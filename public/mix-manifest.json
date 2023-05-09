@@ -1,0 +1,16 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/css/app.css": "/css/app.css",
+    "/vendors/js/bootstrap/bootstrap-multiselect.js": "/vendors/js/bootstrap/bootstrap-multiselect.js",
+    "/vendors/js/bootstrap/bootstrap.bundle.min.js": "/vendors/js/bootstrap/bootstrap.bundle.min.js",
+    "/vendors/js/bootstrap/bootstrap.min.js": "/vendors/js/bootstrap/bootstrap.min.js",
+    "/vendors/js/charts/chart.min.js": "/vendors/js/charts/chart.min.js",
+    "/vendors/js/jquery/jquery.min.js": "/vendors/js/jquery/jquery.min.js",
+    "/vendors/js/popper/popper.min.js": "/vendors/js/popper/popper.min.js",
+    "/vendors/js/tables/datatable/dataTables.bootstrap4.min.js": "/vendors/js/tables/datatable/dataTables.bootstrap4.min.js",
+    "/vendors/js/tables/datatable/jquery.dataTables.min.js": "/vendors/js/tables/datatable/jquery.dataTables.min.js",
+    "/vendors/css/bootstrap/bootstrap-multiselect.css": "/vendors/css/bootstrap/bootstrap-multiselect.css",
+    "/vendors/css/bootstrap/bootstrap.css": "/vendors/css/bootstrap/bootstrap.css",
+    "/vendors/css/bootstrap/bootstrap.min.css": "/vendors/css/bootstrap/bootstrap.min.css",
+    "/vendors/css/tables/datatable/dataTables.bootstrap4.min.css": "/vendors/css/tables/datatable/dataTables.bootstrap4.min.css"
+}

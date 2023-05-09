@@ -1,0 +1,33 @@
+
+.imagenformatologo{
+  text-align: center;
+}
+
+
+.conceptos td,
+th {
+    border: 1px solid #B9B9B9;
+}
+
+.tr_head_content {
+    background-color: #6A0F49 !important;
+    color: white !important;
+}
+
+.column_data{
+    text-align: center;
+}
+
+.column_numbers{
+    text-align: right;
+}
+
+.table-striped {
+  tbody tr:nth-of-type(#{$table-striped-order}) {
+    background-color: $table-accent-bg;
+  }
+}
+
+table, tr, td{
+  border:none;
+ }
