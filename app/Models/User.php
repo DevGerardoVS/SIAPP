@@ -7,22 +7,34 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Notifications\ResetPasswordNotification;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
+    protected $table = 'adm_users';
+
     protected $fillable = [
-        'name',
+        'id_ente',
+        'nombre',
+        'p_apellido',
+        's_apellido',
+        'celular',
         'email',
+        'username',
         'password',
+        'sudo',
+        'status'
     ];
+
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -32,6 +44,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at',
+        'updated_at'
     ];
 
     /**
@@ -42,4 +56,21 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function setPasswordAttribute($val){
+        if(!empty($val)){
+            $this->attributes['password'] = \Hash::make($val);
+        }
+    }
+
+     /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
 }
