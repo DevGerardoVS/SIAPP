@@ -151,15 +151,7 @@ if (isset(Auth::user()->id)) {
                             // window.location.href = "{{ route('logout') }}";
                         }
                     });
-
                 }
-
-
-
-
-
-
-
             }
         }, 1000);
     </Script>
@@ -198,18 +190,12 @@ if (isset(Auth::user()->id)) {
                         <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav me-auto">
                         </ul>
-
                         <!-- Right Side Of Navbar -->
                         <ul class="navbar-nav ms-auto">
                             <!-- Authentication Links -->
-
-
-
                             @guest
-
                                 @if (Route::has('login'))
                                     <li class="nav-item">
-
                                         <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                                     </li>
                                 @endif
@@ -349,7 +335,7 @@ if (isset(Auth::user()->id)) {
 
 
     {{-- @if (Request::is('/', 'home', 'login', 'password/reset', 'cambiar-contrasenia', ''))
-     
+
     <footer class="text-center text-lg-start text-white colorMorado footer fixed-bottom footerClassMain" style="">
         <div class="gobiernoDigitalDIV" style=""></div>
      <div class="container pb-0"></div>
@@ -362,7 +348,7 @@ if (isset(Auth::user()->id)) {
             </label>
         </div>
         @else
-     
+
     <footer class="text-center text-lg-start text-white colorMorado footer footerClassMain" style="">
 @endif --}}
 
