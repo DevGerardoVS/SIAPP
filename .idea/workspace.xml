@@ -5,54 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Models/administracion/Bitacora.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/administracion/Funciones.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/administracion/Grupo.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/administracion/Menu.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/administracion/MenuGrupo.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/administracion/Permisos.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/administracion/Sistema.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/administracion/SistemaGrupo.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/administracion/UsuarioGrupo.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/catalogos/CatEntes.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/migrations/2023_03_22_145802_procedures_v1.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Aseguradoras.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Bitacora.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/DetalleConcesion.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/DetallePago.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Funciones.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Modulos.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Perfiles.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/PolizasSeguro.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2022_07_27_180731_create_modulos_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2022_07_27_180947_create_perfiles_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2022_07_27_182114_create_bitacora_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2022_07_27_182135_create_configuracion_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2022_08_22_224309_create_permission_tables.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2022_08_23_172808_create_funciones_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2023_03_14_172334_create_spcl_detalle_concesion_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2023_03_14_172430_create_spcl_detalle_pago_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2023_03_14_172507_create_cat_aseguradoras_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2023_03_14_173038_create_spcl_polizas_seguro_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2023_03_28_224658_create_spcl_polizas_seguro_historico_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2023_04_03_231330_create_spcl_concesiones_bloqueadas_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2023_04_25_235823_alter_users_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/ConcesionesBloqueadasSeeder.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/ConfiguracionSAPSeeder.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/ConfiguracionSeeder.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/DatabaseSeeder.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/FuncionesSeeder.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/ModulosSeeder.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/PerfilesSeeder.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/PermissionsSeeder.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/RoleHasPermissionsSeeder.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/RolesSeeder.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/asignacionderoles.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/cat_aseguradoras.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/user.php" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +19,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Dilan" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -265,7 +218,7 @@
       <workItem from="1683824241276" duration="6851000" />
       <workItem from="1684181099285" duration="440000" />
       <workItem from="1684181590711" duration="559000" />
-      <workItem from="1684189061621" duration="393000" />
+      <workItem from="1684189061621" duration="2243000" />
     </task>
     <servers />
   </component>
