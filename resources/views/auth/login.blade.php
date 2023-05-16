@@ -45,12 +45,12 @@
                         <h5 class="text-center" style="font-size: 24px">Inicio de sesión</h5>
                         <br>
                         <div class="row mb-3" style="text-align: center; ">
-                            <input id="email" type="email" style="width: 75%"
-                                class="form-control @error('email') is-invalid @enderror" name="email"
-                                placeholder="{{ __('Correo o Usuario') }}" value="{{ old('email') }}" required
-                                autocomplete="email" autofocus>
+                            <input id="username" type="username" style="width: 75%"
+                                class="form-control @error('username') is-invalid @enderror" name="username"
+                                placeholder="{{ __('Usuario') }}" value="{{ old('username') }}" required
+                                autocomplete="username" autofocus>
 
-                            @error('email')
+                            @error('username')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

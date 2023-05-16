@@ -1,19 +1,4 @@
-<?php
-$stName = __('messages.nombre_sistema');
-$acr = 'COCOTRA';
-use App\Models\Perfiles;
-use Illuminate\Support\Facades\Log;
-//{{$stName}}
-if (isset(Auth::user()->id)) {
-    $menu = Perfiles::select('perfiles.id', 'perfiles.menu')
-        ->join('users', 'users.perfil_id', '=', 'perfiles.id')
-        ->where('users.id', Auth::user()->id)
-        ->first();
-    
-    $menu = $menu->menu;
-    $menu = json_decode($menu, true);
-}
-?>
+
 
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -55,7 +40,7 @@ if (isset(Auth::user()->id)) {
     @if (isset($titleDesc) && $titleDesc != '')
         <title>{{ $acr . ' - ' . $titleDesc }}</title>
     @else
-        <title>{{ $stName }}</title>
+        <title>D</title>
     @endif
 
     <!-- Scripts -->
@@ -168,17 +153,14 @@ if (isset(Auth::user()->id)) {
 
 <body >
     <div id="app" style="">
-        @if (Request::is('login', 'password/reset', 'cambiar-contrasenia'))
-        {{--@elseif (!Request::is('concesiones', 'concesionesgetdatos', 'imprimirdatoss', 'descargarformato', 'guardarpoliza') && isset(Auth::user()->id))--}}
-        @elseif (isset(Auth::user()->id))
             <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
                 <div class="container">
-                    <a class="navbar-brand" href="{{ route('home') }}" title="{{ $stName }}">
+                    <a class="navbar-brand" href="{{ route('home') }}" title="D">
                         <img src="{{ asset('img/logoWhite.png') }}"
                             style="max-height: 45px; margin-left:10px; margin-right:10px; pointer-events: none !important;"
                             alt="logo">
 
-                        <b>{{ $stName }}</b>
+                        <b>Titulo</b>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -189,115 +171,13 @@ if (isset(Auth::user()->id)) {
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav me-auto">
+                            <li> <a href="{{ route('logout') }}">logout</a></li>
+
                         </ul>
                         <!-- Right Side Of Navbar -->
-                        <ul class="navbar-nav ms-auto">
-                            <!-- Authentication Links -->
-                            @guest
-                                @if (Route::has('login'))
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                    </li>
-                                @endif
-                            @else
-                                {{-- {{json_encode($menu)}} --}}
-                                @foreach ($menu as $item)
-                                    {{ strpos($item['modruta'], 'A_') }}
-                                    {{-- menu( {{ $item['modruta'] }}), --}}
-                                    @if (strpos($item['modruta'], 'A_') === false)
-                                        <li class="nav-item dropdown ">
-                                            {{--<a id="navbarDropdown" class="nav-link"
-                                                href="{{ route($item['modruta']) }}" role="button" v-pre>
-                                                {{ $item['namemodulo'] }}</a>--}}
-                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ $item['namemodulo'] }}</a>
-                                            <div class="dropdown-menu">
-                                                @foreach ($item['submodulos'] as $submodulo)
-                                                    @foreach ($submodulo['funciones'] as $funcion)
-                                                        <a class="dropdown-item" href="{{ route($funcion['ruta'])}}">{{ $funcion['nombre']}}</a>
-                                                    @endforeach
-                                                @endforeach
-                                            </div>
-                                        </li>
-                                    @elseif (strpos($item['modruta'], 'A_') === true)
-                                    @endif
-                                @endforeach
-
-                                {{-- <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ __('Usuarios') }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('users') }}">Usuarios</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ __('Configuraciones') }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('configuraciones') }}">Configuraciones</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ __('Agua') }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('agua') }}">Agua</a>
-                                <a class="dropdown-item" href="{{ route('tarifas_agua') }}">Tarifas</a>
-                                <a class="dropdown-item" href="{{ route('organismos_agua') }}">Organismos Operadores</a>
-                                <a class="dropdown-item" href="{{ route('pozos_agua') }}">Pozos de Agua</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ __('Predial') }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('predial') }}">Predial</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ __('Reportes') }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="">Reportes</a>
-                            </div>
-                        </li> --}}
-                                @isset($menu)
-                                    <li class="nav-item dropdown">
-
-                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
-                                            role="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false" v-pre title="Mi Usuario">
-                                            <i class="fas fa-user-circle" aria-hidden="true"></i>
-                                        </a>
-
-                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
-                                            style="text-align: center;">
-
-
-                                            <a class="dropdown-item" href="{{ route('cambiar_contrasenia') }}">
-                                                {{ __('Cambiar contraseña') }}
-                                            </a>
-                                            <a class="dropdown-item" href="{{ route('logout') }}"
-                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                {{ __('Cerrar Sesión') }}
-                                            </a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                                class="d-none">
-                                                @csrf
-                                            </form>
-                                        </div>
-                                    </li>
-                                @endisset
-                            @endguest
-                        </ul>
                     </div>
                 </div>
             </nav>
-        @endif
         @if (Request::is('/', 'login', 'password/reset', 'cambiar-contrasenia'))
             <main style="min-height: auto; min-width:auto;">
                 @yield('content')
@@ -315,9 +195,6 @@ if (isset(Auth::user()->id)) {
 <br>
 <br>
 <br>
-    @if (Request::is('/', 'home', '', 'password/reset', 'cambiar-contrasenia', ''))
-        {{-- <footer class="text-center text-lg-start text-white colorMorado footer footerClassMain" style=""> --}}
-    @else
         <footer class="text-center text-lg-start text-white colorMorado footer fixed-bottom footerClassMain"
             style="">
             <div class="gobiernoDigitalDIV" style=""></div>
@@ -331,7 +208,6 @@ if (isset(Auth::user()->id)) {
                     </a>
                 </label>
             </div>
-    @endif
 
 
     {{-- @if (Request::is('/', 'home', 'login', 'password/reset', 'cambiar-contrasenia', ''))

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Auth;
 use Redirect;
@@ -38,7 +39,10 @@ class LoginController extends Controller
      */
 
     public function login(Request $request) {
-        if(Auth::attempt(['username' => $request['username'], 'password' => $request['password']])) {
+        log::debug("::: ". $request['email']);
+        $verificacion = Auth::attempt(['email' => $request['email'], 'password' => $request['password']]);
+
+        if(Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             if(Auth::user()->estatus == 1)
                 return redirect('/');
             else
