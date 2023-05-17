@@ -1,0 +1,1 @@
+var _environment = { max_size : 100, map_zoom : 15, coordenadas : {}, map : null, marker : null, field_lat : 'mp_latitud', field_lng : 'mp_longitud', field_search_map : 'pac-input', uo : '', poa : '' };

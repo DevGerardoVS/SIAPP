@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsuarioController;
 
 
 /*
@@ -56,15 +57,17 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     //Usuarios
 });
 
-Route::middleware(['role:Monitor|Super Usuario'])->group(function () {
-    Route::get('/users', [App\Http\Controllers\UsersController::class, 'index'])->name('users');
-    Route::post('/get-users', [App\Http\Controllers\UsersController::class, 'getUsuarios'])->name('get-users');
-    Route::post('/users-destroy', [App\Http\Controllers\UsersController::class, 'destroy'])->name('users-destroy');
-    Route::post('/users-add', [App\Http\Controllers\UsersController::class, 'store'])->name('users-add');
-    Route::post('/users-update', [App\Http\Controllers\UsersController::class, 'update'])->name('users-update');
-    Route::post('/users-edit', [App\Http\Controllers\UsersController::class, 'show'])->name('users-edit');
-    Route::get('/users-export', [App\Http\Controllers\UsersController::class, 'export'])->name('users-export');
-    Route::get('/users/get-organismos', [App\Http\Controllers\UsersController::class, 'getOrganismosMunicipales'])->name('get-organismos-user');
+Route::controller(UsuarioController::class)->group(function () {
+    Route::get('/adm-usuarios', 'getIndex')->name('index_usuario');
+    Route::get('/adm-usuarios/data/{id?}', 'getData');
+    Route::post('/adm-usuarios/status', 'postStatus');
+    Route::get('/adm-usuarios/create', 'getCreate');
+    Route::post('/adm-usuarios/store', 'postStore');
+    Route::get('/adm-usuarios/update/{id?}', 'getUpdate');
+    Route::post('/adm-usuarios/put-usuario', 'postUpdate');
+    Route::get('/adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
+    Route::post('/adm-usuarios/eliminar', 'postDelete');
+    Route::post('/adm-usuarios/grupos', 'postGrupos');
 });
 //Configuracion
 Route::middleware(['role:Control|Super Usuario'])->group(function () {

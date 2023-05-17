@@ -15,7 +15,7 @@ use Carbon\Carbon;
 use App\Exports\UsersExport;
 use App\Models\User;
 
-class UsersController extends Controller{
+class UsersControl extends Controller{
 
     /**
      * Constructor de la clase controlador

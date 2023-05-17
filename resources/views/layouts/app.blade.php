@@ -135,6 +135,7 @@
             }
         }, 1000);
     </Script>
+    <script src="/js/utilerias.js"></Script>
     {{-- Page Scripts --}}
     @yield('page_scripts')
 
