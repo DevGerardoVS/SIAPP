@@ -153,6 +153,7 @@
 
 <body >
     <div id="app" style="">
+        @if( isset(Auth::user()->id))
             <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
                 <div class="container">
                     <a class="navbar-brand" href="{{ route('home') }}" title="D">
@@ -178,16 +179,16 @@
                     </div>
                 </div>
             </nav>
-        @if (Request::is('/', 'login', 'password/reset', 'cambiar-contrasenia'))
+        @endif
+            @if (Request::is('/', 'login', 'password/reset', 'cambiar-contrasenia'))
             <main style="min-height: auto; min-width:auto;">
                 @yield('content')
             </main>
-        @else
+            @else
             <main class="py-4">
                 @yield('content')
             </main>
         @endif
-
 
     </div>
 </body>
@@ -195,6 +196,7 @@
 <br>
 <br>
 <br>
+    @if( isset(Auth::user()->id))
         <footer class="text-center text-lg-start text-white colorMorado footer fixed-bottom footerClassMain"
             style="">
             <div class="gobiernoDigitalDIV" style=""></div>
@@ -241,4 +243,5 @@
 <!-- Footer -->
 
 
+        @endif
 </html>
