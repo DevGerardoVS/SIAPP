@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,7 +182,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/Dilan SFA/Documents/repositorios/Sistema-Integral",
+    "last_opened_file_path": "C:/Users/Dilan SFA/Documents/repositorios/COCOTRA",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -219,7 +220,7 @@
       <workItem from="1684181099285" duration="440000" />
       <workItem from="1684181590711" duration="559000" />
       <workItem from="1684189061621" duration="23883000" />
-      <workItem from="1684338291575" duration="667000" />
+      <workItem from="1684338291575" duration="5593000" />
     </task>
     <servers />
   </component>

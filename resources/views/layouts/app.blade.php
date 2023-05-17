@@ -1,12 +1,7 @@
-
-
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-
-
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -40,7 +35,7 @@
     @if (isset($titleDesc) && $titleDesc != '')
         <title>{{ $acr . ' - ' . $titleDesc }}</title>
     @else
-        <title>D</title>
+        <title>Sistema Integral de Logueo</title>
     @endif
 
     <!-- Scripts -->
@@ -161,7 +156,7 @@
                             style="max-height: 45px; margin-left:10px; margin-right:10px; pointer-events: none !important;"
                             alt="logo">
 
-                        <b>Titulo</b>
+                        <b>Sistema Integral</b>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -172,8 +167,40 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav me-auto">
-                            <li> <a href="{{ route('logout') }}">logout</a></li>
+                        </ul>
+                        <ul class="navbar-nav ms-auto">
+                            <?php $menus = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, null]); ?>
+                            @foreach($menus as $menu)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{$menu->ruta}}">
+                                    {{$menu->nombre_menu}}
+                                </a>
+                            </li>
+                            @endforeach
+                            <!--CERRAR SESION Y CAMBIO DE CONTRASEÑA-->
+                            <li class="nav-item dropdown">
 
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
+                                   role="button" data-bs-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false" v-pre title="Mi Usuario">
+                                    <i class="fas fa-user-circle" aria-hidden="true"></i>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
+                                     style="text-align: center;">
+                                    <a class="dropdown-item" href="{{ route('cambiar_contrasenia') }}">
+                                        {{ __('Cambiar contraseña') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        {{ __('Cerrar Sesión') }}
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                          class="d-none">
+                                        @csrf
+                                    </form>
+                                </div>
+                            </li>
                         </ul>
                         <!-- Right Side Of Navbar -->
                     </div>
@@ -181,6 +208,7 @@
             </nav>
         @endif
             @if (Request::is('/', 'login', 'password/reset', 'cambiar-contrasenia'))
+        <br><br>
             <main style="min-height: auto; min-width:auto;">
                 @yield('content')
             </main>
