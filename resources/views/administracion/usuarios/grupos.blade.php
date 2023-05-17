@@ -35,7 +35,7 @@
 							<div class="form-actions">
 								<div class="row">
 									<div class="col-md-12">
-										<a class="btn btn-labeled btn-danger btnCancel" id="btnCancel" href="/#/adm-usuarios">
+										<a class="btn btn-labeled btn-danger btnCancel" id="btnCancel" href="/adm-usuarios">
 											<span class="btn-label"><i class="glyphicon glyphicon-arrow-left"></i></span>
 											Regresar
 										</a>
@@ -55,6 +55,8 @@
 	</div>
 </section>
 <script src="/assets/js/plugin/bootstrap-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
 <script src="/js/administracion/usuarios/init.js"></script>
 <script>
 	//En casos como este, que son raros se mete un poco de código desde aqui por cuestiones de que es mas problema llamarlo desde el archivo init.js

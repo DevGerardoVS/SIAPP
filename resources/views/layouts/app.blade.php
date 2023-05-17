@@ -32,7 +32,7 @@
     
         'callback_catch' => 'callbackCatch',
     ]) !!}
-    @if (isset($titleDesc) && $titleDesc != '')
+    @if (isset($titleDesc) && $titleDesc != '' && isset($acr))
         <title>{{ $acr . ' - ' . $titleDesc }}</title>
     @else
         <title>Sistema Integral de Logueo</title>
@@ -42,6 +42,8 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link href="{{ asset(mix('vendors/css/bootstrap/bootstrap.min.css')) }}" rel="stylesheet" id="bootstrap-css">

@@ -9,8 +9,8 @@ var dao = {
 			_columns = [
 				{"aTargets" : [0], "mData" : "nombre_grupo"},
 				{"aTargets" : [1], "mData" : function(o){
-					return '<a data-toggle="tooltip" title="Administrar Permisos" class="btn btn-sm btn-info" href="/#/adm-permisos/grupo/'+o.id+'">' + '<i class="glyphicon glyphicon-screenshot"></i></a>&nbsp;'
-						+'<a data-toggle="tooltip" title="Modificar Grupo" class="btn btn-sm btn-success" href="/#/adm-grupos/update/'+o.id+'">' + '<i class="glyphicon glyphicon-pencil"></i></a>&nbsp;'
+					return '<a data-toggle="tooltip" title="Administrar Permisos" class="btn btn-sm btn-info" href="/adm-permisos/grupo/'+o.id+'">' + '<i class="glyphicon glyphicon-screenshot"></i></a>&nbsp;'
+						+'<a data-toggle="tooltip" title="Modificar Grupo" class="btn btn-sm btn-success" href="/adm-grupos/update/'+o.id+'">' + '<i class="glyphicon glyphicon-pencil"></i></a>&nbsp;'
 						+'<a data-toggle="tooltip" title="Eliminar Grupo" class="btn btn-sm btn-danger" onclick="dao.eliminarGrupo(' + o.id + ')">' + '<i class="glyphicon glyphicon-trash"></i></a>&nbsp;';
 				}},
 				
@@ -56,7 +56,7 @@ var dao = {
     	}).done(function(response){
     		if (response == "done") {
     			_gen.notificacion_min('Éxito', 'La acción se ha realizado correctamente', 1);
-    			window.location.href = '/#/adm-grupos';
+    			window.location.href = '/adm-grupos';
     		}
     	});
     },
@@ -76,7 +76,7 @@ var dao = {
     	}).done(function(response){
     		if (response == "done") {
     			_gen.notificacion_min('Éxito', 'La acción se ha realizado correctamente', 1);
-    			window.location.href = '/#/adm-grupos';
+    			window.location.href = '/adm-grupos';
     		}
     	});
     },

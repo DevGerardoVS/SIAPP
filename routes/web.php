@@ -56,19 +56,23 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     Route::post('/contrasenia-confirmada', [App\Http\Controllers\ChangePasswordController::class, 'store'])->name('change_password');
     //Usuarios
 });
+Route::get('/calendario',[App\Http\Controllers\LogController::class, 'logsView'])->name('viewLogs');
+Route::post('/calendario/download',[App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
 
 Route::controller(UsuarioController::class)->group(function () {
-    Route::get('/adm-usuarios', 'getIndex')->name('index_usuario');
-    Route::get('/adm-usuarios/data/{id?}', 'getData');
-    Route::post('/adm-usuarios/status', 'postStatus');
-    Route::get('/adm-usuarios/create', 'getCreate');
-    Route::post('/adm-usuarios/store', 'postStore');
-    Route::get('/adm-usuarios/update/{id?}', 'getUpdate');
-    Route::post('/adm-usuarios/put-usuario', 'postUpdate');
-    Route::get('/adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
-    Route::post('/adm-usuarios/eliminar', 'postDelete');
-    Route::post('/adm-usuarios/grupos', 'postGrupos');
+    Route::get(' administracion/usuarios/adm-usuarios', 'getIndex')->name('index_usuario');
+    Route::get(' administracion/usuarios/adm-usuarios/data/{id?}', 'getData');
+    Route::post('administracion/usuarios/adm-usuarios/status', 'postStatus');
+    Route::get(' administracion/usuarios/adm-usuarios/create', 'getCreate');
+    Route::post('administracion/usuarios/adm-usuarios/store', 'postStore');
+    Route::get(' administracion/usuarios/adm-usuarios/update/{id?}', 'getUpdate');
+    Route::post('administracion/usuarios/adm-usuarios/put-usuario', 'postUpdate');
+    Route::get(' administracion/usuarios/adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
+    Route::post('administracion/usuarios/adm-usuarios/eliminar', 'postDelete');
+    Route::post('administracion/usuarios/adm-usuarios/grupos', 'postGrupos');
 });
+include('administracion.php');//Agregar las rutas para el módulo de administración en este archivo
+
 //Configuracion
 Route::middleware(['role:Control|Super Usuario'])->group(function () {
     Route::get('/configuraciones', [App\Http\Controllers\ConfiguracionController::class, 'index'])->name('configuraciones');
@@ -92,8 +96,7 @@ Route::middleware(['role:Control|Super Usuario'])->group(function () {
     Route::post('/configuraciones/perfiles/agregar', [App\Http\Controllers\PermisosController::class, 'agregarPerfiles'])->name('agregar_perfiles');
     Route::get('/configuraciones/perfiles/acciones/{action?}/{id?}', [App\Http\Controllers\PermisosController::class, 'actionsPerfiles'])->name('acciones_perfiles');
     //Logs
-    Route::get('/configuraciones/logs',[App\Http\Controllers\LogController::class, 'logsView'])->name('viewLogs');
-    Route::post('/configuraciones/logs/download',[App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
+
     //bitacora 
     Route::post('/configuraciones/get-bitacora',[App\Http\Controllers\BitacoraController::class,'getBitacora'])->name('get_bitacora');
     Route::get('/configuraciones/bitacora', [App\Http\Controllers\BitacoraController::class, 'bitacoras'])->name('bitacoras');
