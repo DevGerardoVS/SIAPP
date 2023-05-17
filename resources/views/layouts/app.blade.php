@@ -171,11 +171,31 @@
                         <ul class="navbar-nav ms-auto">
                             <?php $menus = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, null]); ?>
                             @foreach($menus as $menu)
-                            <li class="nav-item">
+                            <?php $hijos = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, $menu->id]); ?>
+                            @if($hijos)
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
+                                   role="button" data-bs-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false" v-pre title="Mi Usuario">
+                                    {{$menu->nombre_menu}}
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="text-align: center;">
+                                    @foreach($hijos as $hijo )
+                                    <a class="dropdown-item" href="{{$hijo->ruta}}">
+                                        {{$hijo->nombre_menu}}
+                                    </a>
+                                    @endforeach
+                                </div>
+                            </li>
+                            @else
+                            <li class="nav-item dropdown">
                                 <a class="nav-link" href="{{$menu->ruta}}">
                                     {{$menu->nombre_menu}}
                                 </a>
                             </li>
+                            @endif
+
                             @endforeach
                             <!--CERRAR SESION Y CAMBIO DE CONTRASEÑA-->
                             <li class="nav-item dropdown">
