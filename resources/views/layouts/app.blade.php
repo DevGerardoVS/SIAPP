@@ -154,7 +154,7 @@
         @if( isset(Auth::user()->id))
             <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
                 <div class="container">
-                    <a class="navbar-brand" href="{{ route('home') }}" title="D">
+                    <a class="navbar-brand" href="/" title="Sistema Integral">
                         <img src="{{ asset('img/logoWhite.png') }}"
                             style="max-height: 45px; margin-left:10px; margin-right:10px; pointer-events: none !important;"
                             alt="logo">
@@ -231,7 +231,7 @@
             </nav>
         @endif
             @if (Request::is('/', 'login', 'password/reset', 'cambiar-contrasenia'))
-        <br><br>
+
             <main style="min-height: auto; min-width:auto;">
                 @yield('content')
             </main>

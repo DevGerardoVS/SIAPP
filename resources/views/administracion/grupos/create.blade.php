@@ -1,9 +1,11 @@
-<section id="widget-grid">
+@extends('layouts.app')
+@section('content')
+<div class="container">
+    <section id="widget-grid">
 	<div class="row">
 		<article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable" id="widget-article">
 			<div class="jarviswidget" id="widget" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
 				<header>
-					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
 					<h2>Crear Nuevo Grupo</h2>
 				</header>
 				<div>
@@ -41,7 +43,7 @@
 										</button>
 									</div>
 								</div>
-							</div>							
+							</div>
 							</form>
 						</div>
 					</div>
@@ -50,7 +52,10 @@
 		</article>
 	</div>
 </section>
+</div>
+
 <script src="/js/administracion/grupos/init.js"></script>
 <script>
 	init.validateCreate($('#frmCreate'));
 </script>
+@endsection

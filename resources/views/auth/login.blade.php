@@ -33,14 +33,14 @@
                 @endphp
                
                 <div class="card-body">
-                    <div class="  " style="text-align: center; padding-top: 4%;padding-bottom: 4%;">
-                        <img src="{{ asset('/img/LogosGD/GDVertical.png') }}" style="width: 30%" class="css-class"
-                            alt="alt text">
+                    <div class="  " style="text-align: center; padding-top: 34%;padding-bottom: 4%;">
+                        <!--<img src="{{ asset('/img/LogosGD/GDVertical.png') }}" style="width: 30%" class="css-class"
+                            alt="alt text">-->
                     </div>
 
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-                        <h5 class="text-center" style="font-size: 24px; ">{{ __('messages.nombre_sistema') }} </h5>
+                        <h5 class="text-center" style="font-size: 24px; "><b>{{ __('messages.nombre_sistema') }}</b> </h5>
                         {{-- <h5 class="text-center" style="font-size: 24px; padding-bottom: 3%">En Línea </h5> --}}
                         <h5 class="text-center" style="font-size: 24px">Inicio de sesión</h5>
                         <br>
