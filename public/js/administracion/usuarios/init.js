@@ -195,6 +195,7 @@ var init = {
 };
 
 $(document).ready(function () {
+	dao.getData();
 	$('#btnSave').click(function(e){
 		e.preventDefault();
 		if($('#frm_create').valid()) {

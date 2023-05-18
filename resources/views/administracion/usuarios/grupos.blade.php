@@ -1,3 +1,7 @@
+
+@extends('layouts.app')
+
+@section('content')
 <section id="widget-grid">
 	<div class="row">
 		<article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable" id="widget-article">
@@ -54,6 +58,7 @@
 		</article>
 	</div>
 </section>
+@endsection
 <script src="/assets/js/plugin/bootstrap-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 

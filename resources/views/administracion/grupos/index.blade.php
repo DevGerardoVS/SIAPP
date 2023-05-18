@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @section('content')
 <div class="container">
-    <section id="widget-grid" class="">
+
+<section id="widget-grid" class="">
         <div class="row">
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
@@ -40,9 +41,9 @@
         </div>
     </section>
 </div>
+@endsection
 
 <script src="/js/administracion/grupos/init.js"></script>
 <script>
 	dao.getData();
 </script>
-@endsection
