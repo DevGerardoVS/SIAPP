@@ -3,6 +3,7 @@
 
     function getData(){
         var dt = $('#catalogo');
+
         dt.DataTable().clear().destroy();
         generaDatatable();
     }
@@ -12,23 +13,16 @@
         var orderDt = "";
         var column = "";
         var formatCantidades = [];
-        var ordenamiento = [];
-        var columns_hidden = [];
+        var negritas = [];
+        formatCantidades=[];
+        var titulo = 'Reporte '+$('.titulo').text()+' '+$("#municipio_filter").find(':selected').text()+'-'+$("#anio_filter").val();
 
-        if(dt.attr('data-id')!=undefined){
-            var data_order = dt.attr('data-id').split(",");
-            for(var i in data_order){
-                var dato = data_order[i].split("_");
-                orderDt = dato[0];
-                column = dato[1];
-                ordenamiento[i] = [parseInt(column),""+orderDt];
-            }
-        }
-
-        if(dt.attr('data-hidden')!=undefined){
-            var data_hidden = dt.attr('data-hidden').split(",");
-            for(var i in data_hidden){
-                columns_hidden[i] = parseInt(data_hidden[i]);
+        if(dt.attr('data-bold')!=undefined){
+            negritas = dt.attr('data-bold').split(",");
+            for(var i in negritas){
+                if(negritas[i] != ""){
+                    negritas[i] = parseInt(negritas[i]);
+                }
             }
         }
 
@@ -41,26 +35,39 @@
             }
         }
 
+
         $.ajax({
-            url: "administracion/usuarios/adm-usuarios/data",
-            type:'get',
+            url: $("#buscarForm").attr("action"),
+            data: $("#buscarForm").serializeArray(),
+            type:'POST',
             dataType: 'json',
             success: function(response) {
-                if(response.length == 0){
+                //console.log(response)
+                if(response.dataSet.length == 0){
                     dt.attr('data-empty','true');
                 }
                 else{
                     dt.attr('data-empty','false');
                 }
-                
+                if(response.registro_anual == "4"){
+                    $('#btn_registro_anual').attr('style','color:#0d6efd; display: block;');
+                    $('#alert_message').attr('style','display: none;');
+                }
+                if(response.registro_anual == "5"){
+                    $('#alert_message').attr('style','display: none;');
+                }
+                else{
+                    $('#alert_message').attr('style','display: block;');
+                }
 
                 dt.DataTable({
-                    data: response,
-                    pageLength:10,
+                    data: response.dataSet,
+                    searching: false,
+                    paging: false,
+                    ordering: false,
                     scrollX: true,
                     autoWidth: false,
                     processing: true,
-                    order: ordenamiento,
                     ServerSide: true,
                     language: {
                         processing: "Procesando...",
@@ -80,55 +87,75 @@
                             next: "Siguiente",
                             previous: "Anterior",
                         },
-                        buttons: {
-                            copyTitle: 'Copiado al portapapeles',
-                            copySuccess: {
-                                _: '%d registros copiados',
-                                1: 'Se copio un registro'
-                            }
-                        },
+
                     },
+                    dom:'Bfrtip',
+                    buttons:  [
+
+                    {
+            extend: 'excel',
+            text: '<i class="fas fa-file-excel"></i>', extend: 'excel', className: 'btn-success me-2', titleAttr:'Descargar excel',title: titulo,
+            className: 'btn-success'
+        },
+        {
+            extend: 'pdf',
+            text: '<i class="fas fa-file-pdf"></i>', extend: 'pdf', className: 'btn-danger', titleAttr:'Descargar PDF' ,title: titulo,
+            className: 'btn-danger ms-1 '
+
+        }],
+
                     columnDefs: [
                         {
+                            defaultContent: '0',
                             targets: formatCantidades,
                             className: 'text-right'
                         },
-                        {
-                            targets: columns_hidden,
-                            visible: false,
-                            searcheable: false
-                        }
+                         {
+                            targets: [5],
+                            className: 'font-weight-bold'
+                         },
+                         {
+                            targets: [0],
+                            className: 'text-left'
+                         },
+                         {
+                            
+                            className: 'text-right'
+                         },
+
+
                     ],
+                    fnRowCallback: function(nRow, aData, iDisplayIndex) {
+                        if (negritas.includes(iDisplayIndex)) {
+                            $('td', nRow).each(function(){
+                                $(this).attr('style','font-weight: bold');
+                            });
+                        }
+                        return nRow;
+                    },
                     footerCallback: function(row, data, start, end, display){
                         var api = this.api();
                         api.columns('.sum',{
                             page: 'current'
                         }).every(function(){
                             var sum = this.data().reduce(function(a,b){
-                                var x = parseFloat(a) || 0;
+                                var x = a || 0;
                                 if(b == null){
-                                    b = "0.00";
+                                    b = 0;
                                 }
-                                var y = parseFloat(b.replaceAll(",","")) || 0;
+                                var y = b.replaceAll(",","") || 0;
                                 return x + y;
                             },0);
-                            sum = sum.toFixed(2);
-                            $(this.footer()).html($(this.footer()).attr('data-title')+": "+sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                             sum = sum.toFixed(0);
+                            // $(this.footer()).html($(this.footer()).attr('data-title')+": "+sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                         });
                     }
                 });
-                redrawTable('#catalogo');
             },
             error: function(response) {
                 console.log('Error: ' + response);
             }
         });
-    }
-
-    function redrawTable(tabla){
-        dt = $(tabla);
-        dt.DataTable().columns.adjust().draw();
-        dt.children("thead").css("visibility","hidden");
     }
 
     $(document).ready(function() {
@@ -137,17 +164,6 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
-        /*$('#buscarForm').submit( (e) => {
-            e.preventDefault();
-            $(this).find('.filters').change();
-        } );*/
-
-        $("#buscarForm").on("change",".filters_anio",function(e){
-            e.preventDefault();
-            getData();
-        });
-
         $('#date_range').on('apply.daterangepicker', (e, picker) => {
             e.preventDefault();
             getData();
@@ -158,9 +174,8 @@
             getData();
         });
 
-        $( window ).resize(function() {
-            redrawTable("#catalogo");
-        });
+
+
     });
 </script>
 @endsection

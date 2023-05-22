@@ -90,7 +90,6 @@ var dao = {
           $.each(data, function(i, val){
             par.append(new Option(data[i].nombre_grupo, data[i].id));
           });
-          par.select2().select2("val", id);
         });
     },
 
@@ -98,8 +97,8 @@ var dao = {
     	var form = $('#frm_create')[0];
 		var data = new FormData(form);
     	$.ajax({
-    		type : "POST",
-            url: '/adm-usuarios/store',
+    		type : "get",
+            url: 'administracion/usuarios/adm-usuarios/create',
             data : data,
 			enctype : 'multipart/form-data',
 			processData: false,
@@ -148,7 +147,6 @@ var dao = {
     	$('#in_s_apellido').val('');
     	$('#in_email').val('');
     	$('#in_celular').val('');
-    	dao.getPerfil("");
     },
 
     guardarGrupo: function(grupos, id) {

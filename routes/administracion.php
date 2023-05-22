@@ -24,7 +24,7 @@
 
 	Route::controller(GrupoController::class)->group(function () {
 		Route::get('/adm-grupos', 'getIndex')->name('index_grupo');
-		Route::post('/adm-grupos/data', 'getData')->name('getGroups');
+		Route::get('/adm-grupos/data', 'getData')->name('getGroups');
 		Route::get('/adm-grupos/create', 'getCreate');
 		Route::post('/adm-grupos/store', 'postStore')->name('postStore');
 		Route::get('/adm-grupos/update/{id?}', 'getUpdate');

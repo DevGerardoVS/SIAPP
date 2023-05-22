@@ -12,7 +12,7 @@ var _g = {
 };
 //Configuracion de Notificaciones
 var _gen = {
-    notificacion: function(titulo, content, style) {
+    notificacion: function (titulo, content, style) {
         if (style == 1) {
             var _c = '#739E73',
                 _i = 'fa fa-check',
@@ -43,7 +43,7 @@ var _gen = {
         });
     },
 
-    notificacion_min: function(titulo, content, style) {
+    notificacion_min: function (titulo, content, style) {
         if (style == 1) {
             var _c = '#739E73',
                 _i = 'fa fa-check',
@@ -73,7 +73,7 @@ var _gen = {
         });
     },
 
-    setTable: function(tabla, options) {
+    setTable: function (tabla, options) {
         var settings = $.extend(
             {
                 columns: [],
@@ -130,7 +130,7 @@ var _gen = {
             order: settings.order,
             scrollY: settings.height + 'px',
             columns: settings.columns,
-            preDrawCallback: function() {
+            preDrawCallback: function () {
                 if (!responsiveHelper_datatable_tabletools) {
                     responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper(
                         tabla,
@@ -138,22 +138,22 @@ var _gen = {
                     );
                 }
             },
-            rowCallback: function(nRow, data) {
+            rowCallback: function (nRow, data) {
                 if (settings.rowCB != null) settings.rowCB(data, nRow);
                 responsiveHelper_datatable_tabletools.createExpandIcon(nRow);
             },
-            drawCallback: function(oSettings) {
+            drawCallback: function (oSettings) {
                 responsiveHelper_datatable_tabletools.respond();
                 tabla.$('[data-toggle="popover"]').popover();
                 tabla.$('[data-toggle="tooltip"]').tooltip();
             },
-            initComplete: function() {
+            initComplete: function () {
                 otable = tabla.DataTable().columns.adjust().draw();
             },
         });
     },
 
-    setTableB: function(
+    setTableB: function (
         tabla,
         columns,
         url,
@@ -213,7 +213,7 @@ var _gen = {
             order: order,
             scrollY: height + 'px',
             columns: columns,
-            preDrawCallback: function() {
+            preDrawCallback: function () {
                 if (!responsiveHelper_datatable_tabletools) {
                     responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper(
                         tabla,
@@ -221,22 +221,22 @@ var _gen = {
                     );
                 }
             },
-            rowCallback: function(nRow, data) {
+            rowCallback: function (nRow, data) {
                 if (rowFunction != null) rowFunction(data, nRow);
                 responsiveHelper_datatable_tabletools.createExpandIcon(nRow);
             },
-            drawCallback: function(oSettings) {
+            drawCallback: function (oSettings) {
                 responsiveHelper_datatable_tabletools.respond();
                 tabla.$('[data-toggle="popover"]').popover();
                 tabla.$('[data-toggle="tooltip"]').tooltip();
             },
-            initComplete: function() {
+            initComplete: function () {
                 otable = tabla.DataTable().columns.adjust().draw();
             },
         });
     },
 
-    setTableScroll: function(
+    setTableScroll: function (
         tabla,
         columnDefs,
         datelist,
@@ -289,7 +289,7 @@ var _gen = {
                 scrollY: height + 'px',
                 data: datelist,
                 columnDefs: columnDefs,
-                preDrawCallback: function() {
+                preDrawCallback: function () {
                     if (!responsiveHelper_datatable_tabletools) {
                         responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper(
                             tabla,
@@ -297,17 +297,17 @@ var _gen = {
                         );
                     }
                 },
-                rowCallback: function(nRow) {
+                rowCallback: function (nRow) {
                     responsiveHelper_datatable_tabletools.createExpandIcon(
                         nRow
                     );
                 },
-                drawCallback: function(oSettings) {
+                drawCallback: function (oSettings) {
                     responsiveHelper_datatable_tabletools.respond();
                     tabla.$('[data-toggle="popover"]').popover();
                     tabla.$('[data-toggle="tooltip"]').tooltip();
                 },
-                initComplete: function() {
+                initComplete: function () {
                     otable = tabla.DataTable().columns.adjust().draw();
                 },
             });
@@ -316,7 +316,7 @@ var _gen = {
         otable.$('[data-toggle="popover"]').popover();
     },
 
-setTableScrollEspecial: function(
+    setTableScrollEspecial: function (
         tabla,
         columnDefs,
         datelist,
@@ -369,7 +369,7 @@ setTableScrollEspecial: function(
                 scrollY: height + 'px',
                 data: datelist,
                 columnDefs: columnDefs,
-                preDrawCallback: function() {
+                preDrawCallback: function () {
                     if (!responsiveHelper_datatable_tabletools) {
                         responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper(
                             tabla,
@@ -377,17 +377,17 @@ setTableScrollEspecial: function(
                         );
                     }
                 },
-                rowCallback: function(nRow) {
+                rowCallback: function (nRow) {
                     responsiveHelper_datatable_tabletools.createExpandIcon(
                         nRow
                     );
                 },
-                drawCallback: function(oSettings) {
+                drawCallback: function (oSettings) {
                     responsiveHelper_datatable_tabletools.respond();
                     tabla.$('[data-toggle="popover"]').popover();
                     tabla.$('[data-toggle="tooltip"]').tooltip();
                 },
-                initComplete: function() {
+                initComplete: function () {
                     otable = tabla.DataTable().columns.adjust().draw();
                 },
             });
@@ -396,7 +396,7 @@ setTableScrollEspecial: function(
         otable.$('[data-toggle="popover"]').popover();
     },
 
-	setTableScrollEspecial2: function(
+    setTableScrollEspecial2: function (
         tabla,
         columnDefs,
         datelist,
@@ -449,7 +449,7 @@ setTableScrollEspecial: function(
                 scrollY: height + 'px',
                 data: datelist,
                 columnDefs: columnDefs,
-                preDrawCallback: function() {
+                preDrawCallback: function () {
                     if (!responsiveHelper_datatable_tabletools) {
                         responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper(
                             tabla,
@@ -457,17 +457,17 @@ setTableScrollEspecial: function(
                         );
                     }
                 },
-                rowCallback: function(nRow) {
+                rowCallback: function (nRow) {
                     responsiveHelper_datatable_tabletools.createExpandIcon(
                         nRow
                     );
                 },
-                drawCallback: function(oSettings) {
+                drawCallback: function (oSettings) {
                     responsiveHelper_datatable_tabletools.respond();
                     tabla.$('[data-toggle="popover"]').popover();
                     tabla.$('[data-toggle="tooltip"]').tooltip();
                 },
-                initComplete: function() {
+                initComplete: function () {
                     otable = tabla.DataTable().columns.adjust().draw();
                 },
             });
@@ -476,29 +476,29 @@ setTableScrollEspecial: function(
         otable.$('[data-toggle="popover"]').popover();
     },
 
-    loadSelect: function(elem, data) {
+    loadSelect: function (elem, data) {
         elem.empty();
         elem.append(new Option('Seleccione', -1));
-        $.each(data, function(i) {
+        $.each(data, function (i) {
             elem.append(new Option(this.name, this.id));
         });
     },
 
-    loadSelect2: function(elem, data, deft) {
+    loadSelect2: function (elem, data, deft) {
         elem.empty();
         if (deft == null) elem.append(new Option('Seleccione', -1));
         else if (deft != 'false') {
-            $.each(deft, function(i) {
+            $.each(deft, function (i) {
                 elem.append(new Option(this.name, this.id));
             });
         }
-        $.each(data, function(i) {
+        $.each(data, function (i) {
             elem.append(new Option(this.name, this.id));
         });
         elem.select2();
     },
 
-    select: function(select, options) {
+    select: function (select, options) {
         var settings = $.extend(
             {
                 default: [{ id: 'false', name: '--- Seleccione un valor ---' }],
@@ -510,13 +510,13 @@ setTableScrollEspecial: function(
 
         select.empty();
 
-        $.each(settings.default, function(i) {
+        $.each(settings.default, function (i) {
             select.append(
                 new Option(settings.default[i].name, settings.default[i].id)
             );
         });
 
-        $.each(settings.data, function(i) {
+        $.each(settings.data, function (i) {
             select.append(
                 new Option(settings.data[i].name, settings.data[i].id)
             );
@@ -528,27 +528,28 @@ setTableScrollEspecial: function(
             select.select2('val', settings.selected);
     },
 
-    validation: function(_form, _rules, _messages) {
+    validation: function (_form, _rules, _messages) {
+
         _form.validate({
             errorElement: 'span',
             errorClass: 'has-error',
             focusInvalid: true,
             rules: _rules,
             messages: _messages,
-            success: function(e) {
+            success: function (e) {
                 $('.form-group').removeClass('has-error');
                 $(e).remove();
             },
-            highlight: function(e, errorClass) {
+            highlight: function (e, errorClass) {
                 $(e.parentNode).addClass(errorClass);
             },
-            unhighlight: function(e, errorClass) {
+            unhighlight: function (e, errorClass) {
                 $(e.parentNode).removeClass(errorClass);
             },
         });
     },
 
-    validate: function(form, options) {
+    validate: function (form, options) {
         var settings = $.extend(
             {
                 rules: {},
@@ -563,27 +564,27 @@ setTableScrollEspecial: function(
             focusInvalid: true,
             rules: settings.rules,
             messages: settings.messages,
-            success: function(e) {
+            success: function (e) {
                 $('.form-group').removeClass('has-error');
                 $(e).remove();
             },
-            highlight: function(e, errorClass) {
+            highlight: function (e, errorClass) {
                 $(e.parentNode).addClass(errorClass);
             },
-            unhighlight: function(e, errorClass) {
+            unhighlight: function (e, errorClass) {
                 $(e.parentNode).removeClass(errorClass);
             },
         });
     },
 
-    panel: function(div) {
+    panel: function (div) {
         $.ajax({
             type: 'GET',
             url: '/sistemas/panel',
             dataType: 'json',
-        }).done(function(data) {
+        }).done(function (data) {
             content = '';
-            $.each(data, function(i) {
+            $.each(data, function (i) {
                 content += '<div class="superbox-list">';
                 if (data[i].estatus == 1)
                     target =
@@ -616,24 +617,24 @@ setTableScrollEspecial: function(
         });
     },
 
-    getUsrModal: function(id) {
+    getUsrModal: function (id) {
         _gen.getUserData(id);
         $('#userModal').modal('show');
     },
 
-    getUserData: function(id) {
+    getUserData: function (id) {
         $.ajax({
             url: '/usuarios/user/' + id,
             type: 'GET',
             dataType: 'json',
-        }).done(function(data) {
+        }).done(function (data) {
             $('#user-data #username').val(data[0].username);
             $('#user-data #nombre_completo').val(
                 data[0].nombre +
-                    ' ' +
-                    data[0].primer_apellido +
-                    ' ' +
-                    data[0].segundo_apellido
+                ' ' +
+                data[0].primer_apellido +
+                ' ' +
+                data[0].segundo_apellido
             );
             if (data[0].cve_upp != 00) {
                 $('#user-data #cve_upp').val(
@@ -650,7 +651,7 @@ setTableScrollEspecial: function(
         });
     },
 
-    alphaCheck: function(e) {
+    alphaCheck: function (e) {
         var numeric = e.which > 47 && e.which < 58;
         var alpha = e.which > 64 && e.which < 91;
         var bkspace = e.which == 8;
@@ -664,7 +665,7 @@ setTableScrollEspecial: function(
         );
     },
 
-    floatCheck: function(e) {
+    floatCheck: function (e) {
         var numeric = e.which > 47 && e.which < 58;
         var dot = e.which == 46;
         var bkspace = e.which == 8;
@@ -675,7 +676,7 @@ setTableScrollEspecial: function(
         );
     },
 
-    numCheck: function(e) {
+    numCheck: function (e) {
         var numeric = e.which > 47 && e.which < 58;
         var bkspace = e.which == 8;
         var tab = e.which == 0;
@@ -683,7 +684,7 @@ setTableScrollEspecial: function(
         return numeric == false && bkspace == false && tab == false;
     },
 
-    numberCheck: function(e) {
+    numberCheck: function (e) {
         var numeric = e.which >= 46 && e.which < 58;
         var bkspace = e.which == 8;
         var tab = e.which == 0;
@@ -691,7 +692,7 @@ setTableScrollEspecial: function(
         return numeric == false && bkspace == false && tab == false;
     },
 
-    dropMenu: function(items, type, title) {
+    dropMenu: function (items, type, title) {
         type = type || 'success';
         title = title || 'Administrar';
 
@@ -709,7 +710,7 @@ setTableScrollEspecial: function(
         menu += "<ul class='dropdown-menu'>";
 
         li = '';
-        $.each(items, function(i) {
+        $.each(items, function (i) {
             li += '<li>';
             if (items[i].type == 'link') {
                 target = items[i].target || false;
@@ -746,10 +747,10 @@ setTableScrollEspecial: function(
     },
 };
 //Funcion para Serializar Objeto
-$.fn.serializeObject = function() {
+$.fn.serializeObject = function () {
     var o = {};
     var a = this.serializeArray();
-    $.each(a, function() {
+    $.each(a, function () {
         if (o[this.name] !== undefined) {
             if (!o[this.name].push) {
                 o[this.name] = [o[this.name]];
@@ -785,14 +786,14 @@ function DisableBackButton() {
 }
 DisableBackButton();
 window.onload = DisableBackButton;
-window.onpageshow = function(evt) {
+window.onpageshow = function (evt) {
     if (evt.persisted) DisableBackButton();
 };
-window.onunload = function() {
+window.onunload = function () {
     void 0;
 };
 //Formato Texto
-$.formatText = function(input) {
+$.formatText = function (input) {
     var text = input.val();
     var text_formated = text.toLowerCase();
     text_formated =
@@ -800,24 +801,24 @@ $.formatText = function(input) {
     input.val(text_formated);
 };
 //Formato Moneda
-$.formatCurrency = function(amount, format) {
+$.formatCurrency = function (amount, format) {
     var aumont2 = amount;
     amount = amount || 0;
     amount = parseFloat(amount.toString().replace(/[^0-9\.]+/g, ''));
     var signo;
     signo = Math.sign(aumont2);
 
-    if (format){
-        if(signo == "-1"){
+    if (format) {
+        if (signo == "-1") {
             return '$- ' + amount.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-        }else{
+        } else {
             return '$ ' + amount.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
         }
     }
     else return amount.toFixed(2);
 };
 //Funcion on Blur
-$(document).on('blur', '.form-currency', function() {
+$(document).on('blur', '.form-currency', function () {
     current = 0;
     if ($(this).val() != '') current = $(this).val();
 
@@ -825,11 +826,11 @@ $(document).on('blur', '.form-currency', function() {
     $(this).val(currency);
 });
 //Funcion de Validacion de Calendario
-$(document).on('blur', '.cal-control', function() {
+$(document).on('blur', '.cal-control', function () {
     var total = 0;
     var target = $(this).attr('target');
 
-    $('.cal-control').each(function() {
+    $('.cal-control').each(function () {
         if (!$(this).val() == '') {
             total += $.formatCurrency($(this).val(), false);
         }
@@ -841,7 +842,7 @@ $(document).on('blur', '.cal-control', function() {
 $.widget(
     'ui.dialog',
     $.extend({}, $.ui?.dialog.prototype, {
-        _title: function(title) {
+        _title: function (title) {
             if (!this.options.title) {
                 title.html('&#160;');
             } else {
@@ -853,7 +854,7 @@ $.widget(
 //Validacion Campo Obligatorio
 $.validator.addMethod(
     'valueNotEquals',
-    function(value, element, arg) {
+    function (value, element, arg) {
         return arg != value;
     },
     'El campo es obligatorio'
@@ -861,7 +862,7 @@ $.validator.addMethod(
 //Validacion de solo Letras
 $.validator.addMethod(
     'lettersonly',
-    function(value, element) {
+    function (value, element) {
         return this.optional(element) || /^[a-z\s]*$/i.test(value);
     },
     'Sólamente letras sin acentos porfavor'
@@ -869,7 +870,7 @@ $.validator.addMethod(
 //Validacion Alfanumerica
 $.validator.addMethod(
     'alphanumeric',
-    function(value, element) {
+    function (value, element) {
         return this.optional(element) || /^[a-zA-Z0-9]+$/.test(value);
     },
     'Introduzca sólamente caracteres alfanuméricos'
@@ -880,8 +881,8 @@ $.ajaxSetup({
         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
     },
     async: false,
-    success: function(data) {},
-    error: function(error, status, err) {
+    success: function (data) { },
+    error: function (error, status, err) {
         if (error.status == 401)
             _gen.notificacion_min(
                 'Movimiento no autorizado',
@@ -897,29 +898,29 @@ $.ajaxSetup({
     },
 });
 //Deshabilitacion de Tecla Enter
-$(document).on('keyup keypress', 'form', function(e) {
+$(document).on('keyup keypress', 'form', function (e) {
     if (e.which == 13) {
         e.preventDefault();
         return false;
     }
 });
 //Funcion Documento on Change
-$(document).on('change', "[type='file']:not('.pdf-ignore')", function() {
+$(document).on('change', "[type='file']:not('.pdf-ignore')", function () {
     file = $(this).prop('files')[0];
     button = $('#' + $(this).attr('bt-target'));
     var doc = $(this).val();
     var ext = doc.substring(doc.lastIndexOf('.'));
     //console.log(ext);
-    if(ext != '.xlsx'){
-         if (file.size > _globals.max_size * 1024 * 1024) {
+    if (ext != '.xlsx') {
+        if (file.size > _globals.max_size * 1024 * 1024) {
             /*if(ext != ".xml" && ext != ".pdf"){
 
         }*/
             _gen.notificacion_min(
                 'Error',
                 'El archivo cargado pesa más de ' +
-                    _globals.max_size +
-                    'mb, seleccione un archivo más ligero',
+                _globals.max_size +
+                'mb, seleccione un archivo más ligero',
                 4
             );
             button.attr('disabled', true);
@@ -927,10 +928,10 @@ $(document).on('change', "[type='file']:not('.pdf-ignore')", function() {
             button.attr('disabled', false);
         }
     }
-    
+
 });
 //Funcion on Click Evento Submit
-$(document).on('click', '[type=submit]', function(e) {
+$(document).on('click', '[type=submit]', function (e) {
     e.preventDefault();
     form = $(this).parents('form:first');
     if (form.valid() && $(this).attr('disabled', false)) {
@@ -944,12 +945,12 @@ $('body').tooltip({
     selector: '[data-toggle="tooltip"]',
 });
 //Modal para Actualizacion de Usuario
-$(document).on('click', '#user', function(e) {
+$(document).on('click', '#user', function (e) {
     $.ajax({
         type: 'GET',
         url: '/usuarios/profile',
         dataType: 'json',
-    }).done(function(user) {
+    }).done(function (user) {
         user = user[0];
 
         upp = user.upp == null ? 'No Asignado' : user.upp;
@@ -1017,13 +1018,13 @@ $(document).on('click', '#user', function(e) {
 $.validator.setDefaults({
     errorElement: 'span',
     errorClass: 'help-block',
-    highlight: function(element, errorClass, validClass) {
+    highlight: function (element, errorClass, validClass) {
         $(element).closest('.form-group').addClass('has-error');
     },
-    unhighlight: function(element, errorClass, validClass) {
+    unhighlight: function (element, errorClass, validClass) {
         $(element).closest('.form-group').removeClass('has-error');
     },
-    errorPlacement: function(error, element) {
+    errorPlacement: function (error, element) {
         if (
             element.parent('.input-group').length ||
             element.prop('type') === 'checkbox' ||
@@ -1044,17 +1045,17 @@ if ('localStorage' in window && window['localStorage'] !== null) {
     );
 }
 //Funcion para Actualizacion de Password
-$(document).on('click', '#updatePasswordTrigger', function(e) {
+$(document).on('click', '#updatePasswordTrigger', function (e) {
     $('#profile-info').slideUp(200);
     $('#password-update').slideDown(200);
 });
 //Funcion para Ejecucion de Perfil
-$(document).on('click', '#btnProfileTrigger', function(e) {
+$(document).on('click', '#btnProfileTrigger', function (e) {
     $('#profile-info').slideDown(200);
     $('#password-update').slideUp(200);
 });
 //Funcion de Actualizacion de Password
-$(document).on('click', '#btnUpdatePassword', function(e) {
+$(document).on('click', '#btnUpdatePassword', function (e) {
     lc_old_password = $('#old_password').val();
     lc_new_password = $('#new_password').val();
     lc_password_confirmation = $('#password_confirmation').val();
@@ -1073,7 +1074,7 @@ $(document).on('click', '#btnUpdatePassword', function(e) {
                 old_password: lc_old_password,
                 new_password: lc_new_password,
             },
-        }).done(function(response) {
+        }).done(function (response) {
             if (response == 'success') {
                 $('#profile').modal('hide');
                 _gen.notificacion_min(

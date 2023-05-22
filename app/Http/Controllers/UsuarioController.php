@@ -9,6 +9,7 @@ use Datatables;
 use App\Models\User;
 use Auth;
 use DB;
+use Log;
 use App\Models\administracion\UsuarioGrupo;
 
 class UsuarioController extends Controller
@@ -45,7 +46,20 @@ class UsuarioController extends Controller
 		}
 
 		$query = $query->get();
-		return $query;
+		$dataSet = [];
+		foreach ($query as $key) {
+			$i = array(
+				$key->username,
+				$key->email,
+				$key->nombre_completo,
+				$key->celular,
+				$key->perfil,
+				$key->estatus,
+				$key->username,
+			);
+			$dataSet[] = $i;
+		}
+		return $dataSet;
 	}
 	//Confirmar Email
 	public function getCheckemail(Request $request){
@@ -58,6 +72,7 @@ class UsuarioController extends Controller
 	//Inserta Usuario
 	public function postStore(Request $request){
 		Controller::check_permission('postUsuarios');
+		Log::debug($request);
 		$validaUserName = User::where('username', $request->username)->get();
 		$validaEmail = User::where('email', $request->email)->get();
 		if ($validaUserName->isEmpty() == false) {
@@ -65,10 +80,10 @@ class UsuarioController extends Controller
 		}
 		if ($validaEmail->isEmpty() == false) {
 			return response()->json("emailDuplicate", 200);
-		}
+		}	
 		$getId = User::create($request->all());
 		$grupoUsuario = new UsuarioGrupo();
-		$grupoUsuario->id_grupo = $request->id_grupo;
+		$grupoUsuario->id_ente = $request->id_grupo;
 		$grupoUsuario->id_usuario = $getId->id;
 		$grupoUsuario->save();
 		
