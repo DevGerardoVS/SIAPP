@@ -11,7 +11,7 @@
 
 	Route::controller(UsuarioController::class)->group(function () {
 		Route::get('/adm-usuarios', 'getIndex')->name('index_usuario');
-		Route::get('/adm-usuarios/data/{id?}', 'getData');
+		Route::post('/adm-usuarios/data/{id?}', 'getData');
 		Route::post('/adm-usuarios/status', 'postStatus');
 		Route::get('/adm-usuarios/create', 'getCreate');
 		Route::post('/adm-usuarios/store', 'postStore');
@@ -24,9 +24,9 @@
 
 	Route::controller(GrupoController::class)->group(function () {
 		Route::get('/adm-grupos', 'getIndex')->name('index_grupo');
-		Route::get('/adm-grupos/data', 'getData');
+		Route::post('/adm-grupos/data', 'getData')->name('getGroups');
 		Route::get('/adm-grupos/create', 'getCreate');
-		Route::post('/adm-grupos/store', 'postStore');
+		Route::post('/adm-grupos/store', 'postStore')->name('postStore');
 		Route::get('/adm-grupos/update/{id?}', 'getUpdate');
 		Route::post('/adm-grupos/put-grupo', 'postUpdate');
 		Route::post('/adm-grupos/eliminar', 'postDelete');

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\Administracion\GrupoController;
 
 
 /*
@@ -71,6 +72,8 @@ Route::controller(UsuarioController::class)->group(function () {
     Route::post('administracion/usuarios/adm-usuarios/eliminar', 'postDelete');
     Route::post('administracion/usuarios/adm-usuarios/grupos', 'postGrupos');
 });
+
+
 include('administracion.php');//Agregar las rutas para el módulo de administración en este archivo
 
 //Configuracion
@@ -103,8 +106,6 @@ Route::middleware(['role:Control|Super Usuario'])->group(function () {
     Route::post('/configuraciones/get-fecha-bitacora', [App\Http\Controllers\BitacoraController::class, 'getBitacora2'])->name('get_fecha_bitacora');
     Route::post('/configuraciones/bitacora-export', [App\Http\Controllers\BitacoraController::class, 'exportBitacora'])->name('bitacora_export');
 });
-
-
 
 Route::middleware(['role:Monitor|Analista|Super Usuario'])->group(function () {
     Route::get('/concesiones/get-aseguradoras', [App\Http\Controllers\AdminConcesionesController::class, 'getAseguradoras'])->name('get_aseguradoras');//->middleware('can:concesiones.administrador_de_concesiones.consultar');
@@ -145,7 +146,6 @@ Route::middleware(['role:Monitor|Super Usuario'])->group(function () {
 Route::middleware(['role:Analista|Super Usuario'])->group(function () {
 
 Route::get('/desbloqueo/concesion', [App\Http\Controllers\pagoconcesion::class, 'desbloqueoconcesion'])->name('desbloqueoconcesion');
-// ->middleware('can:reportes.reporte_de_polizas_de_seguro_por_concesion.consultar')
 Route::post('/desbloqueo/concesion/id', [App\Http\Controllers\pagoconcesion::class, 'desbloqueoconcesionupdate'])->name('desbloqueoconcesionupdate');
 
 });

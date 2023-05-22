@@ -42,6 +42,7 @@ var dao = {
 	},
 
 	crearGrupo : function(){
+		console.log("CREANDO...")
     	var form = $('#frmCreate')[0];
 		var data = new FormData(form);
     	$.ajax({

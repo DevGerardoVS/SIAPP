@@ -23,7 +23,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="widget-body no-padding">
+                        <form action="{{ route('getGroups') }}" id="buscarForm" method="post">
+                            @csrf
+                            <div class="row">
+                                <div class="col-sm-2">
+                            </div>
+                        </form>
+                        <br>
+                        <!--<div class="widget-body no-padding">
                             <div class="table-responsive">
                                 <table id="tbl-grupos" class="table table-hover table-striped">
                                     <thead>
@@ -34,16 +41,31 @@
                                     </thead>
                                 </table>
                             </div>
-                        </div>
+                        </div>-->
+                        <table id="catalogo" class="table table-striped table-bordered text-center " style="width:100%">
+                            <thead>
+                            <tr class="colorMorado">
+                                <th>Nombre</th>
+                                <th>Administración</th>
+                            </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </article>
         </div>
     </section>
 </div>
-@endsection
+@isset($dataSet)
+@include('panels.datatable')
+@endisset
 
 <script src="/js/administracion/grupos/init.js"></script>
 <script>
 	dao.getData();
+    $(document).ready(function () {
+       getData();
+    });
+
 </script>
+@endsection
