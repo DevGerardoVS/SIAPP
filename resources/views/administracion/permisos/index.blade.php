@@ -22,7 +22,7 @@
 												<div class="tree smart-form" id="modules-tree">
 													<ul>
 														<ul>
-															<?php $menus = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, null]); ?>
+															<?php $menus = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id,Session::get('sistema') null]); ?>
 															@foreach($menus as $menu)
 															<li>									
 																<span>																
@@ -37,7 +37,7 @@
 																	</span>
 																</span>
 																<ul>
-																	<?php $hijos = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, $menu->id]); ?>
+																	<?php $hijos = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id,Session::get('sistema'), $menu->id]); ?>
 																	@foreach($hijos as $hijo)
 																	<li style="display: none">
 																		<span>
@@ -51,7 +51,7 @@
 																				@endif
 																			</span>
 																		</span>
-																		<?php $nietos = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id,$hijo->id]); ?>
+																		<?php $nietos = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id,Session::get('sistema'),$hijo->id]); ?>
 																		@if($nietos)
 																			<ul>
 																			@foreach($nietos as $nieto)

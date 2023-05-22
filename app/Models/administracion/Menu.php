@@ -13,14 +13,16 @@ class Menu extends Model
     protected $table = 'adm_menus';
 
     protected $fillable = [
-    	'padre',
+		'id_sistema',
+		'padre',
     	'nombre_menu',
     	'ruta',
     	'icono',
     	'nivel',
     	'posicion',
     	'descripcion',
-    	'estatus'
+    	'estatus',
+
     ];
 
     protected $dates = ['deleted_at'];
