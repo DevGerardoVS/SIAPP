@@ -14,16 +14,6 @@
         var formatCantidades = [];
         var ordenamiento = [];
 
-        /*if(dt.attr('data-id')!=undefined){
-            var data_order = dt.attr('data-id').split(",");
-            for(var i in data_order){
-                var dato = data_order[i].split("_");
-                orderDt = dato[0];
-                column = dato[1];
-                ordenamiento[i] = [parseInt(column),""+orderDt];
-            }
-        }*/
-
         if(dt.attr('data-format')!=undefined){
             formatCantidades = dt.attr('data-format').split(",");
             for(var i in formatCantidades){
@@ -42,6 +32,7 @@
                 /* if(response.hasOwnProperty('resumenTotal')){
                     getTotalData();
                 } */
+                console.log("RES -> ")
 
                 if(response.dataSet.length == 0){
                     dt.attr('data-empty','true');

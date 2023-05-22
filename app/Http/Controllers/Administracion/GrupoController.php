@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Administracion;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\administracion\Grupo;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 class GrupoController extends Controller
@@ -12,13 +13,23 @@ class GrupoController extends Controller
     //Consulta Vista Grupos
     public function getIndex() {
         Controller::check_permission('getGrupos');
-    	return view('administracion.grupos.index');
+    	return view('administracion.grupos.index',['dataSet'=>'']);
     }
     //Consulta Tablero Grupos
     public function getData() {
+        $data = [];
         Controller::check_permission('getGrupos', false);
         $query = Grupo::where('deleted_at', null)->get();
-    	return response()->json($query, 200);
+
+        foreach ($query as $q){
+            array_push($data,[$q->nombre_grupo, "Editar permisos - Editar nombre - Eliminar"]);
+        }
+
+    	return response()->json(
+            [
+                "dataSet" => $data
+            ]
+        );
     }
     //Inserta Grupo
     public function getCreate(){
@@ -28,7 +39,7 @@ class GrupoController extends Controller
     //Inserta Grupo
     public function postStore(Request $request){
         Controller::check_permission('postGrupos');
-    	Grupo::create($request->all());
+    	Grupo::create(['nombre_grupo'=>$request->nombre]);
     	return response()->json("done", 200);
     }
     //Actualiza Grupo

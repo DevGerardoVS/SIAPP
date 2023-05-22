@@ -5,10 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_17_05_2023_01_21_p__m___Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_17_05_2023_01_21_p__m___Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_17_05_2023_01_22_p__m___Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_17_05_2023_01_22_p__m___Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_17_05_2023_05_40_p__m___Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_17_05_2023_05_40_p__m___Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/administracion/usuarios/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/usuarios/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/auth/login.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/auth/login.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/administracion/grupos/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/administracion/grupos/init.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/administracion/grupos/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/grupos/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/administracion/grupos/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/grupos/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/panels/datatable.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/panels/datatable.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/administracion.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/administracion.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,22 +187,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Dilan SFA/Documents/repositorios/COCOTRA&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/Dilan SFA/Documents/repositorios/Sistema-Integral",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Dilan SFA\Documents\repositorios\Sistema-Integral\app\Http\Controllers" />
       <recent name="C:\Users\Dilan SFA\Documents\repositorios\Sistema-Integral\database\migrations" />
       <recent name="C:\Users\Dilan SFA\Documents\repositorios\Sistema-Integral\app\Models" />
     </key>
@@ -223,7 +232,9 @@
       <workItem from="1684181590711" duration="559000" />
       <workItem from="1684189061621" duration="23883000" />
       <workItem from="1684338291575" duration="12202000" />
-      <workItem from="1684421991610" duration="5150000" />
+      <workItem from="1684421991610" duration="7458000" />
+      <workItem from="1684509773590" duration="16748000" />
+      <workItem from="1684767728737" duration="7310000" />
     </task>
     <servers />
   </component>
