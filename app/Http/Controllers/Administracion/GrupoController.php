@@ -22,7 +22,10 @@ class GrupoController extends Controller
         $query = Grupo::where('deleted_at', null)->get();
 
         foreach ($query as $q){
-            array_push($data,[$q->nombre_grupo, "Editar permisos - Editar nombre - Eliminar"]);
+            $button2 = '<a class="btn btn-primary" href="/adm-grupos/update/'.$q->id.'"><span>Editar</span></a>';
+            $button3 = '<a class="btn btn-danger" id="deleteGroup"><span>Eliminar</span></a>';
+
+            array_push($data,[$q->nombre_grupo, $button2.' '.$button3]);
         }
 
     	return response()->json(
@@ -50,8 +53,9 @@ class GrupoController extends Controller
     }
     //Actualiza Grupo
     public function postUpdate(Request $request){
+        log::debug($request);
         Controller::check_permission('putGrupos');
-    	Grupo::find($request->id)->update($request->all());
+    	Grupo::find($request->id)->update(["nombre_grupo" => $request->nombre]);
     	return response()->json("done", 200);
     }
     //Elimina Grupo Borrado Lógico

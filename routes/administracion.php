@@ -28,8 +28,8 @@
 		Route::get('/adm-grupos/create', 'getCreate');
 		Route::post('/adm-grupos/store', 'postStore')->name('postStore');
 		Route::get('/adm-grupos/update/{id?}', 'getUpdate');
-		Route::post('/adm-grupos/put-grupo', 'postUpdate');
-		Route::post('/adm-grupos/eliminar', 'postDelete');
+		Route::post('/adm-grupos/put-grupo', 'postUpdate')->name('postUpdate');
+		Route::post('/adm-grupos/eliminar', 'postDelete')->name('postDelete');
 	});
 
 	Route::controller(PermisoController::class)->group(function () {
