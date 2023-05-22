@@ -172,9 +172,9 @@
                         <ul class="navbar-nav me-auto">
                         </ul>
                         <ul class="navbar-nav ms-auto">
-                            <?php $menus = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, null]); ?>
+                            <?php $menus = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id,Session::get('sistema'), null]); ?>
                             @foreach($menus as $menu)
-                            <?php $hijos = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, $menu->id]); ?>
+                            <?php $hijos = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id,Session::get('sistema'), $menu->id]); ?>
                             @if($hijos)
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
@@ -261,7 +261,6 @@
                     </a>
                 </label>
             </div>
-
 
     {{-- @if (Request::is('/', 'home', 'login', 'password/reset', 'cambiar-contrasenia', ''))
 
