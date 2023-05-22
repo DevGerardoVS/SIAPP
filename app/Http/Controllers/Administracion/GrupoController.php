@@ -22,8 +22,10 @@ class GrupoController extends Controller
         $query = Grupo::where('deleted_at', null)->get();
 
         foreach ($query as $q){
-            $button3 = '<a class="btn btn-primary" href="/adm-grupos/update/'.$q->id.'"><span>Editar</span></a>';
-            array_push($data,[$q->nombre_grupo, $button3]);
+            $button2 = '<a class="btn btn-primary" href="/adm-grupos/update/'.$q->id.'"><span>Editar</span></a>';
+            $button3 = '<a class="btn btn-danger" id="deleteGroup"><span>Eliminar</span></a>';
+
+            array_push($data,[$q->nombre_grupo, $button2.' '.$button3]);
         }
 
     	return response()->json(

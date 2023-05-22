@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_18_05_2023_05_36_p__m___Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_18_05_2023_05_36_p__m___Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_18_05_2023_05_36_p__m___Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_18_05_2023_05_36_p__m___Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/administracion/grupos/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/grupos/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/administracion/grupos/update.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/grupos/update.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/administracion.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/administracion.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -255,7 +251,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php</url>
-          <line>40</line>
+          <line>42</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\Administracion\GrupoController" />
             <option name="methodName" value="postStore" />
@@ -264,7 +260,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php</url>
-          <line>52</line>
+          <line>54</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\Administracion\GrupoController" />
             <option name="methodName" value="postUpdate" />
@@ -282,7 +278,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php</url>
-          <line>59</line>
+          <line>61</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\Administracion\GrupoController" />
             <option name="methodName" value="postDelete" />
