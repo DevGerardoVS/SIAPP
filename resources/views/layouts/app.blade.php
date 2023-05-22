@@ -250,7 +250,6 @@
     @if( isset(Auth::user()->id))
         <footer class="text-center text-lg-start text-white colorMorado footer fixed-bottom footerClassMain"
             style="">
-            <div class="gobiernoDigitalDIV" style=""></div>
             <div class="container pb-0"></div>
             <div class="text-center">
                 <label class="footerMessageMain" style="">
