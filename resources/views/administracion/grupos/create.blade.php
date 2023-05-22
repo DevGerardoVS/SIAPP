@@ -60,30 +60,6 @@
        $('#btnSave').on('click',function (e) {
            e.preventDefault()
 
-           console.log("GUARDANDO")
-           console.log($('#in_nombre').val())
-
-          /* $.ajax({
-               type : "POST",
-               url: "{{route('postStore')}}",
-               headers: {
-                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-               },
-               data : {
-                   "_token": "{{ csrf_token() }}",
-                   'nombre' : $('#in_nombre').val()
-                    },
-               enctype : 'multipart/form-data',
-               processData: false,
-               contentType: false,
-               cache: false,
-               timeout: 600000
-           }).done(function(response){
-               if (response == "done") {
-                   _gen.notificacion_min('Éxito', 'La acción se ha realizado correctamente', 1);
-                   window.location.href = '/adm-grupos';
-               }
-           });*/
            $.ajax({
                url:"{{route('postStore')}}",
                type: "POST",
