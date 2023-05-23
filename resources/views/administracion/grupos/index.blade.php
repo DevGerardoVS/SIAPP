@@ -55,6 +55,26 @@
             </article>
         </div>
     </section>
+
+    <!--modal delete-->
+    <div class="modal fade" id="modaldel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header colorMorado">
+                    <h5 class="modal-title" id="exampleModalLabel">Eliminar grupo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <input type="number" id="idHidden" hidden >
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro que desea eliminar el grupo? <strong id="deshabilitar-user"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{__("messages.cancelar")}}</button>
+                    <button id="confirmar-baja" type="button" class="btn btn-primary">Eliminar grupo</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @isset($dataSet)
 @include('panels.datatable')
@@ -66,6 +86,33 @@
     $(document).ready(function () {
        getData();
     });
+
+    function eliminarRegistro(i){
+        $('#idHidden').val(i)
+    }
+
+    $('#confirmar-baja').on('click', function (e) {
+        e.preventDefault()
+        console.log($('#idHidden').val())
+
+        $.ajax({
+            url:"{{route('postDelete')}}",
+            type: "POST",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "id" : $('#idHidden').val()
+            },
+            success:function(response){
+                console.log(response)
+                if (response == "done") {
+                    window.location.href = '/adm-grupos';
+                }
+            },
+            error: function(response) {
+                console.log('Error: ' + response);
+            }
+        });
+    })
 
 </script>
 @endsection

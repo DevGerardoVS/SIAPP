@@ -11,6 +11,7 @@ use App\Models\administracion\Sistema;
 use App\Models\administracion\Permisos;
 use App\Models\administracion\MenuGrupo;
 use App\Models\administracion\SistemaGrupo;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 class PermisoController extends Controller
@@ -18,9 +19,20 @@ class PermisoController extends Controller
     //Consulta Grupo Correspondiente
     public function getGrupo($id) {
         Controller::check_permission('getPermisos');
-    	$grupo = Grupo::find($id);
-		$permisos = Permisos::where('id_grupo', '=', $grupo->id)->get();
-		$menus = MenuGrupo::where('id_grupo', '=', $grupo->id)->get();
+
+        $grupo = Grupo::find($id);
+        log::debug("GRUPO: ".$grupo);
+
+        $permisos = Permisos::where('id_grupo', '=', $grupo->id)->get();
+        log::debug("PERMISOS:" .$permisos);
+
+        $menus = MenuGrupo::where('id_grupo', '=', $grupo->id)->get();
+        log::debug("MENUS: ".$menus);
+
+        $sistemas = SistemaGrupo::where('id_grupo', '=', $grupo->id)->get();
+        log::debug("SISTEMAS: ".$sistemas);
+        log::debug("####################################");
+
 		$asignados = [];
 		foreach($permisos as $permiso)
 			$asignados[] = $permiso->id_funcion;
@@ -36,7 +48,6 @@ class PermisoController extends Controller
         $sistemas_all = [];
         $sistemas_full = Sistema::all();
         foreach($sistemas_full as $sistema) {
-            
             $funciones_sistema = DB::select('SELECT COUNT(id) AS total FROM adm_rel_funciones_grupos WHERE id_grupo = ? AND id_funcion IN (SELECT id FROM adm_funciones WHERE id_sistema = ?)', [$grupo->id, $sistema->id])[0];
             $menus_sistema = DB::select('SELECT COUNT(id) AS total FROM adm_rel_menu_grupo WHERE id_grupo = ? AND id_menu IN (SELECT id FROM adm_menus WHERE id_sistema = ?)', [$grupo->id, $sistema->id])[0];
             $funciones = Funciones::where('id_sistema', $sistema->id)->get();
@@ -46,6 +57,7 @@ class PermisoController extends Controller
             $sistemas_all[] = $sistema->id;
          }
 		$data = ["grupo" => $grupo, "asignados" => $asignados, "menus" => $menus_asignados, "sistemas" => $sistemas_asignados, "sistema-all" => $sistemas_all];
+        log::debug($data['grupo']->id);
         //dd($data);
 		return view('administracion.permisos.index', compact('data'));
     }
