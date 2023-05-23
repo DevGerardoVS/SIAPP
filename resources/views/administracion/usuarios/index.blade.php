@@ -57,6 +57,7 @@
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 <script type="text/javascript">
+const url="administracion/usuarios/adm-usuarios/data";
     var dao = {
         setStatus: function(id, estatus) {
             Swal.fire({
@@ -88,6 +89,7 @@
                                 'La acción se ha realizado correctamente',
                                 'success'
                             );
+                            getData(url);
                         }
                     });
                 }
@@ -124,6 +126,7 @@
                                 'La acción se ha realizado correctamente',
                                 'success'
                             );
+                            getData(url);
                         }
                     });
 
@@ -175,6 +178,7 @@
                 });
                 $('#exampleModal').modal('hide');
                 dao.limpiarFormularioCrear();
+                getData(url);
             });
         },
 
@@ -301,8 +305,8 @@
     };
 
     $(document).ready(function() {
-
-        getData();
+       
+        getData(url);
         dao.getPerfil();
 
         $('#btnSave').click(function(e) {

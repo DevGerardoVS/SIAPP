@@ -1,13 +1,13 @@
 @section('page_scripts')
 <script type="text/javascript">
 
-    function getData(){
+    function getData(ruta){
         var dt = $('#catalogo');
         dt.DataTable().clear().destroy();
-        generaDatatable();
+        generaDatatable(ruta);
     }
 
-    function generaDatatable(){
+    function generaDatatable(ruta){
         var dt = $('#catalogo');
         var orderDt = "";
         var column = "";
@@ -42,7 +42,7 @@
         }
 
         $.ajax({
-            url: "administracion/usuarios/adm-usuarios/data",
+            url: ruta,
             type:'get',
             dataType: 'json',
             success: function(response) {
