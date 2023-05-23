@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @section('content')
+@include('administracion.usuarios.modalCreate')
     <div class="container">
-        @include('administracion.usuarios.modalCreate')
+        
         <section id="widget-grid" class="conteiner">
             <div class="row">
                 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
@@ -35,7 +36,7 @@
                                                 <th data-hide="phone">Celular</th>
                                                 <th data-hide="phone">Perfil</th>
                                                 <th data-hide="phone">Estatus</th>
-                                                <th class="th-administration">Administración</th>
+                                                <th class="th-administration">Acciones</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -57,41 +58,16 @@
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 <script type="text/javascript">
     var dao = {
-        getData: function() {
-            $.ajax({
-                type: "GET",
-                url: "administracion/usuarios/adm-usuarios/data",
-                dataType: "json"
-            }).done(function(_data) {
-                $.each(_data, function(key, value) {
-                    var accion =
-                        '<a data-toggle="tooltip" title="Modificar Usuario" class="btn btn-sm btn-success" href="/adm-usuarios/update/' +
-                        value.id + '">' +
-                        '<i class="glyphicon glyphicon-pencil"></i></a>&nbsp;' +
-                        '<a data-toggle="tooltip" title="Inhabilitar/Habilitar Usuario" class="btn btn-sm btn-warning" onclick="dao.setStatus(' +
-                        value.id + ', ' + value.estatus + ')">' +
-                        '<i class="glyphicon glyphicon-lock"></i></a>&nbsp;' +
-                        '<a data-toggle="tooltip" title="Eliminar Usuario" class="btn btn-sm btn-danger" onclick="dao.eliminarUsuario(' +
-                        value.id + ')">' +
-                        '<i class="glyphicon glyphicon-trash"></i></a>&nbsp;';
-                    $('#tbl-usuarios').append('<tr><th scope="row">' + value.username +
-                        '</th> <th>  ' + value.email +
-                        '</th> <th>' + value.celular +
-                        '</th><th>' + value.perfil +
-                        '</th><th>' + value.estatus +
-                        '</th><th>' + value.id_grupo +
-                        '</th></th><th>' + accion + '</th></tr>')
-
-                });
-            });
-        },
-
         setStatus: function(id, estatus) {
-            $.SmartMessageBox({
+            Swal.fire({
                 title: 'Confirmar Activación/Desactivación',
-                buttons: '[No][Continuar]',
-            }, function(btn, input) {
-                if (btn === "Continuar" && input != "") {
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirmar'
+            }).then((result) => {
+                if (result.isConfirmed) {
                     $.ajax({
                         type: "POST",
                         url: "/adm-usuarios/status",
@@ -101,13 +77,17 @@
                         }
                     }).done(function(data) {
                         if (data != "done") {
-                            _gen.notificacion_min('Error',
+                            Swal.fire(
+                                'Error!',
                                 'Hubo un problema al querer realizar la acción, contacte a soporte',
-                                4);
+                                'Error'
+                            );
                         } else {
-                            _gen.notificacion_min('Éxito',
-                                'La acción se ha realizado correctamente', 1);
-                            dao.getData();
+                            Swal.fire(
+                                'Éxito!',
+                                'La acción se ha realizado correctamente',
+                                'success'
+                            );
                         }
                     });
                 }
@@ -115,11 +95,16 @@
         },
 
         eliminarUsuario: function(id) {
-            $.SmartMessageBox({
-                title: 'Confirmar Eliminación',
-                buttons: '[No][Continuar]',
-            }, function(btn, input) {
-                if (btn === "Continuar" && input != "") {
+            Swal.fire({
+                title: '¿Seguro que quieres eliminar este usuario?',
+                text: "Esta accion es irreversible",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirmar'
+            }).then((result) => {
+                if (result.isConfirmed) {
                     $.ajax({
                         type: "POST",
                         url: "/adm-usuarios/eliminar",
@@ -128,17 +113,25 @@
                         }
                     }).done(function(data) {
                         if (data != "done") {
-                            _gen.notificacion_min('Error',
+                            Swal.fire(
+                                'Error!',
                                 'Hubo un problema al querer realizar la acción, contacte a soporte',
-                                4);
+                                'Error'
+                            );
                         } else {
-                            _gen.notificacion_min('Éxito',
-                                'La acción se ha realizado correctamente', 1);
-                            dao.getData();
+                            Swal.fire(
+                                'Éxito!',
+                                'La acción se ha realizado correctamente',
+                                'success'
+                            );
                         }
                     });
+
                 }
-            });
+            })
+
+
+
         },
 
 
@@ -146,7 +139,7 @@
         getPerfil: function(id) {
             $.ajax({
                 type: "GET",
-                url: '/adm-grupos/data',
+                url: 'administracion/usuarios/grupos',
                 dataType: "JSON"
             }).done(function(data) {
                 var par = $('#id_grupo');
@@ -154,7 +147,7 @@
                 par.append(new Option("-- Selecciona Perfil --", ""));
                 document.getElementById("id_grupo").options[0].disabled = true;
                 $.each(data, function(i, val) {
-                    
+
                     par.append(new Option(data[i].nombre_grupo, data[i].id));
                 });
             });
@@ -199,23 +192,27 @@
             });
         },
 
-        editarUsuario: function() {
-            var form = $('#frm_update')[0];
-            var data = new FormData(form);
+        editarUsuario: function(id) {
+            $('#exampleModal').modal('show');
             $.ajax({
-                type: "POST",
-                url: '/adm-usuarios/put-usuario',
-                data: data,
+                type: "GET",
+                url: 'administracion/usuarios/adm-usuarios/update/'+id,
                 enctype: 'multipart/form-data',
                 processData: false,
                 contentType: false,
                 cache: false,
                 timeout: 600000
             }).done(function(response) {
-                if (response == "done") {
-                    _gen.notificacion_min('Éxito', 'La acción se ha realizado correctamente', 1);
-                    window.location.href = '/#/adm-usuarios';
-                }
+                const {id, username, celular,email, estatus, id_grupo, nombre, p_apellido,s_apellido,perfil}= response;
+                $('#id_user').val(id);
+                $('#username').val(username);
+                $('#in_nombre').val(nombre);
+                $('#in_p_apellido').val(p_apellido);
+                $('#in_s_apellido').val(s_apellido);
+                $('#in_email').val(email);
+                $('#in_celular').val(celular);
+                $('#id_grupo').val(id_grupo);
+
             });
         },
 
@@ -264,12 +261,6 @@
                     }
                 }
             }
-            /*    form.forEach(element => {
-                   if($(element?.id).val() == ""){
-
-                   }
-               }); */
-
         }
 
 
@@ -282,20 +273,7 @@
 
         $('#btnSave').click(function(e) {
             e.preventDefault();
-           /*  dao.validarFormulario($('#frm_create'));  */
             dao.crearUsuario();
-
-            /*   console.log("Form", $('#frm_create'));
-              if ($('#frm_create').valid()) {
-                  dao.crearUsuario();
-              } */
-        });
-
-        $('#btnUpdate').click(function(e) {
-            e.preventDefault();
-            if ($('#frm_update').valid()) {
-                dao.editarUsuario();
-            }
         });
 
         /* $('#in_celular').mask('00-00-00-00-00'); */

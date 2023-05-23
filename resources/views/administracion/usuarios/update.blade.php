@@ -1,121 +1,87 @@
-<section id="widget-grid">
-	<div class="row">
-		<article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable" id="widget-article">
-			<div class="jarviswidget" id="widget" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-				<header>
-					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
-					<h2>Editar Información de Usuario</h2>
-				</header>
-				<div>
-					<div class="widget-body">
-						<div class="widget-body">
-							<form class="form-horizontal" id="frm_update">
-							<div class="row">
-								<div class="col-md-10 col-md-offset-1">
-									<fieldset>
-										<section class="col col-6">
-											<legend>Datos para editar usuario</legend>
-											<input type="hidden"  id="id_user" name="id" value="{{$user->id}}">
-											<input type="hidden" name="_method" value="POST" id="_method">
-
-											<div class="form-group col-md-6">
-												<label class="control-label col-md-4">Nombre de usuario</label>
-												<div class="col-md-8">
-													<input type="text" class="form-control" id="in_username" name="username" placeholder="Nombre de Usuario" value="{{$user->username}}">
-												</div>
-											</div>
-
-											<div class="form-group col-md-6">
-												<label class="control-label col-md-4">Nombre</label>
-												<div class="col-md-8">
-													<input type="text" class="form-control" id="in_nombre" name="nombre" value="{{$user->nombre}}">
-												</div>
-											</div>
-
-											<div style="clear:both"></div>
-
-											<div class="form-group col-md-6">
-												<label class="control-label col-md-4">Primer Apellido</label>
-												<div class="col-md-8">
-													<input type="text" class="form-control" id="in_p_apellido" name="p_apellido" value="{{$user->p_apellido}}">
-												</div>
-											</div>
-
-											<div class="form-group col-md-6">
-												<label class="control-label col-md-4">Segundo Apellido</label>
-												<div class="col-md-8">
-													<input type="text" class="form-control" id="in_s_apellido" name="s_apellido" value="{{$user->s_apellido}}">
-												</div>
-											</div>
-
-											<div style="clear:both"></div>
-
-											<div class="form-group col-md-6">
-												<label class="control-label col-md-4">Correo Electrónico</label>
-												<div class="col-md-8">
-													<input type="text" class="form-control" id="in_email" name="email" value="{{$user->email}}">
-												</div>
-											</div>
-
-											<div class="form-group col-md-6">
-												<label class="control-label col-md-4">Celular</label>
-												<div class="col-md-8">
-													<input type="text" class="form-control" id="in_celular" name="celular" value="{{$user->celular}}">
-												</div>
-											</div>
-
-											<div style="clear:both"></div>
-
-
-
-											<div class="form-group col-md-6">
-												<label class="control-label col-md-4">Perfil</label>
-												<div class="col-md-8">
-													<select name="id_grupo" id="slc_perfil" class="form-control select2"></select>
-												</div>
-											</div>
-
-											<div style="clear:both"></div>
-
-										</section>
-									</fieldset>
-								</div>
-							</div>
-
-							<div class="form-actions">
-								<div class="row">
-									<div class="col-md-12">
-										<a class="btn btn-labeled btn-danger btnCancel" id="btnCancel" href="/adm-usuarios">
-											<span class="btn-label"><i class="glyphicon glyphicon-arrow-left"></i></span>
-											Regresar
-										</a>
-										<button class="btn btn-labeled btn-primary" type="button" id="btnUpdate">
-											<span class="btn-label"><i class="glyphicon glyphicon-ok"></i></span>
-											Guardar
-										</button>
-									</div>
-								</div>
-							</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</article>
-	</div>
-</section>
-<script src="/js/administracion/usuarios/init.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-
-<script>
-	//En las vistas solo se llaman las funciones del archivo init
-
-
-	var idPerfil = "{{$user->id_grupo}}";
-	if (idPerfil != 'null' || idPerfil != null ) {
-		dao.getPerfil(idPerfil);
-	}else {
-		dao.getPerfil("");
-	}
-	init.validateCreate($('#frm_create'));
-</script>
+<div class="modal fade bd-example-modal-lg" id="updateModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Usuario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <a aria-hidden="true" style="color: whitesmoke" onclick="dao.limpiarFormularioCrear()">&times;</a>
+                </button>
+            </div>
+            <meta name="csrf-token" content="{{ csrf_token() }}">
+            <div class="modal-body">
+                <form id="frm_update">
+                    @csrf
+                    <input type="hidden" value="0" id="id_user">
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="form-group col-md-8">
+                            <label class="control-label ">Nombre de usuario</label>
+                            <input type="text" class="form-control" style="width: 100%" id="in_username"
+                                name="username" placeholder="nombreUsuario...">
+                                <span id="error_username" class="has-error"></span>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"></div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Nombre</label>
+                            <input type="text" class="form-control" id="in_nombre" name="nombre"
+                                placeholder="Alberto...">
+                                <span id="error_in_nombre" class="has-error"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label ">Primer Apellido</label>
+                            <input type="text" class="form-control" id="in_p_apellido" name="p_apellido"
+                                placeholder="Sánchez...">
+                                <span id="error_in_p_apellido" class="has-error"></span>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"></div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Segundo Apellido</label>
+                            <input type="text" class="form-control" id="in_s_apellido" name="s_apellido"
+                                placeholder="López...">
+                                <span id="error_in_s_apellido" class="has-error"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Correo Electrónico</label>
+                            <input type="text" class="form-control" id="in_email" name="email"
+                                placeholder="correo@dominio.com">
+                                <span id="error_in_email" class="has-error"></span>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"></div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Contraseña</label>
+                            <input type="password" class="form-control" id="in_pass" name="in_pass">
+                            <span id="error_in_pass" class="has-error"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Confirmar
+                                Contraseña</label>
+                            <input type="password" class="form-control" id="in_pass_conf" name="in_pass_conf">
+                            <span id="error_in_pass_conf" class="has-error"></span>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"></div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Celular</label>
+                            <input type="text" class="form-control" id="in_celular" name="celular"
+                                placeholder="44-30-29-02-22">
+                                <span id="error_in_celular" class="has-error"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Perfil</label>
+                            <select name="id_grupo" id="id_grupo" class="form-control"></select>
+                            <span id="error_id_grupo" class="has-error"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" style="border-color: green" data-dismiss="modal" onclick="dao.limpiarFormularioCrear()">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>

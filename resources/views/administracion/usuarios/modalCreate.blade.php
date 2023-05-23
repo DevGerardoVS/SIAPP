@@ -5,14 +5,14 @@
             <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
                 <h5 class="modal-title" id="exampleModalLabel">Agregar Usuario</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" style="color: whitesmoke" onclick="dao.limpiarFormularioCrear()">&times;</span>
+                    <a aria-hidden="true" style="color: whitesmoke" onclick="dao.limpiarFormularioCrear()">&times;</a>
                 </button>
             </div>
             <meta name="csrf-token" content="{{ csrf_token() }}">
             <div class="modal-body">
                 <form id="frm_create">
                     @csrf
-                    <input type="hidden" value="0" id="id_user">
+                    <textarea type="text" value="0" id="id_user" name="id_user" style="display: none"></textarea>
                     <div class="row">
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-8">

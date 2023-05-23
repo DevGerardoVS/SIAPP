@@ -60,8 +60,8 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     Route::post('/contrasenia-confirmada', [App\Http\Controllers\ChangePasswordController::class, 'store'])->name('change_password');
     //Usuarios
 });
-Route::get('/calendario',[App\Http\Controllers\LogController::class, 'logsView'])->name('viewLogs');
-Route::post('/calendario/download',[App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
+Route::get('/logs',[App\Http\Controllers\LogController::class, 'logsView'])->name('viewLogs');
+Route::post('/logs/download',[App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
 
 Route::controller(UsuarioController::class)->group(function () {
     Route::get(' administracion/usuarios/adm-usuarios', 'getIndex')->name('index_usuario');
@@ -74,6 +74,7 @@ Route::controller(UsuarioController::class)->group(function () {
     Route::get(' administracion/usuarios/adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
     Route::post('administracion/usuarios/adm-usuarios/eliminar', 'postDelete');
     Route::post('administracion/usuarios/adm-usuarios/grupos', 'postGrupos');
+    Route::get('administracion/usuarios/grupos', 'grupos');
 });
 
 
