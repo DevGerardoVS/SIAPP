@@ -50,12 +50,7 @@
     </div>
     @include('panels.datatable')
 @endsection
-<script src="js/utilerias.js" type="text/javascript"></script>
-<script src="https://code.jquery.com/jquery-3.7.0.min.js" type="text/javascript"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 const url="administracion/usuarios/adm-usuarios/data";
     var dao = {
@@ -95,7 +90,6 @@ const url="administracion/usuarios/adm-usuarios/data";
                 }
             });
         },
-
         eliminarUsuario: function(id) {
             Swal.fire({
                 title: '¿Seguro que quieres eliminar este usuario?',
@@ -136,9 +130,6 @@ const url="administracion/usuarios/adm-usuarios/data";
 
 
         },
-
-
-
         getPerfil: function(id) {
             $.ajax({
                 type: "GET",
@@ -150,12 +141,10 @@ const url="administracion/usuarios/adm-usuarios/data";
                 par.append(new Option("-- Selecciona Perfil --", ""));
                 document.getElementById("id_grupo").options[0].disabled = true;
                 $.each(data, function(i, val) {
-
                     par.append(new Option(data[i].nombre_grupo, data[i].id));
                 });
             });
         },
-
         crearUsuario: function() {
             var form = $('#frm_create')[0];
             var data = new FormData(form);
@@ -181,7 +170,6 @@ const url="administracion/usuarios/adm-usuarios/data";
                 getData(url);
             });
         },
-
         editarUsuario: function(id) {
             $('#exampleModal').modal('show');
             $.ajax({
@@ -216,7 +204,6 @@ const url="administracion/usuarios/adm-usuarios/data";
 
             });
         },
-
         limpiarFormularioCrear: function() {
            
             inps = [
@@ -241,7 +228,6 @@ const url="administracion/usuarios/adm-usuarios/data";
             dao.getPerfil();
             $('#exampleModal').modal('hide');
         },
-
         guardarGrupo: function(grupos, id) {
             $.ajax({
                 type: "POST",
@@ -258,7 +244,6 @@ const url="administracion/usuarios/adm-usuarios/data";
                 }
             });
         },
-
         validarFormulario: function() {
             inps = [
                 'in_username',
@@ -305,7 +290,7 @@ const url="administracion/usuarios/adm-usuarios/data";
     };
 
     $(document).ready(function() {
-       
+		console.log("DSAAS");
         getData(url);
         dao.getPerfil();
 

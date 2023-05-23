@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
-                <h5 class="modal-title" id="exampleModalLabel">Agregar Usuario</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Agregar usuario</h5>
                 <button id="cerrar" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <a aria-hidden="true" style="color: whitesmoke" onclick="dao.limpiarFormularioCrear()">&times;</a>
                 </button>
@@ -30,7 +30,7 @@
                                 <span id="error_in_nombre" class="has-error"></span>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="control-label ">Primer Apellido</label>
+                            <label class="control-label ">Primer apellido</label>
                             <input type="text" class="form-control" id="in_p_apellido" name="p_apellido"
                                 placeholder="Sánchez...">
                                 <span id="error_in_p_apellido" class="has-error"></span>
@@ -38,13 +38,13 @@
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
-                            <label class="control-label">Segundo Apellido</label>
+                            <label class="control-label">Segundo apellido</label>
                             <input type="text" class="form-control" id="in_s_apellido" name="s_apellido"
                                 placeholder="López...">
                                 <span id="error_in_s_apellido" class="has-error"></span>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="control-label">Correo Electrónico</label>
+                            <label class="control-label">Correo electrónico</label>
                             <input type="text" class="form-control" id="in_email" name="email"
                                 placeholder="correo@dominio.com">
                                 <span id="error_in_email" class="has-error"></span>
