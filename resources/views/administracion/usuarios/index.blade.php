@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('content')
-@include('administracion.usuarios.modalCreate')
+    @include('administracion.usuarios.modalCreate')
     <div class="container">
-        
+
         <section id="widget-grid" class="conteiner">
             <div class="row">
                 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
@@ -172,23 +172,9 @@
                     title: 'Your work has been saved',
                     showConfirmButton: false,
                     timer: 1500
-                })
+                });
+                $('#exampleModal').modal('hide');
                 dao.limpiarFormularioCrear();
-            }).fail(function(response) {
-                const {
-                    errors
-                } = response.responseJSON;
-                console.log("responseJSON", errors);
-                for (const key in errors) {
-                    if (Object.hasOwnProperty.call(errors, key)) {
-                        const element = errors[key];
-                        $(`#error_${key}`).text(element[0]).addClass('has-error').addClass('d-block');
-                        $(`#error_${key}`).addClass('is-invalid');
-                        $(`#${key}`).addClass('is-invalid').addClass('d-block');
-                    }
-                }
-
-
             });
         },
 
@@ -196,16 +182,27 @@
             $('#exampleModal').modal('show');
             $.ajax({
                 type: "GET",
-                url: 'administracion/usuarios/adm-usuarios/update/'+id,
+                url: 'administracion/usuarios/adm-usuarios/update/' + id,
                 enctype: 'multipart/form-data',
                 processData: false,
                 contentType: false,
                 cache: false,
                 timeout: 600000
             }).done(function(response) {
-                const {id, username, celular,email, estatus, id_grupo, nombre, p_apellido,s_apellido,perfil}= response;
+                const {
+                    id,
+                    username,
+                    celular,
+                    email,
+                    estatus,
+                    id_grupo,
+                    nombre,
+                    p_apellido,
+                    s_apellido,
+                    perfil
+                } = response;
                 $('#id_user').val(id);
-                $('#username').val(username);
+                $('#in_username').val(username);
                 $('#in_nombre').val(nombre);
                 $('#in_p_apellido').val(p_apellido);
                 $('#in_s_apellido').val(s_apellido);
@@ -217,19 +214,28 @@
         },
 
         limpiarFormularioCrear: function() {
-            $('#in_username').val('');
-            $('#in_pass').val('');
-            $('#in_pass_conf').val('');
-            $('#in_email').val('');
-            $('#in_nombre').val('');
-            $('#in_p_apellido').val('');
-            $('#in_s_apellido').val('');
-            $('#in_email').val('');
-            $('#in_celular').val('');
+           
+            inps = [
+                'id_user',
+                'in_username',
+                'in_nombre',
+                'in_p_apellido',
+                'in_s_apellido',
+                'in_email',
+                'in_pass',
+                'in_pass_conf',
+                'in_celular',
+                'id_grupo'
+            ];
+            inps.forEach(e => {
+                $('#'+e).val('').removeClass('is-invalid').removeClass('d-block');
+                $('#error_' + e).text("");
+                $('#error_' + e).removeClass('is-invalid').removeClass('d-block');
+                
+            });
             $("#id_grupo").find('option').remove();
-            $(".has-error span").remove();
-            $('.form-group').removeClass('is-invalid');
             dao.getPerfil();
+            $('#exampleModal').modal('hide');
         },
 
         guardarGrupo: function(grupos, id) {
@@ -248,18 +254,46 @@
                 }
             });
         },
-        validarFormulario: function(form) {
-            for (const key in form) {
-                if (Object.hasOwnProperty.call(form, key)) {
-                    const element = form[key];
-                    console.log("element", element);
-                    if (document.getElementById(element?.id)?.value == "") {
-                        $(`#error_${element.name}`).text("Este campo es requerido").addClass('has-error')
-                            .addClass('d-block');
-                        $(`#error_${element.name}`).addClass('is-invalid');
-                        $(`#${element.name}`).addClass('is-invalid').addClass('d-block');
-                    }
+
+        validarFormulario: function() {
+            inps = [
+                'in_username',
+                'in_nombre',
+                'in_p_apellido',
+                'in_s_apellido',
+                'in_email',
+                'in_pass',
+                'in_pass_conf',
+                'in_celular'
+            ];
+            let bol = 0;
+            inps.forEach(key => {
+                if ($('#' + key).val() == "") {
+                    $('#error_' + key).text("Este campo es requerido").addClass('has-error')
+                        .addClass('d-block');
+                    $('#error_' + key).addClass('is-invalid');
+                    $('#' + key).addClass('is-invalid').addClass('d-block');
+                    bol++;
+                } else {
+                    $('#error_' + key).text("").removeClass('has-error')
+                        .removeClass('d-block');
+                    $('#error_' + key).removeClass('is-invalid');
+                    $('#' + key).removeClass('is-invalid').removeClass('d-block');
                 }
+            });
+            if ($('select[name="id_grupo"] option:selected').text() == "" || $(
+                    'select[name="id_grupo"] option:selected').text() == '-- Selecciona Perfil --') {
+                bol++;
+                $('#error_id_grupo').text("Este campo es requerido").addClass('has-error')
+                    .addClass('d-block');
+                $('#error_id_grupo').addClass('is-invalid');
+                $('#id_grupo').addClass('is-invalid').addClass('d-block');
+            }
+
+            if (bol != 0) {
+                return false;
+            } else {
+                return true;
             }
         }
 
@@ -273,9 +307,62 @@
 
         $('#btnSave').click(function(e) {
             e.preventDefault();
-            dao.crearUsuario();
+            if (dao.validarFormulario()) {
+                dao.crearUsuario();
+            }
         });
 
+        $("#id_grupo").change(function() {
+            if ($('select[name="id_grupo"] option:selected').text() == "" || $(
+                    'select[name="id_grupo"] option:selected').text() == '-- Selecciona Perfil --')
+            {
+                $('#error_id_grupo').text("Este campo es requerido").addClass('has-error')
+                    .addClass('d-block');
+                $('#error_id_grupo').addClass('is-invalid');
+                $('#id_grupo').addClass('is-invalid').addClass('d-block');
+            }else{
+                $('#error_id_grupo').text("").removeClass('has-error')
+                    .removeClass('d-block');
+                $('#error_id_grupo').removeClass('is-invalid');
+                $('#id_grupo').removeClass('is-invalid').removeClass('d-block');
+
+            }
+        });
+
+        $("#in_pass_conf").change(function() {
+            if ($("#in_pass_conf").val() != $("#in_pass").val()) {
+                $('#error_in_pass_conf').text("Las contraseñas no coinciden");
+                $('#error_in_pass').text("Las contraseñas no coinciden");
+                $('#error_in_pass_conf').addClass('is-invalid');
+                $("#in_pass").addClass('is-invalid').addClass('d-block');
+                $("#in_pass_conf").addClass('is-invalid').addClass('d-block');
+            } else {
+                $('#error_in_pass_conf').text("");
+                $('#error_in_pass').text("");
+                $('#error_in_pass_conf').removeClass('is-invalid');
+                $("#in_pass").removeClass('is-invalid').removeClass('d-block');
+                $("#in_pass_conf").removeClass('is-invalid').removeClass('d-block');
+            }
+
+        });
+        $("#in_pass").change(function() {
+         if($("#in_pass").val() !=''){
+               if ($("#in_pass_conf").val() != $("#in_pass").val()) {
+                $('#error_in_pass_conf').text("Las contraseñas no coinciden");
+                $('#error_in_pass').text("Las contraseñas no coinciden");
+                $('#error_in_pass_conf').addClass('is-invalid');
+                $("#in_pass").addClass('is-invalid').addClass('d-block');
+                $("#in_pass_conf").addClass('is-invalid').addClass('d-block');
+            } else {
+                $('#error_in_pass_conf').text("");
+                $('#error_in_pass').text("");
+                $('#error_in_pass_conf').removeClass('is-invalid');
+                $("#in_pass").removeClass('is-invalid').removeClass('d-block');
+                $("#in_pass_conf").removeClass('is-invalid').removeClass('d-block');
+            }}
+
+        });
+        
         /* $('#in_celular').mask('00-00-00-00-00'); */
     });
 </script>
