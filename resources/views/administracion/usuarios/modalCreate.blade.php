@@ -1,18 +1,18 @@
-<div class="modal fade bd-example-modal-lg" id="updateModal" tabindex="-1" role="dialog"
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
                 <h5 class="modal-title" id="exampleModalLabel">Agregar Usuario</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button id="cerrar" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <a aria-hidden="true" style="color: whitesmoke" onclick="dao.limpiarFormularioCrear()">&times;</a>
                 </button>
             </div>
             <meta name="csrf-token" content="{{ csrf_token() }}">
             <div class="modal-body">
-                <form id="frm_update">
+                <form id="frm_create">
                     @csrf
-                    <input type="hidden" value="0" id="id_user">
+                    <textarea type="text" value="0" id="id_user" name="id_user" style="display: none"></textarea>
                     <div class="row">
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-8">
@@ -79,7 +79,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" style="border-color: green" data-dismiss="modal" onclick="dao.limpiarFormularioCrear()">Cancelar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="dao.limpiarFormularioCrear()">Cancelar</button>
                 <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
             </div>
         </div>
