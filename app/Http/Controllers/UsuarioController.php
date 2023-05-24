@@ -91,24 +91,24 @@ class UsuarioController extends Controller
 	{
 		if ($request->id_user != 0) {
 			$this->postUpdate($request);
-		}else{
-		Controller::check_permission('postUsuarios');
-		Log::debug($request);
-		$validaUserName = User::where('username', $request->username)->get();
-		$validaEmail = User::where('email', $request->email)->get();
-		if ($validaUserName->isEmpty() == false) {
-			return response()->json("userDuplicate", 200);
-		}
-		if ($validaEmail->isEmpty() == false) {
-			return response()->json("emailDuplicate", 200);
-		}
-		$user = User::create($request->all());
-		UsuarioGrupo::create([
-			'id_grupo' => $request->id_grupo,
-			'id_usuario' => $user->id
-		]);
+		} else {
+			Controller::check_permission('postUsuarios');
+			$validaUserName = User::where('username', $request->username)->get();
+			$validaEmail = User::where('email', $request->email)->get();
+			if ($validaUserName->isEmpty() == false) {
+				return response()->json("userDuplicate", 200);
+			}
+			if ($validaEmail->isEmpty() == false) {
+				return response()->json("emailDuplicate", 200);
+			}
+			$user = User::create($request->all());
+			UsuarioGrupo::create([
+				'id_grupo' => $request->id_grupo,
+				'id_usuario' => $user->id
+			]);
 
-		return response()->json("done", 200);}
+			return response()->json("done", 200);
+		}
 	}
 	//Reset Password
 	public function postResetpwd(Request $request)

@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
-                <h5 class="modal-title" id="exampleModalLabel">Agregar Usuario</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Agregar usuario</h5>
                 <button id="cerrar" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <a aria-hidden="true" style="color: whitesmoke" onclick="dao.limpiarFormularioCrear()">&times;</a>
                 </button>
@@ -30,7 +30,7 @@
                                 <span id="error_in_nombre" class="has-error"></span>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="control-label ">Primer Apellido</label>
+                            <label class="control-label ">Primer apellido</label>
                             <input type="text" class="form-control" id="in_p_apellido" name="p_apellido"
                                 placeholder="Sánchez...">
                                 <span id="error_in_p_apellido" class="has-error"></span>
@@ -38,13 +38,13 @@
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
-                            <label class="control-label">Segundo Apellido</label>
+                            <label class="control-label">Segundo apellido</label>
                             <input type="text" class="form-control" id="in_s_apellido" name="s_apellido"
                                 placeholder="López...">
                                 <span id="error_in_s_apellido" class="has-error"></span>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="control-label">Correo Electrónico</label>
+                            <label class="control-label">Correo electrónico</label>
                             <input type="text" class="form-control" id="in_email" name="email"
                                 placeholder="correo@dominio.com">
                                 <span id="error_in_email" class="has-error"></span>
@@ -53,14 +53,23 @@
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Contraseña</label>
-                            <input type="password" class="form-control" id="in_pass" name="in_pass">
+                            <input type="password" class="form-control" id="password" name="password">
                             <span id="error_in_pass" class="has-error"></span>
+                            <div id="message">
+                                <p id="letter" class="invalid">Una letra <b>minuscula</b> </p>
+                                <p id="capital" class="invalid">Una letra <b>mayuscula</b></p>
+                                <p id="number" class="invalid">Un <b>número</b></p>
+                                <p id="length" class="invalid">Al menos <b>8 caracteres</b></p>
+                            </div>
                         </div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Confirmar
                                 Contraseña</label>
-                            <input type="password" class="form-control" id="in_pass_conf" name="in_pass_conf">
+                            <input type="password" class="form-control" id="" name="in_pass_conf">
                             <span id="error_in_pass_conf" class="has-error"></span>
+                            <div id="message1">
+                                <p id="coincide" class="valid">Las contraseñas coinciden</p>
+                            </div>
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
