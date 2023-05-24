@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
 
-<section id="widget-grid" class="">
+<section id="widget-grid">
         <div class="row">
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
@@ -30,18 +30,6 @@
                             </div>
                         </form>
                         <br>
-                        <!--<div class="widget-body no-padding">
-                            <div class="table-responsive">
-                                <table id="tbl-grupos" class="table table-hover table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th class="th-administration">Administración</th>
-                                    </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>-->
                         <table id="catalogo" class="table table-striped table-bordered text-center " style="width:100%">
                             <thead>
                             <tr class="colorMorado">
@@ -93,7 +81,6 @@
 
     $('#confirmar-baja').on('click', function (e) {
         e.preventDefault()
-        console.log($('#idHidden').val())
 
         $.ajax({
             url:"{{route('postDelete')}}",

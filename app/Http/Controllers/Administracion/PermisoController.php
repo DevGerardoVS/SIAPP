@@ -21,17 +21,9 @@ class PermisoController extends Controller
         Controller::check_permission('getPermisos');
 
         $grupo = Grupo::find($id);
-        log::debug("GRUPO: ".$grupo);
-
         $permisos = Permisos::where('id_grupo', '=', $grupo->id)->get();
-        log::debug("PERMISOS:" .$permisos);
-
         $menus = MenuGrupo::where('id_grupo', '=', $grupo->id)->get();
-        log::debug("MENUS: ".$menus);
-
         $sistemas = SistemaGrupo::where('id_grupo', '=', $grupo->id)->get();
-        log::debug("SISTEMAS: ".$sistemas);
-        log::debug("####################################");
 
 		$asignados = [];
 		foreach($permisos as $permiso)
@@ -57,7 +49,6 @@ class PermisoController extends Controller
             $sistemas_all[] = $sistema->id;
          }
 		$data = ["grupo" => $grupo, "asignados" => $asignados, "menus" => $menus_asignados, "sistemas" => $sistemas_asignados, "sistema-all" => $sistemas_all];
-        log::debug($data['grupo']->id);
         //dd($data);
 		return view('administracion.permisos.index', compact('data'));
     }
@@ -77,6 +68,7 @@ class PermisoController extends Controller
     }
     //Asigna Menu a Grupo
     public function postMasigna(Request $request) {
+        log::debug("MASIGNA");
         Controller::check_permission('postPermisos', false);
     	$menu = new MenuGrupo();
 		$menu->id_grupo = $request->role;
