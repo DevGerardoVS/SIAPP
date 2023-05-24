@@ -44,10 +44,12 @@ class ChangePasswordController extends Controller
             'nueva_contraseña' => ['required'],
             'confirmar_nueva_contraseña' => ['same:nueva_contraseña'],
         ]);
-        ModelsUser::find(auth()->user()->id)->update(['password'=> Hash::make($request->nueva_contraseña)]);
+        $ModelsUser = ModelsUser::where('id', auth()->user()->id)->firstOrFail();
+        $ModelsUser->password = $request->nueva_contraseña;//Hash::make($request->nueva_contraseña);
+        $ModelsUser->save();
         // bitacora
         try {
-            $modulo = "Cambio de contraseña";
+           /*  $modulo = "Cambio de contraseña";
             $accion = "Modificacion";
             $data_old= array('nombre'=>auth()->user()->nombre, 'email'=>auth()->user()->email, 'password'=>auth()->user()->password);
             $data_new= array('nombre'=>auth()->user()->nombre, 'email'=>auth()->user()->email, 'password'=>Hash::make($request->nueva_contraseña));
@@ -57,7 +59,7 @@ class ChangePasswordController extends Controller
                 'anterior'=>$data_old,
                 'nuevo'=>$data_new
             );
-            BitacoraHelper::saveBitacora(BitacoraHelper::getIp(), $modulo , $accion, json_encode($array_data));
+                   BitacoraHelper::saveBitacora(BitacoraHelper::getIp(), $modulo , $accion, json_encode($array_data)); */
         } catch (\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
         }

@@ -132,12 +132,10 @@ const url="administracion/usuarios/adm-usuarios/data";
                     username,
                     celular,
                     email,
-                    estatus,
                     id_grupo,
                     nombre,
                     p_apellido,
-                    s_apellido,
-                    perfil
+                    s_apellido 
                 } = response;
                 $('#id_user').val(id);
                 $('#in_username').val(username);
@@ -159,7 +157,7 @@ const url="administracion/usuarios/adm-usuarios/data";
                 'in_p_apellido',
                 'in_s_apellido',
                 'in_email',
-                'in_pass',
+                'password',
                 'in_pass_conf',
                 'in_celular',
                 'id_grupo'
@@ -197,7 +195,7 @@ const url="administracion/usuarios/adm-usuarios/data";
                 'in_p_apellido',
                 'in_s_apellido',
                 'in_email',
-                'in_pass',
+                'password',
                 'in_pass_conf',
                 'in_celular'
             ];
@@ -265,34 +263,34 @@ const url="administracion/usuarios/adm-usuarios/data";
         });
 
         $("#in_pass_conf").change(function() {
-            if ($("#in_pass_conf").val() != $("#in_pass").val()) {
+            if ($("#in_pass_conf").val() != $("#password").val()) {
                 $('#error_in_pass_conf').text("Las contraseñas no coinciden");
                 $('#error_in_pass').text("Las contraseñas no coinciden");
                 $('#error_in_pass_conf').addClass('is-invalid');
-                $("#in_pass").addClass('is-invalid').addClass('d-block');
+                $("#password").addClass('is-invalid').addClass('d-block');
                 $("#in_pass_conf").addClass('is-invalid').addClass('d-block');
             } else {
                 $('#error_in_pass_conf').text("");
                 $('#error_in_pass').text("");
                 $('#error_in_pass_conf').removeClass('is-invalid');
-                $("#in_pass").removeClass('is-invalid').removeClass('d-block');
+                $("#password").removeClass('is-invalid').removeClass('d-block');
                 $("#in_pass_conf").removeClass('is-invalid').removeClass('d-block');
             }
 
         });
-        $("#in_pass").change(function() {
-         if($("#in_pass").val() !=''){
-               if ($("#in_pass_conf").val() != $("#in_pass").val()) {
+        $("#password").change(function() {
+         if($("#password").val() !=''){
+               if ($("#in_pass_conf").val() != $("#password").val()) {
                 $('#error_in_pass_conf').text("Las contraseñas no coinciden");
                 $('#error_in_pass').text("Las contraseñas no coinciden");
                 $('#error_in_pass_conf').addClass('is-invalid');
-                $("#in_pass").addClass('is-invalid').addClass('d-block');
+                $("#password").addClass('is-invalid').addClass('d-block');
                 $("#in_pass_conf").addClass('is-invalid').addClass('d-block');
             } else {
                 $('#error_in_pass_conf').text("");
                 $('#error_in_pass').text("");
                 $('#error_in_pass_conf').removeClass('is-invalid');
-                $("#in_pass").removeClass('is-invalid').removeClass('d-block');
+                $("#password").removeClass('is-invalid').removeClass('d-block');
                 $("#in_pass_conf").removeClass('is-invalid').removeClass('d-block');
             }}
 
