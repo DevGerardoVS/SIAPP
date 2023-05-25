@@ -25,7 +25,7 @@
                                     </div>
                                     <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
                                         <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
-                                            data-target=".bd-example-modal-lg">Agregar Usuario</button>
+                                            data-target=".bd-example-modal-lg"  data-backdrop="static" data-keyboard="false">Agregar Usuario</button>
                                     </div>
                                 </div>
                             </div>
@@ -297,7 +297,7 @@
     $(document).ready(function() {
         getData();
         dao.getPerfil();
-
+        $('#exampleModal').modal({backdrop: 'static', keyboard: false})
         $('#btnSave').click(function(e) {
             e.preventDefault();
             if (dao.validarFormulario()) {
