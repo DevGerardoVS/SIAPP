@@ -46,7 +46,7 @@
             type:'POST',
             dataType: 'json',
             success: function(response) {
-                if(response.length == 0){
+                if(response?.dataSet.length == 0){
                     dt.attr('data-empty','true');
                 }
                 else{
@@ -55,7 +55,7 @@
                 
 
                 dt.DataTable({
-                    data: response,
+                    data: response?.dataSet,
                     pageLength:10,
                     scrollX: true,
                     autoWidth: false,
