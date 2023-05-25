@@ -28,7 +28,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <br>
                             <table id="catalogo" class="table table-striped table-bordered text-center "
                                 style="width:100%">
@@ -55,36 +55,45 @@
         });
 
         function eliminarRegistro(id) {
-            Swal.fire({
-                title: '¿Seguro que quieres eliminar este usuario?',
-                text: "Esta accion es irreversible",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Confirmar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('postDelete') }}",
-                        type: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            "id": id
-                        },
-                        success: function(response) {
-                            console.log(response)
-                            if (response == "done") {
-                                getData();
+            if (id != null) {
+                Swal.fire({
+                    title: '¿Seguro que quieres eliminar este usuario?',
+                    text: "Esta accion es irreversible",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirmar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('postDelete') }}",
+                            type: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "id": id
+                            },
+                            success: function(response) {
+                                console.log(response)
+                                if (response == "done") {
+                                    getData();
+                                }
+                            },
+                            error: function(response) {
+                                console.log('Error: ' + response);
                             }
-                        },
-                        error: function(response) {
-                            console.log('Error: ' + response);
-                        }
-                    });
+                        });
 
-                }
+                    }
+                });
+            }else{
+                Swal.fire({
+                icon: 'info',
+                title: 'No se puede eliminar, ya cuenta con usuarios relacionados',
+                showConfirmButton: false,
+                timer: 1500
             })
-        }
+            }
+        };
     </script>
 @endsection
