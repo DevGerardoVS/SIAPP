@@ -24,7 +24,7 @@ class GrupoController extends Controller
         foreach ($query as $q){
             $button1 = '<a class="btn btn-primary" href="/adm-permisos/grupo/'.$q->id.'"><span>Permisos</span></a>';
             $button2 = '<a class="btn btn-primary" href="/adm-grupos/update/'.$q->id.'"><span>Editar</span></a>';
-            $button3 = '<button data-toggle="tooltip" data-placement="top" onclick="eliminarRegistro('.$q->id.')" title="Eliminar grupo" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modaldel"><span>Eliminar</span></button>';
+            $button3 = '<button onclick="eliminarRegistro('.$q->id.')" title="Eliminar grupo" class="btn btn-danger"><span>Eliminar</span></button>';
 
             array_push($data,[$q->nombre_grupo, $button1.' '.$button2.' '.$button3]);
         }
