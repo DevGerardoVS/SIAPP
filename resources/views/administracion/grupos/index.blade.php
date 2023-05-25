@@ -68,9 +68,7 @@
 @include('panels.datatable')
 @endisset
 
-<script src="/js/administracion/grupos/init.js"></script>
 <script>
-	dao.getData();
     $(document).ready(function () {
        getData();
     });

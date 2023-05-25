@@ -75,7 +75,7 @@ class UsuarioController extends Controller
 			);
 			$dataSet[] = $i;
 		}
-		return $dataSet;
+		return [ 'dataSet'=>$dataSet];
 	}
 	//Confirmar Email
 	public function getCheckemail(Request $request)

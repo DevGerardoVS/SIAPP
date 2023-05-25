@@ -2,7 +2,12 @@
 @section('content')
     @include('administracion.usuarios.modalCreate')
     <div class="container">
-
+            <form action="{{ route('getdata') }}" id="buscarForm" method="post">
+                @csrf
+                <div class="row">
+                    <div class="col-sm-2">
+                </div>
+            </form>
         <section id="widget-grid" class="conteiner">
             <div class="row">
                 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
@@ -52,7 +57,6 @@
 @endsection
 <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
 <script type="text/javascript">
-const url="administracion/usuarios/adm-usuarios/data";
     var dao = {
         setStatus: function(id, estatus) {
             Swal.fire({
@@ -84,7 +88,7 @@ const url="administracion/usuarios/adm-usuarios/data";
                                 'La acción se ha realizado correctamente',
                                 'success'
                             );
-                            getData(url);
+                            getData();
                         }
                     });
                 }
@@ -120,7 +124,7 @@ const url="administracion/usuarios/adm-usuarios/data";
                                 'La acción se ha realizado correctamente',
                                 'success'
                             );
-                            getData(url);
+                            getData();
                         }
                     });
 
@@ -167,7 +171,7 @@ const url="administracion/usuarios/adm-usuarios/data";
                 });
                 $('#exampleModal').modal('hide');
                 dao.limpiarFormularioCrear();
-                getData(url);
+                getData();
             });
         },
         editarUsuario: function(id) {
@@ -290,8 +294,7 @@ const url="administracion/usuarios/adm-usuarios/data";
     };
 
     $(document).ready(function() {
-		console.log("DSAAS");
-        getData(url);
+        getData();
         dao.getPerfil();
 
         $('#btnSave').click(function(e) {
