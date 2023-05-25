@@ -60,20 +60,21 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     Route::post('/contrasenia-confirmada', [App\Http\Controllers\ChangePasswordController::class, 'store'])->name('change_password');
     //Usuarios
 });
-Route::get('/calendario',[App\Http\Controllers\LogController::class, 'logsView'])->name('viewLogs');
-Route::post('/calendario/download',[App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
+Route::get('/logs',[App\Http\Controllers\LogController::class, 'logsView'])->name('viewLogs');
+Route::post('/logs/download',[App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
 
 Route::controller(UsuarioController::class)->group(function () {
-    Route::get(' administracion/usuarios/adm-usuarios', 'getIndex')->name('index_usuario');
-    Route::get(' administracion/usuarios/adm-usuarios/data/{id?}', 'getData');
+    Route::get('administracion/usuarios/adm-usuarios', 'getIndex')->name('index_usuario');
+    Route::post('administracion/usuarios/adm-usuarios/data', 'getData')->name('getdata');
     Route::post('administracion/usuarios/adm-usuarios/status', 'postStatus');
-    Route::get(' administracion/usuarios/adm-usuarios/create', 'getCreate');
+    Route::get('administracion/usuarios/adm-usuarios/create', 'getCreate');
     Route::post('administracion/usuarios/adm-usuarios/store', 'postStore');
-    Route::get(' administracion/usuarios/adm-usuarios/update/{id?}', 'getUpdate');
+    Route::get('administracion/usuarios/adm-usuarios/update/{id?}', 'getUpdate');
     Route::post('administracion/usuarios/adm-usuarios/put-usuario', 'postUpdate');
-    Route::get(' administracion/usuarios/adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
+    Route::get('administracion/usuarios/adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
     Route::post('administracion/usuarios/adm-usuarios/eliminar', 'postDelete');
     Route::post('administracion/usuarios/adm-usuarios/grupos', 'postGrupos');
+    Route::get('administracion/usuarios/grupos', 'grupos');
 });
 
 

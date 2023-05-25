@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
         );
 
         protected $menus = array(
-            ['id' => 2,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Calendario', 'ruta' => '/calendario', 'icono' => 'fa-calendar', 'nivel' => 0, 'posicion' => 2, 'descripcion' => 'Módulo de calendario'],
+            ['id' => 2,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Logs', 'ruta' => '/logs', 'icono' => 'fa-calendar', 'nivel' => 0, 'posicion' => 2, 'descripcion' => 'Módulo de calendario'],
             ['id' => 5,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Usuarios', 'ruta' => '/adm-usuarios', 'icono' => 'fa-user', 'nivel' => 0, 'posicion' => 5, 'descripcion' => 'Módulo para administrar los usuarios del sistema'],
             ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administración', 'ruta' => '#', 'icono' => 'fa-gears', 'nivel' => 0, 'posicion' => 7, 'descripcion' => 'Conjunto de módulos de adminsitración del sistema'],
             ['id' => 15,  'id_sistema' => 1,'padre' => 14, 'nombre_menu' => 'Grupos', 'ruta' => '/adm-grupos', 'icono' => 'fa-users', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Módulo para administrar los grupos del sistema'],
