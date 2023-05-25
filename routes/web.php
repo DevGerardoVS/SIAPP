@@ -65,7 +65,7 @@ Route::post('/logs/download',[App\Http\Controllers\LogController::class, 'downlo
 
 Route::controller(UsuarioController::class)->group(function () {
     Route::get('administracion/usuarios/adm-usuarios', 'getIndex')->name('index_usuario');
-    Route::post('administracion/usuarios/adm-usuarios/data', 'getData')->name('getdata');
+    Route::get('administracion/usuarios/adm-usuarios/data/', 'getData')->name('getdata');
     Route::post('administracion/usuarios/adm-usuarios/status', 'postStatus');
     Route::get('administracion/usuarios/adm-usuarios/create', 'getCreate');
     Route::post('administracion/usuarios/adm-usuarios/store', 'postStore');
@@ -153,4 +153,3 @@ Route::get('/desbloqueo/concesion', [App\Http\Controllers\pagoconcesion::class, 
 Route::post('/desbloqueo/concesion/id', [App\Http\Controllers\pagoconcesion::class, 'desbloqueoconcesionupdate'])->name('desbloqueoconcesionupdate');
 
 });
-

@@ -2,7 +2,7 @@
 @section('content')
     @include('administracion.usuarios.modalCreate')
     <div class="container">
-            <form action="{{ route('getdata') }}" id="buscarForm" method="post">
+            <form action="{{ route('getdata') }}" id="buscarForm" method="GET">
                 @csrf
                 <div class="row">
                     <div class="col-sm-2">

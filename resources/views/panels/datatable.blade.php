@@ -43,7 +43,7 @@
         $.ajax({
             url:  $("#buscarForm").attr("action"),
             data: $("#buscarForm").serializeArray(),
-            type:'POST',
+            type:$("#buscarForm").attr("method"),
             dataType: 'json',
             success: function(response) {
                 if(response?.dataSet.length == 0){
