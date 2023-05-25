@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Administracion;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\administracion\Grupo;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use DB;
 
 class GrupoController extends Controller
 {
@@ -22,11 +22,27 @@ class GrupoController extends Controller
         $query = Grupo::where('deleted_at', null)->get();
 
         foreach ($query as $q){
-            $button1 = '<a class="btn btn-primary" href="/adm-permisos/grupo/'.$q->id.'"><span>Permisos</span></a>';
-            $button2 = '<a class="btn btn-primary" href="/adm-grupos/update/'.$q->id.'"><span>Editar</span></a>';
-            $button3 = '<button onclick="eliminarRegistro('.$q->id.')" title="Eliminar grupo" class="btn btn-danger"><span>Eliminar</span></button>';
+            $rel = DB::table('adm_rel_user_grupo')
+                ->where('id_grupo','=',$q->id)
+                ->get();
 
-            array_push($data,[$q->nombre_grupo, $button1.' '.$button2.' '.$button3]);
+            if(sizeof($rel) == 0){
+                log::debug("datos");
+                $button1 = '<a class="btn btn-primary" href="/adm-permisos/grupo/'.$q->id.'"><span>Permisos</span></a>';
+                $button2 = '<a class="btn btn-primary" href="/adm-grupos/update/'.$q->id.'"><span>Editar</span></a>';
+                $button3 = '<button onclick="eliminarRegistro('.$q->id.')" title="Eliminar grupo" class="btn btn-danger"><span>Eliminar</span></button>';
+
+                array_push($data,[$q->nombre_grupo, $button1.' '.$button2.' '.$button3]);
+            }else{
+                $button1 = '<a class="btn btn-primary" href="/adm-permisos/grupo/'.$q->id.'"><span>Permisos</span></a>';
+                $button2 = '<a class="btn btn-primary" href="/adm-grupos/update/'.$q->id.'"><span>Editar</span></a>';
+                $button3 = '<button disabled onclick="eliminarRegistro('.$q->id.')" title="Eliminar grupo" class="btn btn-danger"><span>Eliminar</span></button>';
+
+                array_push($data,[$q->nombre_grupo, $button1.' '.$button2.' '.$button3]);
+                log::debug("Sin datos");
+            }
+
+
         }
 
     	return response()->json(
