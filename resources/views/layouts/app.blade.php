@@ -48,6 +48,7 @@
     <link href="{{ asset(mix('vendors/css/bootstrap/bootstrap.min.css')) }}" rel="stylesheet" id="bootstrap-css">
     <link href="{{ asset(mix('vendors/css/bootstrap/bootstrap-multiselect.css')) }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/js/all.min.js" />
 
     <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/charts/chart.min.js')) }}"></script>
