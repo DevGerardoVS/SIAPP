@@ -167,7 +167,8 @@ class UsuarioController extends Controller
 			'id',
 			'nombre_grupo',
 			'estatus'
-		)->get();
+		)->where('deleted_at','=',null)
+		->get();
 		return response()->json($perfil, 200);
 	}
 	//Actualiza Estatus de Usuario

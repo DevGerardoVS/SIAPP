@@ -2,12 +2,12 @@
 @section('content')
     @include('administracion.usuarios.modalCreate')
     <div class="container">
-            <form action="{{ route('getdata') }}" id="buscarForm" method="GET">
-                @csrf
-                <div class="row">
-                    <div class="col-sm-2">
+        <form action="{{ route('getdata') }}" id="buscarForm" method="GET">
+            @csrf
+            <div class="row">
+                <div class="col-sm-2">
                 </div>
-            </form>
+        </form>
         <section id="widget-grid" class="conteiner">
             <div class="row">
                 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
@@ -55,7 +55,8 @@
     </div>
     @include('panels.datatable')
 @endsection
-<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+    crossorigin="anonymous"></script>
 <script type="text/javascript">
     var dao = {
         setStatus: function(id, estatus) {
@@ -209,7 +210,7 @@
             });
         },
         limpiarFormularioCrear: function() {
-           
+
             inps = [
                 'id_user',
                 'in_username',
@@ -223,10 +224,10 @@
                 'id_grupo'
             ];
             inps.forEach(e => {
-                $('#'+e).val('').removeClass('is-invalid').removeClass('d-block');
+                $('#' + e).val('').removeClass('is-invalid').removeClass('d-block');
                 $('#error_' + e).text("");
                 $('#error_' + e).removeClass('is-invalid').removeClass('d-block');
-                
+
             });
             $("#id_grupo").find('option').remove();
             dao.getPerfil();
@@ -306,13 +307,12 @@
 
         $("#id_grupo").change(function() {
             if ($('select[name="id_grupo"] option:selected').text() == "" || $(
-                    'select[name="id_grupo"] option:selected').text() == '-- Selecciona Perfil --')
-            {
+                    'select[name="id_grupo"] option:selected').text() == '-- Selecciona Perfil --') {
                 $('#error_id_grupo').text("Este campo es requerido").addClass('has-error')
                     .addClass('d-block');
                 $('#error_id_grupo').addClass('is-invalid');
                 $('#id_grupo').addClass('is-invalid').addClass('d-block');
-            }else{
+            } else {
                 $('#error_id_grupo').text("").removeClass('has-error')
                     .removeClass('d-block');
                 $('#error_id_grupo').removeClass('is-invalid');
@@ -322,58 +322,41 @@
         });
 
         $("#in_pass_conf").change(function() {
-            if ($("#in_pass_conf").val() != $("#password").val()) {
-                $('#error_in_pass_conf').text("Las contraseñas no coinciden");
-                $('#error_in_pass').text("Las contraseñas no coinciden");
-                $('#error_in_pass_conf').addClass('is-invalid');
-                $("#password").addClass('is-invalid').addClass('d-block');
-                $("#in_pass_conf").addClass('is-invalid').addClass('d-block');
-            } else {
-                $('#error_in_pass_conf').text("");
-                $('#error_in_pass').text("");
-                $('#error_in_pass_conf').removeClass('is-invalid');
-                $("#password").removeClass('is-invalid').removeClass('d-block');
-                $("#in_pass_conf").removeClass('is-invalid').removeClass('d-block');
+            if ($("#in_pass_conf").val() != ' ' && $("#password").val() != '') {
+                if ($("#in_pass_conf").val() != $("#password").val()) {
+                    $('#error_in_pass_conf').text("Las contraseñas no coinciden");
+                    $('#error_password').text("Las contraseñas no coinciden");
+                    $('#error_in_pass_conf').addClass('is-invalid');
+                    $("#password").addClass('is-invalid').addClass('d-block');
+                    $("#in_pass_conf").addClass('is-invalid').addClass('d-block');
+                } else {
+                    $('#error_in_pass_conf').text("");
+                    $('#error_password').text("");
+                    $('#error_in_pass_conf').removeClass('is-invalid');
+                    $("#password").removeClass('is-invalid').removeClass('d-block');
+                    $("#in_pass_conf").removeClass('is-invalid').removeClass('d-block');
+                }
             }
 
         });
         $("#password").change(function() {
-         if($("#password").val() !=''){
-            var lowerCaseLetters = /[a-z]/g;
-              let password= document.getElementById('password');
-                if(password.value.match(lowerCaseLetters)) {
-                    $('#letter').removeClass("invalid");
-                    $('#letter').addClass("valid");
+            if ($("#password").val() != '' && $("#in_pass_conf").val() != '') {
+                if ($("#in_pass_conf").val() != $("#password").val()) {
+                    $('#error_in_pass_conf').text("Las contraseñas no coinciden");
+                    $('#error_password').text("Las contraseñas no coinciden");
+                    $('#error_in_pass_conf').addClass('is-invalid');
+                    $("#password").addClass('is-invalid').addClass('d-block');
+                    $("#in_pass_conf").addClass('is-invalid').addClass('d-block');
                 } else {
-                    $('#letter').remove("valid");
-                    $('#letter').add("invalid");
+                    $('#error_in_pass_conf').text("");
+                    $('#error_password').text("");
+                    $('#error_in_pass_conf').removeClass('is-invalid');
+                    $("#password").removeClass('is-invalid').removeClass('d-block');
+                    $("#in_pass_conf").removeClass('is-invalid').removeClass('d-block');
                 }
-                var upperCaseLetters = /[A-Z]/g;
-                console.log(password.value.match(upperCaseLetters));
-                if(password.value.match(upperCaseLetters)) {
-                    $('#capital').removeClass("invalid");
-                    $('#capital').addClass("valid");
-                } else {
-                    console.log("else")
-                    $('#capital').removeClass("valid");
-                    $('#capital').addClass("invalid");
-                }
-               if ($("#in_pass_conf").val() != $("#password").val()) {
-                $('#error_in_pass_conf').text("Las contraseñas no coinciden");
-                $('#error_in_pass').text("Las contraseñas no coinciden");
-                $('#error_in_pass_conf').addClass('is-invalid');
-                $("#password").addClass('is-invalid').addClass('d-block');
-                $("#in_pass_conf").addClass('is-invalid').addClass('d-block');
-            } else {
-                $('#error_in_pass_conf').text("");
-                $('#error_in_pass').text("");
-                $('#error_in_pass_conf').removeClass('is-invalid');
-                $("#password").removeClass('is-invalid').removeClass('d-block');
-                $("#in_pass_conf").removeClass('is-invalid').removeClass('d-block');
-            }}
-
+            }
         });
-        
+
         /* $('#in_celular').mask('00-00-00-00-00'); */
     });
 </script>
