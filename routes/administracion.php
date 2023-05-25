@@ -45,6 +45,6 @@
 
 	Route::controller(BitacoraController::class)->group(function () {
 		Route::get('/adm-bitacora', 'getIndex');
-		Route::get('/adm-bitacora/data/{fecha?}', 'getData');
+		Route::post('/adm-bitacora/data/{fecha?}', 'getBitacora')->name('getBitacora');
 	});
 ?>

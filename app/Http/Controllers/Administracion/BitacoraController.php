@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Administracion;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
+use Log;
 use App\Models\administracion\Bitacora;
 use Carbon\Carbon;
 
@@ -15,8 +16,10 @@ class BitacoraController extends Controller
     	return view("administracion.bitacora.index");
     }
 
-    public function getData($fecha) {
-    	if ($fecha == 0) {
+    public function getBitacora(Request $request) {
+		log::debug($request);
+		$fecha = $request->fecha;
+    	if ($request->fecha == 0) {
     		$fecha = Carbon::now()->format('Y-m-d');
     	}
     	$query = DB::table('adm_bitacora')
@@ -24,7 +27,19 @@ class BitacoraController extends Controller
     			->where('adm_bitacora.fecha_movimiento', '=', $fecha)
     			->orderBy('adm_bitacora.id', 'DESC')
     			->get();
+		$dataSet = [];
+		foreach ($query as $key) {
+			$dataSet[] = array(
+				$key->username,
+				$key->accion,
+				$key->modulo,
+				$key->ip_origen,
+				$key->fecha_movimiento,
+				$key->created_at,
 
-    	return response()->json($query, 200);
+			);
+		}
+
+    	return ['dataSet'=>$dataSet];
     }
 }

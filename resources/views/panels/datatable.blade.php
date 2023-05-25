@@ -40,12 +40,14 @@
                 }
             }
         }
+        console.log("ruta",$("#buscarForm").attr("action"));
         $.ajax({
             url:  $("#buscarForm").attr("action"),
             data: $("#buscarForm").serializeArray(),
             type:$("#buscarForm").attr("method"),
             dataType: 'json',
             success: function(response) {
+                console.log("response",response)
                 if(response?.dataSet.length == 0){
                     dt.attr('data-empty','true');
                 }

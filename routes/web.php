@@ -102,13 +102,6 @@ Route::middleware(['role:Control|Super Usuario'])->group(function () {
     Route::get('/configuraciones/perfiles', [App\Http\Controllers\PermisosController::class, 'perfiles'])->name('perfiles');
     Route::post('/configuraciones/perfiles/agregar', [App\Http\Controllers\PermisosController::class, 'agregarPerfiles'])->name('agregar_perfiles');
     Route::get('/configuraciones/perfiles/acciones/{action?}/{id?}', [App\Http\Controllers\PermisosController::class, 'actionsPerfiles'])->name('acciones_perfiles');
-    //Logs
-
-    //bitacora 
-    Route::post('/configuraciones/get-bitacora',[App\Http\Controllers\BitacoraController::class,'getBitacora'])->name('get_bitacora');
-    Route::get('/configuraciones/bitacora', [App\Http\Controllers\BitacoraController::class, 'bitacoras'])->name('bitacoras');
-    Route::post('/configuraciones/get-fecha-bitacora', [App\Http\Controllers\BitacoraController::class, 'getBitacora2'])->name('get_fecha_bitacora');
-    Route::post('/configuraciones/bitacora-export', [App\Http\Controllers\BitacoraController::class, 'exportBitacora'])->name('bitacora_export');
 });
 
 Route::middleware(['role:Monitor|Analista|Super Usuario'])->group(function () {

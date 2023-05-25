@@ -2,6 +2,10 @@
 @section('content')
 
 <div class="container">
+    <form action="{{ route('getBitacora') }}" id="buscarForm" method="POST">
+        @csrf
+        <input style="display: none" type="text" id="fecha" name="fecha">
+    </form>
     <section id="widget-grid" class="">
         <div class="row">
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
@@ -12,7 +16,7 @@
                     <div>
                         <div class="jarviswidget-editbox">
                         </div>
-                        <div class="widget-body-toolbar">
+{{--                         <div class="widget-body-toolbar">
                             <div class="row">
                                 <div class="col-xs-9 col-sm-5 col-md-5 col-lg-5">
                                     <div class="col-md-4">
@@ -22,12 +26,12 @@
                                 <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="widget-body no-padding">
                             <div class="table-responsive">
-                                <table id="tbl-bitacora" class="table table-hover table-striped">
+                                <table id="catalogo" class="table table-hover table-striped">
                                     <thead>
-                                    <tr>
+                                        <tr class="colorMorado">
                                         <th data-class="expand">Nombre Usuario</th>
                                         <th data-hide="phone">Movimiento o Acción</th>
                                         <th data-hide="phone">Módulo</th>
@@ -45,9 +49,12 @@
         </div>
     </section>
 </div>
-
-<script src="/js/administracion/bitacora/init.js"></script>
+<script src="https://momentjs.com/downloads/moment.js"></script>
+@include('panels.datatable')
 <script>
-	dao.getData($('#in_filtro_fecha').val());
+var date2 = new Date();
+    console.log("fecha",moment(date2).format("YYYY-MM-DD"));
+    $('#fecha').val(moment(date2).format("YYYY-MM-DD"));
+	getData();
 </script>
 @endsection
