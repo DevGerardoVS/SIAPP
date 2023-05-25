@@ -1,13 +1,13 @@
 @section('page_scripts')
 <script type="text/javascript">
 
-    function getData(ruta){
+    function getData(){
         var dt = $('#catalogo');
         dt.DataTable().clear().destroy();
-        generaDatatable(ruta);
+        generaDatatable();
     }
 
-    function generaDatatable(ruta){
+    function generaDatatable(){
         var dt = $('#catalogo');
         var orderDt = "";
         var column = "";
@@ -40,10 +40,10 @@
                 }
             }
         }
-
         $.ajax({
-            url: ruta,
-            type:'get',
+            url:  $("#buscarForm").attr("action"),
+            data: $("#buscarForm").serializeArray(),
+            type:'POST',
             dataType: 'json',
             success: function(response) {
                 if(response.length == 0){

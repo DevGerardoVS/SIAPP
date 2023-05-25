@@ -64,14 +64,14 @@ Route::get('/logs',[App\Http\Controllers\LogController::class, 'logsView'])->nam
 Route::post('/logs/download',[App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
 
 Route::controller(UsuarioController::class)->group(function () {
-    Route::get(' administracion/usuarios/adm-usuarios', 'getIndex')->name('index_usuario');
-    Route::get(' administracion/usuarios/adm-usuarios/data/{id?}', 'getData');
+    Route::get('administracion/usuarios/adm-usuarios', 'getIndex')->name('index_usuario');
+    Route::post('administracion/usuarios/adm-usuarios/data', 'getData')->name('getdata');
     Route::post('administracion/usuarios/adm-usuarios/status', 'postStatus');
-    Route::get(' administracion/usuarios/adm-usuarios/create', 'getCreate');
+    Route::get('administracion/usuarios/adm-usuarios/create', 'getCreate');
     Route::post('administracion/usuarios/adm-usuarios/store', 'postStore');
-    Route::get(' administracion/usuarios/adm-usuarios/update/{id?}', 'getUpdate');
+    Route::get('administracion/usuarios/adm-usuarios/update/{id?}', 'getUpdate');
     Route::post('administracion/usuarios/adm-usuarios/put-usuario', 'postUpdate');
-    Route::get(' administracion/usuarios/adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
+    Route::get('administracion/usuarios/adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
     Route::post('administracion/usuarios/adm-usuarios/eliminar', 'postDelete');
     Route::post('administracion/usuarios/adm-usuarios/grupos', 'postGrupos');
     Route::get('administracion/usuarios/grupos', 'grupos');
