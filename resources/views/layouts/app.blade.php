@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{csrf_token()}}">
-    <meta name="X-CSRF-TOKEN" content="{{csrf_token()}}">
-    
+    <meta name="csrf-token" content="{{csrf_token()}}">    
     <script typ1e="text/javascript">
         function callbackThen(response) {
             // read HTTP status
@@ -39,9 +37,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
     <!-- Fonts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link href="{{ asset(mix('vendors/css/bootstrap/bootstrap.min.css')) }}" rel="stylesheet" id="bootstrap-css">
@@ -49,10 +45,11 @@
     <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/charts/chart.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/jquery/jquery.min.js')) }}"></script>
-    <script src="{{ asset(mix('vendors/js/popper/popper.min.js')) }}"></script>
+    <script src="{{ asset('vendors/js/jquery/jquery.mask.min.js') }}"></script>
+    <script src="{{ asset('vendors/js/jquery/jquery-3.7.0.js') }}"></script>
     <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap.bundle.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap-multiselect.js')) }}"></script>
-    {{-- <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}"> --}}
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}">
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     {{-- buttons --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
