@@ -38,25 +38,22 @@
     @endif
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="js/app.js" defer></script>
     <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
     <!-- Fonts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link href="{{ asset(mix('vendors/css/bootstrap/bootstrap.min.css')) }}" rel="stylesheet" id="bootstrap-css">
-    <link href="{{ asset(mix('vendors/css/bootstrap/bootstrap-multiselect.css')) }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/js/all.min.js" />
-
-    <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap.min.js')) }}"></script>
-    <script src="{{ asset(mix('vendors/js/charts/chart.min.js')) }}"></script>
-    <script src="{{ asset(mix('vendors/js/jquery/jquery.min.js')) }}"></script>
-    <script src="{{ asset(mix('vendors/js/popper/popper.min.js')) }}"></script>
-    <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap.bundle.min.js')) }}"></script>
-    <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap-multiselect.js')) }}"></script>
-    {{-- <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}"> --}}
-    <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
+    <link href="vendors/css/bootstrap/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href=" vendors/css/bootstrap/bootstrap-multiselect.css" rel="stylesheet">
+    <script src="vendors/js/bootstrap/bootstrap.min.js"></script>
+    <script src="vendors/js/charts/chart.min.js"></script>
+    <script src="vendors/js/jquery/jquery.min.js"></script>
+    <script src="vendors/js/popper/popper.min.js"></script>
+    <script src="vendors/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="vendors/js/bootstrap/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="vendors/css/bootstrap/bootstrap.css">
+    <script src="vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
     {{-- buttons --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
 
@@ -83,9 +80,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     {{-- buttons --}}
-    <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap4.min.js')) }}"></script>
-    <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap4.min.css')) }}">
-    <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
+    <script src="vendors/js/tables/datatable/dataTables.bootstrap4.min.js"></script>
+    <link rel="stylesheet" href="vendors/css/tables/datatable/dataTables.bootstrap4.min.css">
+    <script src="vendor/sweetalert/sweetalert.all.js"></script>
     <script>
         var tiempo = parseInt("{{ $_ENV['SESSION_INACTIVITYTIME'] }}") * 60;
         var reloj = setInterval(function() {
@@ -140,8 +137,8 @@
     @yield('page_scripts')
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/customStyle.css') }}" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
+    <link href="css/customStyle.css" rel="stylesheet">
 
     {{-- Page Styles --}}
     @yield('page_styles')
