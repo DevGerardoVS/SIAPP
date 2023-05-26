@@ -38,8 +38,8 @@
                                                                                 <input type="checkbox" name="menus" value="{{$menu->id}}">
                                                                                 @endif
                                                                             </span>
-                                                                        </span>
-                                                                        <ul class="list-group" style="width: 250px">
+                                                                        </span><br>
+                                                                        <ul class="list-group" >
                                                                             <?php $hijos = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id,Session::get('sistema'), $menu->id]); ?>
                                                                             @foreach($hijos as $hijo)
                                                                             <li class="list-group-item" style="display: none">

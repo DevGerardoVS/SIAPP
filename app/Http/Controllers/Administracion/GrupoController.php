@@ -63,8 +63,6 @@ class GrupoController extends Controller
     }
     //Elimina Grupo Borrado Lógico
     public function postDelete(Request $request){
-        log::debug("######");
-        log::debug($request);
         Controller::check_permission('deleteGrupos');
     	Grupo::where('id', $request->id)->delete();
     	return response()->json("done", 200);

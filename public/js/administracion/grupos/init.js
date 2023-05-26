@@ -98,12 +98,34 @@ var init = {
 };
 
 $(document).ready(function () {
-	$('#btnSave').click(function(e) {
-		e.preventDefault();
-		if ($('#frmCreate').valid()) {
-			dao.crearGrupo();
-		}
-	});
+	getData();
+	$('#btnSave').on('click',function (e) {
+		e.preventDefault()
+		console.log("das")
+		var form = $('#buscarForm')[0];
+		var data = new FormData(form);
+		data.append('nombre',in_nombre)
+
+		$.ajax({
+			url:"/adm-grupos/store",
+			type: "POST",
+			data: data,
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			cache: false,
+			timeout: 600000,
+			success:function(response){
+				console.log(response)
+				if (response == "done") {
+					window.location.href = '/adm-grupos';
+				}
+			},
+			error: function(response) {
+				console.log('Error: ' + response);
+			}
+		});
+	})
 
 	$('#btnUpdate').click(function(e) {
 		e.preventDefault();
@@ -112,3 +134,50 @@ $(document).ready(function () {
 		}
 	});
 });
+
+function eliminarRegistro(id) {
+	var form = $('#buscarForm')[0];
+	var data = new FormData(form);
+	data.append('id',id)
+	if (id != null) {
+		Swal.fire({
+			title: '¿Seguro que quieres eliminar este usuario?',
+			text: "Esta accion es irreversible",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Confirmar'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				$.ajax({
+					url: "/adm-grupos/eliminar",
+					type: "POST",
+					data: data,
+					enctype: 'multipart/form-data',
+					processData: false,
+					contentType: false,
+					cache: false,
+					timeout: 600000,
+					success: function(response) {
+						console.log(response)
+						if (response == "done") {
+							getData();
+						}
+					},
+					error: function(response) {
+						console.log('Error: ' + response);
+					}
+				});
+
+			}
+		});
+	}else{
+		Swal.fire({
+			icon: 'info',
+			title: 'No se puede eliminar, ya cuenta con usuarios relacionados',
+			showConfirmButton: false,
+			timer: 1500
+		})
+	}
+};

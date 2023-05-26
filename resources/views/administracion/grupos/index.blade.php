@@ -1,4 +1,7 @@
 @extends('layouts.app')
+@isset($dataSet)
+@include('panels.datatable')
+@endisset
 @section('content')
     <div class="container">
         <form action="{{ route('getGroups') }}" id="buscarForm" method="Post">
@@ -45,55 +48,8 @@
             </div>
         </section>
     </div>
-    @isset($dataSet)
-        @include('panels.datatable')
-    @endisset
 
-    <script>
-        $(document).ready(function() {
-            getData();
-        });
 
-        function eliminarRegistro(id) {
-            if (id != null) {
-                Swal.fire({
-                    title: '¿Seguro que quieres eliminar este usuario?',
-                    text: "Esta accion es irreversible",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Confirmar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: "{{ route('postDelete') }}",
-                            type: "POST",
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                "id": id
-                            },
-                            success: function(response) {
-                                console.log(response)
-                                if (response == "done") {
-                                    getData();
-                                }
-                            },
-                            error: function(response) {
-                                console.log('Error: ' + response);
-                            }
-                        });
-
-                    }
-                });
-            }else{
-                Swal.fire({
-                icon: 'info',
-                title: 'No se puede eliminar, ya cuenta con usuarios relacionados',
-                showConfirmButton: false,
-                timer: 1500
-            })
-            }
-        };
-    </script>
 @endsection
+<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+<script src="/js/administracion/grupos/init.js"></script>
