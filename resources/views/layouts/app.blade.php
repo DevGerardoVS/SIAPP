@@ -12,10 +12,9 @@
     <script typ1e="text/javascript">
         function callbackThen(response) {
             // read HTTP status
-            console.log(response.status);
             // read Promise object
             response.json().then(function(data) {
-                console.log(data);
+                console.log(data.action);
             });
 
         }
@@ -126,7 +125,6 @@
                                 }`,
                                 success: function(result) {
                                     window.location.href = "{{ route('login') }}";
-                                    console.log(result);
                                 },
                                 dataType: "json"
                             });

@@ -15,35 +15,35 @@
                     <textarea type="text" value="0" id="id_user" name="id_user" style="display: none"></textarea>
                     <div class="row">
                         <div class="col-md-2"></div>
-                        <div class="form-group col-md-8">
+                        <div class="form-group col-md-4">
                             <label class="control-label ">Nombre de usuario</label>
-                            <input type="text" class="form-control" style="width: 100%" id="in_username"
+                            <input type="text" class="form-control" id="in_username"
                                 name="username" placeholder="nombreUsuario...">
                                 <span id="error_username" class="has-error"></span>
                         </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Nombre</label>
                             <input type="text" class="form-control" id="in_nombre" name="nombre"
                                 placeholder="Alberto...">
                                 <span id="error_in_nombre" class="has-error"></span>
                         </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label ">Primer apellido</label>
                             <input type="text" class="form-control" id="in_p_apellido" name="p_apellido"
                                 placeholder="Sánchez...">
                                 <span id="error_in_p_apellido" class="has-error"></span>
                         </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Segundo apellido</label>
                             <input type="text" class="form-control" id="in_s_apellido" name="s_apellido"
                                 placeholder="López...">
                                 <span id="error_in_s_apellido" class="has-error"></span>
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"></div>
+                        <div class="form-group col-md-8">
                             <label class="control-label">Correo electrónico</label>
                             <input type="text" class="form-control" id="in_email" name="email"
                                 placeholder="correo@dominio.com">
@@ -71,9 +71,10 @@
                                 <span id="error_in_celular" class="has-error"></span>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="control-label">Perfil</label>
+                            <label  class="control-label">Perfil</label>
                             <select name="id_grupo" id="id_grupo" class="form-control"></select>
                             <span id="error_id_grupo" class="has-error"></span>
+                            <h6 id="label_idGrupo"></h6>
                         </div>
                     </div>
                 </form>

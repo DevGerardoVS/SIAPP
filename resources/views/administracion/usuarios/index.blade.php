@@ -25,7 +25,8 @@
                                     </div>
                                     <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
                                         <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
-                                            data-target=".bd-example-modal-lg"  data-backdrop="static" data-keyboard="false">Agregar Usuario</button>
+                                            data-target=".bd-example-modal-lg" data-backdrop="static"
+                                            data-keyboard="false">Agregar Usuario</button>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +139,7 @@
         getPerfil: function(id) {
             $.ajax({
                 type: "GET",
-                url: 'administracion/usuarios/grupos',
+                url: 'grupos',
                 dataType: "JSON"
             }).done(function(data) {
                 var par = $('#id_grupo');
@@ -155,7 +156,7 @@
             var data = new FormData(form);
             $.ajax({
                 type: "POST",
-                url: 'administracion/usuarios/adm-usuarios/store',
+                url: 'adm-usuarios/store',
                 data: data,
                 enctype: 'multipart/form-data',
                 processData: false,
@@ -179,7 +180,7 @@
             $('#exampleModal').modal('show');
             $.ajax({
                 type: "GET",
-                url: 'administracion/usuarios/adm-usuarios/update/' + id,
+                url: 'adm-usuarios/update/' + id,
                 enctype: 'multipart/form-data',
                 processData: false,
                 contentType: false,
@@ -196,7 +197,8 @@
                     nombre,
                     p_apellido,
                     s_apellido,
-                    perfil
+                    perfil,
+                    nombre_grupo
                 } = response;
                 $('#id_user').val(id);
                 $('#in_username').val(username);
@@ -205,7 +207,10 @@
                 $('#in_s_apellido').val(s_apellido);
                 $('#in_email').val(email);
                 $('#in_celular').val(celular);
-                $('#id_grupo').val(id_grupo);
+                $('#label_idGrupo').text(nombre_grupo).show();
+                
+                $("#id_grupo").hide();
+                $("#labelGrupo").hide();
 
             });
         },
@@ -232,22 +237,10 @@
             $("#id_grupo").find('option').remove();
             dao.getPerfil();
             $('#exampleModal').modal('hide');
-        },
-        guardarGrupo: function(grupos, id) {
-            $.ajax({
-                type: "POST",
-                url: '/adm-usuarios/grupos',
-                data: {
-                    id: id,
-                    grupos: grupos
-                }
-            }).done(function(response) {
-                if (response == "done") {
-                    _gen.notificacion_min('Éxito', 'La acción se ha realizado correctamente', 1);
-                } else if (response == "nada") {
-                    _gen.notificacion_min('Advertencia', 'Nada que agregar', 3);
-                }
-            });
+            $("#id_grupo").show();
+            $("#labelGrupo").show();
+            $("#label_idGrupo").text("").hide();
+
         },
         validarFormulario: function() {
             inps = [
@@ -297,7 +290,10 @@
     $(document).ready(function() {
         getData();
         dao.getPerfil();
-        $('#exampleModal').modal({backdrop: 'static', keyboard: false})
+        $('#exampleModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        })
         $('#btnSave').click(function(e) {
             e.preventDefault();
             if (dao.validarFormulario()) {
@@ -356,7 +352,5 @@
                 }
             }
         });
-
-        /* $('#in_celular').mask('00-00-00-00-00'); */
     });
 </script>
