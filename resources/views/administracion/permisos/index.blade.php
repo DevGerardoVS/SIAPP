@@ -24,13 +24,13 @@
                                                     <div class="form-group" >
                                                         <div class="tree smart-form" id="modules-tree">
                                                             <ul class="list-group" style="width: 250px">
-                                                                <ul class="list-group-item" style="width: 250px">
+                                                                <ul class="list-group-item" style="width: 450px">
                                                                     <?php $menus = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id,Session::get('sistema'), null]); ?>
                                                                     @foreach($menus as $menu)
                                                                     <li >
                                                                         <span>
                                                                             <i class="fa fa-lg {{$menu->icono}}"></i>&nbsp;
-                                                                            {{$menu->nombre_menu}}
+                                                                            <b>{{$menu->nombre_menu}}</b>
                                                                             <span class="ch">
                                                                                 @if(in_array($menu->id, $data['menus']))
                                                                                 <input type="checkbox" name="menus" value="{{$menu->id}}" checked>
@@ -70,10 +70,10 @@
                                                                                                 @endif
                                                                                             </span>
                                                                                         </span>
-                                                                                        <ul>
+                                                                                        <ul class="list-group">
                                                                                             <?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ', [$nieto->nombre]); ?>
                                                                                             @foreach($permisos as $permiso)
-                                                                                            <li style="display:none">
+                                                                                            <li class="list-group-item" style="display:none">
 																							<span>
 																								<label class="checkbox inline-block">
 																									@if(in_array($permiso->id, $data['asignados']))
@@ -88,21 +88,21 @@
                                                                                             @endforeach
                                                                                             <?php $modulos = DB::select('SELECT DISTINCT modulo FROM adm_funciones WHERE padre=? ORDER BY modulo', [$nieto->nombre]); ?>
                                                                                             @foreach($modulos as $modulo)
-                                                                                            <li style="display: none"><span><i class="fa fa-lg fa-plus-circle"></i>&nbsp; {{$modulo->modulo}}</span>
-                                                                                                <ul>
+                                                                                            <li class="list-group-item" style="display: none"><span><i class="fa fa-lg fa-plus-circle"></i>&nbsp; {{$modulo->modulo}}</span>
+                                                                                                <ul class="list-group">
                                                                                                     <?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$modulo->modulo]); ?>
                                                                                                     @foreach($permisos as $permiso)
-                                                                                                    <li style="display:none">
-																								<span>
-																									<label class="checkbox inline-block">
-																										@if(in_array($permiso->id, $data['asignados']))
-																										<input type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
-																										@else
-																										<input type="checkbox" name="permisos" value="{{$permiso->id}}">
-																										@endif
-																										<i></i> {{$permiso->tipo}}
-																									</label>
-																								</span>
+                                                                                                    <li class="list-group-item" style="display:none">
+                                                                                                    <span>
+                                                                                                        <label class="checkbox inline-block">
+                                                                                                            @if(in_array($permiso->id, $data['asignados']))
+                                                                                                            <input type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
+                                                                                                            @else
+                                                                                                            <input type="checkbox" name="permisos" value="{{$permiso->id}}">
+                                                                                                            @endif
+                                                                                                            <i></i> {{$permiso->tipo}}
+                                                                                                        </label>
+                                                                                                    </span>
                                                                                                     </li>
                                                                                                     @endforeach
                                                                                                 </ul></li>
@@ -112,10 +112,10 @@
                                                                                     @endforeach
                                                                                 </ul>
                                                                                 @else
-                                                                                <ul>
+                                                                                <ul class="list-group">
                                                                                     <?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$hijo->nombre_menu]); ?>
                                                                                     @foreach($permisos as $permiso)
-                                                                                    <li style="display:none">
+                                                                                    <li class="list-group-item" style="display:none">
 																					<span>
 																						<label class="checkbox inline-block">
 																							@if(in_array($permiso->id, $data['asignados']))

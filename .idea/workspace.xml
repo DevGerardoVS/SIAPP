@@ -5,18 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_17_05_2023_01_21_p__m___Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_17_05_2023_01_21_p_ m__[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_18_05_2023_05_36_p__m___Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_18_05_2023_05_36_p_ m__[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_17_05_2023_01_22_p__m___Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_17_05_2023_01_22_p_ m__[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_18_05_2023_05_36_p__m___Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_18_05_2023_05_36_p_ m__[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_17_05_2023_05_40_p__m___Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_17_05_2023_05_40_p_ m__[Changes]/shelved.patch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/administracion/permisos/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/permisos/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/configuracion/index.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/permisos/delete_modal.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/permisos/funciones.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/permisos/funciones_modal.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/permisos/modulos.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/permisos/modulos_modal.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/permisos/perfiles.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/permisos/perfiles_modal.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/reportes/pdf/reporte_movimientos_x_concesion_pdf.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/reportes/pdf/reporte_polizas_x_concesion_pdf.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/reportes/reporte_movimientos_x_concesion.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/reportes/reporte_polizas_x_concesion.blade.php" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -250,7 +252,7 @@
       <workItem from="1684767728737" duration="7310000" />
       <workItem from="1684854336675" duration="16401000" />
       <workItem from="1684939772902" duration="4856000" />
-      <workItem from="1685123230874" duration="4871000" />
+      <workItem from="1685123230874" duration="10033000" />
     </task>
     <servers />
   </component>
