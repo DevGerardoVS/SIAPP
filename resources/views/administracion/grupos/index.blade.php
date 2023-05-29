@@ -25,7 +25,7 @@
                                     </div>
                                     <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
                                         <a class="btn btn-success" id="btnNew" href="/adm-grupos/create">
-                                            <i class="fa fa-plus"></i> <span class="hidden-mobile">Agregar Nuevo
+                                            <span class="hidden-mobile">Agregar Nuevo
                                                 Grupo</span>
                                         </a>
                                     </div>

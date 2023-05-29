@@ -101,7 +101,6 @@ $(document).ready(function () {
 	getData();
 	$('#btnSave').on('click',function (e) {
 		e.preventDefault()
-		console.log("das")
 		var form = $('#buscarForm')[0];
 		var data = new FormData(form);
 		data.append('nombre',in_nombre)

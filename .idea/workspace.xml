@@ -8,9 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/administracion/grupos/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/administracion/grupos/init.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/administracion/permisos/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/administracion/permisos/init.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/administracion/grupos/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/grupos/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/administracion/permisos/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/permisos/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/administracion/usuarios/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/usuarios/index.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,7 +243,8 @@
       <workItem from="1684767728737" duration="7310000" />
       <workItem from="1684854336675" duration="16401000" />
       <workItem from="1684939772902" duration="4856000" />
-      <workItem from="1685123230874" duration="12477000" />
+      <workItem from="1685123230874" duration="12995000" />
+      <workItem from="1685373650827" duration="5721000" />
     </task>
     <servers />
   </component>
