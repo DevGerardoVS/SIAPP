@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{csrf_token()}}">    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script typ1e="text/javascript">
         function callbackThen(response) {
             // read HTTP status
@@ -81,6 +81,19 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap4.min.css')) }}">
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script>
+        if (window.location.hostname != 127.0 .0 .1) {
+            document.addEventListener("contextmenu", (e) => {
+                e.preventDefault()
+            });
+            document.addEventListener("keydown", (e) => {
+                e.preventDefault();
+                if (e.keycode == 123) {
+                    return false;
+                }
+            })
+        }
+    </script>
+    <script>
         var tiempo = parseInt("{{ $_ENV['SESSION_INACTIVITYTIME'] }}") * 60;
         var reloj = setInterval(function() {
             if (tiempo <= 0) {
@@ -141,9 +154,9 @@
     @yield('page_styles')
 </head>
 
-<body >
+<body>
     <div id="app" style="">
-        @if( isset(Auth::user()->id))
+        @if (isset(Auth::user()->id))
             <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
                 <div class="container">
                     <a class="navbar-brand" href="/" title="Sistema Integral">
@@ -164,54 +177,54 @@
                         <ul class="navbar-nav me-auto">
                         </ul>
                         <ul class="navbar-nav ms-auto">
-                            <?php $menus = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id,Session::get('sistema'), null]); ?>
-                            @foreach($menus as $menu)
-                            <?php $hijos = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id,Session::get('sistema'), $menu->id]); ?>
-                            @if($hijos)
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
-                                   role="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false" v-pre title="Mi Usuario">
-                                    {{$menu->nombre_menu}}
-                                </a>
+                            <?php $menus = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id, Session::get('sistema'), null]); ?>
+                            @foreach ($menus as $menu)
+                                <?php $hijos = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id, Session::get('sistema'), $menu->id]); ?>
+                                @if ($hijos)
+                                    <li class="nav-item dropdown">
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
+                                            role="button" data-bs-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false" v-pre title="Mi Usuario">
+                                            {{ $menu->nombre_menu }}
+                                        </a>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="text-align: center;">
-                                    @foreach($hijos as $hijo )
-                                    <a class="dropdown-item" href="{{$hijo->ruta}}">
-                                        {{$hijo->nombre_menu}}
-                                    </a>
-                                    @endforeach
-                                </div>
-                            </li>
-                            @else
-                            <li class="nav-item dropdown">
-                                <a class="nav-link" href="{{$menu->ruta}}">
-                                    {{$menu->nombre_menu}}
-                                </a>
-                            </li>
-                            @endif
-
+                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
+                                            style="text-align: center;">
+                                            @foreach ($hijos as $hijo)
+                                                <a class="dropdown-item" href="{{ $hijo->ruta }}">
+                                                    {{ $hijo->nombre_menu }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </li>
+                                @else
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link" href="{{ $menu->ruta }}">
+                                            {{ $menu->nombre_menu }}
+                                        </a>
+                                    </li>
+                                @endif
                             @endforeach
                             <!--CERRAR SESION Y CAMBIO DE CONTRASEÑA-->
                             <li class="nav-item dropdown">
 
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
-                                   role="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false" v-pre title="Mi Usuario">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre
+                                    title="Mi Usuario">
                                     <i class="fas fa-user-circle" aria-hidden="true"></i>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
-                                     style="text-align: center;">
+                                    style="text-align: center;">
                                     <a class="dropdown-item" href="{{ route('cambiar_contrasenia') }}">
                                         {{ __('Cambiar contraseña') }}
                                     </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         {{ __('Cerrar Sesión') }}
                                     </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                          class="d-none">
+                                        class="d-none">
                                         @csrf
                                     </form>
                                 </div>
@@ -222,12 +235,11 @@
                 </div>
             </nav>
         @endif
-            @if (Request::is('/', 'login', 'password/reset', 'cambiar-contrasenia'))
-
+        @if (Request::is('/', 'login', 'password/reset', 'cambiar-contrasenia'))
             <main style="min-height: auto; min-width:auto;">
                 @yield('content')
             </main>
-            @else
+        @else
             <main class="py-4">
                 @yield('content')
             </main>
@@ -239,21 +251,20 @@
 <br>
 <br>
 <br>
-    @if( isset(Auth::user()->id))
-        <footer class="text-center text-lg-start text-white colorMorado footer fixed-bottom footerClassMain"
-            style="">
-            <div class="container pb-0"></div>
-            <div class="text-center">
-                <label class="footerMessageMain" style="">
-                    © {{ date('Y') }} Dirección General de Gobierno Digital | Secretaría de Finanzas y
-                    Administración |
-                    <a class="customFooterA" href="https://www.michoacan.gob.mx">
-                        Gobierno del Estado de Michoacán
-                    </a>
-                </label>
-            </div>
+@if (isset(Auth::user()->id))
+    <footer class="text-center text-lg-start text-white colorMorado footer fixed-bottom footerClassMain" style="">
+        <div class="container pb-0"></div>
+        <div class="text-center">
+            <label class="footerMessageMain" style="">
+                © {{ date('Y') }} Dirección General de Gobierno Digital | Secretaría de Finanzas y
+                Administración |
+                <a class="customFooterA" href="https://www.michoacan.gob.mx">
+                    Gobierno del Estado de Michoacán
+                </a>
+            </label>
+        </div>
 
-    {{-- @if (Request::is('/', 'home', 'login', 'password/reset', 'cambiar-contrasenia', ''))
+        {{-- @if (Request::is('/', 'home', 'login', 'password/reset', 'cambiar-contrasenia', ''))
 
     <footer class="text-center text-lg-start text-white colorMorado footer fixed-bottom footerClassMain" style="">
         <div class="gobiernoDigitalDIV" style=""></div>
@@ -273,16 +284,15 @@
 
 
 
-    <div class="container pb-0"></div>
+        <div class="container pb-0"></div>
 
     </footer>
 
 
 
-<!-- Footer -->
+    <!-- Footer -->
 
-<!-- Footer -->
+    <!-- Footer -->
+@endif
 
-
-        @endif
 </html>
