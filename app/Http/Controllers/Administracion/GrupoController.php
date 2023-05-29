@@ -27,8 +27,8 @@ class GrupoController extends Controller
                 ->get();
             $id = sizeof($rel) == 0 ? $q->id : null;
             $button1 = '<a class="btn btn-primary" href="/adm-permisos/grupo/' . $q->id . '"><span>Permisos</span></a>';
-            $button2 = '<a class="btn btn-secondary" href="/adm-grupos/update/' . $q->id . '"><i class="fa fa-pencil"></i></a>';
-            $button3 = '<button onclick="eliminarRegistro(' .$id. ')" title="Eliminar grupo" class="btn btn-danger"><i class="fa fa-trash"></i></button>';
+            $button2 = '<a class="btn btn-secondary" href="/adm-grupos/update/' . $q->id . '"><i class="fa fa-pencil" style="font-size: x-large"></i></a>';
+            $button3 = '<button onclick="eliminarRegistro(' .$id. ')" title="Eliminar grupo" class="btn btn-danger"><i class="fa fa-trash" style="font-size: x-large"></i></button>';
             array_push($data, [$q->nombre_grupo, $button1 . ' ' . $button2 . ' ' . $button3]);
         }
 
