@@ -49,7 +49,9 @@ class UsuarioController extends Controller
 			->select('adm_users.id', 'adm_users.username', 'adm_users.email', 'adm_users.estatus', DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'), 'adm_users.celular', DB::raw('ifnull(adm_grupos.nombre_grupo, "Sudo") as perfil'), 'adm_users.p_apellido', 'adm_users.s_apellido', 'adm_users.nombre', DB::raw('ifnull(adm_grupos.id, "null") as id_grupo'))
 			->leftJoin('adm_rel_user_grupo', 'adm_users.id', '=', 'adm_rel_user_grupo.id_usuario')
 			->leftJoin('adm_grupos', 'adm_rel_user_grupo.id_grupo', '=', 'adm_grupos.id')
-			->where('adm_users.deleted_at', '=', null);
+			->where('adm_users.deleted_at', '=', null)
+            ->orderby('adm_users.estatus');
+
 		if ($id != 0) {
 			$query = $query->where('adm_users.id', '=', $id);
 		}
