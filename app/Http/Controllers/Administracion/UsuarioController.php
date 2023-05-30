@@ -61,16 +61,16 @@ class UsuarioController extends Controller
 			$accion ='<a data-toggle="tooltip" title="Modificar Usuario"  class="btn btn-sm"onclick="dao.editarUsuario('.$key->id.')" >' .
                         '<i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' .
                         '<a data-toggle="tooltip" title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' .$key->id. ', ' .$key->estatus.')">' .
-                        '<i class="fa fa-lock"></i></a>&nbsp;' .
-                        '<a data-toggle="tooltip" title="Eliminar Usuario" class="btn btn-sm" onclick="dao.eliminarUsuario('.$key->id. ')">' .
-                        '<i class="fa fa-trash" style="color:B40000;" ></i></a>&nbsp;';
+                        '<i class="fa fa-lock"></i></a>&nbsp;'
+                        /*'<a data-toggle="tooltip" title="Eliminar Usuario" class="btn btn-sm" onclick="dao.eliminarUsuario('.$key->id. ')">' .
+                        '<i class="fa fa-trash" style="color:B40000;" ></i></a>&nbsp;'*/;
 			$i = array(
 				$key->username,
 				$key->email,
 				$key->nombre_completo,
 				$key->celular,
 				$key->perfil,
-				$key->estatus,
+				$key->estatus == 1 ? "Activo" : "Inactivo",
 				$accion,
 			);
 			$dataSet[] = $i;

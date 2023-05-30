@@ -102,8 +102,6 @@
 
             tiempo -= 1;
             if (tiempo == 0) {
-
-
                 var urlacctual = "{{ Request::path() }}";
                 if (urlacctual != 'login') {
                     Swal.fire({
