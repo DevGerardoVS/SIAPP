@@ -124,7 +124,6 @@ class UsuarioController extends Controller
 	//Actualiza Usuario
 	public function postUpdate(Request $request)
 	{
-		log::debug($request);
 		Controller::check_permission('putUsuarios');
  		User::find($request->id_user)->update($request->all());
 		return response()->json("done", 200);
