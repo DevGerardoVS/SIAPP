@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Administracion;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\administracion\Grupo;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use DB;
 
 class GrupoController extends Controller
 {
@@ -21,12 +21,16 @@ class GrupoController extends Controller
         Controller::check_permission('getGrupos', false);
         $query = Grupo::where('deleted_at', null)->get();
 
-        foreach ($query as $q){
-            $button1 = '<a class="btn btn-primary" href="/adm-permisos/grupo/'.$q->id.'"><span>Permisos</span></a>';
-            $button2 = '<a class="btn btn-primary" href="/adm-grupos/update/'.$q->id.'"><span>Editar</span></a>';
-            $button3 = '<button data-toggle="tooltip" data-placement="top" onclick="eliminarRegistro('.$q->id.')" title="Eliminar grupo" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modaldel"><span>Eliminar</span></button>';
-
-            array_push($data,[$q->nombre_grupo, $button1.' '.$button2.' '.$button3]);
+        foreach ($query as $q) {
+            $rel = DB::table('adm_rel_user_grupo')
+                ->where('id_grupo', '=', $q->id)
+                ->get();
+            $id = sizeof($rel) == 0 ? $q->id : null;
+            $button1 = '<a class="btn btn-primary" href="/adm-permisos/grupo/' . $q->id . '"><span>Permisos</span></a>';
+            $button2 = '<a class="btn btn-secondary" onclick="dao.editarGrupo(' . $q->id . ')" data-toggle="modal"
+            data-target="#createGroup" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil" style="font-size: x-large"></i></a>';
+            $button3 = '<button onclick="dao.eliminarRegistro(' .$id. ')" title="Eliminar grupo" class="btn btn-danger"><i class="fa fa-trash" style="font-size: x-large"></i></button>';
+            array_push($data, [$q->nombre_grupo, $button1 . ' ' . $button2 . ' ' . $button3]);
         }
 
     	return response()->json(
@@ -43,7 +47,13 @@ class GrupoController extends Controller
     //Inserta Grupo
     public function postStore(Request $request){
         Controller::check_permission('postGrupos');
-    	Grupo::create(['nombre_grupo'=>$request->nombre]);
+        if($request->id_user !=null){
+           $grupo= Grupo::where('id', $request->id_user)->firstOrFail();
+            $grupo->nombre_grupo = $request->nombre;
+            $grupo->save();
+        }else{
+            Grupo::create(['nombre_grupo'=>$request->nombre]);
+        }
     	return response()->json("done", 200);
     }
     //Actualiza Grupo
@@ -51,6 +61,11 @@ class GrupoController extends Controller
         Controller::check_permission('putGrupos', false);
     	$grupo = Grupo::find($id);
     	return view('administracion.grupos.update', compact('grupo'));
+    }
+    public function getGrupo($id){
+        Controller::check_permission('putGrupos', false);
+    	$grupo = Grupo::find($id);
+    	return $grupo;
     }
     //Actualiza Grupo
     public function postUpdate(Request $request){
@@ -60,8 +75,6 @@ class GrupoController extends Controller
     }
     //Elimina Grupo Borrado Lógico
     public function postDelete(Request $request){
-        log::debug("######");
-        log::debug($request);
         Controller::check_permission('deleteGrupos');
     	Grupo::where('id', $request->id)->delete();
     	return response()->json("done", 200);

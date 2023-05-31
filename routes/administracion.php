@@ -10,24 +10,25 @@
 	});
 
 	Route::controller(UsuarioController::class)->group(function () {
-		Route::get('/adm-usuarios', 'getIndex')->name('index_usuario');
-		Route::post('/adm-usuarios/data/{id?}', 'getData');
-		Route::post('/adm-usuarios/status', 'postStatus');
-		Route::get('/adm-usuarios/create', 'getCreate');
-		Route::post('/adm-usuarios/store', 'postStore');
-		Route::get('/adm-usuarios/update/{id?}', 'getUpdate');
-		Route::post('/adm-usuarios/put-usuario', 'postUpdate');
-		Route::get('/adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
-		Route::post('/adm-usuarios/eliminar', 'postDelete');
-		Route::post('/adm-usuarios/grupos', 'postGrupos');
+		Route::get('adm-usuarios', 'getIndex')->name('index_usuario');
+		Route::get('adm-usuarios/data', 'getData')->name('getdata');
+		Route::post('adm-usuarios/status', 'postStatus');
+		Route::get('adm-usuarios/create', 'getCreate');
+		Route::post('adm-usuarios/store', 'postStore');
+		Route::get('adm-usuarios/update/{id?}', 'getUpdate');
+		Route::post('adm-usuarios/put-usuario', 'postUpdate');
+		Route::get('adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
+		Route::post('adm-usuarios/eliminar', 'postDelete');
+		Route::post('adm-usuarios/grupos', 'postGrupos');
+		Route::get('grupos', 'grupos');
 	});
 
 	Route::controller(GrupoController::class)->group(function () {
 		Route::get('/adm-grupos', 'getIndex')->name('index_grupo');
-		Route::post('/adm-grupos/data', 'getData')->name('getGroups');
+		Route::post('adm-grupos/dataGroups', 'getData')->name('getGroups');
 		Route::get('/adm-grupos/create', 'getCreate');
 		Route::post('/adm-grupos/store', 'postStore')->name('postStore');
-		Route::get('/adm-grupos/update/{id?}', 'getUpdate');
+		Route::get('/adm-grupos/update/{id?}', 'getGrupo');
 		Route::post('/adm-grupos/put-grupo', 'postUpdate')->name('postUpdate');
 		Route::post('/adm-grupos/eliminar', 'postDelete')->name('postDelete');
 	});
@@ -45,6 +46,6 @@
 
 	Route::controller(BitacoraController::class)->group(function () {
 		Route::get('/adm-bitacora', 'getIndex');
-		Route::get('/adm-bitacora/data/{fecha?}', 'getData');
+		Route::post('/adm-bitacora/data/{fecha?}', 'getBitacora')->name('getBitacora');
 	});
 ?>

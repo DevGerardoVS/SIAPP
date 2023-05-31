@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
                 <h5 class="modal-title" id="exampleModalLabel">Agregar usuario</h5>
-                <button id="cerrar" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
                     <a aria-hidden="true" style="color: whitesmoke" onclick="dao.limpiarFormularioCrear()">&times;</a>
                 </button>
             </div>
@@ -15,80 +15,65 @@
                     <textarea type="text" value="0" id="id_user" name="id_user" style="display: none"></textarea>
                     <div class="row">
                         <div class="col-md-2"></div>
-                        <div class="form-group col-md-8">
+                        <div class="form-group col-md-4">
                             <label class="control-label ">Nombre de usuario</label>
-                            <input type="text" class="form-control" style="width: 100%" id="in_username"
+                            <input type="text" class="form-control" id="username"
                                 name="username" placeholder="nombreUsuario...">
-                                <span id="error_username" class="has-error"></span>
                         </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Nombre</label>
-                            <input type="text" class="form-control" id="in_nombre" name="nombre"
+                            <input type="text" class="form-control" id="nombre" name="nombre"
                                 placeholder="Alberto...">
-                                <span id="error_in_nombre" class="has-error"></span>
                         </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label ">Primer apellido</label>
-                            <input type="text" class="form-control" id="in_p_apellido" name="p_apellido"
+                            <input type="text" class="form-control" id="p_apellido" name="p_apellido"
                                 placeholder="Sánchez...">
-                                <span id="error_in_p_apellido" class="has-error"></span>
                         </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Segundo apellido</label>
-                            <input type="text" class="form-control" id="in_s_apellido" name="s_apellido"
+                            <input type="text" class="form-control" id="s_apellido" name="s_apellido"
                                 placeholder="López...">
-                                <span id="error_in_s_apellido" class="has-error"></span>
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"></div>
+                        <div class="form-group col-md-8">
                             <label class="control-label">Correo electrónico</label>
-                            <input type="text" class="form-control" id="in_email" name="email"
-                                placeholder="correo@dominio.com">
-                                <span id="error_in_email" class="has-error"></span>
+                            <input type="text" class="form-control" id="email" name="email"
+                                placeholder="correo@dominio.com" pattern=".+@globex\.com" size="30" required>
+                                <span id="email-error"></span>
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Contraseña</label>
                             <input type="password" class="form-control" id="password" name="password">
-                            <span id="error_in_pass" class="has-error"></span>
-                            <div id="message">
-                                <p id="letter" class="invalid">Una letra <b>minuscula</b> </p>
-                                <p id="capital" class="invalid">Una letra <b>mayuscula</b></p>
-                                <p id="number" class="invalid">Un <b>número</b></p>
-                                <p id="length" class="invalid">Al menos <b>8 caracteres</b></p>
-                            </div>
                         </div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Confirmar
                                 Contraseña</label>
-                            <input type="password" class="form-control" id="" name="in_pass_conf">
-                            <span id="error_in_pass_conf" class="has-error"></span>
-                            <div id="message1">
-                                <p id="coincide" class="valid">Las contraseñas coinciden</p>
-                            </div>
+                            <input type="password" class="form-control" id="in_pass_conf" name="in_pass_conf">
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Celular</label>
                             <input type="text" class="form-control" id="in_celular" name="celular"
-                                placeholder="44-30-29-02-22">
-                                <span id="error_in_celular" class="has-error"></span>
+                                placeholder="44-30-29-02-22"  required autocomplete="off" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)">
+                                <span id="in_celular-error" ></span>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="control-label">Perfil</label>
+                            <label  class="control-label">Perfil</label>
                             <select name="id_grupo" id="id_grupo" class="form-control"></select>
-                            <span id="error_id_grupo" class="has-error"></span>
+                            <h6 id="label_idGrupo"></h6>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="dao.limpiarFormularioCrear()">Cancelar</button>
+                <button  id="cerrar" type="button" class="btn btn-secondary " data-dismiss="modal" aria-label="Close" onclick="dao.limpiarFormularioCrear()">Cancelar</button>
                 <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
             </div>
         </div>

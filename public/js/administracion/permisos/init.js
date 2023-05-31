@@ -9,14 +9,14 @@ $(document).ready(function() {
 			$.ajax({
 				type : "POST",
 				url : url + "/asigna",
-				data : {modulo : _id_mod, role : _id_role}
+				data : {"_token": "{{ csrf_token() }}",modulo : _id_mod, role : _id_role}
 			}).done(function(_response) {
 			});
 		} else {
 			$.ajax({
 				type : "POST",
 				url : url + "/remueve",
-				data : {modulo : _id_mod, role : _id_role}
+				data : {"_token": "{{ csrf_token() }}",modulo : _id_mod, role : _id_role}
 			}).done(function(_response) {
 			});
 		}

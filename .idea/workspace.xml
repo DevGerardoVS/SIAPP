@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_22_05_2023_05_56_p__m___Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_22_05_2023_05_56_p__m___Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_22_05_2023_05_57_p__m___Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_22_05_2023_05_57_p__m___Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Administracion/PermisoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Administracion/PermisoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/administracion/grupos/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/grupos/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/administracion/permisos/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/administracion/permisos/index.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +19,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="desarrollo" />
+        <entry key="$PROJECT_DIR$" value="dilan" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -181,20 +176,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/Dilan SFA/Documents/repositorios/Sistema-Integral",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Dilan SFA/Documents/repositorios/Sistema-Integral&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Dilan SFA\Documents\repositorios\Sistema-Integral\app\Http\Controllers" />
@@ -203,6 +198,19 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="Sistema-Integral" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="Sistema-Integral" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
       <TestRunner scope="XML" />
       <method v="2" />
@@ -231,6 +239,9 @@
       <workItem from="1684767728737" duration="7310000" />
       <workItem from="1684854336675" duration="16401000" />
       <workItem from="1684939772902" duration="4856000" />
+      <workItem from="1685123230874" duration="12995000" />
+      <workItem from="1685373650827" duration="10742000" />
+      <workItem from="1685459125665" duration="2825000" />
     </task>
     <servers />
   </component>
@@ -256,7 +267,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php</url>
-          <line>44</line>
+          <line>47</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\Administracion\GrupoController" />
             <option name="methodName" value="postStore" />
@@ -265,7 +276,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php</url>
-          <line>56</line>
+          <line>59</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\Administracion\GrupoController" />
             <option name="methodName" value="postUpdate" />
@@ -283,7 +294,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php</url>
-          <line>61</line>
+          <line>64</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\Administracion\GrupoController" />
             <option name="methodName" value="postDelete" />
@@ -307,6 +318,24 @@
             <option name="methodName" value="postMasigna" />
           </properties>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php</url>
+          <line>41</line>
+          <properties>
+            <option name="className" value="\App\Http\Controllers\Administracion\GrupoController" />
+            <option name="methodName" value="getCreate" />
+          </properties>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/Administracion/GrupoController.php</url>
+          <line>46</line>
+          <properties>
+            <option name="className" value="\App\Http\Controllers\Administracion\GrupoController" />
+            <option name="methodName" value="postStore" />
+          </properties>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php</url>

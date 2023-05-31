@@ -1,114 +1,129 @@
 var dao = {
-	getData : function(){
+	eliminarRegistro: function (id) {
+
+		if (id != null) {
+			Swal.fire({
+				title: '¿Seguro que quieres eliminar este usuario?',
+				text: "Esta accion es irreversible",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Confirmar'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: "/adm-grupos/eliminar",
+						type: "POST",
+                    data: {
+                        id: id
+                    }
+                }).done(function (data) {
+                    if (data != "done") {
+                        Swal.fire(
+                            'Error!',
+                            'Hubo un problema al querer realizar la acción, contacte a soporte',
+                            'Error'
+                        );
+                    } else {
+                        Swal.fire(
+                            'Éxito!',
+                            'La acción se ha realizado correctamente',
+                            'success'
+                        );
+                        getData();
+                    }
+                });
+
+				}
+			});
+		} else {
+			Swal.fire({
+				icon: 'info',
+				title: 'No se puede eliminar, ya cuenta con usuarios relacionados',
+				showConfirmButton: false,
+				timer: 1500
+			})
+		}
+	},
+
+	crearGrupo: function () {
+		var form = $('#frmCreate')[0];
+		var data = new FormData(form);
 		$.ajax({
-			type : "GET",
-			url : "/adm-grupos/data",
-			dataType : "json"
-		}).done(function(_data){
-			_table = $("#tbl-grupos");
-			_columns = [
-				{"aTargets" : [0], "mData" : "nombre_grupo"},
-				{"aTargets" : [1], "mData" : function(o){
-					return '<a data-toggle="tooltip" title="Administrar Permisos" class="btn btn-sm btn-info" href="/adm-permisos/grupo/'+o.id+'">' + '<i class="glyphicon glyphicon-screenshot"></i></a>&nbsp;'
-						+'<a data-toggle="tooltip" title="Modificar Grupo" class="btn btn-sm btn-success" href="/adm-grupos/update/'+o.id+'">' + '<i class="glyphicon glyphicon-pencil"></i></a>&nbsp;'
-						+'<a data-toggle="tooltip" title="Eliminar Grupo" class="btn btn-sm btn-danger" onclick="dao.eliminarGrupo(' + o.id + ')">' + '<i class="glyphicon glyphicon-trash"></i></a>&nbsp;';
-				}},
-				
-			];
-			_gen.setTableScroll(_table, _columns, _data);
+			type: "POST",
+			url: '/adm-grupos/store',
+			data: data,
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			cache: false,
+			timeout: 600000
+		}).done(function (response) {
+			$('#cerrar').trigger('click');
+			Swal.fire({
+				icon: 'success',
+				title: 'Your work has been saved',
+				showConfirmButton: false,
+				timer: 1500
+			});
+			getData();
 		});
 	},
 
-	eliminarGrupo : function(id) {
-		$.SmartMessageBox({
-			title : 'Confirmar Eliminación',
-			buttons : '[No][Continuar]',
-		}, function(btn, input) {
-			if (btn === "Continuar" && input != "") {
-				$.ajax({
-					type : "POST",
-					url : "/adm-grupos/eliminar",
-					data : { id : id}
-				}).done(function(data) {
-					if(data != "done"){
-						_gen.notificacion_min('Error', 'Hubo un problema al querer realizar la acción, contacte a soporte', 4);
-					}else {
-						_gen.notificacion_min('Éxito', 'La acción se ha realizado correctamente', 1);
-						dao.getData();
-					}
-				});
-			}
+	editarGrupo: function (id) {
+		$.ajax({
+			type: "GET",
+			url: '/adm-grupos/update/' + id,
+			enctype: 'multipart/form-data',
+			processData: false,
+			contentType: false,
+			cache: false,
+			timeout: 600000
+		}).done(function (response) {
+			const { id, nombre_grupo } = response;
+			$('#id_user').val(id);
+			$('#nombre').val(nombre_grupo);
 		});
 	},
+	limpiar: function () {
+		$('#id_user').val(null);
+		$('#nombre').val("");
+		$('#nombre-error').text("").removeClass("has-error").removeClass('d-block'); 
+		$('.col-md-8').removeClass("has-error");
+	},
+	CierraPopup: function () {
+		$("#createGroup").modal('hide'); //ocultamos el modal
+		$('body').removeClass('modal-open'); //eliminamos la clase del body para poder hacer scroll
+		$('.modal-backdrop').remove(); //eliminamos el backdrop del modal
+	}
 
-	crearGrupo : function(){
-		console.log("CREANDO...")
-    	var form = $('#frmCreate')[0];
-		var data = new FormData(form);
-    	$.ajax({
-    		type : "POST",
-            url: '/adm-grupos/store',
-            data : data,
-			enctype : 'multipart/form-data',
-			processData: false,
-            contentType: false,
-            cache: false,
-            timeout: 600000
-    	}).done(function(response){
-    		if (response == "done") {
-    			_gen.notificacion_min('Éxito', 'La acción se ha realizado correctamente', 1);
-    			window.location.href = '/adm-grupos';
-    		}
-    	});
-    },
-
-    editarGrupo : function(){
-    	var form = $('#frmUpdate')[0];
-		var data = new FormData(form);
-    	$.ajax({
-    		type : "POST",
-            url: '/adm-grupos/put-grupo',
-            data : data,
-			enctype : 'multipart/form-data',
-			processData: false,
-            contentType: false,
-            cache: false,
-            timeout: 600000
-    	}).done(function(response){
-    		if (response == "done") {
-    			_gen.notificacion_min('Éxito', 'La acción se ha realizado correctamente', 1);
-    			window.location.href = '/adm-grupos';
-    		}
-    	});
-    },
 };
 
 var init = {
-	validateCreate : function(form){
+	validateCreate: function (form) {
 		_gen.validate(form, {
-			rules : {
-				nombre_grupo : {required: true}
+			rules: {
+				nombre: { required: true }
 			},
 
-			messages : {
-				nombre_grupo : {required: "Este campo es requerido"}
+			messages: {
+				nombre: { required: "Este campo es requerido" }
 			}
 		});
 	},
 };
 
 $(document).ready(function () {
-	$('#btnSave').click(function(e) {
+	getData();
+	$('#createGroup').modal({
+		backdrop: 'static',
+		keyboard: false
+	});
+	$('#btnSave').click(function (e) {
 		e.preventDefault();
 		if ($('#frmCreate').valid()) {
 			dao.crearGrupo();
-		}
-	});
-
-	$('#btnUpdate').click(function(e) {
-		e.preventDefault();
-		if ($('#frmUpdate').valid()) {
-			dao.editarGrupo();
 		}
 	});
 });
