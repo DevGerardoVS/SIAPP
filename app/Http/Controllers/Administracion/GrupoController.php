@@ -27,8 +27,9 @@ class GrupoController extends Controller
                 ->get();
             $id = sizeof($rel) == 0 ? $q->id : null;
             $button1 = '<a class="btn btn-primary" href="/adm-permisos/grupo/' . $q->id . '"><span>Permisos</span></a>';
-            $button2 = '<a class="btn btn-secondary" href="/adm-grupos/update/' . $q->id . '"><i class="fa fa-pencil" style="font-size: x-large"></i></a>';
-            $button3 = '<button onclick="eliminarRegistro(' .$id. ')" title="Eliminar grupo" class="btn btn-danger"><i class="fa fa-trash" style="font-size: x-large"></i></button>';
+            $button2 = '<a class="btn btn-secondary" onclick="dao.editarGrupo(' . $q->id . ')" data-toggle="modal"
+            data-target="#createGroup" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil" style="font-size: x-large"></i></a>';
+            $button3 = '<button onclick="dao.eliminarRegistro(' .$id. ')" title="Eliminar grupo" class="btn btn-danger"><i class="fa fa-trash" style="font-size: x-large"></i></button>';
             array_push($data, [$q->nombre_grupo, $button1 . ' ' . $button2 . ' ' . $button3]);
         }
 
@@ -46,7 +47,13 @@ class GrupoController extends Controller
     //Inserta Grupo
     public function postStore(Request $request){
         Controller::check_permission('postGrupos');
-    	Grupo::create(['nombre_grupo'=>$request->nombre]);
+        if($request->id_user !=null){
+           $grupo= Grupo::where('id', $request->id_user)->firstOrFail();
+            $grupo->nombre_grupo = $request->nombre;
+            $grupo->save();
+        }else{
+            Grupo::create(['nombre_grupo'=>$request->nombre]);
+        }
     	return response()->json("done", 200);
     }
     //Actualiza Grupo
@@ -54,6 +61,11 @@ class GrupoController extends Controller
         Controller::check_permission('putGrupos', false);
     	$grupo = Grupo::find($id);
     	return view('administracion.grupos.update', compact('grupo'));
+    }
+    public function getGrupo($id){
+        Controller::check_permission('putGrupos', false);
+    	$grupo = Grupo::find($id);
+    	return $grupo;
     }
     //Actualiza Grupo
     public function postUpdate(Request $request){

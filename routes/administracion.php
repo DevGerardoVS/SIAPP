@@ -28,7 +28,7 @@
 		Route::post('adm-grupos/dataGroups', 'getData')->name('getGroups');
 		Route::get('/adm-grupos/create', 'getCreate');
 		Route::post('/adm-grupos/store', 'postStore')->name('postStore');
-		Route::get('/adm-grupos/update/{id?}', 'getUpdate');
+		Route::get('/adm-grupos/update/{id?}', 'getGrupo');
 		Route::post('/adm-grupos/put-grupo', 'postUpdate')->name('postUpdate');
 		Route::post('/adm-grupos/eliminar', 'postDelete')->name('postDelete');
 	});

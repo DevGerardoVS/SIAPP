@@ -17,63 +17,56 @@
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label ">Nombre de usuario</label>
-                            <input type="text" class="form-control" id="in_username"
+                            <input type="text" class="form-control" id="username"
                                 name="username" placeholder="nombreUsuario...">
-                                <span id="error_username" class="has-error"></span>
                         </div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Nombre</label>
-                            <input type="text" class="form-control" id="in_nombre" name="nombre"
+                            <input type="text" class="form-control" id="in_nombre" name="in_nombre"
                                 placeholder="Alberto...">
-                                <span id="error_in_nombre" class="has-error"></span>
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label ">Primer apellido</label>
-                            <input type="text" class="form-control" id="in_p_apellido" name="p_apellido"
+                            <input type="text" class="form-control" id="in_p_apellido" name="in_p_apellido"
                                 placeholder="Sánchez...">
-                                <span id="error_in_p_apellido" class="has-error"></span>
                         </div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Segundo apellido</label>
-                            <input type="text" class="form-control" id="in_s_apellido" name="s_apellido"
+                            <input type="text" class="form-control" id="in_s_apellido" name="in_s_apellido"
                                 placeholder="López...">
-                                <span id="error_in_s_apellido" class="has-error"></span>
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-8">
                             <label class="control-label">Correo electrónico</label>
                             <input type="text" class="form-control" id="in_email" name="email"
-                                placeholder="correo@dominio.com">
-                                <span id="error_in_email" class="has-error"></span>
+                                placeholder="correo@dominio.com" pattern=".+@globex\.com" size="30" required>
+                                <span id="in_email-error"></span>
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Contraseña</label>
                             <input type="password" class="form-control" id="password" name="password">
-                            <span id="error_password" class="has-error"></span>
                         </div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Confirmar
                                 Contraseña</label>
                             <input type="password" class="form-control" id="in_pass_conf" name="in_pass_conf">
-                            <span id="error_in_pass_conf" class="has-error"></span>
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Celular</label>
                             <input type="text" class="form-control" id="in_celular" name="celular"
-                                placeholder="44-30-29-02-22">
-                                <span id="error_in_celular" class="has-error"></span>
+                                placeholder="44-30-29-02-22"  required autocomplete="off" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)">
+                                <span id="in_celular-error" ></span>
                         </div>
                         <div class="form-group col-md-4">
                             <label  class="control-label">Perfil</label>
                             <select name="id_grupo" id="id_grupo" class="form-control"></select>
-                            <span id="error_id_grupo" class="has-error"></span>
                             <h6 id="label_idGrupo"></h6>
                         </div>
                     </div>

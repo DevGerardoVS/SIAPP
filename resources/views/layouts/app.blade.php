@@ -51,6 +51,8 @@
     <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap-multiselect.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}">
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+
     {{-- buttons --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
 
@@ -75,13 +77,15 @@
         src="https://cdn.jsdelivr.net/npm/datatables-buttons-excel-styles@1.2.0/js/buttons.html5.styles.templates.min.js">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     {{-- buttons --}}
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap4.min.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap4.min.css')) }}">
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script>
-        if (window.location.hostname != 127.0 .0 .1) {
+        const local = '127.0.0.1';
+        if (window.location.hostname != local) {
             document.addEventListener("contextmenu", (e) => {
                 e.preventDefault()
             });
@@ -102,6 +106,8 @@
 
             tiempo -= 1;
             if (tiempo == 0) {
+
+
                 var urlacctual = "{{ Request::path() }}";
                 if (urlacctual != 'login') {
                     Swal.fire({
@@ -133,7 +139,7 @@
                                 },
                                 dataType: "json"
                             });
-                            // window.location.href = "{{ route('logout') }}";
+                            window.location.href = "{{ route('logout') }}";
                             // window.location.href = "{{ route('logout') }}";
                         }
                     });
