@@ -21,7 +21,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary " data-dismiss="modal" aria-label="Close"  onclick="dao.limpiar()">Cerrar</button>
+                <button id="cerrar" type="button" class="btn btn-secondary " data-dismiss="modal" aria-label="Close"  onclick="dao.limpiar()">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="btnSave" >Guardar</button>
             </div>
         </div>

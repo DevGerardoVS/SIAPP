@@ -1,5 +1,6 @@
 var dao = {
 	eliminarRegistro: function (id) {
+
 		if (id != null) {
 			Swal.fire({
 				title: '¿Seguro que quieres eliminar este usuario?',
@@ -12,22 +13,27 @@ var dao = {
 			}).then((result) => {
 				if (result.isConfirmed) {
 					$.ajax({
-						url: "{{ route('postDelete') }}",
+						url: "/adm-grupos/eliminar",
 						type: "POST",
-						data: {
-							"_token": "{{ csrf_token() }}",
-							"id": id
-						},
-						success: function (response) {
-							console.log(response)
-							if (response == "done") {
-								getData();
-							}
-						},
-						error: function (response) {
-							console.log('Error: ' + response);
-						}
-					});
+                    data: {
+                        id: id
+                    }
+                }).done(function (data) {
+                    if (data != "done") {
+                        Swal.fire(
+                            'Error!',
+                            'Hubo un problema al querer realizar la acción, contacte a soporte',
+                            'Error'
+                        );
+                    } else {
+                        Swal.fire(
+                            'Éxito!',
+                            'La acción se ha realizado correctamente',
+                            'success'
+                        );
+                        getData();
+                    }
+                });
 
 				}
 			});
@@ -54,7 +60,7 @@ var dao = {
 			cache: false,
 			timeout: 600000
 		}).done(function (response) {
-			CierraPopup();
+			$('#cerrar').trigger('click');
 			Swal.fire({
 				icon: 'success',
 				title: 'Your work has been saved',

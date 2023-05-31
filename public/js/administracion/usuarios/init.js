@@ -104,20 +104,19 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            console.log("response", response);
+            $('#cerrar').trigger('click');
             Swal.fire({
                 icon: 'success',
                 title: 'Your work has been saved',
                 showConfirmButton: false,
                 timer: 1500
             });
-            $('#exampleModal').modal('hide');
+           
             dao.limpiarFormularioCrear();
             getData();
         });
     },
     editarUsuario: function (id) {
-        $('#exampleModal').modal('show');
         $.ajax({
             type: "GET",
             url: 'adm-usuarios/update/' + id,
@@ -127,6 +126,7 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
+            console.log("response",response)
             const {
                 id,
                 username,
@@ -141,11 +141,11 @@ var dao = {
                 nombre_grupo
             } = response;
             $('#id_user').val(id);
-            $('#in_username').val(username);
-            $('#in_nombre').val(nombre);
-            $('#in_p_apellido').val(p_apellido);
-            $('#in_s_apellido').val(s_apellido);
-            $('#in_email').val(email);
+            $('#username').val(username);
+            $('#nombre').val(nombre);
+            $('#p_apellido').val(p_apellido);
+            $('#s_apellido').val(s_apellido);
+            $('#email').val(email);
             $('#in_celular').val(celular);
             $('#label_idGrupo').text(nombre_grupo).show();
 
@@ -158,11 +158,11 @@ var dao = {
 
         inps = [
             'id_user',
-            'in_username',
-            'in_nombre',
-            'in_p_apellido',
-            'in_s_apellido',
-            'in_email',
+            'username',
+            'nombre',
+            'p_apellido',
+            's_apellido',
+            'email',
             'password',
             'in_pass_conf',
             'in_celular',
@@ -175,7 +175,6 @@ var dao = {
         });
         $("#id_grupo").find('option').remove();
         dao.getPerfil();
-        $('#exampleModal').modal('hide');
         $("#id_grupo").show();
         $("#labelGrupo").show();
         $("#label_idGrupo").text("").hide();
@@ -187,22 +186,23 @@ var init = {
         _gen.validate(form, {
             rules: {
                 username: { required: true },
-                in_nombre: { required: true },
-                in_p_apellido: { required: true },
-                in_s_apellido: { required: true },
-                in_email: { required: true, correo: true },
+                nombre: { required: true },
+                p_apellido: { required: true },
+                s_apellido: { required: true },
+                email: {required: true, email: true},
                 password: { required: true },
                 in_pass_conf: { required: true, equalTo: "#password" },
-                in_celular: { required: true, telefono: true },
+                in_celular: { required: true,
+                    phoneUS: true},
                 id_grupo: { required: true }
 
             },
             messages: {
                 username: { required: "Este campo es requerido" },
-                in_nombre: { required: "Este campo es requerido" },
-                in_p_apellido: { required: "Este campo es requerido" },
-                in_s_apellido: { required: "Este campo es requerido" },
-                in_email: { required: "Este campo es requerido" },
+                nombre: { required: "Este campo es requerido" },
+                p_apellido: { required: "Este campo es requerido" },
+                s_apellido: { required: "Este campo es requerido" },
+                email: { required: "Este campo es requerido" },
                 password: { required: "Este campo es requerido" },
                 in_pass_conf: { required: "Este campo es requerido" },
                 in_celular: { required: "Este campo es requerido" },
@@ -225,19 +225,19 @@ $(document).ready(function () {
         if ($('#frm_create').valid()) {
             dao.crearUsuario();
         }
-        $('#in_email-error').text("Este campo es requerido");
-        $('#in_celular-error').text("Este campo es requerido");
+        $('#email-error').text("Este campo es requerido").addClass('has-error');;
+        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');;
     });
-    $("#in_email").change(function () {
+    $("#email").change(function () {
         var regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        regex.test($("#in_email").val());
+        regex.test($("#email").val());
         var text = "Ingresa un correo electrónico válido";
-        if (regex.test($("#in_email").val())) {
-            $('#in_email-error').text("").removeClass('d-block').removeClass('has-error');
-            $('#in_email').removeClass('has-error').removeClass('d-block');
+        if (regex.test($("#email").val())) {
+            $('#email-error').text("").removeClass('d-block').removeClass('has-error');
+            $('#email').removeClass('has-error').removeClass('d-block');
         } else {
-            $('#in_email-error').text(text).addClass('d-block').addClass('has-error');
-            $('#in_email').addClass('has-error').addClass('d-block');
+            $('#email-error').text(text).addClass('d-block').addClass('has-error');
+            $('#email').addClass('has-error').addClass('d-block');
         }
     });
     $("#in_celular").change(function () {

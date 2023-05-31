@@ -60,7 +60,8 @@ class UsuarioController extends Controller
 		$dataSet = [];
 		
 		foreach ($query as $key) {
-			$accion ='<a data-toggle="tooltip" title="Modificar Usuario"  class="btn btn-sm"onclick="dao.editarUsuario('.$key->id.')" >' .
+			$accion ='<a data-toggle="modal" data-target="#exampleModal" data-backdrop="static" data-keyboard="false" title="Modificar Usuario"
+			class="btn btn-sm"onclick="dao.editarUsuario('.$key->id.')">' .
                         '<i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' .
                         '<a data-toggle="tooltip" title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' .$key->id. ', ' .$key->estatus.')">' .
                         '<i class="fa fa-lock"></i></a>&nbsp;'
@@ -123,6 +124,7 @@ class UsuarioController extends Controller
 	//Actualiza Usuario
 	public function postUpdate(Request $request)
 	{
+		log::debug($request);
 		Controller::check_permission('putUsuarios');
  		User::find($request->id_user)->update($request->all());
 		return response()->json("done", 200);

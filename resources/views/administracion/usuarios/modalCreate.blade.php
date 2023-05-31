@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
                 <h5 class="modal-title" id="exampleModalLabel">Agregar usuario</h5>
-                <button id="cerrar" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
                     <a aria-hidden="true" style="color: whitesmoke" onclick="dao.limpiarFormularioCrear()">&times;</a>
                 </button>
             </div>
@@ -22,28 +22,28 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Nombre</label>
-                            <input type="text" class="form-control" id="in_nombre" name="in_nombre"
+                            <input type="text" class="form-control" id="nombre" name="nombre"
                                 placeholder="Alberto...">
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label ">Primer apellido</label>
-                            <input type="text" class="form-control" id="in_p_apellido" name="in_p_apellido"
+                            <input type="text" class="form-control" id="p_apellido" name="p_apellido"
                                 placeholder="Sánchez...">
                         </div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Segundo apellido</label>
-                            <input type="text" class="form-control" id="in_s_apellido" name="in_s_apellido"
+                            <input type="text" class="form-control" id="s_apellido" name="s_apellido"
                                 placeholder="López...">
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-8">
                             <label class="control-label">Correo electrónico</label>
-                            <input type="text" class="form-control" id="in_email" name="email"
+                            <input type="text" class="form-control" id="email" name="email"
                                 placeholder="correo@dominio.com" pattern=".+@globex\.com" size="30" required>
-                                <span id="in_email-error"></span>
+                                <span id="email-error"></span>
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
@@ -73,7 +73,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="dao.limpiarFormularioCrear()">Cancelar</button>
+                <button  id="cerrar" type="button" class="btn btn-secondary " data-dismiss="modal" aria-label="Close" onclick="dao.limpiarFormularioCrear()">Cancelar</button>
                 <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
             </div>
         </div>
