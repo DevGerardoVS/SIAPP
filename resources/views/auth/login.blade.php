@@ -5,7 +5,7 @@
         <div class="row containerlogin" style=" min-width:100%; ">
             <div class="  col-sm-6 text-center  ladizqlogin">
                 <div style="padding-top: 18%">
-                    <h1 style="padding-top: 5%"> {{ __('messages.nombre_sistema') }}</h1>
+                    <h2 style="padding-top: 5%"> <b>Sistema Integral de Análisis Programático Presupuestal </b> </h2>
                 </div>
 
                 <div style="text-align: left;">
@@ -40,7 +40,8 @@
 
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-                        <h5 class="text-center" style="font-size: 24px; "><b>{{ __('messages.nombre_sistema') }}</b> </h5>
+                        <h5 class="text-center" style="font-size: 24px; "><b>Sistema Integral de Análisis Programático Presupuestal </b> </h5>
+                        <br>
                         {{-- <h5 class="text-center" style="font-size: 24px; padding-bottom: 3%">En Línea </h5> --}}
                         <h5 class="text-center" style="font-size: 24px">Inicio de sesión</h5>
                         <br>
