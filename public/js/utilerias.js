@@ -838,19 +838,6 @@ $(document).on('blur', '.cal-control', function () {
 
     $(target).val($.formatCurrency(total, true));
 });
-//Configuracion de Modal
-$.widget(
-    'ui.dialog',
-    $.extend({}, $.ui?.dialog.prototype, {
-        _title: function (title) {
-            if (!this.options.title) {
-                title.html('&#160;');
-            } else {
-                title.html(this.options.title);
-            }
-        },
-    })
-);
 //Validacion Campo Obligatorio
 $.validator.addMethod(
     'valueNotEquals',

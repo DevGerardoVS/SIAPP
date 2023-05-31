@@ -1,12 +1,10 @@
+@include('administracion.grupos.modalCreate')
 @extends('layouts.app')
-@isset($dataSet)
-@include('panels.datatable')
-@endisset
 @section('content')
+@include('panels.datatable')
     <div class="container">
         <form action="{{ route('getGroups') }}" id="buscarForm" method="Post">
             @csrf
-
         </form>
         <section id="widget-grid">
             <div class="row">
@@ -24,10 +22,10 @@
                                     <div class="col-xs-9 col-sm-5 col-md-5 col-lg-5">
                                     </div>
                                     <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
-                                        <a class="btn btn-success" id="btnNew" href="/adm-grupos/create">
-                                            <span class="hidden-mobile">Agregar Nuevo
-                                                Grupo</span>
-                                        </a>
+                                        <button type="button" class="btn btn-success" data-toggle="modal"
+                                            data-target="#createGroup" data-backdrop="static" data-keyboard="false">
+                                            Agregar Nuevo Grupo
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -48,8 +46,10 @@
             </div>
         </section>
     </div>
-
-
+    <script src="/js/administracion/grupos/init.js"></script>
+    <script src="/js/utilerias.js"></script>
+    <script>
+        //En las vistas solo se llaman las funciones del archivo init
+        init.validateCreate($('#frmCreate'));
+    </script>
 @endsection
-<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
-<script src="/js/administracion/grupos/init.js"></script>

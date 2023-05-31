@@ -21,7 +21,7 @@
                                                     <div class="form-group">
                                                         <label class="control-label col-md-4">Nombre Grupo</label>
                                                         <div class="col-md-8">
-                                                            <input type="text" class="form-control" id="in_nombre" name="nombre_grupo" value="{{$grupo->nombre_grupo}}">
+                                                            <input type="text" class="form-control" id="nombre" name="nombre_grupo" value="{{$grupo->nombre_grupo}}">
                                                         </div>
                                                     </div>
                                                 </section>
@@ -65,7 +65,7 @@
                 type: "POST",
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    "nombre": $('#in_nombre').val(),
+                    "nombre": $('#nombre').val(),
                     "id" : id
                 },
                 success:function(response){

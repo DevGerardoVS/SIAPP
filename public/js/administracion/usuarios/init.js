@@ -1,5 +1,6 @@
+
 var dao = {
-    setStatus: function(id, estatus) {
+    setStatus: function (id, estatus) {
         Swal.fire({
             title: 'Confirmar Activación/Desactivación',
             icon: 'warning',
@@ -16,7 +17,7 @@ var dao = {
                         id: id,
                         estatus: estatus
                     }
-                }).done(function(data) {
+                }).done(function (data) {
                     if (data != "done") {
                         Swal.fire(
                             'Error!',
@@ -35,7 +36,7 @@ var dao = {
             }
         });
     },
-    eliminarUsuario: function(id) {
+    eliminarUsuario: function (id) {
         Swal.fire({
             title: '¿Seguro que quieres eliminar este usuario?',
             text: "Esta accion es irreversible",
@@ -52,7 +53,7 @@ var dao = {
                     data: {
                         id: id
                     }
-                }).done(function(data) {
+                }).done(function (data) {
                     if (data != "done") {
                         Swal.fire(
                             'Error!',
@@ -75,22 +76,22 @@ var dao = {
 
 
     },
-    getPerfil: function(id) {
+    getPerfil: function (id) {
         $.ajax({
             type: "GET",
             url: 'grupos',
             dataType: "JSON"
-        }).done(function(data) {
+        }).done(function (data) {
             var par = $('#id_grupo');
             par.html('');
             par.append(new Option("-- Selecciona Perfil --", ""));
             document.getElementById("id_grupo").options[0].disabled = true;
-            $.each(data, function(i, val) {
+            $.each(data, function (i, val) {
                 par.append(new Option(data[i].nombre_grupo, data[i].id));
             });
         });
     },
-    crearUsuario: function() {
+    crearUsuario: function () {
         var form = $('#frm_create')[0];
         var data = new FormData(form);
         $.ajax({
@@ -102,21 +103,20 @@ var dao = {
             contentType: false,
             cache: false,
             timeout: 600000
-        }).done(function(response) {
-            console.log("response", response);
+        }).done(function (response) {
+            $('#cerrar').trigger('click');
             Swal.fire({
                 icon: 'success',
                 title: 'Your work has been saved',
                 showConfirmButton: false,
                 timer: 1500
             });
-            $('#exampleModal').modal('hide');
+           
             dao.limpiarFormularioCrear();
             getData();
         });
     },
-    editarUsuario: function(id) {
-        $('#exampleModal').modal('show');
+    editarUsuario: function (id) {
         $.ajax({
             type: "GET",
             url: 'adm-usuarios/update/' + id,
@@ -125,7 +125,8 @@ var dao = {
             contentType: false,
             cache: false,
             timeout: 600000
-        }).done(function(response) {
+        }).done(function (response) {
+            console.log("response",response)
             const {
                 id,
                 username,
@@ -140,155 +141,126 @@ var dao = {
                 nombre_grupo
             } = response;
             $('#id_user').val(id);
-            $('#in_username').val(username);
-            $('#in_nombre').val(nombre);
-            $('#in_p_apellido').val(p_apellido);
-            $('#in_s_apellido').val(s_apellido);
-            $('#in_email').val(email);
+            $('#username').val(username);
+            $('#nombre').val(nombre);
+            $('#p_apellido').val(p_apellido);
+            $('#s_apellido').val(s_apellido);
+            $('#email').val(email);
             $('#in_celular').val(celular);
             $('#label_idGrupo').text(nombre_grupo).show();
-            
+
             $("#id_grupo").hide();
             $("#labelGrupo").hide();
 
         });
     },
-    limpiarFormularioCrear: function() {
+    limpiarFormularioCrear: function () {
 
         inps = [
             'id_user',
-            'in_username',
-            'in_nombre',
-            'in_p_apellido',
-            'in_s_apellido',
-            'in_email',
+            'username',
+            'nombre',
+            'p_apellido',
+            's_apellido',
+            'email',
             'password',
             'in_pass_conf',
             'in_celular',
             'id_grupo'
         ];
         inps.forEach(e => {
-            $('#' + e).val('').removeClass('is-invalid').removeClass('d-block');
-            $('#error_' + e).text("");
-            $('#error_' + e).removeClass('is-invalid').removeClass('d-block');
+            $('#' + e).val('').removeClass('has-error').removeClass('d-block');
+            $('#' + e + '-error').text("").removeClass('has-error').removeClass('d-block');
 
         });
         $("#id_grupo").find('option').remove();
         dao.getPerfil();
-        $('#exampleModal').modal('hide');
         $("#id_grupo").show();
         $("#labelGrupo").show();
         $("#label_idGrupo").text("").hide();
 
     },
-    validarFormulario: function() {
-        inps = [
-            'in_username',
-            'in_nombre',
-            'in_p_apellido',
-            'in_s_apellido',
-            'in_email',
-            'password',
-            'in_pass_conf',
-            'in_celular'
-        ];
-        let bol = 0;
-        inps.forEach(key => {
-            if ($('#' + key).val() == "") {
-                $('#error_' + key).text("Este campo es requerido").addClass('has-error')
-                    .addClass('d-block');
-                $('#error_' + key).addClass('is-invalid');
-                $('#' + key).addClass('is-invalid').addClass('d-block');
-                bol++;
-            } else {
-                $('#error_' + key).text("").removeClass('has-error')
-                    .removeClass('d-block');
-                $('#error_' + key).removeClass('is-invalid');
-                $('#' + key).removeClass('is-invalid').removeClass('d-block');
+};
+var init = {
+    validateCreate: function (form) {
+        _gen.validate(form, {
+            rules: {
+                username: { required: true },
+                nombre: { required: true },
+                p_apellido: { required: true },
+                s_apellido: { required: true },
+                email: {required: true, email: true},
+                password: { required: true },
+                in_pass_conf: { required: true, equalTo: "#password" },
+                in_celular: { required: true,
+                    phoneUS: true},
+                id_grupo: { required: true }
+
+            },
+            messages: {
+                username: { required: "Este campo es requerido" },
+                nombre: { required: "Este campo es requerido" },
+                p_apellido: { required: "Este campo es requerido" },
+                s_apellido: { required: "Este campo es requerido" },
+                email: { required: "Este campo es requerido" },
+                password: { required: "Este campo es requerido" },
+                in_pass_conf: { required: "Este campo es requerido" },
+                in_celular: { required: "Este campo es requerido" },
+                id_grupo: { required: "Este campo es requerido" }
+
             }
         });
-        if ($('select[name="id_grupo"] option:selected').text() == "" || $(
-                'select[name="id_grupo"] option:selected').text() == '-- Selecciona Perfil --') {
-            bol++;
-            $('#error_id_grupo').text("Este campo es requerido").addClass('has-error')
-                .addClass('d-block');
-            $('#error_id_grupo').addClass('is-invalid');
-            $('#id_grupo').addClass('is-invalid').addClass('d-block');
-        }
-
-        if (bol != 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-
+    },
 };
 
-$(document).ready(function() {
+$(document).ready(function () {
     getData();
     dao.getPerfil();
     $('#exampleModal').modal({
         backdrop: 'static',
         keyboard: false
     })
-    $('#btnSave').click(function(e) {
+    $('#btnSave').click(function (e) {
         e.preventDefault();
-        if (dao.validarFormulario()) {
+        if ($('#frm_create').valid()) {
             dao.crearUsuario();
         }
+        $('#email-error').text("Este campo es requerido").addClass('has-error');;
+        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');;
     });
-
-    $("#id_grupo").change(function() {
-        if ($('select[name="id_grupo"] option:selected').text() == "" || $(
-                'select[name="id_grupo"] option:selected').text() == '-- Selecciona Perfil --') {
-            $('#error_id_grupo').text("Este campo es requerido").addClass('has-error')
-                .addClass('d-block');
-            $('#error_id_grupo').addClass('is-invalid');
-            $('#id_grupo').addClass('is-invalid').addClass('d-block');
+    $("#email").change(function () {
+        var regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        regex.test($("#email").val());
+        var text = "Ingresa un correo electrónico válido";
+        if (regex.test($("#email").val())) {
+            $('#email-error').text("").removeClass('d-block').removeClass('has-error');
+            $('#email').removeClass('has-error').removeClass('d-block');
         } else {
-            $('#error_id_grupo').text("").removeClass('has-error')
-                .removeClass('d-block');
-            $('#error_id_grupo').removeClass('is-invalid');
-            $('#id_grupo').removeClass('is-invalid').removeClass('d-block');
-
+            $('#email-error').text(text).addClass('d-block').addClass('has-error');
+            $('#email').addClass('has-error').addClass('d-block');
         }
     });
-
-    $("#in_pass_conf").change(function() {
-        if ($("#in_pass_conf").val() != ' ' && $("#password").val() != '') {
-            if ($("#in_pass_conf").val() != $("#password").val()) {
-                $('#error_in_pass_conf').text("Las contraseñas no coinciden");
-                $('#error_password').text("Las contraseñas no coinciden");
-                $('#error_in_pass_conf').addClass('is-invalid');
-                $("#password").addClass('is-invalid').addClass('d-block');
-                $("#in_pass_conf").addClass('is-invalid').addClass('d-block');
-            } else {
-                $('#error_in_pass_conf').text("");
-                $('#error_password').text("");
-                $('#error_in_pass_conf').removeClass('is-invalid');
-                $("#password").removeClass('is-invalid').removeClass('d-block');
-                $("#in_pass_conf").removeClass('is-invalid').removeClass('d-block');
-            }
+    $("#in_celular").change(function () {
+        var regex = /^[a-zA-Z ]+$/;
+        var bol = regex.test($("#in_celular").val());
+        if ($("#in_celular").val() == '') {
+            $('#in_celular-error').text("Este campo es requerido").addClass('d-block').addClass('has-error');
+            $('#in_celular').addClass('d-block').addClass('has-error');
         }
-
-    });
-    $("#password").change(function() {
-        if ($("#password").val() != '' && $("#in_pass_conf").val() != '') {
-            if ($("#in_pass_conf").val() != $("#password").val()) {
-                $('#error_in_pass_conf').text("Las contraseñas no coinciden");
-                $('#error_password').text("Las contraseñas no coinciden");
-                $('#error_in_pass_conf').addClass('is-invalid');
-                $("#password").addClass('is-invalid').addClass('d-block');
-                $("#in_pass_conf").addClass('is-invalid').addClass('d-block');
+        else {
+            if (bol != true) {
+                if ($("#in_celular").val().length != 10) {
+                    $('#in_celular-error').text("El Telefono debe contar con 10 digitos").addClass('d-block').addClass('has-error');
+                    $('#in_celular').addClass('d-block').addClass('has-error');
+                } else {
+                    $('#in_celular-error').text("").removeClass('d-block').removeClass('has-error');
+                    $('#in_celular').removeClass('d-block').removeClass('has-error');
+                }
             } else {
-                $('#error_in_pass_conf').text("");
-                $('#error_password').text("");
-                $('#error_in_pass_conf').removeClass('is-invalid');
-                $("#password").removeClass('is-invalid').removeClass('d-block');
-                $("#in_pass_conf").removeClass('is-invalid').removeClass('d-block');
+                $('#in_celular-error').text("El telefono no puede llevar letras").addClass('d-block').addClass('has-error');
+                $('#in_celular').addClass('d-block').addClass('has-error');
             }
         }
     });
+    $('#in_celular').mask('00-00-00-00-00');
 });
