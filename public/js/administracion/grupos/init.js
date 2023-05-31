@@ -85,8 +85,6 @@ var dao = {
 		$('#nombre').val("");
 		$('#nombre-error').text("").removeClass("has-error").removeClass('d-block'); 
 		$('.col-md-8').removeClass("has-error");
-
-
 	},
 	CierraPopup: function () {
 		$("#createGroup").modal('hide'); //ocultamos el modal
