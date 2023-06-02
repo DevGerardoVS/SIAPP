@@ -32,7 +32,7 @@
     @if (isset($titleDesc) && $titleDesc != '' && isset($acr))
         <title>{{ $acr . ' - ' . $titleDesc }}</title>
     @else
-        <title>Sistema Integral de Logueo</title>
+        <title>Sistema Integral de Análisis Programático Presupuestal </title>
     @endif
 
     <!-- Scripts -->
@@ -163,12 +163,12 @@
         @if (isset(Auth::user()->id))
             <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
                 <div class="container">
-                    <a class="navbar-brand" href="/" title="Sistema Integral">
+                    <a class="navbar-brand" href="/" title="Sistema Integral de Análisis Programático Presupuestal ">
                         <img src="{{ asset('img/logoWhite.png') }}"
                             style="max-height: 45px; margin-left:10px; margin-right:10px; pointer-events: none !important;"
                             alt="logo">
 
-                        <b>Sistema Integral</b>
+                        <b>Sistema Integral de Análisis Programático Presupuestal </b>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
