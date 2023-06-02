@@ -33,13 +33,12 @@ var _gen = {
                 _i = 'fa fa-warning shake animated',
                 _n = '';
         }
-        $.bigBox({
-            title: titulo,
-            content: content,
-            color: _c,
-            timeout: 8000,
+        Swal.fire({
             icon: _i,
-            number: _n,
+            title: titulo,
+            text: content,
+            showConfirmButton: false,
+            timer: 1500
         });
     },
 
@@ -64,12 +63,12 @@ var _gen = {
                 _i = 'fa fa-warning shake animated',
                 _n = '';
         }
-        $.smallBox({
+        Swal.fire({
+            icon: _i,
             title: titulo,
-            content: content,
-            color: _c,
-            iconSmall: _i + 'bounce animated',
-            timeout: 6000,
+            text: content,
+            showConfirmButton: false,
+            timer: 1500
         });
     },
 
