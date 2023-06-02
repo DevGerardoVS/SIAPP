@@ -3,7 +3,7 @@
 namespace App\Helpers;
 
 use Config;
-use App\Models\Bitacora;
+use App\Models\administracion\Bitacora;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -22,11 +22,11 @@ class BitacoraHelper{
     public static function saveBitacora($host,$modulo,$accion,$datos){
         try {
             $bitacora = new Bitacora();
-            $bitacora->usuario = Auth::user()->username;
-            $bitacora->host = $host;
-            $bitacora->modulo = $modulo;
+            $bitacora->username = Auth::user()->username;
+            $bitacora->ip_origen = $host;
             $bitacora->accion = $accion;
-            $bitacora->datos = $datos;
+            $bitacora->modulo = $modulo;
+            $bitacora->fecha_movimiento = $datos;
             $bitacora->save();
         } catch(\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
@@ -38,10 +38,10 @@ class BitacoraHelper{
         try {
             $bitacora = new Bitacora();
             $bitacora->usuario = $usuario;
-            $bitacora->host = $host;
+            $bitacora->ip_origen = $host;
             $bitacora->modulo = $modulo;
             $bitacora->accion = $accion;
-            $bitacora->datos = $datos;
+            $bitacora->fecha_movimiento = $datos;
             $bitacora->save();
         } catch(\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
