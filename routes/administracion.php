@@ -4,6 +4,7 @@
 	use App\Http\Controllers\Administracion\GrupoController;
 	use App\Http\Controllers\Administracion\PermisoController;
 	use App\Http\Controllers\Administracion\BitacoraController;
+	use App\Http\Controllers\ReporteController;
 
 	Route::controller(SistemasController::class)->group(function () {
 		Route::get('/sistemas/panel', 'getPanel');
@@ -47,5 +48,9 @@
 	Route::controller(BitacoraController::class)->group(function () {
 		Route::get('/adm-bitacora', 'getIndex');
 		Route::post('/adm-bitacora/data/{fecha?}', 'getBitacora')->name('getBitacora');
+	});
+
+	Route::controller(ReporteController::class)->group(function(){
+		Route::get('/Reportes/ley-planeacion','index')->name('index');
 	});
 ?>
