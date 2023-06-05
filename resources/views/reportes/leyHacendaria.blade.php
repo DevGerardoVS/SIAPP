@@ -21,22 +21,22 @@
                                     @foreach ($names as $name)
                                         <tr>
                                             <td class="d-flex justify-content-between px-5">
-                                                <div class="my-auto me-2">{{$name->name}}</div>
+                                                @php
+                                                    $replace_report = str_replace('reporte','',$name->name);
+                                                    $replace_art = str_replace('art',' ART.',$replace_report);
+                                                    $replace_underscore = str_replace('_',' ',$replace_art);
+                                                    $replace_num = str_replace('num','NUMERAL',$replace_underscore);
+                                                    $correct_name = $replace_num;   
+                                                @endphp
+                                                <div class="my-auto me-2">{{strtoupper($name->name)}}</div>
                                                 <div class="d-flex justify-content-end flex-wrap">
                                                     <form action="{{ route('downloadReport') }}" method="POST" enctype="multipart/form-data">
                                                         @csrf
-                                                        {{-- <button type="submit" name="export" value="exportZip" style="border: none; background: none !important; color:rgb(103, 103, 255);" title="Descargar zip">
-                                                            <i class="fa fa-download hoverButtonStyle3" aria-hidden="true"></i> zip
-                                                        </button> --}}
-                                                        <button id="btnPDF" type="submit" class="btn btn-sm btn-danger btn-labeled me-sm-3" title="Generar Reporte PDF">
+                                                        <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-sm btn-danger btn-labeled me-sm-3" title="Generar Reporte PDF">
                                                             <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>
                                                             <span class="d-sm-none d-lg-inline">Generar Reporte </span> 
                                                         </button>
                                                     </form>
-                                                    {{-- <button id="btnPDF" type="button" class="btn btn-sm btn-danger btn-labeled me-sm-3" title="Generar Reporte PDF">
-                                                            <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span>
-                                                            <span class="d-sm-none d-lg-inline">Generar Reporte </span> 
-                                                    </button> --}}
                                                     <button id="btnExcel" type="button" class="btn btn-sm btn-success btn-labeled" title="Generar Reporte Excel">
                                                             <span class="btn-label"><i class="fa fa-file-excel-o"></i></span>
                                                             <span class="d-sm-none d-lg-inline">Generar Reporte </span>
