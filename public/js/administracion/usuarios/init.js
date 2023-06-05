@@ -147,7 +147,7 @@ var dao = {
             $('#s_apellido').val(s_apellido);
             $('#email').val(email);
             $('#in_celular').val(celular);
-            $('#label_idGrupo').text(nombre_grupo).show();
+            $('#label_idGrupo').text(perfil).show();
 
             $("#id_grupo").hide();
             $("#labelGrupo").hide();
@@ -175,6 +175,7 @@ var dao = {
         });
         $("#id_grupo").find('option').remove();
         dao.getPerfil();
+        $('.form-group').removeClass('has-error');
         $("#id_grupo").show();
         $("#labelGrupo").show();
         $("#label_idGrupo").text("").hide();
@@ -249,7 +250,7 @@ $(document).ready(function () {
         }
         else {
             if (bol != true) {
-                if ($("#in_celular").val().length != 10) {
+                if ($("#in_celular").val().length != 14) {
                     $('#in_celular-error').text("El Telefono debe contar con 10 digitos").addClass('d-block').addClass('has-error');
                     $('#in_celular').addClass('d-block').addClass('has-error');
                 } else {
