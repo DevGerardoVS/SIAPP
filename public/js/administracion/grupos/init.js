@@ -19,7 +19,7 @@ var dao = {
                         id: id
                     }
                 }).done(function (data) {
-                    if (data != "done") {
+					if (data != "done") {
                         Swal.fire(
                             'Error!',
                             'Hubo un problema al querer realizar la acción, contacte a soporte',
