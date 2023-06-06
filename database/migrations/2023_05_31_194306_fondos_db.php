@@ -15,7 +15,7 @@ return new class extends Migration
     {
 /**/    Schema::create('grupos', function (Blueprint $table){
         $table->increments('id');
-        $table->text('grupo',255)->nullable(false);
+        $table->text('grupo',255)->nullable(false)->collate('utf8_bin');
         $table->integer('ejercicio')->default(null);
         $table->softDeletes();
         $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
