@@ -94,7 +94,7 @@ return new class extends Migration
             $table->foreign('ur_id')->references('id')->on('catalogo');
         });
 
- /**/   Schema::create('area_funcional_entidad_ejecutora', function (Blueprint $table){
+/**/    Schema::create('area_funcional_entidad_ejecutora', function (Blueprint $table){
             $table->increments('id');
             $table->integer('area_funcional_id')->unsigned()->nullable(false);
             $table->integer('entidad_ejecutora_id')->unsigned()->nullable(false);
@@ -199,7 +199,7 @@ return new class extends Migration
 /**/    Schema::create('partida_upp', function (Blueprint $table){
             $table->integer('posicion_presupuestaria_id')->unsigned()->nullable(false);
             $table->integer('upp_id')->unsigned()->nullable(false);
-            $table->primary(['posicion_presupuestal-id', 'upp_id']);
+            $table->primary(['posicion_presupuestaria_id', 'upp_id']);
             $table->string('posicion_presupuestaria_llave',5)->default(null);
             $table->string('upp_clave',3)->default(null);
             $table->integer('ejercicio')->default(null);
@@ -215,8 +215,8 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('upp_id')->unsigned()->nullable(false);
             $table->integer('fondo_id')->unsigned()->nullable(false);
-            $table->bigInteger('presupuesto_asignado',20)->nullable(false);
-            $table->bigInteger('presupuesto_rh',20)->nullable(false);
+            $table->bigInteger('presupuesto_asignado')->nullable(false);
+            $table->bigInteger('presupuesto_rh')->nullable(false);
             $table->integer('ejercicio')->default(null);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -304,7 +304,7 @@ return new class extends Migration
         });
 
 /**/    Schema::create('ur_localidad',function (Blueprint $table){
-            $table->increments('ur_id')->unsigned();
+            $table->integer('ur_id')->unsigned();
             $table->integer('localidad_id')->unsigned()->nullable(false);
             $table->primary(['ur_id','localidad_id']);
             $table->integer('ejercicio')->default(null);
@@ -360,7 +360,7 @@ return new class extends Migration
 
 /**/    Schema::create('uppAutorizadasCPNomina', function (Blueprint $table){
             $table->increments('id');
-            $table->integer('upp_id')->nullable(false);
+            $table->integer('upp_id')->unsigned()->nullable(false);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -370,20 +370,20 @@ return new class extends Migration
 
 /**/    Schema::create('actividades',function (Blueprint $table){
             $table->increments('id');
-            $table->integer('proyectos_ur_id',11)->unsigned()->nullable(false);
+            $table->integer('proyectos_ur_id')->unsigned()->nullable(false);
             $table->text('actividad',255)->default(null);
-            $table->int('enero',11)->default(null);
-            $table->int('febrero',11)->default(null);
-            $table->int('marzo',11)->default(null);
-            $table->int('abril',11)->default(null);
-            $table->int('mayo',11)->default(null);
-            $table->int('junio',11)->default(null);
-            $table->int('julio',11)->default(null);
-            $table->int('agosto',11)->default(null);
-            $table->int('septiembre',11)->default(null);
-            $table->int('octubre',11)->default(null);
-            $table->int('noviembre',11)->default(null);
-            $table->int('diciembre',11)->default(null);
+            $table->integer('enero')->default(null);
+            $table->integer('febrero')->default(null);
+            $table->integer('marzo')->default(null);
+            $table->integer('abril')->default(null);
+            $table->integer('mayo')->default(null);
+            $table->integer('junio')->default(null);
+            $table->integer('julio')->default(null);
+            $table->integer('agosto')->default(null);
+            $table->integer('septiembre')->default(null);
+            $table->integer('octubre')->default(null);
+            $table->integer('noviembre')->default(null);
+            $table->integer('diciembre')->default(null);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -392,10 +392,10 @@ return new class extends Migration
         });
 
 /**/     Schema::create('administracion_capturas',function (Blueprint $table){
-            $table->increments('id',11);
-            $table->integer('upp_id',11)->unsigned()->nullable(false);
+            $table->increments('id');
+            $table->integer('upp_id')->unsigned()->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
-            $table->integer('usuario_id',11)->nullable(false);
+            $table->integer('usuario_id')->nullable(false);
             $table->integer('ejercicio')->nullable(false);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -406,7 +406,7 @@ return new class extends Migration
         });
 
 /**/     Schema::create('cat_direccion',function (Blueprint $table){
-            $table->increments('id',11);
+            $table->increments('id');
             $table->string('cve_direccion',15)->nullable(false);
             $table->string('nombre_direccion',120)->nullable(false);
             $table->softDeletes();
@@ -443,6 +443,10 @@ return new class extends Migration
         Schema::dropIfExists('unidades_medida');
         Schema::dropIfExists('beneficiarios');
         Schema::dropIfExists('administracion_captura');
+        Schema::dropIfExists('cat_direccion');
+        Schema::dropIfExists('actividades');
+        Schema::dropIfExists('administracion_capturas');
+        Schema::dropIfExists('uppAutorizadasCPNomina');
 
     }
 };
