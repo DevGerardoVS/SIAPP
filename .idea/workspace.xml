@@ -7,6 +7,7 @@
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/migrations/2023_05_31_194306_fondos_db.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2023_05_31_194306_fondos_db.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,7 +21,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="desarrollo" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -246,6 +247,7 @@
       <workItem from="1685546025026" duration="13063000" />
       <workItem from="1685632635027" duration="12192000" />
       <workItem from="1685719161109" duration="8606000" />
+      <workItem from="1686063639044" duration="10641000" />
     </task>
     <servers />
   </component>
