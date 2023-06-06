@@ -168,7 +168,7 @@
                             style="max-height: 45px; margin-left:10px; margin-right:10px; pointer-events: none !important;"
                             alt="logo">
 
-                        <b>Sistema Integral de Análisis Programático Presupuestal </b>
+                        <b>SIAPP </b>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
