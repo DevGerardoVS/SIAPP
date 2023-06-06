@@ -4,6 +4,10 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            <button type="button" class="btn colorMorado"
+            name="button_modal_carga" id="button_modal_carga">
+      <i class="fas fa-plus"></i>
+      {{ __('messages.carga_masiva') }}</button>
             <div class="card">
                 <div class="card-header">{{ __('Bienvenido') }}</div>
 
@@ -20,4 +24,17 @@
         </div>
     </div>
 </div>
+
+@include('.CargamasivaModal')
+
+<script type="text/javascript">
+    //boton para api soap
+
+    $(".container").on('click', '#button_modal_carga', function () {
+        $('#ModalCargaMasiva').modal('show');
+    })
+    </script>
+
+
 @endsection
+
