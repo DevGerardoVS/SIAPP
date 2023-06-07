@@ -176,11 +176,11 @@ return new class extends Migration
         Schema::dropIfExists('adm_rel_funciones_grupos');
         Schema::dropIfExists('adm_bitacora');
         Schema::dropIfExists('adm_configuracion');
-        Schema::dropIfExists('adm_sistemas');
         Schema::dropIfExists('adm_funciones');
         Schema::dropIfExists('adm_menus');
         Schema::dropIfExists('adm_grupos');
         Schema::dropIfExists('adm_users');
         Schema::dropIfExists('cat_entes');
+        Schema::dropIfExists('adm_sistemas');
     }
 };

@@ -67,3 +67,4 @@ Route::post('/logs/download',[App\Http\Controllers\LogController::class, 'downlo
 //Route::get('/aportaciones/carga_masiva/get-excel-data', [App\Http\Controllers\CargaMasivaController::class, 'getExcel'])->name('get-excel-data');
 
 include('administracion.php');//Agregar las rutas para el módulo de administración en este archivo
+include('calendarización.php');//Agregar las rutas para el módulo de Calendarización en este archivo
