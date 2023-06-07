@@ -14,7 +14,6 @@ use DB;
 
 class DatabaseSeeder extends Seeder
 {
-
         protected $cat_entes = array(
             ['id' => 1, 'cve_upp' => '01', 'nombre_upp' => 'Secretaría de Administración y Finannzas', 'cve_ur' => '01', 'nombre_ur' => 'Dirección de Gobienrno Digital', 'cve_uo' => '001', 'nombre_uo' => 'Departamento de Proyectos Internos']
         );
