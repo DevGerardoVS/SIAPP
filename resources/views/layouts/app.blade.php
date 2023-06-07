@@ -51,6 +51,8 @@
     <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap-multiselect.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}">
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
+    <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
 
     {{-- buttons --}}
@@ -168,7 +170,7 @@
                             style="max-height: 45px; margin-left:10px; margin-right:10px; pointer-events: none !important;"
                             alt="logo">
 
-                        <b>Sistema Integral de Análisis Programático Presupuestal </b>
+                        <b>SIAPP </b>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
