@@ -76,9 +76,9 @@
                     processing: true,
                     order: ordenamiento,
                     ServerSide: true,
-                    paging: false,
+                    paging: true,
                     searching: false,
-                    ordering: false,
+                    ordering: true,
                     info: false,
                     language: {
                         processing: "Procesando...",

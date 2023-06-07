@@ -17,23 +17,29 @@
                     <label for="anio_filter" class="form-label fw-bold mt-md-1">año: </label>
                 </div>
                 <div class="col-sm-12 col-md-3 col-lg-2">
-                    <select class="form-control filters" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
+                    <select class="form-control filters" id="anio_filter" name="anio_filter" autocomplete="anio_filter" onchange="f()">
                         @foreach ($anios as $anio)
-                        <option value={{$anio->ejercicio}}>{{ DateTime::createFromFormat('y', $anio->ejercicio)->format('Y')}}</option>
+                            <option value={{$anio->ejercicio}}>{{ DateTime::createFromFormat('y', $anio->ejercicio)->format('Y')}}</option>
                         @endforeach
-                        <option value="">3</option>
+                            @php $get_anio = $anio->ejercicio @endphp
                     </select>
                 </div>
                 
+                @php
+                    $fechas = DB::select('select distinct deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[$get_anio]);
+                @endphp
                 <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
                     <label for="corte_filter" class="form-label fw-bold mt-md-1">Fecha de corte:</label>
                 </div>
                 <div class="col-sm-12 col-md-3 col-lg-2">
                     <select class="form-control filters" id="corte_filter" name="corte_filter" autocomplete="corte_filter">
-                        {{-- @foreach ($anio as $item)
-                        <option value={{$item}}>{{$item}}</option>
-                        @endforeach --}}
+                        <option value="">Elegir fecha de corte</option>
+                        @foreach ($fechas as $fecha)
+                            
+                        <option value={{\Carbon\Carbon::parse($fecha->deleted_at)->format('Y-m-d')}}>{{\Carbon\Carbon::parse($fecha->deleted_at)->format('Y-m-d')}}</option>
+                        @endforeach
                     </select>
+                    @php $date = empty($fechas) ? 0 : "2023-05-07"  @endphp
                 </div>
 
             </div>
@@ -60,20 +66,20 @@
                                                     }
                                                     $correct_name = $replace_num;  
                                                 @endphp
-                                                <p class="d-none" id="get_anio">123</p>
+
                                                 <div class="my-auto me-2">{{strtoupper($correct_name)}}</div>
                                                 <div class="d-flex justify-content-end flex-wrap">
-                                                    <form action="{{ route('downloadReport',['name'=>$name->name, 'anio'=> 23]) }}" method="POST" enctype="multipart/form-data">
+                                                    <form action="{{ route('downloadReport',['name'=>$name->name, 'anio'=> $get_anio, 'date'=> $date]) }}" method="POST" enctype="multipart/form-data">
                                                         @csrf
                                                         <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-sm-3" style="border-color: #6a0f49;" title="Generar Reporte PDF">
                                                             <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                                                             <span class="d-sm-none d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
                                                         </button>
                                                     </form>
-                                                    <button id="btnExcel" type="button" class="btn btn-light btn-sm btn-labeled" style="border-color: #6a0f49;" title="Generar Reporte Excel">
+                                                    {{-- <button id="btnExcel" type="button" class="btn btn-light btn-sm btn-labeled" style="border-color: #6a0f49;" title="Generar Reporte Excel">
                                                             <span class="btn-label"><i class="fa fa-file-excel-o text-success fs-4 align-middle"></i></span>
                                                             <span class="d-sm-none d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a Excel</span>
-                                                    </button>
+                                                    </button> --}}
                                                 </div>
                                             </td>
                                         </tr>
@@ -88,12 +94,14 @@
     </div>
 
     <script>
-        var anio = $("#filter").find("#anio_filter").val();
-        $('#anio_filter').on('change', function () {
-            anio = this.value;
-            
-            console.log($('#get_anio').text(anio));
-        });
-        console.log($('#get_anio').text(anio));
+        function f() {
+            var anio = $("#filter").find("#anio_filter").val();
+            // $('#anio_filter').on('change', function () {
+            //     anio = this.value;
+                
+            //     console.log($('#get_anio').text(anio));
+            // });
+            // console.log($('#get_anio').text(anio));
+        }
     </script>
 @endsection

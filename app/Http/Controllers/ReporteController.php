@@ -10,20 +10,16 @@ use Illuminate\Support\Facades\Log;
 
 class ReporteController extends Controller
 {
-    public function index(){
-        $names = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondos_db" AND ROUTINE_NAME LIKE "%art_20%" UNION SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio');
-        // dd($names);
-        $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio');
-        return view('reportes.leyHacendaria',compact('names','anios'));
-    }
+    // public function index(){
+    //     $names = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondos_db" AND ROUTINE_NAME LIKE "%art_20%"');
+    //     $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
+    //     return view('reportes.leyHacendaria',compact('names','anios'));
+    // }
 
-    public function downloadReport($name, $anio){ 
+    public function downloadReport($name, $anio, $date){ 
         date_default_timezone_set('America/Mexico_City');
         
         setlocale(LC_TIME, 'es_VE.UTF-8','esp');
-        $fecha = date('d-m-Y');
-        $marca = strtotime($fecha);
-        $fechaCompleta = strftime('%A %e de %B de %Y', $marca);
         $report =  $name;
 
         $ruta = public_path()."/reportes";
@@ -41,9 +37,9 @@ class ReporteController extends Controller
             "anio" => $anio,
             "logoLeft" => $logo,
             "logoRight" => $logo,
-            // "fecha" =>  '0000-00-00'
-            // "fecha_hoy" => $fechaCompleta 
         );
+        
+        if($date != 0) $parameters["fecha"] = $date;
 
         $database_connection = \Config::get('database.connections.mysql');
 
@@ -57,5 +53,9 @@ class ReporteController extends Controller
         )->execute();
 
         return response()->file($viewFile.".pdf")->deleteFileAfterSend(); 
+    }
+
+    public function index(){
+        return view('reportes.administrativos.calendarioBaseMensual');
     }
 }
