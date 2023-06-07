@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/resources/views/calendarización/techos/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/DatabaseSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeders/fondos_db.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2023_05_31_194306_fondos_db.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2023_05_31_194306_fondos_db.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/calendarización.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/calendarización.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -250,7 +251,7 @@
       <workItem from="1686063639044" duration="10641000" />
       <workItem from="1686150743191" duration="9761000" />
       <workItem from="1686165705436" duration="2368000" />
-      <workItem from="1686176625938" duration="428000" />
+      <workItem from="1686176625938" duration="3474000" />
     </task>
     <servers />
   </component>
