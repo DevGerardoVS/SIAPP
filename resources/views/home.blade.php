@@ -2,26 +2,18 @@
 
 @section('content')
 <div class="container">
+    <form action="{{ route('getBitacora') }}" id="buscarForm" method="POST">
+        @csrf
+        <input style="display: none" type="text" id="fecha" name="fecha">
+    </form>
+ 
+    <header>
+        <h2>Inicio</h2>
+    </header>
+
+
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <button type="button" class="btn colorMorado"
-            name="button_modal_carga" id="button_modal_carga">
-      <i class="fas fa-plus"></i>
-      {{ __('messages.carga_masiva') }}</button>
-            <div class="card">
-                <div class="card-header">{{ __('Bienvenido') }}</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    {{ __('Usted ha iniciado sesión en  Comisión Coordinadora del Transporte Público de Michoacán') }}
-                </div>
-                
-            </div>
             <table id="catalogo" class="table table-striped table-bordered text-center " style="width:100%">
                 <thead>
                     <tr class="colorMorado">
@@ -32,7 +24,10 @@
                     </tr>
                 </thead>
             </table>
-            <br>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-sm-12">
             <table id="catalogo" class="table table-striped table-bordered text-center " style="width:100%">
                 <thead>
                     <tr class="colorMorado">
@@ -47,17 +42,10 @@
         </div>
     </div>
 </div>
+<script src="https://momentjs.com/downloads/moment.js"></script>
+@include('panels.datatable')
+<script>
 
-@include('.CargamasivaModal')
-
-<script type="text/javascript">
-    //boton para api soap
-
-    $(".container").on('click', '#button_modal_carga', function () {
-        $('#ModalCargaMasiva').modal('show');
-    })
-    </script>
-
-
+</script>
 @endsection
 
