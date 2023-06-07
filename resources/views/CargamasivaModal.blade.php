@@ -28,9 +28,9 @@
             </div>
             <div class="col-md-3">
               <div class="form-group">
-                <button  type="button" class="btn colorMorado" id="downloadbtn" name="downloadbtn">               
+                <a href="/calendarizacion/get-plantilla" type="button" class="btn colorMorado" id="downloadbtn" name="downloadbtn">               
                  <i class="fa fa-download" style="color: #dfdfdf"></i> 
-                  {{ __('messages.descargar_plantilla') }}</button>
+                  {{ __('messages.descargar_plantilla') }}</a>
 
               </div>
             </div>
@@ -97,9 +97,5 @@
 
     });
    
-    $('#downloadbtn').click(function(e) {
-      e.preventDefault();
 
-      
-    })   
 </script>
