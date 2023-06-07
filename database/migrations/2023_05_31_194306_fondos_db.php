@@ -423,20 +423,12 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('area_funcional');
         Schema::dropIfExists('area_funcional_entidad_ejecutora');
-        Schema::dropIfExists('catalogo');
-        Schema::dropIfExists('clasificacion_administrativa');
-        Schema::dropIfExists('clasificacion_geografica');
         Schema::dropIfExists('ente_publico_upp');
-        Schema::dropIfExists('entidad_ejecutora');
         Schema::dropIfExists('fondo');
-        Schema::dropIfExists('grupos');
         Schema::dropIfExists('partida_upp');
-        Schema::dropIfExists('posicion_presupuestaria');
         Schema::dropIfExists('presupuesto_upp_asignado');
         Schema::dropIfExists('programacion_presupuesto');
-        Schema::dropIfExists('subgrupos');
         Schema::dropIfExists('tipologia_conac');
         Schema::dropIfExists('ur_localidad');
         Schema::dropIfExists('upp_fondo_montos');
@@ -447,6 +439,13 @@ return new class extends Migration
         Schema::dropIfExists('actividades');
         Schema::dropIfExists('administracion_capturas');
         Schema::dropIfExists('uppAutorizadasCPNomina');
-
+        Schema::dropIfExists('area_funcional');
+        Schema::dropIfExists('clasificacion_administrativa');
+        Schema::dropIfExists('clasificacion_geografica');
+        Schema::dropIfExists('entidad_ejecutora');
+        Schema::dropIfExists('posicion_presupuestaria');
+        Schema::dropIfExists('catalogo');
+        Schema::dropIfExists('subgrupos');
+        Schema::dropIfExists('grupos');
     }
 };

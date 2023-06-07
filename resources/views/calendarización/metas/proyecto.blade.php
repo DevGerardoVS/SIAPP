@@ -33,7 +33,7 @@
                         <br>
                         <div class="widget-body no-padding ">
                             <div class="table-responsive ">
-                                <table id="catalogo" class="table table-hover table-striped ">
+                                <table id="actividades" class="table table-hover table-striped ">
                                     <thead>
                                         <tr class="colorMorado">
                                             <th>Actividad</th>
@@ -46,6 +46,8 @@
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
+                                    <tbody>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -64,4 +66,6 @@
     </div>
     </section>
     </div>
+    <script src="/js/calendarización/metas/init.js"></script>
+    <script src="/js/utilerias.js"></script>
 @endsection

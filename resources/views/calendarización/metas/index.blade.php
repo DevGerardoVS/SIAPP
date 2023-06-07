@@ -23,15 +23,6 @@
                                         <div class="col-md-2">
                                             <select class="form-control filters" id="anio_filter" name="anio_filter"
                                                 autocomplete="anio_filter" placeholder="Seleccione un año">
-                                                <option value="" disabled selected>Seleccione un año</option>
-                                                <option value="2022">2022</option>
-                                                <option value="2023">2023</option>
-                                                <option value="2024">2024</option>
-                                                <option value="2025">2025</option>
-
-                                                {{--    @foreach ($anio as $item)
-                                                <option value={{$item}}>{{$item}}</option>
-                                                @endforeach --}}
                                             </select>
                                         </div>
                                             <div class="col-md-2">
@@ -74,7 +65,7 @@
     </div>
     </section>
     </div>
-    <script src="/js/administracion/usuarios/init.js"></script>
+    <script src="/js/calendarización/metas/init.js"></script>
     <script src="/js/utilerias.js"></script>
     <script>
         //En las vistas solo se llaman las funciones del archivo init
