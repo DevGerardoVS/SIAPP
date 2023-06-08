@@ -9,6 +9,7 @@
  
     <header>
         <h2>Inicio</h2>
+
     </header>
 
 
@@ -44,7 +45,9 @@
 </div>
 <script src="https://momentjs.com/downloads/moment.js"></script>
 @include('panels.datatable')
-<script>
 
-</script>
+
+
 @endsection
+
+
