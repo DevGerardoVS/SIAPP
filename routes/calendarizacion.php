@@ -3,6 +3,8 @@
     use App\Http\Controllers\Calendarizacion\ClavePreController;
 	use App\Http\Controllers\Calendarización\MetasController;
 	use App\Http\Controllers\Calendarización\TechosController;
+	use App\Http\Controllers\Calendarización\CalendarizacionCargaMasivaController;
+
 	Route::controller(MetasController::class)->group(function () {
 		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
 	 	Route::get('/calendarizacion/data', 'getMetas')->name('getMetas');
@@ -27,7 +29,9 @@
 		
 	});
 
-	
+	Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
+		Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('get-plantilla');
+    });
 	
 
 ?>

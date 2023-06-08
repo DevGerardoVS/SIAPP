@@ -71,4 +71,4 @@ Route::post('/logs/download',[App\Http\Controllers\LogController::class, 'downlo
 
 
 include('administracion.php');//Agregar las rutas para el módulo de administración en este archivo
-include('calendarización.php');//Agregar las rutas para el módulo de Calendarización en este archivo
+include('calendarizacion.php');//Agregar las rutas para el módulo de Calendarización en este archivo
