@@ -9,6 +9,8 @@
 		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
 	 	Route::get('/calendarizacion/data', 'getMetas')->name('getMetas');
         Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
+		Route::get('/calendarizacion/selects', 'getSelects');
+		Route::get('/calendarizacion/urs', 'getUrs');
 	});
 
     Route::controller(TechosController::class)->group(function () {
@@ -35,3 +37,6 @@
 	
 
 ?>
+
+	
+	
