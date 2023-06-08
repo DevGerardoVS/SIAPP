@@ -6,7 +6,6 @@ var dao = {
 			dataType : "json",
 			//data : {},
 		}).done(function(_data){
-			console.log('_data:',_data);
 			let data = [];
 			for (let index = 0; index < _data.length; index++) {
 				if (_data[index].clave_presupuestal && _data[index].clave_presupuestal != '') {
@@ -24,7 +23,6 @@ var dao = {
 				}
 				
 			}
-			console.log('Data',data);
 			_table = $("#claves");
 			_columns = [
 				{"aTargets" : [0], "mData" : 'clasificacionAdmin'},
@@ -51,12 +49,110 @@ var dao = {
           url: '/cat-regiones',
           dataType : "JSON"
         }).done(function(data){
-          console.log("🚀 ~ file: init.js:54 ~ data regiones:", data)
           var par = $('#sel_region');
           par.html('');
           par.append(new Option("-- Selecciona una Region --", ""));
           $.each(data, function(i, val){
+            par.append(new Option(data[i].descripcion, data[i].clave + '-'+ data[i].region_id));
+          });
+          //par.select2().select2("val", id);
+        });
+    },
+	getMunicipiosByRegion : function(id){
+        $.ajax({
+          	type : "get",
+          	url: '/cat-municipios/'+ id,
+        }).done(function(data){
+          var par = $('#sel_municipio');
+          par.html('');
+          par.append(new Option("-- Selecciona un Municipio --", ""));
+          $.each(data, function(i, val){
+            par.append(new Option(data[i].descripcion, data[i].clave + '-' + data[i].municipio_id));
+          });
+          //par.select2().select2("val", id);
+        });
+    },
+	getLocalidadByMunicipio : function(id){
+        $.ajax({
+          	type : "get",
+          	url: '/cat-localidad/'+ id,
+        }).done(function(data){
+          var par = $('#sel_localidad');
+          par.html('');
+          par.append(new Option("-- Selecciona una Localidad --", ""));
+          $.each(data, function(i, val){
             par.append(new Option(data[i].descripcion, data[i].clave));
+          });
+          par.select2().select2("val", id);
+        });
+    },
+	getUpp : function(id){
+		console.log('funcion UPPs')
+        $.ajax({
+          	type : "get",
+          	url: '/cat-upp',
+        }).done(function(data){
+          var par = $('#sel_upp');
+          par.html('');
+          par.append(new Option("-- Selecciona una Unidad Programática --", ""));
+          $.each(data, function(i, val){
+            par.append(new Option(data[i].descripcion, data[i].clave + '-' +data[i].upp_id));
+          });
+          //par.select2().select2("val", id);
+        });
+    },
+	getUninadResponsableByUpp : function(id){
+        $.ajax({
+          	type : "get",
+          	url: '/cat-unidad-responsable/'+ id,
+        }).done(function(data){
+          var par = $('#sel_unidad_res');
+          par.html('');
+          par.append(new Option("-- Selecciona una Unidad Responsable --", ""));
+          $.each(data, function(i, val){
+            par.append(new Option(data[i].descripcion, data[i].clave + '-' + data[i].ur_id));
+          });
+          //par.select2().select2("val", id);
+        });
+    },
+	getProgramaPresupuestarioByur : function(id){
+        $.ajax({
+          	type : "get",
+          	url: '/cat-programa-presupuestario/'+ id,
+        }).done(function(data){
+          var par = $('#sel_programa');
+          par.html('');
+          par.append(new Option("-- Selecciona un Programa Presupuestario --", ""));
+          $.each(data, function(i, val){
+            par.append(new Option(data[i].descripcion, data[i].clave + '-'+ data[i].programa_presupuestario_id));
+          });
+          //par.select2().select2("val", id);
+        });
+    },
+	getSubProgramaByProgramaId : function(id){
+        $.ajax({
+          	type : "get",
+          	url: '/cat-subprograma-presupuesto/'+ id,
+        }).done(function(data){
+          var par = $('#sel_sub_programa');
+          par.html('');
+          par.append(new Option("-- Selecciona un Sub Programa Presupuestario --", ""));
+          $.each(data, function(i, val){
+            par.append(new Option(data[i].descripcion, data[i].clave + '-' + data[i].subprograma_presupuestario_id));
+          });
+          //par.select2().select2("val", id);
+        });
+    },
+	getProyectoBySubPrograma : function(id){
+        $.ajax({
+          	type : "get",
+          	url: '/cat-proyecyo/'+ id,
+        }).done(function(data){
+          var par = $('#sel_proyecto');
+          par.html('');
+          par.append(new Option("-- Selecciona un Proyecto --", ""));
+          $.each(data, function(i, val){
+            par.append(new Option(data[i].descripcion, data[i].clave ));
           });
           //par.select2().select2("val", id);
         });
@@ -70,5 +166,42 @@ $(document).ready(function(){
         keyboard: false
     });
 	//$('.select2').select2();
-	
+	$('#sel_region').change(function(e){
+		e.preventDefault();
+		let val = this.value;
+		let id = val.substring(3,5);
+		dao.getMunicipiosByRegion(id);
+	});
+	$('#sel_municipio').change(function(e){
+		e.preventDefault();
+		let val = this.value;
+		let id = val.substring(4);
+		dao.getLocalidadByMunicipio(id);
+	});
+	$('#sel_upp').change(function(e){
+		e.preventDefault();
+		let val = this.value;
+		let id = val.substring(4);
+		dao.getUninadResponsableByUpp(id);
+	});
+	$('#sel_unidad_res').change(function(e){
+		e.preventDefault();
+		let val = this.value;
+		let id = val.substring(3);
+		dao.getProgramaPresupuestarioByur(id);
+	});
+	$('#sel_programa').change(function(e){
+		e.preventDefault();
+		let val = this.value;
+		let id = val.substring(3);
+		dao.getSubProgramaByProgramaId(id);
+	});
+	$('#sel_sub_programa').change(function(e){
+		e.preventDefault();
+		let val = this.value;
+		let id = val.substring(3);
+		dao.getProyectoBySubPrograma(id);
+	});
+
+
 });

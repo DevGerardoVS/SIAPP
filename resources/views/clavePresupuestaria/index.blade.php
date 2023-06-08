@@ -161,7 +161,7 @@
                         <div style="clear:both"></div>
                         <div class="col-md-2"></div>
                             <div class="col-md-8">
-                                <label class="control-label">Unidad Prograática Presupuestal*</label>
+                                <label class="control-label">Unidad Programática Presupuestal*</label>
                                 <select class="form-control select2" name="sel_upp" id="sel_upp"></select>
                             </div>
                         <div class="col-md-2"></div>
@@ -221,7 +221,7 @@
                         <div style="clear:both"></div>
                         <div class="col-md-2"></div>
                             <div class="col-md-8">
-                                <label class="control-label">sel_fondo</label>
+                                <label class="control-label">Fondo</label>
                                 <select class="form-control select2" name="sel_fondo" id="sel_fondo"></select>
                             </div>
                         <div class="col-md-2"></div>
@@ -242,6 +242,7 @@
     <script>
         dao.getData();
         dao.getRegiones("");
+        dao.getUpp("");
     </script>
 @endsection
 
