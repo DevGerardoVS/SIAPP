@@ -951,17 +951,21 @@ $.ajaxSetup({
     success: function (data) { },
     error: function (error, status, err) {
         if (error.status == 401)
-            _gen.notificacion_min(
-                'Movimiento no autorizado',
-                'No cuenta con los permisos suficientes para realizar esta acción',
-                4
-            );
+        Swal.fire({
+            icon: 'warning',
+            title: 'Movimiento no autorizado',
+            text: 'No cuenta con los permisos suficientes para realizar esta acción',
+            showConfirmButton: false,
+            timer: 1500
+        });
         else if (error.status == 500)
-            _gen.notificacion_min(
-                'Error del servidor',
-                'Ha ocurrido un error interno. Intentelo más tarde o contacte a soporte técnico',
-                4
-            );
+        Swal.fire({
+            icon: 'error',
+            title: 'Error del servidor',
+            text: 'Ha ocurrido un error interno. Intentelo más tarde o contacte a soporte técnico',
+            showConfirmButton: false,
+            timer: 1500
+        });
     },
 });
 //Deshabilitacion de Tecla Enter
@@ -983,13 +987,15 @@ $(document).on('change', "[type='file']:not('.pdf-ignore')", function () {
             /*if(ext != ".xml" && ext != ".pdf"){
 
         }*/
-            _gen.notificacion_min(
-                'Error',
-                'El archivo cargado pesa más de ' +
-                _globals.max_size +
-                'mb, seleccione un archivo más ligero',
-                4
-            );
+        Swal.fire({
+            icon: 'error',
+            title: 'Error del servidor',
+            text: 'El archivo cargado pesa más de ' +
+            _globals.max_size +
+            'mb, seleccione un archivo más ligero',
+            showConfirmButton: false,
+            timer: 1500
+        });
             button.attr('disabled', true);
         } else {
             button.attr('disabled', false);
@@ -1130,7 +1136,13 @@ $(document).on('click', '#btnUpdatePassword', function (e) {
     if (lc_new_password != lc_password_confirmation) {
         $('#new_password').parent().addClass('has-error');
         $('#password_confirmation').parent().addClass('has-error');
-        _gen.notificacion_min('Error', 'Las contraseñas no coinciden', 4);
+        Swal.fire({
+            icon: 'error',
+            text: 'Las contraseñas no coinciden',
+            showConfirmButton: false,
+            timer: 1500
+        });
+        
     } else {
         $('#new_password').parent().removeClass('has-error');
         $('#password_confirmation').parent().removeClass('has-error');
@@ -1144,17 +1156,20 @@ $(document).on('click', '#btnUpdatePassword', function (e) {
         }).done(function (response) {
             if (response == 'success') {
                 $('#profile').modal('hide');
-                _gen.notificacion_min(
-                    'Contraseña Actualizada',
-                    'La contraseña se ha acutalizado correctamente. En su próximo inicio de sesión se verá reflejado',
-                    1
-                );
+                Swal.fire({
+                    icon: 'error',
+                    title:'Contraseña Actualizada',
+                    text:  'La contraseña se ha acutalizado correctamente. En su próximo inicio de sesión se verá reflejado',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
-                _gen.notificacion_min(
-                    'Error',
-                    'La contraseña actual no es correcta. Intentelo de nuevo',
-                    4
-                );
+                Swal.fire({
+                    icon: 'error',
+                    text:  'La contraseña actual no es correcta. Intentelo de nuevo',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
         });
     }
