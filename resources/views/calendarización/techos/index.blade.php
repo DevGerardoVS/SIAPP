@@ -14,7 +14,7 @@
                 <div color="darken" class="jarviswidget" id="wid-id-1" data-widget-editbutton="false"
                      data-widget-colorbutton="false" data-widget-deletebutton="false">
                     <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
-                        <h2>Calendarización de metas</h2>
+                        <h2>Techos Financieros</h2>
                     </header>
                     <br>
                     <div>
