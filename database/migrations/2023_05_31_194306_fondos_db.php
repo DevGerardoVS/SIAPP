@@ -262,18 +262,18 @@ return new class extends Migration
             $table->integer('fondo_id')->unsigned()->nullable(false);
             $table->integer('proyecto_presupuestal_id')->unsigned()->nullable(false);
             $table->text('clave_presupuestal',64);
-            $table->float('enero')->default(null);
-            $table->float('febrero')->default(null);
-            $table->float('marzo')->default(null);
-            $table->float('abril')->default(null);
-            $table->float('mayo')->default(null);
-            $table->float('junio')->default(null);
-            $table->float('julio')->default(null);
-            $table->float('agosto')->default(null);
-            $table->float('septiembre')->default(null);
-            $table->float('octubre')->default(null);
-            $table->float('noviembre')->default(null);
-            $table->float('diciembre')->default(null);
+            $table->float('enero',23)->default(null);
+            $table->float('febrero',23)->default(null);
+            $table->float('marzo',23)->default(null);
+            $table->float('abril',23)->default(null);
+            $table->float('mayo',23)->default(null);
+            $table->float('junio',23)->default(null);
+            $table->float('julio',23)->default(null);
+            $table->float('agosto',23)->default(null);
+            $table->float('septiembre',23)->default(null);
+            $table->float('octubre',23)->default(null);
+            $table->float('noviembre',23)->default(null);
+            $table->float('diciembre',23)->default(null);
             $table->integer('estado')->nullable(false);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -372,6 +372,10 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('proyectos_ur_id')->unsigned()->nullable(false);
             $table->text('actividad',255)->default(null);
+            $table->enum('tipo',['Acumulativa','Continua','Especial'])->nullable(false);
+            $table->integer('beneficiario_id')->unsigned()->nullable(false);
+            $table->integer('unidad_medida_id')->unsigned()->nullable(false);
+            $table->integer('cantidad_beneficiarios');
             $table->integer('enero')->default(null);
             $table->integer('febrero')->default(null);
             $table->integer('marzo')->default(null);
@@ -389,6 +393,8 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
             $table->foreign('proyectos_ur_id')->references('id')->on('proyectos_ur');
+            $table->foreign('beneficiario_id')->references('id')->on('beneficiarios');
+            $table->foreign('unidad_medida_id')->references('id')->on('unidades_medida');
         });
 
 /**/     Schema::create('administracion_capturas',function (Blueprint $table){

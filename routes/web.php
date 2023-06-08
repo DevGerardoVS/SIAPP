@@ -27,7 +27,7 @@ Route::get('/', function () {
 
 Route::get('', function () {
     if ((!Auth::check())) {
-        return view('auth.login');
+        return view('main_page');
     }
     if (!Auth::guest()) {
         Session(['sistema' => 1]);
@@ -36,6 +36,12 @@ Route::get('', function () {
         return view('auth.login');
     }
 });
+
+Route::get('/login',function(){
+    if ((!Auth::check())) {
+        return view('auth.login');
+    }
+})->name('login');
 
 Route::get('/home', function () {
     if(!Auth::guest()){
