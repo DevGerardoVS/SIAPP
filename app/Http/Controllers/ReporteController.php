@@ -16,7 +16,7 @@ class ReporteController extends Controller
     //     return view('reportes.leyHacendaria',compact('names','anios'));
     // }
 
-    public function downloadReport($name, $anio, $date){ 
+    public function downloadReport($name, $anio, $date, Request $request){ 
         date_default_timezone_set('America/Mexico_City');
         
         setlocale(LC_TIME, 'es_VE.UTF-8','esp');
@@ -56,6 +56,81 @@ class ReporteController extends Controller
     }
 
     public function index(){
-        return view('reportes.administrativos.calendarioBaseMensual');
+        $reportes = DB::select("CALL calendario_fondo_mensual('23', NULL)");
+        // ***********************************************************************************************************
+        // $array_concepto = array('predios_registrados' => __('messages.predios_registrados'),
+        // 'predios_pagados'     => __('messages.predios_pagados'),
+        // 'predios_pagados_rezago' => __('messages.predios_pagados_rezago'), 
+        // 'rec_potencial_anual' => __('messages.rec_potencial_anual'),
+        //  'rec_potencial_anual_ant' => __('messages.rec_potencial_anual_ant'));
+        // $data = DB::select("CALL calendario_fondo_mensual('23', NULL)");
+
+        // $dataSet = array();
+        // $dataSet[] = array(__('messages.datos_padron'), '', '', '', '', '', '');
+        // $total_t1=0;
+        // $total_t2=0;
+        // $total_t3=0;
+        // $total_t4=0;
+        // $total=0;
+        // foreach ($array_concepto as $key => $concepto) {
+        // $total_suma = 0;
+        // $trimestre1 = 0;
+        // $trimestre2 = 0;
+        // $trimestre3 = 0;
+        // $trimestre4 = 0;
+        // $ds = array();
+        // array_push($ds, $array_concepto[$key]);
+
+        // foreach ($data as $k => $d) {
+
+        // $suma = 0;
+        // array_push($ds, $data[$k]->$key);
+        // $suma = str_replace(',', '', $data[$k]->$key);
+        // if($d->trimestre==1) $trimestre1 += str_replace(',', '', $data[$k]->$key);
+        // else if($d->trimestre==2) $trimestre2 += str_replace(',', '', $data[$k]->$key);
+        // else if($d->trimestre==3) $trimestre3 += str_replace(',', '', $data[$k]->$key);
+        // else if($d->trimestre==4) $trimestre4 += str_replace(',', '', $data[$k]->$key);
+        // $total_suma += $suma;
+        // }
+
+        // // sumar solo predios pagados actual y rezago
+        // if($array_concepto[$key] == __('messages.predios_pagados') || $array_concepto[$key] == __('messages.predios_pagados_rezago')){
+        // $total_t1 += $trimestre1;
+        // $total_t2 += $trimestre2;
+        // $total_t3 += $trimestre3;
+        // $total_t4 += $trimestre4;
+        // $total += $total_suma;
+        // }
+
+        // if (count($data) > 0) {
+
+
+        // $ds[1] = number_format($trimestre1, 2);
+        // $ds[2] = number_format($trimestre2, 2);
+        // $ds[3] = number_format($trimestre3, 2);
+        // $ds[4] = number_format($trimestre4, 2);
+
+        // if($key == "rec_potencial_anual" || $key == "rec_potencial_anual_ant" ){
+        // $ds[5] = number_format($trimestre1, 2);
+        // }
+        // else{
+        // $ds[5] = number_format($total_suma, 2);
+        // } 
+        // }
+        // if($key == "rec_potencial_anual")
+        // $dataSet[] =  array(__('messages.total_predios_pagados'), number_format($total_t1,2), number_format($total_t2,2), number_format($total_t3,2), number_format($total_t4,2), number_format($total,2));
+
+
+        // $dataSet[] = $ds;
+
+
+        // }
+
+
+        // return response()->json([
+        // "dataSet" => $dataSet,
+        // ]);
+        // ***********************************************************************************************************
+        return view('reportes.administrativos.calendarioBaseMensual', compact('reportes'));
     }
 }
