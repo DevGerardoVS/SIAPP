@@ -21,7 +21,15 @@ class MetasController extends Controller
     public function getProyecto()
 	{
         $dataSet=$this->getProyect();
-		return view('calendarización.metas.proyecto',["dataSet"=>$dataSet]);
+		$uMed = DB::table('unidades_medida')
+			->select(
+				'id',
+				'clave',
+				'unidad_medida'
+			)
+			->where('deleted_at', null)
+			->get();
+		return view('calendarización.metas.proyecto',["dataSet"=>$uMed]);
 	}
     public function getMetas($id = 0)
 	{
@@ -89,6 +97,51 @@ class MetasController extends Controller
 		}
 		return $dataSet;
 	}
+	public function getUrs()
+	{
+		$urs = DB::table('catalogo')
+			->select(
+				'id',
+				'subgrupo_id',
+				'clave',
+				'descripcion'
+			)
+			->where('deleted_at', null)
+			->where('subgrupo_id', 12)
+			->get();
+		return $urs;
+	}
+	public function getSelects()
+	{
+		$uMed = DB::table('unidades_medida')
+			->select(
+				'id',
+				'clave',
+				'unidad_medida'
+			)
+			->where('deleted_at', null)
+			->get();
+			$fondos = DB::table('catalogo')
+			->select(
+				'id',
+				'subgrupo_id',
+				'clave',
+				'descripcion'
+			)
+			->where('deleted_at', null)
+			->where('subgrupo_id', 31)
+			->get();
+			$bene = DB::table('beneficiarios')
+			->select(
+				'id',
+				'clave',
+				'beneficiario'
+			)
+			->where('deleted_at', null)
+			->get();
+		return ["unidadM"=>$uMed,"fondos"=>$fondos,"beneficiario"=>$bene ];
+	}
+	
 	//Vista Create Usuario
 /* 	public function getCreate()
 	{

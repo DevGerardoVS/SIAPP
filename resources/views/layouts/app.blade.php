@@ -52,9 +52,13 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}">
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
+
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.11.2/css/bootstrap-select.min.css'>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
 
     {{-- buttons --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">

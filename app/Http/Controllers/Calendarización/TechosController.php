@@ -7,5 +7,9 @@ use Illuminate\Http\Request;
 
 class TechosController extends Controller
 {
-    //
+    //Consulta Vista Techos
+    public function getIndex()
+    {
+        return view('calendarización.techos.index');
+    }
 }
