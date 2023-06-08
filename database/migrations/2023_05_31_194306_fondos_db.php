@@ -262,18 +262,18 @@ return new class extends Migration
             $table->integer('fondo_id')->unsigned()->nullable(false);
             $table->integer('proyecto_presupuestal_id')->unsigned()->nullable(false);
             $table->text('clave_presupuestal',64);
-            $table->float('enero')->default(null);
-            $table->float('febrero')->default(null);
-            $table->float('marzo')->default(null);
-            $table->float('abril')->default(null);
-            $table->float('mayo')->default(null);
-            $table->float('junio')->default(null);
-            $table->float('julio')->default(null);
-            $table->float('agosto')->default(null);
-            $table->float('septiembre')->default(null);
-            $table->float('octubre')->default(null);
-            $table->float('noviembre')->default(null);
-            $table->float('diciembre')->default(null);
+            $table->float('enero',23)->default(null);
+            $table->float('febrero',23)->default(null);
+            $table->float('marzo',23)->default(null);
+            $table->float('abril',23)->default(null);
+            $table->float('mayo',23)->default(null);
+            $table->float('junio',23)->default(null);
+            $table->float('julio',23)->default(null);
+            $table->float('agosto',23)->default(null);
+            $table->float('septiembre',23)->default(null);
+            $table->float('octubre',23)->default(null);
+            $table->float('noviembre',23)->default(null);
+            $table->float('diciembre',23)->default(null);
             $table->integer('estado')->nullable(false);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -347,7 +347,7 @@ return new class extends Migration
 
         });
 
-/**/    Schema::create('proyectos_ur',function (Blueprint $table){
+/**/    /*Schema::create('proyectos_ur',function (Blueprint $table){
             $table->increments('id');
             $table->integer('upp_id')->nullable(false);
             $table->integer('ur_id')->nullable(false);
@@ -356,7 +356,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-        });
+        });*/
 
 /**/    Schema::create('uppAutorizadasCPNomina', function (Blueprint $table){
             $table->increments('id');
@@ -368,10 +368,14 @@ return new class extends Migration
             $table->foreign('upp_id')->references('id')->on('catalogo');
         });
 
-/**/    Schema::create('actividades',function (Blueprint $table){
+/**/    /*Schema::create('actividades',function (Blueprint $table){
             $table->increments('id');
             $table->integer('proyectos_ur_id')->unsigned()->nullable(false);
             $table->text('actividad',255)->default(null);
+            $table->enum('tipo',['Acumulativa','Continua','Especial'])->nullable(false);
+            $table->integer('beneficiario_id')->unsigned()->nullable(false);
+            $table->integer('unidad_medida_id')->unsigned()->nullable(false);
+            $table->integer('cantidad_beneficiarios');
             $table->integer('enero')->default(null);
             $table->integer('febrero')->default(null);
             $table->integer('marzo')->default(null);
@@ -389,7 +393,9 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
             $table->foreign('proyectos_ur_id')->references('id')->on('proyectos_ur');
-        });
+            $table->foreign('beneficiario_id')->references('id')->on('beneficiarios');
+            $table->foreign('unidad_medida_id')->references('id')->on('unidades_medida');
+        });*/
 
 /**/     Schema::create('administracion_capturas',function (Blueprint $table){
             $table->increments('id');
@@ -414,6 +420,61 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
+        Schema::create('proyectos_mir',function (Blueprint $table){
+            $table->increments('id');
+            $table->integer('programa_id')->nullable(false);
+            $table->integer('subprograma_id')->nullable(false);
+            $table->integer('proyecto_id')->nullable(false);
+            $table->softDeletes();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+        });
+
+        Schema::create('actividades_mir', function (Blueprint $table){
+            $table->increments('id');
+            $table->integer('datos_mir_id')->unsigned()->nullable(false);
+            $table->string('clave',45)->nullable(false);
+            $table->string('actividad',255)->nullable(false);
+            $table->integer('estatus')->nullable(false);
+            $table->softDeletes();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+
+            $table->foreign('datos_mir_id')->references('id')->on('proyectos_mir');
+        });
+
+        Schema::create('metas',function (Blueprint $table){
+            $table->increments('id');
+            $table->integer('programa_id')->unsigned()->nullable(false);
+            $table->integer('subprograma_id')->unsigned()->nullable(false);
+            $table->integer('proyecto_id')->unsigned()->nullable(false);
+            $table->integer('actividad_id')->unsigned()->nullable(false);
+            $table->enum('tipo',['Acumulativa','Continua','Especial'])->nullable(false);
+            $table->integer('beneficiario_id')->nullable(false);
+            $table->integer('unidad_medida_id')->nullable(false);
+            $table->integer('cantidad_beneficiarios');
+            $table->integer('enero')->default(null);
+            $table->integer('febrero')->default(null);
+            $table->integer('marzo')->default(null);
+            $table->integer('abril')->default(null);
+            $table->integer('mayo')->default(null);
+            $table->integer('junio')->default(null);
+            $table->integer('julio')->default(null);
+            $table->integer('agosto')->default(null);
+            $table->integer('septiembre')->default(null);
+            $table->integer('octubre')->default(null);
+            $table->integer('noviembre')->default(null);
+            $table->integer('diciembre')->default(null);
+            $table->softDeletes();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+
+            $table->foreign('programa_id')->references('id')->on('catalogo');
+            $table->foreign('subprograma_id')->references('id')->on('catalogo');
+            $table->foreign('proyecto_id')->references('id')->on('catalogo');
+            $table->foreign('actividad_id')->references('id')->on('actividades_mir');
+        });
+
     }
 
     /**
@@ -436,7 +497,7 @@ return new class extends Migration
         Schema::dropIfExists('beneficiarios');
         Schema::dropIfExists('administracion_captura');
         Schema::dropIfExists('cat_direccion');
-        Schema::dropIfExists('actividades');
+        /*Schema::dropIfExists('actividades');*/
         Schema::dropIfExists('administracion_capturas');
         Schema::dropIfExists('uppAutorizadasCPNomina');
         Schema::dropIfExists('area_funcional');

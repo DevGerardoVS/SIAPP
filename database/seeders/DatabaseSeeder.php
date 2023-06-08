@@ -120,7 +120,6 @@ class DatabaseSeeder extends Seeder
                 }
             }
 
-
             echo "\n    -Carga Catálogo Menus";
             foreach ($this->menus as $menu) {
                 $menu_bd = Menu::find($menu['id']);
@@ -154,6 +153,9 @@ class DatabaseSeeder extends Seeder
                 }
             }
 
+            $this->call([
+                fondosSeeder::class
+            ]);
 
             DB::commit();
             echo "\n    - Se aplico con exito el Seeder - Base:\n";
@@ -161,5 +163,6 @@ class DatabaseSeeder extends Seeder
             DB::rollback();
             echo "\n    - Ocurrio un error al ejecutar la operacion:",$e;
         }
+
     }
 }

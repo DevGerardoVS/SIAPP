@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container containerlogin" style=" min-width:100%; ">
+    <div class="container containerlogin" style=" min-width:100%; display: contents;">
         <div class="row containerlogin" style=" min-width:100%; ">
             <div class="  col-sm-6 text-center  ladizqlogin">
                 <div style="padding-top: 18%">
-                    <h2 style="padding-top: 5%"> <b>Sistema Integral de Análisis Programático Presupuestal </b> </h2>
+                    {{--<h2 style="padding-top: 5%"> <b>Sistema Integral de Análisis Programático Presupuestal </b> </h2>--}}
                 </div>
 
                 <div style="text-align: left;">
@@ -101,12 +101,12 @@
                         </div>
                     </form>
                 </div>
-                {{-- <div class="text-center colortextfoot" style="padding-bottom: 2%" id="footerA">
+                <div class="text-center colortextfoot" style="margin-bottom: 20%" id="footerA">
                     © 2023 Dirección General de Gobierno Digital | Secretaría de Finanzas y Administración |
                     <a href="https://www.michoacan.gob.mx">
                         Gobierno del Estado de Michoacán
                     </a>
-                </div> --}}
+                </div> 
             </div>
         </div>
     </div>
