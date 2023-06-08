@@ -28,12 +28,25 @@
                                 <div class="col-md-2">
                                     <select class="form-control filters" id="ur_filter" name="ur_filter"
                                             autocomplete="ur_filter" placeholder="Seleccione una UR">
-                                        <option value="" disabled selected>Seleccione una UR</option>
+                                        <option value="" disabled selected>Buscar por UPP</option>
                                         <option value="2022">002</option>
                                         <option value="2023">003</option>
                                         <option value="2024">004</option>
                                         <option value="2025">005</option>
                                     </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-control filters" id="ur_filter" name="ur_filter"
+                                            autocomplete="ur_filter" placeholder="Seleccione una UR">
+                                        <option value="" disabled selected>Buscar por fondo</option>
+                                        <option value="2022">002</option>
+                                        <option value="2023">003</option>
+                                        <option value="2024">004</option>
+                                        <option value="2025">005</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-primary">Nuevo registro</button>
                                 </div>
                             </div>
                         </div>
