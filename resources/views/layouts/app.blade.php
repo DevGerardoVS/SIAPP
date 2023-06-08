@@ -160,6 +160,8 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/customStyle.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/CargaMasiva.css') }}" rel="stylesheet">
+
 
     {{-- Page Styles --}}
     @yield('page_styles')

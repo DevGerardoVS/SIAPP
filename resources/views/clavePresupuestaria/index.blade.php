@@ -44,10 +44,20 @@
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2 text-right">
-                                        <label for="buttonBtnNew">&nbsp;</label>
-                                        <button type="button" class="btn btn-success form-control" data-toggle="modal" id="btnNuevaClave"
-                                            data-target="#modalNewClave" data-backdrop="static"
-                                            data-keyboard="false">Nueva Clave</button>
+                                        <div class="row">
+                                            <button type="button" class="btn colorMorado"
+                                            name="button_modal_carga" id="button_modal_carga">
+                                            <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
+                                    
+                                        </div>
+
+                                        <div class="row">
+                                            <label for="buttonBtnNew">&nbsp;</label>
+                                            <button type="button" class="btn btn-success form-control" data-toggle="modal" id="btnNuevaClave"
+                                                data-target="#modalNewClave" data-backdrop="static"
+                                                data-keyboard="false">Nueva Clave</button>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -236,9 +246,11 @@
         </div>
     </div>
 </div>
-
+     @include('clavePresupuestaria.CargamasivaModal')
     <script src="/js/clavesP/init.js"></script>
     <script src="/js/utilerias.js"></script>
+    <script src="/js/clavesP/cargamasiva.js"></script>
+
     <script>
         dao.getData();
         dao.getRegiones("");
