@@ -1,8 +1,6 @@
 @extends('layouts.app')
 @include('calendarización.metas.addActividad')
-@isset($dataSet)
-    @include('panels.datatable')
-@endisset
+@include('panels.datatable')
 @section('content')
     <div class="container">
         <form action="{{ route('proyecto') }}" id="buscarForm" method="GET">
@@ -66,6 +64,10 @@
     </div>
     </section>
     </div>
-    <script src="/js/calendarización/metas/init.js"></script>
+    <script src="/js/calendarización/metas/initActiv.js"></script>
     <script src="/js/utilerias.js"></script>
+    <script>
+        //En las vistas solo se llaman las funciones del archivo init
+        init.validateCreate($('#frm_create'));
+    </script>
 @endsection
