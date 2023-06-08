@@ -75,46 +75,47 @@ var dao = {
 
 
 
-    },
-    getAnio: function () {
-        let anio = [2022, 2023, 2024, 2025];
-        var par = $('#anio_filter');
-        par.html('');
-        par.append(new Option("-- Año--", ""));
-        document.getElementById("anio_filter").options[0].disabled = true;
-        $.each(anio, function (i, val) {
-            par.append(new Option(anio[i], anio[i]));
-        });
-        /*      $.ajax({
-                 type: "GET",
-                 url: 'grupos',
-                 dataType: "JSON"
-             }).done(function (data) {
-                 var par = $('#id_grupo');
-                 par.html('');
-                 par.append(new Option("-- Selecciona Perfil --", ""));
-                 document.getElementById("id_grupo").options[0].disabled = true;
-                 $.each(data, function (i, val) {
-                     par.append(new Option(data[i].nombre_grupo, data[i].id));
-                 }); 
-             }); */
-    },
-    getUrs: function () {
-
+    }, getSelect: function () {
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/urs',
+            url: '/calendarizacion/selects',
             dataType: "JSON"
         }).done(function (data) {
-            var par = $('#ur_filter');
-            par.html('');
-            par.append(new Option("-- URS--", ""));
-            document.getElementById("ur_filter").options[0].disabled = true;
-            $.each(data, function (i, val) {
-                par.append(new Option(data[i].descripcion, data[i].clave));
-            });
+            console.log(data);
+            const { unidadM, fondos, beneficiario } = data;
+            var fond = $('#sel_fondo');
+            fond.html('');
+            fond.append(new Option("-- Fondos--", ""));
+             document.getElementById("sel_fondo").options[0].disabled = true;
+             $.each(fondos, function (i, val) {
+                fond.append(new Option(fondos[i].descripcion, fondos[i].clave));
+             });
+/*              var med = $('#medida');
+             med.html('');
+            $.each(unidadM, function (i, val) {
+
+                med.append(new Option(val.unidad_medida, val.clave)); 
+               med.append('<option data-tokens='+unidadM[i][0]+'>'+unidadM[i][2]+'</option>'); 
+              }); */
+              var tipo_be = $('#tipo_Be');
+              tipo_be.html('');
+              tipo_be.append(new Option("--U. Beneficiarios--", ""));
+               document.getElementById("tipo_Be").options[0].disabled = true;
+               $.each(beneficiario, function (i, val) {
+                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
+               });
+            let actividades = ["Acumulativa", "Continua", "Especial"];
+               var tipo_AC = $('#tipo_AC');
+               tipo_AC.html('');
+               tipo_AC.append(new Option("--T. Actividad--", ""));
+                document.getElementById("tipo_AC").options[0].disabled = true;
+                $.each(actividades, function (i, val) {
+                    tipo_AC.append(new Option(actividades[i], i));
+               });
         });
     },
+    
+
     crearUsuario: function () {
         var form = $('#frm_create')[0];
         var data = new FormData(form);
@@ -205,6 +206,50 @@ var dao = {
         $("#label_idGrupo").text("").hide();
 
     },
+     edit_row:function (no){
+    document.getElementById("edit_button" + no).style.display = "none";
+    document.getElementById("save_button" + no).style.display = "block";
+
+    var name = document.getElementById("name_row" + no);
+    var country = document.getElementById("country_row" + no);
+    var age = document.getElementById("age_row" + no);
+
+    var name_data = name.innerHTML;
+    var country_data = country.innerHTML;
+    var age_data = age.innerHTML;
+
+    name.innerHTML = "<input type='text' id='name_text" + no + "' value='" + name_data + "'>";
+    country.innerHTML = "<input type='text' id='country_text" + no + "' value='" + country_data + "'>";
+    age.innerHTML = "<input type='text' id='age_text" + no + "' value='" + age_data + "'>";
+    },
+    save_row:function(no) {
+    var name_val = document.getElementById("name_text" + no).value;
+    var country_val = document.getElementById("country_text" + no).value;
+    var age_val = document.getElementById("age_text" + no).value;
+
+    document.getElementById("name_row" + no).innerHTML = name_val;
+    document.getElementById("country_row" + no).innerHTML = country_val;
+    document.getElementById("age_row" + no).innerHTML = age_val;
+
+    document.getElementById("edit_button" + no).style.display = "block";
+    document.getElementById("save_button" + no).style.display = "none";
+}, delete_row:function(no) {
+    document.getElementById("row" + no + "").outerHTML = "";
+},
+
+    add_row: function () {
+        var form = $('#actividad')[0];
+        var data = new FormData(form);
+        const f = {};
+        data.forEach((value, key) => (f[key] = value));
+        console.log(f);
+
+    var table = document.getElementById("actividades");
+    var table_len = (table.rows.length);
+        var row = table.insertRow(table_len).outerHTML = "<tr id='row"+table_len+"' ><td >" + f.actividad + "</td><td>" + f.metas + "</td><td>" + f.tipo_Ac +
+            "</td><td>" + f.beneficiario + "</td><td>" + f.tipo_Be + "</td><td>" + f.medida + "</td><td>" + f.sel_fondo + "</td><td><input type='button' id='edit_button" +
+            table_len + "' value='Edit' class='edit' onclick='dao.edit_row(" + table_len + ")'> <input type='button' value='Delete' class='delete' onclick='dao.delete_row(" + table_len + ")'></td></tr>";
+}
 };
 var init = {
     validateCreate: function (form) {
@@ -242,8 +287,10 @@ var init = {
 
 $(document).ready(function () {
     getData();
-    dao.getAnio();
-    dao.getUrs();
+    dao.getSelect();
+    $('#medida').selectpicker({
+        style: 'btn-default'
+      });
     $('#exampleModal').modal({
         backdrop: 'static',
         keyboard: false
