@@ -11,7 +11,7 @@
 	});
 
 	Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
-			//ruta temporal
+			
     Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('get-plantilla');
 	});
 
