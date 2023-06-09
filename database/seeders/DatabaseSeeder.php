@@ -70,6 +70,8 @@ class DatabaseSeeder extends Seeder
     protected $grupos = array(
 
         ['id' => 5, 'nombre_grupo' => 'Administrador', 'estatus' => 0],
+        ['id' => 6, 'nombre_grupo' => 'user', 'estatus' => 0],
+
     );
 
 
