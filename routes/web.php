@@ -37,14 +37,14 @@ Route::get('', function () {
     }
 });
 
-Route::get('/login',function(){
+Route::get('/login', function () {
     if ((!Auth::check())) {
         return view('auth.login');
     }
 })->name('login');
 
 Route::get('/home', function () {
-    if(!Auth::guest()){
+    if (!Auth::guest()) {
         Session(['sistema' => 1]);
         return view('home');
     } else {
@@ -61,14 +61,9 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     // cambiar contraseña
     Route::get('/cambiar-contrasenia', [App\Http\Controllers\ChangePasswordController::class, 'index'])->name('cambiar_contrasenia');
     Route::post('/contrasenia-confirmada', [App\Http\Controllers\ChangePasswordController::class, 'store'])->name('change_password');
+    Route::get('/logs', [App\Http\Controllers\LogController::class, 'logsView'])->name('viewLogs');
+    Route::post('/logs/download', [App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
+    include('administracion.php'); //Agregar las rutas para el módulo de administración en este archivo
+    include('calendarizacion.php'); //Agregar las rutas para el módulo de Calendarización en este archivo
     //Usuarios
 });
-Route::get('/logs',[App\Http\Controllers\LogController::class, 'logsView'])->name('viewLogs');
-Route::post('/logs/download',[App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
-
-
-
-
-
-include('administracion.php');//Agregar las rutas para el módulo de administración en este archivo
-include('calendarizacion.php');//Agregar las rutas para el módulo de Calendarización en este archivo
