@@ -17,16 +17,15 @@
                     <label for="anio_filter" class="form-label fw-bold mt-md-1">año: </label>
                 </div>
                 <div class="col-sm-12 col-md-3 col-lg-2">
-                    <select class="form-control filters" id="anio_filter" name="anio_filter" autocomplete="anio_filter" onchange="f()">
+                    <select class="form-control filters" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
                         @foreach ($anios as $anio)
                             <option value={{$anio->ejercicio}}>{{ DateTime::createFromFormat('y', $anio->ejercicio)->format('Y')}}</option>
                         @endforeach
-                            @php $get_anio = $anio->ejercicio @endphp
                     </select>
                 </div>
                 
                 @php
-                    $fechas = DB::select('select distinct deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[$get_anio]);
+                    $fechas = DB::select('select distinct deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[23]);
                 @endphp
                 <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
                     <label for="corte_filter" class="form-label fw-bold mt-md-1">Fecha de corte:</label>

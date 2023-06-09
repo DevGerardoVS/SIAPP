@@ -52,6 +52,7 @@
 
 	Route::controller(ReporteController::class)->group(function(){
 		Route::get('/Reportes/ley-planeacion','index')->name('index');
+		Route::post('/Reportes/get-ley-planeacion','reporte')->name('get_reporte');
 		Route::post('/download/{name?}-{anio?}-{date?}', [ReporteController::class, 'downloadReport'])->name('downloadReport');
 	});
 ?>
