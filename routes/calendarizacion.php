@@ -25,6 +25,10 @@
 		Route::get('/cat-programa-presupuestario/{id?}', 'getProgramaPresupuestarios');
 		Route::get('/cat-subprograma-presupuesto/{id?}', 'getSubProgramas');
 		Route::get('/cat-proyecyo/{id?}', 'getProyectos');
+		Route::get('/cat-linea-accion/{id?}', 'getLineaAccion');
+		Route::get('/cat-partidas/{id?}', 'getPartidas');
+		
+		
 		
 		
 	});

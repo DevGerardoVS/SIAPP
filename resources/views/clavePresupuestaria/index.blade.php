@@ -64,7 +64,7 @@
                             <br><br>
                             
                                 <div class="table-responsive">
-                                    <table id="claves" class="table table-hover table-striped ">
+                                    <table id="claves" class="table table-striped table-bordered text-center " style="width:100%">
                                         <thead>
                                             <tr class="colorMorado">
                                                 <th>Clasificacion</th>
@@ -218,7 +218,9 @@
                         <div class="col-md-2"></div>
                             <div class="col-md-8">
                                 <label class="control-label">Periodo Presupuestario</label>
-                                <select class="form-control select2" name="sel_periodo" id="sel_periodo"></select>
+                                <select class="form-control select2" name="sel_periodo" id="sel_periodo">
+                                    <option value="01-ENE">01-ENE</option>
+                                </select>
                             </div>
                         <div class="col-md-2"></div>
                         <div style="clear:both"></div>

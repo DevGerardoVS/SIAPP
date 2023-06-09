@@ -114,6 +114,22 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($proyectos,200);
     }
+    public function getLineaAccion($id){
+        $linea = DB::table('area_funcional_entidad_ejecutora')
+        ->SELECT('catalogo.clave','catalogo.descripcion')
+        ->leftJoin('entidad_ejecutora','entidad_ejecutora.id', '=', 'area_funcional_entidad_ejecutora.entidad_ejecutora_id')
+        ->leftJoin('area_funcional','area_funcional.id','=','area_funcional_entidad_ejecutora.area_funcional_id')
+        ->leftJoin('catalogo','area_funcional.linea_accion_id', '=', 'catalogo.id')
+        ->WHERE('catalogo.deleted_at','=', null)
+        ->WHERE('entidad_ejecutora.ur_id','=',$id)
+        ->orderBy('catalogo.clave')
+        ->DISTINCT()
+        ->get();
+        return response()->json($linea,200);
+    }
+    public function getPartidas($id){
+        //$partidas = DB::table('partida_upp')
+    }
     
 
 }

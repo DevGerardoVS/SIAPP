@@ -83,7 +83,7 @@ var dao = {
           $.each(data, function(i, val){
             par.append(new Option(data[i].descripcion, data[i].clave));
           });
-          par.select2().select2("val", id);
+          //par.select2().select2("val", id);
         });
     },
 	getUpp : function(id){
@@ -157,6 +157,34 @@ var dao = {
           //par.select2().select2("val", id);
         });
     },
+	getLineaDeAccionByUpp : function(id){
+        $.ajax({
+          	type : "get",
+          	url: '/cat-linea-accion/'+ id,
+        }).done(function(data){
+          var par = $('#sel_linea');
+          par.html('');
+          par.append(new Option("-- Selecciona una Linea de Acción --", ""));
+          $.each(data, function(i, val){
+            par.append(new Option(data[i].descripcion, data[i].clave ));
+          });
+          //par.select2().select2("val", id);
+        });
+    },
+	getPartidaByUpp : function(id){
+        $.ajax({
+          	type : "get",
+          	url: '/cat-partidas/'+ id,
+        }).done(function(data){
+          var par = $('#sel_partida');
+          par.html('');
+          par.append(new Option("-- Selecciona una Partida --", ""));
+          $.each(data, function(i, val){
+            par.append(new Option(data[i].descripcion, data[i].clave ));
+          });
+          //par.select2().select2("val", id);
+        });
+    },
 };
 
 
@@ -182,13 +210,16 @@ $(document).ready(function(){
 		e.preventDefault();
 		let val = this.value;
 		let id = val.substring(4);
+		console.log("🚀 ~ file: init.js:213 ~ $ ~ id:", id)
 		dao.getUninadResponsableByUpp(id);
+		dao.getPartidaByUpp(id);
 	});
 	$('#sel_unidad_res').change(function(e){
 		e.preventDefault();
 		let val = this.value;
 		let id = val.substring(3);
 		dao.getProgramaPresupuestarioByur(id);
+		dao.getLineaDeAccionByUpp(id);
 	});
 	$('#sel_programa').change(function(e){
 		e.preventDefault();
