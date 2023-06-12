@@ -11,6 +11,7 @@ use App\Models\User;
 use Auth;
 use DB;
 use Log;
+use App\Models\calendarizacion\clasificacion_geografica;
 
 class CalendarizacionCargaMasivaController extends Controller
 {
@@ -22,34 +23,45 @@ class CalendarizacionCargaMasivaController extends Controller
     
      //Obtener datos del excel
      public function loadDataPlantilla(Request $request)	{
-        ini_set('max_execution_time', 1200);
+          ini_set('max_execution_time', 1200);
+      Log::debug($request);
+       $message=[
+         'file'=> 'El archivo debe ser tipo xlsx' 
+       ];
+     
+        $request->validate([
+          'file'=> 'required|mimes:xlsx, csv, xls'
+       ], $message );
 
-        $attributeNames = array(
-            'cmFile' => 'plantilla'
+       $returnData = array(
+          'status' => 'success',
+          'title' => 'Éxito',
+          'message' => 'Se ha importado con exito',
         );
 
-       $validator = Validator::make($request->all(), [
-            'cmFile' => 'required|mimes:csv',
-        ]); 
+        return response()->json($returnData);
+     
 
-       $validator->setAttributeNames($attributeNames);
-       $request->file('cmFile');
-       return view('clavePresupuestaria.index');
-        
+
+
+/*         Excel::import(new ClavePresupuestaria, request()->file($request->file));
+ */        
+            
        }
 
        public function guardarCMAportacion(Request $request){
+          ini_set('max_execution_time', 1200);
   
           $attributeNames = array(
               'cmFile' => 'plantilla'
           );
   
-         $validator = Validator::make($request->all(), [
+          $validator = Validator::make($request->all(), [
               'cmFile' => 'required|mimes:csv',
-          ]); 
+          ]);
   
-        $validator->setAttributeNames($attributeNames);
-   
+          $validator->setAttributeNames($attributeNames);
+  
           //Revisar que las comunidades tengan los factores para proceder
           $checkCoeficientes = DB::select("SELECT nombre FROM comunidads WHERE id NOT IN (SELECT idComunidad FROM coeficiente_municipals where idComunidad and habilitado = 1) and centralizada = 0");
   
