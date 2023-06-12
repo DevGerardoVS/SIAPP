@@ -73,9 +73,11 @@ class ReporteController extends Controller
         if ($request->input('anio_filter') != null) {
             // array_push($array_where, [$tabla . '.municipio_id', '=', $request->input('municipio_filter')]);
         }
-        // log::info($request->input('anio_filter'));
-        $data = DB::select("CALL calendario_fondo_mensual(".$request->input('anio_filter').", NULL)");
-        // log::info("CALL calendario_fondo_mensual(".$request->input('anio_filter').", ". NULL .")");
+        $anio = $request->input('anio_filter');
+        $fecha = $request->input('fechaCorte_filter') != null ? $request->input('fechaCorte_filter') : "NULL";
+    
+        $data = DB::select("CALL calendario_fondo_mensual(".$anio.", ".$fecha.")");
+        log::info($fecha);
         $dataSet = array();
 
         foreach ($data as $d) {

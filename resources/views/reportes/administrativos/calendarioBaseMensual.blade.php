@@ -13,35 +13,31 @@
 
         <br>
         <div>
-            <section class="row mt-5" id="filter">
+            <section class="row mt-5" >
                 <form action="{{route('get_reporte')}}" id="buscarForm" method="POST">
-                <div class="col-md-10 col-sm-12 d-md-flex">
+                    <div class="col-md-10 col-sm-12 d-md-flex">
                         <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
                             <label for="anio_filter" class="form-label fw-bold mt-md-1">año: </label>
                         </div>
                         <div class="col-sm-12 col-md-3 col-lg-2">
-                            <select class="form-control filters" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
+                            <select class="form-control filters filters_anio" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
                                 @foreach ($anios as $anio)
                                     <option value={{$anio->ejercicio}}>{{ DateTime::createFromFormat('y', $anio->ejercicio)->format('Y')}}</option>
                                 @endforeach
                             </select>
                         </div>
                         
-                        @php
-                            $fechas = DB::select('select distinct deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[23]);
-                        @endphp
+                        @php $fechas = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[23]); @endphp
                         <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
-                            <label for="corte_filter" class="form-label fw-bold mt-md-1">Fecha de corte:</label>
+                            <label for="fechaCorte_filter" class="form-label fw-bold mt-md-1">Fecha de corte:</label>
                         </div>
                         <div class="col-sm-12 col-md-3 col-lg-2">
-                            <select class="form-control filters filters_fecha" id="corte_filter" name="corte_filter" autocomplete="corte_filter">
+                            <select class="form-control filters filters_fechaCorte" id="fechaCorte_filter" name="fechaCorte_filter" autocomplete="fechaCorte_filter">
                                 <option value="">Elegir fecha de corte</option>
                                 @foreach ($fechas as $fecha)
-                                    
                                 <option value={{\Carbon\Carbon::parse($fecha->deleted_at)->format('Y-m-d')}}>{{\Carbon\Carbon::parse($fecha->deleted_at)->format('Y-m-d')}}</option>
                                 @endforeach
                             </select>
-                            {{-- @php $date = empty($fechas) ? 0 : "2023-05-07"  @endphp --}}
                         </div>
                     </div>
                 </form>
@@ -123,6 +119,7 @@
     //inicializamos el data table
     $(document).ready(function() {
         getData();
+
     });
 </script>
 @endsection

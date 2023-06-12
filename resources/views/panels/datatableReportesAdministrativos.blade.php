@@ -180,7 +180,7 @@
 
         $('#buscarForm').submit( (e) => {
             e.preventDefault();
-            $(this).find('.filters_fecha').change();
+            $(this).find('.filters_fechaCorte').change();
         } );
 
         $("#buscarForm").on("change",".filters_anio",function(e){
@@ -188,7 +188,7 @@
             getData();
         });
 
-        $("#buscarForm").on("change",".filters_fecha",function(e){
+        $("#buscarForm").on("change",".filters_fechaCorte",function(e){
             e.preventDefault();
             getData();
         });
