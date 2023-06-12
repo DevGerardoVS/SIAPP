@@ -39,6 +39,7 @@
             type:'POST',
             dataType: 'json',
             success: function(response) {
+                // console.log($("#buscarForm").serializeArray());
                 if(response.dataSet.length == 0){
                     dt.attr('data-empty','true');
                 }
@@ -83,20 +84,21 @@
                             previous: "Anterior",
                         }
                     },
-                    dom: 'frltip',columnDefs: [
-                        {
-                            targets: formatCantidades,
-                            className: 'text-right'
-                        },
-                        {
-                            targets: [0,1],
-                            className: 'text-left'
-                        },
-                        {
-                            targets: [0,1,2,3,4,5],
-                            className: 'text-center'
-                        },
-                    ],
+                    dom: 'frltip',
+                    // columnDefs: [
+                    //     {
+                    //         targets: formatCantidades,
+                    //         className: 'text-right'
+                    //     },
+                    //     {
+                    //         targets: [0,1],
+                    //         className: 'text-left'
+                    //     },
+                    //     {
+                    //         targets: [0,1,2,3,4,5],
+                    //         className: 'text-center'
+                    //     },
+                    // ],
                     // Poner el scroll debajo del footer 
                     "fnInitComplete": function(){
                         // Disable TBODY scoll bars
@@ -114,33 +116,33 @@
                         });     
                     },
                     // obtener la suma total
-                    footerCallback: function (row, data, start, end, display) {
-                        var api = this.api();
+                    // footerCallback: function (row, data, start, end, display) {
+                    //     var api = this.api();
             
-                        // Remove the formatting to get integer data for summation
-                        var intVal = function (i) {
-                            return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-                        };
+                    //     // Remove the formatting to get integer data for summation
+                    //     var intVal = function (i) {
+                    //         return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                    //     };
             
-                        // Total over all pages
-                        total = api
-                            .column(14)
-                            .data()
-                            .reduce(function (a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0);
+                    //     // Total over all pages
+                    //     total = api
+                    //         .column(14)
+                    //         .data()
+                    //         .reduce(function (a, b) {
+                    //             return intVal(a) + intVal(b);
+                    //         }, 0);
             
-                        // Total over this page
-                        pageTotal = api
-                            .column(14, { page: 'current' })
-                            .data()
-                            .reduce(function (a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0);
+                    //     // Total over this page
+                    //     pageTotal = api
+                    //         .column(14, { page: 'current' })
+                    //         .data()
+                    //         .reduce(function (a, b) {
+                    //             return intVal(a) + intVal(b);
+                    //         }, 0);
             
-                        // Update footer
-                        $(api.column(14).footer()).html( total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
-                    },
+                    //     // Update footer
+                    //     $(api.column(14).footer()).html( total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                    // },
                     // obtener la suma de cada vista
                 //     footerCallback: function(row, data, start, end, display){
                 //        var api = this.api();
@@ -167,15 +169,33 @@
     }
     
     $(document).ready(function() {
+        function getDataFechaCorte(ejercicio) { //función para actualizar el select fechas de corte
+            $.ajax({
+                url: "/Reportes/data-fecha-corte/"+ ejercicio,
+                type:'POST',
+                dataType: 'json',
+                success: function(data) {
+                    var par = $('#fechaCorte_filter');
+                    par.html('');
+                    par.append(new Option("Elegir fecha de corte", ""));
+                    $.each(data, function(i, val){
+                        par.append(new Option(data[i].deleted_at, data[i].deleted_at));
+                    });
+                }
+            });
+        }
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
+        getDataFechaCorte($('#anio_filter').find(":selected").val());
+        
         $('#buscarForm').submit( (e) => {
             e.preventDefault();
             $(this).find('.filters_anio').change();
+            getDataFechaCorte($('#anio_filter').val());
         } );
 
         $('#buscarForm').submit( (e) => {
@@ -186,11 +206,14 @@
         $("#buscarForm").on("change",".filters_anio",function(e){
             e.preventDefault();
             getData();
+            $("#anio").val($('#anio_filter').val());
+            getDataFechaCorte($('#anio_filter').val());
         });
 
         $("#buscarForm").on("change",".filters_fechaCorte",function(e){
             e.preventDefault();
             getData();
+            $("#fechaCorte").val($('#fechaCorte_filter').val());
         });
     });
 </script>

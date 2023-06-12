@@ -14,7 +14,7 @@
         <br>
         <div>
             <section class="row mt-5" >
-                <form action="{{route('get_reporte')}}" id="buscarForm" method="POST">
+                <form action="{{route('get_reporte_administrativo',['nombre'=>'calendario_fondo_mensual'])}}" id="buscarForm" method="POST">
                     <div class="col-md-10 col-sm-12 d-md-flex">
                         <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
                             <label for="anio_filter" class="form-label fw-bold mt-md-1">año: </label>
@@ -27,40 +27,24 @@
                             </select>
                         </div>
                         
-                        @php $fechas = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[23]); @endphp
                         <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
                             <label for="fechaCorte_filter" class="form-label fw-bold mt-md-1">Fecha de corte:</label>
                         </div>
                         <div class="col-sm-12 col-md-3 col-lg-2">
                             <select class="form-control filters filters_fechaCorte" id="fechaCorte_filter" name="fechaCorte_filter" autocomplete="fechaCorte_filter">
-                                <option value="">Elegir fecha de corte</option>
-                                @foreach ($fechas as $fecha)
-                                <option value={{\Carbon\Carbon::parse($fecha->deleted_at)->format('Y-m-d')}}>{{\Carbon\Carbon::parse($fecha->deleted_at)->format('Y-m-d')}}</option>
-                                @endforeach
                             </select>
                         </div>
                     </div>
                 </form>
             </section>
-            {{--  --}}
-            {{-- <form action="{{route('get_reporte')}}" id="buscarForm" method="POST">
-                <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
-                    <label for="anio_filter" class="form-label fw-bold mt-md-1">año: </label>
-                </div>
-                <div class="col-sm-12 col-md-3 col-lg-2">
-                    <select class="form-control filters filters_anio" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
-                        @foreach ($anios as $anio)
-                            <option value={{$anio->ejercicio}}>{{ DateTime::createFromFormat('y', $anio->ejercicio)->format('Y')}}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </form> --}}
         </div>
         <br>
         <br>
-        <div class="d-flex flex-wrap">
-            <form action="{{ route('downloadReport') }}" method="POST" enctype="multipart/form-data">
+        <div class="d-flex flex-wrap justify-content-end">
+            <form action="{{ route('downloadReport',['nombre'=>'calendario_fondo_mensual']) }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                <input type="text" hidden id="anio" name="anio">
+                <input type="text" hidden id="fechaCorte" name="fechaCorte">
                 <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3" style="border-color: #6a0f49;" title="Generar Reporte PDF">
                     <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                     <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
@@ -71,40 +55,40 @@
                         <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a Excel</span>
                 </button>
         </div>
-    </div>
-    <br>
-    <div class="row mx-auto" style="width: 90%">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                        id="genericDataTable" data-format="2,3,4,5,6,7,8,9,10,11,12,13,14">
-                        <thead  class="colorMorado">
-                            <tr>
-                                <th class="exportable align-middle text-light">Ramo</th>
-                                <th class="exportable align-middle text-light" style="width: 25em;">Fondo</th>
-                                <th class="exportable align-middle text-light sum">Enero</th>
-                                <th class="exportable align-middle text-light sum">Febrero</th>
-                                <th class="exportable align-middle text-light sum">Marzo</th>
-                                <th class="exportable align-middle text-light sum">Abril</th>
-                                <th class="exportable align-middle text-light sum">Mayo</th>
-                                <th class="exportable align-middle text-light sum">Junio</th>
-                                <th class="exportable align-middle text-light sum">Julio</th>
-                                <th class="exportable align-middle text-light sum">Agosto</th>
-                                <th class="exportable align-middle text-light sum">Septiembre</th>
-                                <th class="exportable align-middle text-light sum">Octubre</th>
-                                <th class="exportable align-middle text-light sum">Noviembre</th>
-                                <th class="exportable align-middle text-light sum">Diciembre</th>
-                                <th class="exportable align-middle text-light sum">Importe total</th>
-                            </tr>
-                        </thead>
-                        <tfoot class="colorMorado" style="">
-                            <tr>
-                                <td class="align-middle text-center" colspan="14">TOTAL</td>
-                                <td class="align-middle text-end total" style="width: 20em;" id="total"></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+        <br>
+        <div class="row mx-auto" >
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
+                            id="genericDataTable" data-format="2,3,4,5,6,7,8,9,10,11,12,13,14">
+                            <thead  class="colorMorado">
+                                <tr>
+                                    <th class="exportable align-middle text-light">Ramo</th>
+                                    <th class="exportable align-middle text-light" style="width: 25em;">Fondo</th>
+                                    <th class="exportable align-middle text-light sum">Enero</th>
+                                    <th class="exportable align-middle text-light sum">Febrero</th>
+                                    <th class="exportable align-middle text-light sum">Marzo</th>
+                                    <th class="exportable align-middle text-light sum">Abril</th>
+                                    <th class="exportable align-middle text-light sum">Mayo</th>
+                                    <th class="exportable align-middle text-light sum">Junio</th>
+                                    <th class="exportable align-middle text-light sum">Julio</th>
+                                    <th class="exportable align-middle text-light sum">Agosto</th>
+                                    <th class="exportable align-middle text-light sum">Septiembre</th>
+                                    <th class="exportable align-middle text-light sum">Octubre</th>
+                                    <th class="exportable align-middle text-light sum">Noviembre</th>
+                                    <th class="exportable align-middle text-light sum">Diciembre</th>
+                                    <th class="exportable align-middle text-light sum">Importe total</th>
+                                </tr>
+                            </thead>
+                            <tfoot class="colorMorado" style="">
+                                <tr>
+                                    <td class="align-middle text-center" colspan="14">TOTAL</td>
+                                    <td class="align-middle text-end total" style="width: 20em;" id="total"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
