@@ -10,5 +10,6 @@
 
     Route::controller(TechosController::class)->group(function () {
         Route::get('/calendarizacion/techos', 'getIndex')->name('index_techos');
+        Route::get('/calendarizacion/techos/data', 'getTechos')->name('getTechos');
     });
 ?>

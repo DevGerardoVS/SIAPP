@@ -152,10 +152,6 @@ class DatabaseSeeder extends Seeder
                 }
             }
 
-            $this->call([
-                fondosSeeder::class
-            ]);
-
             DB::commit();
             echo "\n    - Se aplico con exito el Seeder - Base:\n";
         } catch (\Exception $e) {

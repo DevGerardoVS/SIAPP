@@ -1,12 +1,11 @@
 @extends('layouts.app')
 @include('panels.datatable')
+@include('calendarización.techos.modalCreate')
 @section('content')
 <div class="container">
-    <form action="{{ route('getMetas') }}" id="buscarForm" method="GET">
+    <form action="{{ route('getTechos') }}" id="buscarForm" method="GET">
         @csrf
-        <div class="row">
-            <div class="col-sm-2">
-            </div>
+
     </form>
     <section id="widget-grid" class="conteiner">
         <div class="row">
@@ -27,7 +26,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <select class="form-control filters" id="ur_filter" name="ur_filter"
-                                            autocomplete="ur_filter" placeholder="Seleccione una UR">
+                                            autocomplete="ur_filter" placeholder="Seleccione una UPP">
                                         <option value="" disabled selected>Buscar por UPP</option>
                                         <option value="2022">002</option>
                                         <option value="2023">003</option>
@@ -37,16 +36,17 @@
                                 </div>
                                 <div class="col-md-2">
                                     <select class="form-control filters" id="ur_filter" name="ur_filter"
-                                            autocomplete="ur_filter" placeholder="Seleccione una UR">
+                                            autocomplete="ur_filter" placeholder="Seleccione un fondo">
                                         <option value="" disabled selected>Buscar por fondo</option>
-                                        <option value="2022">002</option>
-                                        <option value="2023">003</option>
-                                        <option value="2024">004</option>
-                                        <option value="2025">005</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
-                                    <button class="btn btn-primary">Nuevo registro</button>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-2">
+                                    <!--<button class="btn btn-primary">Nuevo registro</button>-->
+                                    <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
+                                            data-target=".bd-example-modal-lg" data-backdrop="static"
+                                            data-keyboard="false">Agregar
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -57,14 +57,13 @@
                             <table id="catalogo" class="table table-hover table-striped ">
                                 <thead>
                                 <tr class="colorMorado">
-                                    <th>UR</th>
-                                    <th>Programas</th>
-                                    <th>SubProgramas</th>
-                                    <th>Proyecto</th>
+                                    <th>ID UPP</th>
+                                    <th>Unidad Programatica Presupuestaria</th>
+                                    <th>Tipo</th>
+                                    <th>ID Fondo</th>
                                     <th>Fondo</th>
                                     <th>Presupuesto</th>
-                                    <th>Actividad</th>
-                                    <th>Meta</th>
+                                    <th>Ejercicio</th>
                                     <th>Acciones</th>
                                 </tr>
                                 </thead>
@@ -78,7 +77,7 @@
 </div>
 </section>
 </div>
-<script src="/js/calendarización/metas/init.js"></script>
+<script src="/js/calendarización/techos/init.js"></script>
 <script src="/js/utilerias.js"></script>
 <script>
     //En las vistas solo se llaman las funciones del archivo init
