@@ -34,7 +34,9 @@
 	});
 
 	Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
-		Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('get-plantilla');
+		Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('getplantilla');
+		Route::post('/calendarizacion/load-Data-Plantilla', 'loadDataPlantilla')->name('load_data_plantilla');
+
     });
 	
 
