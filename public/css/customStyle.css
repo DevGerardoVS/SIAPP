@@ -508,3 +508,34 @@ th {
 .column_numbers{
     text-align: right;
 }
+
+th.centro-gestor
+{
+  background-color: brown !important;
+  color: aliceblue !important; 
+}
+th.area-funcional
+{
+  background-color: dimgrey !important;
+  color: aliceblue !important; 
+}
+th.periodo-presupuestal
+{
+  background-color: plum !important;
+  color: aliceblue !important; 
+}
+th.clasificacion-economica
+{
+  background-color: grey !important;
+  color: aliceblue !important; 
+}
+th.fondo
+{
+  background-color: orangered !important;
+  color: aliceblue !important; 
+}
+th.inversion
+{
+  background-color: darksalmon !important;
+  color: aliceblue !important; 
+}

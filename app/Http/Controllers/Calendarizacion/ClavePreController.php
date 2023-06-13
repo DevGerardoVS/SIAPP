@@ -11,14 +11,18 @@ class ClavePreController extends Controller
     public function getPanel(){
         return view('clavePresupuestaria.index');
     }
+    public function getCreate(){
+        return view('clavePresupuestaria.create');
+    }
     public function getClaves(Request $request){
         $claves = DB::table('programacion_presupuesto')
-        ->SELECT('programacion_presupuesto.id','clave_presupuestal', DB::raw ('SUM(enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre) AS totalByClave'),'catalogo.clave','catalogo.descripcion')
+        ->SELECT('programacion_presupuesto.id','clave_presupuestal', (DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre AS totalByClave')),'catalogo.clave','catalogo.descripcion')
         ->leftJoin('entidad_ejecutora','programacion_presupuesto.entidad_ejecutora_id', '=', 'entidad_ejecutora.id')
         ->leftJoin('catalogo', 'entidad_ejecutora.upp_id','=','catalogo.id')
         ->where('programacion_presupuesto.deleted_at', '=', null)
         ->groupBy('catalogo.clave')
         ->get();
+        
         //Log::debug($claves);
         return response()->json($claves, 200);
 
@@ -28,7 +32,7 @@ class ClavePreController extends Controller
         ->SELECT('clasificacion_geografica.region_id','catalogo.clave','catalogo.descripcion')
         ->leftJoin('catalogo', 'clasificacion_geografica.region_id', '=', 'catalogo.id')
         ->where('catalogo.deleted_at', '=', null)
-        ->groupBy('catalogo.clave')
+        ->orderBy('catalogo.clave')
         ->distinct()
         ->get();
         return response()->json($regiones, 200);
@@ -93,7 +97,7 @@ class ClavePreController extends Controller
         ->SELECT('area_funcional.subprograma_presupuestario_id','catalogo.clave', 'catalogo.descripcion')
         ->leftjoin('entidad_ejecutora','entidad_ejecutora.id', '=', 'area_funcional_entidad_ejecutora.entidad_ejecutora_id')
         ->leftJoin('area_funcional', 'area_funcional.id', '=','area_funcional_entidad_ejecutora.area_funcional_id')
-        ->leftJoin('catalogo','area_funcional.programa_presupuestario_id', '=', 'catalogo.id')
+        ->leftJoin('catalogo','area_funcional.subprograma_presupuestario_id', '=', 'catalogo.id')
         ->WHERE('catalogo.deleted_at','=', null)
         ->WHERE('area_funcional.programa_presupuestario_id','=',$id)
         ->orderBy('catalogo.clave')
@@ -128,8 +132,35 @@ class ClavePreController extends Controller
         return response()->json($linea,200);
     }
     public function getPartidas($id){
-        //$partidas = DB::table('partida_upp')
+        $partidas = DB::table('partida_upp')
+        ->SELECT('catalogo.clave', 'catalogo.descripcion')
+        ->leftJoin('posicion_presupuestaria','partida_upp.posicion_presupuestaria_id','=','posicion_presupuestaria.id')
+        ->leftJoin('catalogo','posicion_presupuestaria.partida_especifica_id','=','catalogo.id')
+        ->WHERE('catalogo.deleted_at','=',null)
+        ->WHERE('partida_upp.upp_id','=',$id)
+        ->DISTINCT()
+        ->get();
+        return response()->json($partidas,200);
     }
-    
+    public function getPresupuestoAsignado(){
+        $Totcalendarizado = 0;
+        $disponible = 0;
+        $presupuestoAsignado = DB::table('presupuesto_upp_asignado')
+        ->SELECT(DB::raw('SUM(presupuesto_asignado) as totalAsignado'))->get();
+        $calendarizados = DB::table('programacion_presupuesto')
+        ->SELECT(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre as calendarizados'))->get();
+        foreach ($calendarizados as $key => $value) {
+            log::debug(json_encode($value));
+            //$Totcalendarizado = $Totcalendarizado + $value;
+        }
+        //$disponible = $presupuestoAsignado - $Totcalendarizado;
+        $response = [
+            'presupuestoAsignado'=>$presupuestoAsignado,
+            'disponible'=>$disponible,
+            'Totcalendarizado'=>$Totcalendarizado
+        ];
+
+        return response()->json($response,200);
+    }
 
 }

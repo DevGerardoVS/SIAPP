@@ -6,6 +6,7 @@ var dao = {
 			dataType : "json",
 			//data : {},
 		}).done(function(_data){
+			console.log("🚀 ~ file: init.js:9 ~ _data:", _data)
 			let data = [];
 			for (let index = 0; index < _data.length; index++) {
 				if (_data[index].clave_presupuestal && _data[index].clave_presupuestal != '') {
@@ -185,6 +186,17 @@ var dao = {
           //par.select2().select2("val", id);
         });
     },
+  getPresupuesAsignado : function(){
+    $.ajax({
+      type: 'get',
+      url: '/get-presupuesto-asignado'
+    }).done(function(response){
+      console.log("presupuesto: ", response);
+      // let totalAsignado = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response[0].totalAsignado);
+      // $('#asignadoUpp').val(totalAsignado);
+    });
+
+  }
 };
 
 
@@ -198,19 +210,29 @@ $(document).ready(function(){
 		e.preventDefault();
 		let val = this.value;
 		let id = val.substring(3,5);
+    document.getElementById("region").innerHTML = id;
 		dao.getMunicipiosByRegion(id);
 	});
 	$('#sel_municipio').change(function(e){
 		e.preventDefault();
 		let val = this.value;
 		let id = val.substring(4);
+    document.getElementById("municipio").innerHTML = id;
 		dao.getLocalidadByMunicipio(id);
 	});
+  $('#sel_localidad').change(function (e) {
+    let val = this.value;
+    console.log('localidad',val);
+    document.getElementById('localidad').innerHTML = val;
+  });
 	$('#sel_upp').change(function(e){
 		e.preventDefault();
 		let val = this.value;
+		console.log("🚀 ~ file: init.js:220 ~ $ ~ val UPP:", val)
+    let clave = val.substring(0,3);
 		let id = val.substring(4);
 		console.log("🚀 ~ file: init.js:213 ~ $ ~ id:", id)
+    document.getElementById('upp').innerHTML = clave;
 		dao.getUninadResponsableByUpp(id);
 		dao.getPartidaByUpp(id);
 	});
@@ -218,21 +240,54 @@ $(document).ready(function(){
 		e.preventDefault();
 		let val = this.value;
 		let id = val.substring(3);
+    let clave = val.substring(0,2);
+    document.getElementById('ur').innerHTML = clave;
 		dao.getProgramaPresupuestarioByur(id);
 		dao.getLineaDeAccionByUpp(id);
 	});
 	$('#sel_programa').change(function(e){
 		e.preventDefault();
 		let val = this.value;
+		console.log("🚀 ~ file: init.js:240 ~ $ ~ val programa:", val)
 		let id = val.substring(3);
+    let clave = val.substring(0,2);
+    document.getElementById('programaPre').innerHTML = clave;
 		dao.getSubProgramaByProgramaId(id);
 	});
 	$('#sel_sub_programa').change(function(e){
 		e.preventDefault();
 		let val = this.value;
-		let id = val.substring(3);
+		console.log("🚀 ~ file: init.js:249 ~ $ ~ val subProgama:", val)
+		let id = val.substring(4);
+    console.log("🚀 ~ file: init.js:251 ~ $ ~ id subPrograma:", id)
+    let clave = val.substring(0,3);
+    document.getElementById('subPrograma').innerHTML = clave;
 		dao.getProyectoBySubPrograma(id);
 	});
-
+  $('#sel_proyecto').change(function (e) {
+    e.preventDefault();
+    let val = this.value;
+    // console.log("🚀 ~ file: init.js:257 ~ val proyecto:", val)
+    // let clave = val.substring(0,3);
+    document.getElementById('proyectoPre').innerHTML = val;
+  });
+  $('#sel_linea').change(function (e) {
+    e.preventDefault();
+    let clave = this.value;
+    console.log("🚀 ~ file: init.js:265 ~ clave: linea Accion", clave)
+    document.getElementById('lineaAccion').innerHTML = clave;
+  });
+  $('#sel_periodo').change(function (e) {
+    e.preventDefault();
+    let clave = this.value;
+    console.log("🚀 ~ file: init.js:265 ~ clave: linea Accion", clave)
+    document.getElementById('mesAfectacion').innerHTML = clave;
+  });
+  $('#sel_partida').change(function (e) {
+    e.preventDefault();
+    let clave = this.value;
+    console.log("🚀 ~ file: init.js:265 ~ clave: partida", clave)
+    document.getElementById('partidaEpecifica').innerHTML = clave;
+  });
 
 });

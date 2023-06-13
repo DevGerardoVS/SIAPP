@@ -53,9 +53,10 @@
 
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
-                                            <button type="button" class="btn btn-success form-control" data-toggle="modal" id="btnNuevaClave"
+                                            {{-- <button type="button" class="btn btn-success form-control" data-toggle="modal" id="btnNuevaClave"
                                                 data-target="#modalNewClave" data-backdrop="static"
-                                                data-keyboard="false">Nueva Clave</button>
+                                                data-keyboard="false">Nueva Clave</button> --}}
+                                                <a type="button" class="btn btn-success form-control"  href="/calendarizacion-claves-create" ><i class="fa fa-plus">Nueva Clave</i></a>
                                         </div>
 
                                     </div>
@@ -64,20 +65,33 @@
                             <br><br>
                             
                                 <div class="table-responsive">
-                                    <table id="claves" class="table table-striped table-bordered text-center " style="width:100%">
+                                    <table id="claves" class="table table-hover table-striped" style="width: 100%">
                                         <thead>
-                                            <tr class="colorMorado">
-                                                <th>Clasificacion</th>
-                                                <th>Centro Gestor</th>
-                                                <th>Area Funcional</th>
-                                                <th>Periodo</th>
-                                                <th>Posicion</th>
-                                                <th>Fondo</th>
-                                                <th>Proyecto</th>
-                                                <th>Total</th>
-                                                <th>Acciones</th>
+                                            <tr>
+                                                <th class="centro-gestor">Clasificacion</th>
+                                                <th class="centro-gestor">Centro Gestor</th>
+                                                <th class="area-funcional">Area Funcional</th>
+                                                <th class="periodo-presupuestal">Periodo</th>
+                                                <th class="clasificacion-economica">Posicion</th>
+                                                <th class="fondo">Fondo</th>
+                                                <th class="inversion">Proyecto</th>
+                                                <th class="colorMorado">Total</th>
+                                                <th class="colorMorado">Acciones</th>
                                             </tr>
                                         </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="centro-gestor"></td>
+                                                <td class="centro-gestor"></td>
+                                                <td class="area-funcional"></td>
+                                                <td class="periodo-presupuestal"></td>
+                                                <td class="clasificacion-economica"></td>
+                                                <td class="fondo"></td>
+                                                <td class="inversion"></td>
+                                                <td class="colorMorado"></td>
+                                                <td class="colorMorado"></td>
+                                            </tr>
+                                        </tbody>
                                     </table>
                                 </div>
                             
@@ -87,167 +101,6 @@
             </div>
         </section>
     </div>
-    {{-- modal para crear una nueva clave --}}
-    <div class="modal fade bd-example-modal-lg" id="modalNewClave" tabindex="-1" role="dialog"
-    aria-labelledby="modalNewClaveLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
-                <h5 class="modal-title" id="modalNewClaveLabel">Agregar una Clave presupuestaria</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
-                    <a aria-hidden="true" style="color: whitesmoke" onclick="">&times;</a>
-                </button>
-            </div>
-            <meta name="csrf-token" content="{{ csrf_token() }}">
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-8">
-                        <table>
-                            <tr>
-                                <th>21111</th>
-                                <th>16</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>007</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                                <th>&nbsp;&nbsp;</th>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-md-2"></div>
-                </div>
-                <br><br>
-
-                <form id="frm_create_clave">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Region*</label>
-                                <select class="form-control select2" name="sel_region" id="sel_region"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Municipio*</label>
-                                <select class="form-control select2" name="sel_municipio" id="sel_municipio"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Localidad*</label>
-                                <select class="form-control select2" name="sel_localidad" id="sel_localidad"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Unidad Programática Presupuestal*</label>
-                                <select class="form-control select2" name="sel_upp" id="sel_upp"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Unidad Responsable*</label>
-                                <select class="form-control select2" name="sel_unidad_res" id="sel_unidad_res"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Programa Presupuestario*</label>
-                                <select class="form-control select2" name="sel_programa" id="sel_programa"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Subprograma Presupuestario*</label>
-                                <select class="form-control select2" name="sel_sub_programa" id="sel_sub_programa"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Proyecto*</label>
-                                <select class="form-control select2" name="sel_proyecto" id="sel_proyecto"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Linia de Acción</label>
-                                <select class="form-control select2" name="sel_linea" id="sel_linea"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Periodo Presupuestario</label>
-                                <select class="form-control select2" name="sel_periodo" id="sel_periodo">
-                                    <option value="01-ENE">01-ENE</option>
-                                </select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Partida</label>
-                                <select class="form-control select2" name="sel_partida" id="sel_partida"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                        <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <label class="control-label">Fondo</label>
-                                <select class="form-control select2" name="sel_fondo" id="sel_fondo"></select>
-                            </div>
-                        <div class="col-md-2"></div>
-                        <div style="clear:both"></div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button  id="cerrar" type="button" class="btn btn-secondary " data-dismiss="modal" aria-label="Close" onclick="dao.limpiarFormularioCrear()">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
-            </div>
-        </div>
-    </div>
-</div>
      @include('clavePresupuestaria.CargamasivaModal')
     <script src="/js/clavesP/init.js"></script>
     <script src="/js/utilerias.js"></script>
@@ -257,6 +110,7 @@
         dao.getData();
         dao.getRegiones("");
         dao.getUpp("");
+        dao.getPresupuesAsignado();
     </script>
 @endsection
 
