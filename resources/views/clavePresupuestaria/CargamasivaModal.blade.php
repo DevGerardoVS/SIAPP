@@ -121,23 +121,26 @@
             allowOutsideClick: false,
             timer: 2000000,
             timerProgressBar: true,
- 
+            didOpen: () => {
+                    Swal.showLoading();
+                },
+                
           });
         },
         success: function (response) {
           Swal.close();
           Swal.fire({
-              title: 'Carga masiva con exito',
+              title: 'Exito',
              timer: 2000,
-             type: 'success',
              icon: 'success',
-             buttons: false,
-             timerProgressBar: false,
-
+            text:  'Datos importados con exito',
+            didOpen: () => {
+                    Swal.hideLoading();
+                },
            }).then(
              function () {
-              $('#ModalCargaMasiva').modal('hide');
               $("#ModalCargaMasiva").find("#file_label").val('Sin archivos seleccionados')
+              $('#ModalCargaMasiva').modal('hide');
 
              },
            
@@ -148,14 +151,15 @@
             icon: 'error',
             title: '{{__("messages.error")}}',
             timer: 2000,
-            buttons: false,
-            timerProgressBar: false,
+            didOpen: () => {
+                    Swal.hideLoading();
+                },
             text: response.responseJSON.message ? response.responseJSON.message : 'Ocurrio un error al momento de obtener la información.',
             confirmButtonText: "{{__('messages.aceptar')}}",
           }).then(
             function(){
-              $('#ModalCargaMasiva').modal('hide');
               $("#ModalCargaMasiva").find("#file_label").val('Sin archivos seleccionados')
+              $('#ModalCargaMasiva').modal('hide');
 
             }
           );

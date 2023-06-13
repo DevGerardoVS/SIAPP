@@ -24,20 +24,23 @@ class CalendarizacionCargaMasivaController extends Controller
      //Obtener datos del excel
      public function loadDataPlantilla(Request $request)	{
           ini_set('max_execution_time', 1200);
-      Log::debug($request);
        $message=[
          'file'=> 'El archivo debe ser tipo xlsx' 
        ];
      
         $request->validate([
-          'file'=> 'required|mimes:xlsx, csv, xls'
+          'file'=> 'required|mimes:xlsx'
        ], $message );
 
-       $returnData = array(
-          'status' => 'success',
-          'title' => 'Éxito',
-          'message' => 'Se ha importado con exito',
-        );
+
+        
+
+        $returnData = array(
+            'status' => 'success',
+            'title' => 'Éxito',
+            'message' => 'Se ha importado con exito',
+            'data' => $test
+          );
 
         return response()->json($returnData);
      
