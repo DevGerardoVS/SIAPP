@@ -6,7 +6,7 @@
         @csrf
         <input style="display: none" type="text" id="fecha" name="fecha">
     </form>
- 
+    <br>
     <header>
         <h2>Inicio</h2>
 
@@ -27,9 +27,10 @@
             </table>
         </div>
     </div>
+    <br>
     <div class="row justify-content-center">
         <div class="col-sm-12">
-            <table id="catalogo" class="table table-striped table-bordered text-center " style="width:100%">
+            <table id="catalogoB" class="table table-striped table-bordered text-center " style="width:100%">
                 <thead>
                     <tr class="colorMorado">
                         <th>{{__("messages.clave_fondo")}}</th>
@@ -43,11 +44,12 @@
         </div>
     </div>
 </div>
+
 <script src="https://momentjs.com/downloads/moment.js"></script>
 @include('panels.datatable')
+<script>
 
-
-
+</script>
 @endsection
 
 
