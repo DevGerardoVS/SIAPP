@@ -3,7 +3,7 @@
 @include('panels.datatable')
 @section('content')
     <div class="container">
-        <form action="{{ route('proyecto') }}" id="buscarForm" method="GET">
+        <form action="{{ route('proyectos') }}" id="buscarForm" method="GET">
             @csrf
             <div class="row">
                 <div class="col-sm-2">
@@ -31,7 +31,7 @@
                         <br>
                         <div class="widget-body no-padding ">
                             <div class="table-responsive ">
-                                <table id="actividades" class="table table-hover table-striped ">
+                                <table id="catalogo" class="table table-hover table-striped ">
                                     <thead>
                                         <tr class="colorMorado">
                                             <th>Actividad</th>
@@ -68,6 +68,6 @@
     <script src="/js/utilerias.js"></script>
     <script>
         //En las vistas solo se llaman las funciones del archivo init
-        init.validateCreate($('#frm_create'));
+        init.validateCreate($('#actividad'));
     </script>
 @endsection
