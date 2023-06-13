@@ -1,4 +1,5 @@
-let actividades = [];
+const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
+
 var dao = {
     setStatus: function (id, estatus) {
         Swal.fire({
@@ -76,52 +77,68 @@ var dao = {
 
 
     }, getSelect: function () {
+        for (let i = 1; i <=12; i++) {
+            $("#" + i).val(0);
+        }
+        console.log("entro");
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
             dataType: "JSON"
         }).done(function (data) {
-            console.log(data);
-            const { unidadM, fondos, beneficiario } = data;
+            console.log("done",data);
+            const { unidadM, fondos, beneficiario, actividades,activids } = data;
+            var act = $('#sel_actividad'); 
+            act.html('');
+            act.append(new Option("--Actividad--",""));
+            document.getElementById("sel_actividad").options[0].disabled = true;
+            $.each(actividades, function (i, val) {
+                act.append(new Option(val.actividad, val.clave));
+            });
+            act.selectpicker({ search: true });
+            var med = $('#medida');
+            med.html('');
+            med.append(new Option("-- Medida--", ""));
+            document.getElementById("medida").options[0].disabled = true;
+            $.each(unidadM, function (i, val) {
+                med.append(new Option(val.unidad_medida, val.clave));
+            }); 
+            med.selectpicker({ search: true });
             var fond = $('#sel_fondo');
             fond.html('');
             fond.append(new Option("-- Fondos--", ""));
-             document.getElementById("sel_fondo").options[0].disabled = true;
-             $.each(fondos, function (i, val) {
+            document.getElementById("sel_fondo").options[0].disabled = true;
+            $.each(fondos, function (i, val) {
                 fond.append(new Option(fondos[i].descripcion, fondos[i].clave));
-             });
-/*              var med = $('#medida');
-             med.html('');
-            $.each(unidadM, function (i, val) {
-
-                med.append(new Option(val.unidad_medida, val.clave)); 
-               med.append('<option data-tokens='+unidadM[i][0]+'>'+unidadM[i][2]+'</option>'); 
-              }); */
-              var tipo_be = $('#tipo_Be');
-              tipo_be.html('');
-              tipo_be.append(new Option("--U. Beneficiarios--", ""));
-               document.getElementById("tipo_Be").options[0].disabled = true;
-               $.each(beneficiario, function (i, val) {
+            });
+            fond.selectpicker({ search: true });
+            var tipo_be = $('#tipo_Be');
+            tipo_be.html('');
+            tipo_be.append(new Option("--U. Beneficiarios--", ""));
+            document.getElementById("tipo_Be").options[0].disabled = true;
+            $.each(beneficiario, function (i, val) {
                 tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
-               });
-            let actividades = ["Acumulativa", "Continua", "Especial"];
-               var tipo_AC = $('#tipo_AC');
-               tipo_AC.html('');
-               tipo_AC.append(new Option("--T. Actividad--", ""));
-                document.getElementById("tipo_AC").options[0].disabled = true;
-                $.each(actividades, function (i, val) {
-                    tipo_AC.append(new Option(actividades[i], i));
-               });
+            });
+            tipo_be.selectpicker({ search: true });
+            var tipo_AC = $('#tipo_Ac');
+            tipo_AC.html('');
+            tipo_AC.append(new Option("--Tipo Actividad--", ""));
+            document.getElementById("tipo_Ac").options[0].disabled = true;
+            $.each(activids, function (i, val) {
+                tipo_AC.append(new Option(val, val));
+            }); 
+            tipo_AC.selectpicker({ search: true });
+
         });
     },
     
 
     crearUsuario: function () {
-        var form = $('#frm_create')[0];
+        var form = $('#actividad')[0];
         var data = new FormData(form);
         $.ajax({
             type: "POST",
-            url: 'adm-usuarios/store',
+            url: '/calendarizacion/create',
             data: data,
             enctype: 'multipart/form-data',
             processData: false,
@@ -129,6 +146,7 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
+            console.log(response);
             $('#cerrar').trigger('click');
             Swal.fire({
                 icon: 'success',
@@ -136,8 +154,6 @@ var dao = {
                 showConfirmButton: false,
                 timer: 1500
             });
-
-            dao.limpiarFormularioCrear();
             getData();
         });
     },
@@ -179,107 +195,113 @@ var dao = {
 
         });
     },
-    limpiarFormularioCrear: function () {
-
-        inps = [
-            'id_user',
-            'username',
-            'nombre',
-            'p_apellido',
-            's_apellido',
-            'email',
-            'password',
-            'in_pass_conf',
-            'in_celular',
-            'id_grupo'
-        ];
-        inps.forEach(e => {
-            $('#' + e).val('').removeClass('has-error').removeClass('d-block');
-            $('#' + e + '-error').text("").removeClass('has-error').removeClass('d-block');
-
+    limpiar: function () {
+        inputs.forEach(e => {
+            $('#' + e + '-error').text("").removeClass('#' + e + '-error');
+            if (e != 'beneficiario') {
+                $('#'+e).selectpicker('destroy');
+            }
         });
-        $("#id_grupo").find('option').remove();
-        dao.getAnio();
-        $('.form-group').removeClass('has-error');
-        $("#id_grupo").show();
-        $("#labelGrupo").show();
-        $("#label_idGrupo").text("").hide();
-
+        dao.getSelect();
+        $('.form-group').removeClass('has-error');  
+        for (let i = 1; i <=12; i++) {
+            $('#' + i).val("");
+        }
+        $('#sumMetas').val("");
+        $('#beneficiario').val("");
+        for (let i = 1; i <=12; i++) {
+            $("#" + i).prop('disabled', true); 
+        }
     },
-     edit_row:function (no){
-    document.getElementById("edit_button" + no).style.display = "none";
-    document.getElementById("save_button" + no).style.display = "block";
-
-    var name = document.getElementById("name_row" + no);
-    var country = document.getElementById("country_row" + no);
-    var age = document.getElementById("age_row" + no);
-
-    var name_data = name.innerHTML;
-    var country_data = country.innerHTML;
-    var age_data = age.innerHTML;
-
-    name.innerHTML = "<input type='text' id='name_text" + no + "' value='" + name_data + "'>";
-    country.innerHTML = "<input type='text' id='country_text" + no + "' value='" + country_data + "'>";
-    age.innerHTML = "<input type='text' id='age_text" + no + "' value='" + age_data + "'>";
+    arrEquals: function (numeros) {
+        let duplicados = [];
+        let bool = numeros.length;
+ 
+        const tempArray = [...numeros].sort();
+         
+        for (let i = 0; i <= tempArray.length; i++) {
+          if (tempArray[i + 1] === tempArray[i]) {
+            duplicados.push(tempArray[i]);
+          }
+        }
+        if(bool != duplicados.length)
+        {return false}else{return true}
+      },
+    validateAcu: function () {
+        let e = 0;
+        for (let i = 1; i <= 12; i++) {           
+            let suma = parseInt($('#' + i).val() != "" ? $('#' + i).val() : 0);
+            e += suma;
+        }
+        return e;
     },
-    save_row:function(no) {
-    var name_val = document.getElementById("name_text" + no).value;
-    var country_val = document.getElementById("country_text" + no).value;
-    var age_val = document.getElementById("age_text" + no).value;
-
-    document.getElementById("name_row" + no).innerHTML = name_val;
-    document.getElementById("country_row" + no).innerHTML = country_val;
-    document.getElementById("age_row" + no).innerHTML = age_val;
-
-    document.getElementById("edit_button" + no).style.display = "block";
-    document.getElementById("save_button" + no).style.display = "none";
-}, delete_row:function(no) {
-    document.getElementById("row" + no + "").outerHTML = "";
-},
-
-    add_row: function () {
-        var form = $('#actividad')[0];
-        var data = new FormData(form);
-        const f = {};
-        data.forEach((value, key) => (f[key] = value));
-        console.log(f);
-
-    var table = document.getElementById("actividades");
-    var table_len = (table.rows.length);
-        var row = table.insertRow(table_len).outerHTML = "<tr id='row"+table_len+"' ><td >" + f.actividad + "</td><td>" + f.metas + "</td><td>" + f.tipo_Ac +
-            "</td><td>" + f.beneficiario + "</td><td>" + f.tipo_Be + "</td><td>" + f.medida + "</td><td>" + f.sel_fondo + "</td><td><input type='button' id='edit_button" +
-            table_len + "' value='Edit' class='edit' onclick='dao.edit_row(" + table_len + ")'> <input type='button' value='Delete' class='delete' onclick='dao.delete_row(" + table_len + ")'></td></tr>";
-}
+    validatEspe: function () {
+        let e = [];
+        for (let i = 1; i <= 12; i++) {           
+            let suma = parseInt($('#' + i).val() != "" ? $('#' + i).val() : 0);
+            e.push(suma)
+        }
+        return Math.max(...e);
+    },
+    validatCont: function () {
+        let e = [];
+        for (let i = 1; i <= 12; i++) { 
+            if($('#' + i).val() != ""){
+                let suma = parseInt($('#' + i).val());
+                e.push(suma);
+            }
+        }
+        if (dao.arrEquals(e)) {
+            return e[0];
+        } else {
+            $('#sumMetas').val("");
+            //$("#btnSave").prop('disabled', true);
+            Swal.fire({
+                icon: 'info',
+                title: 'Tipo de actividad continua',
+                text: 'El valor ingresado de cada mes deben ser iguales',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+    },
+    sumar: function () {
+        let actividad = $("#tipo_Ac option:selected").text();
+        switch (actividad) {
+            case 'Acumulativa':
+                  $('#sumMetas').val(dao.validateAcu());
+                break;
+            case 'Continua':
+                $('#sumMetas').val(dao.validatCont());
+                break;
+            case 'Especial':
+                $('#sumMetas').val(dao.validatEspe());
+                break;
+        
+            default:
+                break;
+        }
+      }
 };
+
 var init = {
     validateCreate: function (form) {
         _gen.validate(form, {
             rules: {
-                username: { required: true },
-                nombre: { required: true },
-                p_apellido: { required: true },
-                s_apellido: { required: true },
-                email: { required: true, email: true },
-                password: { required: true },
-                in_pass_conf: { required: true, equalTo: "#password" },
-                in_celular: {
-                    required: true,
-                    phoneUS: true
-                },
-                id_grupo: { required: true }
-
+                sel_actividad: { required: true },
+                sel_fondo: { required: true },
+                tipo_Ac: { required: true },
+                beneficiario: { required: true },
+                tipo_Be: { required: true },
+                medida: { required: true }
             },
             messages: {
-                username: { required: "Este campo es requerido" },
-                nombre: { required: "Este campo es requerido" },
-                p_apellido: { required: "Este campo es requerido" },
-                s_apellido: { required: "Este campo es requerido" },
-                email: { required: "Este campo es requerido" },
-                password: { required: "Este campo es requerido" },
-                in_pass_conf: { required: "Este campo es requerido" },
-                in_celular: { required: "Este campo es requerido" },
-                id_grupo: { required: "Este campo es requerido" }
-
+                sel_actividad: { required: "Este campo es requerido" },
+                sel_fondo: { required: "Este campo es requerido" },
+                tipo_Ac: { required: "Este campo es requerido" },
+                beneficiario: { required: "Este campo es requerido" },
+                tipo_Be: { required: "Este campo es requerido" },
+                medida: { required: "Este campo es requerido" }
             }
         });
     },
@@ -288,54 +310,17 @@ var init = {
 $(document).ready(function () {
     getData();
     dao.getSelect();
-    $('#medida').selectpicker({
-        style: 'btn-default'
-      });
-    $('#exampleModal').modal({
-        backdrop: 'static',
-        keyboard: false
-    })
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        if ($('#frm_create').valid()) {
+      if ($('#actividad').valid()) {
             dao.crearUsuario();
         }
-        $('#email-error').text("Este campo es requerido").addClass('has-error');;
-        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');;
     });
-    $("#email").change(function () {
-        var regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        regex.test($("#email").val());
-        var text = "Ingresa un correo electrónico válido";
-        if (regex.test($("#email").val())) {
-            $('#email-error').text("").removeClass('d-block').removeClass('has-error');
-            $('#email').removeClass('has-error').removeClass('d-block');
-        } else {
-            $('#email-error').text(text).addClass('d-block').addClass('has-error');
-            $('#email').addClass('has-error').addClass('d-block');
+
+    $('#tipo_Ac').change(() => {
+        for (let i = 1; i <=12; i++) {
+            $("#"+i).prop('disabled', false); 
         }
-    });
-    $("#in_celular").change(function () {
-        var regex = /^[a-zA-Z ]+$/;
-        var bol = regex.test($("#in_celular").val());
-        if ($("#in_celular").val() == '') {
-            $('#in_celular-error').text("Este campo es requerido").addClass('d-block').addClass('has-error');
-            $('#in_celular').addClass('d-block').addClass('has-error');
-        }
-        else {
-            if (bol != true) {
-                if ($("#in_celular").val().length != 14) {
-                    $('#in_celular-error').text("El Telefono debe contar con 10 digitos").addClass('d-block').addClass('has-error');
-                    $('#in_celular').addClass('d-block').addClass('has-error');
-                } else {
-                    $('#in_celular-error').text("").removeClass('d-block').removeClass('has-error');
-                    $('#in_celular').removeClass('d-block').removeClass('has-error');
-                }
-            } else {
-                $('#in_celular-error').text("El telefono no puede llevar letras").addClass('d-block').addClass('has-error');
-                $('#in_celular').addClass('d-block').addClass('has-error');
-            }
-        }
-    });
-    $('#in_celular').mask('00-00-00-00-00');
+        
+    })
 });

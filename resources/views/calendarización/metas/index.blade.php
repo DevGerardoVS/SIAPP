@@ -27,7 +27,8 @@
                                         </div>
                                             <div class="col-md-6">
                                                 <select class="form-control filters" id="ur_filter" name="ur_filter"
-                                                    autocomplete="ur_filter" placeholder="Seleccione una UR">
+                                                    autocomplete="ur_filter" placeholder="Seleccione una UR" data-live-search="true">
+                                                    <option value="" disabled selected>Seleccione una UR</option>
                                                 </select>
                                             </div>
                                 </div>
