@@ -45,15 +45,15 @@
                 @csrf
                 <input type="text" hidden id="anio" name="anio">
                 <input type="text" hidden id="fechaCorte" name="fechaCorte">
-                <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3" style="border-color: #6a0f49;" title="Generar Reporte PDF">
+                <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
                     <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                     <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
                 </button>
-            </form>
-                <button id="btnExcel" type="button" class="btn btn-light btn-sm btn-labeled" style="border-color: #6a0f49;" title="Generar Reporte Excel">
-                        <span class="btn-label"><i class="fa fa-file-excel-o text-success fs-4 align-middle"></i></span>
-                        <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a Excel</span>
+                <button id="btnExcel" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled" style="border-color: #6a0f49;" title="Generar Reporte Excel" name="action" value="xls">
+                    <span class="btn-label"><i class="fa fa-file-excel-o text-success fs-4 align-middle"></i></span>
+                    <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a Excel</span>
                 </button>
+            </form>
         </div>
         <br>
         <div class="row mx-auto">
@@ -62,7 +62,7 @@
                     <div class="card-body">
                         <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
                             id="genericDataTable">
-                            <thead  class="colorMorado">
+                            <thead class="colorMorado">
                                 <tr>
                                     <th class="exportable align-middle text-light">Unidad programática presupuestaría</th>
                                     <th class="exportable align-middle text-light">Fondo</th>

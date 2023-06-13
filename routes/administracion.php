@@ -51,8 +51,8 @@
 	});
 
 	Route::controller(ReporteController::class)->group(function(){
-		// Route::get('/Reportes/ley-planeacion','indexPlaneacion')->name('index_planeacion');
-		Route::get('/Reportes/ley-planeacion','indexAdministrativo')->name('index_administrativo');
+		Route::get('/Reportes/ley-planeacion','indexPlaneacion')->name('index_planeacion');
+		// Route::get('/Reportes/ley-planeacion','indexAdministrativo')->name('index_administrativo');
 		// Route::get('/Reportes/administrativo','indexAdministrativo')->name('index_administrativo');
 
 		Route::post('/Reportes/data-fecha-corte/{ejercicio?}','getFechaCorte')->name('get_fecha_corte');

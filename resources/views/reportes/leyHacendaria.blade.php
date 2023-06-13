@@ -19,7 +19,7 @@
                     <div class="col-sm-12 col-md-3 col-lg-2">
                         <select class="form-control filters filters_anio" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
                             @foreach ($anios as $anio)
-                                <option value={{$anio->ejercicio}}>{{ DateTime::createFromFormat('y', $anio->ejercicio)->format('Y')}}</option>
+                                <option value={{$anio->ejercicio}}>{{ $anio->ejercicio}}</option>
                             @endforeach
                         </select>
                     </div>

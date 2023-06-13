@@ -11,8 +11,9 @@
         var dt = $('#genericDataTable');
         var orderDt = "";
         var column = "";
-        var formatCantidades = [];
-        var ordenamiento = [];
+        var formatRight = [];
+        var formatLeft = [];
+        var formatCenter = [];
         var bold = [];
 
         if(dt.attr('data-bold')!=undefined){
@@ -24,11 +25,29 @@
             }
         }
 
-        if(dt.attr('data-format')!=undefined){
-            formatCantidades = dt.attr('data-format').split(",");
-            for(var i in formatCantidades){
-                if(formatCantidades[i] != ""){
-                    formatCantidades[i] = parseInt(formatCantidades[i]);
+        if(dt.attr('data-right')!=undefined){
+            formatRight = dt.attr('data-right').split(",");
+            for(var i in formatRight){
+                if(formatRight[i] != ""){
+                    formatRight[i] = parseInt(formatRight[i]);
+                }
+            }
+        }
+
+        if(dt.attr('data-left')!=undefined){
+            formatLeft = dt.attr('data-left').split(",");
+            for(var i in formatLeft){
+                if(formatLeft[i] != ""){
+                    formatLeft[i] = parseInt(formatLeft[i]);
+                }
+            }
+        }
+
+        if(dt.attr('data-center')!=undefined){
+            formatCenter = dt.attr('data-center').split(",");
+            for(var i in formatCenter){
+                if(formatCenter[i] != ""){
+                    formatCenter[i] = parseInt(formatCenter[i]);
                 }
             }
         }
@@ -60,6 +79,7 @@
                 dt.DataTable({
                     data: response.dataSet,
                     searching: true,
+                    autoWidth: true,
                 ordering: true,
                 pageLength: 10,
                 dom: 'frltip',
@@ -85,20 +105,20 @@
                         }
                     },
                     dom: 'frltip',
-                    // columnDefs: [
-                    //     {
-                    //         targets: formatCantidades,
-                    //         className: 'text-right'
-                    //     },
-                    //     {
-                    //         targets: [0,1],
-                    //         className: 'text-left'
-                    //     },
-                    //     {
-                    //         targets: [0,1,2,3,4,5],
-                    //         className: 'text-center'
-                    //     },
-                    // ],
+                    columnDefs: [
+                        {
+                            targets: formatRight,
+                            className: 'text-right'
+                        },
+                        {
+                            targets: formatLeft,
+                            className: 'text-left'
+                        },
+                        {
+                            targets: formatCenter,
+                            className: 'text-center'
+                        },
+                    ],
                     // Poner el scroll debajo del footer 
                     "fnInitComplete": function(){
                         // Disable TBODY scoll bars
@@ -116,33 +136,33 @@
                         });     
                     },
                     // obtener la suma total
-                    // footerCallback: function (row, data, start, end, display) {
-                    //     var api = this.api();
+                    footerCallback: function (row, data, start, end, display) {
+                        var api = this.api();
             
-                    //     // Remove the formatting to get integer data for summation
-                    //     var intVal = function (i) {
-                    //         return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-                    //     };
+                        // Remove the formatting to get integer data for summation
+                        var intVal = function (i) {
+                            return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                        };
             
-                    //     // Total over all pages
-                    //     total = api
-                    //         .column(14)
-                    //         .data()
-                    //         .reduce(function (a, b) {
-                    //             return intVal(a) + intVal(b);
-                    //         }, 0);
+                        // Total over all pages
+                        total = api
+                            .column(".sum")
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
             
-                    //     // Total over this page
-                    //     pageTotal = api
-                    //         .column(14, { page: 'current' })
-                    //         .data()
-                    //         .reduce(function (a, b) {
-                    //             return intVal(a) + intVal(b);
-                    //         }, 0);
+                        // Total over this page
+                        pageTotal = api
+                            .column(".sum", { page: 'current' })
+                            .data()
+                            .reduce(function (a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
             
-                    //     // Update footer
-                    //     $(api.column(14).footer()).html( total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
-                    // },
+                        // Update footer
+                        $(api.column(".sum").footer()).html( total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                    },
                     // obtener la suma de cada vista
                 //     footerCallback: function(row, data, start, end, display){
                 //        var api = this.api();
@@ -169,9 +189,9 @@
     }
     
     $(document).ready(function() {
-        function getDataFechaCorte(ejercicio) { //función para actualizar el select fechas de corte
+        function getDataFechaCorte(anio) { //función para actualizar el select fechas de corte
             $.ajax({
-                url: "/Reportes/data-fecha-corte/"+ ejercicio,
+                url: "/Reportes/data-fecha-corte/"+ anio,
                 type:'POST',
                 dataType: 'json',
                 success: function(data) {
@@ -190,7 +210,8 @@
             }
         });
 
-        getDataFechaCorte($('#anio_filter').find(":selected").val());
+        $("#anio").val($('#anio_filter option:selected').val());
+        getDataFechaCorte($('#anio_filter option:selected').val());
         
         $('#buscarForm').submit( (e) => {
             e.preventDefault();

@@ -22,7 +22,7 @@
                         <div class="col-sm-12 col-md-3 col-lg-2">
                             <select class="form-control filters filters_anio" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
                                 @foreach ($anios as $anio)
-                                    <option value={{$anio->ejercicio}}>{{ DateTime::createFromFormat('y', $anio->ejercicio)->format('Y')}}</option>
+                                    <option value={{$anio->anio}}>{{ DateTime::createFromFormat('y', $anio->anio)->format('Y')}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -45,15 +45,15 @@
                 @csrf
                 <input type="text" hidden id="anio" name="anio">
                 <input type="text" hidden id="fechaCorte" name="fechaCorte">
-                <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3" style="border-color: #6a0f49;" title="Generar Reporte PDF">
+                <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
                     <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                     <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
                 </button>
-            </form>
-                <button id="btnExcel" type="button" class="btn btn-light btn-sm btn-labeled" style="border-color: #6a0f49;" title="Generar Reporte Excel">
-                        <span class="btn-label"><i class="fa fa-file-excel-o text-success fs-4 align-middle"></i></span>
-                        <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a Excel</span>
+                <button id="btnExcel" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled" style="border-color: #6a0f49;" title="Generar Reporte Excel" name="action" value="xls">
+                    <span class="btn-label"><i class="fa fa-file-excel-o text-success fs-4 align-middle"></i></span>
+                    <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a Excel</span>
                 </button>
+            </form>
         </div>
         <br>
         <div class="row mx-auto" >
@@ -61,29 +61,29 @@
                 <div class="card">
                     <div class="card-body">
                         <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                            id="genericDataTable" data-format="2,3,4,5,6,7,8,9,10,11,12,13,14">
+                            id="genericDataTable" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="0,1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14">
                             <thead  class="colorMorado">
                                 <tr>
                                     <th class="exportable align-middle text-light">Ramo</th>
-                                    <th class="exportable align-middle text-light" style="width: 25em;">Fondo</th>
-                                    <th class="exportable align-middle text-light sum">Enero</th>
-                                    <th class="exportable align-middle text-light sum">Febrero</th>
-                                    <th class="exportable align-middle text-light sum">Marzo</th>
-                                    <th class="exportable align-middle text-light sum">Abril</th>
-                                    <th class="exportable align-middle text-light sum">Mayo</th>
-                                    <th class="exportable align-middle text-light sum">Junio</th>
-                                    <th class="exportable align-middle text-light sum">Julio</th>
-                                    <th class="exportable align-middle text-light sum">Agosto</th>
-                                    <th class="exportable align-middle text-light sum">Septiembre</th>
-                                    <th class="exportable align-middle text-light sum">Octubre</th>
-                                    <th class="exportable align-middle text-light sum">Noviembre</th>
-                                    <th class="exportable align-middle text-light sum">Diciembre</th>
+                                    <th class="exportable align-middle text-light" style="width: 300px ;">Fondo</th>
+                                    <th class="exportable align-middle text-light">Enero</th>
+                                    <th class="exportable align-middle text-light">Febrero</th>
+                                    <th class="exportable align-middle text-light">Marzo</th>
+                                    <th class="exportable align-middle text-light">Abril</th>
+                                    <th class="exportable align-middle text-light">Mayo</th>
+                                    <th class="exportable align-middle text-light">Junio</th>
+                                    <th class="exportable align-middle text-light">Julio</th>
+                                    <th class="exportable align-middle text-light">Agosto</th>
+                                    <th class="exportable align-middle text-light">Septiembre</th>
+                                    <th class="exportable align-middle text-light">Octubre</th>
+                                    <th class="exportable align-middle text-light">Noviembre</th>
+                                    <th class="exportable align-middle text-light">Diciembre</th>
                                     <th class="exportable align-middle text-light sum">Importe total</th>
                                 </tr>
                             </thead>
-                            <tfoot class="colorMorado" style="">
+                            <tfoot class="colorMorado">
                                 <tr>
-                                    <td class="align-middle text-center" colspan="14">TOTAL</td>
+                                    <td class="align-middle text-start" colspan="14">TOTAL</td>
                                     <td class="align-middle text-end total" style="width: 20em;" id="total"></td>
                                 </tr>
                             </tfoot>

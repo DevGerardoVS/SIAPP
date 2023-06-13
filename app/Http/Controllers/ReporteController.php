@@ -27,8 +27,9 @@ class ReporteController extends Controller
     public function indexAdministrativo(){
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
-        return view("reportes.administrativos.resumenCapituloPartida", [
-        // return view("reportes.administrativos.calendarioBaseMensual", [
+        // return view("reportes.administrativos.resumenCapituloPartida", [
+        return view("reportes.administrativos.calendarioBaseMensual", [
+        // return view("reportes.administrativos.resumenCapituloPartida", [
             'dataSet' => json_encode($dataSet),
             'anios' => $anios,
         ]);
@@ -39,7 +40,7 @@ class ReporteController extends Controller
         $dataSet = array();
 
         foreach($data as $d){
-            $ds = array($d->name);
+            $ds = array($d->name,$d->name);
             $dataSet[] = $ds;
         }
         
@@ -71,7 +72,7 @@ class ReporteController extends Controller
         elseif($nombre == "resumen_capitulo_partida"){
             $data = DB::select("CALL resumen_capitulo_partida(".$anio.", ".$fecha.")");
             foreach ($data as $d) {
-                $ds = array($d->capitulo, $d->partida_llave, $d->partida, $d->importe);
+                $ds = array($d->capitulo, $d->partida_llave." ".$d->partida, number_format($d->importe));
                 $dataSet[] = $ds;
             }
         }
@@ -97,8 +98,8 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function getFechaCorte($ejercicio){
-        $fechaCorte = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[$ejercicio]);
+    public function getFechaCorte($anio){
+        $fechaCorte = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where anio = ? and deleted_at is not null',[$anio]);
 
         return $fechaCorte;
     }
@@ -107,7 +108,7 @@ class ReporteController extends Controller
         date_default_timezone_set('America/Mexico_City');
         
         setlocale(LC_TIME, 'es_VE.UTF-8','esp');
-        // $report =  'calendario_fondo_mensual';
+        // $report =  'reporte_art_20_frac_X_b_num_11_2';
         $report =  $nombre;
         $anio = $request->input('anio');
         $fechaCorte = $request->input('fechaCorte');
@@ -120,16 +121,16 @@ class ReporteController extends Controller
         }
         $logo = public_path()."/img/logo.png";
         $report_path = app_path() ."/Reportes/".$report.".jasper";
-        $format = array('pdf,xlsx');
+        // dd($request->action);
+        $format = array($request->action);
         $output_file =  public_path()."/reportes";
         $viewFile = public_path()."/reportes/".$report;
-
         $parameters = array(
             "anio" => $anio,
             "logoLeft" => $logo,
             "logoRight" => $logo,
         );
-        if($fechaCorte != null) $parameters["fecha"] = $fechaCorte;
+        if($fechaCorte != null) $parameters["fecha"] = $fechaCorte . " 00:00:00";
 
         $database_connection = \Config::get('database.connections.mysql');
 
@@ -142,6 +143,6 @@ class ReporteController extends Controller
           $database_connection
         )->execute();
 
-        return response()->file($viewFile.".pdf")->deleteFileAfterSend(); 
+        return $request->action == 'pdf' ? response()->file($viewFile.".pdf")->deleteFileAfterSend() : response()->file($viewFile.".xls")->deleteFileAfterSend(); 
     }
 }
