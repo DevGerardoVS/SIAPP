@@ -19,7 +19,7 @@ class InicioController extends Controller
             $data = DB::table('inicio_a')->get();
 
             foreach ($data as $d) {
-                $ds = array($d->presupuesto_asignado, $d->presupuesto_calendarizado, $d->disponible,$d->avance);
+                $ds = array(number_format($d->presupuesto_asignado, 2, '.', ',') , number_format($d->presupuesto_calendarizado, 2, '.', ','), number_format($d->disponible, 2, '.', ',') , number_format($d->avance, 2, '.', ','));
                 $dataSet[] = $ds;
             }
 
@@ -41,7 +41,7 @@ class InicioController extends Controller
             $data = DB::table('inicio_b')->get();
 
             foreach ($data as $d) {
-                $ds = array($d->clave, $d->fondo, $d->asignado, $d->programado, $d->avance);
+                $ds = array($d->clave, $d->fondo, number_format($d->asignado, 2, '.', ','), number_format($d->programado, 2, '.', ','), number_format($d->avance, 2, '.', ','));
                 $dataSet[] = $ds;
             }
 
