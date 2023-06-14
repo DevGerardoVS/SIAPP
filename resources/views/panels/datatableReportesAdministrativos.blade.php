@@ -210,13 +210,15 @@
             }
         });
 
-        $("#anio").val($('#anio_filter option:selected').val());
-        getDataFechaCorte($('#anio_filter option:selected').val());
+        $(".anio").val($('#anio_filter option:selected').val());
+        $(".upp").val($('#upp_filter option:selected').val());
+        console.log($(".upp").val($('#upp_filter option:selected').val()));
+        getDataFechaCorte($('#anio_filter option:selected').val());  //Llenar el select de fecha de acuerdo al valor del año por defecto
         
         $('#buscarForm').submit( (e) => {
             e.preventDefault();
             $(this).find('.filters_anio').change();
-            getDataFechaCorte($('#anio_filter').val());
+            getDataFechaCorte($('#anio_filter').val()); //Llenar el select de fecha de acuerdo al valor del año
         } );
 
         $('#buscarForm').submit( (e) => {
@@ -224,10 +226,15 @@
             $(this).find('.filters_fechaCorte').change();
         } );
 
+        $('#buscarForm').submit( (e) => {
+            e.preventDefault();
+            $(this).find('.filters_upp').change();
+        });
+
         $("#buscarForm").on("change",".filters_anio",function(e){
             e.preventDefault();
             getData();
-            $("#anio").val($('#anio_filter').val());
+            $(".anio").val($('#anio_filter').val());
             getDataFechaCorte($('#anio_filter').val());
         });
 
@@ -235,6 +242,12 @@
             e.preventDefault();
             getData();
             $("#fechaCorte").val($('#fechaCorte_filter').val());
+        });
+
+        $("#buscarForm").on("change",".filters_upp",function(e){
+            e.preventDefault();
+            getData();
+            $("#upp").val($('#upp_filter').val());
         });
     });
 </script>

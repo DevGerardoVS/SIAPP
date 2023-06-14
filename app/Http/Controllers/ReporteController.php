@@ -27,11 +27,15 @@ class ReporteController extends Controller
     public function indexAdministrativo(){
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
+        $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
+        // dd($upps);
         // return view("reportes.administrativos.resumenCapituloPartida", [
-        return view("reportes.administrativos.calendarioBaseMensual", [
+        // return view("reportes.administrativos.calendarioBaseMensual", [
         // return view("reportes.administrativos.resumenCapituloPartida", [
+        return view("reportes.administrativos.proyectoAvanceGeneral", [
             'dataSet' => json_encode($dataSet),
             'anios' => $anios,
+            'upps' => $upps,
         ]);
     }
 

@@ -62,8 +62,8 @@
                                                     <form action="{{ route('downloadReport',['nombre'=>$name->name]) }}" method="POST" enctype="multipart/form-data">
                                                     {{-- <form action="{{ route('downloadReport',['name'=>$name->name, 'anio'=> 23, 'date'=> 0]) }}" method="POST" enctype="multipart/form-data"> --}}
                                                         @csrf
-                                                        <input type="text" hidden id="anio" name="anio">
-                                                        <input type="text" hidden id="fechaCorte" name="fechaCorte">
+                                                        <input type="text" hidden class="anio" id="anio" name="anio">
+                                                        <input type="text" hidden class="fechaCorte" id="fechaCorte" name="fechaCorte">
                                                         <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-sm-3" style="border-color: #6a0f49;" title="Generar Reporte PDF">
                                                             <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                                                             <span class="d-sm-none d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
