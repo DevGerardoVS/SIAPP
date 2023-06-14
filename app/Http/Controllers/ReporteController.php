@@ -14,7 +14,8 @@ class ReporteController extends Controller
 {
     public function indexPlaneacion(){
         $dataSet = array();
-        $names = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondos_db" AND ROUTINE_NAME LIKE "%art_20%" AND ROUTINE_NAME NOT LIKE "%a_num_1_%"');
+        $names = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondoss_db" AND ROUTINE_NAME LIKE "%art_20%" AND ROUTINE_NAME NOT LIKE "%a_num_1_%"');
+        // $names = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondos_db" AND ROUTINE_NAME LIKE "%art_20%" AND ROUTINE_NAME NOT LIKE "%a_num_1_%"');
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         return view("reportes.leyHacendaria", [
             'dataSet' => json_encode($dataSet),
@@ -27,15 +28,16 @@ class ReporteController extends Controller
     public function indexAdministrativo(){
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
-        $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
+        // $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
         // dd($upps);
         // return view("reportes.administrativos.resumenCapituloPartida", [
         // return view("reportes.administrativos.calendarioBaseMensual", [
         // return view("reportes.administrativos.resumenCapituloPartida", [
-        return view("reportes.administrativos.proyectoAvanceGeneral", [
+        // return view("reportes.administrativos.proyectoAvanceGeneral", [
+        return view("reportes.administrativos.proyectoCalendarioActividadGeneral", [
             'dataSet' => json_encode($dataSet),
             'anios' => $anios,
-            'upps' => $upps,
+            // 'upps' => $upps,
         ]);
     }
 
@@ -102,8 +104,14 @@ class ReporteController extends Controller
         ]);
     }
 
+    // public function getFechaCorte($anio){
+    //     $fechaCorte = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where anio = ? and deleted_at is not null',[$anio]);
+
+    //     return $fechaCorte;
+    // }
+    // Datos BD antigua
     public function getFechaCorte($anio){
-        $fechaCorte = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where anio = ? and deleted_at is not null',[$anio]);
+        $fechaCorte = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[$anio]);
 
         return $fechaCorte;
     }
@@ -114,7 +122,7 @@ class ReporteController extends Controller
         setlocale(LC_TIME, 'es_VE.UTF-8','esp');
         // $report =  'reporte_art_20_frac_X_b_num_11_2';
         $report =  $nombre;
-        $anio = $request->input('anio');
+        $anio = (int)$request->input('anio');
         $fechaCorte = $request->input('fechaCorte');
         // dd($report);
 
@@ -135,6 +143,7 @@ class ReporteController extends Controller
             "logoRight" => $logo,
         );
         if($fechaCorte != null) $parameters["fecha"] = $fechaCorte . " 00:00:00";
+        // dd($parameters);
 
         $database_connection = \Config::get('database.connections.mysql');
 

@@ -1,5 +1,5 @@
 <?php
-    $titleDesc = "Proyecto Calendario por UPP";
+    $titleDesc = "Avance de Proyectos con Actividades por UPP";
     
 ?>
 
@@ -22,7 +22,7 @@
                         <div class="col-sm-12 col-md-3 col-lg-2">
                             <select class="form-control filters filters_anio" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
                                 @foreach ($anios as $anio)
-                                    <option value={{$anio->anio}}>{{ DateTime::createFromFormat('y', $anio->anio)->format('Y')}}</option>
+                                    <option value={{$anio->ejercicio}}>{{$anio->ejercicio}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -61,32 +61,16 @@
                 <div class="card">
                     <div class="card-body">
                         <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                            id="genericDataTable" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="0,1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14">
-                            <thead  class="colorMorado">
+                            id="genericDataTable" data-right="1,2,3" data-left="0,4" data-center="0,1,2,3,4">
+                            <thead class="colorMorado">
                                 <tr>
-                                    <th class="exportable align-middle text-light">Clave presupuestal</th>
-                                    <th class="exportable align-middle text-light">Monto Anual</th>
-                                    <th class="exportable align-middle text-light">Enero</th>
-                                    <th class="exportable align-middle text-light">Febrero</th>
-                                    <th class="exportable align-middle text-light">Marzo</th>
-                                    <th class="exportable align-middle text-light">Abril</th>
-                                    <th class="exportable align-middle text-light">Mayo</th>
-                                    <th class="exportable align-middle text-light">Junio</th>
-                                    <th class="exportable align-middle text-light">Julio</th>
-                                    <th class="exportable align-middle text-light">Agosto</th>
-                                    <th class="exportable align-middle text-light">Septiembre</th>
-                                    <th class="exportable align-middle text-light">Octubre</th>
-                                    <th class="exportable align-middle text-light">Noviembre</th>
-                                    <th class="exportable align-middle text-light">Diciembre</th>
+                                    <th class="exportable align-middle text-light">Unidad programática presupuestaría</th>
+                                    <th class="exportable align-middle text-light">Cantidad de proyectos</th>
+                                    <th class="exportable align-middle text-light">Cantidad de proyectos con actividades</th>
+                                    <th class="exportable align-middle text-light">% de avance</th>
+                                    <th class="exportable align-middle text-light">Estatus</th>
                                 </tr>
                             </thead>
-                            <tfoot class="colorMorado">
-                                <tr>
-                                    <td class="align-middle text-start">TOTAL</td>
-                                    <td class="align-middle text-end total" style="width: 20em;" id="total"></td>
-                                    {{-- poner los demas totales --}}
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>

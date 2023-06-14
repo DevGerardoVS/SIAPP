@@ -80,11 +80,12 @@
                     data: response.dataSet,
                     searching: true,
                     autoWidth: true,
-                ordering: true,
-                pageLength: 10,
-                dom: 'frltip',
-                scrollX: true,
-                "lengthMenu": [10, 25, 50, 75, 100, 150, 200],
+                    ordering: true,
+                    // processing: true,
+                    pageLength: 10,
+                    dom: 'frltip',
+                    scrollX: true,
+                    "lengthMenu": [10, 25, 50, 75, 100, 150, 200],
                     language: {
                         processing: "Procesando...",
                         lengthMenu: "Mostrar _MENU_ registros",
@@ -106,6 +107,10 @@
                     },
                     dom: 'frltip',
                     columnDefs: [
+                        {
+                            defaultContent: "-",
+                            targets: "_all"
+                        },
                         {
                             targets: formatRight,
                             className: 'text-right'
@@ -241,12 +246,14 @@
         $("#buscarForm").on("change",".filters_fechaCorte",function(e){
             e.preventDefault();
             getData();
+            $(".fechaCorte").val($('#fechaCorte_filter').val());
             $("#fechaCorte").val($('#fechaCorte_filter').val());
         });
 
         $("#buscarForm").on("change",".filters_upp",function(e){
             e.preventDefault();
             getData();
+            $(".upp").val($('#upp_filter').val());
             $("#upp").val($('#upp_filter').val());
         });
     });

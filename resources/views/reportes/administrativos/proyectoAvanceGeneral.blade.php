@@ -43,7 +43,7 @@
                         <div class="col-md-6 col-sm-12">
                             <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
                                 @foreach ($upps as $upp)
-                                    <option value={{$upp->clave}}  {{$upp->descripcion}}>{{$upp->clave}} {{$upp->descripcion}}</option>
+                                    <option value={{$upp->clave}} {{$upp->descripcion}}>{{$upp->clave}} {{$upp->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>

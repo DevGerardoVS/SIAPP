@@ -61,7 +61,7 @@
                 <div class="card">
                     <div class="card-body">
                         <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                            id="genericDataTable" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="0,1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14">
+                            id="genericDataTable" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="0,1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%">
                             <thead  class="colorMorado">
                                 <tr>
                                     <th class="exportable align-middle text-light">Ramo</th>

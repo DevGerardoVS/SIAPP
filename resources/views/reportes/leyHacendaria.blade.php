@@ -40,8 +40,7 @@
                 <div class="col-md-10 col-sm-12">
                     <div class="card">
                         <div class="card-body">
-
-                            <table  class="table table-striped table-bordered" id="tbl-reportes">
+                            <table class="table table-striped table-bordered" id="tbl-reportes">
                                 <tbody>
                                     @foreach ($names as $name)
                                         <tr>
@@ -49,30 +48,29 @@
                                                 @php
                                                     $replace_underscore = str_replace('_',' ',$name->name);
                                                     $replace_report = str_replace('reporte','',$replace_underscore);
-                                                    // $replace_art = str_replace('art',' ART.',$replace_report);
                                                     $replace_num = str_replace('num','numeral',$replace_report);
                                                     if (str_contains($replace_num, 'num')) {
                                                         $replace_num = substr_replace( $replace_num, "inc ", 15, 0 );
                                                     }
-                                                    $correct_name = $replace_num;  
+                                                    $replace_dot = str_replace('11 ','11.',$replace_num);
+                                                    $correct_name = $replace_dot;  
                                                 @endphp
 
                                                 <div class="my-auto me-2">{{strtoupper($correct_name)}}</div>
                                                 <div class="d-flex justify-content-end flex-wrap">
                                                     <form action="{{ route('downloadReport',['nombre'=>$name->name]) }}" method="POST" enctype="multipart/form-data">
-                                                    {{-- <form action="{{ route('downloadReport',['name'=>$name->name, 'anio'=> 23, 'date'=> 0]) }}" method="POST" enctype="multipart/form-data"> --}}
                                                         @csrf
                                                         <input type="text" hidden class="anio" id="anio" name="anio">
                                                         <input type="text" hidden class="fechaCorte" id="fechaCorte" name="fechaCorte">
-                                                        <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-sm-3" style="border-color: #6a0f49;" title="Generar Reporte PDF">
+                                                        <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-sm-3" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
                                                             <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                                                             <span class="d-sm-none d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
                                                         </button>
-                                                    </form>
-                                                    {{-- <button id="btnExcel" type="button" class="btn btn-light btn-sm btn-labeled" style="border-color: #6a0f49;" title="Generar Reporte Excel">
+                                                        <button id="btnExcel" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled" style="border-color: #6a0f49;" title="Generar Reporte Excel" name="action" value="xls">
                                                             <span class="btn-label"><i class="fa fa-file-excel-o text-success fs-4 align-middle"></i></span>
                                                             <span class="d-sm-none d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a Excel</span>
-                                                    </button> --}}
+                                                        </button>
+                                                    </form>
                                                     
                                                 </div>
                                             </td>
@@ -80,7 +78,6 @@
                                     @endforeach 			
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>

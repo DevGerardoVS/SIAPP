@@ -1,6 +1,7 @@
 <?php
-    $titleDesc = "Proyecto Calendario General";
-    // $titleDesc = "Proyecto Calendario por UPP"
+    $titleDesc = "Proyecto Calendario de Actividades General";
+    // $titleDesc = "Proyecto Calendario de Actividades por UPP"
+    
 ?>
 
 @extends('layouts.app')
@@ -41,7 +42,7 @@
         <br>
         <br>
         <div class="d-flex flex-wrap justify-content-end">
-            <form action="{{ route('downloadReport',['nombre'=>'calendario_general']) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('downloadReport',['nombre'=>'calendario_UPP']) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="text" hidden class="anio" id="anio" name="anio">
                 <input type="text" hidden class="fechaCorte" id="fechaCorte" name="fechaCorte">
@@ -61,11 +62,21 @@
                 <div class="card">
                     <div class="card-body">
                         <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                            id="genericDataTable" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="0,1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14">
-                            <thead  class="colorMorado">
+                            id="genericDataTable" data-right="0" data-left="1" data-center="2"  style="width:100%">
+                            <thead class="colorMorado">
                                 <tr>
-                                    <th class="exportable align-middle text-light">Clave presupuestal</th>
-                                    <th class="exportable align-middle text-light">Monto Anual</th>
+                                    <th class="exportable align-middle text-light">UPP</th>
+                                    <th class="exportable align-middle text-light">UR</th>
+                                    <th class="exportable align-middle text-light">Programa</th>
+                                    <th class="exportable align-middle text-light">Subprograma</th>
+                                    <th class="exportable align-middle text-light">Proyecto</th>
+                                    <th class="exportable align-middle text-light">Fondo</th>
+                                    <th class="exportable align-middle text-light">Actividad</th>
+                                    <th class="exportable align-middle text-light">Cantidad Beneficiarios</th>
+                                    <th class="exportable align-middle text-light">Beneficiarios</th>
+                                    <th class="exportable align-middle text-light">Unidad de medida</th>
+                                    <th class="exportable align-middle text-light">Tipo de actividad</th>
+                                    <th class="exportable align-middle text-light">Meta anual</th>
                                     <th class="exportable align-middle text-light">Enero</th>
                                     <th class="exportable align-middle text-light">Febrero</th>
                                     <th class="exportable align-middle text-light">Marzo</th>
@@ -80,13 +91,6 @@
                                     <th class="exportable align-middle text-light">Diciembre</th>
                                 </tr>
                             </thead>
-                            <tfoot class="colorMorado">
-                                <tr>
-                                    <td class="align-middle text-start">TOTAL</td>
-                                    <td class="align-middle text-end total" style="width: 20em;" id="total"></td>
-                                    {{-- poner los demas totales --}}
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
