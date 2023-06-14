@@ -47,7 +47,7 @@
             dataType: 'json',
             success: function(response) {
                 console.log("res-DataTable",response)
-                if(response?.dataSet.length == 0){
+                if(response?.dataSet?.length == 0){
                     dt.attr('data-empty','true');
                 }
                 else{
@@ -121,7 +121,7 @@
                 redrawTable('#catalogo');
             },
             error: function(response) {
-                console.log('Error: ' + response);
+                console.log('Error: ', response.responseJSON.message);
             }
         });
     }

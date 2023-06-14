@@ -96,8 +96,26 @@ var dao = {
                  document.getElementById("id_grupo").options[0].disabled = true;
                  $.each(data, function (i, val) {
                      par.append(new Option(data[i].nombre_grupo, data[i].id));
-                 });
+                 }); 
              }); */
+    },
+    getUrs: function () {
+
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/urs',
+            dataType: "JSON"
+        }).done(function (data) {
+            var par = $('#ur_filter');
+            par.html('');
+            par.append(new Option("-- URS--", ""));
+            document.getElementById("ur_filter").options[0].disabled = true;
+            $.each(data, function (i, val) {
+                par.append(new Option(data[i].descripcion, data[i].clave));
+            });
+            par.selectpicker({ search: true });
+
+        });
     },
     crearUsuario: function () {
         var form = $('#frm_create')[0];
@@ -189,53 +207,6 @@ var dao = {
         $("#label_idGrupo").text("").hide();
 
     },
-     edit_row:function (no){
-    document.getElementById("edit_button" + no).style.display = "none";
-    document.getElementById("save_button" + no).style.display = "block";
-
-    var name = document.getElementById("name_row" + no);
-    var country = document.getElementById("country_row" + no);
-    var age = document.getElementById("age_row" + no);
-
-    var name_data = name.innerHTML;
-    var country_data = country.innerHTML;
-    var age_data = age.innerHTML;
-
-    name.innerHTML = "<input type='text' id='name_text" + no + "' value='" + name_data + "'>";
-    country.innerHTML = "<input type='text' id='country_text" + no + "' value='" + country_data + "'>";
-    age.innerHTML = "<input type='text' id='age_text" + no + "' value='" + age_data + "'>";
-    },
-    save_row:function(no) {
-    var name_val = document.getElementById("name_text" + no).value;
-    var country_val = document.getElementById("country_text" + no).value;
-    var age_val = document.getElementById("age_text" + no).value;
-
-    document.getElementById("name_row" + no).innerHTML = name_val;
-    document.getElementById("country_row" + no).innerHTML = country_val;
-    document.getElementById("age_row" + no).innerHTML = age_val;
-
-    document.getElementById("edit_button" + no).style.display = "block";
-    document.getElementById("save_button" + no).style.display = "none";
-}, delete_row:function(no) {
-    document.getElementById("row" + no + "").outerHTML = "";
-},
-
-    add_row: function () {
-        var form = $('#actividad')[0];
-        var data = new FormData(form);
-        const f = {};
-        data.forEach((value, key) => (f[key] = value));
-        console.log(f);
-
-    var table = document.getElementById("actividades");
-    var table_len = (table.rows.length) - 1;
-        var row = table.insertRow(table_len).outerHTML = "<tr'><td>" + f.actividades + "</td><td>" + f.metas + "</td><td>" + f.tipo_AC +
-        "</td><td><input type='button' id='edit_button" + table_len + "' value='Edit' class='edit' onclick='edit_row(" + table_len + ")'> <input type='button' id='save_button" + table_len + "' value='Save' class='save' onclick='save_row(" + table_len + ")'> <input type='button' value='Delete' class='delete' onclick='delete_row(" + table_len + ")'></td></tr>";
-
-    document.getElementById("new_name").value = "";
-    document.getElementById("new_country").value = "";
-    document.getElementById("new_age").value = "";
-}
 };
 var init = {
     validateCreate: function (form) {
@@ -272,8 +243,11 @@ var init = {
 };
 
 $(document).ready(function () {
+    let inset="";
     getData();
     dao.getAnio();
+    dao.getUrs();
+   $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
         keyboard: false
@@ -283,42 +257,12 @@ $(document).ready(function () {
         if ($('#frm_create').valid()) {
             dao.crearUsuario();
         }
-        $('#email-error').text("Este campo es requerido").addClass('has-error');;
-        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');;
     });
-    $("#email").change(function () {
-        var regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        regex.test($("#email").val());
-        var text = "Ingresa un correo electrónico válido";
-        if (regex.test($("#email").val())) {
-            $('#email-error').text("").removeClass('d-block').removeClass('has-error');
-            $('#email').removeClass('has-error').removeClass('d-block');
-        } else {
-            $('#email-error').text(text).addClass('d-block').addClass('has-error');
-            $('#email').addClass('has-error').addClass('d-block');
-        }
-    });
-    $("#in_celular").change(function () {
-        var regex = /^[a-zA-Z ]+$/;
-        var bol = regex.test($("#in_celular").val());
-        if ($("#in_celular").val() == '') {
-            $('#in_celular-error').text("Este campo es requerido").addClass('d-block').addClass('has-error');
-            $('#in_celular').addClass('d-block').addClass('has-error');
-        }
-        else {
-            if (bol != true) {
-                if ($("#in_celular").val().length != 14) {
-                    $('#in_celular-error').text("El Telefono debe contar con 10 digitos").addClass('d-block').addClass('has-error');
-                    $('#in_celular').addClass('d-block').addClass('has-error');
-                } else {
-                    $('#in_celular-error').text("").removeClass('d-block').removeClass('has-error');
-                    $('#in_celular').removeClass('d-block').removeClass('has-error');
-                }
-            } else {
-                $('#in_celular-error').text("El telefono no puede llevar letras").addClass('d-block').addClass('has-error');
-                $('#in_celular').addClass('d-block').addClass('has-error');
-            }
-        }
-    });
-    $('#in_celular').mask('00-00-00-00-00');
+   /*  $("#serchUr").click(function () {
+        console.log("aedsa",$('#serchUr').val());
+    }); 
+    $("#serchUr").keypress(function (e) {
+        inset += String.fromCharCode(e.keyCode);
+        dao.getUrs(inset);
+    });*/
 });

@@ -1,11 +1,9 @@
 @extends('layouts.app')
 @include('calendarización.metas.addActividad')
-@isset($dataSet)
-    @include('panels.datatable')
-@endisset
+@include('panels.datatable')
 @section('content')
     <div class="container">
-        <form action="{{ route('proyecto') }}" id="buscarForm" method="GET">
+        <form action="{{ route('proyectos') }}" id="buscarForm" method="GET">
             @csrf
             <div class="row">
                 <div class="col-sm-2">
@@ -33,7 +31,7 @@
                         <br>
                         <div class="widget-body no-padding ">
                             <div class="table-responsive ">
-                                <table id="actividades" class="table table-hover table-striped ">
+                                <table id="catalogo" class="table table-hover table-striped ">
                                     <thead>
                                         <tr class="colorMorado">
                                             <th>Actividad</th>
@@ -66,6 +64,10 @@
     </div>
     </section>
     </div>
-    <script src="/js/calendarización/metas/init.js"></script>
+    <script src="/js/calendarización/metas/initActiv.js"></script>
     <script src="/js/utilerias.js"></script>
+    <script>
+        //En las vistas solo se llaman las funciones del archivo init
+        init.validateCreate($('#actividad'));
+    </script>
 @endsection
