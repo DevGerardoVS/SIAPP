@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Calendarización;
 
 use App\Http\Controllers\Controller;
+use App\Imports\ClavePresupuestaria;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Models\calendarizacion\clasificacion_geografica;
 use Redirect;
 use Datatables;
 use App\Models\User;
 use Auth;
 use DB;
 use Log;
-use App\Models\calendarizacion\clasificacion_geografica;
 
 class CalendarizacionCargaMasivaController extends Controller
 {
@@ -33,21 +34,30 @@ class CalendarizacionCargaMasivaController extends Controller
        ], $message );
 
 
-        
+        $file=$request->file->store('plantilla');
 
-        $returnData = array(
-            'status' => 'success',
-            'title' => 'Éxito',
-            'message' => 'Se ha importado con exito',
-            'data' => $test
-          );
+        try {
+            (new ClavePresupuestaria)->import($file, 'local', \Maatwebsite\Excel\Excel::XLSX);
 
-        return response()->json($returnData);
-     
+            $returnData = array(
+                'status' => 'success',
+                'title' => 'Éxito',
+                'message' => 'Se ha importado con exito',
+              );
+    
+            return response()->json($returnData);
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+             $failures = $e->failures();
+             
+             foreach ($failures as $failure) {
+                 $failure->row(); // row that went wrong
+                 $failure->attribute(); // either heading key (if using heading row concern) or column index
+                 $failure->errors(); // Actual error messages from Laravel validator
+                 $failure->values(); // The values of the row that has failed.
+             }
+        }
 
-
-
-/*         Excel::import(new ClavePresupuestaria, request()->file($request->file));
+/*         
  */        
             
        }
