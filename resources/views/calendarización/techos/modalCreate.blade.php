@@ -26,9 +26,13 @@
                         <div class="col-sm-4">
                             <labe>Unidad Programática Presupuestal: </labe>
                         </div>
+                        <?php $upp = DB::table('v_entidad_ejecutora')->get();?>
                         <div class="col-sm-5">
                             <select class="form-control filters" placeholder="Seleccione una UPP">
-                                <option value="" disabled selected>Seleccione una UPP</option>
+                                <option value="" selected>Seleccione una UPP</option>
+                        @foreach($upp as $u)
+                                <option value="" >{{$u->upp}}</option>
+                        @endforeach
                             </select>
                         </div>
                     </div>

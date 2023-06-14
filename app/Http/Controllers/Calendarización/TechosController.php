@@ -16,11 +16,16 @@ class TechosController extends Controller
 
     public function getTechos(){
         $dataSet = [];
-        $data = DB::table('techos_financieros as tf')
+        /*$data = DB::table('techos_financieros as tf')
             ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
             ->leftJoin('v_entidad_ejecutora as vee','vee.clv_upp','=','tf.clv_upp')
             ->leftJoin('fondo as f', 'f.clv_fondo_ramo','=','tf.clv_fondo')
-            ->where('tf.ejercicio','=',2023)
+            ->get()
+        ;*/
+        $data = DB::table('techos_financieros as tf')
+            ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
+            ->leftJoinSub('select distinct clv_upp, upp from v_entidad_ejecutora','vee','tf.clv_upp','=','vee.clv_upp')
+            ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo')
             ->get()
         ;
 
