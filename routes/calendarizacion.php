@@ -12,6 +12,8 @@
 		Route::get('/calendarizacion/selects', 'getSelects');
 		Route::get('/calendarizacion/urs', 'getUrs');
 		Route::post('/calendarizacion/create', 'createMeta');
+		Route::post('/calendarizacion/detelet', 'deleteMeta');
+		Route::get('/calendarizacion/update/{id?}','updateMeta');
 		Route::get('/calendarizacion/metasXproyecto', 'getMetasXp')->name('proyectos');
 	});
 
