@@ -50,7 +50,7 @@ var dao = {
             if (result.isConfirmed) {
                 $.ajax({
                     type: "POST",
-                    url: "/adm-usuarios/eliminar",
+                    url: "/calendarizacion/detelet",
                     data: {
                         id: id
                     }
@@ -77,9 +77,7 @@ var dao = {
 
 
     }, getSelect: function () {
-        for (let i = 1; i <=12; i++) {
-            $("#" + i).val(0);
-        }
+
         console.log("entro");
         $.ajax({
             type: "GET",
@@ -125,7 +123,7 @@ var dao = {
             tipo_AC.append(new Option("--Tipo Actividad--", ""));
             document.getElementById("tipo_Ac").options[0].disabled = true;
             $.each(activids, function (i, val) {
-                tipo_AC.append(new Option(val, val));
+                tipo_AC.append(new Option(val, i));
             }); 
             tipo_AC.selectpicker({ search: true });
 
@@ -158,17 +156,14 @@ var dao = {
         });
     },
     editarUsuario: function (id) {
+        console.log(id)
         $.ajax({
             type: "GET",
-            url: 'adm-usuarios/update/' + id,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-            timeout: 600000
+            url: '/calendarizacion/update/' + id,
+            dataType: "JSON"
         }).done(function (response) {
             console.log("response", response)
-            const {
+        /*     const {
                 id,
                 username,
                 celular,
@@ -191,7 +186,7 @@ var dao = {
             $('#label_idGrupo').text(perfil).show();
 
             $("#id_grupo").hide();
-            $("#labelGrupo").hide();
+            $("#labelGrupo").hide(); */
 
         });
     },
@@ -205,7 +200,7 @@ var dao = {
         dao.getSelect();
         $('.form-group').removeClass('has-error');  
         for (let i = 1; i <=12; i++) {
-            $('#' + i).val("");
+            $('#' + i).val(0);
         }
         $('#sumMetas').val("");
         $('#beneficiario').val("");
@@ -281,7 +276,27 @@ var dao = {
             default:
                 break;
         }
-      }
+    },
+    valMeses: function () {
+        let e = [];
+        for (let i = 1; i <= 12; i++) { 
+            if($('#' + i).val() != ""){
+                let suma = parseInt($('#' + i).val());
+                e.push(suma);
+            }
+        }
+        if (e>=1) {
+            return true;
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campos vacíos',
+                text: 'Mínimo un mes debe contener una cantidad valida',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+    },
 };
 
 var init = {
@@ -308,11 +323,14 @@ var init = {
 };
 
 $(document).ready(function () {
+    for (let i = 1; i <=12; i++) {
+        $("#" + i).val(0);
+    }
     getData();
     dao.getSelect();
     $('#btnSave').click(function (e) {
         e.preventDefault();
-      if ($('#actividad').valid()) {
+        if ($('#actividad').valid() && dao.valMeses()) {
             dao.crearUsuario();
         }
     });
