@@ -25,19 +25,21 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <select class="form-control filters" id="ur_filter" name="ur_filter"
-                                            autocomplete="ur_filter" placeholder="Seleccione una UPP">
-                                        <option value="" disabled selected>Buscar por UPP</option>
-                                        <option value="2022">002</option>
-                                        <option value="2023">003</option>
-                                        <option value="2024">004</option>
-                                        <option value="2025">005</option>
+                                    <?php $upp = DB::table('v_entidad_ejecutora')->select('clv_upp','upp')->distinct()->get();?>
+                                    <select class="form-control filters" id="upp_filter" name="upp_filter" placeholder="Seleccione una UPP">
+                                        <option value="" selected>Buscar por UPP</option>
+                                        @foreach($upp as $u)
+                                        <option value="{{$u->clv_upp}}" >{{$u->upp}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <select class="form-control filters" id="ur_filter" name="ur_filter"
-                                            autocomplete="ur_filter" placeholder="Seleccione un fondo">
-                                        <option value="" disabled selected>Buscar por fondo</option>
+                                    <?php $fondo = DB::table('fondo')->select('clv_fondo_ramo','fondo_ramo')->distinct()->get();?>
+                                    <select class="form-control filters" id="fondo_filter" name="fondo_filter" placeholder="Seleccione un fondo" data-live-search="true">
+                                        <option value="0" selected>Buscar por fondo</option>
+                                        @foreach($fondo as $f)
+                                        <option value="{{$f->clv_fondo_ramo}}" >{{$f->fondo_ramo}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-4"></div>

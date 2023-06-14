@@ -16,12 +16,7 @@ class TechosController extends Controller
 
     public function getTechos(){
         $dataSet = [];
-        /*$data = DB::table('techos_financieros as tf')
-            ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
-            ->leftJoin('v_entidad_ejecutora as vee','vee.clv_upp','=','tf.clv_upp')
-            ->leftJoin('fondo as f', 'f.clv_fondo_ramo','=','tf.clv_fondo')
-            ->get()
-        ;*/
+
         $data = DB::table('techos_financieros as tf')
             ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
             ->leftJoinSub('select distinct clv_upp, upp from v_entidad_ejecutora','vee','tf.clv_upp','=','vee.clv_upp')
@@ -30,8 +25,7 @@ class TechosController extends Controller
         ;
 
         foreach ($data as $d){
-            $button2 = '<a class="btn btn-secondary" onclick="" data-toggle="modal"
-            data-target="#createGroup" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil" style="font-size: large; color: white"></i></a>';
+            $button2 = '<a class="btn btn-secondary" onclick="" data-toggle="modal" data-target="#createGroup" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil" style="font-size: large; color: white"></i></a>';
             $button3 = '<button onclick="" title="Eliminar grupo" class="btn btn-danger"><i class="fa fa-trash" style="font-size: large"></i></button>';
 
             array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,$button2.' '.$button3]);

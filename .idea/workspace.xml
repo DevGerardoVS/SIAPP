@@ -7,6 +7,7 @@
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Calendarización/TechosController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Calendarización/TechosController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/calendarización/techos/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/calendarización/techos/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/calendarización/techos/modalCreate.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/calendarización/techos/modalCreate.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -243,6 +244,7 @@
       <workItem from="1686325090841" duration="11218000" />
       <workItem from="1686585230816" duration="15420000" />
       <workItem from="1686669009409" duration="13109000" />
+      <workItem from="1686755919070" duration="3906000" />
     </task>
     <servers />
   </component>

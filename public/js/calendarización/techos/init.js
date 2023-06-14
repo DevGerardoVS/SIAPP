@@ -137,6 +137,7 @@ var init = {
 $(document).ready(function () {
     getData();
     dao.getAnio();
+    $('#fondo_filter').selectpicker({ search: true });
     $('#btnNew').on('click',function (e) {
         e.preventDefault();
         anio = new Date().getFullYear() + 1;
