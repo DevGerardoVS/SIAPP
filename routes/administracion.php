@@ -4,6 +4,7 @@
 	use App\Http\Controllers\Administracion\GrupoController;
 	use App\Http\Controllers\Administracion\PermisoController;
 	use App\Http\Controllers\Administracion\BitacoraController;
+	use App\Http\Controllers\Administracion\InicioController;
 
 	Route::controller(SistemasController::class)->group(function () {
 		Route::get('/sistemas/panel', 'getPanel');
@@ -21,6 +22,11 @@
 		Route::post('adm-usuarios/eliminar', 'postDelete');
 		Route::post('adm-usuarios/grupos', 'postGrupos');
 		Route::get('grupos', 'grupos');
+	});
+
+	Route::controller(InicioController::class)->group(function (){
+		Route::post('adm-inicio/a', 'GetInicioA')->name('inicio_a');
+		Route::post('adm-inicio/b', 'GetInicioB')->name('inicio_b');
 	});
 
 	Route::controller(GrupoController::class)->group(function () {
