@@ -3,10 +3,6 @@
 
 
     function getData(tabla, rt){
-       
-
-
-
        var dt = $(tabla);
        var orderDt = "";
        var column = "";
