@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Calendarización;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TechosController extends Controller
 {
@@ -28,12 +29,25 @@ class TechosController extends Controller
             $button2 = '<a class="btn btn-secondary" onclick="" data-toggle="modal" data-target="#createGroup" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil" style="font-size: large; color: white"></i></a>';
             $button3 = '<button onclick="" title="Eliminar grupo" class="btn btn-danger"><i class="fa fa-trash" style="font-size: large"></i></button>';
 
-            array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,$button2.' '.$button3]);
+            array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,'pendiente',$button2.' '.$button3]);
         }
 
         return [
             'dataSet'=>$dataSet,
             'data' => json_encode($data)
         ];
+    }
+
+    public function getFondos(){
+        $fondos = DB::table('fondo')
+            ->select('clv_fondo_ramo','fondo_ramo')
+            ->distinct()
+            ->get();
+
+        return json_encode($fondos);
+    }
+
+    public function addTecho(Request $request){
+        log::debug($request);
     }
 }

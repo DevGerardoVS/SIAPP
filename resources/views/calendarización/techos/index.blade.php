@@ -26,8 +26,8 @@
                                 </div>
                                 <div class="col-md-2">
                                     <?php $upp = DB::table('v_entidad_ejecutora')->select('clv_upp','upp')->distinct()->get();?>
-                                    <select class="form-control filters" id="upp_filter" name="upp_filter" placeholder="Seleccione una UPP">
-                                        <option value="" selected>Buscar por UPP</option>
+                                    <select class="form-control filters" id="upp_filter" name="upp_filter" placeholder="Seleccione una UPP" data-live-search="true">
+                                        <option value="0" selected>Buscar por UPP</option>
                                         @foreach($upp as $u)
                                         <option value="{{$u->clv_upp}}" >{{$u->upp}}</option>
                                         @endforeach
@@ -42,9 +42,23 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-4"></div>
+                            </div>
+                            <br>
+                            <div class="row">
                                 <div class="col-md-2">
-                                    <!--<button class="btn btn-primary">Nuevo registro</button>-->
+                                    <button type="button" class="btn btn-outline-success" data-toggle="" id="btnExport"
+                                            data-target=".bd-example-modal-lg" data-backdrop="static"
+                                            data-keyboard="false">Exportar Excel
+                                    </button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-secondary" data-toggle="" id="btnCarga"
+                                            data-target=".bd-example-modal-lg" data-backdrop="static"
+                                            data-keyboard="false">Carga masiva
+                                    </button>
+                                </div>
+                                <div class="col-md-6"></div>
+                                <div class="col-md-2">
                                     <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
                                             data-target=".bd-example-modal-lg" data-backdrop="static"
                                             data-keyboard="false">Agregar
@@ -66,6 +80,7 @@
                                     <th>Fondo</th>
                                     <th>Presupuesto</th>
                                     <th>Ejercicio</th>
+                                    <th>Usuario que actualizó</th>
                                     <th>Acciones</th>
                                 </tr>
                                 </thead>

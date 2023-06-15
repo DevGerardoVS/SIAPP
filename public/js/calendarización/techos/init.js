@@ -137,7 +137,10 @@ var init = {
 $(document).ready(function () {
     getData();
     dao.getAnio();
+
     $('#fondo_filter').selectpicker({ search: true });
+    $('#upp_filter').selectpicker({ search: true });
+
     $('#btnNew').on('click',function (e) {
         e.preventDefault();
         anio = new Date().getFullYear() + 1;
@@ -145,26 +148,40 @@ $(document).ready(function () {
     })
     $('#agregar_fondo').on('click', function (e){
         e.preventDefault()
+        selectFondo = ''
 
         table = document.getElementById('fondos')
         table_lenght = (table.rows.length)
-        iconD = '<i class="fa fa-trash" style="font-size: large; color: red"></i>'
+
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/techos/get-fondos',
+            dataType: "JSON"
+        }).done(function (data) {
+            selectFondo = '<select class="form-control filters" id="fondo_'+table_lenght+'" name="fondo_'+table_lenght+'" placeholder="Seleccione un fondo">';
+            selectFondo += '<option value="0" selected>Seleccione fondo</option>';
+            data.forEach(function(item){
+                selectFondo += '<option value="'+item.clv_fondo_ramo+'" >'+item.clv_fondo_ramo+" - "+item.fondo_ramo+'</option>'
+            });
+            selectFondo += '</select>';
+        });
 
         row = table.insertRow(table_lenght).outerHTML='<tr id="'+table_lenght+'">\n' +
             '<td>' +
-            '       <select class="form-control filters" placeholder="Seleccione una tipo">\n' +
+            '       <select class="form-control filters" id="tipo_'+table_lenght+'" name="tipo_'+table_lenght+'" placeholder="Seleccione una tipo">\n' +
             '           <option value="">Seleccione un tipo</option>\n' +
+            '           <option value="Operativo">Operativo</option>\n' +
+            '           <option value="RH">RH</option>\n' +
             '       </select>' +
             '</td>\n' +
             '<td>' +
-            '<select class="form-control filters" id="ur_filter" name="ur_filter" autocomplete="ur_filter" placeholder="Seleccione un fondo">' +
-            '<option value="" disabled selected>Buscar por fondo</option>\n' +
-            '</select>' +
+            selectFondo
+            +
             '</td>\n' +
             '<td>' +
-            '<input type="number" class="form-control" id="monto" name="monto" placeholder="$1000">' +
+            '<input type="number" class="form-control" id="presupuesto_'+table_lenght+'" name="presupuesto_'+table_lenght+'" placeholder="$1000">' +
             '</td>\n' +
-            '  <td><input type="number" value="2024" class="form-control" id="ejercicio" name="ejercicio" disabled placeholder="2024"></td>\n' +
+            '  <td><input type="number" value="2024" class="form-control" id="ejercicio_'+table_lenght+'" name="ejercicio_'+table_lenght+'" disabled placeholder="2024"></td>\n' +
             '<td>' +
             '   <input type="button" value="Eliminar" onclick="dao.eliminaFondo('+table_lenght+')" title="Eliminar fondo" class="btn btn-danger delete" >' +
             '</td>\n' +
@@ -176,14 +193,7 @@ $(document).ready(function () {
         backdrop: 'static',
         keyboard: false
     })
-    $('#btnSave').click(function (e) {
-        e.preventDefault();
-        if ($('#frm_create').valid()) {
-            dao.crearUsuario();
-        }
-        $('#email-error').text("Este campo es requerido").addClass('has-error');;
-        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');;
-    });
+
     $("#email").change(function () {
         var regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         regex.test($("#email").val());
@@ -219,4 +229,31 @@ $(document).ready(function () {
         }
     });
     $('#in_celular').mask('00-00-00-00-00');
+});
+
+$('#btnSave').click(function (e) {
+    e.preventDefault();
+    var form = $('#frm_create_techo')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        type: "POST",
+        url: '/calendarizacion/techos/add-techo',
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 600000
+    }).done(function (response) {
+        $('#cerrar').trigger('click');
+        /*Swal.fire({
+            icon: 'success',
+            title: 'Your work has been saved',
+            showConfirmButton: false,
+            timer: 1500
+        });*/
+        dao.limpiarFormularioCrear();
+        getData();
+    });
 });
