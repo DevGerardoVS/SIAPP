@@ -44,7 +44,9 @@ class DatabaseSeeder extends Seeder
             ['id' => 11,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Reportes', 'ruta' => '/Reportes', 'icono' => 'fa-flag-checkered', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Reportes'],
             ['id' => 12,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'ley Planeacion Hacienda', 'ruta' => '/Reportes/ley-planeacion', 'icono' => 'fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Reportes'],
             ['id' => 13,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Administrativos', 'ruta' => '/Reportes/administrativos', 'icono' => 'fa-flag-checkered', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Reportes'],
-            ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administracio de captura', 'ruta' => '/admon-capturas', 'icono' => ' fa-crosshairs', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas']
+            ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administracio de captura', 'ruta' => '/admon-capturas', 'icono' => ' fa-crosshairs', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
+            ['id' => 15,  'id_sistema' => 1,'padre' => 13, 'nombre_menu' => 'algo asi', 'ruta' => '/administrativos/algo', 'icono' => 'fa-flag-checkered', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Reportes']
+
         );
 
         protected $funciones = array(
@@ -64,6 +66,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 14,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'getPermisos', 'tipo' => 'Consulta', 'descripcion' => 'Consulta de permisos'],
             ['id' => 15,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'postPermisos', 'tipo' => 'Insercion', 'descripcion' => 'Crear registro de permisos'],
             ['id' => 16,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
+            
         
         );
 
@@ -158,9 +161,9 @@ class DatabaseSeeder extends Seeder
                 }
             }
 
-            $this->call([
+      /*       $this->call([
                 fondosSeeder::class
-            ]);
+            ]); */
 
             DB::commit();
             echo "\n    - Se aplico con exito el Seeder - Base:\n";

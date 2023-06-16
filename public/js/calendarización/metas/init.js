@@ -100,18 +100,35 @@ var dao = {
              }); */
     },
     getUrs: function () {
-
         $.ajax({
             type: "GET",
             url: '/calendarizacion/urs',
             dataType: "JSON"
         }).done(function (data) {
+            console.log("urs",data)
             var par = $('#ur_filter');
             par.html('');
             par.append(new Option("-- URS--", ""));
             document.getElementById("ur_filter").options[0].disabled = true;
             $.each(data, function (i, val) {
                 par.append(new Option(data[i].descripcion, data[i].clave));
+            });
+            par.selectpicker({ search: true });
+
+        });
+    },
+    getProg: function (ur) {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/programas/'+ur,
+            dataType: "JSON"
+        }).done(function (data) {
+            var par = $('#pr_filter');
+            par.html('');
+            par.append(new Option("-- Programa--", ""));
+            document.getElementById("pr_filter").options[0].disabled = true;
+            $.each(data, function (i, val) {
+                par.append(new Option(val.clv_programa,val.programa));
             });
             par.selectpicker({ search: true });
 
@@ -207,6 +224,15 @@ var dao = {
         $("#label_idGrupo").text("").hide();
 
     },
+    editarMeta: function (id) {
+        console.log(id)
+        Swal.fire({
+            icon: 'success',
+            title: 'Your work has been saved',
+            showConfirmButton: false,
+            timer: 1500
+          })
+    }
 };
 var init = {
     validateCreate: function (form) {
@@ -243,10 +269,15 @@ var init = {
 };
 
 $(document).ready(function () {
-    let inset="";
     getData();
-    dao.getAnio();
     dao.getUrs();
+
+    $('#ur_filter').change(function () {
+        let ur = $("#ur_filter option:selected").val();
+        console.log("saDASd",ur)
+        $('#ur').val(ur);
+    }) 
+    
    $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
@@ -258,11 +289,8 @@ $(document).ready(function () {
             dao.crearUsuario();
         }
     });
-   /*  $("#serchUr").click(function () {
-        console.log("aedsa",$('#serchUr').val());
-    }); 
-    $("#serchUr").keypress(function (e) {
-        inset += String.fromCharCode(e.keyCode);
-        dao.getUrs(inset);
-    });*/
+   /* $("#serchUr").click(function () {
+     console.log("aedsa",$('#serchUr').val());
+      });
+    */
 });

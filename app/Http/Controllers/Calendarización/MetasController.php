@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Calendarización;
 use App\Models\Catalogo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Redirect;
 use Datatables;
 use App\Models\calendarizacion\Metas;
 use Auth;
 use DB;
 use Log;
+use Illuminate\Database\Query\JoinClause;
 
 
 class MetasController extends Controller
@@ -22,76 +24,148 @@ class MetasController extends Controller
 	}
     public function getProyecto()
 	{
-        $dataSet=$this->getProyect();
-		$uMed = DB::table('unidades_medida')
-			->select(
-				'id',
-				'clave',
-				'unidad_medida'
-			)
-			->where('deleted_at', null)
-			->get();
-		return view('calendarización.metas.proyecto',["dataSet"=>$uMed]);
+		return view('calendarización.metas.proyecto');
 	}
-    public function getMetas()
-	{
-		$prog = DB::table('proyectos_mir')
-			->select(
-				'proyectos_mir.id',
-				'catalogo.clave as programa',
-				)
-			->leftJoin('catalogo', 'catalogo.id', '=', 'proyectos_mir.programa_id')
-			->where('proyectos_mir.deleted_at', '=', null);
-		$subprog = DB::table('proyectos_mir')
-			->select(
-				'proyectos_mir.id',
-				'catalogo.clave as subprograma',
-				)
-			->leftJoin('catalogo', 'catalogo.id', '=', 'proyectos_mir.subprograma_id')
-			->where('proyectos_mir.deleted_at', '=', null);
-		$proye = DB::table('proyectos_mir')
-			->select(
-				'proyectos_mir.id',
-				'catalogo.descripcion',
-				)
-			->leftJoin('catalogo', 'catalogo.id', '=', 'proyectos_mir.proyecto_id')
-			->where('proyectos_mir.deleted_at', '=', null);
-
-		$query = DB::table('proyectos_mir')
-			->leftJoinSub($prog, 'prog', function ($join) {
-				$join->on('proyectos_mir.id', '=', 'prog.id');
-			})
-			->leftJoinSub($subprog, 'subprog', function ($join) {
-				$join->on('proyectos_mir.id', '=', 'subprog.id');
-			})
-			->leftJoinSub($proye, 'proye', function ($join) {
-				$join->on('proyectos_mir.id', '=', 'proye.id');
-			})
-			->select(
-				'proyectos_mir.id',
-				'prog.programa',
-				'subprog.subprograma',
-				'proye.descripcion',
-			);
-				$query = $query->get();
+	public function getNames($id){
+		$cvl = DB::table('proyectos_mir')
+		->select(
+			'id',
+			'clv_upp',
+			'clv_ur',
+			'clv_programa',
+			'clv_subprograma',
+			'clv_proyecto',
+			)
+		->where('proyectos_mir.id', '=', $id)
+		->where('proyectos_mir.deleted_at', '=', null)->get();
+		$query = DB::table('v_epp')
+		->select(
+			'ur',
+			'programa',
+			'subprograma',
+			'proyecto'
+			)
+		->where('v_epp.clv_ur','=',$cvl[0]->clv_ur)
+		->where('v_epp.clv_upp', '=',$cvl[0]->clv_upp )
+		->where('v_epp.clv_programa', '=',$cvl[0]->clv_programa )
+		->where( 'v_epp.clv_subprograma', '=',$cvl[0]->clv_subprograma)
+		->where('v_epp.clv_proyecto', '=', $cvl[0]->clv_proyecto)->get();
+	$dataSet = [];
+	foreach ($query as $key) {
+		$i = array(
+			$key->ur,
+			$key->programa,
+			$key->subprograma,
+			$key->proyecto,
+		);
+		$dataSet[] = $i;
+	}
+	return $dataSet[0];
+	}
+public function getMetasP(Request $req){
+		Log::debug($req);
+	$activs = DB::table("programacion_presupuesto")
+		->select(
+		'id',
+		'programa_presupuestario as programa',
+		'subprograma_presupuestario as subprograma',
+		'proyecto_presupuestario as proyecto'
+		)
+		->where('ur','=',$req->ur_filter)
+		->distinct()->get();
+		/* ->where('upp','=',auth::user()->id_ente) */
 		$dataSet = [];
 		
-		foreach ($query as $key) {
-            $accion =   '<a type="button" class="btn btn-primary"  href="/calendarizacion/proyecto" class="button"><i class="fa-plus">Agregar</i></a>';
+		foreach ($activs as $key) {
+            $accion = '<div class="form-check">
+			<input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+			<label class="form-check-label" for="exampleRadios1">
+			</label>
+		  </div>';
 			$i = array(
-				$key->id,
 				$key->programa,
 				$key->subprograma,
-				$key->descripcion,
-				"",
-				"",
-                " ",
-                " ",
+				$key->proyecto,
 				$accion,
 			);
 			$dataSet[] = $i;
 		}
-		return [ 'dataSet'=>$dataSet];
+		return ['dataSet'=>$dataSet];
+
+}
+    public function getMetas()
+	{
+		$activs = DB::table("actividades_mir")
+		->select(
+		'actividades_mir.id',
+		'proyecto_mir_id',
+		'clv_actividad',
+		'actividad',
+		'metas.total AS total'
+		)
+		->leftJoin('metas', 'metas.actividad_id', '=', 'actividades_mir.id')
+		->where('metas.total', '!=', null)
+		->where('actividades_mir.deleted_at', '=', null);
+
+		$query = DB::table('proyectos_mir')
+		->leftJoinSub($activs, 'act', function ($join) {
+			$join->on('proyectos_mir.id', '=', 'act.proyecto_mir_id');
+		})
+			->select(
+				'proyectos_mir.id',
+				'proyectos_mir.clv_upp AS upp',
+				'proyectos_mir.clv_ur AS ur',
+				'proyectos_mir.clv_programa AS programa',
+				'proyectos_mir.clv_subprograma AS subprograma',
+				'proyectos_mir.clv_proyecto AS proyecto',
+				'catalogo.descripcion',
+				'programacion_presupuesto.fondo_ramo AS fondo',
+				DB::raw(
+				"SUM(enero
+				+ febrero
+				+ marzo 
+				+ abril
+				+ mayo
+				+ junio
+				+ julio
+				+ agosto
+				+ septiembre
+				+ octubre
+				+ noviembre
+				+ diciembre) 
+				AS presupuesto"),
+				'act.actividad',
+				'act.total'
+				)
+			->leftJoin('catalogo', 'catalogo.clave', '=', 'proyectos_mir.clv_proyecto')
+			->where('catalogo.grupo_id', '=', 18)
+			->leftJoin("actividades_mir",'actividades_mir.proyecto_mir_id','=','proyectos_mir.id')
+			->join('programacion_presupuesto', function (JoinClause $join) {
+				$join->on('proyectos_mir.clv_upp', '=', 'programacion_presupuesto.upp')
+					->orOn('programacion_presupuesto.programa_presupuestario', '=', 'proyectos_mir.clv_programa')
+					->orOn('programacion_presupuesto.subprograma_presupuestario', '=', 'proyectos_mir.clv_subprograma')
+					->orOn('programacion_presupuesto.proyecto_presupuestario', '=', 'proyectos_mir.clv_proyecto');
+			})->groupByRaw('proyectos_mir.clv_upp,proyectos_mir.clv_ur,proyectos_mir.clv_programa,proyectos_mir.clv_subprograma,proyectos_mir.clv_proyecto,catalogo.descripcion,programacion_presupuesto.fondo_ramo')
+		->where('proyectos_mir.deleted_at', '=', null)->get();
+		$dataSet = [];
+		
+		foreach ($query as $key) {
+            $accion = $key->actividad != ""? '<buttton type="button" class="btn btn-success"  onclick="dao.editarMeta('.$key->id.')" class="button"><i  class="fa fa-pencil"></i></buttton>':
+			'<a type="button" class="btn btn-primary"  href="/calendarizacion/proyecto/'.$key->id.'" class="button"><i class="fa-plus">Agregar</i></a>';
+			$i = array(
+				$key->ur,
+				$key->programa,
+				$key->subprograma,
+				$key->descripcion,
+				$key->fondo,
+				$key->presupuesto,
+                $key->actividad,
+                $key->total,
+				$accion,
+			);
+			$dataSet[] = $i;
+		}
+		return ['dataSet'=>$dataSet];
 	}
     public function getProyect($id = 0)
 	{
@@ -128,18 +202,27 @@ class MetasController extends Controller
 	}
 	public function getUrs()
 	{
-		/* $urs= Catalogo::where('deleted_at', null)
-		->where('subgrupo_id', 12)
-		->where('descripcion', 'like', '%' . $inp . '%')->get(); */
 	 	$urs = DB::table('catalogo')
 			->select(
 				'id',
-				'subgrupo_id',
 				'clave',
 				'descripcion'
 			)
 			->where('deleted_at', null)
-			->where('subgrupo_id', 12)
+			->where('grupo_id', 8)
+			->get(); 
+		return $urs;
+	}
+	public function getProgramas($ur)
+	{
+		log::debug($ur);
+	 	$urs = DB::table('v_epp')
+			->select(
+				'id',
+				'clv_programa',
+				'programa'
+			)
+			->where('clv_ur', $ur)
 			->get(); 
 		return $urs;
 	}
@@ -147,31 +230,29 @@ class MetasController extends Controller
 	{
 		$uMed = DB::table('unidades_medida')
 			->select(
-				'id',
-				'clave',
+				'id as clave',
 				'unidad_medida'
 			)
 			->where('deleted_at', null)
 			->get();
-			$fondos = DB::table('catalogo')
+			$fondos = DB::table('fondo')
 			->select(
 				'id',
-				'subgrupo_id',
-				'clave',
-				'descripcion'
+				'clv_fondo_ramo',
+				'fondo_ramo as ramo'
 			)
 			->where('deleted_at', null)
-			->where('subgrupo_id', 31)
-			->get();
-			$activ = DB::table('actividades_mir')
+			->distinct()->get();
+		/* $activ = Http::acceptJson()->get('https://pokeapi.co/api/v2/pokemon/');
+		$res = json_decode($activ->body()); */
+		$activ = DB::table('actividades_mir')
 			->select(
 				'id',
-				'datos_mir_id',
-				'clave',
+				'clv_actividad',
 				'actividad'
 			)
 			->where('deleted_at', null)
-			->get();
+			->get(); 
 			$bene = DB::table('beneficiarios')
 			->select(
 				'id',
@@ -184,15 +265,17 @@ class MetasController extends Controller
 		return ["unidadM"=>$uMed,"fondos"=>$fondos,"beneficiario"=>$bene,"actividades"=>$activ,"activids"=>$tAct ];
 	}
 	public function createMeta(Request  $request){
+		log::debug($request);
 		$meta = Metas::create([
-			'programa_id' =>1 /* $request-> */,
-			'subprograma_id' => 1,/* $request-> */
-			'proyecto_id' => 1, /* $request-> */
+			'proyecto_mir_id ' => intval($request->pMir_id),
 			'actividad_id' => $request->sel_actividad,
+			'clv_fondo'=> $request->sel_fondo,
+			'estatus'=>0,
 			'tipo' => $request->tipo_Ac,
 			'beneficiario_id' => $request->tipo_Be,
-			'unidad_medida_id' => $request->medida,
+			'unidad_medidad_id' => intval($request->medida),
 			'cantidad_beneficiarios' => $request->beneficiario,
+			'total'=>$request->sumMetas,
 			'enero'=> $request[1] != NULL ?$request[1] :0,
 			'febrero'=> $request[2] != NULL ?$request[2] :0,
 			'marzo'=> $request[3] != NULL ?$request[3] :0,
@@ -211,93 +294,38 @@ class MetasController extends Controller
 	}
 	public function getMetasXp()
 	{
-		$prog = DB::table('metas')
-		->select(
-			'metas.id',
-			'catalogo.clave as programa',
-			)
-		->leftJoin('catalogo', 'catalogo.id', '=', 'metas.programa_id')
-		->where('metas.deleted_at', '=', null);
-	$subprog = DB::table('metas')
-		->select(
-			'metas.id',
-			'catalogo.clave as subprograma',
-			)
-		->leftJoin('catalogo', 'catalogo.id', '=', 'metas.subprograma_id')
-		->where('metas.deleted_at', '=', null);
-	$proye = DB::table('metas')
-		->select(
-			'metas.id',
-			'catalogo.descripcion',
-			)
-		->leftJoin('catalogo', 'catalogo.id', '=', 'metas.proyecto_id')
-		->where('metas.deleted_at', '=', null);
-	$activ = DB::table('metas')
-		->select(
-			'metas.id',
-			'actividades_mir.actividad',
-			)
-		->leftJoin('actividades_mir', 'actividades_mir.id', '=', 'metas.actividad_id')
-		->where('metas.deleted_at', '=', null);
-	$benefi = DB::table('metas')
-		->select(
-			'metas.id',
-			'beneficiarios.beneficiario',
-			)
-		->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
-		->where('metas.deleted_at', '=', null);
-	$medida = DB::table('metas')
-		->select(
-			'metas.id',
-			'unidades_medida.unidad_medida',
-			)
-		->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.beneficiario_id')
-		->where('metas.deleted_at', '=', null);
-
-	$query = DB::table('metas')
-		->leftJoinSub($prog, 'prog', function ($join) {
-			$join->on('metas.id', '=', 'prog.id');
-		})
-		->leftJoinSub($subprog, 'subprog', function ($join) {
-			$join->on('metas.id', '=', 'subprog.id');
-		})
-		->leftJoinSub($proye, 'proye', function ($join) {
-			$join->on('metas.id', '=', 'proye.id');
-		})
-		->leftJoinSub($activ, 'activ', function ($join) {
-			$join->on('metas.id', '=', 'activ.id');
-		})
-		->leftJoinSub($benefi, 'benefi', function ($join) {
-			$join->on('metas.id', '=', 'benefi.id');
-		})
-		->leftJoinSub($medida, 'medida', function ($join) {
-			$join->on('metas.id', '=', 'medida.id');
-		})
-		->select(
-			'metas.id',
-			'activ.actividad',
-			'subprog.subprograma',
-			'proye.descripcion',
-			'tipo',
-			'cantidad_beneficiarios',
-			'beneficiario',
-			'unidad_medida'
-		)->where('metas.deleted_at', '=', null);
-			$query = $query->get();
+			$query = DB::table('metas')
+			->leftJoin('actividades_mir', 'actividades_mir.id', '=', 'metas.actividad_id')
+			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+			->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medidad_id')
+			->select(
+				'metas.id',
+				'actividades_mir.actividad',
+				'total',
+				'fondo.ramo',
+				'tipo',
+				'cantidad_beneficiarios',
+				'beneficiarios.beneficiario',
+				'unidades_medida.unidad_medida',
+				
+			)->where('metas.deleted_at', '=', null);
+				$query = $query->get();
+		$dataSet = [];
 		foreach ($query as $key) {
-            $accion ='<a data-toggle="modal" data-target="#addActividad" data-backdrop="static" data-keyboard="false" title="Modificar Usuario"
+            $accion ='<a data-toggle="modal" data-target="#addActividad" data-backdrop="static" data-keyboard="false" title="Modificar meta"
 			class="btn btn-sm"onclick="dao.editarUsuario('.$key->id.')">' .
                         '<i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' .
-                        '<a data-toggle="tooltip" title="Eliminar Usuario" class="btn btn-sm" onclick="dao.eliminarUsuario('.$key->id. ')">' .
-                        '<i class="fa fa-trash" style="color:B40000;" ></i></a>&nbsp;';
+                        '<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar('.$key->id. ')">' .
+                        '<i class="fa fa-trash" style="color:B40000;" ></i></button>&nbsp;';
 			$i = array(
 				$key->actividad,
-				$key->subprograma,
-				$key->tipo,
-				$key->descripcion,
+				$key->total,
+				$this->actividad($key->tipo),
 				$key->cantidad_beneficiarios,
                 $key->beneficiario,
                 $key->unidad_medida,
+				$key->ramo,
 				$accion,
 			);
 			$dataSet[] = $i;
@@ -306,7 +334,6 @@ class MetasController extends Controller
 	}
 	public function actividad($id)
 	{
-		Log::debug($id);
 		switch ($id) {
 			case 0:
 				return 'Acumulativa';

@@ -14,13 +14,13 @@ class Metas extends Model
 
     protected $fillable = [
         'id',
-        'programa_id',
-        'subprograma_id',
-        'proyecto_id',
+        'proyecto_mir_id',
         'actividad_id',
+        'clv_fondo',
+        'estatus',
         'tipo',
         'beneficiario_id',
-        'unidad_medida_id',
+        'unidad_medidad_id',
         'cantidad_beneficiarios',
         'enero',
         'febrero',
@@ -33,14 +33,14 @@ class Metas extends Model
         'septiembre',
         'octubre',
         'noviembre',
-        'diciembre'
+        'diciembre',
+        'total',
     ];
 
     protected $dates = ['deleted_at'];
 
     protected $hidden = [
-    	'created_at', 
-    	'updated_at'
+        'created_at',
+        'updated_at'
     ];
 }
-

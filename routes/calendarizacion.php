@@ -7,10 +7,13 @@
 
 	Route::controller(MetasController::class)->group(function () {
 		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
-	 	Route::get('/calendarizacion/data', 'getMetas')->name('getMetas');
-        Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
+	 	Route::post('/calendarizacion/data', 'getMetasP')->name('getMetasP');
+        Route::get('/calendarizacion/proyecto/{ur?}', 'getProyecto')->name('proyecto');
+		Route::get('/nombres/{id?}', 'getNames');
 		Route::get('/calendarizacion/selects', 'getSelects');
 		Route::get('/calendarizacion/urs', 'getUrs');
+		Route::get('/calendarizacion/programas/{ur?}', 'getProgramas');
+		Route::get('/calendarizacion/subprog/{ur?}', 'getSubProg');
 		Route::post('/calendarizacion/create', 'createMeta');
 		Route::post('/calendarizacion/detelet', 'deleteMeta');
 		Route::get('/calendarizacion/update/{id?}','updateMeta');

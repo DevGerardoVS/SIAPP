@@ -20,11 +20,8 @@
                         <br>
                         <div>
                             <div class="widget-body-toolbar">
-                                <ul style="">
-                                    <li><b>UR:</b></li>
-                                    <li><b>Programa:</b></li>
-                                    <li><b>Subprograma:</b></li>
-                                    <li><b>Proyecto:</b></li>
+                                <ul id="nombres">
+
                                 </ul>
                             </div>
                         </div>

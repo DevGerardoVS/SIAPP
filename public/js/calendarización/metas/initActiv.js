@@ -1,6 +1,23 @@
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 
 var dao = {
+    nextPage: function () {
+        var url = window.location.href;
+        
+        $.ajax({
+            type: "GET",
+            url: "/nombres/" + url.slice(-1),
+            dataType: "JSON"
+        }).done(function (data) {
+            console.log("names",data)
+            var act = $('#nombres'); 
+            act.html('');
+            act.append('<li><b>UR:</b>&nbsp;' + data[0] + '</li>');
+            act.append('<li><b>Programa:</b>&nbsp;' + data[1] + '</li>');
+            act.append('<li><b>Subprograma:</b>&nbsp;' + data[2] + '</li>');
+            act.append('<li><b>Proyecto:</b>&nbsp;' + data[3] + '</li>');
+        });
+    },
     setStatus: function (id, estatus) {
         Swal.fire({
             title: 'Confirmar Activación/Desactivación',
@@ -31,13 +48,13 @@ var dao = {
                             'La acción se ha realizado correctamente',
                             'success'
                         );
-                        getData();
+                        location.reload();
                     }
                 });
             }
         });
     },
-    eliminarUsuario: function (id) {
+    eliminar: function (id) {
         Swal.fire({
             title: '¿Seguro que quieres eliminar este usuario?',
             text: "Esta accion es irreversible",
@@ -77,8 +94,6 @@ var dao = {
 
 
     }, getSelect: function () {
-
-        console.log("entro");
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
@@ -91,7 +106,7 @@ var dao = {
             act.append(new Option("--Actividad--",""));
             document.getElementById("sel_actividad").options[0].disabled = true;
             $.each(actividades, function (i, val) {
-                act.append(new Option(val.actividad, val.clave));
+                act.append(new Option(val.actividad,val.clv_actividad));
             });
             act.selectpicker({ search: true });
             var med = $('#medida');
@@ -107,7 +122,7 @@ var dao = {
             fond.append(new Option("-- Fondos--", ""));
             document.getElementById("sel_fondo").options[0].disabled = true;
             $.each(fondos, function (i, val) {
-                fond.append(new Option(fondos[i].descripcion, fondos[i].clave));
+                fond.append(new Option(fondos[i].ramo, fondos[i].clv_fondo_ramo));
             });
             fond.selectpicker({ search: true });
             var tipo_be = $('#tipo_Be');
@@ -134,6 +149,9 @@ var dao = {
     crearUsuario: function () {
         var form = $('#actividad')[0];
         var data = new FormData(form);
+        var url = window.location.href;
+        data.append('pMir_id', url.slice(-1));
+        data.append('sumMetas', $('#sumMetas').val());
         $.ajax({
             type: "POST",
             url: '/calendarizacion/create',
@@ -144,7 +162,6 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            console.log(response);
             $('#cerrar').trigger('click');
             Swal.fire({
                 icon: 'success',
@@ -155,41 +172,7 @@ var dao = {
             getData();
         });
     },
-    editarUsuario: function (id) {
-        console.log(id)
-        $.ajax({
-            type: "GET",
-            url: '/calendarizacion/update/' + id,
-            dataType: "JSON"
-        }).done(function (response) {
-            console.log("response", response)
-        /*     const {
-                id,
-                username,
-                celular,
-                email,
-                estatus,
-                id_grupo,
-                nombre,
-                p_apellido,
-                s_apellido,
-                perfil,
-                nombre_grupo
-            } = response;
-            $('#id_user').val(id);
-            $('#username').val(username);
-            $('#nombre').val(nombre);
-            $('#p_apellido').val(p_apellido);
-            $('#s_apellido').val(s_apellido);
-            $('#email').val(email);
-            $('#in_celular').val(celular);
-            $('#label_idGrupo').text(perfil).show();
-
-            $("#id_grupo").hide();
-            $("#labelGrupo").hide(); */
-
-        });
-    },
+ 
     limpiar: function () {
         inputs.forEach(e => {
             $('#' + e + '-error').text("").removeClass('#' + e + '-error');
@@ -202,7 +185,7 @@ var dao = {
         for (let i = 1; i <=12; i++) {
             $('#' + i).val(0);
         }
-        $('#sumMetas').val("");
+        $('#sumMetas').val(0);
         $('#beneficiario').val("");
         for (let i = 1; i <=12; i++) {
             $("#" + i).prop('disabled', true); 
@@ -323,22 +306,24 @@ var init = {
 };
 
 $(document).ready(function () {
-    for (let i = 1; i <=12; i++) {
+    for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
+    $("#sumMetas").val(0);
     getData();
+    dao.nextPage();
     dao.getSelect();
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        if ($('#actividad').valid() && dao.valMeses()) {
+        if ($('#actividad').valid()) {
             dao.crearUsuario();
         }
     });
 
     $('#tipo_Ac').change(() => {
-        for (let i = 1; i <=12; i++) {
-            $("#"+i).prop('disabled', false); 
+        for (let i = 1; i <= 12; i++) {
+            $("#" + i).prop('disabled', false);
         }
-        
+
     })
 });
