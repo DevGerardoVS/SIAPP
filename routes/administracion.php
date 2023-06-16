@@ -57,16 +57,20 @@
 	});
 
 	Route::controller(ReporteController::class)->group(function(){
-		// Route::get('/Reportes/ley-planeacion','indexPlaneacion')->name('index_planeacion');
-		Route::get('/Reportes/ley-planeacion','indexAdministrativo')->name('index_administrativo');
-		// Route::get('/Reportes/administrativo','indexAdministrativo')->name('index_administrativo');
+		Route::get('/Reportes/ley-planeacion','indexPlaneacion')->name('index_planeacion');
+		Route::get('/Reportes/administrativos', 'indexAdministrativo')->name('index_administrativo');
+
+		Route::post('/Reportes/administrativos/calendarioFondoMensual', 'calendarioFondoMensual')->name('calendario_fondo_mensual');
+    	Route::post('/Reportes/administrativos/resumenCapituloPartida', 'resumenCapituloPartida')->name('resumen_capitulo_partida');
+    	Route::post('/Reportes/administrativos/proyectoAvanceGeneral', 'proyectoAvanceGeneral')->name('proyecto_avance_general');
+    	Route::post('/Reportes/administrativos/proyectoCalendarioGeneral', 'proyectoCalendarioGeneral')->name('proyecto_calendario_general');
 
 		Route::post('/Reportes/data-fecha-corte/{ejercicio?}','getFechaCorte')->name('get_fecha_corte');
 
-		Route::post('/Reportes/get-ley-planeacion','reportePlaneacion')->name('get_reporte_planeacion');
+		// Route::post('/Reportes/get-ley-planeacion','reportePlaneacion')->name('get_reporte_planeacion');
 		Route::post('/Reportes/get-administrativo{nombre}','reporteAdministrativo')->name('get_reporte_administrativo');
+		// Route::post('/Reportes/get-administrativo{nombre}','reporteAdministrativo')->name('get_reporte_administrativo');
 
 		Route::post('/Reportes/download/{nombre}', 'downloadReport')->name('downloadReport');
-		// Route::post('/download/{name?}-{anio?}-{date?}', 'downloadReport')->name('downloadReport');
 	});
 ?>

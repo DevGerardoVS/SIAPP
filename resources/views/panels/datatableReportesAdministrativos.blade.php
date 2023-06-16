@@ -189,11 +189,16 @@
             },
             error: function(response) {
                 console.log('Error: ' + response);
-            }
+            },
         });
     }
     
     $(document).ready(function() {
+        $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+            $.fn.dataTable.Api('.dataTable')
+                .columns.adjust()
+                .responsive.recalc();
+        });
         function getDataFechaCorte(anio) { //función para actualizar el select fechas de corte
             $.ajax({
                 url: "/Reportes/data-fecha-corte/"+ anio,
@@ -217,7 +222,7 @@
 
         $(".anio").val($('#anio_filter option:selected').val());
         $(".upp").val($('#upp_filter option:selected').val());
-        console.log($(".upp").val($('#upp_filter option:selected').val()));
+        // console.log($(".upp").val($('#upp_filter option:selected').val()));
         getDataFechaCorte($('#anio_filter option:selected').val());  //Llenar el select de fecha de acuerdo al valor del año por defecto
         
         $('#buscarForm').submit( (e) => {

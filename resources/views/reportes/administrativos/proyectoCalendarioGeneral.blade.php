@@ -35,6 +35,18 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-10 col-sm-12 d-md-flex mt-2">
+                        <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
+                            <label for="fechaCorte_filter" class="form-label fw-bold mt-md-1">UPP:</label>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
+                                @foreach ($upps as $upp)
+                                    <option value={{$upp->clave}} {{$upp->descripcion}}>{{$upp->clave}} {{$upp->descripcion}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </form>
             </section>
         </div>
@@ -45,6 +57,7 @@
                 @csrf
                 <input type="text" hidden class="anio" id="anio" name="anio">
                 <input type="text" hidden class="fechaCorte" id="fechaCorte" name="fechaCorte">
+                <input type="text" hidden class="upp" id="upp" name="upp">
                 <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
                     <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                     <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 

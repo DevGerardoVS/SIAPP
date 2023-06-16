@@ -29,32 +29,72 @@ class ReporteController extends Controller
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         // $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
-        // dd($upps);
-        // return view("reportes.administrativos.resumenCapituloPartida", [
-        // return view("reportes.administrativos.calendarioBaseMensual", [
-        // return view("reportes.administrativos.resumenCapituloPartida", [
-        // return view("reportes.administrativos.proyectoAvanceGeneral", [
-        return view("reportes.administrativos.proyectoCalendarioActividadGeneral", [
+        return view("reportes.administrativos.index2", [
             'dataSet' => json_encode($dataSet),
             'anios' => $anios,
             // 'upps' => $upps,
         ]);
     }
 
-    public function reportePlaneacion(Request $request){
-        $data = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondos_db" AND ROUTINE_NAME LIKE "%art_20%" AND ROUTINE_NAME NOT LIKE "%a_num_1_%"');
-        $dataSet = array();
+    // public function reportePlaneacion(Request $request){
+    //     $data = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondos_db" AND ROUTINE_NAME LIKE "%art_20%" AND ROUTINE_NAME NOT LIKE "%a_num_1_%"');
+    //     $dataSet = array();
 
-        foreach($data as $d){
-            $ds = array($d->name,$d->name);
+    //     foreach($data as $d){
+    //         $ds = array($d->name,$d->name);
+    //         $dataSet[] = $ds;
+    //     }
+        
+    //     log::info($dataSet);
+    //     return response()->json([
+    //         "dataSet" => $dataSet,
+    //     ]);
+    // }
+
+    // prueba
+    public function calendarioFondoMensual(Request $request){
+        $anio = $request->anio;
+        $fecha = $request->input('fechaCorte_filter') != null ? $request->input('fechaCorte_filter') : "NULL";
+        $data = DB::select("CALL calendario_fondo_mensual(".$anio.", ".$fecha.")");
+        foreach ($data as $d) {
+
+            $suma = $d->enero + $d->febrero + $d->marzo + $d->abril + $d->mayo + $d->junio + $d->julio + $d->agosto + $d->septiembre + $d->octubre + $d->noviembre + $d->diciembre;
+
+            $ds = array($d->ramo, $d->fondo, number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre), number_format($suma));
             $dataSet[] = $ds;
         }
-        
-        log::info($dataSet);
         return response()->json([
             "dataSet" => $dataSet,
         ]);
     }
+
+    public function resumenCapituloPartida(Request $request){
+        log::info($request);
+        $anio = $request->anio;
+        $fecha = $request->input('fechaCorte_filter') != null ? $request->input('fechaCorte_filter') : "NULL";
+        $data = DB::select("CALL resumen_capitulo_partida(".$anio.", ".$fecha.")");
+            foreach ($data as $d) {
+                $ds = array($d->capitulo, $d->partida_llave." ".$d->partida, number_format($d->importe));
+                $dataSet[] = $ds;
+            }
+        return response()->json([
+            "dataSet" => $dataSet,
+        ]);
+    }
+
+    public function proyectoAvanceGeneral(Request $request){
+        $anio = $request->input('anio_filter');
+        $fecha = $request->input('fechaCorte_filter') != null ? $request->input('fechaCorte_filter') : "NULL";
+        $data = DB::select("CALL resumen_capitulo_partida(23, ".$fecha.")");
+            foreach ($data as $d) {
+                $ds = array($d->capitulo, $d->partida_llave." ".$d->partida, number_format($d->importe));
+                $dataSet[] = $ds;
+            }
+        return response()->json([
+            "dataSet" => $dataSet,
+        ]);
+    }
+    // prueba
 
     public function reporteAdministrativo($nombre,Request $request){
 
