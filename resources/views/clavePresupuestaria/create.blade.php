@@ -2,6 +2,7 @@
 @include('administracion.usuarios.modalCreate')
 @include('panels.datatable')
 @section('content')
+
 <div class="container">
     <section id="widget-grid" class="conteiner">
         <div class="row">
@@ -24,128 +25,221 @@
                         </div>
                         <div class="table-responsive">
                             <table id="newClave" class="table able-bordered" style="width: 100%">
-                                <thead>
+                                <tbody>
                                     <tr class="">
-                                        <th class="centro-gestor">21111</th>
-                                        <th class="centro-gestor" id="entidadFederativa">16</th>
-                                        <th class="centro-gestor" id="region">&nbsp;&nbsp;</th>
-                                        <th class="centro-gestor" id="municipio">&nbsp;&nbsp;</th>
-                                        <th class="centro-gestor" id="localidad">&nbsp;&nbsp;</th>
-                                        <th class="centro-gestor" id="upp">007</th>
-                                        <th class="centro-gestor" id="subsecretaria">&nbsp;&nbsp;</th>
-                                        <th class="centro-gestor" id="ur">&nbsp;&nbsp;</th>
-                                        <th class="area-funcional" id="finalidad">&nbsp;&nbsp;</th>
-                                        <th class="area-funcional" id="funcion">&nbsp;&nbsp;</th>
-                                        <th class="area-funcional" id="subfuncion">&nbsp;&nbsp;</th>
-                                        <th class="area-funcional" id="eje">&nbsp;&nbsp;</th>
-                                        <th class="area-funcional" id="lineaAccion">&nbsp;&nbsp;</th>
-                                        <th class="area-funcional" id="programaSectorial">&nbsp;&nbsp;</th>
-                                        <th class="area-funcional" id="conac">&nbsp;&nbsp;</th>
-                                        <th class="area-funcional" id="programaPre">&nbsp;&nbsp;</th>
-                                        <th class="area-funcional" id="subPrograma">&nbsp;&nbsp;</th>
-                                        <th class="area-funcional" id="proyectoPre">&nbsp;&nbsp;</th>
-                                        <th class="periodo-presupuestal" id="mesAfectacion">&nbsp;&nbsp;</th>
-                                        <th class="clasificacion-economica" id="capitulo">&nbsp;&nbsp;</th>
-                                        <th class="clasificacion-economica" id="concepto">&nbsp;&nbsp;</th>
-                                        <th class="clasificacion-economica" id="partidaGen">&nbsp;&nbsp;</th>
-                                        <th class="clasificacion-economica" id="partidaEpecifica">&nbsp;&nbsp;</th>
-                                        <th class="clasificacion-economica" id="tipoGasto">&nbsp;&nbsp;</th>
-                                        <th class="fondo" id="anioFondo">&nbsp;&nbsp;</th>
-                                        <th class="fondo" id="etiquetado">&nbsp;&nbsp;</th>
-                                        <th class="fondo" id="fuenteFinanciamiento">&nbsp;&nbsp;</th>
-                                        <th class="fondo" id="ramo">&nbsp;&nbsp;</th>
-                                        <th class="fondo" id="fondoRamo">&nbsp;&nbsp;</th>
-                                        <th class="fondo" id="capital">&nbsp;&nbsp;</th>
-                                        <th class="fondo" id="proyectoObra">&nbsp;&nbsp;</th>
+                                        <td class="centro-gestor" id="clasificacion"></td>
+                                        <td class="centro-gestor" id="entidadFederativa">16</td>
+                                        <td class="centro-gestor" id="region">&nbsp;&nbsp;</td>
+                                        <td class="centro-gestor" id="municipio">&nbsp;&nbsp;</td>
+                                        <td class="centro-gestor" id="localidad">&nbsp;&nbsp;</td>
+                                        <td class="centro-gestor" id="upp">007</td>
+                                        <td class="centro-gestor" id="subsecretaria">&nbsp;&nbsp;</td>
+                                        <td class="centro-gestor" id="ur">&nbsp;&nbsp;</td>
+                                        <td class="area-funcional" id="finalidad">&nbsp;&nbsp;</td>
+                                        <td class="area-funcional" id="funcion">&nbsp;&nbsp;</td>
+                                        <td class="area-funcional" id="subfuncion">&nbsp;&nbsp;</td>
+                                        <td class="area-funcional" id="eje">&nbsp;&nbsp;</td>
+                                        <td class="area-funcional" id="lineaAccion">&nbsp;&nbsp;</td>
+                                        <td class="area-funcional" id="programaSectorial">&nbsp;&nbsp;</td>
+                                        <td class="area-funcional" id="conac">&nbsp;&nbsp;</td>
+                                        <td class="area-funcional" id="programaPre">&nbsp;&nbsp;</td>
+                                        <td class="area-funcional" id="subPrograma">&nbsp;&nbsp;</td>
+                                        <td class="area-funcional" id="proyectoPre">&nbsp;&nbsp;</td>
+                                        <td class="periodo-presupuestal" id="mesAfectacion">&nbsp;&nbsp;</td>
+                                        <td class="clasificacion-economica" id="capitulo">&nbsp;&nbsp;</td>
+                                        <td class="clasificacion-economica" id="concepto">&nbsp;&nbsp;</td>
+                                        <td class="clasificacion-economica" id="partidaGen">&nbsp;&nbsp;</td>
+                                        <td class="clasificacion-economica" id="partidaEpecifica">&nbsp;&nbsp;</td>
+                                        <td class="clasificacion-economica" id="tipoGasto">&nbsp;&nbsp;</td>
+                                        <td class="fondo" id="anioFondo">&nbsp;&nbsp;</td>
+                                        <td class="fondo" id="etiquetado">&nbsp;&nbsp;</td>
+                                        <td class="fondo" id="fuenteFinanciamiento">&nbsp;&nbsp;</td>
+                                        <td class="fondo" id="ramo">&nbsp;&nbsp;</td>
+                                        <td class="fondo" id="fondoRamo">&nbsp;&nbsp;</td>
+                                        <td class="fondo" id="capital">&nbsp;&nbsp;</td>
+                                        <td class="fondo" id="proyectoObra">00000</td>
                                     </tr>
-                                </thead>
+                                </tbody>
                             </table>
                         </div>   
-                        <form class="form-horizontal" id="frm_create_clave">
-                            @csrf
+                        <div id="primeraParte">
+                            <form class="form-horizontal" id="frm_create_clave">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Region*</label>
+                                            <select class="form-control select2" name="sel_region" id="sel_region" data-live-search="true"></select>
+                                        </div>                            
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Municipio*</label>
+                                            <select class="form-control select2" name="sel_municipio" id="sel_municipio"></select>
+                                        </div>
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Localidad*</label>
+                                            <select class="form-control select2" name="sel_localidad" id="sel_localidad"></select>
+                                        </div>                                                               
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Unidad Programática Presupuestal*</label>
+                                            <select class="form-control select2" name="sel_upp" id="sel_upp"></select>
+                                        </div>                                
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Unidad Responsable*</label>
+                                            <select class="form-control select2" name="sel_unidad_res" id="sel_unidad_res"></select>
+                                        </div>                                                                
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Programa Presupuestario*</label>
+                                            <select class="form-control select2" name="sel_programa" id="sel_programa"></select>
+                                        </div>                                                                
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Subprograma Presupuestario*</label>
+                                            <select class="form-control select2" name="sel_sub_programa" id="sel_sub_programa"></select>
+                                        </div>                                
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Proyecto*</label>
+                                            <select class="form-control select2" name="sel_proyecto" id="sel_proyecto"></select>
+                                        </div>                                
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Linia de Acción</label>
+                                            <select class="form-control select2" name="sel_linea" id="sel_linea"></select>
+                                        </div>                                
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Periodo Presupuestario</label>
+                                            <select class="form-control select2" name="sel_periodo" id="sel_periodo">
+                                                <option value="">-- Seleccione Periodo Presupuestal --</option>
+                                                <option value="1-ENE">1-ENE-DEC</option>
+                                            </select>
+                                        </div>
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Partida</label>
+                                            <select class="form-control select2" name="sel_partida" id="sel_partida" data-live-search="true"></select>
+                                        </div>                                
+                                    <div style="clear:both"></div>
+                                    <div class="col-md-2"></div>
+                                        <div class="col-md-10">
+                                            <label class="control-label">Fondo</label>
+                                            <select class="form-control select2" name="sel_fondo" id="sel_fondo"></select>
+                                        </div>                                
+                                    <div style="clear:both"></div>
+                                </div>
+                            </form>
                             <div class="row">
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Region*</label>
-                                        <select class="form-control select2" name="sel_region" id="sel_region"></select>
-                                    </div>                            
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Municipio*</label>
-                                        <select class="form-control select2" name="sel_municipio" id="sel_municipio"></select>
-                                    </div>
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Localidad*</label>
-                                        <select class="form-control select2" name="sel_localidad" id="sel_localidad"></select>
-                                    </div>                                                               
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Unidad Programática Presupuestal*</label>
-                                        <select class="form-control select2" name="sel_upp" id="sel_upp"></select>
-                                    </div>                                
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Unidad Responsable*</label>
-                                        <select class="form-control select2" name="sel_unidad_res" id="sel_unidad_res"></select>
-                                    </div>                                                                
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Programa Presupuestario*</label>
-                                        <select class="form-control select2" name="sel_programa" id="sel_programa"></select>
-                                    </div>                                                                
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Subprograma Presupuestario*</label>
-                                        <select class="form-control select2" name="sel_sub_programa" id="sel_sub_programa"></select>
-                                    </div>                                
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Proyecto*</label>
-                                        <select class="form-control select2" name="sel_proyecto" id="sel_proyecto"></select>
-                                    </div>                                
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Linia de Acción</label>
-                                        <select class="form-control select2" name="sel_linea" id="sel_linea"></select>
-                                    </div>                                
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Periodo Presupuestario</label>
-                                        <select class="form-control select2" name="sel_periodo" id="sel_periodo">
-                                            <option value="">-- Seleccione Periodo Presupuestal --</option>
-                                            <option value="1-ENE">1-ENE-DEC</option>
-                                        </select>
-                                    </div>
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Partida</label>
-                                        <select class="form-control select2" name="sel_partida" id="sel_partida"></select>
-                                    </div>                                
-                                <div style="clear:both"></div>
-                                <div class="col-md-2"></div>
-                                    <div class="col-md-10">
-                                        <label class="control-label">Fondo</label>
-                                        <select class="form-control select2" name="sel_fondo" id="sel_fondo"></select>
-                                    </div>                                
-                                <div style="clear:both"></div>
+                                <div class="col-md-6"></div>
+                                <div class="col-md-2">
+                                    <button  id="btnCancelar" type="button" class="btn btn-secondary " >Cancelar</button>
+                                    <button type="button" class="btn btn-primary" id="btnSaveClave">Siguente</button>
+                                </div>
                             </div>
-                        </form>
-                        <div class="row">
-                            <div class="col-md-5"></div>
-                            <div class="col-md-2">
-                                <button  id="cerrar" type="button" class="btn btn-secondary " data-dismiss="modal" aria-label="Close" onclick="dao.limpiarFormularioCrear()">Cancelar</button>
-                                <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
+                        </div>
+                        <div id="segundaParte">
+                            <form id="actividad">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label ">Presupuesto asignado Fondo</label>
+                                        <input type="text" id="preFondo" class="form-control" disabled>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Presupuesto disponible Fondo</label>
+                                        <input type="text" id="preDisFondo" class="form-control" disabled>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label ">Cantidad de beneficiarios*</label>
+                                        <input type="text" id="beneficiarios" class="form-control" disabled>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label">Unidad de medida</label>
+                                        <input type="text" id="unidadMedida" class="form-control" disabled>
+                                    </div>
+                                </div>
+                                <div class="table-responsive ">
+                                    <table id="meses1" class="table table-hover table-striped ">
+                                        <thead>
+                                            <tr class="colorMorado" style="text-align:center;">
+                                                <th>Enero</th>
+                                                <th>Febrero</th>
+                                                <th>Marzo</th>
+                                                <th>Abril</th>
+                                                <th>Mayo</th>
+                                                <th>Junio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <td><input id="enero" name="enero" type="text" class="form-control"></td>
+                                            <td><input id="febrero" name="febrero" type="text" class="form-control"></td>
+                                            <td><input id="marzo" name="marzo" type="text" class="form-control"></td>
+                                            <td><input id="abril" name="abril" type="text" class="form-control"></td>
+                                            <td><input id="mayo" name="mayo" type="text" class="form-control"></td>
+                                            <td><input id="junio" name="junio" type="text" class="form-control"></td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="table-responsive ">
+                                    <table id="meses2" class="table table-hover table-striped"
+                                        style="border-bottom-style: none;">
+                                        <thead>
+                                            <tr class="colorMorado" style="text-align:center;">
+                                                <th>Julio </th>
+                                                <th>Agosto </th>
+                                                <th>Septiembre</th>
+                                                <th>Octubre </th>
+                                                <th>Noviembre </th>
+                                                <th>Diciembre </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <td><input id="julio" name="julio" type="text"
+                                                    class="form-control "></td>
+                                            <td><input id="agosto" name="agosto" type="text"
+                                                    class="form-control"></td>
+                                            <td><input id="sep" name="sep" type="text"
+                                                    class="form-control"></td>
+                                            <td><input id="octubre" name="octubre" type="text"
+                                                    class="form-control"></td>
+                                            <td><input id="nov" name="nov" type="text"
+                                                    class="form-control"></td>
+                                            <td><input id="dic" name="dic" type="text"
+                                                    class="form-control"></td>
+                                            <tr style="border-style: none;">
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <h6><b>Total Calendarizado</b></h6>
+                                                </td>
+                                                <td><input id="metas" name="metas" type="text" class="form-control">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </form>
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-2">
+                                    <button  id="btnRegresar" type="button" class="btn btn-secondary " >Regresar</button>
+                                    <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
+                                </div>
                             </div>
                         </div>
                     </div>

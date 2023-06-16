@@ -25,7 +25,7 @@
                             <div class="widget-body-toolbar">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <label for="asignadoUpp">Asignado Upp:</label>
+                                        <label for="asignadoUpp">Asignado:</label>
                                         <input type="text" id="asignadoUpp" name="asignadoUpp" class="form-control" disabled>
                                     </div>
                                     <div class="col-md-2">
@@ -33,14 +33,12 @@
                                         <input type="text" id="calendarizado" name="calendarizado" class="form-control" disabled>
                                     </div>
                                     <div class="col-md-2">
-                                        <label for="asignadoUpp">Disponible Upp:</label>
+                                        <label for="asignadoUpp">Disponible:</label>
                                         <input type="text" id="disponibleUpp" name="disponibleUpp" class="form-control" disabled>
                                     </div>
                                     <div class="col-md-2 text-right">
                                         <label for="buttonPresupuesto">&nbsp;</label>
-                                        <button type="button" class="btn btn-success form-control" data-toggle="modal" id="btnPresupuesto"
-                                            data-target=".bd-example-modal-lg" data-backdrop="static"
-                                            data-keyboard="false">Presupuesto por fondo</button>
+                                            <a type="button" class="btn btn-success form-control"  href="/calendarizacion-claves-presupuesto-fondo" ><i class="fa fa-eye">Presupuesto por Fondo</i></a>
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2 text-right">
@@ -53,9 +51,6 @@
 
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
-                                            {{-- <button type="button" class="btn btn-success form-control" data-toggle="modal" id="btnNuevaClave"
-                                                data-target="#modalNewClave" data-backdrop="static"
-                                                data-keyboard="false">Nueva Clave</button> --}}
                                                 <a type="button" class="btn btn-success form-control"  href="/calendarizacion-claves-create" ><i class="fa fa-plus">Nueva Clave</i></a>
                                         </div>
 

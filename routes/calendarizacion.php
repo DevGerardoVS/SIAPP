@@ -23,12 +23,22 @@
 		Route::get('/cat-localidad/{id?}', 'getLocalidades');		
 		Route::get('/cat-upp', 'getUpp');
 		Route::get('/cat-unidad-responsable/{id?}', 'getUnidadesResponsables');
-		Route::get('/cat-programa-presupuestario/{id?}', 'getProgramaPresupuestarios');
-		Route::get('/cat-subprograma-presupuesto/{id?}', 'getSubProgramas');
-		Route::get('/cat-proyecyo/{id?}', 'getProyectos');
-		Route::get('/cat-linea-accion/{id?}', 'getLineaAccion');
-		Route::get('/cat-partidas/{id?}', 'getPartidas');
+		Route::get('/cat-programa-presupuestario/{upp?}/{id?}', 'getProgramaPresupuestarios');
+		Route::get('/cat-subprograma-presupuesto/{ur?}/{id?}', 'getSubProgramas');
+		Route::get('/cat-proyecyo/{programa?}/{id?}', 'getProyectos');
+		Route::get('/cat-linea-accion/{uppId?}/{id?}', 'getLineaAccion');
 		Route::get('/get-presupuesto-asignado', 'getPresupuestoAsignado');
+		Route::get('/calendarizacion-claves-presupuesto-fondo', 'getPanelPresupuestoFondo');
+		Route::post('/calendarizacion-eliminar-clave', 'postEliminarClave');
+		Route::get('/calendarizacion/get-calendarizacion-panel', 'getPanelCalendarizacion');
+		Route::get('/cat-subSecretaria/{upp?}/{ur?}', 'getSubSecretaria');
+		Route::get('/cat-area-funcional/{uppId?}/{id?}', 'getAreaFuncional');
+		Route::get('/cat-partidas', 'getPartidas');
+		Route::get('/cat-fondos/{id?}', 'getFondos');
+		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
+		Route::get('/presupuesto-upp-asignado/{upp?}/{fonfo?}/{subPrograma?}', 'getPresupuestoPorUpp');
+
+		
 		
 		
 		
