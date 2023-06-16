@@ -101,7 +101,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="text-center colortextfoot" style="margin-bottom: 20%" id="footerA">
+                <div class="text-center colortextfoot" style="margin-bottom: 15%" id="footerA">
                     © 2023 Dirección General de Gobierno Digital | Secretaría de Finanzas y Administración |
                     <a href="https://www.michoacan.gob.mx">
                         Gobierno del Estado de Michoacán
