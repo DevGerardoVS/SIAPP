@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Calendarización;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Dompdf\Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
+use function Psy\debug;
 
 class TechosController extends Controller
 {
@@ -48,6 +53,51 @@ class TechosController extends Controller
     }
 
     public function addTecho(Request $request){
-        log::debug($request);
+        $data = array_chunk(array_slice($request->all(),3),3);
+        $aKeys = array_keys(array_slice($request->all(),3));
+        $validaForm = [];
+
+        foreach ($aKeys as $a){
+            $validaForm[$a] = 'required';
+        }
+
+        $upp = $request->uppSelected;
+        $ejercicio = $request->anio;
+
+        $request->validate($validaForm);
+
+        if(count($data) != 0){
+            try {
+                DB::beginTransaction();
+                foreach ($data as $d){
+                    DB::table('techos_financieros')->insert([
+                        'clv_upp' => $upp,
+                        'clv_fondo' => $d[1],
+                        'tipo' => $d[0],
+                        'presupuesto' => $d[2],
+                        'ejercicio' => $ejercicio,
+                        'updated_at' => Carbon::now(),
+                        'created_at' => Carbon::now(),
+                        'updated_user' => Auth::user()->username,
+                        'created_user' => Auth::user()->username
+                    ]);
+                }
+                DB::commit();
+                return [
+                    'status' => 200
+                ];
+            }catch (Throwable $e){
+                DB::rollBack();
+                report($e);
+                return [
+                    'status' => 400,
+                    'error' => $e
+                ];
+            }
+        }else{
+            return [
+                'status' => 400
+            ];
+        }
     }
 }

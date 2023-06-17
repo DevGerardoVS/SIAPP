@@ -28,7 +28,7 @@
                         </div>
                         <?php $upp = DB::table('v_entidad_ejecutora')->select('clv_upp','upp')->distinct()->get();?>
                         <div class="col-sm-5">
-                            <select class="form-control filters" placeholder="Seleccione una UPP" id="uppSelected" name="uppSelected">
+                            <select class="form-control filters" placeholder="Seleccione una UPP" id="uppSelected" name="uppSelected" required>
                                 <option value="0" selected>Seleccione una UPP</option>
                                 @foreach($upp as $u)
                                 <option value="{{$u->clv_upp}}" >{{$u->upp}}</option>
@@ -61,6 +61,7 @@
                         </div>
                     </div>
                     <br>
+
                 </form>
             </div>
             <div class="modal-footer">

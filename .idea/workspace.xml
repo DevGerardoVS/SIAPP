@@ -10,7 +10,6 @@
       <change beforePath="$PROJECT_DIR$/public/js/calendarización/techos/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/calendarización/techos/init.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/calendarización/techos/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/calendarización/techos/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/calendarización/techos/modalCreate.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/calendarización/techos/modalCreate.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/calendarizacion.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/calendarizacion.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,20 +180,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Dilan SFA/OneDrive - Secretaría de Finanzas y Administración del Gobierno de Michoacán/Documentos/repositorios/Sistema-Integral&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/Dilan SFA/OneDrive - Secretaría de Finanzas y Administración del Gobierno de Michoacán/Documentos/repositorios/CreditosFiscalesNew",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Dilan SFA\Documents\repositorios\Sistema-Integral\public\js\calendarización\techos" />
@@ -246,7 +245,9 @@
       <workItem from="1686325090841" duration="11218000" />
       <workItem from="1686585230816" duration="15420000" />
       <workItem from="1686669009409" duration="13109000" />
-      <workItem from="1686755919070" duration="17980000" />
+      <workItem from="1686755919070" duration="18642000" />
+      <workItem from="1686840529212" duration="18684000" />
+      <workItem from="1686929167240" duration="17064000" />
     </task>
     <servers />
   </component>
@@ -297,12 +298,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/public/js/calendarización/techos/init.js</url>
-          <line>102</line>
+          <line>80</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/public/js/calendarización/techos/init.js</url>
+          <line>109</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/Calendarización/TechosController.php</url>
-          <line>17</line>
+          <line>22</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\Calendarización\TechosController" />
             <option name="methodName" value="getTechos" />
@@ -311,7 +318,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/Calendarización/TechosController.php</url>
-          <line>40</line>
+          <line>45</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\Calendarización\TechosController" />
             <option name="methodName" value="getFondos" />
@@ -320,12 +327,21 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">
           <url>file://$PROJECT_DIR$/app/Http/Controllers/Calendarización/TechosController.php</url>
-          <line>12</line>
+          <line>17</line>
           <properties>
             <option name="className" value="\App\Http\Controllers\Calendarización\TechosController" />
             <option name="methodName" value="getIndex" />
           </properties>
           <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/Calendarización/TechosController.php</url>
+          <line>54</line>
+          <properties>
+            <option name="className" value="\App\Http\Controllers\Calendarización\TechosController" />
+            <option name="methodName" value="addTecho" />
+          </properties>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

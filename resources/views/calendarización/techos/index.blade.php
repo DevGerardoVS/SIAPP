@@ -7,7 +7,16 @@
         @csrf
 
     </form>
-    <section id="widget-grid" class="conteiner">
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>EROR</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+    <section id="widget-grid" class="container">
         <div class="row">
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div color="darken" class="jarviswidget" id="wid-id-1" data-widget-editbutton="false"
@@ -98,7 +107,7 @@
 <script src="/js/utilerias.js"></script>
 <script>
     //En las vistas solo se llaman las funciones del archivo init
-    init.validateCreate($('#frm_create'));
+    init.validateCreate($('#frm_create_techo'));
 </script>
 @endsection
 
