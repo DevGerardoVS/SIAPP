@@ -71,6 +71,6 @@
 		Route::post('/Reportes/get-administrativo{nombre}','reporteAdministrativo')->name('get_reporte_administrativo');
 		// Route::post('/Reportes/get-administrativo{nombre}','reporteAdministrativo')->name('get_reporte_administrativo');
 
-		Route::post('/Reportes/download/{nombre}', 'downloadReport')->name('downloadReport');
+		Route::post('/Reportes/download/{nombre?}', 'downloadReport')->name('downloadReport');
 	});
 ?>

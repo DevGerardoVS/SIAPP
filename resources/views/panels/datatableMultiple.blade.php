@@ -80,13 +80,14 @@
        var formData = new FormData();
        var csrf_tpken = $("input[name='_token']").val();
        var anio = $("#anio_filter").val();
-       var fecha = $("#fechaCorte_filter").val();
-    //    if(fecha != null && fecha != "null") fecha = fecha + " 00:00:00";
-    //    console.log(fecha);
+       var fecha = !$("#fechaCorte_filter").val() ? "null" : $("#fechaCorte_filter").val();
+       var upp = $("#upp_filter").val();
 
+       console.log(upp);
        formData.append("_token",csrf_tpken);
        formData.append("anio",anio);
        formData.append("fecha",fecha);
+       formData.append("upp",upp);
 
         $.ajax({
            url: $(ruta).attr("action"),
@@ -106,6 +107,7 @@
                     data: response.dataSet,
                     searching: true,
                     autoWidth: true,
+                    order:[],
                     ordering: true,
                     processing: true,
                     // serverSide: true,
@@ -214,6 +216,10 @@
         dt.DataTable().columns.adjust().draw();
         dt.children("thead").css("visibility","hidden");
     }
-
 </script>
+<style>
+    .custom-select{
+        min-width: 4em;
+    }
+</style>
 @endsection

@@ -35,10 +35,29 @@
                     </select>
                 </div>
             </div>
-            {{-- <div class="col-sm-2">
-
-                <button  type="submit" class="btn" style="color: #0d6efd"><i class="fas fa-plus">{{__("messages.export_todo_excel")}}</i></button>
-            </div> --}}
+            <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
+                <div class="col-sm-3 col-md-3 col-lg-2 text-md-end d-none div_upp">
+                    <label for="fechaCorte_filter" class="form-label fw-bold mt-md-1">UPP:</label>
+                </div>
+                <div class="col-md-6 col-sm-12 d-none div_upp">
+                    <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
+                        @foreach ($upps as $upp)
+                            <option value={{$upp->clave}} {{$upp->descripcion}}>{{$upp->clave}} {{$upp->descripcion}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            {{-- botones de descarga --}}
+            <div class="d-flex flex-wrap justify-content-end">
+                <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
+                    <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
+                    <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
+                </button>
+                <button id="btnExcel" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled" style="border-color: #6a0f49;" title="Generar Reporte Excel" name="action" value="xls">
+                    <span class="btn-label"><i class="fa fa-file-excel-o text-success fs-4 align-middle"></i></span>
+                    <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a Excel</span>
+                </button>
+            </div>
         </form>
 
 
@@ -93,7 +112,7 @@
                     </div>
                 </div>
             </div>
-            <!--ss capituloPartida-->
+            <!--capituloPartida-->
             <div class="tab-pane" id="capituloPartida" role="tabpanel" aria-labelledby="capituloPartida_tab" >
                 <div class="row mx-auto">
                     <div class="col-md-12">
@@ -165,20 +184,22 @@
             function selectTable(id){
     
         switch(id){
-        case "fondoMensual_tab":
-                    var dt = $('#catalogoA');
-                    tabla="#catalogoA";
-                    letter="A";
-                    dt.DataTable().clear().destroy();
-                    getData(tabla,letter);                    
-                        break;
-                    case "capituloPartida_tab":
-                    var dt = $('#catalogoB');
-                    tabla="#catalogoB";
-                    letter="B";
-                    dt.DataTable().clear().destroy();
-                    getData(tabla,letter);
-                           break;
+            case "fondoMensual_tab":
+                var dt = $('#catalogoA');
+                tabla="#catalogoA";
+                letter="A";
+                $('.div_upp').addClass('d-none');
+                dt.DataTable().clear().destroy();
+                getData(tabla,letter);                    
+                break;
+            case "capituloPartida_tab":
+                var dt = $('#catalogoB');
+                tabla="#catalogoB";
+                letter="B";
+                $('.div_upp').removeClass('d-none'); //cambiar a agregar
+                dt.DataTable().clear().destroy();
+                getData(tabla,letter);
+                break;
     
          }
     }
@@ -192,6 +213,11 @@
     });
     
     $("#form").on("change",".filters_fechaCorte",function(e){
+        dt.DataTable().clear().destroy();
+        getData(tabla,letter);
+    });
+
+    $("#form").on("change",".filters_upp",function(e){
         dt.DataTable().clear().destroy();
         getData(tabla,letter);
     });

@@ -14,8 +14,8 @@ class ReporteController extends Controller
 {
     public function indexPlaneacion(){
         $dataSet = array();
-        $names = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondoss_db" AND ROUTINE_NAME LIKE "%art_20%" AND ROUTINE_NAME NOT LIKE "%a_num_1_%"');
-        // $names = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondos_db" AND ROUTINE_NAME LIKE "%art_20%" AND ROUTINE_NAME NOT LIKE "%a_num_1_%"');
+        // $names = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondoss_db" AND ROUTINE_NAME LIKE "%art_20%" AND ROUTINE_NAME NOT LIKE "%a_num_1_%"');
+        $names = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondos_db" AND ROUTINE_NAME LIKE "%art_20%" AND ROUTINE_NAME NOT LIKE "%a_num_1_%"');
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         return view("reportes.leyHacendaria", [
             'dataSet' => json_encode($dataSet),
@@ -28,11 +28,11 @@ class ReporteController extends Controller
     public function indexAdministrativo(){
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
-        // $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
+        $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
         return view("reportes.administrativos.index3", [
             'dataSet' => json_encode($dataSet),
             'anios' => $anios,
-            // 'upps' => $upps,
+            'upps' => $upps,
         ]);
     }
 
@@ -53,22 +53,17 @@ class ReporteController extends Controller
 
     // prueba
     public function calendarioFondoMensual(Request $request){
-        if ($request->anio != null) {
-            $anio = $request->anio;
-        }
-
-        
-        $fecha = $request->fecha != null && $request->fecha != null ? $request->fecha : "null";
-       
-        log::info($request );
+        $anio = $request->anio;
+        $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
         $dataSet = array();
         // $data = DB::select("CALL calendario_fondo_mensual(".$anio.", null)");
         $data = DB::select("CALL calendario_fondo_mensual(".$anio.", ".$fecha.")");
+        log::info("calendario".$fecha);
         foreach ($data as $d) {
 
             $suma = $d->enero + $d->febrero + $d->marzo + $d->abril + $d->mayo + $d->junio + $d->julio + $d->agosto + $d->septiembre + $d->octubre + $d->noviembre + $d->diciembre;
 
-            $ds = array($d->ramo, $d->fondo, number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre), number_format($suma));
+            $ds = array($d->ramo, $d->fondo_ramo, number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre), number_format($suma));
             $dataSet[] = $ds;
         }
         return response()->json([
@@ -78,12 +73,12 @@ class ReporteController extends Controller
 
     public function resumenCapituloPartida(Request $request){
         $anio = $request->anio;
-        $fecha = $request->fecha != null ? $request->fecha. " 00:00:00" : "NULL";
+        $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
         $dataSet = array();
-        // $data = DB::select("CALL resumen_capitulo_partida(".$anio.", ".$fecha.")");
-        $data = DB::select("CALL resumen_capitulo_partida(".$anio.", Null)");
+        $data = DB::select("CALL reporte_resumen_por_capitulo_y_partida(".$anio.", ".$fecha.")");
+        // $data = DB::select("CALL reporte_resumen_por_capitulo_y_partida(".$anio.", '2023-06-13')");
             foreach ($data as $d) {
-                $ds = array($d->capitulo, $d->partida_llave." ".$d->partida, number_format($d->importe));
+                $ds = array($d->capitulo, $d->partida, number_format($d->importe));
                 $dataSet[] = $ds;
             }
         return response()->json([
