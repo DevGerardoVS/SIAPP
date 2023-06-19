@@ -41,13 +41,13 @@
                             </select>
                         </div>
                         
-                        <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
+                        {{-- <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
                             <label for="fechaCorte_filter" class="form-label fw-bold mt-md-1">Fecha de corte:</label>
                         </div>
                         <div class="col-sm-12 col-md-3 col-lg-2">
                             <select class="form-control filters filters_fechaCorte" id="fechaCorte_filter" name="fechaCorte_filter" autocomplete="fechaCorte_filter">
                             </select>
-                        </div>
+                        </div> --}}
                     </div>
                 </form>
             </section>
@@ -73,11 +73,11 @@
 
         {{-- TAB --}}
         <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="calendario-fondo-base" data-bs-toggle="tab" data-bs-target="#fondo-base" type="button" role="tab" aria-controls="fondo-base" aria-selected="false">Calendario fondo base mensual</button>
+            <li class="nav-item">
+              <button class="nav-link active" id="calendario-fondo-base" data-bs-toggle="tab" data-bs-target="#fondo-base" type="button" role="tab" aria-controls="fondo-base" aria-selected="true">Calendario fondo base mensual</button>
             </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="resumen-capitulo-partida" data-bs-toggle="tab" data-bs-target="#capitulo-partida" type="button" role="tab" aria-controls="capitulo-partida" aria-selected="false">Resume capítulo y partida</button>
+            <li class="nav-item">
+              <button class="nav-link" id="resumen-capitulo-partida" data-bs-toggle="tab" data-bs-target="#capitulo-partida" type="button" role="tab" aria-controls="capitulo-partida" aria-selected="false">Resumen capítulo y partida</button>
             </li>
             {{-- <li class="nav-item" role="presentation">
               <button class="nav-link" id="proyecto_avance_general" data-bs-toggle="tab" data-bs-target="#avance-general" type="button" role="tab" aria-controls="avance-general" aria-selected="false">Proyecto avance general</button>
@@ -188,11 +188,16 @@
       var tabla;
       var letter;
       $(document).ready(function() {
+        $("#buscarForm").on("change",".filters_anio",function(e){
+            e.preventDefault();
+            getDataFechaCorte($('#anio_filter').val());
+        });
           $.ajaxSetup({
               headers: {
                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
               }
           });
+          getDataFechaCorte($('#anio_filter').val());
   
           $('button[data-bs-toggle="tab"]').on('click', function (e) {
               var id = e.target.id;
@@ -209,13 +214,13 @@
       dt.DataTable().clear().destroy();
       getData(tabla,letter);      
          
-      let form = document.getElementById("form");
+      let form = document.getElementById("buscarForm");
       
       $("#buscarForm").on('change','.filters',function(){
           var id = $(".active")[1].id;
+          console.log($(".active")[1].id);
           selectTable(id);
       });
-
   
       function selectTable(id){
         switch(id){

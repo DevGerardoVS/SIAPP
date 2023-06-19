@@ -29,7 +29,7 @@ class ReporteController extends Controller
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         // $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
-        return view("reportes.administrativos.index2", [
+        return view("reportes.administrativos.index3", [
             'dataSet' => json_encode($dataSet),
             'anios' => $anios,
             // 'upps' => $upps,
@@ -53,8 +53,16 @@ class ReporteController extends Controller
 
     // prueba
     public function calendarioFondoMensual(Request $request){
-        $anio = $request->anio;
-        $fecha = $request->input('fechaCorte_filter') != null ? $request->input('fechaCorte_filter') : "NULL";
+        if ($request->anio != null) {
+            $anio = $request->anio;
+        }
+
+        
+        $fecha = $request->fecha != null && $request->fecha != null ? $request->fecha : "null";
+       
+        log::info($request );
+        $dataSet = array();
+        // $data = DB::select("CALL calendario_fondo_mensual(".$anio.", null)");
         $data = DB::select("CALL calendario_fondo_mensual(".$anio.", ".$fecha.")");
         foreach ($data as $d) {
 
@@ -69,10 +77,11 @@ class ReporteController extends Controller
     }
 
     public function resumenCapituloPartida(Request $request){
-        log::info($request);
         $anio = $request->anio;
-        $fecha = $request->input('fechaCorte_filter') != null ? $request->input('fechaCorte_filter') : "NULL";
-        $data = DB::select("CALL resumen_capitulo_partida(".$anio.", ".$fecha.")");
+        $fecha = $request->fecha != null ? $request->fecha. " 00:00:00" : "NULL";
+        $dataSet = array();
+        // $data = DB::select("CALL resumen_capitulo_partida(".$anio.", ".$fecha.")");
+        $data = DB::select("CALL resumen_capitulo_partida(".$anio.", Null)");
             foreach ($data as $d) {
                 $ds = array($d->capitulo, $d->partida_llave." ".$d->partida, number_format($d->importe));
                 $dataSet[] = $ds;
@@ -96,53 +105,53 @@ class ReporteController extends Controller
     }
     // prueba
 
-    public function reporteAdministrativo($nombre,Request $request){
+    // public function reporteAdministrativo($nombre,Request $request){
 
-        $anio = $request->input('anio_filter');
-        $fecha = $request->input('fechaCorte_filter') != null ? $request->input('fechaCorte_filter') : "NULL";
+    //     $anio = $request->input('anio_filter');
+    //     $fecha = $request->input('fechaCorte_filter') != null ? $request->input('fechaCorte_filter') : "NULL";
     
-        $dataSet = array();
+    //     $dataSet = array();
         
-        // CALENDARIO FONDO MENSUAL
-        if($nombre == "calendario_fondo_mensual"){
-            $data = DB::select("CALL calendario_fondo_mensual(".$anio.", ".$fecha.")");
-            foreach ($data as $d) {
+    //     // CALENDARIO FONDO MENSUAL
+    //     if($nombre == "calendario_fondo_mensual"){
+    //         $data = DB::select("CALL calendario_fondo_mensual(".$anio.", ".$fecha.")");
+    //         foreach ($data as $d) {
     
-                $suma = $d->enero + $d->febrero + $d->marzo + $d->abril + $d->mayo + $d->junio + $d->julio + $d->agosto + $d->septiembre + $d->octubre + $d->noviembre + $d->diciembre;
+    //             $suma = $d->enero + $d->febrero + $d->marzo + $d->abril + $d->mayo + $d->junio + $d->julio + $d->agosto + $d->septiembre + $d->octubre + $d->noviembre + $d->diciembre;
     
-                $ds = array($d->ramo, $d->fondo, number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre), number_format($suma));
-                $dataSet[] = $ds;
-            }
-        }
-        // RESUMEN CAPITULO Y PARTIDA
-        elseif($nombre == "resumen_capitulo_partida"){
-            $data = DB::select("CALL resumen_capitulo_partida(".$anio.", ".$fecha.")");
-            foreach ($data as $d) {
-                $ds = array($d->capitulo, $d->partida_llave." ".$d->partida, number_format($d->importe));
-                $dataSet[] = $ds;
-            }
-        }
-        // PROYECTO AVANCE GENERAL
-        elseif($nombre == 'proyecto_avance_general'){
-            // $data = DB::select("CALL resumen_capitulo_partida(".$anio.", ".$fecha.")");
-            // foreach ($data as $d) {
-            //     $ds = array($d->capitulo, $d->partida_llave, $d->partida, $d->importe);
-            //     $dataSet[] = $ds;
-            // }
-        }
-        // CALENDARIO GENERAL
-        elseif($nombre == 'calendario_general'){
+    //             $ds = array($d->ramo, $d->fondo, number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre), number_format($suma));
+    //             $dataSet[] = $ds;
+    //         }
+    //     }
+    //     // RESUMEN CAPITULO Y PARTIDA
+    //     elseif($nombre == "resumen_capitulo_partida"){
+    //         $data = DB::select("CALL resumen_capitulo_partida(".$anio.", ".$fecha.")");
+    //         foreach ($data as $d) {
+    //             $ds = array($d->capitulo, $d->partida_llave." ".$d->partida, number_format($d->importe));
+    //             $dataSet[] = $ds;
+    //         }
+    //     }
+    //     // PROYECTO AVANCE GENERAL
+    //     elseif($nombre == 'proyecto_avance_general'){
+    //         // $data = DB::select("CALL resumen_capitulo_partida(".$anio.", ".$fecha.")");
+    //         // foreach ($data as $d) {
+    //         //     $ds = array($d->capitulo, $d->partida_llave, $d->partida, $d->importe);
+    //         //     $dataSet[] = $ds;
+    //         // }
+    //     }
+    //     // CALENDARIO GENERAL
+    //     elseif($nombre == 'calendario_general'){
 
-        }
-        // CALENDARIO POR UPP
-        elseif($nombre == 'calendario_upp'){
+    //     }
+    //     // CALENDARIO POR UPP
+    //     elseif($nombre == 'calendario_upp'){
 
-        }
+    //     }
 
-        return response()->json([
-            "dataSet" => $dataSet,
-        ]);
-    }
+    //     return response()->json([
+    //         "dataSet" => $dataSet,
+    //     ]);
+    // }
 
     // public function getFechaCorte($anio){
     //     $fechaCorte = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where anio = ? and deleted_at is not null',[$anio]);

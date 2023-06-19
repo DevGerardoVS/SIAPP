@@ -1,31 +1,36 @@
 @section('page_scripts')
 <script type="text/javascript">
-      //  
+
+
     function getDataFechaCorte(anio) { //función para actualizar el select fechas de corte
         $.ajax({
-        url: "/Reportes/data-fecha-corte/"+ anio,
-        type:'POST',
-        dataType: 'json',
-        success: function(data) {
-            var par = $('#fechaCorte_filter');
-            par.html('');
-            par.append(new Option("Elegir fecha de corte", ""));
-            $.each(data, function(i, val){
-                par.append(new Option(data[i].deleted_at, data[i].deleted_at));
-            });
-        }
+            url: "/Reportes/data-fecha-corte/"+ anio,
+            type:'POST',
+            dataType: 'json',
+            success: function(data) {
+                var par = $('#fechaCorte_filter');
+                par.html('');
+                par.append(new Option("Elegir fecha de corte", ""));
+                $.each(data, function(i, val){
+                    par.append(new Option(data[i].deleted_at, data[i].deleted_at));
+                });
+            }
         });
     }
 
     function getData(tabla, rt){
-        var dt = $(tabla);
-        var orderDt = "";
-        var column = "";
-        var formatRight = [];
+       
+
+       var dt = $(tabla);
+       var orderDt = "";
+       var column = "";
+       var ruta;
+       var formatRight = [];
         var formatLeft = [];
         var formatCenter = [];
-        var ruta;
-        switch(rt){
+        var bold = [];
+         
+       switch(rt){
            case "A":
                ruta = "#buscarFormA";
                break;
@@ -34,8 +39,8 @@
                break;
            default:
                break;
-        }
-        // Dar fotmato a las tablas dependiendo su cantidad de columnas
+       }
+
         if(dt.attr('data-bold')!=undefined){
             bold = dt.attr('data-bold').split(",");
             for(var i in bold){
@@ -71,14 +76,14 @@
                 }
             }
         }
-
+       
        var formData = new FormData();
-        var anio = $("#anio_filter").val();
-        console.log(anio);
-        var fecha = getDataFechaCorte(anio);
-        // console.log(fecha);
-       var consulta = $(tabla+'_val').val();
        var csrf_tpken = $("input[name='_token']").val();
+       var anio = $("#anio_filter").val();
+       var fecha = $("#fechaCorte_filter").val();
+    //    if(fecha != null && fecha != "null") fecha = fecha + " 00:00:00";
+    //    console.log(fecha);
+
        formData.append("_token",csrf_tpken);
        formData.append("anio",anio);
        formData.append("fecha",fecha);
@@ -102,9 +107,8 @@
                     searching: true,
                     autoWidth: true,
                     ordering: true,
-                    paging: true,
                     processing: true,
-                    ServerSide: true,
+                    // serverSide: true,
                     pageLength: 10,
                     dom: 'frltip',
                     scrollX: true,
@@ -135,8 +139,7 @@
                            }
                        },
                    },
-                   dom:'frltip',
-                   columnDefs: [
+                    columnDefs: [
                         {
                             defaultContent: "-",
                             targets: "_all"
@@ -156,30 +159,30 @@
                     ],
                     // Poner el scroll debajo del footer 
                     "fnInitComplete": function(){
-                        // Deshabilitar la barra de scroll
+                        // Disable TBODY scoll bars
                         $('.dataTables_scrollBody').css({
                             'overflow': 'hidden',
                             'border': '0'
                         });
 
-                        // Habilitar la barra de scroll
+                        // Habilitar la barra de scroll en el tfoot
                         $('.dataTables_scrollFoot').css('overflow', 'auto');
 
-                        // Sincronizar la barra de scroll con la tabla
+                        // Sincronizar la barra de scroll con la body
                         $('.dataTables_scrollFoot').on('scroll', function () {
                             $('.dataTables_scrollBody').scrollLeft($(this).scrollLeft());
                         });     
                     },
-                   // obtener la suma total
-                   footerCallback: function (row, data, start, end, display) {
+                    // obtener la suma total
+                    footerCallback: function (row, data, start, end, display) {
                         var api = this.api();
             
-                        // Remover el formato de texto para hacerlo entero
+                        // Cambiar el formato string a entero
                         var intVal = function (i) {
                             return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
                         };
             
-                        // Total de todas las páginas
+                        // Suma total de todas las páginas
                         total = api
                             .column(".sum")
                             .data()
@@ -187,7 +190,7 @@
                                 return intVal(a) + intVal(b);
                             }, 0);
             
-                        // Total sobre esta página
+                        // Total sobre la página actual
                         pageTotal = api
                             .column(".sum", { page: 'current' })
                             .data()
@@ -195,7 +198,7 @@
                                 return intVal(a) + intVal(b);
                             }, 0);
             
-                        // Actualizar el footer
+                        // Actualizar footer
                         $(api.column(".sum").footer()).html( total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                     },
                });
@@ -205,17 +208,12 @@
                console.log('{{__("messages.error")}}: ' + response);
            }
        });
-    }
-
-    function redrawTable(tabla){
+   }
+   function redrawTable(tabla){
         dt = $(tabla);
         dt.DataTable().columns.adjust().draw();
         dt.children("thead").css("visibility","hidden");
     }
+
 </script>
-<style>
-    .custom-select{
-        min-width: 4em;
-    }
-</style>
 @endsection
