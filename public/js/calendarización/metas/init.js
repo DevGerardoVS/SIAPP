@@ -113,6 +113,8 @@ var dao = {
             $.each(data, function (i, val) {
                 par.append(new Option(data[i].descripcion, data[i].clave));
             });
+            par.selectpicker({ search: true });
+
         });
     },
     crearUsuario: function () {
@@ -241,9 +243,11 @@ var init = {
 };
 
 $(document).ready(function () {
+    let inset="";
     getData();
     dao.getAnio();
     dao.getUrs();
+   $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
         keyboard: false
@@ -253,42 +257,12 @@ $(document).ready(function () {
         if ($('#frm_create').valid()) {
             dao.crearUsuario();
         }
-        $('#email-error').text("Este campo es requerido").addClass('has-error');;
-        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');;
     });
-    $("#email").change(function () {
-        var regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        regex.test($("#email").val());
-        var text = "Ingresa un correo electrónico válido";
-        if (regex.test($("#email").val())) {
-            $('#email-error').text("").removeClass('d-block').removeClass('has-error');
-            $('#email').removeClass('has-error').removeClass('d-block');
-        } else {
-            $('#email-error').text(text).addClass('d-block').addClass('has-error');
-            $('#email').addClass('has-error').addClass('d-block');
-        }
-    });
-    $("#in_celular").change(function () {
-        var regex = /^[a-zA-Z ]+$/;
-        var bol = regex.test($("#in_celular").val());
-        if ($("#in_celular").val() == '') {
-            $('#in_celular-error').text("Este campo es requerido").addClass('d-block').addClass('has-error');
-            $('#in_celular').addClass('d-block').addClass('has-error');
-        }
-        else {
-            if (bol != true) {
-                if ($("#in_celular").val().length != 14) {
-                    $('#in_celular-error').text("El Telefono debe contar con 10 digitos").addClass('d-block').addClass('has-error');
-                    $('#in_celular').addClass('d-block').addClass('has-error');
-                } else {
-                    $('#in_celular-error').text("").removeClass('d-block').removeClass('has-error');
-                    $('#in_celular').removeClass('d-block').removeClass('has-error');
-                }
-            } else {
-                $('#in_celular-error').text("El telefono no puede llevar letras").addClass('d-block').addClass('has-error');
-                $('#in_celular').addClass('d-block').addClass('has-error');
-            }
-        }
-    });
-    $('#in_celular').mask('00-00-00-00-00');
+   /*  $("#serchUr").click(function () {
+        console.log("aedsa",$('#serchUr').val());
+    }); 
+    $("#serchUr").keypress(function (e) {
+        inset += String.fromCharCode(e.keyCode);
+        dao.getUrs(inset);
+    });*/
 });

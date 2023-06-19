@@ -8,6 +8,8 @@
           <button type="button" class="btn-close" onclick="limpiarCampos()" data-bs-dismiss="modal"
                   aria-label="Close"></button>
         </div>
+
+          @csrf
         <div class="modal-body">
           <div class="row">
             <div class="col-md-12 d-flex justify-content-center" >
@@ -68,9 +70,9 @@
             <div class="col-md-12">
               <div class="form-group">
                 <div class="d-flex justify-content-center">
-                  <button style="width: 20%; border: 1px solid #555;" type="button" class="btn colorMorado" onclick="document.getElementById('excel').click()">Seleccionar archivo</button>
-                  <input type="file"  id="excel" name="excel" style="display:none"
-                   accept="text/plain, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx, .xls, .csv">
+                  <button style="width: 20%; border: 1px solid #555;" type="button" class="btn colorMorado" onclick="document.getElementById('file').click()">Seleccionar archivo</button>
+                  <input type="file"  id="file" name="file" style="display:none"
+                   accept=" .xlsx ">
                    <input id="file_label" style="width: 70%" type="text" readonly value="Sin archivos seleccionados">
                 </div>
               </div>
@@ -83,6 +85,7 @@
              {{__("messages.cargar_archivo")}}</button>
           </div>
         </div>
+
       </div>
   </div>
 
@@ -91,11 +94,80 @@
 <script type="text/javascript">
 
    //mostrar campos una vez selecionado el municipio
-   $('#excel').change(function(e) {
+   $('#file').change(function(e) {
       e.preventDefault();
-      $("#ModalCargaMasiva").find("#file_label").val($('#excel')[0].files[0].name)
-
+      $("#ModalCargaMasiva").find("#file_label").val($('#file')[0].files[0].name)
     });
-   
+    
+    $('#aceptar').click(function(e){
+      e.preventDefault();
+      var fd = new FormData();
+      var files = $('#file')[0].files;
+      fd.append('_token', "{{ csrf_token() }}")
+      fd.append('file',files[0]);
+
+      $.ajax({
+        url: "{{route('load_data_plantilla')}} ",
+        type: "POST",
+        data:  fd,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        beforeSend: function () {
+          let timerInterval
+          Swal.fire({
+            title: '{{__("messages.msg_cargando_datos")}}',
+            html: ' <b></b>',
+            allowOutsideClick: false,
+            timer: 2000000,
+            timerProgressBar: true,
+            didOpen: () => {
+                    Swal.showLoading();
+                },
+                
+          });
+        },
+        success: function (response) {
+          Swal.close();
+          Swal.fire({
+              title: 'Exito',
+             timer: 2000,
+             icon: 'success',
+            text:  'Datos importados con exito',
+            didOpen: () => {
+                    Swal.hideLoading();
+                },
+           }).then(
+             function () {
+              $("#ModalCargaMasiva").find("#file_label").val('Sin archivos seleccionados')
+              $('#ModalCargaMasiva').modal('hide');
+
+             },
+           
+          )
+        },
+        error: function (response) {
+          Swal.fire({
+            icon: 'error',
+            title: '{{__("messages.error")}}',
+            timer: 2000,
+            didOpen: () => {
+                    Swal.hideLoading();
+                },
+            text: response.responseJSON.message ? response.responseJSON.message : 'Ocurrio un error al momento de obtener la información.',
+            confirmButtonText: "{{__('messages.aceptar')}}",
+          }).then(
+            function(){
+              $("#ModalCargaMasiva").find("#file_label").val('Sin archivos seleccionados')
+              $('#ModalCargaMasiva').modal('hide');
+
+            }
+          );
+        }
+      });
+      
+    })
+
+
 
 </script>

@@ -36,46 +36,6 @@ var dao = {
             }
         });
     },
-    eliminarUsuario: function (id) {
-        Swal.fire({
-            title: '¿Seguro que quieres eliminar este usuario?',
-            text: "Esta accion es irreversible",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "/adm-usuarios/eliminar",
-                    data: {
-                        id: id
-                    }
-                }).done(function (data) {
-                    if (data != "done") {
-                        Swal.fire(
-                            'Error!',
-                            'Hubo un problema al querer realizar la acción, contacte a soporte',
-                            'Error'
-                        );
-                    } else {
-                        Swal.fire(
-                            'Éxito!',
-                            'La acción se ha realizado correctamente',
-                            'success'
-                        );
-                        getData();
-                    }
-                });
-
-            }
-        })
-
-
-
-    },
     getAnio: function () {
         let anio = [2022, 2023, 2024, 2025];
         var par = $('#anio_filter');
@@ -99,70 +59,17 @@ var dao = {
                  });
              }); */
     },
-    crearUsuario: function () {
-        var form = $('#frm_create')[0];
-        var data = new FormData(form);
-        $.ajax({
-            type: "POST",
-            url: 'adm-usuarios/store',
-            data: data,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-            timeout: 600000
-        }).done(function (response) {
-            $('#cerrar').trigger('click');
-            Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 1500
-            });
-
-            dao.limpiarFormularioCrear();
-            getData();
-        });
-    },
-    editarUsuario: function (id) {
-        $.ajax({
-            type: "GET",
-            url: 'adm-usuarios/update/' + id,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-            timeout: 600000
-        }).done(function (response) {
-            console.log("response", response)
-            const {
-                id,
-                username,
-                celular,
-                email,
-                estatus,
-                id_grupo,
-                nombre,
-                p_apellido,
-                s_apellido,
-                perfil,
-                nombre_grupo
-            } = response;
-            $('#id_user').val(id);
-            $('#username').val(username);
-            $('#nombre').val(nombre);
-            $('#p_apellido').val(p_apellido);
-            $('#s_apellido').val(s_apellido);
-            $('#email').val(email);
-            $('#in_celular').val(celular);
-            $('#label_idGrupo').text(perfil).show();
-
-            $("#id_grupo").hide();
-            $("#labelGrupo").hide();
-
-        });
-    },
     limpiarFormularioCrear: function () {
+        $('#fondos').empty()
+        $('#fondos').append('<thead>\n' +
+            '     <tr class="colorMorado">\n' +
+            '         <th>Tipo</th>\n' +
+            '         <th>ID Fondo</th>\n' +
+            '         <th>Monto</th>\n' +
+            '         <th>Ejercicio</th>\n' +
+            '         <th>Acciones</th>\n' +
+            '     </tr>\n' +
+            ' </thead>')
 
         inps = [
             'id_user',
@@ -189,53 +96,9 @@ var dao = {
         $("#label_idGrupo").text("").hide();
 
     },
-     edit_row:function (no){
-    document.getElementById("edit_button" + no).style.display = "none";
-    document.getElementById("save_button" + no).style.display = "block";
-
-    var name = document.getElementById("name_row" + no);
-    var country = document.getElementById("country_row" + no);
-    var age = document.getElementById("age_row" + no);
-
-    var name_data = name.innerHTML;
-    var country_data = country.innerHTML;
-    var age_data = age.innerHTML;
-
-    name.innerHTML = "<input type='text' id='name_text" + no + "' value='" + name_data + "'>";
-    country.innerHTML = "<input type='text' id='country_text" + no + "' value='" + country_data + "'>";
-    age.innerHTML = "<input type='text' id='age_text" + no + "' value='" + age_data + "'>";
-    },
-    save_row:function(no) {
-    var name_val = document.getElementById("name_text" + no).value;
-    var country_val = document.getElementById("country_text" + no).value;
-    var age_val = document.getElementById("age_text" + no).value;
-
-    document.getElementById("name_row" + no).innerHTML = name_val;
-    document.getElementById("country_row" + no).innerHTML = country_val;
-    document.getElementById("age_row" + no).innerHTML = age_val;
-
-    document.getElementById("edit_button" + no).style.display = "block";
-    document.getElementById("save_button" + no).style.display = "none";
-}, delete_row:function(no) {
-    document.getElementById("row" + no + "").outerHTML = "";
-},
-
-    add_row: function () {
-        var form = $('#actividad')[0];
-        var data = new FormData(form);
-        const f = {};
-        data.forEach((value, key) => (f[key] = value));
-        console.log(f);
-
-    var table = document.getElementById("actividades");
-    var table_len = (table.rows.length) - 1;
-        var row = table.insertRow(table_len).outerHTML = "<tr'><td>" + f.actividades + "</td><td>" + f.metas + "</td><td>" + f.tipo_AC +
-        "</td><td><input type='button' id='edit_button" + table_len + "' value='Edit' class='edit' onclick='edit_row(" + table_len + ")'> <input type='button' id='save_button" + table_len + "' value='Save' class='save' onclick='save_row(" + table_len + ")'> <input type='button' value='Delete' class='delete' onclick='delete_row(" + table_len + ")'></td></tr>";
-
-    document.getElementById("new_name").value = "";
-    document.getElementById("new_country").value = "";
-    document.getElementById("new_age").value = "";
-}
+    eliminaFondo: function (i) {
+        document.getElementById(i).outerHTML=""
+    }
 };
 var init = {
     validateCreate: function (form) {
@@ -274,6 +137,40 @@ var init = {
 $(document).ready(function () {
     getData();
     dao.getAnio();
+    $('#btnNew').on('click',function (e) {
+        e.preventDefault();
+        anio = new Date().getFullYear() + 1;
+        $('#anioOpt').val(anio)
+    })
+    $('#agregar_fondo').on('click', function (e){
+        e.preventDefault()
+
+        table = document.getElementById('fondos')
+        table_lenght = (table.rows.length)
+        iconD = '<i class="fa fa-trash" style="font-size: large; color: red"></i>'
+
+        row = table.insertRow(table_lenght).outerHTML='<tr id="'+table_lenght+'">\n' +
+            '<td>' +
+            '       <select class="form-control filters" placeholder="Seleccione una tipo">\n' +
+            '           <option value="">Seleccione un tipo</option>\n' +
+            '       </select>' +
+            '</td>\n' +
+            '<td>' +
+            '<select class="form-control filters" id="ur_filter" name="ur_filter" autocomplete="ur_filter" placeholder="Seleccione un fondo">' +
+            '<option value="" disabled selected>Buscar por fondo</option>\n' +
+            '</select>' +
+            '</td>\n' +
+            '<td>' +
+            '<input type="number" class="form-control" id="monto" name="monto" placeholder="$1000">' +
+            '</td>\n' +
+            '  <td><input type="number" value="2024" class="form-control" id="ejercicio" name="ejercicio" disabled placeholder="2024"></td>\n' +
+            '<td>' +
+            '   <input type="button" value="Eliminar" onclick="dao.eliminaFondo('+table_lenght+')" title="Eliminar fondo" class="btn btn-danger delete" >' +
+            '</td>\n' +
+            '</tr>'
+
+    })
+
     $('#exampleModal').modal({
         backdrop: 'static',
         keyboard: false
