@@ -29,7 +29,7 @@
 		Route::get('/cat-linea-accion/{id?}', 'getLineaAccion');
 		Route::get('/cat-partidas/{id?}', 'getPartidas');
 		Route::get('/get-presupuesto-asignado', 'getPresupuestoAsignado');
-		
+		Route::get('/ver-detalle', 'getConceptosClave')->name('detalle');
 		
 		
 		
