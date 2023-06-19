@@ -7,7 +7,7 @@
 
 	Route::controller(MetasController::class)->group(function () {
 		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
-	 	Route::post('/calendarizacion/data', 'getMetasP')->name('getMetasP');
+		Route::get('/calendarizacion/data/{ur?}', 'getMetasP');
         Route::get('/calendarizacion/proyecto/{ur?}', 'getProyecto')->name('proyecto');
 		Route::get('/nombres/{id?}', 'getNames');
 		Route::get('/calendarizacion/selects', 'getSelects');

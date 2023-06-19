@@ -1,5 +1,26 @@
 let actividades = [];
 var dao = {
+    getProyecto : function(ur){
+		if (ur == null || ur == ''){
+			ur = 0;
+		}
+		$.ajax({
+			type : "GET",
+			url : "/calendarizacion/data/" + ur,
+			dataType : "json"
+        }).done(function (_data) {
+			_table = $("#proye");
+			_columns = [
+				{"aTargets" : [0], "mData" : "programa"},
+				{"aTargets" : [1], "mData" : "subprograma"},
+				{"aTargets" : [2], "mData" : "proyecto"},
+                {"aTargets" : [3], "mData" : function(){
+					return '<div class="form-check"><input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked><label class="form-check-label" for="exampleRadios1"></label></div>';
+				}},
+			];
+			_gen.setTableScroll(_table, _columns, _data);
+		});
+	},
     setStatus: function (id, estatus) {
         Swal.fire({
             title: 'Confirmar Activación/Desactivación',
@@ -266,6 +287,18 @@ var init = {
             }
         });
     },
+    getTabla : function(){
+		$.ajax({
+			type : "GET",
+			url : "/ver-detalle",
+			dataType : "json"
+        }).done(function (data) {
+			table = $("#catalogo");
+            $.each(data, function (i, val) {
+                table.append("<tr><td>" + data[i][0]+"</td><td>" + data[i][1]+"</td><td>" + data[i][2]+"</td></tr>");
+            });
+		});
+	},
 };
 
 $(document).ready(function () {
@@ -275,7 +308,7 @@ $(document).ready(function () {
     $('#ur_filter').change(function () {
         let ur = $("#ur_filter option:selected").val();
         console.log("saDASd",ur)
-        $('#ur').val(ur);
+        dao.getProyecto(ur);
     }) 
     
    $('input[type=search]').attr('id', 'serchUr');

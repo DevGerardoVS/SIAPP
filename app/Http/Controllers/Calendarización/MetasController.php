@@ -57,40 +57,39 @@ class MetasController extends Controller
 			$key->programa,
 			$key->subprograma,
 			$key->proyecto,
+			" ",
 		);
 		$dataSet[] = $i;
 	}
 	return $dataSet[0];
 	}
-public function getMetasP(Request $req){
-		Log::debug($req);
+public function getMetasP($ur){
+		Log::debug($ur);
 	$activs = DB::table("programacion_presupuesto")
+	->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
 		->select(
-		'id',
+		'programacion_presupuesto.id',
 		'programa_presupuestario as programa',
 		'subprograma_presupuestario as subprograma',
-		'proyecto_presupuestario as proyecto'
+		'v_epp.proyecto as proyecto'
 		)
-		->where('ur','=',$req->ur_filter)
+		->where('programacion_presupuesto.ur','=',$ur)
 		->distinct()->get();
 		/* ->where('upp','=',auth::user()->id_ente) */
-		$dataSet = [];
+		/* $dataSet = [];
 		
 		foreach ($activs as $key) {
-            $accion = '<div class="form-check">
-			<input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-			<label class="form-check-label" for="exampleRadios1">
-			</label>
-		  </div>';
+         
 			$i = array(
-				$key->programa,
-				$key->subprograma,
-				$key->proyecto,
-				$accion,
+				"programa"=>$key->programa,
+				"subprograma"=>$key->subprograma,
+				"proyecto"=>$key->proyecto,
+				"seleccion"=>$accion
 			);
 			$dataSet[] = $i;
-		}
-		return ['dataSet'=>$dataSet];
+		} */
+		
+		return  response()->json($activs, 200);
 
 }
     public function getMetas()
