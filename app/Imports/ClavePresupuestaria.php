@@ -3,6 +3,7 @@
 namespace App\Imports;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProgramacionPresupuesto;
+use App\Models\v_epp;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use App\Models\calendarizacion\clasificacion_geografica;
@@ -15,16 +16,49 @@ use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Validators\Failure;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+use Illuminate\Database\Query\Builder;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
-
-class ClavePresupuestaria implements ToModel,WithHeadingRow, WithBatchInserts,WithChunkReading,SkipsOnFailure
+class ClavePresupuestaria implements ToModel,WithHeadingRow, WithBatchInserts,WithChunkReading,WithValidation,SkipsEmptyRows
 {
+
+    
     use RemembersRowNumber;
-    use Importable,SkipsFailures;
+    use Importable;
+    
+    public function prepareForValidation($row,$index)
+    {
+        //validacion de codigo admconac
+        $arrayadmconac = str_split($row['admconac'], 1);
+        $valadm= v_epp::select()->where('clv_sector_publico',$arrayadmconac[0])
+        ->where('clv_region',$arrayadmconac[1])
+        ->where('clv_municipio',$arrayadmconac[2])
+        ->where('clv_localidad',$arrayadmconac[3])
+        ->where('clv_localidad',$arrayadmconac[4])
+        ->count();
+        \Log::debug('//////////// valos de consulta de admconac');
+        \Log::debug($valadm);
+         //validacion de parte clave geografica
+         $valgeo= ProgramacionPresupuesto::select('clv_entidad_federativa')->where('clv_entidad_federativa',$row['ef'])
+         ->where('clv_region',$row['reg'])
+         ->where('clv_municipio',$row['mpio'])
+         ->where('clv_localidad','loc')->value('clv_entidad_federativa');
+         \Log::debug('//////////// valos de consulta de clave geografica');
+         \Log::debug($valgeo);
+         $valgeo==$row['ef'] ? $row['ef']=NULL : $row['ef']; 
+        //validacion de tipo de usuario
+      $row['tipo']='RH';
+       //validacion si la upp tiene firmados claves presupuestales
+       $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->value('estado');
+        $valupp==1 ? $row['upp']=NULL : $row['upp']; 
+        return $row;
+    }
 
     public function model(array $row)
     {
+
+
         $currentRowNumber = $this->getRowNumber();
         return new ProgramacionPresupuesto([
           'clasificacion_administrativa'  =>  $row['admconac'],
@@ -32,7 +66,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow, WithBatchInserts,Wi
           'region'  => $row['reg'],
           'municipio'  => $row['mpio'],
           'localidad'  => $row['loc'],
-          'upp'    => $row['upp'],
+          'upp'    =>  $row['upp'],
           'subsecretaria'    => $row['subsecretaria'],
           'ur'    => $row['ur'],
           'finalidad'    => $row['finalidad'],
@@ -84,11 +118,30 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow, WithBatchInserts,Wi
     public function rules(): array
     {
         return [
+            '*.tipo' => Rule::in(['RH', 'Operativo']),
+
+             //validacion 7 verificar que exista
+             '*.ef' =>  'required|string',
+/*              '*.reg' =>  Rule::exists('clasificacion_geografica','clv_region'),                                        
+             '*.mpio' =>  Rule::exists('clasificacion_geografica','clv_municipio'),                                        
+             '*.loc' =>  Rule::exists('clasificacion_geografica','clv_localidad'),                                        
+            */                             
+             
+             //validacion 3 verificar que upp este autorizada comentada porque no hay upps autorizadas aun
+/*              '*.upp' => ['required',
+                Rule::exists('uppautorizadascpnomina','upp_id')                                        
+            ], */
             
-             '*.total' => 'integer|size:*.enero+*.febrero+*.marzo+*.abril+*.mayo+*.junio+*.julio+*.agosto+*.septiembre+*.octubre+*.noviembre+*.diciembre',
-            
+              '*.upp' =>  'required|string', 
         ];
     }
+
+     public function customValidationMessages()
+{
+    return [
+        '*.upp.exists' => 'No se pueden registrar las claves porque no esta autorizada la upp ',
+    ];
+} 
 
     public function batchSize(): int
     {
