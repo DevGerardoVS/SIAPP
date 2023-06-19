@@ -40,6 +40,99 @@ var dao = {
 			_gen.setTableScrollGroupBy(_table, _columns, data);
 		});
 	},
+  postCreate: function () {
+    //const form = new FormData();
+    let clasificacionAdministrativa = document.getElementById('clasificacion').innerHTML;
+    let entidadFederativa = document.getElementById('entidadFederativa').innerHTML;
+    let region = document.getElementById('region').innerHTML;
+    let municipio = document.getElementById('municipio').innerHTML;
+    let localidad = document.getElementById('localidad').innerHTML;
+    let upp = document.getElementById('upp').innerHTML;
+    let subsecretaria = document.getElementById('subsecretaria').innerHTML;
+    let ur = document.getElementById('ur').innerHTML;
+    let finalidad = document.getElementById('finalidad').innerHTML;
+    let funcion = document.getElementById('funcion').innerHTML;
+    let subfuncion = document.getElementById('subfuncion').innerHTML;
+    let eje = document.getElementById('eje').innerHTML;
+    let lineaAccion = document.getElementById('lineaAccion').innerHTML;
+    let programaSectorial = document.getElementById('programaSectorial').innerHTML;
+    let conac = document.getElementById('conac').innerHTML;
+    let programaPre = document.getElementById('programaPre').innerHTML;
+    let subPrograma = document.getElementById('subPrograma').innerHTML;
+    let proyectoPre = document.getElementById('proyectoPre').innerHTML;
+    let mesAfectacion = document.getElementById('mesAfectacion').innerHTML;
+    let capitulo = document.getElementById('capitulo').innerHTML;
+    let concepto = document.getElementById('concepto').innerHTML;
+    let partidaGen = document.getElementById('partidaGen').innerHTML;
+    let partidaEpecifica = document.getElementById('partidaEpecifica').innerHTML;
+    let tipoGasto = document.getElementById('tipoGasto').innerHTML;
+    let anioFondo = document.getElementById('anioFondo').innerHTML;
+    let etiquetado = document.getElementById('etiquetado').innerHTML;
+    let fuenteFinanciamiento = document.getElementById('fuenteFinanciamiento').innerHTML;
+    let ramo = document.getElementById('ramo').innerHTML;
+    let fondoRamo = document.getElementById('fondoRamo').innerHTML;
+    let capital = document.getElementById('capital').innerHTML;
+    let proyectoObra = document.getElementById('proyectoObra').innerHTML;
+    let enero = document.getElementById('enero').value;
+    let febrero = document.getElementById('febrero').value;
+    let marzo = document.getElementById('marzo').value;
+    let abril = document.getElementById('abril').value;
+    let mayo = document.getElementById('mayo').value;
+    let junio = document.getElementById('junio').value;
+    let julio = document.getElementById('julio').value;
+    let agosto = document.getElementById('agosto').value;
+    let septiembre = document.getElementById('septiembre').value;
+    let octubre = document.getElementById('octubre').value;
+    let noviembre = document.getElementById('noviembre').value;
+    let diciembre = document.getElementById('diciembre').value;
+    let total = document.getElementById('totalCalendarizado').value;
+    let datos = [clasificacionAdministrativa,entidadFederativa,region, municipio,localidad,upp,subsecretaria,ur,finalidad,funcion,subfuncion,eje,lineaAccion,programaSectorial,
+      conac,programaPre,subPrograma,proyectoPre,mesAfectacion,capitulo,concepto,partidaGen,partidaEpecifica,tipoGasto,anioFondo,etiquetado,fuenteFinanciamiento,ramo,fondoRamo,capital,
+      proyectoObra,enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre,total];
+      // let nombres = ['clasificacionAdministrativa','entidadFederativa','region', 'municipio','localidad','upp','subsecretaria','ur','finalidad','funcion','subfuncion','eje','lineaAccion','programaSectorial',
+      //   'conac','programaPre','subPrograma','proyectoPre','mesAfectacion','capitulo','concepto','partidaGen','partidaEpecifica','tipoGasto','anioFondo','etiquetado','fuenteFinanciamiento','ramo','fondoRamo','capital',
+      //   'proyectoObra','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre','total'];
+      // for (let index = 0; index < datos.length; index++) {
+      //   form.append(nombres[index], datos[index]);
+      // }
+      // console.log('form',form);
+      $.ajax({
+        type: "POST",
+        url: '/calendarizacion-guardar-clave',
+        data: {'data': datos}
+      }).done(function (response) {
+        if (response != 'done') {
+          Swal.fire(
+            'Error',
+            'A ocurrido un error',
+            'error'
+          );
+        }else{
+          Swal.fire(
+            'Eliminado',
+            'Eliminado correctamente.',
+            'success'
+          );
+          dao.getData("");
+        }
+      });
+      // $.ajax({
+      //   type : "POST",
+      //   url: '/calendarizacion-guardar-clave',
+      //   data : form,
+      //   dataType:'json',
+      //   cache: false,
+      //   timeout: 600000
+      // }).done(function(response){
+      //   if (response == "error") {
+      //     _gen.notificacion_min('Advertencia', 'A ocurrido un error.', 3);
+      //   } else{
+      //     _gen.notificacion_min('Éxito', 'Se generó con exito el registro.', 1); 
+      //     window.location.href = 'calendarizacion/claves';
+      //   }
+      // });
+
+  },
   eliminarClave : function (id) {
     Swal.fire({
       title: '¿Seguro que desea eliminar la clave?',
@@ -260,6 +353,8 @@ var dao = {
         console.log('presupues por upp',data);
         let presupuesto = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.presupuesto);
         document.getElementById('preFondo').value = presupuesto;
+        let disponible = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.disponible);
+        document.getElementById('preDisFondo').value = disponible;
       });
     },
 
@@ -315,6 +410,23 @@ var init = {
   },
 }
 
+function calucalarCalendario() {
+  var total = 0;
+  $(".monto").each(function() {
+
+    if (isNaN(parseInt($(this).val()))) {
+
+      total += 0;
+
+    } else {
+
+      total +=   parseInt($(this).val());
+
+    }
+
+  });
+  document.getElementById('totalCalendarizado').value = total;
+}
 
 $(document).ready(function(){
   $("#segundaParte").hide();
@@ -434,6 +546,20 @@ $(document).ready(function(){
     $("#segundaParte").hide("slow");
     $("#primeraParte").show();
     
+  });
+  $('#btnSaveAll').click(function (params) {
+    params.preventDefault();
+    console.log('entro en la funcion');
+    let total = document.getElementById('totalCalendarizado').value;
+    let disponible = document.getElementById('preDisFondo').value;
+    let disp = parseInt(disponible.replaceAll(',', '').replaceAll('$', ''));
+    console.log('disponible',disp);
+    console.log('total',total);
+    if (total > 0 && total <= parseInt(disp)) {
+      dao.postCreate();
+    }else{
+      console.log('retorna un error');
+    }
   });
 
 

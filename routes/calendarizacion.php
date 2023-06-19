@@ -36,6 +36,7 @@
 		Route::get('/get-presupuesto-asignado', 'getPresupuestoAsignado');
 		Route::get('/calendarizacion-claves-presupuesto-fondo', 'getPanelPresupuestoFondo');
 		Route::post('/calendarizacion-eliminar-clave', 'postEliminarClave');
+		Route::post('/calendarizacion-guardar-clave', 'postGuardarClave');
 		Route::get('/calendarizacion/get-calendarizacion-panel', 'getPanelCalendarizacion');
 		Route::get('/cat-subSecretaria/{upp?}/{ur?}', 'getSubSecretaria');
 		Route::get('/cat-area-funcional/{uppId?}/{id?}', 'getAreaFuncional');

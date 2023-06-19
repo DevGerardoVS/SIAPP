@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use Log;
-use App\Models\calendarizacion\ProgramacionPresupuesto;
+use App\Models\ProgramacionPresupuesto;
 
 class ClavePreController extends Controller
 {
@@ -40,6 +40,9 @@ class ClavePreController extends Controller
         ->orderBy('v_entidad_ejecutora.clv_ur')
         ->get();
         return response()->json($claves, 200);
+    }
+    public function postGuardarClave(Request $request){
+        Log::debug(json_encode($request->data));
     }
     public function postEliminarClave(Request $request){
         ProgramacionPresupuesto::where('id',$request->id)->delete();
@@ -182,15 +185,35 @@ class ClavePreController extends Controller
         return response()->json($clasificacion,200);
     }
     public function getPresupuestoPorUpp($upp,$fondo,$subPrograma){
-
+        $disponible = 0;
         $presupuestoUpp = DB::table('techos_financieros')
         ->SELECT('presupuesto')
         ->WHERE('clv_upp', '=', $upp)
         ->WHERE('clv_fondo', '=', $fondo)
         ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->first();
-        return response()->json($presupuestoUpp,200);
+        $presupuestoAsignado = DB::table('programacion_presupuesto')
+        ->SELECT(DB::raw('SUM( total )AS TotalAsignado'))
+        ->WHERE ('upp', '=', $upp)
+        ->first();
+
+        if ($presupuestoAsignado && $presupuestoAsignado != '' && $presupuestoUpp && $presupuestoUpp != '') {
+            $disponible = $presupuestoUpp->presupuesto - $presupuestoAsignado->TotalAsignado;
+        }else {
+            if ($presupuestoUpp && $presupuestoUpp != '') {
+                $disponible = $presupuestoUpp->presupuesto ? $presupuestoUpp->presupuesto : 0;
+            }else {
+                $presupuestoUpp->presupuesto = 0;
+                $disponible = $presupuestoUpp->presupuesto ? $presupuestoUpp->presupuesto : 0;
+            }
+        }
+        $response = [
+            'presupuesto'=>$presupuestoUpp->presupuesto ? $presupuestoUpp->presupuesto : 0,
+            'disponible'=>$disponible,
+        ];
+        return response()->json($response,200);
     }
+
     public function getPresupuestoAsignado(){
         $Totcalendarizado = 0;
         $disponible = 0;
