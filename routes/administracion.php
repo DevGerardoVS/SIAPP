@@ -62,8 +62,10 @@
 
 		Route::post('/Reportes/administrativos/calendarioFondoMensual', 'calendarioFondoMensual')->name('calendario_fondo_mensual');
     	Route::post('/Reportes/administrativos/resumenCapituloPartida', 'resumenCapituloPartida')->name('resumen_capitulo_partida');
-    	Route::post('/Reportes/administrativos/proyectoAvanceGeneral', 'proyectoAvanceGeneral')->name('proyecto_avance_general');
     	Route::post('/Reportes/administrativos/proyectoCalendarioGeneral', 'proyectoCalendarioGeneral')->name('proyecto_calendario_general');
+    	Route::post('/Reportes/administrativos/proyectoAvanceGeneral', 'proyectoAvanceGeneral')->name('proyecto_avance_general');
+    	Route::post('/Reportes/administrativos/proyectoCalendarioGeneralActividad', 'proyectoCalendarioGeneralActividad')->name('proyecto_calendario_general_actividad');
+    	Route::post('/Reportes/administrativos/avanceProyectoActividadUPP', 'avanceProyectoActividadUPP')->name('avance_proyecto_actividad_upp');
 
 		Route::post('/Reportes/data-fecha-corte/{ejercicio?}','getFechaCorte')->name('get_fecha_corte');
 

@@ -37,6 +37,18 @@
            case "B":
                ruta = "#buscarFormB";
                break;
+           case "C":
+               ruta = "#buscarFormC";
+               break;
+           case "D":
+               ruta = "#buscarFormC";
+               break;
+           case "E":
+               ruta = "#buscarFormE";
+               break;
+           case "F":
+               ruta = "#buscarFormF";
+               break;
            default:
                break;
        }
@@ -81,13 +93,14 @@
        var csrf_tpken = $("input[name='_token']").val();
        var anio = $("#anio_filter").val();
        var fecha = !$("#fechaCorte_filter").val() ? "null" : $("#fechaCorte_filter").val();
-       var upp = $("#upp_filter").val();
-
-       console.log(upp);
+       
        formData.append("_token",csrf_tpken);
        formData.append("anio",anio);
        formData.append("fecha",fecha);
-       formData.append("upp",upp);
+       if(!$('.div_upp').hasClass('d-none')){
+           var upp = !$("#upp_filter").val() ? "null" : $("#upp_filter").val();
+           formData.append("upp",upp);
+        }
 
         $.ajax({
            url: $(ruta).attr("action"),
@@ -157,23 +170,26 @@
                         {
                             targets: formatCenter,
                             className: 'text-center'
-                        },
+                        }
                     ],
                     // Poner el scroll debajo del footer 
                     "fnInitComplete": function(){
+                        //Comprobar si hay footer
+                        if($('tfoot .colorMorado').length){ 
                         // Disable TBODY scoll bars
-                        $('.dataTables_scrollBody').css({
-                            'overflow': 'hidden',
-                            'border': '0'
-                        });
-
-                        // Habilitar la barra de scroll en el tfoot
-                        $('.dataTables_scrollFoot').css('overflow', 'auto');
-
-                        // Sincronizar la barra de scroll con la body
-                        $('.dataTables_scrollFoot').on('scroll', function () {
-                            $('.dataTables_scrollBody').scrollLeft($(this).scrollLeft());
-                        });     
+                            $('.dataTables_scrollBody').css({
+                                'overflow': 'hidden',
+                                'border': '0'
+                            });
+    
+                            // Habilitar la barra de scroll en el tfoot
+                            $('.dataTables_scrollFoot').css('overflow', 'auto');
+    
+                            // Sincronizar la barra de scroll con la body
+                            $('.dataTables_scrollFoot').on('scroll', function () {
+                                $('.dataTables_scrollBody').scrollLeft($(this).scrollLeft());
+                            });     
+                        }
                     },
                     // obtener la suma total
                     footerCallback: function (row, data, start, end, display) {

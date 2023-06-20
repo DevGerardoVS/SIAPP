@@ -51,14 +51,13 @@ class ReporteController extends Controller
     //     ]);
     // }
 
-    // prueba
+    // Administrativos
     public function calendarioFondoMensual(Request $request){
         $anio = $request->anio;
         $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
         $dataSet = array();
         // $data = DB::select("CALL calendario_fondo_mensual(".$anio.", null)");
         $data = DB::select("CALL calendario_fondo_mensual(".$anio.", ".$fecha.")");
-        log::info("calendario".$fecha);
         foreach ($data as $d) {
 
             $suma = $d->enero + $d->febrero + $d->marzo + $d->abril + $d->mayo + $d->junio + $d->julio + $d->agosto + $d->septiembre + $d->octubre + $d->noviembre + $d->diciembre;
@@ -86,19 +85,45 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function proyectoAvanceGeneral(Request $request){
-        $anio = $request->input('anio_filter');
-        $fecha = $request->input('fechaCorte_filter') != null ? $request->input('fechaCorte_filter') : "NULL";
-        $data = DB::select("CALL resumen_capitulo_partida(23, ".$fecha.")");
+    public function proyectoCalendarioGeneral(Request $request){
+        $anio = $request->anio;
+        $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
+        $upp = $request->upp != "null" ? "'".$request->upp."'"  : "null";
+        $dataSet = array();
+        $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.")");
+        // $data = DB::select("CALL reporte_resumen_por_capitulo_y_partida(".$anio.", '2023-06-13')");
             foreach ($data as $d) {
-                $ds = array($d->capitulo, $d->partida_llave." ".$d->partida, number_format($d->importe));
+                $ds = array($d->clave, number_format($d->monto_anual), number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre));
                 $dataSet[] = $ds;
             }
         return response()->json([
             "dataSet" => $dataSet,
         ]);
     }
-    // prueba
+
+    // Aún no completado
+    public function proyectoAvanceGeneral(Request $request){
+        $dataSet = array();
+        // $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.")");
+        return response()->json([
+            "dataSet" => $dataSet,
+        ]);
+    }
+    public function proyectoCalendarioGeneralActividad(Request $request){
+        $dataSet = array();
+        // $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.")");
+        return response()->json([
+            "dataSet" => $dataSet,
+        ]);
+    }
+    public function avanceProyectoActividadUPP(Request $request){
+        $dataSet = array();
+        // $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.")");
+        return response()->json([
+            "dataSet" => $dataSet,
+        ]);
+    }
+    // Administrativos
 
     // public function reporteAdministrativo($nombre,Request $request){
 
@@ -160,14 +185,18 @@ class ReporteController extends Controller
         return $fechaCorte;
     }
 
-    public function downloadReport($nombre, Request $request){ 
+    public function downloadReport(Request $request, $nombre){ 
         date_default_timezone_set('America/Mexico_City');
+        if($nombre == "administrativo") $nombre = $request->nombre;
+        // dd($request);
+
         
         setlocale(LC_TIME, 'es_VE.UTF-8','esp');
         // $report =  'reporte_art_20_frac_X_b_num_11_2';
         $report =  $nombre;
-        $anio = (int)$request->input('anio');
-        $fechaCorte = $request->input('fechaCorte');
+        $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
+        $fechaCorte = !$request->input('fechaCorte') ? $request->fechaCorte_filter : $request->input('fechaCorte');
+        $upp = $request->upp_filter;
         // dd($report);
 
         $ruta = public_path()."/reportes";
@@ -185,9 +214,10 @@ class ReporteController extends Controller
             "anio" => $anio,
             "logoLeft" => $logo,
             "logoRight" => $logo,
+            "fecha" => $fechaCorte,
         );
-        if($fechaCorte != null) $parameters["fecha"] = $fechaCorte . " 00:00:00";
-        // dd($parameters);
+        if($nombre == "capitulo_partida") $parameters["upp"] = $upp;//poner dentro del if los nombres con los que se tendrá la upp
+        dd($request);
 
         $database_connection = \Config::get('database.connections.mysql');
 
