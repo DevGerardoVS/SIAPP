@@ -528,6 +528,42 @@ th {
     text-align: right;
 }
 
+th.centro-gestor
+{
+  background-color: brown !important;
+  color: aliceblue !important; 
+  border: 1px solid #B9B9B9;
+}
+th.area-funcional
+{
+  background-color: dimgrey !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+th.periodo-presupuestal
+{
+  background-color: plum !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+th.clasificacion-economica
+{
+  background-color: grey !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+th.fondo
+{
+  background-color: orangered !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+th.inversion
+{
+  background-color: darksalmon !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
 td.centro-gestor
 {
   background-color: brown !important;

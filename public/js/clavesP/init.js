@@ -41,7 +41,6 @@ var dao = {
 		});
 	},
   postCreate: function () {
-    //const form = new FormData();
     let clasificacionAdministrativa = document.getElementById('clasificacion').innerHTML;
     let entidadFederativa = document.getElementById('entidadFederativa').innerHTML;
     let region = document.getElementById('region').innerHTML;
@@ -86,16 +85,12 @@ var dao = {
     let noviembre = document.getElementById('noviembre').value;
     let diciembre = document.getElementById('diciembre').value;
     let total = document.getElementById('totalCalendarizado').value;
-    let datos = [clasificacionAdministrativa,entidadFederativa,region, municipio,localidad,upp,subsecretaria,ur,finalidad,funcion,subfuncion,eje,lineaAccion,programaSectorial,
-      conac,programaPre,subPrograma,proyectoPre,mesAfectacion,capitulo,concepto,partidaGen,partidaEpecifica,tipoGasto,anioFondo,etiquetado,fuenteFinanciamiento,ramo,fondoRamo,capital,
-      proyectoObra,enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre,total];
-      // let nombres = ['clasificacionAdministrativa','entidadFederativa','region', 'municipio','localidad','upp','subsecretaria','ur','finalidad','funcion','subfuncion','eje','lineaAccion','programaSectorial',
-      //   'conac','programaPre','subPrograma','proyectoPre','mesAfectacion','capitulo','concepto','partidaGen','partidaEpecifica','tipoGasto','anioFondo','etiquetado','fuenteFinanciamiento','ramo','fondoRamo','capital',
-      //   'proyectoObra','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre','total'];
-      // for (let index = 0; index < datos.length; index++) {
-      //   form.append(nombres[index], datos[index]);
-      // }
-      // console.log('form',form);
+    let tipo = document.getElementById('tipo').value;
+    let datos = [{'clasificacionAdministrativa':clasificacionAdministrativa,'entidadFederativa':entidadFederativa,'region':region, 'municipio':municipio,'localidad':localidad,'upp':upp,'subsecretaria':subsecretaria,
+    'ur':ur,'finalidad':finalidad,'funcion':funcion,'subfuncion':subfuncion,'eje':eje,'lineaAccion':lineaAccion,'programaSectorial':programaSectorial,
+    'conac':conac,'programaPre':programaPre,'subPrograma':subPrograma,'proyectoPre':proyectoPre,'mesAfectacion':mesAfectacion,'capitulo':capitulo,'concepto':concepto,'partidaGen':partidaGen,'partidaEpecifica':partidaEpecifica,'tipoGasto':tipoGasto,
+    'anioFondo':anioFondo,'etiquetado':etiquetado,'fuenteFinanciamiento':fuenteFinanciamiento,'ramo':ramo,'fondoRamo':fondoRamo,'capital':capital,
+    'proyectoObra':proyectoObra,'enero':enero,'febrero':febrero,'marzo':marzo,'abril':abril,'mayo':mayo,'junio':junio,'julio':julio,'agosto':agosto,'septiembre':septiembre,'octubre':octubre,'noviembre':noviembre,'diciembre':diciembre,'total':total,'tipo':tipo}];
       $.ajax({
         type: "POST",
         url: '/calendarizacion-guardar-clave',
@@ -104,34 +99,18 @@ var dao = {
         if (response != 'done') {
           Swal.fire(
             'Error',
-            'A ocurrido un error',
+            'A ocurrido un error por favor intentalo de nuevo...',
             'error'
           );
         }else{
           Swal.fire(
-            'Eliminado',
-            'Eliminado correctamente.',
+            'Exito',
+            'Registro Exitoso',
             'success'
           );
-          dao.getData("");
+          window.location.href = 'calendarizacion/claves';
         }
       });
-      // $.ajax({
-      //   type : "POST",
-      //   url: '/calendarizacion-guardar-clave',
-      //   data : form,
-      //   dataType:'json',
-      //   cache: false,
-      //   timeout: 600000
-      // }).done(function(response){
-      //   if (response == "error") {
-      //     _gen.notificacion_min('Advertencia', 'A ocurrido un error.', 3);
-      //   } else{
-      //     _gen.notificacion_min('Éxito', 'Se generó con exito el registro.', 1); 
-      //     window.location.href = 'calendarizacion/claves';
-      //   }
-      // });
-
   },
   eliminarClave : function (id) {
     Swal.fire({
@@ -370,6 +349,7 @@ var dao = {
       $('#asignadoUpp').val(totalAsignado);
       $('#calendarizado').val(Totcalendarizado);
       $('#disponibleUpp').val(disponible);
+      $('#tipo').val(response.tipo);
       
     });
 
@@ -533,7 +513,7 @@ $(document).ready(function(){
     dao.getPresupuestoPorUpp(upp,fondoRemo,subPrograma);
   });
   $('#btnSaveClave').click(function (params) {
-    params.preventDefault();//btnRegresar
+    params.preventDefault();
     init.validateClave($('#frm_create_clave'));
     if ($('#frm_create_clave').valid()) {
       $("#primeraParte").hide("slow");
@@ -553,12 +533,23 @@ $(document).ready(function(){
     let total = document.getElementById('totalCalendarizado').value;
     let disponible = document.getElementById('preDisFondo').value;
     let disp = parseInt(disponible.replaceAll(',', '').replaceAll('$', ''));
-    console.log('disponible',disp);
-    console.log('total',total);
     if (total > 0 && total <= parseInt(disp)) {
       dao.postCreate();
     }else{
-      console.log('retorna un error');
+      if (total > 0) {
+        Swal.fire(
+          'Advertencia!',
+          'No es posible rebasar el limite del presupuesto.',
+          'warning'
+        );
+      }else{
+        Swal.fire(
+          'Advertencia!',
+          'Es necesario calendarizar al menos un monto.',
+          'warning'
+        );
+      }
+     
     }
   });
 

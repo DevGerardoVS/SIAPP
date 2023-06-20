@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use Log;
+use Auth;
+use DateTime;
 use App\Models\ProgramacionPresupuesto;
 
 class ClavePreController extends Controller
@@ -42,7 +44,62 @@ class ClavePreController extends Controller
         return response()->json($claves, 200);
     }
     public function postGuardarClave(Request $request){
-        Log::debug(json_encode($request->data));
+        $ejercicio = date("Y");
+        try {
+            $nuevaClave = ProgramacionPresupuesto::create([
+                'clasificacion_administrativa' => $request->data[0]['clasificacionAdministrativa'],
+                'entidad_federativa' => $request->data[0]['entidadFederativa'],
+                'region' => $request->data[0]['region'],
+                'municipio' => $request->data[0]['municipio'],
+                'localidad' => $request->data[0]['localidad'],
+                'upp' => $request->data[0]['upp'],
+                'subsecretaria' => $request->data[0]['subsecretaria'],
+                'ur' => $request->data[0]['ur'],
+                'finalidad' => $request->data[0]['finalidad'],
+                'funcion' => $request->data[0]['funcion'],
+                'subfuncion' => $request->data[0]['subfuncion'],
+                'eje' => $request->data[0]['eje'],
+                'linea_accion' => $request->data[0]['lineaAccion'],
+                'programa_sectorial' => $request->data[0]['programaSectorial'],
+                'tipologia_conac' => $request->data[0]['conac'],
+                'programa_presupuestario' => $request->data[0]['programaPre'],
+                'subprograma_presupuestario' => $request->data[0]['subPrograma'],
+                'proyecto_presupuestario' => $request->data[0]['proyectoPre'],
+                'periodo_presupuestal' => $request->data[0]['mesAfectacion'],
+                'posicion_presupuestaria' => $request->data[0]['capitulo'] . $request->data[0]['concepto'] . $request->data[0]['partidaGen'] . $request->data[0]['partidaEpecifica'],
+                'tipo_gasto' => $request->data[0]['tipoGasto'],
+                'anio' => $request->data[0]['anioFondo'],
+                'etiquetado' => $request->data[0]['etiquetado'],
+                'fuente_financiamiento' => $request->data[0]['fuenteFinanciamiento'],
+                'ramo' => $request->data[0]['ramo'],
+                'fondo_ramo' => $request->data[0]['fondoRamo'],
+                'capital' => $request->data[0]['capital'],
+                'proyecto_obra' => $request->data[0]['proyectoObra'],
+                'ejercicio' =>  $ejercicio, 
+                'enero' => $request->data[0]['enero'],
+                'febrero' => $request->data[0]['febrero'],  
+                'marzo' => $request->data[0]['marzo'],   
+                'abril' => $request->data[0]['abril'],  
+                'mayo' => $request->data[0]['mayo'],   
+                'junio' => $request->data[0]['junio'],    
+                'julio' => $request->data[0]['julio'],    
+                'agosto' => $request->data[0]['agosto'],   
+                'septiembre' => $request->data[0]['septiembre'],   
+                'octubre' => $request->data[0]['octubre'],   
+                'noviembre' => $request->data[0]['noviembre'],  
+                'diciembre' => $request->data[0]['diciembre'],  
+                'total' => $request->data[0]['total'],   
+                'estado' => 0,    
+                'tipo' => $request->data[0]['tipo'],    
+                'created_user' => Auth::user()->username, 
+            ]);
+        } catch (\Exception $exp) {
+            DB::rollBack();
+			Log::debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+			return response()->json('error',200);
+        }
+        return response()->json('done',200);
     }
     public function postEliminarClave(Request $request){
         ProgramacionPresupuesto::where('id',$request->id)->delete();
@@ -187,7 +244,7 @@ class ClavePreController extends Controller
     public function getPresupuestoPorUpp($upp,$fondo,$subPrograma){
         $disponible = 0;
         $presupuestoUpp = DB::table('techos_financieros')
-        ->SELECT('presupuesto')
+        ->SELECT('presupuesto','tipo')
         ->WHERE('clv_upp', '=', $upp)
         ->WHERE('clv_fondo', '=', $fondo)
         ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
@@ -196,20 +253,18 @@ class ClavePreController extends Controller
         ->SELECT(DB::raw('SUM( total )AS TotalAsignado'))
         ->WHERE ('upp', '=', $upp)
         ->first();
-
-        if ($presupuestoAsignado && $presupuestoAsignado != '' && $presupuestoUpp && $presupuestoUpp != '') {
-            $disponible = $presupuestoUpp->presupuesto - $presupuestoAsignado->TotalAsignado;
-        }else {
-            if ($presupuestoUpp && $presupuestoUpp != '') {
-                $disponible = $presupuestoUpp->presupuesto ? $presupuestoUpp->presupuesto : 0;
+        if ($presupuestoUpp && $presupuestoUpp != '') {
+            if ($presupuestoAsignado && $presupuestoAsignado != '' ) {
+                $disponible = $presupuestoUpp->presupuesto - $presupuestoAsignado->TotalAsignado;
             }else {
-                $presupuestoUpp->presupuesto = 0;
                 $disponible = $presupuestoUpp->presupuesto ? $presupuestoUpp->presupuesto : 0;
             }
         }
+           
         $response = [
-            'presupuesto'=>$presupuestoUpp->presupuesto ? $presupuestoUpp->presupuesto : 0,
+            'presupuesto'=>$presupuestoUpp ? $presupuestoUpp->presupuesto : 0,
             'disponible'=>$disponible,
+            'tipo'=> $presupuestoUpp ?  $presupuestoUpp->tipo : '',
         ];
         return response()->json($response,200);
     }

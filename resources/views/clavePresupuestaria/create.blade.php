@@ -32,7 +32,7 @@
                                         <td class="centro-gestor" id="region">&nbsp;&nbsp;</td>
                                         <td class="centro-gestor" id="municipio">&nbsp;&nbsp;</td>
                                         <td class="centro-gestor" id="localidad">&nbsp;&nbsp;</td>
-                                        <td class="centro-gestor" id="upp">007</td>
+                                        <td class="centro-gestor" id="upp"></td>
                                         <td class="centro-gestor" id="subsecretaria">&nbsp;&nbsp;</td>
                                         <td class="centro-gestor" id="ur">&nbsp;&nbsp;</td>
                                         <td class="area-funcional" id="finalidad">&nbsp;&nbsp;</td>
@@ -66,80 +66,92 @@
                             <form class="form-horizontal" id="frm_create_clave">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Region*</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Region*</label></div>
+                                        <div class="col-md-8">
                                             <select class="form-control select2" name="sel_region" id="sel_region" data-live-search="true"></select>
                                         </div>                            
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Municipio*</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Municipio*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_municipio" id="sel_municipio"></select>
                                         </div>
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Localidad*</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Localidad*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_localidad" id="sel_localidad"></select>
                                         </div>                                                               
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Unidad Programática Presupuestal*</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Unidad Programática Presupuestal*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_upp" id="sel_upp"></select>
                                         </div>                                
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Unidad Responsable*</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Unidad Responsable*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_unidad_res" id="sel_unidad_res"></select>
                                         </div>                                                                
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Programa Presupuestario*</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Programa Presupuestario*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_programa" id="sel_programa"></select>
                                         </div>                                                                
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Subprograma Presupuestario*</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Subprograma Presupuestario*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_sub_programa" id="sel_sub_programa"></select>
                                         </div>                                
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Proyecto*</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Proyecto*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_proyecto" id="sel_proyecto"></select>
                                         </div>                                
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Linia de Acción</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Linia de Acción*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_linea" id="sel_linea"></select>
                                         </div>                                
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Periodo Presupuestario</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Periodo Presupuestario*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_periodo" id="sel_periodo">
                                                 <option value="">-- Seleccione Periodo Presupuestal --</option>
                                                 <option value="1-ENE">1-ENE-DEC</option>
                                             </select>
                                         </div>
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Partida</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Partida*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_partida" id="sel_partida" data-live-search="true"></select>
                                         </div>                                
                                     <div style="clear:both"></div>
-                                    <div class="col-md-2"></div>
-                                        <div class="col-md-10">
-                                            <label class="control-label">Fondo</label>
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Fondo*</label></div>
+                                        <div class="col-md-8">
+                                            
                                             <select class="form-control select2" name="sel_fondo" id="sel_fondo"></select>
-                                        </div>                                
+                                        </div>        
+                                        <input type="hidden" id="tipo" name="tipo">                        
                                     <div style="clear:both"></div>
                                 </div>
                             </form>
