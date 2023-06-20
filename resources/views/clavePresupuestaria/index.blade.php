@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@include('administracion.usuarios.modalCreate')
+@include('clavePresupuestaria.modalDetalle')
 @include('panels.datatable')
 @section('content')
 <link href="https://cdn.datatables.net/v/dt/dt-1.13.4/rg-1.3.1/datatables.min.css" rel="stylesheet"/>
@@ -42,13 +42,16 @@
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2 text-right">
+                                        <button type="button" class="btn btn-light" data-toggle="modal"
+                                            data-target="#detalle"data-backdrop="static" data-keyboard="false">Ver detalle clave presupuestaria
+                                        </button>
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
                                     
                                         </div>
-
+                                        
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
                                                 <a type="button" class="btn btn-success form-control"  href="/calendarizacion-claves-create" ><i class="fa fa-plus">Nueva Clave</i></a>

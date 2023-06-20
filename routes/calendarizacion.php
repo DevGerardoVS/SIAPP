@@ -9,12 +9,6 @@
 		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
 	 	Route::get('/calendarizacion/data', 'getMetas')->name('getMetas');
         Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
-		Route::get('/calendarizacion/selects', 'getSelects');
-		Route::get('/calendarizacion/urs', 'getUrs');
-		Route::post('/calendarizacion/create', 'createMeta');
-		Route::post('/calendarizacion/detelet', 'deleteMeta');
-		Route::get('/calendarizacion/update/{id?}','updateMeta');
-		Route::get('/calendarizacion/metasXproyecto', 'getMetasXp')->name('proyectos');
 	});
 
     Route::controller(TechosController::class)->group(function () {
@@ -44,8 +38,8 @@
 		Route::get('/cat-fondos/{id?}', 'getFondos');
 		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
 		Route::get('/presupuesto-upp-asignado/{upp?}/{fonfo?}/{subPrograma?}', 'getPresupuestoPorUpp');
+		Route::get('/ver-detalle', 'getConceptosClave')->name('detalle');
 
-		
 		
 		
 		

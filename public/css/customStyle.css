@@ -527,38 +527,37 @@ th {
 .column_numbers{
     text-align: right;
 }
-
-th.centro-gestor
+.centro-gestor
 {
   background-color: brown !important;
   color: aliceblue !important; 
   border: 1px solid #B9B9B9;
 }
-th.area-funcional
+.area-funcional
 {
   background-color: dimgrey !important;
   color: aliceblue !important;
   border: 1px solid #B9B9B9; 
 }
-th.periodo-presupuestal
+.periodo-presupuestal
 {
   background-color: plum !important;
   color: aliceblue !important;
   border: 1px solid #B9B9B9; 
 }
-th.clasificacion-economica
+.clasificacion-economica
 {
   background-color: grey !important;
   color: aliceblue !important;
   border: 1px solid #B9B9B9; 
 }
-th.fondo
+.fondo
 {
   background-color: orangered !important;
   color: aliceblue !important;
   border: 1px solid #B9B9B9; 
 }
-th.inversion
+.inversion
 {
   background-color: darksalmon !important;
   color: aliceblue !important;

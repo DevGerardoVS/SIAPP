@@ -353,7 +353,34 @@ var dao = {
       
     });
 
-  }
+  },
+   getTabla: function(){
+		$.ajax({
+			type : "GET",
+			url : "/ver-detalle",
+			dataType : "json"
+        }).done(function (data) {
+			table = $("#detalleClave");
+            let clase;
+            for (let i = 0; i < data.length; i++) {
+                if(i<=11)
+                        clase='centro-gestor';
+                if(i>11 && i<=21)
+                        clase='area-funcional';
+                if(i==22)
+                        clase='periodo-presupuestal';
+                if(i>22 && i<=27)
+                        clase='clasificacion-economica';
+                if(i>27 && i<=33)
+                        clase='fondo';
+                if(i==34)
+                        clase='inversion';
+                   
+                $("#detalleClave").append('<tr><td class="col-md-4 text-left">' + data[i][0]+'</td><td class="col-md-1 '+clase+'">' + data[i][1]+'</td><td class="col-md-7 text-left">' + data[i][2]+'</td></tr>');
+                
+            }
+		});
+	}
 };
 var init = {
   validateClave : function (form) {
@@ -552,6 +579,6 @@ $(document).ready(function(){
      
     }
   });
-
+  dao.getTabla();
 
 });
