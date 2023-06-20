@@ -619,6 +619,10 @@ $(document).ready(function(){
     params.preventDefault();
     dao.getTabla();
   });
+  $('#btnCancelar').click(function (params) {
+    params.preventDefault();
+    window.location.href = 'calendarizacion/claves';
+  })
   
   
 

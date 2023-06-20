@@ -272,8 +272,8 @@ class ClavePreController extends Controller
     public function getPresupuestoAsignado(){
         $Totcalendarizado = 0;
         $disponible = 0;
-        $presupuestoAsignado = DB::table('presupuesto_upp_asignado')
-        ->SELECT(DB::raw('SUM(presupuesto_asignado) as totalAsignado'))->get();
+        $presupuestoAsignado = DB::table('techos_financieros')
+        ->SELECT(DB::raw('SUM(presupuesto) as totalAsignado'))->get();
         $calendarizados = DB::table('programacion_presupuesto')
         ->SELECT(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre as calendarizados'))->get();
         foreach ($calendarizados as $key => $value) {

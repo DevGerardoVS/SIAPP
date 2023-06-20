@@ -57,7 +57,7 @@
                                         <td class="fondo" id="ramo">&nbsp;&nbsp;</td>
                                         <td class="fondo" id="fondoRamo">&nbsp;&nbsp;</td>
                                         <td class="fondo" id="capital">&nbsp;&nbsp;</td>
-                                        <td class="fondo" id="proyectoObra">00000</td>
+                                        <td class="fondo" id="proyectoObra">000000</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -134,7 +134,7 @@
                                             
                                             <select class="form-control select2" name="sel_periodo" id="sel_periodo">
                                                 <option value="">-- Seleccione Periodo Presupuestal --</option>
-                                                <option value="1-ENE">1-ENE-DEC</option>
+                                                <option value="01-ENE">1-ENE-DEC</option>
                                             </select>
                                         </div>
                                     <div style="clear:both"></div>
@@ -158,7 +158,7 @@
                             <div class="row">
                                 <div class="col-md-6"></div>
                                 <div class="col-md-2">
-                                    <button  id="btnCancelar" type="button" class="btn btn-secondary " >Cancelar</button>
+                                    <button  id="btnCancelar" type="button" class="btn btn-secondary" id="btnCancelar">Cancelar</button>
                                     <button type="button" class="btn btn-primary" id="btnSaveClave">Siguente</button>
                                 </div>
                             </div>
