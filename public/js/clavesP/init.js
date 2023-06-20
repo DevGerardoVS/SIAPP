@@ -354,7 +354,7 @@ var dao = {
     });
 
   },
-   getTabla: function(){
+  getTabla: function () {
     let clasificacionAdministrativa = document.getElementById('clasificacion').innerHTML;
     let entidadFederativa = document.getElementById('entidadFederativa').innerHTML;
     let region = document.getElementById('region').innerHTML;
@@ -386,37 +386,39 @@ var dao = {
     let fondoRamo = document.getElementById('fondoRamo').innerHTML;
     let capital = document.getElementById('capital').innerHTML;
     let proyectoObra = document.getElementById('proyectoObra').innerHTML;
-    let clave = clasificacionAdministrativa+entidadFederativa+region+municipio+localidad+upp+subsecretaria+ur+finalidad+funcion+
-    subfuncion+eje+lineaAccion+programaSectorial+conac+programaPre+subPrograma+proyectoPre+mesAfectacion+capitulo+concepto+partidaGen+partidaEpecifica+tipoGasto+anioFondo+
-    etiquetado+fuenteFinanciamiento+ramo+fondoRamo+capital+proyectoObra;
-    console.log('Clave Completa',clave);
-		$.ajax({
-			type : "GET",
-			url : "/ver-detalle/"+clave,
-			dataType : "json"
-        }).done(function (data) {
-			table = $("#detalleClave");
-            let clase;
-            for (let i = 0; i < data.length; i++) {
-                if(i<=11)
-                        clase='centro-gestor';
-                if(i>11 && i<=21)
-                        clase='area-funcional';
-                if(i==22)
-                        clase='periodo-presupuestal';
-                if(i>22 && i<=27)
-                        clase='clasificacion-economica';
-                if(i>27 && i<=33)
-                        clase='fondo';
-                if(i==34)
-                        clase='inversion';
-                   
-                $("#detalleClave").append('<tr><td class="col-md-4 text-left">' + data[i][0]+'</td><td class="col-md-1 '+clase+'">' + data[i][1]+'</td><td class="col-md-7 text-left">' + data[i][2]+'</td></tr>');
-                
-            }
-          $('detalle').show(true);
-		});
-	}
+    let clave = clasificacionAdministrativa + entidadFederativa + region + municipio + localidad + upp + subsecretaria + ur + finalidad + funcion +
+      subfuncion + eje + lineaAccion + programaSectorial + conac + programaPre + subPrograma + proyectoPre + mesAfectacion + capitulo + concepto + partidaGen + partidaEpecifica + tipoGasto + anioFondo +
+      etiquetado + fuenteFinanciamiento + ramo + fondoRamo + capital + proyectoObra;
+    console.log('Clave Completa', clave);
+    $.ajax({
+      type: "GET",
+      url: "/ver-detalle/" + clave,
+      dataType: "json"
+    }).done(function (data) {
+      $("#detalleClave").empty();
+      $("#titulo").text(`${upp} - ${data[9][2]}`);
+      table = $("#detalleClave");
+      let clase;
+      for (let i = 0; i < data.length; i++) {
+        if (i <= 11)
+          clase = 'centro-gestor';
+        if (i > 11 && i <= 21)
+          clase = 'area-funcional';
+        if (i == 22)
+          clase = 'periodo-presupuestal';
+        if (i > 22 && i <= 27)
+          clase = 'clasificacion-economica';
+        if (i > 27 && i <= 33)
+          clase = 'fondo';
+        if (i == 34)
+          clase = 'inversion';
+
+        $("#detalleClave").append('<tr><td class="col-md-4 text-left">' + data[i][0] + '</td><td class="col-md-1 ' + clase + '">' + data[i][1] + '</td><td class="col-md-7 text-left">' + data[i][2] + '</td></tr>');
+
+      }
+      $('detalle').show(true);
+    });
+  }
 };
 var init = {
   validateClave : function (form) {
