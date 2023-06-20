@@ -1,16 +1,9 @@
 @extends('layouts.app')
-@include('clavePresupuestaria.modalDetalle')
 @include('panels.datatable')
 @section('content')
 <link href="https://cdn.datatables.net/v/dt/dt-1.13.4/rg-1.3.1/datatables.min.css" rel="stylesheet"/>
 <script src="https://cdn.datatables.net/v/dt/dt-1.13.4/rg-1.3.1/datatables.min.js"></script>
     <div class="container">
-        <form action="{{ route('getdata') }}" id="buscarForm" method="GET">
-            @csrf
-            <div class="row">
-                <div class="col-sm-2">
-                </div>
-        </form>
         <section id="widget-grid" class="conteiner">
             <div class="row">
                 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
@@ -42,9 +35,6 @@
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2 text-right">
-                                        <button type="button" class="btn btn-light" data-toggle="modal"
-                                            data-target="#detalle"data-backdrop="static" data-keyboard="false">Ver detalle clave presupuestaria
-                                        </button>
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">

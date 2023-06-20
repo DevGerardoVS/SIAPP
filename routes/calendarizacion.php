@@ -38,7 +38,7 @@
 		Route::get('/cat-fondos/{id?}', 'getFondos');
 		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
 		Route::get('/presupuesto-upp-asignado/{upp?}/{fonfo?}/{subPrograma?}', 'getPresupuestoPorUpp');
-		Route::get('/ver-detalle', 'getConceptosClave')->name('detalle');
+		Route::get('/ver-detalle/{clave?}', 'getConceptosClave')->name('detalle');
 
 		
 		

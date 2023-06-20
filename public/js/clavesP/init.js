@@ -355,9 +355,44 @@ var dao = {
 
   },
    getTabla: function(){
+    let clasificacionAdministrativa = document.getElementById('clasificacion').innerHTML;
+    let entidadFederativa = document.getElementById('entidadFederativa').innerHTML;
+    let region = document.getElementById('region').innerHTML;
+    let municipio = document.getElementById('municipio').innerHTML;
+    let localidad = document.getElementById('localidad').innerHTML;
+    let upp = document.getElementById('upp').innerHTML;
+    let subsecretaria = document.getElementById('subsecretaria').innerHTML;
+    let ur = document.getElementById('ur').innerHTML;
+    let finalidad = document.getElementById('finalidad').innerHTML;
+    let funcion = document.getElementById('funcion').innerHTML;
+    let subfuncion = document.getElementById('subfuncion').innerHTML;
+    let eje = document.getElementById('eje').innerHTML;
+    let lineaAccion = document.getElementById('lineaAccion').innerHTML;
+    let programaSectorial = document.getElementById('programaSectorial').innerHTML;
+    let conac = document.getElementById('conac').innerHTML;
+    let programaPre = document.getElementById('programaPre').innerHTML;
+    let subPrograma = document.getElementById('subPrograma').innerHTML;
+    let proyectoPre = document.getElementById('proyectoPre').innerHTML;
+    let mesAfectacion = document.getElementById('mesAfectacion').innerHTML;
+    let capitulo = document.getElementById('capitulo').innerHTML;
+    let concepto = document.getElementById('concepto').innerHTML;
+    let partidaGen = document.getElementById('partidaGen').innerHTML;
+    let partidaEpecifica = document.getElementById('partidaEpecifica').innerHTML;
+    let tipoGasto = document.getElementById('tipoGasto').innerHTML;
+    let anioFondo = document.getElementById('anioFondo').innerHTML;
+    let etiquetado = document.getElementById('etiquetado').innerHTML;
+    let fuenteFinanciamiento = document.getElementById('fuenteFinanciamiento').innerHTML;
+    let ramo = document.getElementById('ramo').innerHTML;
+    let fondoRamo = document.getElementById('fondoRamo').innerHTML;
+    let capital = document.getElementById('capital').innerHTML;
+    let proyectoObra = document.getElementById('proyectoObra').innerHTML;
+    let clave = clasificacionAdministrativa+entidadFederativa+region+municipio+localidad+upp+subsecretaria+ur+finalidad+funcion+
+    subfuncion+eje+lineaAccion+programaSectorial+conac+programaPre+subPrograma+proyectoPre+mesAfectacion+capitulo+concepto+partidaGen+partidaEpecifica+tipoGasto+anioFondo+
+    etiquetado+fuenteFinanciamiento+ramo+fondoRamo+capital+proyectoObra;
+    console.log('Clave Completa',clave);
 		$.ajax({
 			type : "GET",
-			url : "/ver-detalle",
+			url : "/ver-detalle/"+clave,
 			dataType : "json"
         }).done(function (data) {
 			table = $("#detalleClave");
@@ -379,6 +414,7 @@ var dao = {
                 $("#detalleClave").append('<tr><td class="col-md-4 text-left">' + data[i][0]+'</td><td class="col-md-1 '+clase+'">' + data[i][1]+'</td><td class="col-md-7 text-left">' + data[i][2]+'</td></tr>');
                 
             }
+          $('detalle').show(true);
 		});
 	}
 };
@@ -579,6 +615,11 @@ $(document).ready(function(){
      
     }
   });
-  dao.getTabla();
+  $('#verDetalle').click(function (params) {
+    params.preventDefault();
+    dao.getTabla();
+  });
+  
+  
 
 });

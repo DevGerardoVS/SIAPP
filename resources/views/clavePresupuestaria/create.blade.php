@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@include('administracion.usuarios.modalCreate')
+@include('clavePresupuestaria.modalDetalle')
 @include('panels.datatable')
 @section('content')
 
@@ -166,6 +166,14 @@
                         <div id="segundaParte">
                             <form id="actividad">
                                 <div class="row">
+                                    <div class="col-md-9"></div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-light" data-toggle="modal"
+                                            data-target="#detalle"data-backdrop="static" data-keyboard="false" id="verDetalle">Ver detalle clave presupuestaria
+                                    </button>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="control-label ">Presupuesto asignado Fondo</label>
                                         <input type="text" id="preFondo" class="form-control" disabled>
@@ -173,14 +181,6 @@
                                     <div class="form-group col-md-6">
                                         <label class="control-label">Presupuesto disponible Fondo</label>
                                         <input type="text" id="preDisFondo" class="form-control" disabled>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="control-label ">Cantidad de beneficiarios*</label>
-                                        <input type="text" id="beneficiarios" class="form-control" disabled>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="control-label">Unidad de medida</label>
-                                        <input type="text" id="unidadMedida" class="form-control" disabled>
                                     </div>
                                 </div>
                                 <div class="table-responsive ">
