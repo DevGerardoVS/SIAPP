@@ -284,11 +284,11 @@
             </div>
         </div>
     </div>
-      @isset($dataSet)
-      @include('panels.datatableMultiple')
-      @endisset  
+    @isset($dataSet)
+    @include('panels.datatableMultiple')
+    @endisset  
 
-      <script type="text/javascript">
+    <script type="text/javascript">
         //inicializamos el data table
         var tabla;
         var letter;
@@ -308,15 +308,15 @@
                 selectTable(id);
             });
     
-        $( window ).resize(function() {
+            $( window ).resize(function() {
                 redrawTable(tabla);
-        });
-             var dt = $('#catalogoA');
-             tabla="#catalogoA";
+            });
+
+            var dt = $('#catalogoA');
+            tabla="#catalogoA";
             letter="A";
             dt.DataTable().clear().destroy();
             getData(tabla,letter);
-            
            
             let form = document.getElementById("form");
             
@@ -326,86 +326,80 @@
             });
             
             function selectTable(id){
+                switch(id){
+                    case "fondoMensual_tab":
+                        var dt = $('#catalogoA');
+                        tabla="#catalogoA";
+                        letter="A";
+                        $('.div_upp').addClass('d-none');
+                        $("#nombre").val('calendario_fondo_mensual');
+                        dt.DataTable().clear().destroy();
+                        getData(tabla,letter);                    
+                        break;
+                    case "capituloPartida_tab":
+                        var dt = $('#catalogoB');
+                        tabla="#catalogoB";
+                        letter="B";
+                        $('.div_upp').addClass('d-none');
+                        $("#nombre").val('reporte_resumen_por_capitulo_y_partida');
+                        dt.DataTable().clear().destroy();
+                        getData(tabla,letter);
+                        break;
+                    case "calendarioGeneral_tab":
+                        var dt = $('#catalogoC');
+                        tabla="#catalogoC";
+                        letter="C";
+                        $('.div_upp').removeClass('d-none');
+                        $("#nombre").val('calendario_general');
+                        dt.DataTable().clear().destroy();
+                        getData(tabla,letter);
+                        break;
+                    case "avanceGeneral_tab":
+                        var dt = $('#catalogoD');
+                        tabla="#catalogoD";
+                        letter="D";
+                        $('.div_upp').removeClass('d-none');
+                        $("#nombre").val('avance_general');
+                        dt.DataTable().clear().destroy();
+                        getData(tabla,letter);
+                        break;
+                    case "calendarioGeneralActividad_tab":
+                        var dt = $('#catalogoE');
+                        tabla="#catalogoE";
+                        letter="E";
+                        $('.div_upp').removeClass('d-none');
+                        $("#nombre").val('proyecto_calendario_actividades');
+                        dt.DataTable().clear().destroy();
+                        getData(tabla,letter);
+                        break;
+                    case "avanceProyectoActividadUPP_tab":
+                        var dt = $('#catalogoF');
+                        tabla="#catalogoF";
+                        letter="F";
+                        $('.div_upp').addClass('d-none');
+                        $("#nombre").val('avance_proyectos_actividades_upp');
+                        dt.DataTable().clear().destroy();
+                        getData(tabla,letter);
+                        break;
+                }
+            }
     
-        switch(id){
-            case "fondoMensual_tab":
-                var dt = $('#catalogoA');
-                tabla="#catalogoA";
-                letter="A";
-                $('.div_upp').addClass('d-none');
-                $("#nombre").val('calendario_fondo_mensual');
-                dt.DataTable().clear().destroy();
-                getData(tabla,letter);                    
-                break;
-            case "capituloPartida_tab":
-                var dt = $('#catalogoB');
-                tabla="#catalogoB";
-                letter="B";
-                $('.div_upp').addClass('d-none');
-                $("#nombre").val('reporte_resumen_por_capitulo_y_partida');
-                dt.DataTable().clear().destroy();
-                getData(tabla,letter);
-                break;
-            case "calendarioGeneral_tab":
-                var dt = $('#catalogoC');
-                tabla="#catalogoC";
-                letter="C";
-                $('.div_upp').removeClass('d-none');
-                $("#nombre").val('calendario_general');
-                dt.DataTable().clear().destroy();
-                getData(tabla,letter);
-                break;
-            case "avanceGeneral_tab":
-                var dt = $('#catalogoD');
-                tabla="#catalogoD";
-                letter="D";
-                $('.div_upp').removeClass('d-none');
-                $("#nombre").val('avance_general');
-                dt.DataTable().clear().destroy();
-                getData(tabla,letter);
-                break;
-            case "calendarioGeneralActividad_tab":
-                var dt = $('#catalogoE');
-                tabla="#catalogoE";
-                letter="E";
-                $('.div_upp').removeClass('d-none');
-                $("#nombre").val('calendario_general_actividad');
-                dt.DataTable().clear().destroy();
-                getData(tabla,letter);
-                break;
-            case "avanceProyectoActividadUPP_tab":
-                var dt = $('#catalogoF');
-                tabla="#catalogoF";
-                letter="F";
-                $('.div_upp').addClass('d-none');
-                $("#nombre").val('avance_proyectos_actividades_upp');
-                dt.DataTable().clear().destroy();
-                getData(tabla,letter);
-                break;
-    
-         }
-    }
-    
-    });
-    
-    $("#form").on("change",".filters_anio",function(e){
-        dt.DataTable().clear().destroy();
-        getData(tabla,letter);
-        getDataFechaCorte($('#anio_filter').val());
-    });
-    
-    $("#form").on("change",".filters_fechaCorte",function(e){
-        dt.DataTable().clear().destroy();
-        getData(tabla,letter);
-    });
+        });
+        
+        $("#form").on("change",".filters_anio",function(e){
+            dt.DataTable().clear().destroy();
+            getData(tabla,letter);
+            getDataFechaCorte($('#anio_filter').val());
+        });
+        
+        $("#form").on("change",".filters_fechaCorte",function(e){
+            dt.DataTable().clear().destroy();
+            getData(tabla,letter);
+        });
 
-    $("#form").on("change",".filters_upp",function(e){
-        dt.DataTable().clear().destroy();
-        getData(tabla,letter);
-    });
-         
-    
+        $("#form").on("change",".filters_upp",function(e){
+            dt.DataTable().clear().destroy();
+            getData(tabla,letter);
+        });
     </script>
-
-
 @endsection
