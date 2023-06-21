@@ -66,6 +66,20 @@ class ReporteController extends Controller
             "dataSet" => $dataSet,
         ]);
     }
+    
+    public function proyectoAvanceGeneral(Request $request){
+        $anio = $request->anio;
+        $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
+        $dataSet = array();
+        $data = DB::select("CALL proyecto_avance_general(".$anio.", ".$fecha.")");
+        foreach ($data as $d) {
+            $ds = array($d->clv_upp." ".$d->upp, $d->clv_fondo_ramo." ".$d->fondo_ramo, $d->clv_capitulo." ".$d->capitulo, number_format($d->monto_anual), number_format($d->calendarizado), number_format($d->disponible), number_format($d->avance), $d->estatus);
+            $dataSet[] = $ds;
+        }
+        return response()->json([
+            "dataSet" => $dataSet,
+        ]);
+    }
 
     public function proyectoCalendarioGeneral(Request $request){
         $anio = $request->anio;
@@ -74,7 +88,7 @@ class ReporteController extends Controller
         $dataSet = array();
         $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.")");
         foreach ($data as $d) {
-            $ds = array($d->clave, number_format($d->monto_anual), number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre));
+            $ds = array($d->upp,$d->clave, number_format($d->monto_anual), number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre));
             $dataSet[] = $ds;
         }
         return response()->json([
@@ -82,35 +96,34 @@ class ReporteController extends Controller
         ]);
     }
 
-    // Aún no completado
-    public function proyectoAvanceGeneral(Request $request){
-        $dataSet = array();
-        // $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.")");
-        return response()->json([
-            "dataSet" => $dataSet,
-        ]);
-    }
     public function proyectoCalendarioGeneralActividad(Request $request){
-        $dataSet = array();
-        // $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.")");
-        return response()->json([
-            "dataSet" => $dataSet,
-        ]);
-    }
-    public function avanceProyectoActividadUPP(Request $request){
         $anio = $request->anio;
         $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
-        $data = DB::select("CALL avance_proyectos_actividades_upp(".$anio.", ".$fecha.")");
+        $upp = $request->upp != "null" ? "'".$request->upp."'"  : "null";
         $dataSet = array();
+        $data = DB::select("CALL proyecto_calendario_actividades(".$anio.", ".$upp.", ".$fecha.")");
         foreach ($data as $d) {
-            $ds = array();
+            $ds = array($d->clv_upp, $d->clv_ur, $d->clv_programa, $d->clv_subprograma, $d->clv_proyecto, $d->clv_fondo, $d->actividad, $d->cantidad_beneficiarios, $d->beneficiario, $d->unidad_medida, $d->tipo, number_format($d->meta_anual), number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre));
             $dataSet[] = $ds;
         }
         return response()->json([
             "dataSet" => $dataSet,
         ]);
     }
-    // Administrativos
+
+    public function avanceProyectoActividadUPP(Request $request){
+        $anio = $request->anio;
+        $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
+        $dataSet = array();
+        $data = DB::select("CALL avance_proyectos_actividades_upp(".$anio.", ".$fecha.")");
+        foreach ($data as $d) {
+            $ds = array($d->clv_upp." ".$d->upp, $d->proyectos, $d->actividades, $d->avance, $d->estatus);
+            $dataSet[] = $ds;
+        }
+        return response()->json([
+            "dataSet" => $dataSet,
+        ]);
+    }
 
     public function getFechaCorte($anio){
         $fechaCorte = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[$anio]);
@@ -148,7 +161,7 @@ class ReporteController extends Controller
             "logoRight" => $logo,
             "fecha" => $fechaCorte,
         );
-        if($nombre == "capitulo_partida") $parameters["upp"] = $upp;//poner dentro del if los nombres con los que se tendrá la upp
+        if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades") $parameters["upp"] = $upp;//poner dentro del if los nombres con los que se tendrá la upp
         dd($request);
 
         $database_connection = \Config::get('database.connections.mysql');

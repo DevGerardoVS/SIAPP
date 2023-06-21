@@ -41,7 +41,7 @@
                ruta = "#buscarFormC";
                break;
            case "D":
-               ruta = "#buscarFormC";
+               ruta = "#buscarFormD";
                break;
            case "E":
                ruta = "#buscarFormE";
@@ -116,11 +116,13 @@
                else{
                    dt.attr('data-empty','false');
                }
+            //    console.log(response.dataSet);
                dt.DataTable({
                     data: response.dataSet,
                     searching: true,
                     autoWidth: true,
                     order:[],
+                    group: [],
                     ordering: true,
                     processing: true,
                     // serverSide: true,
@@ -154,6 +156,9 @@
                            }
                        },
                    },
+                   rowGroup: {
+                        dataSrc: 0
+                    },
                     columnDefs: [
                         {
                             defaultContent: "-",
@@ -172,11 +177,21 @@
                             className: 'text-center'
                         }
                     ],
+                    // "createdRow": function( row, data, dataIndex ) {
+                    //     if(tabla == "#catalogoD"){
+                    //         // console.log(data[0]);
+                    //         if ( data[0] == "001 CONGRESO DEL ESTADO DE MICHOACÁN DE OCAMPO" ) {
+                    //             console.log(row);
+                    //         $(row).addClass( 'important' );
+                    //         }
+
+                    //     }
+                    // },
                     // Poner el scroll debajo del footer 
                     "fnInitComplete": function(){
                         //Comprobar si hay footer
-                        if($('tfoot .colorMorado').length){ 
-                        // Disable TBODY scoll bars
+                        if($(tabla+' tfoot.colorMorado').length != 0){
+                            // Deshabilitar la barra de scroll del body
                             $('.dataTables_scrollBody').css({
                                 'overflow': 'hidden',
                                 'border': '0'

@@ -6,14 +6,14 @@
 @extends('layouts.app')
 @section('content')
 
-    <div class="container w-100 p-4">
+    <div class="mx-auto p-4" style="width:90%;">
 
         <h1 class="fw-bold text-center">{{ $titleDesc }}</h1>
         <div class="rounded-pill" style="height: .5em; background-color: rgb(37, 150, 190)"></div>
         <form action="{{route('calendario_fondo_mensual')}}" id="buscarFormA" name="analisis" method="post"> </form>
         <form action="{{route('resumen_capitulo_partida')}}" id="buscarFormB" name="analisis" method="post"><input type="text" id="catalogoB_val"  style="display: none"></form> 
-        <form action="{{route('proyecto_calendario_general')}}" id="buscarFormC" name="analisis" method="post"><input type="text" id="catalogoC_val"  style="display: none"></form> 
-        <form action="{{route('proyecto_avance_general')}}" id="buscarFormD" name="analisis" method="post"><input type="text" id="catalogoD_val"  style="display: none"></form> 
+        <form action="{{route('proyecto_avance_general')}}" id="buscarFormC" name="analisis" method="post"><input type="text" id="catalogoC_val"  style="display: none"></form> 
+        <form action="{{route('proyecto_calendario_general')}}" id="buscarFormD" name="analisis" method="post"><input type="text" id="catalogoD_val"  style="display: none"></form> 
         <form action="{{route('proyecto_calendario_general_actividad')}}" id="buscarFormE" name="analisis" method="post"><input type="text" id="catalogoE_val"  style="display: none"></form> 
         <form action="{{route('avance_proyecto_actividad_upp')}}" id="buscarFormF" name="analisis" method="post"><input type="text" id="catalogoF_val"  style="display: none"></form> 
 
@@ -55,7 +55,7 @@
             </div>
             <input type="text" hidden class="nombre" id="nombre" name="nombre">
             {{-- botones de descarga --}}
-            <div class="d-flex flex-wrap justify-content-end">
+            <div class="d-flex flex-wrap justify-content-end mb-5 mt-sm-2 mt-lg-0">
                 <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
                     <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                     <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
@@ -70,7 +70,7 @@
 
 
         <br>
-        <ul class="nav nav-tabs nav-justified " id="tabs" role="tablist">
+        <ul class="nav nav-tabs " id="tabs" role="tablist">
             <li class="nav-item" >
                 <button class="nav-link textoMorado active" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" aria-selected="true">Calendario fondo mensual</button>
             </li>
@@ -78,21 +78,21 @@
                 <button class="nav-link textoMorado" role="tab" type="button" id="capituloPartida_tab" data-bs-toggle="tab" data-bs-target="#capituloPartida" aria-controls="capituloPartida" aria-selected="false">Resumen capítulo y partida</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" aria-selected="false">Proyecto calendario general</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="avanceGeneral_tab" data-bs-toggle="tab" data-bs-target="#avanceGeneral" aria-controls="avanceGeneral" aria-selected="false">Proyecto avance general</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="avanceGeneral_tab" data-bs-toggle="tab" data-bs-target="#avanceGeneral" aria-controls="avanceGeneral" aria-selected="false">Proyecto avance general</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" aria-selected="false">Proyecto calendario general</button>
             </li>
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Proyecto calendario general de actividades</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Proyecto calendario general de actividades</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Avance de proyectos con actividades por UPP</button>
             </li>
         
         </ul>
 
-        <div class="tab-content" >
+        <div class="tab-content" style="font-size: 12px;">
             {{-- fondo mensual --}}
             <div class="tab-pane active" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
                 <div class="row mx-auto" >
@@ -159,6 +159,32 @@
                     </div>
                 </div>
             </div>
+             {{-- Proyecto avance general --}}
+             <div class="tab-pane" id="avanceGeneral" role="tabpanel" aria-labelledby="avanceGeneral_tab" >    
+                <div class="row mx-auto" >
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
+                                    id="catalogoC" data-right="3,4,5,6" data-left="0,1,2,7" data-center="0,1,2,3,4,5,6,7" style="width:100%">
+                                    <thead class="colorMorado">
+                                        <tr>
+                                            <th class="exportable align-middle text-light">Unidad programática presupuestaría</th>
+                                            <th class="exportable align-middle text-light">Fondo</th>
+                                            <th class="exportable align-middle text-light">Capítulo</th>
+                                            <th class="exportable align-middle text-light sum">Monto anual</th>
+                                            <th class="exportable align-middle text-light">Calendarizado</th>
+                                            <th class="exportable align-middle text-light">Disponible</th>
+                                            <th class="exportable align-middle text-light">% de avance</th>
+                                            <th class="exportable align-middle text-light">Estatus</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {{-- Proyecto calendario general --}}
             <div class="tab-pane" id="calendarioGeneral" role="tabpanel" aria-labelledby="calendarioGeneral_tab" >    
                 <div class="row mx-auto" >
@@ -166,13 +192,15 @@
                         <div class="card">
                             <div class="card-body">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoC" data-right="1,2,3,4,5,6,7,8,9,10,11,12,13" data-left="0" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13" style="width:100%">
+                                    id="catalogoD" data-right="1,2,3,4,5,6,7,8,9,10,11,12,13" data-left="0" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13" style="width:100%">
                                     <thead  class="colorMorado">
                                         <tr>
+                                            {{-- ver la forma de borrar la primera columna --}}
+                                            <th class="exportable align-middle text-light d-none">Clave presupuestal</th>
                                             <th class="exportable align-middle text-light">Clave presupuestal</th>
                                             <th class="exportable align-middle text-light sum">Monto anual</th>
-                                            <th class="exportable align-middle text-light">Enero</th>
-                                            <th class="exportable align-middle text-light">Febrero</th>
+                                            <th class="exportable align-middle text-light sum">Enero</th>
+                                            <th class="exportable align-middle text-light sum">Febrero</th>
                                             <th class="exportable align-middle text-light">Marzo</th>
                                             <th class="exportable align-middle text-light">Abril</th>
                                             <th class="exportable align-middle text-light">Mayo</th>
@@ -185,32 +213,12 @@
                                             <th class="exportable align-middle text-light">Diciembre</th>
                                         </tr>
                                     </thead>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {{-- Proyecto avance general --}}
-            <div class="tab-pane" id="avanceGeneral" role="tabpanel" aria-labelledby="avanceGeneral_tab" >    
-                <div class="row mx-auto" >
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoD" data-right="3,4,5,6" data-left="0,1,2,7" data-center="0,1,2,3,4,5,6,7" style="width:100%">
-                                    <thead class="colorMorado">
+                                    <tfoot class="colorMorado">
                                         <tr>
-                                            <th class="exportable align-middle text-light">Unidad programática presupuestaría</th>
-                                            <th class="exportable align-middle text-light">Fondo</th>
-                                            <th class="exportable align-middle text-light">Capítulo</th>
-                                            <th class="exportable align-middle text-light">Monto anual</th>
-                                            <th class="exportable align-middle text-light">Calendarizado</th>
-                                            <th class="exportable align-middle text-light">Disponible</th>
-                                            <th class="exportable align-middle text-light">% de avance</th>
-                                            <th class="exportable align-middle text-light">Estatus</th>
+                                            <td class="align-middle text-start">TOTAL</td>
+                                            <td class="align-middle text-end total" ></td>
                                         </tr>
-                                    </thead>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
@@ -224,7 +232,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoE" data-right="1,2,3,4,5,6,7,8,9,10,11,12,13" data-left="0" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13" style="width:100%">
+                                    id="catalogoE" data-right="7,11,12,13,14,15,16,17,18,19,20,21,22,23" data-left="0,1,2,3,4,5,6,8,9,10" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23" style="width:100%">
                                     <thead  class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light">UPP</th>
@@ -270,7 +278,7 @@
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light">Unidad programática presupuestaría</th>
-                                            <th class="exportable align-middle text-light">Cantidad de proyectos</th>
+                                            <th class="exportable align-middle text-light sum">Cantidad de proyectos</th>
                                             <th class="exportable align-middle text-light">Cantidad de proyectos con actividades</th>
                                             <th class="exportable align-middle text-light">% de avance</th>
                                             <th class="exportable align-middle text-light">Estatus</th>
@@ -288,6 +296,8 @@
     @include('panels.datatableMultiple')
     @endisset  
 
+    <link href="https://cdn.datatables.net/v/dt/dt-1.13.4/rg-1.3.1/datatables.min.css" rel="stylesheet"/>
+    <script src="https://cdn.datatables.net/v/dt/dt-1.13.4/rg-1.3.1/datatables.min.js"></script>
     <script type="text/javascript">
         //inicializamos el data table
         var tabla;
@@ -334,7 +344,7 @@
                         $('.div_upp').addClass('d-none');
                         $("#nombre").val('calendario_fondo_mensual');
                         dt.DataTable().clear().destroy();
-                        getData(tabla,letter);                    
+                        getData(tabla,letter);                  
                         break;
                     case "capituloPartida_tab":
                         var dt = $('#catalogoB');
@@ -345,21 +355,21 @@
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
-                    case "calendarioGeneral_tab":
+                    case "avanceGeneral_tab":
                         var dt = $('#catalogoC');
                         tabla="#catalogoC";
                         letter="C";
-                        $('.div_upp').removeClass('d-none');
-                        $("#nombre").val('calendario_general');
+                        $('.div_upp').addClass('d-none');
+                        $("#nombre").val('proyecto_avance_general');
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
-                    case "avanceGeneral_tab":
+                    case "calendarioGeneral_tab":
                         var dt = $('#catalogoD');
                         tabla="#catalogoD";
                         letter="D";
                         $('.div_upp').removeClass('d-none');
-                        $("#nombre").val('avance_general');
+                        $("#nombre").val('calendario_general');
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
