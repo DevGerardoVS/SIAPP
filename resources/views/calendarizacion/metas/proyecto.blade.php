@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@include('calendarización.metas.addActividad')
+@include('calendarizacion.metas.addActividad')
 @include('panels.datatable')
 @section('content')
     <div class="container">
@@ -51,7 +51,7 @@
                 </div>
         </section>
     </div>
-    <script src="/js/calendarización/metas/initActiv.js"></script>
+    <script src="/js/calendarizacion/metas/initActiv.js"></script>
     <script src="/js/utilerias.js"></script>
     <script>
         //En las vistas solo se llaman las funciones del archivo init

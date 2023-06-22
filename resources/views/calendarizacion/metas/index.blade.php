@@ -46,7 +46,7 @@
                     </div>
             </div>
             <br>
-            @include('calendarización.metas.tableMetas')
+            @include('calendarizacion.metas.tableMetas')
             <div class="d-flex justify-content-center">
                 <a type="button" class="btn btn-secondary" href="/calendarizacion/proyecto" onclick="dao.limpiar()">Actividades capturadas</a>
                 &nbsp &nbsp
@@ -58,7 +58,7 @@
     </div>
     </section>
     </div>
-    <script src="/js/calendarización/metas/init.js"></script>
+    <script src="/js/calendarizacion/metas/init.js"></script>
     <script src="/js/utilerias.js"></script>
     <script>
         //En las vistas solo se llaman las funciones del archivo init

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Calendarización;
+namespace App\Http\Controllers\Calendarizacion;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;

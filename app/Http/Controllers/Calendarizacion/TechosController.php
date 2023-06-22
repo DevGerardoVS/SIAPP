@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Calendarización;
+namespace App\Http\Controllers\Calendarizacion;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -17,7 +17,7 @@ class TechosController extends Controller
     //Consulta Vista Techos
     public function getIndex()
     {
-        return view('calendarización.techos.index');
+        return view('calendarizacion.techos.index');
     }
 
     public function getTechos(){

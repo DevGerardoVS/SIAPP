@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Calendarización;
+namespace App\Http\Controllers\Calendarizacion;
 
 use App\Models\Catalogo;
 use App\Http\Controllers\Controller;
@@ -24,11 +24,11 @@ class MetasController extends Controller
 	//Consulta Vista Usuarios
 	public function getIndex()
 	{
-		return view('calendarización.metas.index');
+		return view('calendarizacion.metas.index');
 	}
 	public function getProyecto()
 	{
-		return view('calendarización.metas.proyecto');
+		return view('calendarizacion.metas.proyecto');
 	}
 	public function getActiv()
 	{
@@ -407,14 +407,14 @@ class MetasController extends Controller
 	public function pdfView()
     {
 		$data = MetasHelper::actividades();
-		return view('calendarización.metas.proyectoPDF', compact('data'));
+		return view('calendarizacion.metas.proyectoPDF', compact('data'));
     }
 	
 	public function exportPdf(Request $request)
     {
 		$data = MetasHelper::actividades();
 		  view()->share('data',$data);
-		$pdf = PDF::loadView('calendarización.metas.proyectoPDF');
+		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF');
 		return $pdf->download('Proyecto con actividades.pdf');
     }
 }
