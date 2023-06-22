@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@include('calendarización.metas.addActividad')
+@include('calendarizacion.metas.addActividad')
 @isset($dataSet)
     @include('panels.datatable')
 @endisset
@@ -66,6 +66,6 @@
     </div>
     </section>
     </div>
-    <script src="/js/calendarización/metas/init.js"></script>
+    <script src="/js/calendarizacion/metas/init.js"></script>
     <script src="/js/utilerias.js"></script>
 @endsection

@@ -16,12 +16,12 @@ class MetasController extends Controller
 	//Consulta Vista Usuarios
 	public function getIndex()
 	{
-		return view('calendarización.metas.index');
+		return view('calendarizacion.metas.index');
 	}
     public function getProyecto()
 	{
         $dataSet=$this->getProyect();
-		return view('calendarización.metas.proyecto',["dataSet"=>$dataSet]);
+		return view('calendarizacion.metas.proyecto',["dataSet"=>$dataSet]);
 	}
     public function getMetas($id = 0)
 	{
@@ -92,7 +92,7 @@ class MetasController extends Controller
 	//Vista Create Usuario
 /* 	public function getCreate()
 	{
-		return view('calendarización.metas.index');
+		return view('calendarizacion.metas.index');
 	} */
 
 	//Vista Update Usuario

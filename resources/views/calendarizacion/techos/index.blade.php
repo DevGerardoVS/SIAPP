@@ -78,7 +78,7 @@
 </div>
 </section>
 </div>
-<script src="/js/calendarización/metas/init.js"></script>
+<script src="/js/calendarizacion/metas/init.js"></script>
 <script src="/js/utilerias.js"></script>
 <script>
     //En las vistas solo se llaman las funciones del archivo init
