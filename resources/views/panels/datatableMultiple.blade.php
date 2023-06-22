@@ -10,7 +10,7 @@
             success: function(data) {
                 var par = $('#fechaCorte_filter');
                 par.html('');
-                par.append(new Option("Elegir fecha de corte", ""));
+                par.append(new Option("Todo", ""));
                 $.each(data, function(i, val){
                     par.append(new Option(data[i].deleted_at, data[i].deleted_at));
                 });
@@ -206,24 +206,111 @@
                             return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
                         };
             
-                        // Suma total de todas las páginas
-                        total = api
-                            .column(".sum")
-                            .data()
-                            .reduce(function (a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0);
-            
-                        // Total sobre la página actual
-                        pageTotal = api
-                            .column(".sum", { page: 'current' })
-                            .data()
-                            .reduce(function (a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0);
-            
-                        // Actualizar footer
-                        $(api.column(".sum").footer()).html( total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                            if(ruta == "#buscarFormD"){
+                                totalMonto = api
+                                .column(2)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalEnero = api
+                                .column(3)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalFebrero = api
+                                .column(4)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalMarzo = api
+                                .column(5)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalAbril = api
+                                .column(6)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalMayo = api
+                                .column(7)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalJunio = api
+                                .column(8)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalJulio = api
+                                .column(9)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalAgosto = api
+                                .column(10)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalSeptiembre = api
+                                .column(11)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalOctubre = api
+                                .column(12)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalNoviembre = api
+                                .column(13)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalDiciembre = api
+                                .column(14)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+
+                                $(api.column(2).footer()).html( (totalMonto/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(3).footer()).html( (totalEnero/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(4).footer()).html( (totalFebrero/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(5).footer()).html( (totalMarzo/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(6).footer()).html( (totalAbril/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(7).footer()).html( (totalMayo/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(8).footer()).html( (totalJunio/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(9).footer()).html( (totalJulio/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(10).footer()).html( (totalAgosto/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(11).footer()).html( (totalSeptiembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(12).footer()).html( (totalOctubre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(13).footer()).html( (totalNoviembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(14).footer()).html( (totalDiciembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                            }else{
+                                // Suma total de todas las páginas
+                                total = api
+                                    .column(".sum")
+                                    .data()
+                                    .reduce(function (a, b) {
+                                        return intVal(a) + intVal(b);
+                                }, 0);
+                                    
+                                // Actualizar footer
+                                $(api.column(".sum").footer()).html( total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                            }
                     },
                });
                redrawTable(tabla);

@@ -193,8 +193,8 @@
                                     id="catalogoD" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%">
                                     <thead  class="colorMorado " style="text-align: center !important">
                                         <tr>
-                                            <th class="exportable align-middle text-light d-none">Clave presupuestal0</th>
-                                            <th class="exportable align-middle text-light" style="text-align: center !important">Clave presupuestal</th>
+                                            <th class="exportable align-middle text-light d-none">Columna para agrupar las UPP</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important width:28em; !important">Clave presupuestal</th>
                                             <th class="exportable align-middle text-light sum" style="text-align: center !important">Monto anual</th>
                                             <th class="exportable align-middle text-light sum" style="text-align: center !important">Enero</th>
                                             <th class="exportable align-middle text-light sum" style="text-align: center !important">Febrero</th>
@@ -212,10 +212,21 @@
                                     </thead>
                                     <tfoot class="colorMorado">
                                         <tr>
+                                            <td class="align-middle text-end total d-none" ></td>
                                             <td class="align-middle text-start">TOTAL</td>
-                                            <td class="align-middle text-end total" >2424343</td>
-                                            <td class="align-middle text-end total" >12424343</td>
-                                            <td class="align-middle text-end total" >22424343</td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -223,7 +234,6 @@
                         </div>
                     </div>
                 </div>
-                {{-- @include('reportes.administrativos.proyectoCalendarioGeneral') --}}
             </div>
             {{-- Proyecto calendario actividades general E--}}
             <div class="tab-pane" id="calendarioGeneralActividad" role="tabpanel" aria-labelledby="calendarioGeneralActividad_tab" >    
@@ -277,11 +287,11 @@
                                     id="catalogoF" data-right="1,2,3" data-left="0,4" data-center="0,1,2,3,4" style="width:100%">
                                     <thead class="colorMorado">
                                         <tr>
-                                            <th class="exportable align-middle text-light">Unidad programática presupuestaría</th>
-                                            <th class="exportable align-middle text-light sum">Cantidad de proyectos</th>
-                                            <th class="exportable align-middle text-light">Cantidad de proyectos con actividades</th>
-                                            <th class="exportable align-middle text-light">% de avance</th>
-                                            <th class="exportable align-middle text-light">Estatus</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Unidad programática presupuestaría</th>
+                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Cantidad de proyectos</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Cantidad de proyectos con actividades</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">% de avance</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Estatus</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -371,6 +381,7 @@
                         letter="D";
                         $('.div_upp').removeClass('d-none');
                         $("#nombre").val('calendario_general');
+                        dt.DataTable().columns.adjust().draw();
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
