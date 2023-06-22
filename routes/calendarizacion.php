@@ -1,9 +1,9 @@
 <?php 	
 
     use App\Http\Controllers\Calendarizacion\ClavePreController;
-	use App\Http\Controllers\Calendarización\MetasController;
-	use App\Http\Controllers\Calendarización\TechosController;
-	use App\Http\Controllers\Calendarización\CalendarizacionCargaMasivaController;
+	use App\Http\Controllers\Calendarizacion\MetasController;
+	use App\Http\Controllers\Calendarizacion\TechosController;
+	use App\Http\Controllers\Calendarizacion\CalendarizacionCargaMasivaController;
 
 	Route::controller(MetasController::class)->group(function () {
 		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
