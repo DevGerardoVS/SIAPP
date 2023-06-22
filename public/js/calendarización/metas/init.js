@@ -1,63 +1,8 @@
+const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
+
 let actividades = [];
 var dao = {
-    getProyecto : function(ur){
-		if (ur == null || ur == ''){
-			ur = 0;
-		}
-		$.ajax({
-			type : "GET",
-			url : "/calendarizacion/data/" + ur,
-			dataType : "json"
-        }).done(function (_data) {
-			_table = $("#proye");
-			_columns = [
-				{"aTargets" : [0], "mData" : "programa"},
-				{"aTargets" : [1], "mData" : "subprograma"},
-				{"aTargets" : [2], "mData" : "proyecto"},
-                {"aTargets" : [3], "mData" : function(){
-					return '<div class="form-check"><input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked><label class="form-check-label" for="exampleRadios1"></label></div>';
-				}},
-			];
-			_gen.setTableScroll(_table, _columns, _data);
-		});
-	},
-    setStatus: function (id, estatus) {
-        Swal.fire({
-            title: 'Confirmar Activación/Desactivación',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "/adm-usuarios/status",
-                    data: {
-                        id: id,
-                        estatus: estatus
-                    }
-                }).done(function (data) {
-                    if (data != "done") {
-                        Swal.fire(
-                            'Error!',
-                            'Hubo un problema al querer realizar la acción, contacte a soporte',
-                            'Error'
-                        );
-                    } else {
-                        Swal.fire(
-                            'Éxito!',
-                            'La acción se ha realizado correctamente',
-                            'success'
-                        );
-                        getData();
-                    }
-                });
-            }
-        });
-    },
-    eliminarUsuario: function (id) {
+    eliminar: function (id) {
         Swal.fire({
             title: '¿Seguro que quieres eliminar este usuario?',
             text: "Esta accion es irreversible",
@@ -70,7 +15,7 @@ var dao = {
             if (result.isConfirmed) {
                 $.ajax({
                     type: "POST",
-                    url: "/adm-usuarios/eliminar",
+                    url: "/calendarizacion/detelet",
                     data: {
                         id: id
                     }
@@ -87,7 +32,6 @@ var dao = {
                             'La acción se ha realizado correctamente',
                             'success'
                         );
-                        getData();
                     }
                 });
 
@@ -97,42 +41,18 @@ var dao = {
 
 
     },
-    getAnio: function () {
-        let anio = [2022, 2023, 2024, 2025];
-        var par = $('#anio_filter');
-        par.html('');
-        par.append(new Option("-- Año--", ""));
-        document.getElementById("anio_filter").options[0].disabled = true;
-        $.each(anio, function (i, val) {
-            par.append(new Option(anio[i], anio[i]));
-        });
-        /*      $.ajax({
-                 type: "GET",
-                 url: 'grupos',
-                 dataType: "JSON"
-             }).done(function (data) {
-                 var par = $('#id_grupo');
-                 par.html('');
-                 par.append(new Option("-- Selecciona Perfil --", ""));
-                 document.getElementById("id_grupo").options[0].disabled = true;
-                 $.each(data, function (i, val) {
-                     par.append(new Option(data[i].nombre_grupo, data[i].id));
-                 }); 
-             }); */
-    },
     getUrs: function () {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/urs',
             dataType: "JSON"
         }).done(function (data) {
-            console.log("urs",data)
             var par = $('#ur_filter');
             par.html('');
             par.append(new Option("-- URS--", ""));
             document.getElementById("ur_filter").options[0].disabled = true;
             $.each(data, function (i, val) {
-                par.append(new Option(data[i].descripcion, data[i].clave));
+                par.append(new Option(data[i].ur, data[i].clv_ur));
             });
             par.selectpicker({ search: true });
 
@@ -155,12 +75,14 @@ var dao = {
 
         });
     },
-    crearUsuario: function () {
-        var form = $('#frm_create')[0];
+    crearMeta: function () {
+        var form = $('#actividad')[0];
         var data = new FormData(form);
+        data.append('pMir_id',  $('[name="proyecto"]:checked').val());
+        data.append('sumMetas', $('#sumMetas').val());
         $.ajax({
             type: "POST",
-            url: 'adm-usuarios/store',
+            url: '/calendarizacion/create',
             data: data,
             enctype: 'multipart/form-data',
             processData: false,
@@ -169,91 +91,180 @@ var dao = {
             timeout: 600000
         }).done(function (response) {
             $('#cerrar').trigger('click');
+            dao.limpiar();
             Swal.fire({
                 icon: 'success',
                 title: 'Your work has been saved',
                 showConfirmButton: false,
                 timer: 1500
             });
-
-            dao.limpiarFormularioCrear();
-            getData();
         });
-    },
-    editarUsuario: function (id) {
-        $.ajax({
-            type: "GET",
-            url: 'adm-usuarios/update/' + id,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-            timeout: 600000
-        }).done(function (response) {
-            console.log("response", response)
-            const {
-                id,
-                username,
-                celular,
-                email,
-                estatus,
-                id_grupo,
-                nombre,
-                p_apellido,
-                s_apellido,
-                perfil,
-                nombre_grupo
-            } = response;
-            $('#id_user').val(id);
-            $('#username').val(username);
-            $('#nombre').val(nombre);
-            $('#p_apellido').val(p_apellido);
-            $('#s_apellido').val(s_apellido);
-            $('#email').val(email);
-            $('#in_celular').val(celular);
-            $('#label_idGrupo').text(perfil).show();
-
-            $("#id_grupo").hide();
-            $("#labelGrupo").hide();
-
-        });
-    },
-    limpiarFormularioCrear: function () {
-
-        inps = [
-            'id_user',
-            'username',
-            'nombre',
-            'p_apellido',
-            's_apellido',
-            'email',
-            'password',
-            'in_pass_conf',
-            'in_celular',
-            'id_grupo'
-        ];
-        inps.forEach(e => {
-            $('#' + e).val('').removeClass('has-error').removeClass('d-block');
-            $('#' + e + '-error').text("").removeClass('has-error').removeClass('d-block');
-
-        });
-        $("#id_grupo").find('option').remove();
-        dao.getAnio();
-        $('.form-group').removeClass('has-error');
-        $("#id_grupo").show();
-        $("#labelGrupo").show();
-        $("#label_idGrupo").text("").hide();
-
     },
     editarMeta: function (id) {
-        console.log(id)
         Swal.fire({
             icon: 'success',
             title: 'Your work has been saved',
             showConfirmButton: false,
             timer: 1500
           })
-    }
+    }, getSelect: function () {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/selects',
+            dataType: "JSON"
+        }).done(function (data) {
+            const { unidadM, fondos, beneficiario, actividades,activids } = data;
+            var act = $('#sel_actividad'); 
+            act.html('');
+            act.append(new Option("--Actividad--","true",true,true));
+            document.getElementById("sel_actividad").options[0].disabled = true;
+            $.each(actividades, function (i, val) {
+                act.append(new Option(val.actividad, i));
+            });
+            act.selectpicker({ search: true });
+            var med = $('#medida');
+            med.html('');
+            med.append(new Option("-- Medida--", ""));
+            document.getElementById("medida").options[0].disabled = true;
+            $.each(unidadM, function (i, val) {
+                med.append(new Option(val.unidad_medida, val.clave));
+            }); 
+            med.selectpicker({ search: true });
+            var fond = $('#sel_fondo');
+            fond.html('');
+            fond.append(new Option("-- Fondos--", ""));
+            document.getElementById("sel_fondo").options[0].disabled = true;
+            $.each(fondos, function (i, val) {
+                fond.append(new Option(fondos[i].ramo, fondos[i].clv_fondo_ramo));
+            });
+            fond.selectpicker({ search: true });
+            var tipo_be = $('#tipo_Be');
+            tipo_be.html('');
+            tipo_be.append(new Option("--U. Beneficiarios--", ""));
+            document.getElementById("tipo_Be").options[0].disabled = true;
+            $.each(beneficiario, function (i, val) {
+                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
+            });
+            tipo_be.selectpicker({ search: true });
+            var tipo_AC = $('#tipo_Ac');
+            tipo_AC.html('');
+            tipo_AC.append(new Option("--Tipo Actividad--", ""));
+            document.getElementById("tipo_Ac").options[0].disabled = true;
+            $.each(activids, function (i, val) {
+                tipo_AC.append(new Option(val, i));
+            }); 
+            tipo_AC.selectpicker({ search: true });
+
+        });
+    },
+    limpiar: function () {
+        console.log("limpiando.....")
+        inputs.forEach(e => {
+            $('#' + e + '-error').text("").removeClass('#' + e + '-error');
+            if (e != 'beneficiario') {
+                $('#'+e).selectpicker('destroy');
+            }
+        });
+        dao.getSelect();
+        $('.form-group').removeClass('has-error');  
+        for (let i = 1; i <=12; i++) {
+            $('#' + i).val(0);
+        }
+        $('#sumMetas').val(0);
+        $('#beneficiario').val("");
+        for (let i = 1; i <=12; i++) {
+            $("#" + i).prop('disabled', true); 
+        }
+    },
+    arrEquals: function (numeros) {
+        let duplicados = [];
+        let bool = numeros.length;
+ 
+        const tempArray = [...numeros].sort();
+         
+        for (let i = 0; i <= tempArray.length; i++) {
+          if (tempArray[i + 1] === tempArray[i]) {
+            duplicados.push(tempArray[i]);
+          }
+        }
+        if(bool != duplicados.length)
+        {return false}else{return true}
+      },
+    validateAcu: function () {
+        let e = 0;
+        for (let i = 1; i <= 12; i++) {           
+            let suma = parseInt($('#' + i).val() != "" ? $('#' + i).val() : 0);
+            e += suma;
+        }
+        return e;
+    },
+    validatEspe: function () {
+        let e = [];
+        for (let i = 1; i <= 12; i++) {           
+            let suma = parseInt($('#' + i).val() != "" ? $('#' + i).val() : 0);
+            e.push(suma)
+        }
+        return Math.max(...e);
+    },
+    validatCont: function () {
+        let e = [];
+        for (let i = 1; i <= 12; i++) { 
+            if($('#' + i).val() != ""){
+                let suma = parseInt($('#' + i).val());
+                e.push(suma);
+            }
+        }
+        if (dao.arrEquals(e)) {
+            return e[0];
+        } else {
+            $('#sumMetas').val("");
+            //$("#btnSave").prop('disabled', true);
+            Swal.fire({
+                icon: 'info',
+                title: 'Tipo de actividad continua',
+                text: 'El valor ingresado de cada mes deben ser iguales',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+    },
+    sumar: function () {
+        let actividad = $("#tipo_Ac option:selected").text();
+        switch (actividad) {
+            case 'Acumulativa':
+                  $('#sumMetas').val(dao.validateAcu());
+                break;
+            case 'Continua':
+                $('#sumMetas').val(dao.validatCont());
+                break;
+            case 'Especial':
+                $('#sumMetas').val(dao.validatEspe());
+                break;
+        
+            default:
+                break;
+        }
+    },
+    valMeses: function () {
+        let e = [];
+        for (let i = 1; i <= 12; i++) { 
+            if($('#' + i).val() != ""){
+                let suma = parseInt($('#' + i).val());
+                e.push(suma);
+            }
+        }
+        if (e>=1) {
+            return true;
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campos vacíos',
+                text: 'Mínimo un mes debe contener una cantidad valida',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+    },
 };
 var init = {
     validateCreate: function (form) {
@@ -287,30 +298,40 @@ var init = {
             }
         });
     },
-    getTabla : function(){
-		$.ajax({
-			type : "GET",
-			url : "/ver-detalle",
-			dataType : "json"
-        }).done(function (data) {
-			table = $("#catalogo");
-            $.each(data, function (i, val) {
-                table.append("<tr><td>" + data[i][0]+"</td><td>" + data[i][1]+"</td><td>" + data[i][2]+"</td></tr>");
-            });
-		});
-	},
 };
 
+var init = {
+    validateCreate: function (form) {
+        _gen.validate(form, {
+            rules: {
+                sel_actividad: { required: true },
+                sel_fondo: { required: true },
+                tipo_Ac: { required: true },
+                beneficiario: { required: true },
+                tipo_Be: { required: true },
+                medida: { required: true }
+            },
+            messages: {
+                sel_actividad: { required: "Este campo es requerido" },
+                sel_fondo: { required: "Este campo es requerido" },
+                tipo_Ac: { required: "Este campo es requerido" },
+                beneficiario: { required: "Este campo es requerido" },
+                tipo_Be: { required: "Este campo es requerido" },
+                medida: { required: "Este campo es requerido" }
+            }
+        });
+    },
+};
 $(document).ready(function () {
-    getData();
+    getData();    
     dao.getUrs();
+    dao.getSelect();
+    for (let i = 1; i <= 12; i++) {
+        $("#" + i).val(0);
+    }
+    $("#sumMetas").val(0);
 
-    $('#ur_filter').change(function () {
-        let ur = $("#ur_filter option:selected").val();
-        console.log("saDASd",ur)
-        dao.getProyecto(ur);
-    }) 
-    
+   
    $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
@@ -318,12 +339,15 @@ $(document).ready(function () {
     })
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        if ($('#frm_create').valid()) {
-            dao.crearUsuario();
+        if ($('#actividad').valid()) {
+            dao.crearMeta();
         }
     });
-   /* $("#serchUr").click(function () {
-     console.log("aedsa",$('#serchUr').val());
-      });
-    */
+
+    $('#tipo_Ac').change(() => {
+        for (let i = 1; i <= 12; i++) {
+            $("#" + i).prop('disabled', false);
+        }
+
+    })
 });

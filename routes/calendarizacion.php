@@ -7,8 +7,12 @@
 
 	Route::controller(MetasController::class)->group(function () {
 		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
-		Route::get('/calendarizacion/data/{ur?}', 'getMetasP');
-        Route::get('/calendarizacion/proyecto/{ur?}', 'getProyecto')->name('proyecto');
+		Route::get('/calendarizacion/pdf', 'pdfView');
+		Route::post('/calendarizacion/data/', 'getMetasP')->name('metasP');
+		Route::get('/actividades/data', 'getActiv')->name('actividades');
+		Route::get('/actividades/exportExcel', 'exportExcel')->name('ExportExcel');
+		Route::get('/actividades/exportPdf', 'exportPdf');
+        Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
 		Route::get('/nombres/{id?}', 'getNames');
 		Route::get('/calendarizacion/selects', 'getSelects');
 		Route::get('/calendarizacion/urs', 'getUrs');

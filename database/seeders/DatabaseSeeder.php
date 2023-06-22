@@ -15,16 +15,16 @@ use DB;
 class DatabaseSeeder extends Seeder
 {
         protected $cat_entes = array(
-            ['id' => 1, 'cve_upp' => '01', 'nombre_upp' => 'Secretaría de Administración y Finannzas', 'cve_ur' => '01', 'nombre_ur' => 'Dirección de Gobienrno Digital', 'cve_uo' => '001', 'nombre_uo' => 'Departamento de Proyectos Internos'],
-            ['id' => 2, 'cve_upp' => '07', 'nombre_upp' => 'Secretaría de prueba', 'cve_ur' => '02', 'nombre_ur' => 'Dirección de pruebas', 'cve_uo' => '002', 'nombre_uo' => 'Departamento de Pruebas Internos']
+            ['id' => 1, 'cve_upp' => '007', 'nombre_upp' => 'Secretaría de Administración y Finannzas', 'cve_ur' => '01', 'nombre_ur' => 'Dirección de Gobienrno Digital', 'cve_uo' => '001', 'nombre_uo' => 'Departamento de Proyectos Internos'],
+            ['id' => 2, 'cve_upp' => '001', 'nombre_upp' => 'Secretaría de prueba', 'cve_ur' => '02', 'nombre_ur' => 'Dirección de pruebas', 'cve_uo' => '002', 'nombre_uo' => 'Departamento de Pruebas Internos']
 
         );
 
         protected $cat_users = array(
             ['id' => 1, 'id_ente' => null, 'nombre' => 'sudo', 'p_apellido' => 'admin', 's_apellido' => 'sedj', 'celular' => '00-00-00-00-00', 'email' => 'prueba1@gmail.com', 'username' => 'administrador', 'password' => 'valida2022', 'sudo' => 1],
             ['id' => 2, 'id_ente' => 1, 'nombre' => 'Francisco', 'p_apellido' => 'Méndez', 's_apellido' => 'Chávez', 'celular' => '44-32-21-90-95', 'email' => 'pacomendez2308@gmail.com', 'username' => 'depExpedientes', 'password' => 'depExpedientes.22', 'sudo' => 0],
-            ['id' => 3, 'id_ente' => 2, 'nombre' => 'Jack', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Jack', 'password' => 'valida23', 'sudo' => 0]
-
+            ['id' => 3, 'id_ente' => 2, 'nombre' => 'Jack', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Jack', 'password' => 'valida23', 'sudo' => 0],
+            ['id' => 4, 'id_ente' => 1, 'nombre' => 'UnidadR', 'p_apellido' => 'u', 's_apellido' => 'pp', 'celular' => '44-32-21-90-95', 'email' => 'upp_user@gmail.com', 'username' => 'upp', 'password' => 'valida23', 'sudo' => 0]
         );
 
         protected $sistemas = array(
@@ -66,15 +66,14 @@ class DatabaseSeeder extends Seeder
             ['id' => 14,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'getPermisos', 'tipo' => 'Consulta', 'descripcion' => 'Consulta de permisos'],
             ['id' => 15,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'postPermisos', 'tipo' => 'Insercion', 'descripcion' => 'Crear registro de permisos'],
             ['id' => 16,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
-            
-        
+            ['id' => 16,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
         );
 
     protected $grupos = array(
 
-        ['id' => 5, 'nombre_grupo' => 'Administrador', 'estatus' => 0],
-        ['id' => 6, 'nombre_grupo' => 'user', 'estatus' => 0],
-
+        ['id' => 1, 'nombre_grupo' => 'Administrador', 'estatus' => 0],
+        ['id' => 2, 'nombre_grupo' => 'user', 'estatus' => 0],
+        ['id' => 3, 'nombre_grupo' => 'upp', 'estatus' => 0]
     );
 
 

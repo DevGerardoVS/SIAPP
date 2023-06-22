@@ -1,59 +1,30 @@
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 
 var dao = {
-    nextPage: function () {
-        var url = window.location.href;
-        
-        $.ajax({
-            type: "GET",
-            url: "/nombres/" + url.slice(-1),
-            dataType: "JSON"
-        }).done(function (data) {
-            console.log("names",data)
-            var act = $('#nombres'); 
-            act.html('');
-            act.append('<li><b>UR:</b>&nbsp;' + data[0] + '</li>');
-            act.append('<li><b>Programa:</b>&nbsp;' + data[1] + '</li>');
-            act.append('<li><b>Subprograma:</b>&nbsp;' + data[2] + '</li>');
-            act.append('<li><b>Proyecto:</b>&nbsp;' + data[3] + '</li>');
-        });
-    },
-    setStatus: function (id, estatus) {
-        Swal.fire({
-            title: 'Confirmar Activación/Desactivación',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "/adm-usuarios/status",
-                    data: {
-                        id: id,
-                        estatus: estatus
-                    }
-                }).done(function (data) {
-                    if (data != "done") {
-                        Swal.fire(
-                            'Error!',
-                            'Hubo un problema al querer realizar la acción, contacte a soporte',
-                            'Error'
-                        );
-                    } else {
-                        Swal.fire(
-                            'Éxito!',
-                            'La acción se ha realizado correctamente',
-                            'success'
-                        );
-                        location.reload();
-                    }
-                });
-            }
-        });
-    },
+    getData : function(){
+		$.ajax({
+			type : "GET",
+			url : "/actividades/data",
+			dataType : "json"
+        }).done(function (_data) {
+			_table = $("#catalogo");
+			_columns = [
+				{"aTargets" : [0] , "mData" :[0] },
+				{"aTargets" : [1] , "mData" :[1] },
+				{"aTargets" : [2] , "mData" :[2] },
+				{"aTargets" : [3] , "mData" :[3] },
+				{"aTargets" : [4] , "mData" :[4] },
+                { "aTargets": [5] , "mData": [5] },
+                {"aTargets" : [6] , "mData" :[6] },
+				{"aTargets" : [7] , "mData" :[7] },
+				{"aTargets" : [8] , "mData" :[8] },
+				{"aTargets" : [9] , "mData" :[9] },
+				{"aTargets" : [10], "mData" :[10]},
+				{"aTargets" : [11], "mData" :[11]}
+			];
+			_gen.setTableScroll(_table, _columns, _data);
+		});
+	},
     eliminar: function (id) {
         Swal.fire({
             title: '¿Seguro que quieres eliminar este usuario?',
@@ -84,95 +55,13 @@ var dao = {
                             'La acción se ha realizado correctamente',
                             'success'
                         );
-                        getData();
+                        dao.getData();
                     }
                 });
 
             }
         })
-
-
-
-    }, getSelect: function () {
-        $.ajax({
-            type: "GET",
-            url: '/calendarizacion/selects',
-            dataType: "JSON"
-        }).done(function (data) {
-            console.log("done",data);
-            const { unidadM, fondos, beneficiario, actividades,activids } = data;
-            var act = $('#sel_actividad'); 
-            act.html('');
-            act.append(new Option("--Actividad--",""));
-            document.getElementById("sel_actividad").options[0].disabled = true;
-            $.each(actividades, function (i, val) {
-                act.append(new Option(val.actividad,val.clv_actividad));
-            });
-            act.selectpicker({ search: true });
-            var med = $('#medida');
-            med.html('');
-            med.append(new Option("-- Medida--", ""));
-            document.getElementById("medida").options[0].disabled = true;
-            $.each(unidadM, function (i, val) {
-                med.append(new Option(val.unidad_medida, val.clave));
-            }); 
-            med.selectpicker({ search: true });
-            var fond = $('#sel_fondo');
-            fond.html('');
-            fond.append(new Option("-- Fondos--", ""));
-            document.getElementById("sel_fondo").options[0].disabled = true;
-            $.each(fondos, function (i, val) {
-                fond.append(new Option(fondos[i].ramo, fondos[i].clv_fondo_ramo));
-            });
-            fond.selectpicker({ search: true });
-            var tipo_be = $('#tipo_Be');
-            tipo_be.html('');
-            tipo_be.append(new Option("--U. Beneficiarios--", ""));
-            document.getElementById("tipo_Be").options[0].disabled = true;
-            $.each(beneficiario, function (i, val) {
-                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
-            });
-            tipo_be.selectpicker({ search: true });
-            var tipo_AC = $('#tipo_Ac');
-            tipo_AC.html('');
-            tipo_AC.append(new Option("--Tipo Actividad--", ""));
-            document.getElementById("tipo_Ac").options[0].disabled = true;
-            $.each(activids, function (i, val) {
-                tipo_AC.append(new Option(val, i));
-            }); 
-            tipo_AC.selectpicker({ search: true });
-
-        });
     },
-    
-
-    crearUsuario: function () {
-        var form = $('#actividad')[0];
-        var data = new FormData(form);
-        var url = window.location.href;
-        data.append('pMir_id', url.slice(-1));
-        data.append('sumMetas', $('#sumMetas').val());
-        $.ajax({
-            type: "POST",
-            url: '/calendarizacion/create',
-            data: data,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-            timeout: 600000
-        }).done(function (response) {
-            $('#cerrar').trigger('click');
-            Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 1500
-            });
-            getData();
-        });
-    },
- 
     limpiar: function () {
         inputs.forEach(e => {
             $('#' + e + '-error').text("").removeClass('#' + e + '-error');
@@ -310,20 +199,20 @@ $(document).ready(function () {
         $("#" + i).val(0);
     }
     $("#sumMetas").val(0);
-    getData();
-    dao.nextPage();
-    dao.getSelect();
+    dao.getData();
     $('#btnSave').click(function (e) {
         e.preventDefault();
         if ($('#actividad').valid()) {
             dao.crearUsuario();
         }
     });
+  
+    
 
     $('#tipo_Ac').change(() => {
         for (let i = 1; i <= 12; i++) {
             $("#" + i).prop('disabled', false);
         }
 
-    })
+    });
 });
