@@ -67,8 +67,6 @@
             </div>
         </form>
 
-
-
         <br>
         <ul class="nav nav-tabs " id="tabs" role="tablist">
             <li class="nav-item" >
@@ -93,7 +91,7 @@
         </ul>
 
         <div class="tab-content" style="font-size: 12px;">
-            {{-- fondo mensual --}}
+            {{-- fondo mensual A--}}
             <div class="tab-pane active" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
@@ -103,21 +101,21 @@
                                     id="catalogoA" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="0,1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%">
                                     <thead  class="colorMorado">
                                         <tr>
-                                            <th class="exportable align-middle text-light">Ramo</th>
-                                            <th class="exportable align-middle text-light" style="width: 300px ;">Fondo</th>
-                                            <th class="exportable align-middle text-light">Enero</th>
-                                            <th class="exportable align-middle text-light">Febrero</th>
-                                            <th class="exportable align-middle text-light">Marzo</th>
-                                            <th class="exportable align-middle text-light">Abril</th>
-                                            <th class="exportable align-middle text-light">Mayo</th>
-                                            <th class="exportable align-middle text-light">Junio</th>
-                                            <th class="exportable align-middle text-light">Julio</th>
-                                            <th class="exportable align-middle text-light">Agosto</th>
-                                            <th class="exportable align-middle text-light">Septiembre</th>
-                                            <th class="exportable align-middle text-light">Octubre</th>
-                                            <th class="exportable align-middle text-light">Noviembre</th>
-                                            <th class="exportable align-middle text-light">Diciembre</th>
-                                            <th class="exportable align-middle text-light sum">Importe total</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Ramo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Fondo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Enero</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Febrero</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Marzo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Abril</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Mayo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Junio</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Julio</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Agosto</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Septiembre</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Octubre</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Noviembre</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Diciembre</th>
+                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Importe total</th>
                                         </tr>
                                     </thead>
                                     <tfoot class="colorMorado">
@@ -132,7 +130,7 @@
                     </div>
                 </div>
             </div>
-            <!--Capitulo y partida-->
+            <!--Capitulo y partida B-->
             <div class="tab-pane" id="capituloPartida" role="tabpanel" aria-labelledby="capituloPartida_tab" >
                 <div class="row mx-auto">
                     <div class="col-md-12">
@@ -142,9 +140,9 @@
                                     id="catalogoB" data-right="2" data-left="0,1" data-center="0,1,2" style="width:100%">
                                     <thead  class="colorMorado">
                                         <tr>
-                                            <th class="exportable align-middle text-light">Capítulo</th>
-                                            <th class="exportable align-middle text-light">Partida</th>
-                                            <th class="exportable align-middle text-light sum">Importe</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Capítulo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Partida</th>
+                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Importe</th>
                                         </tr>
                                     </thead>
                                     <tfoot class="colorMorado">
@@ -159,7 +157,7 @@
                     </div>
                 </div>
             </div>
-             {{-- Proyecto avance general --}}
+             {{-- Proyecto avance general C--}}
              <div class="tab-pane" id="avanceGeneral" role="tabpanel" aria-labelledby="avanceGeneral_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
@@ -169,14 +167,14 @@
                                     id="catalogoC" data-right="3,4,5,6" data-left="0,1,2,7" data-center="0,1,2,3,4,5,6,7" style="width:100%">
                                     <thead class="colorMorado">
                                         <tr>
-                                            <th class="exportable align-middle text-light">Unidad programática presupuestaría</th>
-                                            <th class="exportable align-middle text-light">Fondo</th>
-                                            <th class="exportable align-middle text-light">Capítulo</th>
-                                            <th class="exportable align-middle text-light sum">Monto anual</th>
-                                            <th class="exportable align-middle text-light">Calendarizado</th>
-                                            <th class="exportable align-middle text-light">Disponible</th>
-                                            <th class="exportable align-middle text-light">% de avance</th>
-                                            <th class="exportable align-middle text-light">Estatus</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Unidad programática presupuestaría</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Fondo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Capítulo</th>
+                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Monto anual</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Calendarizado</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Disponible</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">% de avance</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Estatus</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -185,38 +183,39 @@
                     </div>
                 </div>
             </div>
-            {{-- Proyecto calendario general --}}
+            {{-- Proyecto calendario general D--}}
             <div class="tab-pane" id="calendarioGeneral" role="tabpanel" aria-labelledby="calendarioGeneral_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoD" data-right="1,2,3,4,5,6,7,8,9,10,11,12,13" data-left="0" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13" style="width:100%">
-                                    <thead  class="colorMorado">
+                                    id="catalogoD" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%">
+                                    <thead  class="colorMorado " style="text-align: center !important">
                                         <tr>
-                                            {{-- ver la forma de borrar la primera columna --}}
-                                            <th class="exportable align-middle text-light d-none">Clave presupuestal</th>
-                                            <th class="exportable align-middle text-light">Clave presupuestal</th>
-                                            <th class="exportable align-middle text-light sum">Monto anual</th>
-                                            <th class="exportable align-middle text-light sum">Enero</th>
-                                            <th class="exportable align-middle text-light sum">Febrero</th>
-                                            <th class="exportable align-middle text-light">Marzo</th>
-                                            <th class="exportable align-middle text-light">Abril</th>
-                                            <th class="exportable align-middle text-light">Mayo</th>
-                                            <th class="exportable align-middle text-light">Junio</th>
-                                            <th class="exportable align-middle text-light">Julio</th>
-                                            <th class="exportable align-middle text-light">Agosto</th>
-                                            <th class="exportable align-middle text-light">Septiembre</th>
-                                            <th class="exportable align-middle text-light">Octubre</th>
-                                            <th class="exportable align-middle text-light">Noviembre</th>
-                                            <th class="exportable align-middle text-light">Diciembre</th>
+                                            <th class="exportable align-middle text-light d-none">Clave presupuestal0</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Clave presupuestal</th>
+                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Monto anual</th>
+                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Enero</th>
+                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Febrero</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Marzo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Abril</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Mayo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Junio</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Julio</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Agosto</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Septiembre</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Octubre</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Noviembre</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Diciembre</th>
                                         </tr>
                                     </thead>
                                     <tfoot class="colorMorado">
                                         <tr>
                                             <td class="align-middle text-start">TOTAL</td>
-                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" >2424343</td>
+                                            <td class="align-middle text-end total" >12424343</td>
+                                            <td class="align-middle text-end total" >22424343</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -224,8 +223,9 @@
                         </div>
                     </div>
                 </div>
+                {{-- @include('reportes.administrativos.proyectoCalendarioGeneral') --}}
             </div>
-            {{-- Proyecto calendario actividades general --}}
+            {{-- Proyecto calendario actividades general E--}}
             <div class="tab-pane" id="calendarioGeneralActividad" role="tabpanel" aria-labelledby="calendarioGeneralActividad_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
@@ -235,30 +235,30 @@
                                     id="catalogoE" data-right="7,11,12,13,14,15,16,17,18,19,20,21,22,23" data-left="0,1,2,3,4,5,6,8,9,10" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23" style="width:100%">
                                     <thead  class="colorMorado">
                                         <tr>
-                                            <th class="exportable align-middle text-light">UPP</th>
-                                            <th class="exportable align-middle text-light">UR</th>
-                                            <th class="exportable align-middle text-light">Programa</th>
-                                            <th class="exportable align-middle text-light">Subprograma</th>
-                                            <th class="exportable align-middle text-light">Proyecto</th>
-                                            <th class="exportable align-middle text-light">Fondo</th>
-                                            <th class="exportable align-middle text-light">Actividad</th>
-                                            <th class="exportable align-middle text-light">Cantidad Beneficiarios</th>
-                                            <th class="exportable align-middle text-light">Beneficiarios</th>
-                                            <th class="exportable align-middle text-light">U. de medida</th>
-                                            <th class="exportable align-middle text-light">Tipo de actividad</th>
-                                            <th class="exportable align-middle text-light sum">Meta anual</th>
-                                            <th class="exportable align-middle text-light">Enero</th>
-                                            <th class="exportable align-middle text-light">Febrero</th>
-                                            <th class="exportable align-middle text-light">Marzo</th>
-                                            <th class="exportable align-middle text-light">Abril</th>
-                                            <th class="exportable align-middle text-light">Mayo</th>
-                                            <th class="exportable align-middle text-light">Junio</th>
-                                            <th class="exportable align-middle text-light">Julio</th>
-                                            <th class="exportable align-middle text-light">Agosto</th>
-                                            <th class="exportable align-middle text-light">Septiembre</th>
-                                            <th class="exportable align-middle text-light">Octubre</th>
-                                            <th class="exportable align-middle text-light">Noviembre</th>
-                                            <th class="exportable align-middle text-light">Diciembre</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">UPP</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">UR</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Programa</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Subprograma</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Proyecto</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Fondo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Actividad</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Cantidad Beneficiarios</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Beneficiarios</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">U. de medida</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Tipo de actividad</th>
+                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Meta anual</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Enero</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Febrero</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Marzo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Abril</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Mayo</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Junio</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Julio</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Agosto</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Septiembre</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Octubre</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Noviembre</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Diciembre</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -267,7 +267,7 @@
                     </div>
                 </div>
             </div>
-            {{-- Avance de proyectos con actividades por upp --}}
+            {{-- Avance de proyectos con actividades por upp F--}}
             <div class="tab-pane" id="avanceProyectoActividadUPP" role="tabpanel" aria-labelledby="avanceProyectoActividadUPP_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
@@ -292,11 +292,12 @@
             </div>
         </div>
     </div>
+
     @isset($dataSet)
     @include('panels.datatableMultiple')
     @endisset  
 
-    <link href="https://cdn.datatables.net/v/dt/dt-1.13.4/rg-1.3.1/datatables.min.css" rel="stylesheet"/>
+    <link href="https://cdn.datatables.net/v//dt/dt-1.13.4/rg-1.3.1/datatables.min.css" rel="stylesheet"/>
     <script src="https://cdn.datatables.net/v/dt/dt-1.13.4/rg-1.3.1/datatables.min.js"></script>
     <script type="text/javascript">
         //inicializamos el data table

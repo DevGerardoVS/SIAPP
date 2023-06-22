@@ -559,3 +559,12 @@ display: inline-block;
 /*Without this, clicking will make it sticky*/
 pointer-events: none;
 }
+
+/* Estilos para datatable reportes administrativos */
+.txtR{
+  text-align: right !important;
+}
+
+.txtL{
+  text-align: left !important;
+}

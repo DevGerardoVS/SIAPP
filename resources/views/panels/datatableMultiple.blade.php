@@ -110,22 +110,26 @@
             contentType: false,
             processData: false,
            success: function(response) {
-               if(response.dataSet.length == 0){
-                   dt.attr('data-empty','true');
-               }
-               else{
-                   dt.attr('data-empty','false');
-               }
-            //    console.log(response.dataSet);
+                if(response.dataSet.length == 0){
+                    dt.attr('data-empty','true');
+                }
+                else{
+                    dt.attr('data-empty','false');
+                }
+
+                // Se habilita el rowgroup dependiendo la tabla en la que esta el usuario
+                var estatus = false;
+                if(ruta == "#buscarFormD") estatus = true;
+
                dt.DataTable({
                     data: response.dataSet,
                     searching: true,
                     autoWidth: true,
                     order:[],
                     group: [],
+                    rowGroup: estatus,
                     ordering: true,
                     processing: true,
-                    // serverSide: true,
                     pageLength: 10,
                     dom: 'frltip',
                     scrollX: true,
@@ -156,9 +160,6 @@
                            }
                        },
                    },
-                   rowGroup: {
-                        dataSrc: 0
-                    },
                     columnDefs: [
                         {
                             defaultContent: "-",
@@ -166,27 +167,17 @@
                         },
                         {
                             targets: formatRight,
-                            className: 'text-right'
+                            className: 'text-right txtR'
                         },
                         {
                             targets: formatLeft,
-                            className: 'text-left'
+                            className: 'text-left txtL'
                         },
                         {
                             targets: formatCenter,
                             className: 'text-center'
                         }
                     ],
-                    // "createdRow": function( row, data, dataIndex ) {
-                    //     if(tabla == "#catalogoD"){
-                    //         // console.log(data[0]);
-                    //         if ( data[0] == "001 CONGRESO DEL ESTADO DE MICHOACÁN DE OCAMPO" ) {
-                    //             console.log(row);
-                    //         $(row).addClass( 'important' );
-                    //         }
-
-                    //     }
-                    // },
                     // Poner el scroll debajo del footer 
                     "fnInitComplete": function(){
                         //Comprobar si hay footer
@@ -236,6 +227,10 @@
                     },
                });
                redrawTable(tabla);
+               // Eliminar primera columna que contiene las UPP
+               if(ruta == "#buscarFormD"){
+                    dt.DataTable().column(0).visible(false);
+                }
             },
            error: function(response) {
                console.log('{{__("messages.error")}}: ' + response);
