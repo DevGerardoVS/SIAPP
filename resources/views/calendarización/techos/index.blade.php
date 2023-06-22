@@ -2,6 +2,7 @@
 @include('panels.datatable')
 @include('calendarización.techos.modalCreate')
 @section('content')
+
 <div class="container">
     <form action="{{ route('getTechos') }}" id="buscarForm" method="GET">
         @csrf
@@ -34,7 +35,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <?php $upp = DB::table('v_entidad_ejecutora')->select('clv_upp','upp')->distinct()->get();?>
+                                    <?php $upp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->get();?>
                                     <select class="form-control filters" id="upp_filter" name="upp_filter" placeholder="Seleccione una UPP" data-live-search="true">
                                         <option value="0" selected>Buscar por UPP</option>
                                         @foreach($upp as $u)

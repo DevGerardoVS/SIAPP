@@ -17,16 +17,12 @@
                             <labe>Año</labe>
                         </div>
                         <div class="col-sm-2">
-                            <!--<select class="form-control filters" id="anio" name="anio"
-                                    autocomplete="anio" placeholder="Seleccione un año" >
-                                <option id="anioOpt" value="" selected>2024</option>
-                            </select>-->
                             <input class="form-control" id="anio" name="anio" type="text" value="2024" onkeydown="return (event.charCode >= 48 && event.charCode <= 57 && event.charCode >= 99 && event.charCode <= 122 )">
                         </div>
                         <div class="col-sm-4">
                             <labe>Unidad Programática Presupuestal: </labe>
                         </div>
-                        <?php $upp = DB::table('v_entidad_ejecutora')->select('clv_upp','upp')->distinct()->get();?>
+                        <?php $upp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->get();?>
                         <div class="col-sm-5">
                             <select class="form-control filters" placeholder="Seleccione una UPP" id="uppSelected" name="uppSelected" required>
                                 <option value="0" selected>Seleccione una UPP</option>

@@ -70,7 +70,18 @@ class TechosController extends Controller
             try {
                 DB::beginTransaction();
                 foreach ($data as $d){
-                    DB::table('techos_financieros')->insert([
+                    foreach ($data as $a){
+                        log::debug($a);
+                        if($d[0] == $a[0] && $d[1] == $a[1]){
+                            return [
+                                'status' => 401,
+                                'error' => "Campos repetidos"
+                            ];
+                        }
+                    }
+
+                    /*
+                      DB::table('techos_financieros')->insert([
                         'clv_upp' => $upp,
                         'clv_fondo' => $d[1],
                         'tipo' => $d[0],
@@ -81,6 +92,7 @@ class TechosController extends Controller
                         'updated_user' => Auth::user()->username,
                         'created_user' => Auth::user()->username
                     ]);
+                    */
                 }
                 DB::commit();
                 return [
