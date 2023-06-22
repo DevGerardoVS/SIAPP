@@ -211,19 +211,19 @@ return new class extends Migration
             $table->foreign('upp_id')->references('id')->on('catalogo');
         });
 
-/**/    Schema::create('presupuesto_upp_asignado',function (Blueprint $table){
+/**/    Schema::create('techos_financieros',function (Blueprint $table){
             $table->increments('id');
-            $table->integer('upp_id')->unsigned()->nullable(false);
-            $table->integer('fondo_id')->unsigned()->nullable(false);
-            $table->bigInteger('presupuesto_asignado')->nullable(false);
-            $table->bigInteger('presupuesto_rh')->nullable(false);
+            $table->string('clv_upp',3)->nullable(false);
+            $table->string('clv_fondo',2)->nullable(false);
+            $table->enum(['Operativo','RH'])->nulleable(false);
+            $table->bigInteger('presupuesto')->nullable(false);
             $table->integer('ejercicio')->default(null);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->foreign('fondo_id')->references('id')->on('catalogo');
-            $table->foreign('upp_id')->references('id')->on('catalogo');
+            $table->string('created_user',45);
+            $table->string('updated_user',45);
+            $table->string('deleted_user',45);
         });
 
 /**/    Schema::create('unidades_medida',function (Blueprint $table){
@@ -316,7 +316,7 @@ return new class extends Migration
             $table->foreign('ur_id')->references('id')->on('catalogo');
         });
 
-/**/    Schema::create('upp_fondo_montos',function (Blueprint $table){
+/**/    /*Schema::create('upp_fondo_montos',function (Blueprint $table){
             $table->increments('id');
             $table->integer('upp_id')->unsigned()->nullable(false);
             $table->integer('fondo_id')->unsigned()->nullable(false);
@@ -330,7 +330,7 @@ return new class extends Migration
             $table->foreign('fondo_id')->references('id')->on('catalogo');
             $table->foreign('upp_id')->references('id')->on('catalogo');
 
-        });
+        });*/
 
 /**/    Schema::create('administracion_captura',function (Blueprint $table){
             $table->increments('id');
@@ -488,11 +488,11 @@ return new class extends Migration
         Schema::dropIfExists('ente_publico_upp');
         Schema::dropIfExists('fondo');
         Schema::dropIfExists('partida_upp');
-        Schema::dropIfExists('presupuesto_upp_asignado');
+        Schema::dropIfExists('techos_financieros');
         Schema::dropIfExists('programacion_presupuesto');
         Schema::dropIfExists('tipologia_conac');
         Schema::dropIfExists('ur_localidad');
-        Schema::dropIfExists('upp_fondo_montos');
+        /*Schema::dropIfExists('upp_fondo_montos');*/
         Schema::dropIfExists('unidades_medida');
         Schema::dropIfExists('beneficiarios');
         Schema::dropIfExists('administracion_captura');
