@@ -39,6 +39,124 @@ return new class extends Migration
             OR (SELECT u.sudo FROM adm_users u WHERE u.id = in_usuario) = 1)
             ORDER BY m.posicion ASC;
         END");
+
+        DB::unprepared("CREATE PROCEDURE SP_AF_EE(in anio int)
+        begin
+            select
+                case 
+                    when clv_programa != '' then ''
+                    else clv_upp
+                end clv_upp,
+                case 
+                    when clv_programa != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when clv_programa != '' then ''
+                    else clv_subsecretaria
+                end clv_subsecretaria,
+                case 
+                    when clv_programa != '' then ''
+                    else subsecretaria
+                end subsecretaria,
+                case 
+                    when clv_programa != '' then ''
+                    else clv_ur
+                end clv_ur,
+                case 
+                    when clv_programa != '' then ''
+                    else ur
+                end ur,
+                case 
+                    when clv_subprograma != '' then ''
+                    else clv_programa
+                end clv_programa,
+                case 
+                    when clv_subprograma != '' then ''
+                    else programa
+                end programa,
+                case 
+                    when clv_proyecto != '' then ''
+                    else clv_subprograma
+                end clv_subprograma,
+                case 
+                    when clv_proyecto != '' then ''
+                    else subprograma
+                end subprograma,
+                clv_proyecto,
+                proyecto
+            from (
+                select distinct
+                    ve.clv_upp,
+                    ve.upp,
+                    ve.clv_subsecretaria,
+                    ve.subsecretaria,
+                    ve.clv_ur,
+                    ve.ur,
+                    '' clv_programa,
+                    '' programa,
+                    '' clv_subprograma,
+                    '' subprograma,
+                    '' clv_proyecto,
+                    '' proyecto
+                from v_epp ve 
+                where ve.ejercicio = anio and 
+                    ve.deleted_at is null
+                union all
+                select distinct
+                    ve.clv_upp,
+                    ve.upp,
+                    ve.clv_subsecretaria,
+                    ve.subsecretaria,
+                    ve.clv_ur,
+                    ve.ur,
+                    ve.clv_programa,
+                    ve.programa,
+                    '' clv_subprograma,
+                    '' subprograma,
+                    '' clv_proyecto,
+                    '' proyecto
+                from v_epp ve 
+                where ve.ejercicio = anio and 
+                    ve.deleted_at is null
+                union all
+                select distinct
+                    ve.clv_upp,
+                    ve.upp,
+                    ve.clv_subsecretaria,
+                    ve.subsecretaria,
+                    ve.clv_ur,
+                    ve.ur,
+                    ve.clv_programa,
+                    ve.programa,
+                    ve.clv_subprograma,
+                    ve.subprograma,
+                    '' clv_proyecto,
+                    '' proyecto
+                from v_epp ve 
+                where ve.ejercicio = anio and 
+                    ve.deleted_at is null
+                union all
+                select 
+                    ve.clv_upp,
+                    ve.upp,
+                    ve.clv_subsecretaria,
+                    ve.subsecretaria,
+                    ve.clv_ur,
+                    ve.ur,
+                    ve.clv_programa,
+                    ve.programa,
+                    ve.clv_subprograma,
+                    ve.subprograma,
+                    ve.clv_proyecto,
+                    ve.proyecto
+                from v_epp ve 
+                where ve.ejercicio = anio and 
+                    ve.deleted_at is null
+                order by clv_upp,clv_subsecretaria,clv_ur,clv_programa,
+                    clv_subprograma,clv_proyecto
+            ) tabla;
+        END");
     }
 
     /**
