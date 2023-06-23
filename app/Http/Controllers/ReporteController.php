@@ -124,6 +124,7 @@ class ReporteController extends Controller
             "dataSet" => $dataSet,
         ]);
     }
+    // Administrativos
 
     public function getFechaCorte($anio){
         $fechaCorte = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[$anio]);
@@ -133,7 +134,6 @@ class ReporteController extends Controller
     public function downloadReport(Request $request, $nombre){ 
         date_default_timezone_set('America/Mexico_City');
         if($nombre == "administrativo") $nombre = $request->nombre;
-        // dd($request);
 
         
         setlocale(LC_TIME, 'es_VE.UTF-8','esp');
@@ -159,10 +159,16 @@ class ReporteController extends Controller
             "anio" => $anio,
             "logoLeft" => $logo,
             "logoRight" => $logo,
-            "fecha" => $fechaCorte,
         );
-        if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades") $parameters["upp"] = $upp;//poner dentro del if los nombres con los que se tendrá la upp
-        dd($request);
+       
+        // dd($parameters);
+        if($fechaCorte != null) $parameters["fecha"] = $fechaCorte;
+        if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades"){
+            if($upp != null) $parameters["upp"] = $upp;
+        }
+        
+
+        // dd($parameters);
 
         $database_connection = \Config::get('database.connections.mysql');
 
