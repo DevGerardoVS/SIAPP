@@ -34,7 +34,7 @@ class CalendarizacionCargaMasivaController extends Controller
 
        $validator->setAttributeNames($attributeNames);
        $request->file('cmFile');
-       return view('clavePresupuestaria.index');
+       return view('calendarizacion.clavePresupuestaria.index');
         
        }
 

@@ -246,7 +246,7 @@
         </div>
     </div>
 </div>
-     @include('clavePresupuestaria.CargamasivaModal')
+     @include('calendarizacion.clavePresupuestaria.CargamasivaModal')
     <script src="/js/clavesP/init.js"></script>
     <script src="/js/utilerias.js"></script>
     <script src="/js/clavesP/cargamasiva.js"></script>

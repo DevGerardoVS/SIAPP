@@ -13,12 +13,14 @@
                     
                     <div class="d-flex " style="justify-content: flex-end">
                         <div>
-                            <a type="button" class="btn btn-primary" href="/calendarizacion/metas">Agregar Actividad</a>
+                            <a type="button" class="btn btn-primary" href="{{ route('exportjasper') }}" target="xxx">Formato</a>
+                            &nbsp
+                            <a type="button" class="btn btn-primary" href="{{ route('index_metas') }}">Agregar Actividad</a>
                             <div class="d-flex justify-content-center" style=" margin: 2px auto;">
                                 <a type="button" style="justify-content: float-right" href="{{ route('ExportExcel') }}"
                                     class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></a>
                                 &nbsp
-                                <a type="button" style="justify-content: flex-end" href="/actividades/exportPdf"
+                                <a type="button" style="justify-content: flex-end" href="{{ route('exportPdf') }}"
                                     class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
                             </div>
                         </div>

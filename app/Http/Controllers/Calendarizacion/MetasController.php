@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Calendarizacion;
 
 use App\Models\Catalogo;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Http;
 use App\Exports\MetasExport;
@@ -16,6 +18,9 @@ use Log;
 use Illuminate\Database\Query\JoinClause;
 use App\Helpers\MetasHelper;
 use PDF;
+use JasperPHP\JasperPHP as PHPJasper;
+use Illuminate\Support\Facades\File;
+use App\Imports\MetasImport;
 
 
 
@@ -404,6 +409,14 @@ class MetasController extends Controller
 		   /*Si no coloco estas lineas Falla*/
         return Excel::download(new MetasExport(), 'Proyecto con actividades.xlsx',\Maatwebsite\Excel\Excel::XLSX);
     }
+	public function proyExcel(Request $request)
+    {
+		   /*Si no coloco estas lineas Falla*/
+		   ob_end_clean();
+		   ob_start();
+		   /*Si no coloco estas lineas Falla*/
+        return Excel::download(new MetasExport(), 'Proyecto con actividades.xlsx',\Maatwebsite\Excel\Excel::XLSX);
+    }
 	public function pdfView()
     {
 		$data = MetasHelper::actividades();
@@ -416,5 +429,73 @@ class MetasController extends Controller
 		  view()->share('data',$data);
 		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF');
 		return $pdf->download('Proyecto con actividades.pdf');
+    }
+ 	public function downloadActividades()
+	{
+		$date=Carbon::now();
+		$upp = CatEntes::where('id', auth::user()->id_ente)->firstOrFail();
+		$request=array(
+			"anio"=>$date->year,
+			"corte"=>$date->format('Y-m-d'),
+			"logoLeft"=> public_path().'img\escudo.png',
+			"logoRight"=>public_path()."img\escudo.png",
+			"UPP"=>$upp->cve_upp,
+            );
+		log::debug($request);
+		return $this->jasper($request);
+
+	} 
+	public function jasper($request){ 
+        date_default_timezone_set('America/Mexico_City');
+        
+        setlocale(LC_TIME, 'es_VE.UTF-8','esp');
+        $fecha = date('d-m-Y');
+        $marca = strtotime($fecha);
+        $fechaCompleta = strftime('%A %e de %B de %Y', $marca);
+        $report =  "Reporte_Calendario_UPP";
+      
+        $ruta = public_path()."/Reportes";
+        //Eliminación si ya existe reporte
+        if(File::exists($ruta."/".$report.".pdf")) {
+            File::delete($ruta."/".$report.".pdf");
+        }
+        $report_path = app_path() ."/Reportes/".$report.".jasper";
+        $format = array('pdf');
+        $output_file =  public_path()."/Reportes";
+
+		$parameters = $request;
+
+        $database_connection = \Config::get('database.connections.mysql');
+
+
+        $jasper = new PHPJasper;
+        $jasper->process(
+          $report_path,
+          $output_file,
+          $format,
+          $parameters,
+          $database_connection
+        )->execute();
+        //dd($jasper);
+        return Response::make(file_get_contents(public_path()."/Reportes/".$report.".pdf"), 200, [
+            'Content-Type' => 'application/pdf'
+        ]);
+    }
+	public function importPlantilla(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            
+			$assets = $request->file('cmFile');
+			$import = new MetasImport();
+			$import->onlySheets('Metas');
+            Excel::import($import,utf8_encode($assets));
+            DB::commit();
+            return redirect('/')->with('success', 'All good!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $e->getMessage();
+        }
+
     }
 }

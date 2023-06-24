@@ -10,8 +10,11 @@
 		Route::get('/calendarizacion/pdf', 'pdfView');
 		Route::post('/calendarizacion/data/', 'getMetasP')->name('metasP');
 		Route::get('/actividades/data', 'getActiv')->name('actividades');
+		Route::get('/actividades/proyecto_calendario', 'proyExcel')->name('ProyExcel');
 		Route::get('/actividades/exportExcel', 'exportExcel')->name('ExportExcel');
-		Route::get('/actividades/exportPdf', 'exportPdf');
+		Route::get('/actividades/exportPdf', 'exportPdf')->name('exportPdf');
+		Route::post('/actividades/import', 'importPlantilla');
+		Route::get('/actividades/jasper', 'downloadActividades')->name('exportjasper');
         Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
 		Route::get('/nombres/{id?}', 'getNames');
 		Route::get('/calendarizacion/selects', 'getSelects');
@@ -22,6 +25,7 @@
 		Route::post('/calendarizacion/detelet', 'deleteMeta');
 		Route::get('/calendarizacion/update/{id?}','updateMeta');
 		Route::get('/calendarizacion/metasXproyecto', 'getMetasXp')->name('proyectos');
+		
 	});
 
     Route::controller(TechosController::class)->group(function () {

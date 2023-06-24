@@ -100,6 +100,49 @@ var dao = {
             });
         });
     },
+    crearMetaImp: function () {
+        var form = $('#formFile')[0];
+        var data = new FormData(form);
+        $.ajax({
+            type: "POST",
+            url: '/actividades/import',
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000
+        }).done(function (response) {
+            $('#cerrar').trigger('click');
+            Swal.fire({
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
+    },
+    importMeta: function () {
+        var form = $('#formFile')[0];
+        var data = new FormData(form);
+        $.ajax({
+            type: "POST",
+            url: '/calendarizacion/create',
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000
+        }).done(function (response) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
+    },
     editarMeta: function (id) {
         Swal.fire({
             icon: 'success',
@@ -298,6 +341,16 @@ var init = {
             }
         });
     },
+    validateFile: function (form) {
+        _gen.validate(form, {
+            rules: {
+                cmFile: { required: true }
+            },
+            messages: {
+                cmFile: { required: "Este campo es requerido" }
+            }
+        });
+    },
 };
 
 var init = {
@@ -341,6 +394,12 @@ $(document).ready(function () {
         e.preventDefault();
         if ($('#actividad').valid()) {
             dao.crearMeta();
+        }
+    });
+    $('#btnSaveM').click(function (e) {
+        e.preventDefault();
+        if ($('#formFile').valid()) {
+            dao.crearMetaImp();
         }
     });
 
