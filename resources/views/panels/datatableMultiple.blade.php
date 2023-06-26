@@ -299,6 +299,30 @@
                                 $(api.column(12).footer()).html( (totalOctubre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(13).footer()).html( (totalNoviembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(14).footer()).html( (totalDiciembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                            }else if(ruta == "#buscarFormC"){
+                                totalMonto = api
+                                .column(3)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalCalendarizado = api
+                                .column(4)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+                                totalDisponible = api
+                                .column(5)
+                                .data()
+                                .reduce(function (a, b) {
+                                    return intVal(a) + intVal(b);
+                                }, 0);
+
+                                $(api.column(3).footer()).html( (totalMonto/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(4).footer()).html( (totalCalendarizado/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(5).footer()).html( (totalDisponible/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                
                             }else{
                                 // Suma total de todas las páginas
                                 total = api

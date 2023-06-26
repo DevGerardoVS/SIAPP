@@ -177,6 +177,16 @@
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Estatus</th>
                                         </tr>
                                     </thead>
+                                    <tfoot class="colorMorado">
+                                        <tr>
+                                            <td class="align-middle text-start" colspan="3">TOTAL</td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                            <td class="align-middle text-end total" ></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
