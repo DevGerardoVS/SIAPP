@@ -13,6 +13,9 @@
 
     Route::controller(TechosController::class)->group(function () {
         Route::get('/calendarizacion/techos', 'getIndex')->name('index_techos');
+        Route::get('/calendarizacion/techos/get-techos', 'getTechos')->name('getTechos');
+        Route::get('/calendarizacion/techos/get-fondos', 'getFondos')->name('getFondos');
+        Route::post('/calendarizacion/techos/add-techo', 'addTecho')->name('addTecho');
     });
 	Route::controller(ClavePreController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');

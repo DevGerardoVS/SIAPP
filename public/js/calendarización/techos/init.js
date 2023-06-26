@@ -71,30 +71,8 @@ var dao = {
             '     </tr>\n' +
             ' </thead>')
 
-        inps = [
-            'id_user',
-            'username',
-            'nombre',
-            'p_apellido',
-            's_apellido',
-            'email',
-            'password',
-            'in_pass_conf',
-            'in_celular',
-            'id_grupo'
-        ];
-        inps.forEach(e => {
-            $('#' + e).val('').removeClass('has-error').removeClass('d-block');
-            $('#' + e + '-error').text("").removeClass('has-error').removeClass('d-block');
-
-        });
-        $("#id_grupo").find('option').remove();
-        dao.getAnio();
-        $('.form-group').removeClass('has-error');
-        $("#id_grupo").show();
-        $("#labelGrupo").show();
-        $("#label_idGrupo").text("").hide();
-
+        $('#uppSelected').removeClass('is-invalid')
+        $('#uppSelected').val(0)
     },
     eliminaFondo: function (i) {
         document.getElementById(i).outerHTML=""
@@ -104,31 +82,14 @@ var init = {
     validateCreate: function (form) {
         _gen.validate(form, {
             rules: {
-                username: { required: true },
-                nombre: { required: true },
-                p_apellido: { required: true },
-                s_apellido: { required: true },
-                email: { required: true, email: true },
-                password: { required: true },
-                in_pass_conf: { required: true, equalTo: "#password" },
-                in_celular: {
-                    required: true,
-                    phoneUS: true
-                },
-                id_grupo: { required: true }
-
+                tipo: { required: true },
+                fondo: { required: true },
+                presupuesto: { required: true },
             },
             messages: {
-                username: { required: "Este campo es requerido" },
-                nombre: { required: "Este campo es requerido" },
-                p_apellido: { required: "Este campo es requerido" },
-                s_apellido: { required: "Este campo es requerido" },
-                email: { required: "Este campo es requerido" },
-                password: { required: "Este campo es requerido" },
-                in_pass_conf: { required: "Este campo es requerido" },
-                in_celular: { required: "Este campo es requerido" },
-                id_grupo: { required: "Este campo es requerido" }
-
+                tipo: { required: "Este campo es requerido" },
+                fondo: { required: "Este campo es requerido" },
+                presupuesto: { required: "Este campo es requerido" },
             }
         });
     },
@@ -137,6 +98,10 @@ var init = {
 $(document).ready(function () {
     getData();
     dao.getAnio();
+
+    $('#fondo_filter').selectpicker({ search: true });
+    $('#upp_filter').selectpicker({ search: true });
+
     $('#btnNew').on('click',function (e) {
         e.preventDefault();
         anio = new Date().getFullYear() + 1;
@@ -145,77 +110,101 @@ $(document).ready(function () {
     $('#agregar_fondo').on('click', function (e){
         e.preventDefault()
 
-        table = document.getElementById('fondos')
-        table_lenght = (table.rows.length)
-        iconD = '<i class="fa fa-trash" style="font-size: large; color: red"></i>'
+        if($('#uppSelected').val() != 0){
+            selectFondo = ''
 
-        row = table.insertRow(table_lenght).outerHTML='<tr id="'+table_lenght+'">\n' +
-            '<td>' +
-            '       <select class="form-control filters" placeholder="Seleccione una tipo">\n' +
-            '           <option value="">Seleccione un tipo</option>\n' +
-            '       </select>' +
-            '</td>\n' +
-            '<td>' +
-            '<select class="form-control filters" id="ur_filter" name="ur_filter" autocomplete="ur_filter" placeholder="Seleccione un fondo">' +
-            '<option value="" disabled selected>Buscar por fondo</option>\n' +
-            '</select>' +
-            '</td>\n' +
-            '<td>' +
-            '<input type="number" class="form-control" id="monto" name="monto" placeholder="$1000">' +
-            '</td>\n' +
-            '  <td><input type="number" value="2024" class="form-control" id="ejercicio" name="ejercicio" disabled placeholder="2024"></td>\n' +
-            '<td>' +
-            '   <input type="button" value="Eliminar" onclick="dao.eliminaFondo('+table_lenght+')" title="Eliminar fondo" class="btn btn-danger delete" >' +
-            '</td>\n' +
-            '</tr>'
+            table = document.getElementById('fondos')
+            table_lenght = (table.rows.length)
 
-    })
+            $.ajax({
+                type: "GET",
+                url: '/calendarizacion/techos/get-fondos',
+                dataType: "JSON"
+            }).done(function (data) {
+                selectFondo = '<select class="form-control filters" id="fondo_'+table_lenght+'" name="fondo_'+table_lenght+'" placeholder="Seleccione un fondo" required>';
+                selectFondo += '<option value="">Seleccione fondo</option>';
+                data.forEach(function(item){
+                    selectFondo += '<option value="'+item.clv_fondo_ramo+'" >'+item.clv_fondo_ramo+" - "+item.fondo_ramo+'</option>'
+                });
+                selectFondo += '</select>';
+            });
 
-    $('#exampleModal').modal({
-        backdrop: 'static',
-        keyboard: false
-    })
-    $('#btnSave').click(function (e) {
-        e.preventDefault();
-        if ($('#frm_create').valid()) {
-            dao.crearUsuario();
-        }
-        $('#email-error').text("Este campo es requerido").addClass('has-error');;
-        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');;
-    });
-    $("#email").change(function () {
-        var regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        regex.test($("#email").val());
-        var text = "Ingresa un correo electrónico válido";
-        if (regex.test($("#email").val())) {
-            $('#email-error').text("").removeClass('d-block').removeClass('has-error');
-            $('#email').removeClass('has-error').removeClass('d-block');
-        } else {
-            $('#email-error').text(text).addClass('d-block').addClass('has-error');
-            $('#email').addClass('has-error').addClass('d-block');
+            row = table.insertRow(table_lenght).outerHTML='<tr id="'+table_lenght+'">\n' +
+                '<td>' +
+                '       <select class="form-control filters" id="tipo_'+table_lenght+'" name="tipo_'+table_lenght+'" placeholder="Seleccione una tipo" required>\n' +
+                '           <option value="">Seleccione un tipo</option>\n'+
+                '           <option value="Operativo">Operativo</option>\n'+
+                '           <option value="RH">RH</option>\n' +
+                '       </select>' +
+                '</td>\n' +
+                '<td>'
+                    + selectFondo +
+                '</td>\n' +
+                '<td>' +
+                '<input type="number" class="form-control" id="presupuesto_'+table_lenght+'" name="presupuesto_'+table_lenght+'" placeholder="$0" required>' +
+                '</td>\n' +
+                '  <td><input type="number" value="2024" class="form-control" id="ejercicio_'+table_lenght+'" name="ejercicio_'+table_lenght+'" disabled placeholder="2024"></td>\n' +
+                '<td>' +
+                '   <input type="button" value="Eliminar" onclick="dao.eliminaFondo('+table_lenght+')" title="Eliminar fondo" class="btn btn-danger delete" >' +
+                '</td>\n' +
+                '</tr>'
+        }else{
+            $('#uppSelected').addClass('is-invalid')
         }
     });
-    $("#in_celular").change(function () {
-        var regex = /^[a-zA-Z ]+$/;
-        var bol = regex.test($("#in_celular").val());
-        if ($("#in_celular").val() == '') {
-            $('#in_celular-error').text("Este campo es requerido").addClass('d-block').addClass('has-error');
-            $('#in_celular').addClass('d-block').addClass('has-error');
-        }
-        else {
-            if (bol != true) {
-                if ($("#in_celular").val().length != 14) {
-                    $('#in_celular-error').text("El Telefono debe contar con 10 digitos").addClass('d-block').addClass('has-error');
-                    $('#in_celular').addClass('d-block').addClass('has-error');
-                } else {
-                    $('#in_celular-error').text("").removeClass('d-block').removeClass('has-error');
-                    $('#in_celular').removeClass('d-block').removeClass('has-error');
-                }
-            } else {
-                $('#in_celular-error').text("El telefono no puede llevar letras").addClass('d-block').addClass('has-error');
-                $('#in_celular').addClass('d-block').addClass('has-error');
+});
+
+$('#btnSave').click(function (e) {
+    e.preventDefault();
+
+    var form = $('#frm_create_techo')[0];
+    var data = new FormData(form);
+
+    /*if($('#frm_create_techo').valid()){*/
+        $.ajax({
+            type: "POST",
+            url: '/calendarizacion/techos/add-techo',
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000
+        }).done(function (response) {
+            if(response.status == 200){
+                $('#cerrar').trigger('click');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Techo financiero creado con éxito',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                dao.limpiarFormularioCrear();
+                getData();
+            }else if(response.status == 400){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Hubo un error, datos faltantes',
+                    showConfirmButton: true
+                });
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hubo un error',
+                    showConfirmButton: true
+                });
             }
-        }
-    });
-    $('#in_celular').mask('00-00-00-00-00');
+        }).fail(function (error) {
+            let arr = Object.keys(error.responseJSON.errors)
+            arr.forEach(function (item) {
+                $("#frm_create_techo").find("#"+item).addClass('is-invalid');
+            })
+            Swal.fire({
+                icon: 'warning',
+                title: 'Hubo un error, campos vacíos',
+                showConfirmButton: true
+            });
+
+        });
+    /*}*/
 });

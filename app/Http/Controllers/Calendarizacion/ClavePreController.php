@@ -349,47 +349,11 @@ class ClavePreController extends Controller
         return response()->json($fondos,200);
     }
     public function getConceptosClave($clave){
-        $nom = array("Sector Público", 
-                        "Sector Público Financiero/No Financiero",
-                        "Sector Economía",
-                        "Subsector Economía",
-                        "Ente Público",
-                        "Entidad Federativa",
-                        "Región",
-                        "Municipio",
-                        "Localidad",
-                        "Unidad Programática Presupuestal",
-                        "Subsecretaría",
-                        "Unidad Responsable",
-                        "Finalidad",
-                        "Función",
-                        "Subfunción",
-                        "Eje",
-                        "Linea de Acción",
-                        "Programa Sectorial",
-                        "Tipología General",
-                        "Programa Presupuestal",
-                        "Subprograma Presupuestal",
-                        "Proyecto Presupuestal",
-                        "Mes de Afectación",
-                        "Capítulo",
-                        "Concepto",
-                        "Partida Genérica",
-                        "Partida Específica",
-                        "Tipo de Gasto",
-                        "Añp (Fondo del Ramo)",
-                        "Etiquetado/No Etiquetado",
-                        "Fuente de Financiamiento",
-                        "Ramo",
-                        "Fondo del Ramo",
-                        "Capital/Interes",
-                        "Proyecto de Obra",);
-       
       $clave = DB::select("CALL conceptos_clave('$clave')");
          $dataset=[];
         $i=0;
         foreach($clave as $key){
-            $a = array($nom[$i],$key->clave,$key->concepto);
+            $a = array($key->descripcion,$key->clave,$key->concepto);
             $dataset[] =$a;
             $i++;
         }  

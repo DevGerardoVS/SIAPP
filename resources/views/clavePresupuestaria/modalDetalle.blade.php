@@ -9,7 +9,7 @@
             </button>
         </div>
         <div class="modal-body">
-        <h6 class="modal-title col-11 text-center font-weight-bold text-secondary">007 - Secretaría de Finannzas y Administración</h6>
+        <h6 class="modal-title col-11 text-center font-weight-bold text-secondary" id="titulo"></h6>
         <br>
         <table class="table table-hover table-bordered" id="detalleClave">
                             

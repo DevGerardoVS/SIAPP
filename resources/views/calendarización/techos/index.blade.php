@@ -7,7 +7,16 @@
         @csrf
 
     </form>
-    <section id="widget-grid" class="conteiner">
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>EROR</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+    <section id="widget-grid" class="container">
         <div class="row">
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                 <div color="darken" class="jarviswidget" id="wid-id-1" data-widget-editbutton="false"
@@ -25,24 +34,40 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <select class="form-control filters" id="ur_filter" name="ur_filter"
-                                            autocomplete="ur_filter" placeholder="Seleccione una UPP">
-                                        <option value="" disabled selected>Buscar por UPP</option>
-                                        <option value="2022">002</option>
-                                        <option value="2023">003</option>
-                                        <option value="2024">004</option>
-                                        <option value="2025">005</option>
+                                    <?php $upp = DB::table('v_entidad_ejecutora')->select('clv_upp','upp')->distinct()->get();?>
+                                    <select class="form-control filters" id="upp_filter" name="upp_filter" placeholder="Seleccione una UPP" data-live-search="true">
+                                        <option value="0" selected>Buscar por UPP</option>
+                                        @foreach($upp as $u)
+                                        <option value="{{$u->clv_upp}}" >{{$u->upp}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <select class="form-control filters" id="ur_filter" name="ur_filter"
-                                            autocomplete="ur_filter" placeholder="Seleccione un fondo">
-                                        <option value="" disabled selected>Buscar por fondo</option>
+                                    <?php $fondo = DB::table('fondo')->select('clv_fondo_ramo','fondo_ramo')->distinct()->get();?>
+                                    <select class="form-control filters" id="fondo_filter" name="fondo_filter" placeholder="Seleccione un fondo" data-live-search="true">
+                                        <option value="0" selected>Buscar por fondo</option>
+                                        @foreach($fondo as $f)
+                                        <option value="{{$f->clv_fondo_ramo}}" >{{$f->fondo_ramo}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-4"></div>
+                            </div>
+                            <br>
+                            <div class="row">
                                 <div class="col-md-2">
-                                    <!--<button class="btn btn-primary">Nuevo registro</button>-->
+                                    <button type="button" class="btn btn-outline-success" data-toggle="" id="btnExport"
+                                            data-target=".bd-example-modal-lg" data-backdrop="static"
+                                            data-keyboard="false">Exportar Excel
+                                    </button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-outline-secondary" data-toggle="" id="btnCarga"
+                                            data-target=".bd-example-modal-lg" data-backdrop="static"
+                                            data-keyboard="false">Carga masiva
+                                    </button>
+                                </div>
+                                <div class="col-md-6"></div>
+                                <div class="col-md-2">
                                     <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
                                             data-target=".bd-example-modal-lg" data-backdrop="static"
                                             data-keyboard="false">Agregar
@@ -64,6 +89,7 @@
                                     <th>Fondo</th>
                                     <th>Presupuesto</th>
                                     <th>Ejercicio</th>
+                                    <th>Usuario que actualizó</th>
                                     <th>Acciones</th>
                                 </tr>
                                 </thead>
@@ -81,7 +107,7 @@
 <script src="/js/utilerias.js"></script>
 <script>
     //En las vistas solo se llaman las funciones del archivo init
-    init.validateCreate($('#frm_create'));
+    init.validateCreate($('#frm_create_techo'));
 </script>
 @endsection
 
