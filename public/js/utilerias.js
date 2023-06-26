@@ -243,7 +243,7 @@ var _gen = {
         pagination,
         order
     ) {
-        height = height || 500;
+        height = height;
         pagination = pagination || 50;
         order = order || [];
 
