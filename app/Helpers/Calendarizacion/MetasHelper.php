@@ -1,6 +1,6 @@
 <?php // Code within app\Helpers\MetasHelper.php
 
-namespace App\Helpers;
+namespace App\Helpers\Calendarizacion;
 
 use Config;
 use Illuminate\Support\Facades\DB;
@@ -47,4 +47,37 @@ class MetasHelper{
             throw new \Exception($exp->getMessage());
         }
     }
+	public static function beneficiarios(){
+		$result = DB::table('beneficiarios')
+		->select(
+			'id',
+			'clave',
+			'beneficiario'
+		)
+		->where('deleted_at', null)
+		->get();
+
+		return $result;
+	}
+
+	public static function unidadMedida(){
+		$result = DB::table('unidades_medida')
+		->select(
+			'id',
+			'clave',
+			'unidad_medida'
+		)
+		->where('deleted_at', null)
+		->get();
+
+		return $result;
+	}
+	public static function tCalendario(){
+
+		$tipo=[];
+		$tipo[] = ['0', 'Acumulativa'];
+		$tipo[] = ['1', 'Continua'];
+		$tipo[] = ['2', 'Especial'];
+		return  $tipo;
+	}
 }

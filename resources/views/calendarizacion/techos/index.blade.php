@@ -2,7 +2,7 @@
 @include('panels.datatable')
 @section('content')
 <div class="container">
-    <form action="{{ route('getMetas') }}" id="buscarForm" method="GET">
+    <form action="{{ route('index_techos') }}" id="buscarForm" method="GET">
         @csrf
         <div class="row">
             <div class="col-sm-2">

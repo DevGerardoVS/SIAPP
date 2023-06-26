@@ -22,7 +22,7 @@
                         <i class="fa fa-download" aria-hidden="true"></i>
                         Descargar plantilla
                     </a>
-                        <input name="cmFile" type="file" id="cmFile" name="cmFile" accept=".xlsx" class="border border-secondary rounded" placeholder="Archivo" required style="margin-top:5%; width : 100%;">
+                        <input name="cmFile" type="file" id="cmFile" name="cmFile" accept=".xlsx,.xlsm" class="border border-secondary rounded" placeholder="Archivo" required style="margin-top:5%; width : 100%;">
                     <br>
                 </div>
                     <hr style="width: 98%; border: 1px solid gray; opacity:0.1;">

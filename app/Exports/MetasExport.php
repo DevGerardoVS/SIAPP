@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
-use App\Helpers\MetasHelper;
+use App\Helpers\Calendarizacion\MetasHelper;
 
 
 class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths

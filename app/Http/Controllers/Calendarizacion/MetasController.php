@@ -10,13 +10,15 @@ use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Http;
 use App\Exports\MetasExport;
+use App\Exports\Calendarizacion\MetasCargaM;
+
 use App\Models\calendarizacion\Metas;
 use App\Models\catalogos\CatEntes;
 use Auth;
 use DB;
 use Log;
 use Illuminate\Database\Query\JoinClause;
-use App\Helpers\MetasHelper;
+use App\Helpers\Calendarizacion\MetasHelper;
 use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
@@ -409,13 +411,13 @@ class MetasController extends Controller
 		   /*Si no coloco estas lineas Falla*/
         return Excel::download(new MetasExport(), 'Proyecto con actividades.xlsx',\Maatwebsite\Excel\Excel::XLSX);
     }
-	public function proyExcel(Request $request)
+	public function proyExcel()
     {
 		   /*Si no coloco estas lineas Falla*/
 		   ob_end_clean();
 		   ob_start();
 		   /*Si no coloco estas lineas Falla*/
-        return Excel::download(new MetasExport(), 'Proyecto con actividades.xlsx',\Maatwebsite\Excel\Excel::XLSX);
+        return Excel::download(new MetasCargaM(), 'CargaMasiva.xlsx');
     }
 	public function pdfView()
     {
@@ -482,20 +484,19 @@ class MetasController extends Controller
         ]);
     }
 	public function importPlantilla(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            
+	{
+		DB::beginTransaction();
+		try {
 			$assets = $request->file('cmFile');
 			$import = new MetasImport();
 			$import->onlySheets('Metas');
-            Excel::import($import,utf8_encode($assets));
-            DB::commit();
-            return redirect('/')->with('success', 'All good!');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return $e->getMessage();
-        }
+			Excel::import($import, $assets, 'UTF-8');
+			DB::commit();
+			return redirect('/')->with('success', 'All good!');
+		} catch (\Exception $e) {
+			DB::rollback();
+			return $e->getMessage();
+		}
 
-    }
+	}
 }

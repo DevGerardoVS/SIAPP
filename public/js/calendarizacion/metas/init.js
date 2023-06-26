@@ -131,7 +131,7 @@ var dao = {
             data: data,
             enctype: 'multipart/form-data',
             processData: false,
-            contentType: false,
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
             cache: false,
             timeout: 600000
         }).done(function (response) {
