@@ -6,17 +6,7 @@
 <div class="container">
     <form action="{{ route('getTechos') }}" id="buscarForm" method="GET">
         @csrf
-
     </form>
-    @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>EROR</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
     <section id="widget-grid" class="container">
         <div class="row">
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
