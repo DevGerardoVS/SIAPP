@@ -77,10 +77,16 @@ var dao = {
     eliminaFondo: function (i) {
         document.getElementById(i).outerHTML=""
     },
-    filtroPresupuesto: function (){
+    filtroPresupuesto: function (i){
         var tecla = event.key;
         if (['.','e','-'].includes(tecla)){
             event.preventDefault()
+        }
+
+        if($('#presupuesto_'+i).val() == 0){
+            $("#frm_create_techo").find('#presupuesto_'+i).addClass('is-invalid');
+        }else{
+            $('#presupuesto_'+i).removeClass('is-invalid')
         }
     }
 };
@@ -147,7 +153,7 @@ $(document).ready(function () {
                     + selectFondo +
                 '</td>\n' +
                 '<td>' +
-                '<input type="number" class="form-control" id="presupuesto_'+table_lenght+'" name="presupuesto_'+table_lenght+'" placeholder="$0" onkeydown="dao.filtroPresupuesto()" required>' +
+                '<input type="number" class="form-control" id="presupuesto_'+table_lenght+'" name="presupuesto_'+table_lenght+'" placeholder="$0" onkeydown="dao.filtroPresupuesto('+table_lenght+')" required>' +
                 '</td>\n' +
                 '  <td><input type="number" value="2024" class="form-control" id="ejercicio_'+table_lenght+'" name="ejercicio_'+table_lenght+'" disabled placeholder="2024"></td>\n' +
                 '<td>' +
@@ -192,7 +198,14 @@ $('#btnSave').click(function (e) {
                     title: 'Hubo un error, datos faltantes',
                     showConfirmButton: true
                 });
-            }else{
+            }else if(response.status == 'Repetidos'){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Hay fondos repetidos',
+                    showConfirmButton: true
+                });
+            }
+            else{
                 Swal.fire({
                     icon: 'error',
                     title: 'Hubo un error',

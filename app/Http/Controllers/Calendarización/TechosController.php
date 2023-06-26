@@ -57,30 +57,36 @@ class TechosController extends Controller
         $aKeys = array_keys(array_slice($request->all(),3));
         $validaForm = [];
 
+        $upp = $request->uppSelected;
+        $ejercicio = $request->anio;
+
+        //Crea array con los validations
         foreach ($aKeys as $a){
             $validaForm[$a] = 'required';
         }
 
-        $upp = $request->uppSelected;
-        $ejercicio = $request->anio;
-
         $request->validate($validaForm);
 
+        //Verifica que no se dupliquen los fondos en el mismo ejercicio
+        $repeticion = $data;
+        foreach ($data as $a){
+            $repeticion = array_slice($repeticion,1);
+            foreach ($repeticion as $r){
+                if($r[0] === $a[0] && $r[1] === $a[1]){
+                    return [
+                        'status' => 'Repetidos',
+                        'error' => "Campos repetidos"
+                    ];
+                }
+            }
+        }
+
+        //guarda el techo
         if(count($data) != 0){
             try {
                 DB::beginTransaction();
                 foreach ($data as $d){
-                    foreach ($data as $a){
-                        log::debug($a);
-                        if($d[0] == $a[0] && $d[1] == $a[1]){
-                            return [
-                                'status' => 401,
-                                'error' => "Campos repetidos"
-                            ];
-                        }
-                    }
 
-                    /*
                       DB::table('techos_financieros')->insert([
                         'clv_upp' => $upp,
                         'clv_fondo' => $d[1],
@@ -92,7 +98,6 @@ class TechosController extends Controller
                         'updated_user' => Auth::user()->username,
                         'created_user' => Auth::user()->username
                     ]);
-                    */
                 }
                 DB::commit();
                 return [
