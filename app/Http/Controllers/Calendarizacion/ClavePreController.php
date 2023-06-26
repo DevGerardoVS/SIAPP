@@ -14,8 +14,9 @@ class ClavePreController extends Controller
     public function getPanel(){
         return view('clavePresupuestaria.index');
     }
-    public function getPanelPresupuestoFondo(){
-        return view('clavePresupuestaria.presupuestoFondo');
+    public function getPanelUpdate($id){
+        $clave = ProgramacionPresupuesto::where('id',$id)->first();
+        return view('clavePresupuestaria.updateCalendarzacion', compact('clave'));
     }
     public function getCreate(){
         return view('clavePresupuestaria.create');
@@ -101,6 +102,34 @@ class ClavePreController extends Controller
         }
         return response()->json('done',200);
     }
+    public function postEditarClave(Request $request){
+        try {
+            Log::debug(json_encode($request));
+            ProgramacionPresupuesto::where('id', $request->data[0]['idClave'])->update([
+                'enero' => $request->data[0]['enero'],
+                'febrero' => $request->data[0]['febrero'],  
+                'marzo' => $request->data[0]['marzo'],   
+                'abril' => $request->data[0]['abril'],  
+                'mayo' => $request->data[0]['mayo'],   
+                'junio' => $request->data[0]['junio'],    
+                'julio' => $request->data[0]['julio'],    
+                'agosto' => $request->data[0]['agosto'],   
+                'septiembre' => $request->data[0]['septiembre'],   
+                'octubre' => $request->data[0]['octubre'],   
+                'noviembre' => $request->data[0]['noviembre'],  
+                'diciembre' => $request->data[0]['diciembre'],  
+                'total' => $request->data[0]['total'],
+            ]);
+        } catch (\Exception $exp) {
+            DB::rollBack();
+			Log::debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+			return response()->json('error',200);
+        }
+        return response()->json('done',200);
+
+        
+    }
     public function postEliminarClave(Request $request){
         ProgramacionPresupuesto::where('id',$request->id)->delete();
         return response()->json('done',200);
@@ -135,7 +164,6 @@ class ClavePreController extends Controller
         return response()->json($localidades,200);
     }
     public function getUpp(){
-        //SELECT * FROM `catalogo` WHERE grupo_id = 6 ORDER by clave;
         $upp = DB::table('entidad_ejecutora')
         ->select('entidad_ejecutora.upp_id','catalogo.clave','catalogo.descripcion')
         ->leftJoin('catalogo','entidad_ejecutora.upp_id','=','catalogo.id')
@@ -252,6 +280,8 @@ class ClavePreController extends Controller
         $presupuestoAsignado = DB::table('programacion_presupuesto')
         ->SELECT(DB::raw('SUM( total )AS TotalAsignado'))
         ->WHERE ('upp', '=', $upp)
+        ->WHERE('fondo_ramo', '=', $fondo)
+        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->first();
         if ($presupuestoUpp && $presupuestoUpp != '') {
             if ($presupuestoAsignado && $presupuestoAsignado != '' ) {
@@ -291,6 +321,32 @@ class ClavePreController extends Controller
         ];
 
         return response()->json($response,200);
+    }
+    public function getPanelPresupuestoFondo(){
+        $disponible = 0;
+        $totalDisponible = 0;
+        $totalAsignado = 0;
+        $totalCalendarizado = 0;
+        $fondos = DB::table('techos_financieros')
+        ->SELECT('clv_fondo', 'fondo.fondo_ramo' , 'techos_financieros.ejercicio',DB::raw('SUM(presupuesto) as montoAsignado'),DB::raw('SUM(programacion_presupuesto.total) as calendarizado'))
+        ->leftJoin('fondo', 'techos_financieros.clv_fondo', '=' ,'fondo.clv_fondo_ramo')
+        ->leftJoin ('programacion_presupuesto', 'techos_financieros.clv_fondo', '=', 'programacion_presupuesto.fondo_ramo')
+        ->DISTINCT()  
+        ->groupBy('techos_financieros.clv_fondo')   
+        ->orderBy('techos_financieros.clv_fondo')
+        ->get();
+        foreach ($fondos as $key => $fondo) {
+           if ($fondo->montoAsignado != null && $fondo->calendarizado != '') {
+                $disponible = $fondo->montoAsignado - $fondo->calendarizado;
+                $fondo->disponible = $disponible;
+           }
+           else {
+                $disponible = $fondo->montoAsignado;
+                $fondo->disponible = $disponible;
+           }
+          
+        } 
+        return response()->json($fondos,200);
     }
     public function getConceptosClave($clave){
         $nom = array("Sector Público", 

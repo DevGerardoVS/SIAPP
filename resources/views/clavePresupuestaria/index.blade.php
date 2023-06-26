@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@include('clavePresupuestaria.modalPresupuestoFondo')
 @include('panels.datatable')
 @section('content')
 <link href="https://cdn.datatables.net/v/dt/dt-1.13.4/rg-1.3.1/datatables.min.css" rel="stylesheet"/>
@@ -31,7 +32,10 @@
                                     </div>
                                     <div class="col-md-2 text-right">
                                         <label for="buttonPresupuesto">&nbsp;</label>
-                                            <a type="button" class="btn btn-success form-control"  href="/calendarizacion-claves-presupuesto-fondo" ><i class="fa fa-eye">Presupuesto por Fondo</i></a>
+                                        <button type="button" class="btn btn-light" data-toggle="modal"
+                                        data-target="#modalPresupuesto"data-backdrop="static" data-keyboard="false" id='presupuestoFondo'>
+                                            <i class="fa fa-eye">Presupuesto por Fondo</i>
+                                        </button>
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2 text-right">
@@ -44,7 +48,7 @@
                                         
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
-                                                <a type="button" class="btn btn-success form-control"  href="/calendarizacion-claves-create" ><i class="fa fa-plus">Nueva Clave</i></a>
+                                                <a type="button"id='btnNuevaClave' class="btn btn-success form-control"  href="/calendarizacion-claves-create" ><i class="fa fa-plus">Nueva Clave</i></a>
                                         </div>
 
                                     </div>

@@ -39,6 +39,9 @@
 		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
 		Route::get('/presupuesto-upp-asignado/{upp?}/{fonfo?}/{subPrograma?}', 'getPresupuestoPorUpp');
 		Route::get('/ver-detalle/{clave?}', 'getConceptosClave')->name('detalle');
+		Route::get('/clave-update/{id?}', 'getPanelUpdate');
+		Route::post('/calendarizacion-editar-clave', 'postEditarClave');
+		
 
 		
 		
