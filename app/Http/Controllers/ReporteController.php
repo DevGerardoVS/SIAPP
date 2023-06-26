@@ -27,7 +27,7 @@ class ReporteController extends Controller
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
-        return view("reportes.administrativos.index3", [
+        return view("reportes.administrativos.indexAdministrativo", [
             'dataSet' => json_encode($dataSet),
             'anios' => $anios,
             'upps' => $upps,

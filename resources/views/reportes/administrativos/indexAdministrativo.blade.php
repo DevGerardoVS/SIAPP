@@ -314,7 +314,7 @@
     </div>
 
     @isset($dataSet)
-    @include('panels.datatableMultiple')
+    @include('panels.datatableReportesAdministrativos')
     @endisset  
 
     <link href="https://cdn.datatables.net/v//dt/dt-1.13.4/rg-1.3.1/datatables.min.css" rel="stylesheet"/>
@@ -381,7 +381,7 @@
                         tabla="#catalogoC";
                         letter="C";
                         $('.div_upp').addClass('d-none');
-                        $("#nombre").val('proyecto_avance_general');
+                        $("#nombre").val('avance_general');
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;

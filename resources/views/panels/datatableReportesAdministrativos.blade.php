@@ -109,6 +109,22 @@
             dataType: 'json',
             contentType: false,
             processData: false,
+            beforeSend: function() {
+                let timerInterval
+                Swal.fire({
+                    title: 'Cargando datos por favor espere...',
+                    html: ' <b></b>',
+                    allowOutsideClick: false,
+                    timer: 2000000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+            },
+            complete: function(){
+                Swal.close();
+            },
            success: function(response) {
                 if(response.dataSet.length == 0){
                     dt.attr('data-empty','true');
@@ -129,7 +145,6 @@
                     group: [],
                     rowGroup: estatus,
                     ordering: true,
-                    processing: true,
                     pageLength: 10,
                     dom: 'frltip',
                     scrollX: true,
