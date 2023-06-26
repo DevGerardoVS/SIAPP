@@ -71,10 +71,7 @@ var dao = {
                 });
 
             }
-        })
-
-
-
+        });
     },
     getPerfil: function (id) {
         $.ajax({
