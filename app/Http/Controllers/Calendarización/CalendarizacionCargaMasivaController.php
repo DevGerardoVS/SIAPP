@@ -5,14 +5,20 @@ namespace App\Http\Controllers\Calendarización;
 use App\Http\Controllers\Controller;
 use App\Imports\ClavePresupuestaria;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\calendarizacion\clasificacion_geografica;
+use App\Models\TechosFinancieros;
+use Carbon\Carbon;
+
 use Redirect;
 use Datatables;
 use App\Models\User;
 use Auth;
+use Shuchkin\SimpleXLSX;
+use App\Models\ProgramacionPresupuesto;
+
 use DB;
 class CalendarizacionCargaMasivaController extends Controller
 {
@@ -25,31 +31,88 @@ class CalendarizacionCargaMasivaController extends Controller
      //Obtener datos del excel
      public function loadDataPlantilla(Request $request)	{
           ini_set('max_execution_time', 1200);
-       $message=[
-         'file'=> 'El archivo debe ser tipo xlsx' 
-       ];
-     
-        $request->validate([
-          'file'=> 'required|mimes:xlsx'
-       ], $message );
-
+        
+            $message=[
+                'file'=> 'El archivo debe ser tipo xlsx' 
+              ];
+       
+              $request->validate([
+                 'file'=> 'required|mimes:xlsx'
+              ], $message );
+         
        //verificar si tiene un registro antes 0 es guardado 1 confirmado
-        $file=$request->file->store('plantilla');
+        $file=$request->file->storeAs(
+            'plantillas', Auth::user()->username.'.xlsx'
+        );
+        $filename='\/app\/plantillas/'.Auth::user()->username.'.xlsx';
+         $arrayupps= array();
+         $arraypresupuesto= array();
+         $errores=0;
+        if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
+            $filearray =$xlsx->rows();
+            $error=0;
+            array_shift($filearray);
+            foreach($filearray as $k){
+                //buscar en el array de upps 
+                $var= array_search($k['5'], $arrayupps);
+                
 
 
-        try {
+                //buscar en el array de totales 
+               if(array_key_exists($k['5'].$k['24'], $arraypresupuesto) && $k['27']!=''){
+
+                $arraypresupuesto[$k['5'].$k['24']] =  $arraypresupuesto[$k['5'].$k['24']]+$k['27']; 
+
+               }else{
+                if($k['27']!='' && $k['5'].$k['24'] !='' ){
+                    $arraypresupuesto[$k['5'].$k['24']] = $k['27']; 
+                }
+               }
+
+                //Se revisa el valor de var si es 0 significa que existe el key 0 en el array se usa el if para cambiar el valor para evitar que la condicion falle
+                if($var=== 0){
+                $var=true;
+                }
+              $var ==false ? array_push($arrayupps,$k['5']):  NULL ; 
+
+            }
+
+            
+             //validacion para eliminar registros no confirmados 
+            foreach($arrayupps as $u){
+                $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+                if($valupp>0){
+                     $deleted = ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->delete();
+                }
+            }
+             //validacion de totales
+             foreach($arraypresupuesto as $key=>$value){
+              $arraysplit = str_split($key, 3);
+                 $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('clv_fondo', $arraysplit[1])->where('tipo','RH')->value('presupuesto');
+                 if($valupp=!$value){
+                 $error++;
+                }
+
+            }
+            if($error>0){
+                return redirect()->to('/calendarizacion/claves')->with('error','El total presupuestado en las upp no es igual al techo financiero');
+            }
+        } else {
+            Log::debug(SimpleXLSX::parseError());
+        }    
+          
+    try {
             (new ClavePresupuestaria)->import($file, 'local', \Maatwebsite\Excel\Excel::XLSX);
 
-            $returnData = array(
-                'status' => 'success',
-                'title' => 'Éxito',
-                'message' => 'Se ha importado con exito',
-              );
-    
-            return response()->json($returnData);
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-          Log::debug("catch activation");
+              if(File::exists(storage_path($filename))){
+                File::delete(storage_path($filename));
+            }
+          return redirect()->to('/calendarizacion/claves')->with('success','Se ha importado el excel ');
+                } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
              $failures = $e->failures();
+             if(File::exists(storage_path($filename))){
+                File::delete(storage_path($filename));
+            }
              foreach ($failures as $failure) {
                  $failure->row(); // row that went wrong
                  $failure->attribute(); // either heading key (if using heading row concern) or column index
@@ -60,17 +123,14 @@ class CalendarizacionCargaMasivaController extends Controller
                  Log::debug($failure->errors());
                  Log::debug($failure->values());
 
-
-                 $returnData = array(
-                    'status' => 'error',
-                    'title' => 'Error',
-                    'message' => 'error de validacion',
-                  );
-                 return response()->json($returnData);
-
-
              }
-        }
+             $returnData = array(
+                'status' => 'error',
+                'title' => 'Error',
+                'message' => 'error de validacion',
+              );
+             return response()->json($returnData);
+        } 
 
  
             

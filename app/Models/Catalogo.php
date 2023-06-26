@@ -13,10 +13,9 @@ class Catalogo extends Model
     protected $table = 'catalogo';
 
     protected $fillable = [
-        'subgrupo_id',
+        'grupo_id',
         'clave',
         'descripcion',
-        'ejercicio',
     ];
 
     protected $dates = ['deleted_at'];

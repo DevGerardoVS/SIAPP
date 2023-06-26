@@ -21,7 +21,7 @@
         Route::get('/calendarizacion/techos', 'getIndex')->name('index_techos');
     });
 	Route::controller(ClavePreController::class)->group(function () {
-		Route::get('/calendarizacion/claves', 'getPanel');
+		Route::get('/calendarizacion/claves', 'getPanel')->name('claves');
 		Route::get('/calendarizacion/claves-get', 'getClaves');
 		Route::get('/cat-regiones', 'getRegiones');
 		Route::get('/cat-municipios/{id?}', 'getMunicipios');
@@ -38,6 +38,7 @@
 	Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
 		Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('getplantilla');
 		Route::post('/calendarizacion/load-Data-Plantilla', 'loadDataPlantilla')->name('load_data_plantilla');
+/* 		Route::post('/calendarizacion/load-Data-Plantilla', 'getObra')->name('getObra'); */
 
     });
 	

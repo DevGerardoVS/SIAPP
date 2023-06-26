@@ -20,6 +20,7 @@
         "maatwebsite/excel": "^3.1",
         "picqer/php-barcode-generator": "^2.2",
         "psr/simple-cache": "2.0",
+        "shuchkin/simplexlsx": "^1.0",
         "simplesoftwareio/simple-qrcode": "~4",
         "spatie/laravel-permission": "*"
     },
