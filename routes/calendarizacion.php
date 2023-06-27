@@ -16,6 +16,9 @@
         Route::get('/calendarizacion/techos/get-techos', 'getTechos')->name('getTechos');
         Route::get('/calendarizacion/techos/get-fondos', 'getFondos')->name('getFondos');
         Route::post('/calendarizacion/techos/add-techo', 'addTecho')->name('addTecho');
+        Route::get('/plantillaCargaTechos', 'exportView');
+        Route::get('/exportPlantilla', 'exportPlantilla')->name('exportPlantilla');
+        Route::post('/import-Plantilla', 'importPlantilla')->name('importPlantilla');
     });
 	Route::controller(ClavePreController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');

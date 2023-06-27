@@ -46,7 +46,6 @@
             type:$("#buscarForm").attr("method"),
             dataType: 'json',
             success: function(response) {
-                console.log("res-DataTable",response)
                 if(response?.dataSet?.length == 0){
                     dt.attr('data-empty','true');
                 }

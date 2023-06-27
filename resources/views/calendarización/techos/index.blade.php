@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @include('panels.datatable')
 @include('calendarización.techos.modalCreate')
+@include('calendarización.techos.modalCarga')
 @section('content')
 <div class="container">
     <form action="{{ route('getTechos') }}" id="buscarForm" method="GET">
@@ -56,21 +57,21 @@
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-outline-success" data-toggle="" id="btnExport"
-                                            data-target=".bd-example-modal-lg" data-backdrop="static"
-                                            data-keyboard="false">Exportar Excel
+                                            data-target=".excel" data-backdrop="static"
+                                            data-keyboard="false"><i class="fa fa-file-excel-o"></i> Exportar Excel
                                     </button>
                                 </div>
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-outline-secondary" data-toggle="" id="btnCarga"
-                                            data-target=".bd-example-modal-lg" data-backdrop="static"
-                                            data-keyboard="false">Carga masiva
+                                            data-target=".carga-masiva" data-backdrop="static"
+                                            data-keyboard="false"><i class="fa fa-file-text-o" aria-hidden="true"></i> Carga masiva
                                     </button>
                                 </div>
                                 <div class="col-md-6"></div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 text-center">
                                     <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
                                             data-target=".bd-example-modal-lg" data-backdrop="static"
-                                            data-keyboard="false">Agregar
+                                            data-keyboard="false"><i class="fa fa-plus"></i> Agregar
                                     </button>
                                 </div>
                             </div>
@@ -108,6 +109,12 @@
 <script>
     //En las vistas solo se llaman las funciones del archivo init
     init.validateCreate($('#frm_create_techo'));
+    init.validateFile($('#importPlantilla'));
 </script>
+{{-- <script src="/js/calendarización/techos/initCM.js"></script>
+<script>
+    //En las vistas solo se llaman las funciones del archivo init
+    init.validateFile($('#importPlantilla'));
+</script> --}}
 @endsection
 
