@@ -14,7 +14,7 @@ class PlantillaTechosExport implements FromView,WithColumnWidths
     public function view(): View
     {
         $upps = DB::table('v_entidad_ejecutora')->select('clv_upp','upp')->distinct()->get();
-        return view('calendarización.techos.plantillaCargaTechos',[
+        return view('calendarizacion.techos.plantillaCargaTechos',[
             "upps" => $upps
         ]);
     }
