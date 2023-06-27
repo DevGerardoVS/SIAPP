@@ -394,7 +394,8 @@ class MetasController extends Controller
 	{
 		//Controller::check_permission('deleteUsuarios');
 		Metas::where('id', $request->id)->delete();
-		return response()->json("done", 200);
+		
+		 
 	}
 	public function updateMeta($id)
 	{
