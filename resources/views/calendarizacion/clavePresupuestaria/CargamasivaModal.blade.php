@@ -8,6 +8,7 @@
           <button type="button" class="btn-close" onclick="limpiarCampos()" data-bs-dismiss="modal"
                   aria-label="Close"></button>
         </div>
+        <form action="{{ route('load_data_plantilla') }}" id="Formmodal" method="POST" enctype="multipart/form-data">
 
           @csrf
         <div class="modal-body">
@@ -79,20 +80,22 @@
             </div>
           </div>
           <div class="modal-footer-carga">
-         <button type="button" {{-- onclick="limpiarCampos()" --}} class="btn btn-secondary " data-bs-dismiss="modal">{{__("messages.cancelar")}}</button>
+         <button type="submit" {{-- onclick="limpiarCampos()" --}} class="btn btn-secondary " data-bs-dismiss="modal">{{__("messages.cancelar")}}</button>
           <button type="button" name="aceptar" id="aceptar" class="btn colorMorado">
             <i class="fa fa-upload" style="color: #dfdfdf"></i> 
              {{__("messages.cargar_archivo")}}</button>
           </div>
         </div>
-
+      </form>
       </div>
   </div>
 
 
 
 <script type="text/javascript">
-
+$( document ).on( "ajaxStart", function() {
+  $( "#loading" ).show();
+} );
    //mostrar campos una vez selecionado el municipio
    $('#file').change(function(e) {
       e.preventDefault();
@@ -100,6 +103,25 @@
     });
     
     $('#aceptar').click(function(e){
+      e.preventDefault();
+      form = $('#ModalCargaMasiva').find("#Formmodal");
+      Swal.fire({
+            title: '{{__("messages.msg_cargando_datos")}}',
+            html: ' <b></b>',
+            allowOutsideClick: false,
+            timer: 2000000,
+            timerProgressBar: true,
+            didOpen: () => {
+                    Swal.showLoading();
+                    
+                },
+    
+          })
+          form.submit();
+
+    })
+
+   /*  $('#aceptar').click(function(e){
       e.preventDefault();
       var fd = new FormData();
       var files = $('#file')[0].files;
@@ -140,6 +162,7 @@
            }).then(
              function () {
               $("#ModalCargaMasiva").find("#file_label").val('Sin archivos seleccionados')
+              $("#ModalCargaMasiva").find("#file").val('')
               $('#ModalCargaMasiva').modal('hide');
 
              },
@@ -159,6 +182,7 @@
           }).then(
             function(){
               $("#ModalCargaMasiva").find("#file_label").val('Sin archivos seleccionados')
+              $("#ModalCargaMasiva").find("#file").val('')
               $('#ModalCargaMasiva').modal('hide');
 
             }
@@ -166,7 +190,7 @@
         }
       });
       
-    })
+    }) */
 
 
 
