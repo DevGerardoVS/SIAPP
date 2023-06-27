@@ -16,13 +16,13 @@ class ClavePreController extends Controller
     }
     public function getPanelUpdate($id){
         $clave = ProgramacionPresupuesto::where('id',$id)->first();
-        return view('clavePresupuestaria.updateCalendarzacion', compact('clave'));
+        return view('calendarizacion.clavePresupuestaria.updateCalendarzacion', compact('clave'));
     }
     public function getCreate(){
-        return view('clavePresupuestaria.create');
+        return view('calendarizacion.clavePresupuestaria.create');
     }
     public function getPanelCalendarizacion(){
-        return view('clavePresupuestaria.calendarizacion');
+        return view('calendarizacion.clavePresupuestaria.calendarizacion');
     }
     public function getClaves(Request $request){
         $claves = DB::table('programacion_presupuesto')

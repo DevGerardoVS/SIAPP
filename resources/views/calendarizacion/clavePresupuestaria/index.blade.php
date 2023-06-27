@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@include('clavePresupuestaria.modalPresupuestoFondo')
+@include('calendarizacion.clavePresupuestaria.modalPresupuestoFondo')
 @include('panels.datatable')
 @section('content')
 <link href="https://cdn.datatables.net/v/dt/dt-1.13.4/rg-1.3.1/datatables.min.css" rel="stylesheet"/>
@@ -93,7 +93,7 @@
             </div>
         </section>
     </div>
-     @include('clavePresupuestaria.CargamasivaModal')
+     @include('calendarizacion.clavePresupuestaria.CargamasivaModal')
     <script src="/js/clavesP/init.js"></script>
     <script src="/js/utilerias.js"></script>
     <script src="/js/clavesP/cargamasiva.js"></script>

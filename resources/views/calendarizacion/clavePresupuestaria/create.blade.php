@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@include('clavePresupuestaria.modalDetalle')
+@include('calendarizacion.clavePresupuestaria.modalDetalle')
 @include('panels.datatable')
 @section('content')
 
