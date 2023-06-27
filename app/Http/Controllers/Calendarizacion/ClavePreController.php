@@ -12,7 +12,7 @@ use App\Models\ProgramacionPresupuesto;
 class ClavePreController extends Controller
 {
     public function getPanel(){
-        return view('clavePresupuestaria.index');
+        return view('calendarizacion.clavePresupuestaria.index');
     }
     public function getPanelUpdate($id){
         $clave = ProgramacionPresupuesto::where('id',$id)->first();

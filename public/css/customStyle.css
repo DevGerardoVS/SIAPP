@@ -45,6 +45,12 @@ footer{
     color: white !important;
 
   }
+  .center {
+    margin: auto;
+    width: 50%;
+    border: 3px solid green;
+    padding: 10px;
+  }
   .colorgriss{
     background-color: #FFFFFF !important;
     color: rgb(145, 20, 20) !important;
@@ -95,6 +101,7 @@ footer{
   .imgSitioOficial{
     width: 8%;
   }
+
 
   #logo_cocotra{
     text-align: left;
