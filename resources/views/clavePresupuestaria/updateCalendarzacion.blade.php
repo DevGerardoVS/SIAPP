@@ -203,7 +203,7 @@
         }
         if (subprograma_presupuestario != '') {
             dao.getSubProgramaByProgramaId(ur,programa_presupuestario,subprograma_presupuestario);
-            dao.getPresupuestoPorUpp(upp,clv_fondo,subprograma_presupuestario);
+            
         }
         if (proyecto_presupuestario != '') {
             dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario);
@@ -212,6 +212,7 @@
             dao.getLineaDeAccionByUpp(upp,ur,linea_accion);
             dao.getPartidaByUpp(partida);
         }
+        dao.getPresupuestoPorUpp(upp,clv_fondo,subprograma_presupuestario);
         calucalarCalendario();
     </script>
     

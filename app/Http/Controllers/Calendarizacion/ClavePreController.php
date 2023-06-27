@@ -91,7 +91,7 @@ class ClavePreController extends Controller
                 'diciembre' => $request->data[0]['diciembre'],  
                 'total' => $request->data[0]['total'],   
                 'estado' => 0,    
-                'tipo' => $request->data[0]['tipo'],    
+                'tipo' => $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH',    
                 'created_user' => Auth::user()->username, 
             ]);
         } catch (\Exception $exp) {
@@ -309,7 +309,7 @@ class ClavePreController extends Controller
         foreach ($calendarizados as $key => $value) {
             $Totcalendarizado = $Totcalendarizado + $value->calendarizados;
         }
-        if ($Totcalendarizado > 1) {
+        if ($Totcalendarizado != 0 ) {
             $disponible = $presupuestoAsignado[0]->totalAsignado - $Totcalendarizado;
         }else {
             $disponible = $presupuestoAsignado[0]->totalAsignado;

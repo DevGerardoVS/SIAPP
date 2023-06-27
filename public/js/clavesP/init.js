@@ -446,8 +446,6 @@ var dao = {
         document.getElementById('preDisFondo').value = disponible;
       });
     },
-
-
   getPresupuesAsignado : function(){
     $.ajax({
       type: 'get',
@@ -459,7 +457,6 @@ var dao = {
       $('#asignadoUpp').val(totalAsignado);
       $('#calendarizado').val(Totcalendarizado);
       $('#disponibleUpp').val(disponible);
-      $('#tipo').val(response.tipo);
       if (Totcalendarizado == totalAsignado) {
         document.getElementById('btnNuevaClave').disabled =true;
         $('#btnNuevaClave').hide(true);
