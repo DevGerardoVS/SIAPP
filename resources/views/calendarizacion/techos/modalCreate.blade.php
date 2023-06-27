@@ -56,6 +56,11 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row" style="background-color: darkgray; margin: 5px;padding: 10px">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-2"><h5><b>Total UPP: </b></h5></div>
+                        <div class="col-md-5">$10000</div>
+                    </div>
                     <br>
 
                 </form>

@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Calendarizacion/TechosController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Calendarizacion/TechosController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/customStyle.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/customStyle.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/calendarizacion/techos/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/calendarizacion/techos/init.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/calendarizacion/techos/modalCreate.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/calendarizacion/techos/modalCreate.blade.php" afterDir="false" />
     </list>
@@ -250,7 +248,7 @@
       <workItem from="1686929167240" duration="17127000" />
       <workItem from="1687446114072" duration="11359000" />
       <workItem from="1687792624449" duration="13504000" />
-      <workItem from="1687878349781" duration="11151000" />
+      <workItem from="1687878349781" duration="13092000" />
     </task>
     <servers />
   </component>

@@ -125,7 +125,7 @@ $(document).ready(function () {
 
         if($('#uppSelected').val() != 0){
             selectFondo = ''
-
+            $('#uppSelected').removeClass('is-invalid')
             table = document.getElementById('fondos')
             table_lenght = (table.rows.length)
 
