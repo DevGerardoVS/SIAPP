@@ -18,13 +18,11 @@
         <form action="{{route('avance_proyecto_actividad_upp')}}" id="buscarFormF" name="analisis" method="post"><input type="text" id="catalogoF_val"  style="display: none"></form> 
 
         {{-- Form para descargar el archivo y cambiar los select --}}
-        <form id="form"  method="POST"> 
-        {{-- <form id="form" action="{{route('downloadReport',['nombre'=>'administrativo'])}}" method="POST">  --}}
-
+        <form id="form"  method="POST">
             @csrf
             <div class="col-md-10 col-sm-12 d-md-flex mt-5">
                 <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
-                    <label for="anio_filter" class="form-label fw-bold mt-md-1">año: </label>
+                    <label for="anio_filter" class="form-label fw-bold mt-md-1">Año: </label>
                 </div>
                 <div class="col-sm-12 col-md-3 col-lg-2">
                     <select class="form-control filters filters_anio" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
@@ -100,7 +98,7 @@
                             <div class="card-body">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
                                     id="catalogoA" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="0,1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%">
-                                    <thead  class="colorMorado">
+                                    <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Ramo</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Fondo</th>
@@ -339,7 +337,7 @@
                 var id = e.target.id;
                 selectTable(id);
             });
-    
+
             $( window ).resize(function() {
                 redrawTable(tabla);
             });

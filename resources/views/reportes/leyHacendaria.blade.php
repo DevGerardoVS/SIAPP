@@ -14,7 +14,7 @@
             <form action="" id="buscarForm" method="POST"> 
                 <div class="col-md-10 col-sm-12 d-md-flex">
                     <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
-                        <label for="anio_filter" class="form-label fw-bold mt-md-1">año: </label>
+                        <label for="anio_filter" class="form-label fw-bold mt-md-1">Año: </label>
                     </div>
                     <div class="col-sm-12 col-md-3 col-lg-2">
                         <select class="form-control filters filters_anio" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
@@ -88,10 +88,4 @@
     @isset($dataSet)
     @include('panels.datatableReportesLeyHacendaria')
     @endisset
-    <script type="text/javascript">
-        //inicializamos el data table
-        $(document).ready(function() {
-            getData();
-        });
-    </script>
 @endsection

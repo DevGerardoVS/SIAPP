@@ -132,17 +132,14 @@ class ReporteController extends Controller
     }
 
     public function downloadReport(Request $request, $nombre){ 
+        ini_set('max_execution_time', 300);
         date_default_timezone_set('America/Mexico_City');
-       
-
-        
         setlocale(LC_TIME, 'es_VE.UTF-8','esp');
-        // $report =  'reporte_art_20_frac_X_b_num_11_2';
+
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
         $fechaCorte = !$request->input('fechaCorte') ? $request->fechaCorte_filter : $request->input('fechaCorte');
         $upp = $request->upp_filter;
-        // dd($report);
 
         $ruta = public_path()."/reportes";
         //Eliminación si ya existe reporte
@@ -151,24 +148,26 @@ class ReporteController extends Controller
         }
         $logo = public_path()."/img/logo.png";
         $report_path = app_path() ."/Reportes/".$report.".jasper";
-        // dd($request->action);
         $format = array($request->action);
         $output_file =  public_path()."/reportes";
-        $viewFile = public_path()."/reportes/".$report;
+        $routeFile = public_path()."/reportes/".$report;
+        $downloadFile = "EF_".$anio."_".$report;
         $parameters = array(
             "anio" => $anio,
             "logoLeft" => $logo,
             "logoRight" => $logo,
         );
        
-        // dd($parameters);
-        if($fechaCorte != null) $parameters["fecha"] = $fechaCorte;
-        if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades_upp"){
-            if($upp != null) $parameters["upp"] = $upp;
+        if($fechaCorte != null) {
+            $parameters["fecha"] = $fechaCorte;
+            $downloadFile = $downloadFile."_".$fechaCorte;
         }
-        
-
-        // dd($parameters);
+        if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades_upp"){
+            if($upp != null){
+                $parameters["upp"] = $upp;
+                $downloadFile = $downloadFile."_UPP_".$upp;
+            }
+        }
 
         $database_connection = \Config::get('database.connections.mysql');
 
@@ -181,6 +180,6 @@ class ReporteController extends Controller
           $database_connection
         )->execute();
 
-        return $request->action == 'pdf' ? response()->file($viewFile.".pdf")->deleteFileAfterSend() : response()->file($viewFile.".xls")->deleteFileAfterSend(); 
+        return $request->action == 'pdf' ? response()->download($routeFile.".pdf", $downloadFile.".pdf")->deleteFileAfterSend() : response()->download($routeFile.".xls", $downloadFile.".xls")->deleteFileAfterSend(); 
     }
 }

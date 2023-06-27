@@ -1,14 +1,8 @@
 @section('page_scripts')
 <script type="text/javascript">
 
-    function getData(){
-        var dt = $('#genericDataTable');
-        dt.DataTable().clear().destroy();
-        generaDatatable();
-    }
-
     function generaDatatable(){
-        var dt = $('#genericDataTable');
+        var dt = $('#tbl-reportes');
 
         $.ajax({
             url: $("#buscarForm").attr("action"),
@@ -23,7 +17,6 @@
                 else{
                     dt.attr('data-empty','false');
                 }
-                console.log(response.dataSet);
                 dt.DataTable({
                     data: response.dataSet,
                     searching: true,
@@ -99,14 +92,12 @@
 
         $("#buscarForm").on("change",".filters_anio",function(e){
             e.preventDefault();
-            getData();
             $(".anio").val($('#anio_filter').val());
             getDataFechaCorte($('#anio_filter').val());
         });
 
         $("#buscarForm").on("change",".filters_fechaCorte",function(e){
             e.preventDefault();
-            getData();
             $(".fechaCorte").val($('#fechaCorte_filter').val());
         });
 
