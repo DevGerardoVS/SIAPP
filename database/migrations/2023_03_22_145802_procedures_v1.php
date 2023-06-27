@@ -1053,67 +1053,57 @@ return new class extends Migration
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_6(in anio int, in corte date)
         begin
             select 
-                conceptos,
-                sum(importe) importe
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                case 
+                    when subfuncion != '' then ''
+                    else funcion
+                end funcion,
+                subfuncion,
+                importe
             from (
                 select 
-                    'Gasto Corriente' conceptos,
-                    sum(pp.total) importe
-                from programacion_presupuesto pp 
-                where ((pp.posicion_presupuestaria)*1) not between 45000 and 45999
-                and ((pp.posicion_presupuestaria)*1) not between 40000 and 47999
-                and pp.ejercicio = anio and if (
+                    finalidad,
+                    '' funcion,
+                    '' subfuncion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                union all 
+                group by vppa.finalidad
+                union all
                 select 
-                    'Gasto Capital' conceptos,
-                    sum(pp.total) importe
-                from programacion_presupuesto pp 
-                where ((pp.posicion_presupuestaria)*1) between 50000 and 79999
-                and pp.ejercicio = anio and if (
+                    finalidad,
+                    funcion,
+                    '' subfuncion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                union all 
+                group by vppa.finalidad,vppa.funcion
+                union all
                 select 
-                    'Amortizacion de la Deuda y Disminucion de Pasivos' conceptos,
-                    sum(pp.total) importe
-                from programacion_presupuesto pp 
-                where ((pp.posicion_presupuestaria)*1) between 90000 and 99999
-                and pp.ejercicio = anio and if (
+                    finalidad,
+                    funcion,
+                    subfuncion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                union all 
-                select 
-                    'Pensiones y Jubilaciones' conceptos,
-                    sum(pp.total) importe
-                from programacion_presupuesto pp 
-                where ((pp.posicion_presupuestaria)*1) between 80000 and 89999
-                and pp.ejercicio = anio and if (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                union all 
-                select 
-                    'Pensiones y Jubilaciones' conceptos,
-                    sum(pp.total) importe
-                from programacion_presupuesto pp 
-                where ((pp.posicion_presupuestaria)*1) between 45000 and 45999
-                and ((pp.posicion_presupuestaria)*1) between 47000 and 47999
-                and pp.ejercicio = anio and if (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-            ) tabla
-            group by conceptos;
+                group by vppa.finalidad,vppa.funcion,vppa.subfuncion
+                order by finalidad,funcion,subfuncion
+            ) tabla;
         END");
 
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_7(in anio int, in corte date)
@@ -1380,7 +1370,7 @@ return new class extends Migration
                         '-',pp.clv_programa,
                         '-',pp.clv_subprograma,
                         '-',pp.clv_proyecto,
-                        '-',pp.periodo,
+                        '-',pp.periodo_presupuestal,
                         '-',pp.clv_capitulo,
                         pp.clv_concepto,
                         pp.clv_partida_generica,
