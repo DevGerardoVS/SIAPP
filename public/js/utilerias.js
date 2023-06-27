@@ -1065,21 +1065,20 @@ $.ajaxSetup({
     async: false,
     success: function (data) { },
     error: function (error, status, err) {
+        console.log("error-".error);
         if (error.status == 401)
         Swal.fire({
             icon: 'warning',
             title: 'Movimiento no autorizado',
             text: 'No cuenta con los permisos suficientes para realizar esta acción',
-            showConfirmButton: false,
-            timer: 1500
+            showConfirmButton: true,
         });
         else if (error.status == 500)
         Swal.fire({
             icon: 'error',
             title: 'Error del servidor',
             text: 'Ha ocurrido un error interno. Intentelo más tarde o contacte a soporte técnico',
-            showConfirmButton: false,
-            timer: 1500
+            showConfirmButton: true,
         });
     },
 });

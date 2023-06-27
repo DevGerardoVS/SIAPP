@@ -3,11 +3,20 @@
 @include('calendarizacion.techos.modalCreate')
 @include('calendarizacion.techos.modalCarga')
 @section('content')
-
 <div class="container">
     <form action="{{ route('getTechos') }}" id="buscarForm" method="GET">
         @csrf
+
     </form>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>EROR</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
     <section id="widget-grid" class="container">
         <div class="row">
             <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
@@ -26,7 +35,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <?php $upp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->get();?>
+                                    <?php $upp = DB::table('v_entidad_ejecutora')->select('clv_upp','upp')->distinct()->get();?>
                                     <select class="form-control filters" id="upp_filter" name="upp_filter" placeholder="Seleccione una UPP" data-live-search="true">
                                         <option value="0" selected>Buscar por UPP</option>
                                         @foreach($upp as $u)

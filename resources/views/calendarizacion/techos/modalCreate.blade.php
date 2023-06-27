@@ -14,13 +14,13 @@
                     @csrf
                     <div class="row">
                         <div class="col-sm-1">
-                            <labe>Año</labe>
+                            <label>Año</label>
                         </div>
                         <div class="col-sm-2">
                             <input class="form-control" id="anio" name="anio" type="text" value="2024" onkeydown="return (event.charCode >= 48 && event.charCode <= 57 && event.charCode >= 99 && event.charCode <= 122 )">
                         </div>
                         <div class="col-sm-4">
-                            <labe>Unidad Programática Presupuestal: </labe>
+                            <label>Unidad Programática Presupuestal: </label>
                         </div>
                         <?php $upp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->get();?>
                         <div class="col-sm-5">

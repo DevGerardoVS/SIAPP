@@ -77,6 +77,46 @@ var dao = {
     eliminaFondo: function (i) {
         document.getElementById(i).outerHTML=""
     },
+    cargaMasiva: function () {
+        var form = $('#importPlantilla')[0];
+        var data = new FormData(form);
+        $.ajax({
+            type: "POST",
+            url: '/import-Plantilla',
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+        }).done(function (response) {
+            if (response != 'done') {
+              Swal.fire(
+                  {
+                      showCloseButton: true,
+                      title: 'Error',
+                      text: 'Ya existen datos con la upp y fondo',
+                      icon: 'error',
+                  }
+                
+              );
+            }else{
+                Swal.fire({
+                    title: 'Guardado',
+                    text: "Se guardo correctamente",
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href="/calendarizacion/techos";
+                    }
+                  });
+              
+            }
+        }).fail(function (response){
+            console.log(response);
+        })
+    },
     filtroPresupuesto: function (i){
         var tecla = event.key;
         if (['.','e','-'].includes(tecla)){
@@ -105,12 +145,22 @@ var init = {
             }
         });
     },
+    validateFile: function(form){
+        _gen.validate(form, {
+            rules: {
+                cmFile: { required: true },
+            },
+            messages: {
+                cmFile: { required: "Este campo es requerido" },
+            }
+        });
+    },
 };
 
 $(document).ready(function () {
     getData();
     dao.getAnio();
-
+    $('#cmFile').val(null);
     $('#fondo_filter').selectpicker({ search: true });
     $('#upp_filter').selectpicker({ search: true });
 
@@ -162,6 +212,26 @@ $(document).ready(function () {
                 '</tr>'
         }else{
             $('#uppSelected').addClass('is-invalid')
+        }
+    });
+    $('#btnCarga').on('click', function () {
+        $('#carga').modal('show');
+    });
+    $('#carga').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    $('#btnCancelar').click(function () {
+        $("#carga").modal('hide');
+        $('#cmFile').val(null);
+    });
+    $('#btnClose').click(function () {
+        $("#carga").modal('hide');
+        $('#cmFile').val(null);
+    });
+    $('#btnSaveM').click(function () {
+        if ($('#importPlantilla').valid()) {
+            dao.cargaMasiva();
         }
     });
 });
