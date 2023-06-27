@@ -1,17 +1,13 @@
 <?php 	
 
     use App\Http\Controllers\Calendarizacion\ClavePreController;
-	use App\Http\Controllers\Calendarización\MetasController;
-	use App\Http\Controllers\Calendarización\TechosController;
-	use App\Http\Controllers\Calendarización\CalendarizacionCargaMasivaController;
+	use App\Http\Controllers\Calendarizacion\MetasController;
+	use App\Http\Controllers\Calendarizacion\TechosController;
+	use App\Http\Controllers\Calendarizacion\CalendarizacionCargaMasivaController;
 
-	Route::controller(MetasController::class)->group(function () {
-		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
-	 	Route::get('/calendarizacion/data', 'getMetas')->name('getMetas');
-        Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
-	});
+	include('metas.php');
 
-    Route::controller(TechosController::class)->group(function () {
+	Route::controller(TechosController::class)->group(function () {
         Route::get('/calendarizacion/techos', 'getIndex')->name('index_techos');
         Route::get('/calendarizacion/techos/get-techos', 'getTechos')->name('getTechos');
         Route::get('/calendarizacion/techos/get-fondos', 'getFondos')->name('getFondos');
@@ -45,6 +41,9 @@
 		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
 		Route::get('/presupuesto-upp-asignado/{upp?}/{fonfo?}/{subPrograma?}', 'getPresupuestoPorUpp');
 		Route::get('/ver-detalle/{clave?}', 'getConceptosClave')->name('detalle');
+		Route::get('/clave-update/{id?}', 'getPanelUpdate');
+		Route::post('/calendarizacion-editar-clave', 'postEditarClave');
+		
 
 		
 		
@@ -56,6 +55,7 @@
 	Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
 		Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('getplantilla');
 		Route::post('/calendarizacion/load-Data-Plantilla', 'loadDataPlantilla')->name('load_data_plantilla');
+/* 		Route::post('/calendarizacion/load-Data-Plantilla', 'getObra')->name('getObra'); */
 
     });
 	

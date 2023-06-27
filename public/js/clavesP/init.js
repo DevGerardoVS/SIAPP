@@ -31,11 +31,9 @@ var dao = {
 				{"aTargets" : [6], "mData" : "proyectoObra"},
 				{"aTargets" : [7], "mData" : "totalByClave"},
 				{"aTargets" : [8], "mData" : function(o){
-					return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="#/'+o.id+'">' + '<i class="fa fa-pencil"></i></a>&nbsp;'
-					+  '<a data-toggle="tooltip" title="Ver" class="btn btn-sm btn-primary">' + '<i class="fa fa-eye" style="color: aliceblue"></i></a>&nbsp;'
+					return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
 					+  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
 				}},
-				
 			];
 			_gen.setTableScrollGroupBy(_table, _columns, data);
 		});
@@ -112,6 +110,44 @@ var dao = {
         }
       });
   },
+  postUpdate : function () {
+    let idClave = document.getElementById('idClave').value;
+    let enero = document.getElementById('enero').value;
+    let febrero = document.getElementById('febrero').value;
+    let marzo = document.getElementById('marzo').value;
+    let abril = document.getElementById('abril').value;
+    let mayo = document.getElementById('mayo').value;
+    let junio = document.getElementById('junio').value;
+    let julio = document.getElementById('julio').value;
+    let agosto = document.getElementById('agosto').value;
+    let septiembre = document.getElementById('septiembre').value;
+    let octubre = document.getElementById('octubre').value;
+    let noviembre = document.getElementById('noviembre').value;
+    let diciembre = document.getElementById('diciembre').value;
+    let total = document.getElementById('totalCalendarizado').value;
+    let datos = [{'idClave':idClave,'enero':enero,'febrero':febrero,'marzo':marzo,'abril':abril,'mayo':mayo,'junio':junio,'julio':julio,'agosto':agosto,'septiembre':septiembre,'octubre':octubre,'noviembre':noviembre,'diciembre':diciembre,'total':total}];
+    $.ajax({
+      type: "POST",
+      url: '/calendarizacion-editar-clave',
+      data: {'data': datos}
+    }).done(function (response) {
+      if (response != 'done') {
+        Swal.fire(
+          'Error',
+          'A ocurrido un error por favor intentalo de nuevo...',
+          'error'
+        );
+      }else{
+        Swal.fire(
+          'Exito',
+          'Registro Exitoso',
+          'success'
+        );
+        window.location.href = '/calendarizacion/claves';
+      }
+    });
+
+  },
   eliminarClave : function (id) {
     Swal.fire({
       title: '¿Seguro que desea eliminar la clave?',
@@ -158,11 +194,17 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona una Region --", ""));
           $.each(data, function(i, val){
-            par.append(new Option(data[i].region, data[i].clv_region));
+            if (val.clv_region == id) {
+              par.append(new Option(data[i].region, data[i].clv_region,true,true));
+              document.getElementById("region").innerHTML = data[i].clv_region;
+            }else{
+              par.append(new Option(data[i].region, data[i].clv_region,false,false));
+            }
+            
           });
         });
     },
-	getMunicipiosByRegion : function(id){
+	getMunicipiosByRegion : function(id,idSelected){
         $.ajax({
           	type : "get",
           	url: '/cat-municipios/'+ id,
@@ -171,11 +213,16 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona un Municipio --", ""));
           $.each(data, function(i, val){
-            par.append(new Option( data[i].municipio , data[i].clv_municipio));
+            if (idSelected != '' && val.clv_municipio == idSelected) {
+              par.append(new Option( data[i].municipio , data[i].clv_municipio,true,true));
+              document.getElementById("municipio").innerHTML = data[i].clv_municipio;
+            }else{
+              par.append(new Option( data[i].municipio , data[i].clv_municipio,false,false));
+            }
           });
         });
     },
-	getLocalidadByMunicipio : function(id){
+	getLocalidadByMunicipio : function(id, idSelected){
         $.ajax({
           	type : "get",
           	url: '/cat-localidad/'+ id,
@@ -184,7 +231,12 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona una Localidad --", ""));
           $.each(data, function(i, val){
-            par.append(new Option(data[i].localidad, data[i].clv_localidad));
+            if (idSelected != '' && val.clv_localidad == idSelected) {
+              par.append(new Option(data[i].localidad, data[i].clv_localidad,true,true));
+              document.getElementById('localidad').innerHTML = data[i].clv_localidad;
+            }else{
+              par.append(new Option(data[i].localidad, data[i].clv_localidad,false,false));
+            }
           });
         });
     },
@@ -197,11 +249,16 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona una Unidad Programática --", ""));
           $.each(data, function(i, val){
-            par.append(new Option(data[i].descripcion , data[i].clave));
+            if (id != '' && val.clave == id) {
+             par.append(new Option(data[i].descripcion , data[i].clave,true,true));
+             document.getElementById('upp').innerHTML = data[i].clave;
+            }else{
+             par.append(new Option(data[i].descripcion , data[i].clave,false,false));
+            }
           });
         });
     },
-	getUninadResponsableByUpp : function(id){
+	getUninadResponsableByUpp : function(id,idSelected){
         $.ajax({
           	type : "get",
           	url: '/cat-unidad-responsable/'+ id,
@@ -210,7 +267,13 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona una Unidad Responsable --", ""));
           $.each(data, function(i, val){
-            par.append(new Option( data[i].ur, data[i].clv_ur));
+            if (idSelected != '' && val.clv_ur == idSelected) {
+              par.append(new Option( data[i].ur, data[i].clv_ur,true,true));
+              document.getElementById('ur').innerHTML = data[i].clv_ur;
+             }else{
+              par.append(new Option( data[i].ur, data[i].clv_ur,false,false));
+             }
+            
           });
         });
     },
@@ -222,7 +285,7 @@ var dao = {
       document.getElementById('subsecretaria').innerHTML = data.clv_subsecretaria;
     });
   },
-	getProgramaPresupuestarioByur : function(uppId,id){
+	getProgramaPresupuestarioByur : function(uppId,id,idSelected){
         $.ajax({
           	type : "get",
           	url: '/cat-programa-presupuestario/'+ uppId + '/' + id,
@@ -231,11 +294,17 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona un Programa Presupuestario --", ""));
           $.each(data, function(i, val){
-            par.append(new Option(data[i].programa, data[i].clv_programa));
+            if (idSelected != '' && val.clv_programa == idSelected) {
+              par.append(new Option(data[i].programa, data[i].clv_programa,true,true));
+              document.getElementById('programaPre').innerHTML = data[i].clv_programa;
+             }else{
+              par.append(new Option(data[i].programa, data[i].clv_programa,false,false));
+             }
+            
           });
         });
     },
-	getSubProgramaByProgramaId : function(ur,id){
+	getSubProgramaByProgramaId : function(ur,id,idSelected){
         $.ajax({
           	type : "get",
           	url: '/cat-subprograma-presupuesto/'+ ur + '/'+ id,
@@ -244,11 +313,17 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona un Sub Programa Presupuestario --", ""));
           $.each(data, function(i, val){
-            par.append(new Option( data[i].subprograma, data[i].clv_subprograma));
+            if (idSelected != '' && val.clv_subprograma == idSelected) {
+              par.append(new Option( data[i].subprograma, data[i].clv_subprograma,true,true));
+              document.getElementById('subPrograma').innerHTML = data[i].clv_subprograma;
+             }else{
+              par.append(new Option( data[i].subprograma, data[i].clv_subprograma,false,false));
+             }
+            
           });
         });
     },
-	getProyectoBySubPrograma : function(programa,id){
+	getProyectoBySubPrograma : function(programa,id, idSelected){
         $.ajax({
           	type : "get",
           	url: '/cat-proyecyo/'+ programa + '/' + id,
@@ -257,11 +332,17 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona un Proyecto --", ""));
           $.each(data, function(i, val){
-            par.append(new Option(data[i].proyecto , data[i].clv_proyecto ));
+            if (idSelected != '' && val.clv_proyecto == idSelected) {
+              par.append(new Option(data[i].proyecto , data[i].clv_proyecto,true,true));
+              document.getElementById('proyectoPre').innerHTML = data[i].clv_proyecto;
+             }else{
+              par.append(new Option(data[i].proyecto , data[i].clv_proyecto,false,false));
+             }
+            
           });
         });
     },
-	getLineaDeAccionByUpp : function(uppId,id){
+	getLineaDeAccionByUpp : function(uppId,id,idSelected){
         $.ajax({
           	type : "get",
           	url: '/cat-linea-accion/'+ uppId + '/' + id,
@@ -270,7 +351,14 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona una Linea de Acción --", ""));
           $.each(data, function(i, val){
-            par.append(new Option(data[i].linea_accion , data[i].clv_linea_accion ));
+            if (idSelected != '' && val.clv_linea_accion == idSelected) {
+              par.append(new Option(data[i].linea_accion , data[i].clv_linea_accion,true,true));
+              document.getElementById('lineaAccion').innerHTML = data[i].clv_linea_accion ;
+              let periodo = '01-ENE';
+              document.getElementById('mesAfectacion').innerHTML = periodo;
+             }else{
+              par.append(new Option(data[i].linea_accion , data[i].clv_linea_accion,false,false));
+             }
           });
         });
     },
@@ -297,20 +385,44 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona una Partida --", ""));
           $.each(data, function(i, val){
-            par.append(new Option(data[i].partida_especifica, data[i].clv_capitulo + data[i].clv_concepto + data[i].clv_partida_generica + data[i].clv_partida_especifica + data[i].clv_tipo_gasto ));
+            let partida = val.clv_capitulo + val.clv_concepto + val.clv_partida_generica + val.clv_partida_especifica + val.clv_tipo_gasto;
+            if (id != '' && partida == id) {
+              par.append(new Option(data[i].partida_especifica, data[i].clv_capitulo + data[i].clv_concepto + data[i].clv_partida_generica + data[i].clv_partida_especifica + data[i].clv_tipo_gasto,true,true));
+              document.getElementById('capitulo').innerHTML = data[i].clv_capitulo;
+              document.getElementById('concepto').innerHTML = data[i].clv_concepto;
+              document.getElementById('partidaGen').innerHTML = data[i].clv_partida_generica;
+              document.getElementById('partidaEpecifica').innerHTML = data[i].clv_partida_especifica;
+              document.getElementById('tipoGasto').innerHTML = data[i].clv_tipo_gasto;
+             }else{
+              par.append(new Option(data[i].partida_especifica, data[i].clv_capitulo + data[i].clv_concepto + data[i].clv_partida_generica + data[i].clv_partida_especifica + data[i].clv_tipo_gasto,false,false));
+             }
           });
         });
     },
-    getFondosByUpp: function (id) {
+    getFondosByUpp: function (id,idSelected) {
       $.ajax({
         type:'get',
         url:'/cat-fondos/'+ id
       }).done(function (data) {
         var par = $('#sel_fondo');
           par.html('');
-          par.append(new Option("-- Selecciona una Partida --", ""));
+          par.append(new Option("-- Selecciona un Fondo --", ""));
           $.each(data, function(i, val){
-            par.append(new Option(data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital));
+            let fondo = val.ejercicio + val.clv_etiquetado + val.clv_fuente_financiamiento + val.clv_ramo + val.clv_fondo + val.clv_capital;
+            if (idSelected != '' && fondo == idSelected) {
+              par.append(new Option(data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,true,true));
+              let ejercicio = data[i].ejercicio;
+              let anioText = ejercicio.toString();
+              let anio = anioText.substring(2,4);
+              document.getElementById('anioFondo').innerHTML = anio;
+              document.getElementById('etiquetado').innerHTML = data[i].clv_etiquetado;
+              document.getElementById('fuenteFinanciamiento').innerHTML = data[i].clv_fuente_financiamiento;
+              document.getElementById('ramo').innerHTML = data[i].clv_ramo;
+              document.getElementById('fondoRamo').innerHTML = data[i].clv_fondo;
+              document.getElementById('capital').innerHTML = data[i].clv_capital;
+             }else{
+              par.append(new Option(data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,false,false));
+             }
           });
       });
     },
@@ -319,7 +431,6 @@ var dao = {
         type:'get',
         url: '/cat-clasificacion-administrativa/'+ upp + '/' + ur,
       }).done(function (data) {
-        console.log('Clasificacion Adm',data);
         let clasificacion = data.clv_sector_publico + data.clv_sector_publico_f + data.clv_sector_economia + data.clv_subsector_economia + data.clv_ente_publico;
         document.getElementById('clasificacion').innerHTML = clasificacion;
       });
@@ -329,15 +440,12 @@ var dao = {
         type:'get',
         url:'/presupuesto-upp-asignado/'+ upp +'/' + fondo + '/' + subPrograma,
       }).done(function (data) {
-        console.log('presupues por upp',data);
         let presupuesto = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.presupuesto);
         document.getElementById('preFondo').value = presupuesto;
         let disponible = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.disponible);
         document.getElementById('preDisFondo').value = disponible;
       });
     },
-
-
   getPresupuesAsignado : function(){
     $.ajax({
       type: 'get',
@@ -349,7 +457,10 @@ var dao = {
       $('#asignadoUpp').val(totalAsignado);
       $('#calendarizado').val(Totcalendarizado);
       $('#disponibleUpp').val(disponible);
-      $('#tipo').val(response.tipo);
+      if (Totcalendarizado == totalAsignado) {
+        document.getElementById('btnNuevaClave').disabled =true;
+        $('#btnNuevaClave').hide(true);
+      }
       
     });
 
@@ -418,7 +529,27 @@ var dao = {
       }
       $('detalle').show(true);
     });
+  },
+  getDetallePresupuestoByFondo : function () {
+    $.ajax({
+      type : 'get',
+      url: '/calendarizacion-claves-presupuesto-fondo',
+      dataType : "JSON"
+    }).done(function (response) {
+      _table = $("#tblPresupuestos");
+			_columns = [
+				{"aTargets" : [0], "mData" : 'clv_fondo'},
+				{"aTargets" : [1], "mData" : "fondo_ramo"},
+				{"aTargets" : [2], "mData" : "ejercicio"},
+				{"aTargets" : [3], "mData" : "montoAsignado"},
+				{"aTargets" : [4], "mData" : "calendarizado"},
+				{"aTargets" : [5], "mData" : "disponible"},
+			];
+			_gen.setTableScrollFotter(_table, _columns, response);
+      $('modalPresupuesto').show(true);
+    });
   }
+
 };
 var init = {
   validateClave : function (form) {
@@ -475,22 +606,18 @@ function calucalarCalendario() {
 
 $(document).ready(function(){
   $("#segundaParte").hide();
-	$('#modalNewClave').modal({
-        backdrop: 'static',
-        keyboard: false
-    });
   $('.select2').select2();
 	$('#sel_region').change(function(e){
 		e.preventDefault();
 		let id = this.value;
     document.getElementById("region").innerHTML = id;
-		dao.getMunicipiosByRegion(id);
+		dao.getMunicipiosByRegion(id,'');
 	});
 	$('#sel_municipio').change(function(e){
 		e.preventDefault(); 
 		let id = this.value;
     document.getElementById("municipio").innerHTML = id;
-		dao.getLocalidadByMunicipio(id);
+		dao.getLocalidadByMunicipio(id,'');
 	});
   $('#sel_localidad').change(function (e) {
     let val = this.value;
@@ -500,9 +627,9 @@ $(document).ready(function(){
 		e.preventDefault();
 		let val = this.value;
     document.getElementById('upp').innerHTML = val;
-		dao.getUninadResponsableByUpp(val);
-    dao.getPartidaByUpp();
-    dao.getFondosByUpp(val);
+		dao.getUninadResponsableByUpp(val,'');
+    dao.getPartidaByUpp('');
+    dao.getFondosByUpp(val,'');
 	});
 	$('#sel_unidad_res').change(function(e){
 		e.preventDefault();
@@ -510,8 +637,8 @@ $(document).ready(function(){
     document.getElementById('ur').innerHTML = id;
     var uppId = document.getElementById("sel_upp").value;
     dao.getSubSecretaria(uppId,id);
-		dao.getProgramaPresupuestarioByur(uppId,id);
-		dao.getLineaDeAccionByUpp(uppId,id);
+		dao.getProgramaPresupuestarioByur(uppId,id,'');
+		dao.getLineaDeAccionByUpp(uppId,id,'');
     dao.getAreaFuncional(uppId,id);
     dao.getClasificacionAdmin(uppId,id);
 	});
@@ -520,14 +647,14 @@ $(document).ready(function(){
 		let id = this.value;
     document.getElementById('programaPre').innerHTML = id;
     var ur = document.getElementById("sel_unidad_res").value;
-		dao.getSubProgramaByProgramaId(ur,id);
+		dao.getSubProgramaByProgramaId(ur,id,'');
 	});
 	$('#sel_sub_programa').change(function(e){
 		e.preventDefault();
 		let id = this.value;
     document.getElementById('subPrograma').innerHTML = id;
     var programa = document.getElementById("sel_programa").value;
-		dao.getProyectoBySubPrograma(programa,id);
+		dao.getProyectoBySubPrograma(programa,id,'');
 	});
   $('#sel_proyecto').change(function (e) {
     e.preventDefault();
@@ -594,7 +721,6 @@ $(document).ready(function(){
   });
   $('#btnSaveAll').click(function (params) {
     params.preventDefault();
-    console.log('entro en la funcion');
     let total = document.getElementById('totalCalendarizado').value;
     let disponible = document.getElementById('preDisFondo').value;
     let disp = parseInt(disponible.replaceAll(',', '').replaceAll('$', ''));
@@ -624,7 +750,41 @@ $(document).ready(function(){
   $('#btnCancelar').click(function (params) {
     params.preventDefault();
     window.location.href = 'calendarizacion/claves';
-  })
+  });
+  $('#btnCancelarUpdate').click(function (params) {
+    params.preventDefault();
+    window.location.href = '/calendarizacion/claves';
+  });
+
+  $('#btnUpdateClv').click(function (params) {
+    params.preventDefault();
+    let total = document.getElementById('totalCalendarizado').value;
+    let disponible = document.getElementById('preDisFondo').value;
+    let disp = parseInt(disponible.replaceAll(',', '').replaceAll('$', ''));
+    if (total > 0 && total <= parseInt(disp)) {
+      dao.postUpdate();
+    }else{
+      if (total > 0) {
+        Swal.fire(
+          'Advertencia!',
+          'No es posible rebasar el limite del presupuesto.',
+          'warning'
+        );
+      }else{
+        Swal.fire(
+          'Advertencia!',
+          'Es necesario calendarizar al menos un monto.',
+          'warning'
+        );
+      }
+     
+    }
+  });
+
+  $('#presupuestoFondo').click(function () {
+      dao.getDetallePresupuestoByFondo();
+  });
+
   
   
 
