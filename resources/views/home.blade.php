@@ -9,7 +9,6 @@
     <br>
     <header>
         <h2>Inicio</h2>
-
     </header>
 
 
@@ -56,9 +55,9 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        
+
         getDatos();
-        
+
     });
 
     function getDatos(){
@@ -122,7 +121,7 @@
                            className: 'text-right'
                        },
                    ],
-                  
+
                });
             },
             error: function(response) {
@@ -145,7 +144,7 @@
         }
 
         try{
-            
+
             $.ajax({
             url:"{{route('inicio_b')}}",
             type: "POST",
@@ -197,12 +196,16 @@
                        },
                    },
                    columnDefs: [
+                        {
+                           targets: [1],
+                           className: 'text-left'
+                       },
                        {
-                           targets: [0,1,2,3],
+                           targets: [0,2,3,4],
                            className: 'text-right'
                        },
                    ],
-                  
+
                });
             },
             error: function(response) {
@@ -225,8 +228,6 @@
         }
     }
 
-    
+
 </script>
 @endsection
-
-

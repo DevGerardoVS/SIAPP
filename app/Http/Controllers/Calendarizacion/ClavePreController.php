@@ -9,7 +9,7 @@ use Log;
 class ClavePreController extends Controller
 {
     public function getPanel(){
-        return view('clavePresupuestaria.index');
+        return view('calendarizacion.clavePresupuestaria.index');
     }
     public function getClaves(Request $request){
         $claves = DB::table('programacion_presupuesto')
