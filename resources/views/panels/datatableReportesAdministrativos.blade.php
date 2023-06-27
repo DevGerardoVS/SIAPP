@@ -112,7 +112,7 @@
             beforeSend: function() {
                 let timerInterval
                 Swal.fire({
-                    title: 'Cargando datos por favor espere...',
+                    title: 'Cargando datos, por favor espere...',
                     html: ' <b></b>',
                     allowOutsideClick: false,
                     timer: 2000000,
@@ -132,7 +132,6 @@
                 else{
                     dt.attr('data-empty','false');
                 }
-
                 // Se habilita el rowgroup dependiendo la tabla en la que esta el usuario
                 var estatus = false;
                 if(ruta == "#buscarFormD") estatus = true;
@@ -194,7 +193,7 @@
                         }
                     ],
                     // Poner el scroll debajo del footer 
-                    "fnInitComplete": function(){
+                    fnInitComplete: function(){
                         //Comprobar si hay footer
                         if($(tabla+' tfoot.colorMorado').length != 0){
                             // Deshabilitar la barra de scroll del body
@@ -352,9 +351,8 @@
                             }
                     },
                });
-               redrawTable(tabla);
-               // Eliminar primera columna que contiene las UPP
-               if(ruta == "#buscarFormD"){
+               redrawTable(tabla);     
+               if(ruta == "#buscarFormD"){ // Eliminar primera columna que contiene las UPP
                     dt.DataTable().column(0).visible(false);
                 }
             },

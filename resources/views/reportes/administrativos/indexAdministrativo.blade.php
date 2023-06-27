@@ -18,7 +18,9 @@
         <form action="{{route('avance_proyecto_actividad_upp')}}" id="buscarFormF" name="analisis" method="post"><input type="text" id="catalogoF_val"  style="display: none"></form> 
 
         {{-- Form para descargar el archivo y cambiar los select --}}
-        <form id="form" action="{{route('downloadReport',['nombre'=>'administrativo'])}}" method="POST"> 
+        <form id="form"  method="POST"> 
+        {{-- <form id="form" action="{{route('downloadReport',['nombre'=>'administrativo'])}}" method="POST">  --}}
+
             @csrf
             <div class="col-md-10 col-sm-12 d-md-flex mt-5">
                 <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
@@ -53,14 +55,13 @@
                     </select>
                 </div>
             </div>
-            <input type="text" hidden class="nombre" id="nombre" name="nombre">
             {{-- botones de descarga --}}
             <div class="d-flex flex-wrap justify-content-end mb-5 mt-sm-2 mt-lg-0">
-                <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
+                <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3 btn_click" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
                     <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                     <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
                 </button>
-                <button id="btnExcel" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled" style="border-color: #6a0f49;" title="Generar Reporte Excel" name="action" value="xls">
+                <button id="btnExcel" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled btn_click" style="border-color: #6a0f49;" title="Generar Reporte Excel" name="action" value="xls">
                     <span class="btn-label"><i class="fa fa-file-excel-o text-success fs-4 align-middle"></i></span>
                     <span class="d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a Excel</span>
                 </button>
@@ -93,7 +94,7 @@
         <div class="tab-content" style="font-size: 12px;">
             {{-- fondo mensual A--}}
             <div class="tab-pane active" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
-                <div class="row mx-auto" >
+                <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
@@ -332,7 +333,7 @@
             });
             
             getDataFechaCorte($('#anio_filter').val());
-            $("#nombre").val('fondo_base_mensual');
+            $("#nombre").val('calendario_fondo_mensual');
     
             $('button[data-bs-toggle="tab"]').on('click', function (e) {
                 var id = e.target.id;
@@ -363,9 +364,9 @@
                         tabla="#catalogoA";
                         letter="A";
                         $('.div_upp').addClass('d-none');
-                        $("#nombre").val('calendario_fondo_mensual');
+                        $("#nombre").val('calendario_fondo_mensual');              
                         dt.DataTable().clear().destroy();
-                        getData(tabla,letter);                  
+                        getData(tabla,letter);   
                         break;
                     case "capituloPartida_tab":
                         var dt = $('#catalogoB');
@@ -400,7 +401,7 @@
                         tabla="#catalogoE";
                         letter="E";
                         $('.div_upp').removeClass('d-none');
-                        $("#nombre").val('proyecto_calendario_actividades');
+                        $("#nombre").val('proyecto_calendario_actividades_upp');
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
@@ -432,6 +433,33 @@
         $("#form").on("change",".filters_upp",function(e){
             dt.DataTable().clear().destroy();
             getData(tabla,letter);
+        });
+
+        $('.btn_click').click(function(){ // dar click a los botones de descarga y mandar el nombre
+            var nombre = "calendario_fondo_mensual";
+            switch (tabla) {
+                case "#catalogoA":
+                    nombre = 'calendario_fondo_mensual';              
+                    break;
+                case "#catalogoB":
+                    var dt = $('#catalogoB');
+                    nombre = "reporte_resumen_por_capitulo_y_partida";
+                    break;
+                case "#catalogoC":
+                    nombre = "avance_general";
+                    break;
+                case "#catalogoD":
+                    var dt = $('#catalogoD');
+                    nombre = "calendario_general";
+                    break;
+                case "#catalogoE":
+                    nombre = "proyecto_calendario_actividades_upp";
+                    break;
+                case "#catalogoF":
+                    nombre = "avance_proyectos_actividades_upp";
+                    break;
+            }
+            $('#form').attr('action', '/Reportes/download/'+nombre);
         });
     </script>
 @endsection

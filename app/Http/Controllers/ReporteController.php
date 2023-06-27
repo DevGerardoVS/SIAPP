@@ -133,7 +133,7 @@ class ReporteController extends Controller
 
     public function downloadReport(Request $request, $nombre){ 
         date_default_timezone_set('America/Mexico_City');
-        if($nombre == "administrativo") $nombre = $request->nombre;
+       
 
         
         setlocale(LC_TIME, 'es_VE.UTF-8','esp');
@@ -163,7 +163,7 @@ class ReporteController extends Controller
        
         // dd($parameters);
         if($fechaCorte != null) $parameters["fecha"] = $fechaCorte;
-        if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades"){
+        if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades_upp"){
             if($upp != null) $parameters["upp"] = $upp;
         }
         
