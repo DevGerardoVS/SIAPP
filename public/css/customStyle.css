@@ -534,3 +534,8 @@ th {
 .column_numbers{
     text-align: right;
 }
+
+#tableScroll{
+    overflow:scroll;
+    height: 500px;
+}

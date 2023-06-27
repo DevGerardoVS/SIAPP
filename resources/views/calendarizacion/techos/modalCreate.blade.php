@@ -41,7 +41,7 @@
                     <br>
                     <div class="row">
                         <div class="widget-body no-padding ">
-                            <div class="table-responsive ">
+                            <div class="table-responsive" id="tableScroll">
                                 <table id="fondos" class="table table-hover table-striped ">
                                     <thead>
                                         <tr class="colorMorado">

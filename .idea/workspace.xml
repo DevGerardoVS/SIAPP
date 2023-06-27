@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="9450d368-3be6-4149-b36a-a686258db362" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/calendarización/techos/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/calendarización/techos/init.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/calendarización/techos/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/calendarización/techos/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Calendarizacion/TechosController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Calendarizacion/TechosController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/css/customStyle.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/customStyle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/calendarizacion/techos/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/calendarizacion/techos/init.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/calendarizacion/techos/modalCreate.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/calendarizacion/techos/modalCreate.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -248,6 +250,7 @@
       <workItem from="1686929167240" duration="17127000" />
       <workItem from="1687446114072" duration="11359000" />
       <workItem from="1687792624449" duration="13504000" />
+      <workItem from="1687878349781" duration="11151000" />
     </task>
     <servers />
   </component>
@@ -346,6 +349,33 @@
             <option name="methodName" value="addTecho" />
           </properties>
           <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/Calendarizacion/TechosController.php</url>
+          <line>22</line>
+          <properties>
+            <option name="className" value="\App\Http\Controllers\Calendarizacion\TechosController" />
+            <option name="methodName" value="getTechos" />
+          </properties>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/Calendarizacion/TechosController.php</url>
+          <line>45</line>
+          <properties>
+            <option name="className" value="\App\Http\Controllers\Calendarizacion\TechosController" />
+            <option name="methodName" value="getFondos" />
+          </properties>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php-line-method">
+          <url>file://$PROJECT_DIR$/app/Http/Controllers/Calendarizacion/TechosController.php</url>
+          <line>54</line>
+          <properties>
+            <option name="className" value="\App\Http\Controllers\Calendarizacion\TechosController" />
+            <option name="methodName" value="addTecho" />
+          </properties>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

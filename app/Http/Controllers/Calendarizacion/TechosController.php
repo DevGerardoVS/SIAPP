@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Calendarización;
+namespace App\Http\Controllers\Calendarizacion;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -17,7 +17,7 @@ class TechosController extends Controller
     //Consulta Vista Techos
     public function getIndex()
     {
-        return view('calendarización.techos.index');
+        return view('calendarizacion.techos.index');
     }
 
     public function getTechos(){
@@ -54,6 +54,7 @@ class TechosController extends Controller
 
     public function addTecho(Request $request){
         $data = array_chunk(array_slice($request->all(),3),3);
+        $aRepetidos = array_chunk(array_slice($request->all(),3),3,true);
         $aKeys = array_keys(array_slice($request->all(),3));
         $validaForm = [];
 
@@ -64,21 +65,27 @@ class TechosController extends Controller
         foreach ($aKeys as $a){
             $validaForm[$a] = 'required';
         }
-
+        log::debug($aRepetidos);
         $request->validate($validaForm);
 
         //Verifica que no se dupliquen los fondos en el mismo ejercicio
+        // y envia el array con las keys del input duplicado
         $repeticion = $data;
+        $c = 0;
         foreach ($data as $a){
+            log::debug($c);
             $repeticion = array_slice($repeticion,1);
             foreach ($repeticion as $r){
                 if($r[0] === $a[0] && $r[1] === $a[1]){
+                    log::debug(array_keys($aRepetidos[$c]));
                     return [
                         'status' => 'Repetidos',
-                        'error' => "Campos repetidos"
+                        'error' => "Campos repetidos",
+                        'etiqueta' => array_keys($aRepetidos[$c])
                     ];
                 }
             }
+            $c += 1;
         }
 
         //guarda el techo

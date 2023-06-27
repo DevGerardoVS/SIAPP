@@ -84,11 +84,10 @@ var dao = {
         }
     },
     validCero: function (i) {
-        console.log(i)
         if($('#presupuesto_'+i).val() == 0){
             $("#frm_create_techo").find('#presupuesto_'+i).addClass('is-invalid');
         }else{
-            $('#presupuesto_'+i).removeClass('is-invalid')
+            $('input').removeClass('is-invalid');
         }
     }
 };
@@ -171,6 +170,9 @@ $(document).ready(function () {
 $('#btnSave').click(function (e) {
     e.preventDefault();
 
+    $('input').removeClass('is-invalid');
+    $('select').removeClass('is-invalid');
+
     var form = $('#frm_create_techo')[0];
     var data = new FormData(form);
 
@@ -197,10 +199,14 @@ $('#btnSave').click(function (e) {
             }else if(response.status == 400){
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Hubo un error, datos faltantes',
+                    title: 'Datos faltantes',
                     showConfirmButton: true
                 });
             }else if(response.status == 'Repetidos'){
+
+                $("#frm_create_techo").find("#"+response.etiqueta[0]).addClass('is-invalid');
+                $("#frm_create_techo").find("#"+response.etiqueta[1]).addClass('is-invalid');
+
                 Swal.fire({
                     icon: 'warning',
                     title: 'Hay fondos repetidos',
