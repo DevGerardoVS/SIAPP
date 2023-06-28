@@ -351,7 +351,7 @@
                             }
                     },
                });
-               redrawTable(tabla);     
+               redrawTable(tabla);   
                if(ruta == "#buscarFormD"){ // Eliminar primera columna que contiene las UPP
                     dt.DataTable().column(0).visible(false);
                 }

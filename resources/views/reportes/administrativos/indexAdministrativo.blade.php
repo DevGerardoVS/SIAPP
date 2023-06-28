@@ -27,7 +27,7 @@
         @endif
         
         {{-- Form para descargar el archivo y cambiar los select --}}
-        <form id="form"  method="POST">
+        <form id="form" method="POST">
             @csrf
             <div class="col-md-10 col-sm-12 d-md-flex mt-5">
                 <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
@@ -54,13 +54,20 @@
                     <label for="fechaCorte_filter" class="form-label fw-bold mt-md-1">UPP:</label>
                 </div>
                 <div class="col-md-6 col-sm-12 d-none div_upp">
-                    <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
-                        <option value="">Todos</option>
+                    @if(Auth::user()->sudo==1)
+                        <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
+                            <option value="">Todos</option>
+                            @foreach ($upps as $upp)
+                                <option value={{$upp->clave}} {{$upp->descripcion}}>{{$upp->clave}} {{$upp->descripcion}}</option>
+                            @endforeach
+                        </select>
+                    @else
                         @foreach ($upps as $upp)
-                            <option value={{$upp->clave}} {{$upp->descripcion}}>{{$upp->clave}} {{$upp->descripcion}}</option>
+                        <h6>@if(Auth::user()->clv_upp == $upp->clave) {{$upp->clave}} {{$upp->descripcion}} @endif</h6>
                         @endforeach
-                    </select>
+                    @endif
                 </div>
+
             </div>
             {{-- botones de descarga --}}
             <div class="d-flex flex-wrap justify-content-end mb-5 mt-sm-2 mt-lg-0">
@@ -74,11 +81,13 @@
                 </button>
             </div>
         </form>
-
+         
         <br>
+
         <ul class="nav nav-tabs " id="tabs" role="tablist">
+            @if(Auth::user()->sudo==1)
             <li class="nav-item" >
-                <button class="nav-link textoMorado active" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" aria-selected="true">Calendario fondo mensual</button>
+                <button class="nav-link textoMorado @if(Auth::user()->sudo==1) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->sudo==1)aria-selected="true"@endif>Calendario fondo mensual</button>
             </li>
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="capituloPartida_tab" data-bs-toggle="tab" data-bs-target="#capituloPartida" aria-controls="capituloPartida" aria-selected="false">Resumen capítulo y partida</button>
@@ -86,26 +95,24 @@
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="avanceGeneral_tab" data-bs-toggle="tab" data-bs-target="#avanceGeneral" aria-controls="avanceGeneral" aria-selected="false">Proyecto avance general</button>
             </li>
-            @if (Auth::user()->sudo==0)
+            @endif
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" aria-selected="false">Proyecto calendario general</button>
+                <button class="nav-link textoMorado @if(Auth::user()->sudo==0) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->sudo==0)aria-selected="true"@endif>Proyecto calendario general</button>
             </li>
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Proyecto calendario general de actividades</button>
             </li>
-            @else
-                
-            @endif
-            
+            @if(Auth::user()->sudo==1)
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Avance de proyectos con actividades por UPP</button>
             </li>
-        
+            @endif
         </ul>
 
         <div class="tab-content" style="font-size: 12px;">
             {{-- fondo mensual A--}}
-            <div class="tab-pane active" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
+            @if(Auth::user()->sudo==1)
+            <div class="tab-pane @if(Auth::user()->sudo==1) active @endif" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
                 <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
@@ -206,8 +213,9 @@
                     </div>
                 </div>
             </div>
+            @endif
             {{-- Proyecto calendario general D--}}
-            <div class="tab-pane" id="calendarioGeneral" role="tabpanel" aria-labelledby="calendarioGeneral_tab" >    
+            <div class="tab-pane @if(Auth::user()->sudo==0) active @endif" id="calendarioGeneral" role="tabpanel" aria-labelledby="calendarioGeneral_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
                         <div class="card">
@@ -301,6 +309,7 @@
                 </div>
             </div>
             {{-- Avance de proyectos con actividades por upp F--}}
+            @if(Auth::user()->sudo==1)
             <div class="tab-pane" id="avanceProyectoActividadUPP" role="tabpanel" aria-labelledby="avanceProyectoActividadUPP_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
@@ -323,6 +332,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 
@@ -348,7 +358,6 @@
             });
             
             getDataFechaCorte($('#anio_filter').val());
-            $("#nombre").val('calendario_fondo_mensual');
     
             $('button[data-bs-toggle="tab"]').on('click', function (e) {
                 var id = e.target.id;
@@ -359,9 +368,17 @@
                 redrawTable(tabla);
             });
 
-            var dt = $('#catalogoA');
-            tabla="#catalogoA";
-            letter="A";
+            var user = {!! json_encode((array)auth()->user()->sudo) !!};
+
+            if(user[0] == 1){
+                var dt = $('#catalogoA');
+                tabla="#catalogoA";
+                letter="A";
+            }else{
+                var dt = $('#catalogoD');
+                tabla="#catalogoD";
+                letter="D";
+            }
             dt.DataTable().clear().destroy();
             getData(tabla,letter);
            
@@ -378,8 +395,7 @@
                         var dt = $('#catalogoA');
                         tabla="#catalogoA";
                         letter="A";
-                        $('.div_upp').addClass('d-none');
-                        $("#nombre").val('calendario_fondo_mensual');              
+                        $('.div_upp').addClass('d-none');          
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);   
                         break;
@@ -388,7 +404,6 @@
                         tabla="#catalogoB";
                         letter="B";
                         $('.div_upp').addClass('d-none');
-                        $("#nombre").val('reporte_resumen_por_capitulo_y_partida');
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
@@ -397,7 +412,6 @@
                         tabla="#catalogoC";
                         letter="C";
                         $('.div_upp').addClass('d-none');
-                        $("#nombre").val('avance_general');
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
@@ -406,8 +420,6 @@
                         tabla="#catalogoD";
                         letter="D";
                         $('.div_upp').removeClass('d-none');
-                        $("#nombre").val('calendario_general');
-                        dt.DataTable().columns.adjust().draw();
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
@@ -416,7 +428,6 @@
                         tabla="#catalogoE";
                         letter="E";
                         $('.div_upp').removeClass('d-none');
-                        $("#nombre").val('proyecto_calendario_actividades_upp');
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
@@ -425,7 +436,6 @@
                         tabla="#catalogoF";
                         letter="F";
                         $('.div_upp').addClass('d-none');
-                        $("#nombre").val('avance_proyectos_actividades_upp');
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
