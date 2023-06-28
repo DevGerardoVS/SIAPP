@@ -299,6 +299,16 @@ return new class extends Migration
             sla.sector
         from sector_linea_accion sla
         join catalogo c on sla.linea_accion_id = c.id;");
+
+        DB::unprepared("CREATE VIEW v_sector_importe AS 
+        select 
+            sla.sector concepto,
+            pp.total importe,
+            pp.ejercicio,
+            pp.deleted_at
+        from programacion_presupuesto pp 
+        join v_sector_linea_accion sla on pp.linea_accion = sla.clv_linea_accion;
+        ");
     }
 
     /**
@@ -320,5 +330,6 @@ return new class extends Migration
         DB::unprepared("DROP VIEW IF EXISTS v_posicion_presupuestaria_llaves");
         DB::unprepared("DROP VIEW IF EXISTS v_programacion_presupuesto_llaves");
         DB::unprepared("DROP VIEW IF EXISTS v_sector_linea_accion");
+        DB::unprepared("DROP VIEW IF EXISTS v_sector_importe");
     }
 };

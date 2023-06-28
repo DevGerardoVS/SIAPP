@@ -1773,6 +1773,20 @@ return new class extends Migration
                 group by clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo
             ) tabla2;
         END");
+
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_10(in anio int, in corte date)
+        begin
+            select 
+                concepto,
+                sum(importe) importe
+            from v_sector_importe vsi
+            where ejercicio = anio and if  (
+                corte is null,
+                deleted_at is null,
+                deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            )
+            group by concepto;
+        END;");
     }
 
     /**
@@ -1814,5 +1828,6 @@ return new class extends Migration
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_4");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_5");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_resumen_por_capitulo_y_partida");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_10");
     }
 };
