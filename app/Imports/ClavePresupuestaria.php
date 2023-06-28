@@ -107,11 +107,12 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         ->where('clave',$row['py'])
         ->count();
         $valcat >= 1 ? $row['py'] : $row['py']=NULL; 
+        
  
         //validacion de año 
 /*       
         $year = date("y");
-        $year+1 == $row['anio'] ? $row['anio'] : null; 
+        $year+1 == $row['anio'] ? $row['anio'] = ate("Y") : NULL; 
 */
 
         //Validaciones para Obra
@@ -218,7 +219,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
          ->where('clv_region',$row['reg'])
          ->where('clv_municipio',$row['mpio'])
          ->where('clv_localidad',$row['loc'])->count();
-         $valgeo >= 1 ? $row['ef'] : $row['ef']=NULL; 
+         $valgeo < 1 ? $row['ef']=NULL : $row['ef']; 
         //validacion de tipo de usuario pendiente
          $row['tipo']='RH';
        //validacion si la upp tiene firmados claves presupuestales
@@ -293,9 +294,11 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             '*.tipo' => Rule::in(['RH', 'Operativo']),
              //validacion 3 verificar que upp este autorizada comentada porque no hay upps autorizadas aun
              '*.upp' => ['required',
-                Rule::exists('uppautorizadascpnomina','upp_id')                                        
+                Rule::exists('uppautorizadascpnomina','clv_upp') ,
+                Rule::notIn(['0']),                                       
             ], 
             '*.admconac' => 'required|string',
+            '*.ef' => 'required|string',
             '*.subsecretaria' => 'required|string',
             '*.finalidad' => 'required|string',
             '*.funcion' => 'required|string',
@@ -304,14 +307,16 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             '*.ps' => 'required|string',
             '*.sprconac' =>  'required|string',
             '*.prg' =>  'required|string',
+            '*.no_etiquetado_y_etiquetado' =>  'required|string',
             '*.spr' => ['required','string',Rule::in(['UUU'])],
             '*.py' =>  'required|string',
-            '*.upp' =>  [ 'required','string',Rule::notIn(['0'])], 
             '*.obra' =>  ['required',
             Rule::exists('proyectos_obra','clv_proyecto_obra')                                        
         ],
             '*.idpartida' =>  'required|string',
-            '*.tipogasto' =>  'required|string',
+            '*.tipogasto' =>  ['required',
+            Rule::exists('posicion_presupuestaria','clv_tipo_gasto')                                        
+        ],
             '*.ur' =>  'required',
             '*.total' => 'required|integer',
             'enero'    =>  'required|integer',
@@ -339,8 +344,10 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
 {
     return [
         '*.admconac' => 'La clave de admonac es invalida',
-        '*.upp.exists' => 'El valor de upp asignado no es valido',
-        '*.upp.notIn' => 'No se pueden registrar las claves porque no esta autorizada la upp ',
+        '*.ef' => 'La combinacion de las claves de la celda B a E es invalida',
+        '*.upp.required' => 'El valor de upp asignado no es valido',
+        '*.upp.exists' => 'El valor de upp asignado no esta autorizado',
+        '*.upp.notIn' => 'No se pueden registrar las claves porque ya tiene claves firmadas ',
         '*.total' => 'El total no coincide con los meses',
         '*.subsecretaria' =>  'La clave de subsecretaria introducida no es valida',
         '*.finalidad' =>  'La clave de finalidad introducida no es valida',
@@ -350,9 +357,13 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         '*.ps' =>  'La clave de ps introducida no es valida',
         '*.sprconac' =>  'La clave de sprconac introducida no es valida',
         '*.prg' =>  'La clave de prg introducida no es valida',
-        '*.spr' =>  'La clave de spr introducida no es valida',
+        '*.spr' =>  'La combinacion de claves de la celda I a la R es invalida',
+        '*.spr.In' =>  'La clave spr debe ser UUU para nominas',
         '*.py' =>  'La clave de py introducida no es valida',
+        '*.ur' => 'El campo ur no existe o la combinacion de ur upp y secretaria es invalida',
+        '*.no_etiquetado_y_etiquetado' => 'La combinacion de las claves de la celda V a Z es invalida',
 
+        
     ];
 } 
  

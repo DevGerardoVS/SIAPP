@@ -121,76 +121,7 @@ $( document ).on( "ajaxStart", function() {
 
     })
 
-   /*  $('#aceptar').click(function(e){
-      e.preventDefault();
-      var fd = new FormData();
-      var files = $('#file')[0].files;
-      fd.append('_token', "{{ csrf_token() }}")
-      fd.append('file',files[0]);
 
-      $.ajax({
-        url: "{{route('load_data_plantilla')}} ",
-        type: "POST",
-        data:  fd,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
-        beforeSend: function () {
-          let timerInterval
-          Swal.fire({
-            title: '{{__("messages.msg_cargando_datos")}}',
-            html: ' <b></b>',
-            allowOutsideClick: false,
-            timer: 2000000,
-            timerProgressBar: true,
-            didOpen: () => {
-                    Swal.showLoading();
-                },
-                
-          });
-        },
-        success: function (response) {
-          Swal.close();
-          Swal.fire({
-              title: 'Exito',
-             timer: 2000,
-             icon: 'success',
-            text:  'Datos importados con exito',
-            didOpen: () => {
-                    Swal.hideLoading();
-                },
-           }).then(
-             function () {
-              $("#ModalCargaMasiva").find("#file_label").val('Sin archivos seleccionados')
-              $("#ModalCargaMasiva").find("#file").val('')
-              $('#ModalCargaMasiva').modal('hide');
-
-             },
-           
-          )
-        },
-        error: function (response) {
-          Swal.fire({
-            icon: 'error',
-            title: '{{__("messages.error")}}',
-            timer: 2000,
-            didOpen: () => {
-                    Swal.hideLoading();
-                },
-            text: response.responseJSON.message ? response.responseJSON.message : 'Ocurrio un error al momento de obtener la información.',
-            confirmButtonText: "{{__('messages.aceptar')}}",
-          }).then(
-            function(){
-              $("#ModalCargaMasiva").find("#file_label").val('Sin archivos seleccionados')
-              $("#ModalCargaMasiva").find("#file").val('')
-              $('#ModalCargaMasiva').modal('hide');
-
-            }
-          );
-        }
-      });
-      
-    }) */
 
 
 
