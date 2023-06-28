@@ -153,9 +153,9 @@ class DatabaseSeeder extends Seeder
                 }
             }
 
-            $this->call([
+            /*$this->call([
                 fondosSeeder::class
-            ]);
+            ]);*/
 
             DB::commit();
             echo "\n    - Se aplico con exito el Seeder - Base:\n";
