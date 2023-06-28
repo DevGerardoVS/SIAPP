@@ -51,7 +51,7 @@
             </div>
             <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
                 <div class="col-sm-3 col-md-3 col-lg-2 text-md-end d-none div_upp">
-                    <label for="fechaCorte_filter" class="form-label fw-bold mt-md-1">UPP:</label>
+                    <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
                 </div>
                 <div class="col-md-6 col-sm-12 d-none div_upp">
                     @if(Auth::user()->sudo==1)

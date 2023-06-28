@@ -5,6 +5,7 @@
 	use App\Http\Controllers\Administracion\PermisoController;
 	use App\Http\Controllers\Administracion\BitacoraController;
 	use App\Http\Controllers\ReporteController;
+	use App\Http\Controllers\AdminCapturaController;
 	use App\Http\Controllers\Administracion\InicioController;
 
 	Route::controller(SistemasController::class)->group(function () {
@@ -70,5 +71,9 @@
 
 		Route::post('/Reportes/data-fecha-corte/{ejercicio?}','getFechaCorte')->name('get_fecha_corte'); // Obtener fecha de acuerdo al año
 		Route::post('/Reportes/download/{nombre}', 'downloadReport')->name('downloadReport'); // Descargar reportes
+	});
+
+	Route::controller(AdminCapturaController::class)->group(function(){
+		Route::get('/admon-capturas','index')->name('index');
 	});
 ?>
