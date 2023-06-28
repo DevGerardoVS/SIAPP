@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\QueryHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use JasperPHP\JasperPHP as PHPJasper;
@@ -132,7 +133,7 @@ class ReporteController extends Controller
     }
 
     public function downloadReport(Request $request, $nombre){ 
-        ini_set('max_execution_time', 300);
+        ini_set('max_execution_time', 300); // Tiempo máximo de ejecución 
         date_default_timezone_set('America/Mexico_City');
         setlocale(LC_TIME, 'es_VE.UTF-8','esp');
 
@@ -142,44 +143,51 @@ class ReporteController extends Controller
         $upp = $request->upp_filter;
 
         $ruta = public_path()."/reportes";
-        //Eliminación si ya existe reporte
-        if(File::exists($ruta."/".$report.".pdf")) {
-            File::delete($ruta."/".$report.".pdf");
-        }
-        $logo = public_path()."/img/logo.png";
-        $report_path = app_path() ."/Reportes/".$report.".jasper";
-        $format = array($request->action);
-        $output_file =  public_path()."/reportes";
-        $routeFile = public_path()."/reportes/".$report;
-        $downloadFile = "EF_".$anio."_".$report;
-        $parameters = array(
-            "anio" => $anio,
-            "logoLeft" => $logo,
-            "logoRight" => $logo,
-        );
-       
-        if($fechaCorte != null) {
-            $parameters["fecha"] = $fechaCorte;
-            $downloadFile = $downloadFile."_".$fechaCorte;
-        }
-        if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades_upp"){
-            if($upp != null){
-                $parameters["upp"] = $upp;
-                $downloadFile = $downloadFile."_UPP_".$upp;
+
+        try {
+        
+            //Eliminación si ya existe reporte
+            if(File::exists($ruta."/".$report.".pdf")) {
+                File::delete($ruta."/".$report.".pdf");
             }
+            $logo = public_path()."/img/logo.png";
+            $report_path = app_path() ."/Reportes/".$report.".jasper";
+            $format = array($request->action);
+            $output_file =  public_path()."/reportes";
+            $file = public_path()."/reportes/".$report;
+            $nameFile = "EF_".$anio."_".$report;
+            $parameters = array(
+                "anio" => $anio,
+                "logoLeft" => $logo,
+                "logoRight" => $logo,
+            );
+        
+            if($fechaCorte != null) {
+                $parameters["fecha"] = $fechaCorte;
+                $nameFile = $nameFile."_".$fechaCorte;
+            }
+            if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades_upp"){
+                if($upp != null){
+                    $parameters["upp"] = $upp;
+                    $nameFile = $nameFile."_UPP_".$upp;
+                }
+            }
+
+            $database_connection = \Config::get('database.connections.mysql');
+
+            $jasper = new PHPJasper;
+            $jasper->process(
+            $report_path,
+            $output_file,
+            $format,
+            $parameters,
+            $database_connection
+            )->execute();
+
+            return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
+        } catch (\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            return back()->withErrors(['msg'=>'Hubo un error al descargar el archivo']);
         }
-
-        $database_connection = \Config::get('database.connections.mysql');
-
-        $jasper = new PHPJasper;
-        $jasper->process(
-          $report_path,
-          $output_file,
-          $format,
-          $parameters,
-          $database_connection
-        )->execute();
-
-        return $request->action == 'pdf' ? response()->download($routeFile.".pdf", $downloadFile.".pdf")->deleteFileAfterSend() : response()->download($routeFile.".xls", $downloadFile.".xls")->deleteFileAfterSend(); 
     }
 }

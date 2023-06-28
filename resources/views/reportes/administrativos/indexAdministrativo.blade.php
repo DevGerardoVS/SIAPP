@@ -17,6 +17,15 @@
         <form action="{{route('proyecto_calendario_general_actividad')}}" id="buscarFormE" name="analisis" method="post"><input type="text" id="catalogoE_val"  style="display: none"></form> 
         <form action="{{route('avance_proyecto_actividad_upp')}}" id="buscarFormF" name="analisis" method="post"><input type="text" id="catalogoF_val"  style="display: none"></form> 
 
+        @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            <h4>{{$errors->first()}}</h4>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @endif
+        
         {{-- Form para descargar el archivo y cambiar los select --}}
         <form id="form"  method="POST">
             @csrf
@@ -323,6 +332,9 @@
         var tabla;
         var letter;
         $(document).ready(function() {
+            $(".alert").delay(4000).slideUp(200, function() {
+                $(this).alert('close');
+            });
 
             $.ajaxSetup({
                 headers: {
