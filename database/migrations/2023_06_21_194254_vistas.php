@@ -289,6 +289,16 @@ return new class extends Migration
         join posicion_presupuestaria pp2 on tp.pos_pre_id = pp2.id 
         join fondo f on tp.fondo_id = f.id 
         join proyectos_obra po on tp.obra_id = po.id;");
+
+        DB::unprepared("CREATE VIEW v_sector_linea_accion AS 
+        select 
+            sla.id,
+            c.clave clv_linea_accion,
+            c.descripcion linea_accion,
+              sla.clv_sector,
+            sla.sector
+        from sector_linea_accion sla
+        join catalogo c on sla.linea_accion_id = c.id;");
     }
 
     /**
@@ -309,5 +319,6 @@ return new class extends Migration
         DB::unprepared("DROP VIEW IF EXISTS v_fondo_llaves");
         DB::unprepared("DROP VIEW IF EXISTS v_posicion_presupuestaria_llaves");
         DB::unprepared("DROP VIEW IF EXISTS v_programacion_presupuesto_llaves");
+        DB::unprepared("DROP VIEW IF EXISTS v_sector_linea_accion");
     }
 };
