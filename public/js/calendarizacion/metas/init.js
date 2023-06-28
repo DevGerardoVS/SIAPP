@@ -376,16 +376,14 @@ var init = {
     },
 };
 $(document).ready(function () {
-    getData();    
+    getData();
     dao.getUrs();
     dao.getSelect();
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
     $("#sumMetas").val(0);
-
-   
-   $('input[type=search]').attr('id', 'serchUr');
+    $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
         keyboard: false
