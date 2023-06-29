@@ -20066,7 +20066,7 @@ class fondosSeeder extends Seeder
             (828,566,'Vuelo',2023,NULL,NOW(),NOW(),null,null,'SEEDER');
         ");
 
-        DB::unprepared("INSERT INTO uppAutorizadasCPNomina values
+        DB::unprepared("INSERT INTO uppautorizadascpnomina values
             (1,003,NULL,NOW(),NOW(),null,null,'SEEDER'),
             (2,006,NULL,NOW(),NOW(),null,null,'SEEDER'),
             (3,007,NULL,NOW(),NOW(),null,null,'SEEDER'),

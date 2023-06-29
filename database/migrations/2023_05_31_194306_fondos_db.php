@@ -57,7 +57,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('clv_entidad_federativa',2)->nullable(false);
             $table->string('entidad_federativa',255)->nullable(false);
-            $table->string('clv_region',2)->unsigned()->nullable(false);
+            $table->string('clv_region',2)->nullable(false);
             $table->string('region',255)->nullable(false);
             $table->string('clv_municipio',3)->nullable(false);
             $table->string('municipio',255)->nullable(false);
@@ -93,13 +93,13 @@ return new class extends Migration
 
         Schema::create('posicion_presupuestaria', function (Blueprint $table){
             $table->increments('id');
-            $table->string('clv_capitulo',1)->unsigned()->nullable(false);
+            $table->string('clv_capitulo',1)->nullable(false);
             $table->string('capitulo',255)->nullable(false);
             $table->string('clv_concepto',1)->nullable(false);
             $table->string('concepto',255)->nullable(false);
-            $table->string('clv_partida_generica',1)->unsigned()->nullable(false);
+            $table->string('clv_partida_generica',1)->nullable(false);
             $table->string('partida_generica',255)->nullable(false);
-            $table->string('clv_partida_especifica',2)->unsigned()->nullable(false);
+            $table->string('clv_partida_especifica',2)->nullable(false);
             $table->string('partida_especifica',255)->nullable(false);
             $table->string('clv_tipo_gasto',2)->nullable(true);
             $table->string('tipo_gasto',255)->nullable(true);
@@ -231,7 +231,7 @@ return new class extends Migration
             $table->string('deleted_user',45)->nullable(true);
         });
 
-        Schema::create('uppAutorizadasCPNomina', function (Blueprint $table){
+        Schema::create('uppautorizadascpnomina', function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_upp',3)->nullable(false);
             $table->softDeletes();
@@ -247,7 +247,6 @@ return new class extends Migration
             $table->string('clv_upp',3)->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
             $table->integer('ejercicio')->nullable(false);
-            $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('created_user',45)->nullable(false);
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -301,8 +300,8 @@ return new class extends Migration
             $table->string('clv_fondo',2)->nullable(false);
             $table->integer('actividad_id')->unsigned()->nullable(false);
             $table->enum('tipo',['Acumulativa','Continua','Especial'])->nullable(false);
-            $table->integer('beneficiario_id')->nullable(false);
-            $table->integer('unidad_medida_id')->nullable(false);
+            $table->integer('beneficiario_id')->unsigned()->nullable(false);
+            $table->integer('unidad_medida_id')->unsigned()->nullable(false);
             $table->integer('cantidad_beneficiarios');
             $table->integer('enero')->default(null);
             $table->integer('febrero')->default(null);
@@ -326,7 +325,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
             $table->foreign('beneficiario_id')->references('id')->on('beneficiarios');
-            $table->foreign('unidad_medidad_id')->references('id')->on('unidades_medida');
+            $table->foreign('unidad_medida_id')->references('id')->on('unidades_medida');
             $table->foreign('actividad_id')->references('id')->on('actividades_mir');
         });
 

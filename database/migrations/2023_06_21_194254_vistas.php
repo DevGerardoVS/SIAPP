@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        DB::unprepared("CREATE VIEW IF NOT EXISTS v_epp AS
+        DB::unprepared("CREATE VIEW v_epp AS
         select 
             e.id,
             c01.clave clv_sector_publico,c01.descripcion sector_publico,
@@ -58,7 +58,7 @@ return new class extends Migration
         join catalogo c17 on e.subprograma_id = c17.id 
         join catalogo c18 on e.proyecto_id = c18.id");
 
-        DB::unprepared("CREATE VIEW if not exists v_entidad_ejecutora as
+        DB::unprepared("CREATE VIEW v_entidad_ejecutora as
         select 
             ee.id,
             c.clave clv_upp,
@@ -78,7 +78,7 @@ return new class extends Migration
         join catalogo c2 on ee.subsecretaria_id = c2.id
         join catalogo c3 on ee.ur_id = c3.id;");
 
-        DB::unprepared("CREATE VIEW if not exists v_epp_llaves as
+        DB::unprepared("CREATE VIEW v_epp_llaves as
         select 
             ve.*,
             concat(
@@ -103,7 +103,7 @@ return new class extends Migration
             ) as llave
         from v_epp ve;");
 
-        DB::unprepared("CREATE VIEW if not exists v_programacion_presupuesto_llaves as
+        DB::unprepared("CREATE VIEW v_programacion_presupuesto_llaves as
         select 
             pp.id,
             concat(
@@ -154,7 +154,7 @@ return new class extends Migration
             pp.created_at
         from programacion_presupuesto pp;");
 
-        DB::unprepared("CREATE VIEW if not exists v_clasificacion_geografica as
+        DB::unprepared("CREATE VIEW v_clasificacion_geografica as
         select
             cg.*,
             ((concat(
@@ -165,7 +165,7 @@ return new class extends Migration
             ))*1) as clasificacion_geografica_llave
         from clasificacion_geografica cg;");
 
-        DB::unprepared("CREATE VIEW if not exists v_posicion_presupuestaria_llaves as
+        DB::unprepared("CREATE VIEW v_posicion_presupuestaria_llaves as
         select 
             pp.*,
             ((concat(
@@ -177,7 +177,7 @@ return new class extends Migration
             ))*1) as posicion_presupuestaria_llave
         from posicion_presupuestaria pp;");
 
-        DB::unprepared("CREATE VIEW if not exists v_fondo_llaves as
+        DB::unprepared("CREATE VIEW v_fondo_llaves as
         select 
             f.*,
             concat(
@@ -189,7 +189,7 @@ return new class extends Migration
             ) as llave
         from fondo f;");
 
-        DB::unprepared("CREATE VIEW if not exists pp_aplanado as
+        DB::unprepared("CREATE VIEW pp_aplanado as
         select 
             tp.id,
             ve.clv_sector_publico,
