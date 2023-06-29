@@ -13,34 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-/**/    Schema::create('grupos', function (Blueprint $table){
-        $table->increments('id');
-        $table->text('grupo',100)->nullable(false);
-        $table->softDeletes();
-        $table->string('created_user',45)->nullable(false);
-        $table->string('updated_user',45)->nullable(true);
-        $table->string('deleted_user',45)->nullable(true);
-        $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-        $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-    });
 
-/**/    Schema::create('subgrupos',function (Blueprint $table){
+        Schema::create('grupos', function (Blueprint $table){
             $table->increments('id');
-            $table->integer('grupo_id')->unsigned()->nullable(false);
-            $table->integer('largo_clave')->nullable(false);
-            $table->text('subgrupo',255)->nullable(false);
-            $table->integer('ejercicio')->default(null);
+            $table->integer('grupo')->nullable(false);
             $table->softDeletes();
             $table->string('created_user',45)->nullable(false);
             $table->string('updated_user',45)->nullable(true);
             $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->foreign('grupo_id')->references('id')->on('grupos');
         });
 
-/**/    Schema::create('catalogo', function (Blueprint $table){
+        Schema::create('catalogo', function (Blueprint $table){
             $table->increments('id');
             $table->integer('grupo_id')->unsigned()->nullable(false);
             $table->string('clave',6)->nullable(false);
@@ -55,40 +40,7 @@ return new class extends Migration
             $table->foreign('grupo_id')->references('id')->on('grupos');
         });
 
-/**/    Schema::create('area_funcional', function (Blueprint $table){
-            $table->increments('id')->nullable(false);
-            $table->integer('finalidad_id')->unsigned()->nullable(false);
-            $table->integer('funcion_id')->unsigned()->nullable(false);
-            $table->integer('subfuncion_id')->unsigned()->nullable(false);
-            $table->integer('eje_id')->unsigned()->nullable(false);
-            $table->integer('linea_accion_id')->unsigned()->nullable(false);
-            $table->integer('programa_sectorial_id')->unsigned()->nullable(false);
-            $table->integer('tipologia_conac_id')->unsigned()->nullable(false);
-            $table->integer('programa_presupuestario_id')->unsigned()->nullable(false);
-            $table->integer('subprograma_presupuestario_id')->unsigned()->nullable(false);
-            $table->integer('proyecto_presupuestario_id')->unsigned()->nullable(false);
-            $table->string('llave',16)->nullable(false);
-            $table->integer('ejercicio')->default(null);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->foreign('eje_id')->references('id')->on('catalogo');
-            $table->foreign('finalidad_id')->references('id')->on('catalogo');
-            $table->foreign('funcion_id')->references('id')->on('catalogo');
-            $table->foreign('linea_accion_id')->references('id')->on('catalogo');
-            $table->foreign('programa_presupuestario_id')->references('id')->on('catalogo');
-            $table->foreign('programa_sectorial_id')->references('id')->on('catalogo');
-            $table->foreign('proyecto_presupuestario_id')->references('id')->on('catalogo');
-            $table->foreign('subfuncion_id')->references('id')->on('catalogo');
-            $table->foreign('subprograma_presupuestario_id')->references('id')->on('catalogo');
-            $table->foreign('tipologia_conac_id')->references('id')->on('catalogo');
-        });
-
-/**/    Schema::create('entidad_ejecutora', function (Blueprint $table){
+        Schema::create('entidad_ejecutora', function (Blueprint $table){
             $table->increments('id');
             $table->integer('upp_id')->unsigned()->nullable(false);
             $table->integer('subsecretaria_id')->unsigned()->nullable(false);
@@ -101,46 +53,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
-/**/    Schema::create('area_funcional_entidad_ejecutora', function (Blueprint $table){
-            $table->increments('id');
-            $table->integer('area_funcional_id')->unsigned()->nullable(false);
-            $table->integer('entidad_ejecutora_id')->unsigned()->nullable(false);
-            $table->integer('ejercicio')->nullable(false);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->foreign('area_funcional_id')->references('id')->on('area_funcional');
-            $table->foreign('entidad_ejecutora_id')->references('id')->on('entidad_ejecutora');
-        });
-
-/**/    Schema::create('clasificacion_administrativa', function (Blueprint $table){
-            $table->increments('id');
-            $table->integer('sector_publico_id')->unsigned()->nullable(false);
-            $table->integer('sector_publico_fnof_id')->unsigned()->nullable(false);
-            $table->integer('sector_economia_id')->unsigned()->nullable(false);
-            $table->integer('subsector_economia_id')->unsigned()->nullable(false);
-            $table->integer('ente_publico_id')->unsigned()->unsigned()->nullable(false);
-            $table->string('llave',5)->nullable(false);
-            $table->integer('ejercicio')->default(null);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->foreign('ente_publico_id')->references('id')->on('catalogo');
-            $table->foreign('sector_economia_id')->references('id')->on('catalogo');
-            $table->foreign('sector_publico_id')->references('id')->on('catalogo');
-            $table->foreign('sector_publico_fnof_id')->references('id')->on('catalogo');
-            $table->foreign('subsector_economia_id')->references('id')->on('catalogo');
-        });
-
-/**/    Schema::create('clasificacion_geografica', function (Blueprint $table){
+        Schema::create('clasificacion_geografica', function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_entidad_federativa',2)->nullable(false);
             $table->string('entidad_federativa',255)->nullable(false);
@@ -158,23 +71,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
-/**/    Schema::create('ente_publico_upp', function (Blueprint $table){
-            $table->increments('id');
-            $table->integer('clasificacion_administrativa_id')->unsigned()->nullable(false);
-            $table->integer('entidad_ejecutora_id')->unsigned()->nullable(false);
-            $table->integer('ejercicio')->default(null);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->foreign('clasificacion_administrativa_id')->references('id')->on('clasificacion_administrativa');
-            $table->foreign('entidad_ejecutora_id')->references('id')->on('entidad_ejecutora');
-        });
-
-/**/    Schema::create('fondo', function (Blueprint $table){
+        Schema::create('fondo', function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_etiquetado',1)->nullable(false);
             $table->string('etiquetado', 255)->nullable(false);
@@ -194,7 +91,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
-/**/    Schema::create('posicion_presupuestaria', function (Blueprint $table){
+        Schema::create('posicion_presupuestaria', function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_capitulo',1)->unsigned()->nullable(false);
             $table->string('capitulo',255)->nullable(false);
@@ -214,25 +111,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
-/**/    Schema::create('partida_upp', function (Blueprint $table){
-            $table->integer('posicion_presupuestaria_id')->unsigned()->nullable(false);
-            $table->integer('upp_id')->unsigned()->nullable(false);
-            $table->primary(['posicion_presupuestaria_id', 'upp_id']);
-            $table->string('posicion_presupuestaria_llave',5)->default(null);
-            $table->string('upp_clave',3)->default(null);
-            $table->integer('ejercicio')->default(null);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->foreign('posicion_presupuestaria_id')->references('id')->on('posicion_presupuestaria');
-            $table->foreign('upp_id')->references('id')->on('catalogo');
-        });
-
-/**/    Schema::create('techos_financieros',function (Blueprint $table){
+        Schema::create('techos_financieros',function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_upp',3)->nullable(false);
             $table->string('clv_fondo',2)->nullable(false);
@@ -247,7 +126,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
-/**/    Schema::create('unidades_medida',function (Blueprint $table){
+        Schema::create('unidades_medida',function (Blueprint $table){
             $table->increments('id');
             $table->integer('clave')->nullable(false);
             $table->text('unidad_medida',255);
@@ -261,7 +140,7 @@ return new class extends Migration
 
         });
 
-/**/    Schema::create('beneficiarios',function (Blueprint $table){
+        Schema::create('beneficiarios',function (Blueprint $table){
             $table->increments('id');
             $table->string('clave',2)->nullable(false);
             $table->text('beneficiario',255);
@@ -271,11 +150,10 @@ return new class extends Migration
             $table->string('updated_user',45)->nullable(true);
             $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));    
         });
 
-/**/    Schema::create('programacion_presupuesto',function (Blueprint $table){
+        Schema::create('programacion_presupuesto',function (Blueprint $table){
             $table->increments('id');
             $table->string('clasificacion_administrativa',5)->nullable(false);
             $table->string('entidad_federativa',2)->nullable(false);
@@ -336,126 +214,46 @@ return new class extends Migration
             $table->string('clave_conac',1)->nullable(true);
             $table->string('descripcion_conac',255)->nullable(true);
             $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
-/**/    Schema::create('ur_localidad',function (Blueprint $table){
-            $table->integer('ur_id')->unsigned();
-            $table->integer('localidad_id')->unsigned()->nullable(false);
-            $table->primary(['ur_id','localidad_id']);
-            $table->integer('ejercicio')->default(null);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->foreign('localidad_id')->references('id')->on('catalogo');
-            $table->foreign('ur_id')->references('id')->on('catalogo');
-        });
-
-/**/    Schema::create('upp_fondo_montos',function (Blueprint $table){
+        Schema::create('cierre_ejercicio_metas',function (Blueprint $table){
             $table->increments('id');
-            $table->integer('upp_id')->unsigned()->nullable(false);
-            $table->integer('fondo_id')->unsigned()->nullable(false);
-            $table->enum('tipo',['RH','Operativo'])->nullable(false);
-            $table->integer('monto')->nullable(false);
-            $table->integer('ejercicio')->default(null);
+            $table->string('clv_upp',3)->nullable(false);
+            $table->enum('estatus',['Cerrado','Abierto'])->default(null);
+            $table->integer('ejercicio')->nullable(false);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->string('created_user',45)->nullable(false);
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->string('updated_user',45)->nullable(true);
+            $table->softDeletes();
+            $table->string('deleted_user',45)->nullable(true);
+        });
+
+        Schema::create('uppAutorizadasCPNomina', function (Blueprint $table){
+            $table->increments('id');
+            $table->string('clv_upp',3)->nullable(false);
             $table->softDeletes();
             $table->string('created_user',45)->nullable(false);
             $table->string('updated_user',45)->nullable(true);
             $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->foreign('fondo_id')->references('id')->on('catalogo');
-            $table->foreign('upp_id')->references('id')->on('catalogo');
-
         });
 
-/**/    Schema::create('cierre_ejercicio_metas',function (Blueprint $table){
+        Schema::create('cierre_ejercicio_claves',function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_upp',3)->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
             $table->integer('ejercicio')->nullable(false);
             $table->softDeletes();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('created_user',45)->nullable(false);
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->string('updated_user',45)->nullable(true);
+            $table->softDeletes();
             $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-
-        });
-
-/**/    /*Schema::create('proyectos_ur',function (Blueprint $table){
-            $table->increments('id');
-            $table->integer('upp_id')->nullable(false);
-            $table->integer('ur_id')->nullable(false);
-            $table->integer('fondo_id')->nullable(false);
-            $table->integer('proyecto_id')->nullable(false);
-            $table->softDeletes();
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-        });*/
-
-/**/    Schema::create('uppAutorizadasCPNomina', function (Blueprint $table){
-            $table->increments('id');
-            $table->string('clv_upp',3)->nullable(false);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-        });
-
-/**/    /*Schema::create('actividades',function (Blueprint $table){
-            $table->increments('id');
-            $table->integer('proyectos_ur_id')->unsigned()->nullable(false);
-            $table->text('actividad',255)->default(null);
-            $table->enum('tipo',['Acumulativa','Continua','Especial'])->nullable(false);
-            $table->integer('beneficiario_id')->unsigned()->nullable(false);
-            $table->integer('unidad_medida_id')->unsigned()->nullable(false);
-            $table->integer('cantidad_beneficiarios');
-            $table->integer('enero')->default(null);
-            $table->integer('febrero')->default(null);
-            $table->integer('marzo')->default(null);
-            $table->integer('abril')->default(null);
-            $table->integer('mayo')->default(null);
-            $table->integer('junio')->default(null);
-            $table->integer('julio')->default(null);
-            $table->integer('agosto')->default(null);
-            $table->integer('septiembre')->default(null);
-            $table->integer('octubre')->default(null);
-            $table->integer('noviembre')->default(null);
-            $table->integer('diciembre')->default(null);
-            $table->softDeletes();
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->foreign('proyectos_ur_id')->references('id')->on('proyectos_ur');
-            $table->foreign('beneficiario_id')->references('id')->on('beneficiarios');
-            $table->foreign('unidad_medida_id')->references('id')->on('unidades_medida');
-        });*/
-
-/**/     Schema::create('cierre_ejercicio_claves',function (Blueprint $table){
-            $table->increments('id');
-            $table->string('clv_upp',3)->nullable(false);
-            $table->enum('estatus',['Cerrado','Abierto'])->default(null);
-            $table->integer('ejercicio')->nullable(false);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
         });
 
 /**/     Schema::create('cat_direccion',function (Blueprint $table){
@@ -479,9 +277,6 @@ return new class extends Migration
             $table->string('clv_proyecto',3)->nullable(false);
             $table->integer('ejercicio')->default(null);
             $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
@@ -493,9 +288,6 @@ return new class extends Migration
             $table->string('actividad',255)->nullable(false);
             $table->integer('estatus')->unsigned()->nullable(false);
             $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
@@ -524,6 +316,7 @@ return new class extends Migration
             $table->integer('octubre')->default(null);
             $table->integer('noviembre')->default(null);
             $table->integer('diciembre')->default(null);
+            $table->integer('total')->default(null);
             $table->integer('estatus')->nullable(false);
             $table->softDeletes();
             $table->string('created_user',45)->nullable(false);
@@ -551,6 +344,56 @@ return new class extends Migration
 
             $table->foreign('linea_accion_id')->references('id')->on('catalogo');
         });
+
+        Schema::create('epp',function (Blueprint $table){
+            $table->increments('id');
+            $table->integer('sector_publico_id')->unsigned()->nullable(false);
+            $table->integer('sector_publico_f_id')->unsigned()->nullable(false);
+            $table->integer('sector_economia_id')->unsigned()->nullable(false);
+            $table->integer('subsector_economia_id')->unsigned()->nullable(false);
+            $table->integer('ente_publico_id')->unsigned()->nullable(false);
+            $table->integer('upp_id')->unsigned()->nullable(false);
+            $table->integer('subsecretaria_id')->unsigned()->nullable(false);
+            $table->integer('ur_id')->unsigned()->nullable(false);
+            $table->integer('finalidad_id')->unsigned()->nullable(false);
+            $table->integer('funcion_id')->unsigned()->nullable(false);
+            $table->integer('subfuncion_id')->unsigned()->nullable(false);
+            $table->integer('eje_id')->unsigned()->nullable(false);
+            $table->integer('linea_accion_id')->unsigned()->nullable(false);
+            $table->integer('programa_sectorial_id')->unsigned()->nullable(false);
+            $table->integer('tipologia_conac_id')->unsigned()->nullable(false);
+            $table->integer('programa_id')->unsigned()->nullable(false);
+            $table->integer('subprograma_id')->unsigned()->nullable(false);
+            $table->integer('proyecto_id')->unsigned()->nullable(false);
+            $table->integer('ejercicio')->unsigned()->nullable(false);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+            $table->string('deleted_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
+            $table->string('created_user',45)->nullable(false);
+        });
+
+        Schema::create('pp_identificadores',function (Blueprint $table){
+            $table->increments('id');
+            $table->integer('epp_id')->unsigned()->nullable(false);
+            $table->integer('clas_geo_id')->unsigned()->nullable(false);
+            $table->integer('pos_pre_id')->unsigned()->nullable(false);
+            $table->integer('fondo_id')->unsigned()->nullable(false);
+            $table->integer('obra_id')->unsigned()->nullable(false);
+        });
+
+        Schema::create('proyectos_obra',function (Blueprint $table){
+            $table->increments('id');
+            $table->string('clv_proyecto_obra',6)->nullable(false);
+            $table->string('proyecto_obra',255)->nullable(false);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+            $table->string('deleted_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
+            $table->string('created_user',45)->nullable(false);
+        });
     }
 
 
@@ -561,24 +404,17 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('area_funcional_entidad_ejecutora');
-        Schema::dropIfExists('ente_publico_upp');
         Schema::dropIfExists('fondo');
-        Schema::dropIfExists('partida_upp');
         Schema::dropIfExists('techos_financieros');
         Schema::dropIfExists('programacion_presupuesto');
         Schema::dropIfExists('tipologia_conac');
-        Schema::dropIfExists('ur_localidad');
-        Schema::dropIfExists('upp_fondo_montos');
         Schema::dropIfExists('unidades_medida');
         Schema::dropIfExists('beneficiarios');
         Schema::dropIfExists('cierre_ejercicio_metas');
         Schema::dropIfExists('cat_direccion');
         Schema::dropIfExists('metas');
-        /*Schema::dropIfExists('actividades');*/
         Schema::dropIfExists('cierre_ejercicio_claves');
         Schema::dropIfExists('uppAutorizadasCPNomina');
-        Schema::dropIfExists('area_funcional');
         Schema::dropIfExists('clasificacion_administrativa');
         Schema::dropIfExists('clasificacion_geografica');
         Schema::dropIfExists('entidad_ejecutora');
@@ -587,5 +423,8 @@ return new class extends Migration
         Schema::dropIfExists('subgrupos');
         Schema::dropIfExists('grupos');
         Schema::dropIfExists('sector_linea_accion');
+        Schema::dropIfExists('epp');
+        Schema::dropIfExists('pp_identificadores');
+        Schema::dropIfExists('proyectos_obra');
     }
 };
