@@ -24,6 +24,7 @@
 		Route::post('adm-usuarios/eliminar', 'postDelete');
 		Route::post('adm-usuarios/grupos', 'postGrupos');
 		Route::get('grupos', 'grupos');
+		Route::get('/upp/get', 'getUpp');
 	});
 
 	Route::controller(InicioController::class)->group(function (){

@@ -1,71 +1,63 @@
 @extends('layouts.app')
 @include('calendarizacion.metas.addActividad')
-@isset($dataSet)
-    @include('panels.datatable')
-@endisset
+@include('panels.datatable')
 @section('content')
     <div class="container">
-        <form action="{{ route('proyecto') }}" id="buscarForm" method="GET">
-            @csrf
-            <div class="row">
-                <div class="col-sm-2">
-                </div>
-        </form>
         <section id="widget-grid" class="conteiner">
             <div class="row">
-                <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
-                    <div color="darken" class="jarviswidget" id="wid-id-1" data-widget-editbutton="false"
-                        data-widget-colorbutton="false" data-widget-deletebutton="false">
-                        <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
-                            <h2>Metas por proyecto</h2>
-                        </header>
-                        <br>
+                <div>
+                    <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8; margin-bottom: 5px;">
+                        <h2>Proyectos con actividades</h2>
+                    </header>
+                </div>
+                    
+                    <div class="d-flex " style="justify-content: flex-end">
                         <div>
-                            <div class="widget-body-toolbar">
-                                <ul style="">
-                                    <li><b>UR:</b></li>
-                                    <li><b>Programa:</b></li>
-                                    <li><b>Subprograma:</b></li>
-                                    <li><b>Proyecto:</b></li>
-                                </ul>
+                            <a type="button" class="btn btn-primary" href="{{ route('exportjasper') }}" target="xxx">Formato</a>
+                            &nbsp
+                            <a type="button" class="btn btn-primary" href="{{ route('index_metas') }}">Agregar Actividad</a>
+                            <div class="d-flex justify-content-center" style=" margin: 2px auto;">
+                                <a type="button" style="justify-content: float-right" href="{{ route('ExportExcel') }}"
+                                    class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></a>
+                                &nbsp
+                                <a type="button" style="justify-content: flex-end" href="{{ route('exportPdf') }}"
+                                    class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
                             </div>
-                        </div>
-                        <br>
-                        <div class="widget-body no-padding ">
-                            <div class="table-responsive ">
-                                <table id="actividades" class="table table-hover table-striped ">
-                                    <thead>
-                                        <tr class="colorMorado">
-                                            <th>Actividad</th>
-                                            <th>Metas</th>
-                                            <th>Tipo Actividad</th>
-                                            <th>No. Beneficiarios</th>
-                                            <th>Beneficiarios</th>
-                                            <th>U. de medida</th>
-                                            <th>Fondo</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="d-flex justify-content-center">
-                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#addActividad"data-backdrop="static" data-keyboard="false">Agregar
-                                Actividad</button>
                         </div>
                     </div>
-            </div>
+                    <div class="widget-body no-padding ">
+                        <div class="table-responsive ">
+                            <table id="catalogo" class="table table-hover table-striped"
+                                style="border-collapse: collapse;">
+                                <thead>
+                                    <tr class="colorMorado">
+                                        <th>UR</th>
+                                        <th>Programa</th>
+                                        <th>Subprograma</th>
+                                        <th>Proyecto</th>
+                                        <th>Fondo</th>
+                                        <th>Actividad</th>
+                                        <th>Tipo Actividad</th>
+                                        <th>Meta anual</th>
+                                        <th># Beneficiarios</th>
+                                        <th>Beneficiarios</th>
+                                        <th>U de medida</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        </section>
     </div>
-    </article>
-    <a class="btn btn-primary btn-lg" href="/calendarizacion/metas" role="button">Regresar</a>
-    <button type="button" class="btn btn-secondary btn-lg">Guardar</button>
-    </div>
-    </section>
-    </div>
-    <script src="/js/calendarizacion/metas/init.js"></script>
+    <script src="/js/calendarizacion/metas/initActiv.js"></script>
     <script src="/js/utilerias.js"></script>
+    <script>
+        //En las vistas solo se llaman las funciones del archivo init
+
+        init.validateCreate($('#actividad'));
+    </script>
 @endsection
