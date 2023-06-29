@@ -407,23 +407,25 @@ return new class extends Migration
         Schema::dropIfExists('techos_financieros');
         Schema::dropIfExists('programacion_presupuesto');
         Schema::dropIfExists('tipologia_conac');
+        Schema::dropIfExists('metas');
         Schema::dropIfExists('unidades_medida');
         Schema::dropIfExists('beneficiarios');
         Schema::dropIfExists('cierre_ejercicio_metas');
         Schema::dropIfExists('cat_direccion');
-        Schema::dropIfExists('metas');
         Schema::dropIfExists('cierre_ejercicio_claves');
         Schema::dropIfExists('uppAutorizadasCPNomina');
         Schema::dropIfExists('clasificacion_administrativa');
         Schema::dropIfExists('clasificacion_geografica');
         Schema::dropIfExists('entidad_ejecutora');
         Schema::dropIfExists('posicion_presupuestaria');
+        Schema::dropIfExists('epp');
+        Schema::dropIfExists('sector_linea_accion');
         Schema::dropIfExists('catalogo');
         Schema::dropIfExists('subgrupos');
         Schema::dropIfExists('grupos');
-        Schema::dropIfExists('sector_linea_accion');
-        Schema::dropIfExists('epp');
         Schema::dropIfExists('pp_identificadores');
         Schema::dropIfExists('proyectos_obra');
+        Schema::dropIfExists('actividades_mir');
+        Schema::dropIfExists('proyectos_mir');
     }
 };
