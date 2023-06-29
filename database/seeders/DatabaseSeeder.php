@@ -72,8 +72,13 @@ class DatabaseSeeder extends Seeder
     protected $grupos = array(
 
         ['id' => 1, 'nombre_grupo' => 'Administrador', 'estatus' => 0],
-        ['id' => 2, 'nombre_grupo' => 'user', 'estatus' => 0],
-        ['id' => 3, 'nombre_grupo' => 'upp', 'estatus' => 0]
+        ['id' => 2, 'nombre_grupo' => 'Gobdigital', 'estatus' => 0],
+        ['id' => 3, 'nombre_grupo' => 'Auditor', 'estatus' => 0],
+        ['id' => 4, 'nombre_grupo' => 'Upp', 'estatus' => 0],
+        ['id' => 5, 'nombre_grupo' => 'Upp-CMO', 'estatus' => 0],
+        ['id' => 6, 'nombre_grupo' => 'upp-CM', 'estatus' => 0],
+        ['id' => 7, 'nombre_grupo' => 'upp-Obra', 'estatus' => 0],
+
     );
 
 
