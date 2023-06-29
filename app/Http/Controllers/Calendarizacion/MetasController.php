@@ -255,7 +255,6 @@ class MetasController extends Controller
 	}
 	public function getProgramas($ur)
 	{
-		log::debug($ur);
 		$urs = DB::table('v_epp')
 			->select(
 				'id',
@@ -441,7 +440,7 @@ class MetasController extends Controller
 			"anio"=>$date->year,
 			"corte"=>$date->format('Y-m-d'),
 			"logoLeft"=> public_path().'img\escudo.png',
-			"logoRight"=>public_path()."img\escudo.png",
+			"logoRight"=>public_path().'img\escudo.png',
 			"UPP"=>$upp->cve_upp,
             );
 		log::debug($request);
@@ -478,8 +477,8 @@ class MetasController extends Controller
           $format,
           $parameters,
           $database_connection
-        )->execute();
-        //dd($jasper);
+        )->output();
+        dd($jasper);
         return Response::make(file_get_contents(public_path()."/Reportes/".$report.".pdf"), 200, [
             'Content-Type' => 'application/pdf'
         ]);
@@ -488,6 +487,7 @@ class MetasController extends Controller
 	{
 		DB::beginTransaction();
 		try {
+			ini_set('max_execution_time', 1200);
 			$assets = $request->file('cmFile');
 			$import = new MetasImport();
 			$import->onlySheets('Metas');

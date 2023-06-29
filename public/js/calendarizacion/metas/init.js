@@ -111,14 +111,12 @@ var dao = {
             processData: false,
             contentType: false,
             cache: false,
-            timeout: 600000
         }).done(function (response) {
             $('#cerrar').trigger('click');
             Swal.fire({
                 icon: 'success',
                 title: 'Your work has been saved',
                 showConfirmButton: false,
-                timer: 1500
             });
         });
     },
