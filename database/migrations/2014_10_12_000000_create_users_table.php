@@ -28,7 +28,7 @@ return new class extends Migration
 
         Schema::create('adm_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_ente')->unsigned()->nullable();
+            $table->integer('id_grupo')->unsigned()->nullable();
             $table->string('nombre', 150);
             $table->string('p_apellido', 80);
             $table->string('s_apellido', 80);
@@ -38,11 +38,12 @@ return new class extends Migration
             $table->string('password', 200);
             $table->rememberToken();
             $table->tinyInteger('sudo')->default(0);
+            $table->string('clv_upp', 20)->nullable();
             $table->tinyInteger('estatus')->default(1);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            $table->foreign('id_ente' )->references('id')->on('cat_entes');
+            $table->foreign('id_grupo' )->references('id')->on('grupos');
         });
 
         //Tablas para la administracion de roles en el proyecto
@@ -105,6 +106,23 @@ return new class extends Migration
             $table->foreign('id_sistema')->references('id')->on('adm_sistemas');
 
         });
+        Schema::create('upp_menus', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('id_sistema')->unsigned();
+            $table->tinyInteger('padre')->default(0);
+            $table->string('nombre_menu', 100);
+            $table->string('ruta', 400);
+            $table->string('icono', 100);
+            $table->tinyInteger('nivel')->default(0);
+            $table->tinyInteger('posicion');
+            $table->string('descripcion', 400);
+            $table->tinyInteger('estatus')->default(1);
+            $table->softDeletes();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->foreign('id_sistema')->references('id')->on('adm_sistemas');
+
+        });
 
         Schema::create('adm_rel_menu_grupo', function (Blueprint $table) {
             $table->increments('id');
@@ -117,6 +135,20 @@ return new class extends Migration
         });
 
         Schema::create('adm_funciones', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('id_sistema')->unsigned();
+
+            $table->integer('id_menu')->unsigned();
+            $table->string('modulo', 50);
+            $table->string('funcion', 70);
+            $table->string('tipo', 50);
+            $table->longText('descripcion');
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->foreign('id_sistema')->references('id')->on('adm_sistemas');
+            $table->foreign('id_menu')->references('id')->on('adm_menus');
+        });
+        Schema::create('upp_funciones', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('id_sistema')->unsigned();
 
