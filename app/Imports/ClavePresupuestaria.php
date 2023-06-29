@@ -110,28 +110,34 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         
  
         //validacion de año 
-/*       
-        $year = date("y");
-        $year+1 == $row['anio'] ? $row['anio'] = ate("Y") : NULL; 
-*/
+      
+/*         $year = date("y");
+        $year+1 == $row['anio'] ? $row['anio'] = date("Y") : NULL;  */
 
-        //Validaciones para Obra
-/*         if(Auth::user()->perfil=='operativo'){
+        //verificar que el usuario tenga permiso
+/*         $usuario=auth::user()->id_ente;//si es vacio es administrador
+        $uppUsuario = CatEntes::where('id', auth::user()->id_ente)->first();
+        $autorizado = uppautorizadascpnomina::where($uppUsuario->cve_upp)->count(); */
+        
+        //Validaciones para Obra aqui hay que chambear
+         if($row['spr']=='UUU'){
+            $row['obra'] == '000000'? $row['obra']: $row['obra'] =NULL;
+        }
+        else{
             $valObra = obra::select()
             ->where('clv_proyecto_obra',$row['obra'])
             ->count();
             if($valObra < 1 ){
                 $row['obra']=NULL;
             }
-        }
-        else{
-            $row['obra'] == '000000'? $row['obra']: $row['obra'] =NULL;
         } 
-*/
+
+/*         Rule::exists('uppautorizadascpnomina','clv_upp') 
+ */
          
         //validacion de codigo para posicion presupuestaria falta usuario
-/*         $arraypos = str_split($row['idpartida'], 1);
-        if($arraypos[0]==1){
+         $arraypos = str_split($row['idpartida'], 1);
+        if($arraypos[0]==1 && $row['spr']=='UUU'){
             $valpos = PosicionPresupuestaria::select()
             ->where('clv_capitulo',$arraypos[0])
             ->where('clv_concepto',$arraypos[1])
@@ -139,14 +145,32 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
             ->where('clv_tipo_gasto',$row['tipogasto'])
             ->count();
-            if($valpos == 0 ){
+            if($valpos < 1  ){
                 $row['idpartida']=NULL;
             }
         }
         else{
-            $row['idpartida']=NULL;
-        } */
+            $valpos = PosicionPresupuestaria::select()
+            ->where('clv_capitulo',$arraypos[0])
+            ->where('clv_concepto',$arraypos[1])
+            ->where('clv_partida_generica',$arraypos[2])
+            ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
+            ->where('clv_tipo_gasto',$row['tipogasto'])
+            ->count();
+            if($valpos < 1  ){
+                $row['idpartida']=NULL;
+            }        
+        } 
 
+         //validacion de tipo de usuario pendiente
+         if($row['spr']=='UUU'){
+            $row['tipo']='RH';
+
+         }
+         else{
+            $row['tipo']='Operativo';
+
+         }
 
         //validacion de fondos
         $valfondo = Fondos::select()
@@ -220,8 +244,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
          ->where('clv_municipio',$row['mpio'])
          ->where('clv_localidad',$row['loc'])->count();
          $valgeo < 1 ? $row['ef']=NULL : $row['ef']; 
-        //validacion de tipo de usuario pendiente
-         $row['tipo']='RH';
+
        //validacion si la upp tiene firmados claves presupuestales
          $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->value('estado');
          $valupp==1 ? $row['upp']=0 : $row['upp']; 
@@ -262,7 +285,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
           'fondo_ramo' => $row['fondo'],
           'capital' => $row['ci'],
           'proyecto_obra' => $row['obra'],
-          'ejercicio' =>  2023, //quitar hardcode despues de probar
+          'ejercicio' =>  $row['ano'], 
           'fondo_ramo'    => $row['fondo'],
           'enero'    => $row['enero'],
           'febrero'    => $row['febrero'],
@@ -278,7 +301,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
           'diciembre'    => $row['diciembre'],
           'total'    => $row['total'],
           'estado'    => 0,
-          'tipo'    => 'RH', 
+          'tipo'    => $row['tipo'], 
           'updated_at' => null,
           'created_user' => Auth::user()->username
 
@@ -292,10 +315,9 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
     {
         return [
             '*.tipo' => Rule::in(['RH', 'Operativo']),
-             //validacion 3 verificar que upp este autorizada comentada porque no hay upps autorizadas aun
+             //cambiar validacion de autorizadas unicamente a operativo
              '*.upp' => ['required',
-                Rule::exists('uppautorizadascpnomina','clv_upp') ,
-                Rule::notIn(['0']),                                       
+                Rule::notIn(['0'])                                       
             ], 
             '*.admconac' => 'required|string',
             '*.ef' => 'required|string',
@@ -308,7 +330,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             '*.sprconac' =>  'required|string',
             '*.prg' =>  'required|string',
             '*.no_etiquetado_y_etiquetado' =>  'required|string',
-            '*.spr' => ['required','string',Rule::in(['UUU'])],
+            '*.spr' => ['required','string'],
             '*.py' =>  'required|string',
             '*.obra' =>  ['required',
             Rule::exists('proyectos_obra','clv_proyecto_obra')                                        
@@ -346,7 +368,6 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         '*.admconac' => 'La clave de admonac es invalida',
         '*.ef' => 'La combinacion de las claves de la celda B a E es invalida',
         '*.upp.required' => 'El valor de upp asignado no es valido',
-        '*.upp.exists' => 'El valor de upp asignado no esta autorizado',
         '*.upp.notIn' => 'No se pueden registrar las claves porque ya tiene claves firmadas ',
         '*.total' => 'El total no coincide con los meses',
         '*.subsecretaria' =>  'La clave de subsecretaria introducida no es valida',
@@ -358,7 +379,6 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         '*.sprconac' =>  'La clave de sprconac introducida no es valida',
         '*.prg' =>  'La clave de prg introducida no es valida',
         '*.spr' =>  'La combinacion de claves de la celda I a la R es invalida',
-        '*.spr.In' =>  'La clave spr debe ser UUU para nominas',
         '*.py' =>  'La clave de py introducida no es valida',
         '*.ur' => 'El campo ur no existe o la combinacion de ur upp y secretaria es invalida',
         '*.no_etiquetado_y_etiquetado' => 'La combinacion de las claves de la celda V a Z es invalida',

@@ -53,7 +53,7 @@
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
                                     
                                         </div>
-                                        
+
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
                                                 <a type="button"id='btnNuevaClave' class="btn btn-success form-control"  href="/calendarizacion-claves-create" ><i class="fa fa-plus">Nueva Clave</i></a>

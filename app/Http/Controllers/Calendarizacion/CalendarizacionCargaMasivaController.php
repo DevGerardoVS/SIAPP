@@ -13,6 +13,8 @@ use App\Models\TechosFinancieros;
 use Carbon\Carbon;
 use App\Exports\ImportErrorsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\catalogos\CatEntes;
+use App\Models\uppautorizadascpnomina;
 
 use Redirect;
 use Datatables;
@@ -27,13 +29,25 @@ class CalendarizacionCargaMasivaController extends Controller
      //Obtener plantilla para descargar
 	public function getExcel(Request $request)	{
      $file='plantilla.xlsx';
+
     return response()->download(storage_path("templates/{$file}"));
 	}
     
      //Obtener datos del excel
      public function loadDataPlantilla(Request $request)	{
-          ini_set('max_execution_time', 1200);
-        
+        ini_set('max_execution_time', 1200);
+
+        //verificar que el usuario tenga permiso
+        $usuario=auth::user()->id_ente;//si es vacio es administrador
+        if($usuario==NULL){
+            $autorizado=1;
+        }else{
+            $uppUsuario = CatEntes::where('id', auth::user()->id_ente)->first();
+
+            $autorizado = uppautorizadascpnomina::where($uppUsuario->cve_upp)->count();
+        }
+
+        if($autorizado>0 ){
             $message=[
                 'file'=> 'El archivo debe ser tipo xlsx' 
               ];
@@ -51,7 +65,6 @@ class CalendarizacionCargaMasivaController extends Controller
          $arraypresupuesto= array();
          $errores=0;
          //wea para identificar usuario
-         $uppUsuario = CatEntes::where('id', auth::user()->id_ente)->first();
 
         if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
             $filearray =$xlsx->rows();
@@ -64,13 +77,13 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
                 //buscar en el array de totales 
-               if(array_key_exists($k['5'].$k['24'], $arraypresupuesto) && $k['27']!=''){
+               if(array_key_exists($k['5'].$k['16'].$k['24'], $arraypresupuesto) && $k['27']!=''){
 
-                $arraypresupuesto[$k['5'].$k['24']] =  $arraypresupuesto[$k['5'].$k['24']]+$k['27']; 
+                $arraypresupuesto[$k['5'].$k['16'].$k['24']] =  $arraypresupuesto[$k['5'].$k['16'].$k['24']]+$k['27']; 
 
                }else{
                 if($k['27']!='' && $k['5'].$k['24'] !='' ){
-                    $arraypresupuesto[$k['5'].$k['24']] = $k['27']; 
+                    $arraypresupuesto[$k['5'].$k['16'].$k['24']] = $k['27']; 
                 }
                }
 
@@ -96,14 +109,22 @@ class CalendarizacionCargaMasivaController extends Controller
              //validacion de totales
              foreach($arraypresupuesto as $key=>$value){
               $arraysplit = str_split($key, 3);
-                 $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('clv_fondo', $arraysplit[1])->where('tipo','RH')->value('presupuesto');
+              $tipoFondo='';
+               if($arraysplit[1]=='UUU'){
+                $tipoFondo='RH';
+               }
+               else{
+                $tipoFondo='Operativo';
+               }
+                 $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo','RH')->where('clv_fondo', $arraysplit[2])->value('presupuesto');
                  if($valupp=!$value){
                  $error++;
                 }
 
             }
             if($error>0){
-                return redirect()->to('/calendarizacion/claves')->withErrors('error','El total presupuestado en las upp no es igual al techo financiero');
+                return redirect()->back()->withErrors('error','El total presupuestado en las upp no es igual al techo financiero');
+
             }
         } else {
             Log::debug(SimpleXLSX::parseError());
@@ -135,10 +156,15 @@ class CalendarizacionCargaMasivaController extends Controller
 
             
             } 
+        }else{
+            return redirect()->back()->withErrors('error','No tiene permisos para hacer carga masiva');
 
- 
+        }
+        
             
        }
+
+       //pendiente no funciona
        public function DownloadErrors(Request $request)	{
 
               $response = Excel::download(new ImportErrorsExport($request->failures), 'Errores.xlsx', \Maatwebsite\Excel\Excel::XLSX);
