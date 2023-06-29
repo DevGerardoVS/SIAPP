@@ -15,7 +15,7 @@ class fondosSeeder extends Seeder
      */
     public function run()
     {
-        DB::unprepared("INSERT INTO grupos values
+        DB::unprepared("INSERT INTO grupos(id,grupo,deleted_at,updated_at,created_at,deleted_user,updated_user,created_user) values
             (1,'SECTOR PÚBLICO',null,now(),now(),null,null,'SEEDER'),
             (2,'SECTOR PÚBLICO FINANCIERO/NO FINANCIERO',null,now(),now(),null,null,'SEEDER'),
             (3,'SECTOR DE ECONOMÍA',null,now(),now(),null,null,'SEEDER'),
@@ -37,7 +37,7 @@ class fondosSeeder extends Seeder
             (19,'METAS_TIPO',null,now(),now(),null,null,'SEEDER');
         ");
 
-        DB::unprepared("INSERT INTO catalogo values 
+        DB::unprepared("INSERT INTO catalogo(id,grupo_id, clave, descripcion, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values 
         (1,1,'2','SECTOR PÚBLICO DE LAS ENTIDADES FEDERATIVAS',null,now(),now(),null,null,'SEEDER'),
         (2,2,'1','SECTOR PÚBLICO NO FINANCIERO',null,now(),now(),null,null,'SEEDER'),
         (3,3,'1','GOBIERNO GENERAL ESTATAL O DEL DISTRITO FEDERAL',null,now(),now(),null,null,'SEEDER'),
@@ -2406,7 +2406,7 @@ class fondosSeeder extends Seeder
         (2366,13,'VT','4.6.3.7 IMPULSAR LA CREACIÓN DEL SISTEMA ESTATAL DE MOVILIDAD Y SEGURIDAD VIAL.',null,now(),now(),null,null,'SEEDER');
         ");
 
-        DB::unprepared("INSERT INTO entidad_ejecutora values 
+        DB::unprepared("INSERT INTO entidad_ejecutora(id,upp_id, subsecretaria_id, ur_id, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values 
             (1,11,91,123,null,now(),now(),null,null,'SEEDER'),
             (2,11,91,124,null,now(),now(),null,null,'SEEDER'),
             (3,11,91,125,null,now(),now(),null,null,'SEEDER'),
@@ -2903,7 +2903,7 @@ class fondosSeeder extends Seeder
             (494,90,91,527,null,now(),now(),null,null,'SEEDER');
         ");
 
-        DB::unprepared("INSERT INTO epp values
+        DB::unprepared("INSERT INTO epp(id,sector_publico_id, sector_publico_f_id, sector_economia_id, subsector_economia_id, ente_publico_id, upp_id, subsecretaria_id, ur_id, finalidad_id, funcion_id, subfuncion_id, eje_id, linea_accion_id, programa_sectorial_id, tipologia_conac_id, programa_id, subprograma_id, proyecto_id, ejercicio, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values
             (1,1,2,3,4,6,11,91,123,528,532,553,617,621,897,910,928,1057,1453,2023,null,now(),now(),null,null,'SEEDER'),
             (2,1,2,3,4,6,11,91,123,528,532,553,617,621,897,911,929,1058,1454,2023,null,now(),now(),null,null,'SEEDER'),
             (3,1,2,3,4,6,11,91,123,528,532,553,617,621,897,912,928,1059,1455,2023,null,now(),now(),null,null,'SEEDER'),
@@ -5119,51 +5119,51 @@ class fondosSeeder extends Seeder
             (2213,1,2,3,4,10,90,91,527,528,541,570,618,622,897,915,1056,1061,1456,2023,null,now(),now(),null,null,'SEEDER');
         ");
 
-        DB::unprepared("INSERT INTO beneficiarios values
-            (1,01,'Adultos',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (2,02,'Adultos mayores',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (3,30,'Alumnos',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (4,28,'Artesanos',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (5,38,'Asociación Civil',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (6,16,'Ayuntamientos',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (7,33,'Biblioteca',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (8,14,'Clubes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (9,26,'Congreso',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (10,23,'Deportistas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (11,31,'Docente',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (12,29,'Empleados',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (13,20,'Empresarios y/o industriales',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (14,32,'Escuela',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (15,35,'Estudiantes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (16,03,'Familias',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (17,13,'Gobierno',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (18,24,'Habitantes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (19,04,'Hombres',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (20,05,'Indígenas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (21,19,'Instituciones y/o asociaciones',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (22,06,'Jóvenes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (23,15,'Migrantes retornados',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (24,07,'Mujeres',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (25,17,'Municipios',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (26,08,'Niñas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (27,09,'Niños',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (28,22,'Niños, niñas y adolescentes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (29,36,'Notarios',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (30,21,'Organizaciones',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (31,39,'Pacientes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (32,10,'Personas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (33,11,'Personas con capacidades diferentes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (34,34,'Personas privadas de su libertad',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (35,18,'Población migrante y sus familias',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (36,12,'Productores',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (37,37,'Proveedores',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (38,25,'Sujetos obligados',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (39,41,'Turistas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (40,27,'Unidades económicas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (41,40,'Usuarios',2023,NULL,NOW(),NOW(),null,null,'SEEDER');
+        DB::unprepared("INSERT INTO beneficiarios(id,clave, beneficiario, ejercicio, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values
+            (1,'01','Adultos',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (2,'02','Adultos mayores',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (3,'30','Alumnos',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (4,'28','Artesanos',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (5,'38','Asociación Civil',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (6,'16','Ayuntamientos',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (7,'33','Biblioteca',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (8,'14','Clubes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (9,'26','Congreso',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (10,'23','Deportistas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (11,'31','Docente',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (12,'29','Empleados',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (13,'20','Empresarios y/o industriales',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (14,'32','Escuela',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (15,'35','Estudiantes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (16,'03','Familias',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (17,'13','Gobierno',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (18,'24','Habitantes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (19,'04','Hombres',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (20,'05','Indígenas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (21,'19','Instituciones y/o asociaciones',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (22,'06','Jóvenes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (23,'15','Migrantes retornados',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (24,'07','Mujeres',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (25,'17','Municipios',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (26,'08','Niñas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (27,'09','Niños',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (28,'22','Niños, niñas y adolescentes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (29,'36','Notarios',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (30,'21','Organizaciones',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (31,'39','Pacientes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (32,'10','Personas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (33,'11','Personas con capacidades diferentes',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (34,'34','Personas privadas de su libertad',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (35,'18','Población migrante y sus familias',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (36,'12','Productores',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (37,'37','Proveedores',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (38,'25','Sujetos obligados',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (39,'41','Turistas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (40,'27','Unidades económicas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (41,'40','Usuarios',2023,NULL,NOW(),NOW(),null,null,'SEEDER');
         ");
 
-        DB::unprepared("INSERT INTO clasificacion_geografica values
+        DB::unprepared("INSERT INTO clasificacion_geografica(id,clv_entidad_federativa, entidad_federativa, clv_region, region, clv_municipio, municipio, clv_localidad, localidad, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values
             (1,'16','Michoacán','03','Cuitzeo','001','Acuitzio','001','Acuitzio del Canje',null,now(),now(),null,null,'SEEDER'),
             (2,'16','Michoacán','03','Cuitzeo','001','Acuitzio','002','Agua Bendita',null,now(),now(),null,null,'SEEDER'),
             (3,'16','Michoacán','03','Cuitzeo','001','Acuitzio','003','Agua Del Toro',null,now(),now(),null,null,'SEEDER'),
@@ -18139,7 +18139,7 @@ class fondosSeeder extends Seeder
             (12973,'16','Michoacán','00','Michoacán de Ocampo','999','Estatal','999','Cobertura Estatal',null,now(),now(),null,null,'SEEDER');
         ");
 
-        DB::unprepared("INSERT INTO fondo values
+        DB::unprepared("INSERT INTO fondo(id,clv_etiquetado, etiquetado, clv_fuente_financiamiento, fuente_financiamiento, clv_ramo, ramo, clv_fondo_ramo, fondo_ramo, clv_capital, capital, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values
             (1,'1','No etiquetado','1','Recursos Fiscales','01','INGRESOS DE FUENTES LOCALES','02','INGRESOS DE FUENTES LOCALES','1','CAPITAL',null,now(),now(),null,null,'SEEDER'),
             (2,'1','No etiquetado','1','Recursos Fiscales','01','INGRESOS DE FUENTES LOCALES','03','APORTACIONES MUNICIPALES','1','CAPITAL',null,now(),now(),null,null,'SEEDER'),
             (3,'1','No etiquetado','1','Recursos Fiscales','01','INGRESOS DE FUENTES LOCALES','04','APORTACIONES DE BENEFICIARIOS','1','CAPITAL',null,now(),now(),null,null,'SEEDER'),
@@ -18236,7 +18236,7 @@ class fondosSeeder extends Seeder
             (94,'2','Etiquetado','5','Recursos Federales','16','MEDIO AMBIENTE Y RECURSOS NATURALES','EA','PROAGUA','1','CAPITAL',null,now(),now(),null,null,'SEEDER');
         ");
 
-        DB::unprepared("INSERT INTO posicion_presupuestaria values
+        DB::unprepared("INSERT INTO posicion_presupuestaria(id,clv_capitulo, capitulo, clv_concepto, concepto, clv_partida_generica, partida_generica, clv_partida_especifica, partida_especifica, clv_tipo_gasto, tipo_gasto, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values
             (1,'1','SERVICIOS PERSONALES','1','REMUNERACIONES AL PERSONAL DE CARÁCTER PERMANENTE','1','Dietas','01','Dietas del Poder Legislativo','1','Gasto Corriente',null,now(),now(),null,null,'SEEDER'),
             (2,'1','SERVICIOS PERSONALES','1','REMUNERACIONES AL PERSONAL DE CARÁCTER PERMANENTE','1','Dietas','02','Dietas a funcionarios electorales','1','Gasto Corriente',null,now(),now(),null,null,'SEEDER'),
             (3,'1','SERVICIOS PERSONALES','1','REMUNERACIONES AL PERSONAL DE CARÁCTER PERMANENTE','1','Dietas','03','Dietas a Funcionarios Municipales','1','Gasto Corriente',null,now(),now(),null,null,'SEEDER'),
@@ -18916,7 +18916,7 @@ class fondosSeeder extends Seeder
             (677,'9','DEUDA PÚBLICA','9','ADEUDOS DE EJERCICIOS FISCALES ANTERIORES (ADEFAS)','1','ADEFAS','01','Adeudos de ejercicios fiscales anteriores','3','Amortización de la deuda y disminución de pasivos',null,now(),now(),null,null,'SEEDER');
         ");
 
-        DB::unprepared("INSERT INTO proyectos_obra values
+        DB::unprepared("INSERT INTO proyectos_obra(id,clv_proyecto_obra, proyecto_obra, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values
             (1,'230001','Rehabilitación de muelles y panteones en la zona lacustre, municipios de Pátzcuaro, Erongaricuaro',null,now(),now(),null,null,'SEEDER'),
             (2,'230002','Remodelación oficinas de Secretaría de Contraloría',null,now(),now(),null,null,'SEEDER'),
             (3,'230003','Edificios, sitios y monumentos históricos y artísticos',null,now(),now(),null,null,'SEEDER'),
@@ -18945,7 +18945,7 @@ class fondosSeeder extends Seeder
             (26,'000000','Sin obra',null,now(),now(),null,null,'SEEDER');
         ");
 
-        DB:: unprepared("INSERT INTO techos_financieros values
+        DB:: unprepared("INSERT INTO techos_financieros(id,clv_upp, clv_fondo, tipo, presupuesto, ejercicio, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values
             (1,'001','02','Operativo',10000000,2023,null,now(),now(),null,null,'SEEDER'),
             (2,'001','09','Operativo',1019545461,2023,null,now(),now(),null,null,'SEEDER'),
             (3,'001','0B','Operativo',168214768,2023,null,now(),now(),null,null,'SEEDER'),
@@ -19209,7 +19209,7 @@ class fondosSeeder extends Seeder
             (261,'109','09','RH',30321833,2023,null,now(),now(),null,null,'SEEDER');
         ");
 
-        DB::unprepared("INSERT INTO tipologia_conac values
+        DB::unprepared("INSERT INTO tipologia_conac(id,tipo, descripcion, clave_conac, descripcion_conac, deleted_at, updated_at, created_at) values
             (1,0,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','S','SUJETOS A REGLAS DE OPERACIÓN',null,now(),now()),
             (2,0,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','U','OTROS SUBSIDIOS',null,now(),now()),
             (3,0,'Desempeño de las Funciones','E','PRESTACIÓN DE SERVICIOS PÚBLICOS',null,now(),now()),
@@ -19235,7 +19235,7 @@ class fondosSeeder extends Seeder
             (23,1,'ADEUDOS DE EJERCICIOS FISCALES ANTERIORES',null,null,null,now(),now());
         ");
 
-        DB::unprepared("INSERT INTO unidades_medida values
+        DB::unprepared("INSERT INTO unidades_medida(id,clave, unidad_medida, ejercicio, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values
             (1,383,'Abrevadero',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
             (2,440,'Acceso',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
             (3,630,'Accidente',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
