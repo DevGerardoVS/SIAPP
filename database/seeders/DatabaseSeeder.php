@@ -81,10 +81,14 @@ class DatabaseSeeder extends Seeder
 
     );
 
-
-
     public function run()
     {
+        $this->call([
+            fondosSeeder::class,
+            pp_identificadoresSeeder::class,
+            ProgramacionPresupuestoSeeder::class,
+        ]);
+        
         echo "\nInicializacion de Catalogos del Sistema";
 
         echo "\n    -Limpieza Anterior";
