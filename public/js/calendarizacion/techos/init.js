@@ -1,3 +1,4 @@
+let total = 0;
 let actividades = [];
 var dao = {
     setStatus: function (id, estatus) {
@@ -83,12 +84,17 @@ var dao = {
             event.preventDefault()
         }
     },
-    validCero: function (i) {
+    validCero: function (i) { 
+
         if($('#presupuesto_'+i).val() == 0){
             $("#frm_create_techo").find('#presupuesto_'+i).addClass('is-invalid');
         }else{
             $('input').removeClass('is-invalid');
         }
+    },
+    total: function(i){
+        total += parseInt($('#presupuesto_'+i).val())
+        console.log(total)
     }
 };
 var init = {
@@ -154,7 +160,7 @@ $(document).ready(function () {
                     + selectFondo +
                 '</td>\n' +
                 '<td>' +
-                '<input type="number" class="form-control" id="presupuesto_'+table_lenght+'" name="presupuesto_'+table_lenght+'" placeholder="$0" onkeydown="dao.filtroPresupuesto()" onkeyup="dao.validCero('+table_lenght+')" required>' +
+                '<input type="number" class="form-control totales" id="presupuesto_'+table_lenght+'" name="presupuesto_'+table_lenght+'" placeholder="$0" onkeydown="dao.filtroPresupuesto()" onkeyup="dao.validCero('+table_lenght+')" onchange="totalP('+table_lenght+')" required>' +
                 '</td>\n' +
                 '  <td><input type="number" value="2024" class="form-control" id="ejercicio_'+table_lenght+'" name="ejercicio_'+table_lenght+'" disabled placeholder="2024"></td>\n' +
                 '<td>' +
@@ -166,6 +172,17 @@ $(document).ready(function () {
         }
     });
 });
+
+function totalP(i){
+    total += parseInt($('#presupuesto_'+i).val())
+    console.log(total)
+
+    table = document.getElementById('fondos')
+    table_lenght = (table.rows.length)
+
+    console.log(" Table: "+(table.rows))
+    console.log(" Length: "+table_lenght)
+}
 
 $('#btnSave').click(function (e) {
     e.preventDefault();
