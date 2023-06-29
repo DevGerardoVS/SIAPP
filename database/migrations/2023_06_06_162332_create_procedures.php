@@ -745,6 +745,7 @@ return new class extends Migration {
 
         DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_general(in anio int, in corte date, in uppC varchar(3))
             begin
+            SET CHARACTER SET utf8mb4, NAMES utf8mb4, collation_connection = 'utf8mb4_general_ci';
             set @upp := uppC collate utf8mb4_unicode_ci;
             
             select
@@ -1250,8 +1251,8 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64))
         begin
-            
-        set @clave := claveT collate utf8mb4_unicode_ci; 
+        SET CHARACTER SET utf8mb4, NAMES utf8mb4, collation_connection = 'utf8mb4_general_ci';
+        set @clave := claveT; 
             
         set @epp := concat(substring(@clave,1,5),substring(@clave,16,22)); 
         
