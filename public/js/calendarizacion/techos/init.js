@@ -85,7 +85,6 @@ var dao = {
         }
     },
     validCero: function (i) { 
-
         if($('#presupuesto_'+i).val() == 0){
             $("#frm_create_techo").find('#presupuesto_'+i).addClass('is-invalid');
         }else{
@@ -160,7 +159,7 @@ $(document).ready(function () {
                     + selectFondo +
                 '</td>\n' +
                 '<td>' +
-                '<input type="number" class="form-control totales" id="presupuesto_'+table_lenght+'" name="presupuesto_'+table_lenght+'" placeholder="$0" onkeydown="dao.filtroPresupuesto()" onkeyup="dao.validCero('+table_lenght+')" onchange="totalP('+table_lenght+')" required>' +
+                '<input type="number" class="form-control totales" min="0" id="presupuesto_'+table_lenght+'" name="presupuesto_'+table_lenght+'" placeholder="$0" onkeydown="dao.filtroPresupuesto()" onkeyup="dao.validCero('+table_lenght+')" onchange="totalP('+table_lenght+')" required>' +
                 '</td>\n' +
                 '  <td><input type="number" value="2024" class="form-control" id="ejercicio_'+table_lenght+'" name="ejercicio_'+table_lenght+'" disabled placeholder="2024"></td>\n' +
                 '<td>' +
@@ -174,24 +173,40 @@ $(document).ready(function () {
 });
 
 function totalP(i){
-    total += parseInt($('#presupuesto_'+i).val())
-    console.log(total)
+    total = 0;
+    table = document.getElementById('fondos');
+    table_lenght = (table.rows.length);
 
-    table = document.getElementById('fondos')
-    table_lenght = (table.rows.length)
+    for(let l=1;l<table_lenght;l++){
+        if(isNaN(parseInt($('#presupuesto_'+l).val()))) {
+            total += 0;
+        }else{
+            total += parseInt($('#presupuesto_'+l).val());
+        }
+    }
+    $('#total-presupuesto').val('$ '+total)
+}
 
-    console.log(" Table: "+(table.rows))
-    console.log(" Length: "+table_lenght)
+function verificarCeros(){
+    table = document.getElementById('fondos');
+    table_lenght = (table.rows.length);
+
+    for(let l=1;l<table_lenght;l++){
+        return $('#presupuesto_'+l).hasClass('is-invalid') == true ?  false :  true;
+    }
 }
 
 $('#btnSave').click(function (e) {
     e.preventDefault();
+    const verificado = verificarCeros();
 
-    $('input').removeClass('is-invalid');
-    $('select').removeClass('is-invalid');
+    if(verificado == true){
+        $('input').removeClass('is-invalid');
+        $('select').removeClass('is-invalid');
 
-    var form = $('#frm_create_techo')[0];
-    var data = new FormData(form);
+        var form = $('#frm_create_techo')[0];
+        var data = new FormData(form);
+
 
         $.ajax({
             type: "POST",
@@ -249,4 +264,11 @@ $('#btnSave').click(function (e) {
             });
 
         });
+    }else{
+        Swal.fire({
+            icon: 'warning',
+            title: 'No se puede registrar fondo con un presupuesto de $0',
+            showConfirmButton: true
+        });
+    }
 });

@@ -47,7 +47,7 @@
                                         <tr class="colorMorado">
                                             <th>Tipo</th>
                                             <th>Fondo</th>
-                                            <th>Monto</th>
+                                            <th>Presupuesto</th>
                                             <th>Ejercicio</th>
                                             <th>Acciones</th>
                                         </tr>
@@ -59,7 +59,7 @@
                     <div class="row" style="background-color: darkgray; margin: 5px;padding: 10px">
                         <div class="col-md-5"></div>
                         <div class="col-md-2"><h5><b>Total UPP: </b></h5></div>
-                        <div class="col-md-5">$10000</div>
+                        <div class="col-md-3"><input class="form-control totales" id="total-presupuesto" placeholder="$0" type="text" disabled></div>
                     </div>
                     <br>
 
