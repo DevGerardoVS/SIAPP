@@ -723,7 +723,7 @@ return new class extends Migration {
                 ) tabla;
             END;");
 
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS fondos_db.calendario_fondo_mensual(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_fondo_mensual(in anio int, in corte date)
             begin
                 select
                     c.descripcion ramo,
