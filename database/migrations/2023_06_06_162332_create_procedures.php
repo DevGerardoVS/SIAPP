@@ -723,7 +723,7 @@ return new class extends Migration {
                 ) tabla;
             END;");
 
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS fondos_db.calendario_fondo_mensual(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_fondo_mensual(in anio int, in corte date)
             begin
                 select
                     c.descripcion ramo,
@@ -742,143 +742,101 @@ return new class extends Migration {
                 )
                 group by c.descripcion,c2.descripcion;
             END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_general(in anio int, in corte date)
-            begin
-                select
-                    clave,
-                    monto_anual,
-                    enero,febrero,marzo,abril,
-                    mayo,junio,julio,agosto,
-                    septiembre,octubre,noviembre,diciembre
-                from (
-                    select 
-                        c.clave upp_clave,
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) clave,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as monto_anual,
-                        sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,
-                        sum(mayo) mayo,sum(junio) junio,sum(julio) julio,sum(agosto) agosto,
-                        sum(septiembre) septiembre,sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
-                    from programacion_presupuesto pp 
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                    join catalogo c on ee.upp_id = c.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c.clave,c.descripcion
-                    union all
-                    select
-                        c4.clave upp_clave,
-                        concat(
-                            ca.llave,'_',
-                            substring(cg.llave,1,2),'_',substring(cg.llave,3,2),'_',
-                            substring(cg.llave,5,3),'_',substring(cg.llave,8,3),
-                            '_',
-                            substring(ee.llave,1,3),'_',substring(ee.llave,3,1),'_',
-                            substring(ee.llave,4,2),
-                            '_',
-                            substring(af.llave,1,1),'_',substring(af.llave,2,1),'_',
-                            substring(af.llave,3,1),'_',substring(af.llave,4,1),'_',
-                            substring(af.llave,5,2),'_',substring(af.llave,7,1),'_',
-                            substring(af.llave,8,1),'_',substring(af.llave,9,2),'_',
-                            substring(af.llave,10,3),'_',substring(af.llave,13,3),
-                            '_',
-                            pp.mes_afectacion,'_',
-                            substring(pp2.llave,1,1),'_',substring(pp2.llave,2,1),'_',
-                            substring(pp2.llave,3,1),'_',substring(pp2.llave,4,2),
-                            '_',
-                            c.clave,'_',
-                            pp.ejercicio,'_',
-                            c2.clave,'_',
-                            substring(f.llave,1,1),'_',substring(f.llave,2,2),'_',
-                            substring(f.llave,4,2),'_',substring(f.llave,6,1),
-                            '_',
-                            c3.clave
-                        ) clave,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as monto_anual,
-                        sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,
-                        sum(mayo) mayo,sum(junio) junio,sum(julio) julio,sum(agosto) agosto,
-                        sum(septiembre) septiembre,sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
-                    from programacion_presupuesto pp
-                    join clasificacion_administrativa ca on pp.clasificacion_administrativa_id = ca.id 
-                    join clasificacion_geografica cg on pp.clasificacion_geografica_id = cg.id 
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-                    join catalogo c on pp.tipo_gasto_id = c.id 
-                    join catalogo c2 on pp.etiquetado_id = c2.id 
-                    join fondo f on pp.fondo_id = f.id 
-                    join catalogo c3 on pp.proyecto_presupuestal_id = c3.id
-                    join catalogo c4 on ee.upp_id = c4.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c4.clave,ca.llave,cg.llave,ee.llave,af.llave,pp.mes_afectacion,
-                    pp2.llave,c.clave,pp.ejercicio,c2.clave,f.llave,c3.clave
-                    order by upp_clave
-                ) tabla;
-            END;");
 
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_general_upp(in anio int, in corte date, in upp varchar(3))
+        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_general(in anio int, in corte date, in uppC varchar(3))
             begin
-                select
+            set @upp := uppC collate utf8mb4_unicode_ci;
+            
+            select
+                upp,
+                clave,
+                monto_anual,
+                enero,febrero,marzo,abril,mayo,
+                junio,julio,agosto,septiembre,
+                octubre,noviembre,diciembre
+            from (
+                select 
                     concat(
-                        ca.llave,'_',
-                        substring(cg.llave,1,2),'_',substring(cg.llave,3,2),'_',
-                        substring(cg.llave,5,3),'_',substring(cg.llave,8,3),
-                        '_',
-                        substring(ee.llave,1,3),'_',substring(ee.llave,4,1),'_',
-                        substring(ee.llave,5,2),
-                        '_',
-                        substring(af.llave,1,1),'_',substring(af.llave,2,1),'_',
-                        substring(af.llave,3,1),'_',substring(af.llave,4,1),'_',
-                        substring(af.llave,5,2),'_',substring(af.llave,7,1),'_',
-                        substring(af.llave,8,1),'_',substring(af.llave,9,2),'_',
-                        substring(af.llave,10,3),'_',substring(af.llave,13,3),
-                        '_',
-                        pp.mes_afectacion,'_',
-                        substring(pp2.llave,1,1),'_',substring(pp2.llave,2,1),'_',
-                        substring(pp2.llave,3,1),'_',substring(pp2.llave,4,2),
-                        '_',
-                        c.clave,'_',
-                        pp.ejercicio,'_',
-                        c2.clave,'_',
-                        substring(f.llave,1,1),'_',substring(f.llave,2,2),'_',
-                        substring(f.llave,4,2),'_',substring(f.llave,6,1),
-                        '_',
-                        c3.clave
-                    ) clave,
-                    sum((enero+febrero+marzo+abril+mayo+junio+
-                    julio+agosto+septiembre+octubre+noviembre+diciembre)) as monto_anual,
-                    sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,
-                    sum(mayo) mayo,sum(junio) junio,sum(julio) julio,sum(agosto) agosto,
-                    sum(septiembre) septiembre,sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
-                from programacion_presupuesto pp
-                join clasificacion_administrativa ca on pp.clasificacion_administrativa_id = ca.id 
-                join clasificacion_geografica cg on pp.clasificacion_geografica_id = cg.id 
-                join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                join area_funcional af on pp.area_funcional_id = af.id 
-                join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-                join catalogo c on pp.tipo_gasto_id = c.id 
-                join catalogo c2 on pp.etiquetado_id = c2.id 
-                join fondo f on pp.fondo_id = f.id 
-                join catalogo c3 on pp.proyecto_presupuestal_id = c3.id
-                join catalogo c4 on ee.upp_id = c4.id 
-                where pp.ejercicio = 23 and pp.deleted_at is null and if  (
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    1 orden,
+                    concat(clv_upp,' ',upp) clave,
+                    sum(total) monto_anual,
+                    sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
+                    sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
+                    sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
+                from pp_aplanado vppa
+                where ejercicio = anio and if (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                ) and c4.clave = '001'
-                group by ca.llave,cg.llave,ee.llave,af.llave,pp.mes_afectacion,
-                pp2.llave,c.clave,pp.ejercicio,c2.clave,f.llave,c3.clave;
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                ) and if(
+                    @upp is not null,
+                    clv_upp = @upp,
+                    clv_upp != ''
+                )
+                group by vppa.clv_upp,vppa.upp,orden,vppa.upp
+                union all
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    2 orden,
+                    concat(
+                        pp.clv_sector_publico,
+                        pp.clv_sector_publico_f,
+                        pp.clv_sector_economia,
+                        pp.clv_subsector_economia,
+                        pp.clv_ente_publico,
+                        '-',pp.clv_entidad_federativa,
+                        '-',pp.clv_region,
+                        '-',pp.clv_municipio,
+                        '-',pp.clv_localidad,
+                        '-',pp.clv_upp,
+                        '-',pp.clv_subsecretaria,
+                        '-',pp.clv_ur,
+                        '-',pp.clv_finalidad,
+                        '-',pp.clv_funcion,
+                        '-',pp.clv_subfuncion,
+                        '-',pp.clv_eje,
+                        '-',pp.clv_linea_accion,
+                        '-',pp.clv_programa_sectorial,
+                        '-',pp.clv_tipologia_conac,
+                        '-',pp.clv_programa,
+                        '-',pp.clv_subprograma,
+                        '-',pp.clv_proyecto,
+                        '-',pp.periodo_presupuestal,
+                        '-',pp.clv_capitulo,
+                        pp.clv_concepto,
+                        pp.clv_partida_generica,
+                        pp.clv_partida_especifica,
+                        '-',pp.clv_tipo_gasto,
+                        '-',pp.anio,
+                        '-',pp.clv_etiquetado,
+                        '-',pp.clv_fuente_financiamiento,
+                        '-',pp.clv_ramo,
+                        '-',pp.clv_fondo_ramo,
+                        '-',pp.clv_capital,
+                        '-',pp.clv_proyecto_obra
+                    ) clave,
+                    total monto_anual,
+                    enero,febrero,marzo,abril,mayo,
+                    junio,julio,agosto,septiembre,
+                    octubre,noviembre,diciembre
+                from pp_aplanado pp
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                ) and if (
+                    @upp is not null,
+                    clv_upp = @upp,
+                    clv_upp != ''
+                )
+                order by upp,orden
+            ) tabla;
             END;");
 
         DB::unprepared("CREATE PROCEDURE IF NOT EXISTS resumen_capitulo_partida(in anio int, in corte date)
@@ -1225,115 +1183,333 @@ return new class extends Migration {
                     ) as claves
                 );
             END;");
-            DB::unprepared("CREATE PROCEDURE IF NOT EXISTS SP_entidad_ejecutora(in softdelete int)
-            begin
-                if softdelete = 3 then
-                    select 
-                        c.clave upp_clave,
-                        c.descripcion upp
-                    from catalogo c
-                    where c.subgrupo_id = 10;
-                else
-                    select 
-                        c.clave upp_clave,
-                        c.descripcion upp,
-                        c2.clave subsecretaria_clave,
-                        c2.descripcion subsecretaria,
-                        c3.clave ur_clave,
-                        c3.descripcion ur
-                    from entidad_ejecutora ee 
-                    join catalogo c on ee.upp_id = c.id 
-                    join catalogo c2 on ee.subsecretaria_id = c2.id 
-                    join catalogo c3 on ee.ur_id = c3.id 
-                    WHERE ( case
-                        when softdelete = 1 then c.deleted_at IS NULL
-                        when softdelete = 0 then c.deleted_at IS NOT NULL 
-                        ELSE ee.id > 0
-                    end);
-                end if;
-            END;");
-            DB::unprepared("CREATE PROCEDURE IF NOT EXISTS clave_presupuestal(in cl varchar(65))
-            begin
+        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS SP_entidad_ejecutora(in softdelete int)
+        begin
+            if softdelete = 3 then
                 select 
-                    clave,
-                    descripcion
-                from (
-                    select 
-                        c.subgrupo_id,
-                        c.clave,
-                        c.descripcion
-                    from catalogo c 
-                    where c.id in
-                    (select id from
-                    (select @clave:=cl) param,clave_pres1) 
-                    union all
-                    select 
-                        22.5 subgrupo_id,
-                        mes_afectacion clave,
-                        'Mes de Afectación' descripcion
-                    from programacion_presupuesto pp
-                    where pp.clave_presupuestal like cl
-                    union all
-                    select 
-                        27.5 subgrupo_id,
-                        ejercicio clave,
-                        'Año' descripcion
-                    from programacion_presupuesto pp
-                    where pp.clave_presupuestal like cl
-                ) tabla
-                order by subgrupo_id;
-            END;");
-            DB::unprepared("CREATE PROCEDURE IF NOT EXISTS borrado_logico_presupuestos(in anio int)
-            begin
-                update programacion_presupuesto 
-                set deleted_at = now()
-                where ejercicio = anio and deleted_at is null;
-            END;");
-             DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64))
-             begin   
-             set @clave := claveT ; 
-             set @epp := concat(substring(@clave,1,5),substring(@clave,16,22)) ; 
-             set @clasGeo := ((substring(@clave,6,10))*1) ; 
-             set @partida := ((substring(@clave,44,6))*1) ; 
-             set @fondo := ((concat(substring(@clave,52,4),ascii(substring(@clave,56,1)),ascii(substring(@clave,57,1)),substring(@clave,58,1)))*1) ; 
-             set @obra := substring(@clave,59,6) ; 
-                 select * from ( select 'Sector Público' descripcion,vel.clv_sector_publico clave,vel.sector_publico concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Sector Público Financiero/No Financiero' descripcion,vel.clv_sector_publico_f clave,vel.sector_publico_f concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Sector Economía' descripcion,vel.clv_sector_economia clave,vel.sector_economia concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Subsector Economía' descripcion,vel.clv_subsector_economia clave,vel.subsector_economia concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Ente Público' descripcion,vel.clv_ente_publico clave,vel.ente_publico concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Entidad Federativa' descripcion,vcg.clv_entidad_federativa clave,vcg.entidad_federativa concepto from v_clasificacion_geografica vcg where vcg.clasificacion_geografica_llave = @clasGeo union all
-                     select 'Región' descripcion,vcg.clv_region clave,vcg.region concepto from v_clasificacion_geografica vcg where vcg.clasificacion_geografica_llave = @clasGeo union all
-                     select 'Municipio' descripcion,vcg.clv_municipio clave,vcg.municipio concepto from v_clasificacion_geografica vcg where vcg.clasificacion_geografica_llave = @clasGeo union all
-                     select 'Localidad' descripcion,vcg.clv_localidad clave,vcg.localidad concepto from v_clasificacion_geografica vcg where vcg.clasificacion_geografica_llave = @clasGeo union all
-                     select 'Unidad Programática Presupuestal' descripcion,vel.clv_upp clave,vel.upp concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Subsecretaría' descripcion,vel.clv_subsecretaria clave,vel.subsecretaria concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Unidad Responsable' descripcion,vel.clv_ur clave,vel.ur concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Finalidad' descripcion,vel.clv_finalidad clave,vel.finalidad concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Función' descripcion,vel.clv_funcion clave,vel.funcion concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Subfunción' descripcion,vel.clv_subfuncion clave,vel.subfuncion concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Eje' descripcion,vel.clv_eje clave,vel.eje concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Linea de Acción' descripcion,vel.clv_linea_accion clave,vel.linea_accion concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Programa Sectorial' descripcion,vel.clv_programa_sectorial clave,vel.programa_sectorial concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Tipología General' descripcion,vel.clv_tipologia_conac clave,vel.clv_tipologia_conac concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Programa Presupuestal' descripcion,vel.clv_programa clave,vel.programa concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Subprograma Presupuestal' descripcion,vel.clv_subprograma clave,vel.subprograma concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Proyecto Presupuestal' descripcion,vel.clv_proyecto clave,vel.proyecto concepto from v_epp_llaves vel where vel.llave like @epp union all
-                     select 'Mes de Afectación' descripcion,substring(@clave,38,6) clave, 'Mes de Afectación' union all
-                     select 'Capítulo' descripcion,vppl.clv_capitulo clave,vppl.capitulo concepto from v_posicion_presupuestaria_llaves vppl where vppl.posicion_presupuestaria_llave like @partida union all
-                     select 'Concepto' descripcion,vppl.clv_concepto clave,vppl.concepto concepto from v_posicion_presupuestaria_llaves vppl where vppl.posicion_presupuestaria_llave like @partida union all
-                     select 'Partida Genérica' descripcion,vppl.clv_partida_generica clave,vppl.partida_generica concepto from v_posicion_presupuestaria_llaves vppl where vppl.posicion_presupuestaria_llave like @partida union all
-                     select 'Partida Específica' descripcion,vppl.clv_partida_especifica clave,vppl.partida_especifica concepto from v_posicion_presupuestaria_llaves vppl where vppl.posicion_presupuestaria_llave like @partida union all
-                     select 'Tipo de Gasto' descripcion,vppl.clv_tipo_gasto clave,vppl.tipo_gasto concepto from v_posicion_presupuestaria_llaves vppl where vppl.posicion_presupuestaria_llave like @partida union all
-                     select 'Año (Fondo del Ramo)' descripcion,substring(@clave,50,2) clave, 'Año' concepto union all
-                     select 'Etiquetado/No Etiquetado' descripcion,vfl.clv_etiquetado clave,vfl.etiquetado concepto from v_fondo_llaves vfl where vfl.fondo_llave like @fondo union all
-                     select 'Fuente de Financiamiento' descripcion,vfl.clv_fuente_financiamiento clave,vfl.fuente_financiamiento concepto from v_fondo_llaves vfl where vfl.fondo_llave like @fondo union all
-                     select 'Ramo' descripcion,vfl.clv_ramo clave,vfl.ramo concepto from v_fondo_llaves vfl where vfl.fondo_llave like @fondo union all
-                     select 'Fondo del Ramo' descripcion,vfl.clv_fondo_ramo clave,vfl.fondo_ramo concepto from v_fondo_llaves vfl where vfl.fondo_llave like @fondo union all
-                     select 'Capital/Interes' descripcion,vfl.clv_capital clave,vfl.capital concepto from v_fondo_llaves vfl where vfl.fondo_llave like @fondo union all
-                     select 'Proyecto de Obra' descripcion,po.clv_proyecto_obra clave,po.proyecto_obra from proyectos_obra po where po.clv_proyecto_obra like @obra
-                 ) tabla;
-             END;");
+                    c.clave upp_clave,
+                    c.descripcion upp
+                from catalogo c
+                where c.subgrupo_id = 10;
+            else
+                select 
+                    c.clave upp_clave,
+                    c.descripcion upp,
+                    c2.clave subsecretaria_clave,
+                    c2.descripcion subsecretaria,
+                    c3.clave ur_clave,
+                    c3.descripcion ur
+                from entidad_ejecutora ee 
+                join catalogo c on ee.upp_id = c.id 
+                join catalogo c2 on ee.subsecretaria_id = c2.id 
+                join catalogo c3 on ee.ur_id = c3.id 
+                WHERE ( case
+                    when softdelete = 1 then c.deleted_at IS NULL
+                    when softdelete = 0 then c.deleted_at IS NOT NULL 
+                    ELSE ee.id > 0
+                end);
+            end if;
+        END;");
+        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS clave_presupuestal(in cl varchar(65))
+        begin
+            select 
+                clave,
+                descripcion
+            from (
+                select 
+                    c.subgrupo_id,
+                    c.clave,
+                    c.descripcion
+                from catalogo c 
+                where c.id in
+                (select id from
+                (select @clave:=cl) param,clave_pres1) 
+                union all
+                select 
+                    22.5 subgrupo_id,
+                    mes_afectacion clave,
+                    'Mes de Afectación' descripcion
+                from programacion_presupuesto pp
+                where pp.clave_presupuestal like cl
+                union all
+                select 
+                    27.5 subgrupo_id,
+                    ejercicio clave,
+                    'Año' descripcion
+                from programacion_presupuesto pp
+                where pp.clave_presupuestal like cl
+            ) tabla
+            order by subgrupo_id;
+        END;");
+        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS borrado_logico_presupuestos(in anio int)
+        begin
+            update programacion_presupuesto 
+            set deleted_at = now()
+            where ejercicio = anio and deleted_at is null;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64))
+        begin
+            
+        set @clave := claveT collate utf8mb4_unicode_ci; 
+            
+        set @epp := concat(substring(@clave,1,5),substring(@clave,16,22)); 
+        
+        set @clasGeo := ((substring(@clave,6,10))*1); 
+        
+        set @partida := ((substring(@clave,44,6))*1); 
+        
+        set @fondo := substring(@clave,52,7); 
+        
+        set @obra := substring(@clave,59,6); 
+            
+            select *
+            from (
+                select 'Sector Público' descripcion, vel.clv_sector_publico clave,vel.sector_publico concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Sector Público Financiero/No Financiero' descripcion, vel.clv_sector_publico_f clave,vel.sector_publico_f concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Sector Economía' descripcion, vel.clv_sector_economia clave,vel.sector_economia concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Subsector Economía' descripcion,vel.clv_subsector_economia clave,vel.subsector_economia concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Ente Público' descripcion,vel.clv_ente_publico clave,vel.ente_publico concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Entidad Federativa' descripcion,vcg.clv_entidad_federativa clave,vcg.entidad_federativa concepto from v_clasificacion_geografica vcg where vcg.clasificacion_geografica_llave = @clasGeo union all
+                select 'Región' descripcion,vcg.clv_region clave,vcg.region concepto from v_clasificacion_geografica vcg where vcg.clasificacion_geografica_llave = @clasGeo union all
+                select 'Municipio' descripcion,vcg.clv_municipio clave,vcg.municipio concepto from v_clasificacion_geografica vcg where vcg.clasificacion_geografica_llave = @clasGeo union all
+                select 'Localidad' descripcion,vcg.clv_localidad clave,vcg.localidad concepto from v_clasificacion_geografica vcg where vcg.clasificacion_geografica_llave = @clasGeo union all
+                select 'Unidad Programática Presupuestal' descripcion,vel.clv_upp clave,vel.upp concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Subsecretaría' descripcion,vel.clv_subsecretaria clave,vel.subsecretaria concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Unidad Responsable' descripcion,vel.clv_ur clave,vel.ur concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Finalidad' descripcion,vel.clv_finalidad clave,vel.finalidad concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Función' descripcion,vel.clv_funcion clave,vel.funcion concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Subfunción' descripcion,vel.clv_subfuncion clave,vel.subfuncion concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Eje' descripcion,vel.clv_eje clave,vel.eje concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Linea de Acción' descripcion,vel.clv_linea_accion clave,vel.linea_accion concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Programa Sectorial' descripcion,vel.clv_programa_sectorial clave,vel.programa_sectorial concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Tipología General' descripcion,vel.clv_tipologia_conac clave,vel.clv_tipologia_conac concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Programa Presupuestal' descripcion,vel.clv_programa clave,vel.programa concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Subprograma Presupuestal' descripcion,vel.clv_subprograma clave,vel.subprograma concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Proyecto Presupuestal' descripcion,vel.clv_proyecto clave,vel.proyecto concepto from v_epp_llaves vel where vel.llave like @epp union all
+                select 'Mes de Afectación' descripcion,substring(@clave,38,6) clave, 'Mes de Afectación' union all
+                select 'Capítulo' descripcion,vppl.clv_capitulo clave,vppl.capitulo concepto from v_posicion_presupuestaria_llaves vppl where vppl.posicion_presupuestaria_llave like @partida union all
+                select 'Concepto' descripcion,vppl.clv_concepto clave,vppl.concepto concepto from v_posicion_presupuestaria_llaves vppl where vppl.posicion_presupuestaria_llave like @partida union all
+                select 'Partida Genérica' descripcion,vppl.clv_partida_generica clave,vppl.partida_generica concepto from v_posicion_presupuestaria_llaves vppl where vppl.posicion_presupuestaria_llave like @partida union all
+                select 'Partida Específica' descripcion,vppl.clv_partida_especifica clave,vppl.partida_especifica concepto from v_posicion_presupuestaria_llaves vppl where vppl.posicion_presupuestaria_llave like @partida union all
+                select 'Tipo de Gasto' descripcion,vppl.clv_tipo_gasto clave,vppl.tipo_gasto concepto from v_posicion_presupuestaria_llaves vppl where vppl.posicion_presupuestaria_llave like @partida union all
+                select 'Año (Fondo del Ramo)' descripcion,substring(@clave,50,2) clave, 'Año' concepto union all
+                select 'Etiquetado/No Etiquetado' descripcion,vfl.clv_etiquetado clave,vfl.etiquetado concepto from v_fondo_llaves vfl where vfl.llave like @fondo union all
+                select 'Fuente de Financiamiento' descripcion,vfl.clv_fuente_financiamiento clave,vfl.fuente_financiamiento concepto from v_fondo_llaves vfl where vfl.llave like @fondo union all
+                select 'Ramo' descripcion,vfl.clv_ramo clave,vfl.ramo concepto from v_fondo_llaves vfl where vfl.llave like @fondo union all
+                select 'Fondo del Ramo' descripcion,vfl.clv_fondo_ramo clave,vfl.fondo_ramo concepto from v_fondo_llaves vfl where vfl.llave like @fondo union all
+                select 'Capital/Interes' descripcion,vfl.clv_capital clave,vfl.capital concepto from v_fondo_llaves vfl where vfl.llave like @fondo union all
+                select 'Proyecto de Obra' descripcion,po.clv_proyecto_obra clave,po.proyecto_obra from proyectos_obra po where po.clv_proyecto_obra like @obra
+            ) tabla;
+        END;
+        
+        CREATE PROCEDURE if not exists insert_pp_aplanado(in anio int)
+        begin
+            create temporary table if not exists temp_epp_aplanado as
+            select 
+                vppl.id,
+                vel.id v_epp_id
+            from v_programacion_presupuesto_llaves vppl 
+            join v_epp_llaves vel on vppl.epp_llave = vel.llave
+            where vppl.ejercicio = anio and vppl.id not in (
+                select id from pp_identificadores pa
+            );
+        
+            create temporary table if not exists temp_claves_montos_aplanado as
+            select 
+                vppl.id,
+                vcg.id clas_geo_id,
+                vpp.id pos_pre_id,
+                vfl.id fondo_id,
+                po.id obra_id
+            from v_programacion_presupuesto_llaves vppl 
+            join v_clasificacion_geografica vcg on vppl.clas_geo_llave = vcg.clasificacion_geografica_llave
+            join v_posicion_presupuestaria_llaves vpp on vppl.posicion_presupuestaria_llave = vpp.posicion_presupuestaria_llave 
+            join v_fondo_llaves vfl on vppl.fondo_llave = vfl.llave 
+            join proyectos_obra po on vppl.proyecto_obra = po.clv_proyecto_obra
+            where vppl.ejercicio = anio and vppl.id not in (
+                select id from pp_identificadores pa
+            );
+        
+            insert into pp_identificadores
+            select 
+                tea.id,
+                tea.v_epp_id,
+                tma.clas_geo_id,
+                tma.pos_pre_id,
+                tma.fondo_id,
+                tma.obra_id
+            from temp_epp_aplanado tea
+            join temp_claves_montos_aplanado tma on tea.id = tma.id
+            order by id;
+            
+            drop temporary table temp_epp_aplanado;
+            
+            drop temporary table temp_claves_montos_aplanado;
+        END");
+
+        DB::unprepared("CREATE PROCEDURE if not exists insert_pp_aplanado(in anio int)
+        begin
+            create temporary table if not exists temp_epp_aplanado as
+            select 
+                vppl.id,
+                vel.id v_epp_id
+            from v_programacion_presupuesto_llaves vppl 
+            join v_epp_llaves vel on vppl.epp_llave = vel.llave
+            where vppl.ejercicio = anio and vppl.id not in (
+                select id from pp_identificadores pa
+            );
+        
+            create temporary table if not exists temp_claves_montos_aplanado as
+            select 
+                vppl.id,
+                vcg.id clas_geo_id,
+                vpp.id pos_pre_id,
+                vfl.id fondo_id,
+                po.id obra_id
+            from v_programacion_presupuesto_llaves vppl 
+            join v_clasificacion_geografica vcg on vppl.clas_geo_llave = vcg.clasificacion_geografica_llave
+            join v_posicion_presupuestaria_llaves vpp on vppl.posicion_presupuestaria_llave = vpp.posicion_presupuestaria_llave 
+            join v_fondo_llaves vfl on vppl.fondo_llave = vfl.llave 
+            join proyectos_obra po on vppl.proyecto_obra = po.clv_proyecto_obra
+            where vppl.ejercicio = anio and vppl.id not in (
+                select id from pp_identificadores pa
+            );
+        
+            insert into pp_identificadores
+            select 
+                tea.id,
+                tea.v_epp_id,
+                tma.clas_geo_id,
+                tma.pos_pre_id,
+                tma.fondo_id,
+                tma.obra_id
+            from temp_epp_aplanado tea
+            join temp_claves_montos_aplanado tma on tea.id = tma.id
+            order by id;
+            
+            drop temporary table temp_epp_aplanado;
+            
+            drop temporary table temp_claves_montos_aplanado;
+        END");
+
+        DB::unprepared("CREATE PROCEDURE if not exists SP_AF_EE(in anio int)
+        begin
+            select
+                case 
+                    when clv_programa != '' then ''
+                    else clv_upp
+                end clv_upp,
+                case 
+                    when clv_programa != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when clv_programa != '' then ''
+                    else clv_subsecretaria
+                end clv_subsecretaria,
+                case 
+                    when clv_programa != '' then ''
+                    else subsecretaria
+                end subsecretaria,
+                case 
+                    when clv_programa != '' then ''
+                    else clv_ur
+                end clv_ur,
+                case 
+                    when clv_programa != '' then ''
+                    else ur
+                end ur,
+                case 
+                    when clv_subprograma != '' then ''
+                    else clv_programa
+                end clv_programa,
+                case 
+                    when clv_subprograma != '' then ''
+                    else programa
+                end programa,
+                case 
+                    when clv_proyecto != '' then ''
+                    else clv_subprograma
+                end clv_subprograma,
+                case 
+                    when clv_proyecto != '' then ''
+                    else subprograma
+                end subprograma,
+                clv_proyecto,
+                proyecto
+            from (
+                select distinct
+                    ve.clv_upp,
+                    ve.upp,
+                    ve.clv_subsecretaria,
+                    ve.subsecretaria,
+                    ve.clv_ur,
+                    ve.ur,
+                    '' clv_programa,
+                    '' programa,
+                    '' clv_subprograma,
+                    '' subprograma,
+                    '' clv_proyecto,
+                    '' proyecto
+                from v_epp ve 
+                where ve.ejercicio = anio and 
+                    ve.deleted_at is null
+                union all
+                select distinct
+                    ve.clv_upp,
+                    ve.upp,
+                    ve.clv_subsecretaria,
+                    ve.subsecretaria,
+                    ve.clv_ur,
+                    ve.ur,
+                    ve.clv_programa,
+                    ve.programa,
+                    '' clv_subprograma,
+                    '' subprograma,
+                    '' clv_proyecto,
+                    '' proyecto
+                from v_epp ve 
+                where ve.ejercicio = anio and 
+                    ve.deleted_at is null
+                union all
+                select distinct
+                    ve.clv_upp,
+                    ve.upp,
+                    ve.clv_subsecretaria,
+                    ve.subsecretaria,
+                    ve.clv_ur,
+                    ve.ur,
+                    ve.clv_programa,
+                    ve.programa,
+                    ve.clv_subprograma,
+                    ve.subprograma,
+                    '' clv_proyecto,
+                    '' proyecto
+                from v_epp ve 
+                where ve.ejercicio = anio and 
+                    ve.deleted_at is null
+                union all
+                select 
+                    ve.clv_upp,
+                    ve.upp,
+                    ve.clv_subsecretaria,
+                    ve.subsecretaria,
+                    ve.clv_ur,
+                    ve.ur,
+                    ve.clv_programa,
+                    ve.programa,
+                    ve.clv_subprograma,
+                    ve.subprograma,
+                    ve.clv_proyecto,
+                    ve.proyecto
+                from v_epp ve 
+                where ve.ejercicio = anio and 
+                    ve.deleted_at is null
+                order by clv_upp,clv_subsecretaria,clv_ur,clv_programa,
+                    clv_subprograma,clv_proyecto
+            ) tabla;
+        END");
     }
 
     /**
@@ -1359,7 +1535,6 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_7;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_8;");
         DB::unprepared("DROP PROCEDURE IF EXISTS calendario_fondo_mensual;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS calendario_general;");
         DB::unprepared("DROP PROCEDURE IF EXISTS calendario_general_upp;");
         DB::unprepared("DROP PROCEDURE IF EXISTS resumen_capitulo_partida;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_3;");
@@ -1376,6 +1551,5 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_2");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_1");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_III");
-        DB::unprepared("DROP PROCEDURE IF EXISTS conceptos_clave");
     }
 };
