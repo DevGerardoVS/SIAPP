@@ -69,10 +69,14 @@ class DatabaseSeeder extends Seeder
         ['id' => 5, 'nombre_grupo' => 'Administrador', 'estatus' => 0],
     );
 
-
-
     public function run()
     {
+        $this->call([
+            fondosSeeder::class,
+            pp_identificadoresSeeder::class,
+            ProgramacionPresupuestoSeeder::class,
+        ]);
+        
         echo "\nInicializacion de Catalogos del Sistema";
 
         echo "\n    -Limpieza Anterior";
