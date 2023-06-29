@@ -19,6 +19,17 @@ class DatabaseSeeder extends Seeder
             ['id' => 2, 'cve_upp' => '001', 'nombre_upp' => 'Secretaría de prueba', 'cve_ur' => '02', 'nombre_ur' => 'Dirección de pruebas', 'cve_uo' => '002', 'nombre_uo' => 'Departamento de Pruebas Internos']
 
         );
+        protected $grupos = array(
+
+            ['id' => 1, 'nombre_grupo' => 'Administrador', 'estatus' => 0],
+            ['id' => 2, 'nombre_grupo' => 'Gobdigital', 'estatus' => 0],
+            ['id' => 3, 'nombre_grupo' => 'Auditor', 'estatus' => 0],
+            ['id' => 4, 'nombre_grupo' => 'Upp', 'estatus' => 0],
+            ['id' => 5, 'nombre_grupo' => 'Upp-CMO', 'estatus' => 0],
+            ['id' => 6, 'nombre_grupo' => 'upp-CM', 'estatus' => 0],
+            ['id' => 7, 'nombre_grupo' => 'upp-Obra', 'estatus' => 0],
+    
+        );
 
         protected $cat_users = array(
             ['id' => 1, 'id_grupo' => 1, 'nombre' => 'sudo', 'p_apellido' => 'admin', 's_apellido' => 'sedj', 'celular' => '00-00-00-00-00', 'email' => 'prueba1@gmail.com', 'username' => 'administrador', 'password' => 'valida2022', 'sudo' => 1,'clv_upp'=>NULL],
@@ -69,18 +80,6 @@ class DatabaseSeeder extends Seeder
             ['id' => 16,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
         );
 
-    protected $grupos = array(
-
-        ['id' => 1, 'nombre_grupo' => 'Administrador', 'estatus' => 0],
-        ['id' => 2, 'nombre_grupo' => 'Gobdigital', 'estatus' => 0],
-        ['id' => 3, 'nombre_grupo' => 'Auditor', 'estatus' => 0],
-        ['id' => 4, 'nombre_grupo' => 'Upp', 'estatus' => 0],
-        ['id' => 5, 'nombre_grupo' => 'Upp-CMO', 'estatus' => 0],
-        ['id' => 6, 'nombre_grupo' => 'upp-CM', 'estatus' => 0],
-        ['id' => 7, 'nombre_grupo' => 'upp-Obra', 'estatus' => 0],
-
-    );
-
     public function run()
     {
         $this->call([
@@ -111,6 +110,16 @@ class DatabaseSeeder extends Seeder
                 } else {
                     $ente_bd->update($ente);
                     $ente_bd->save();
+                }
+            }
+            echo "\n    -Carga Catálogo Grupos";
+            foreach ($this->grupos as $grupo) {
+                $grupo_bd = Grupo::find($grupo['id']);
+                if (!$grupo_bd) {
+                    Grupo::create($grupo);
+                } else {
+                    $grupo_bd->update($grupo);
+                    $grupo_bd->save();
                 }
             }
 
@@ -158,16 +167,7 @@ class DatabaseSeeder extends Seeder
                 }
             }
 
-            echo "\n    -Carga Catálogo Grupos";
-            foreach ($this->grupos as $grupo) {
-                $grupo_bd = Grupo::find($grupo['id']);
-                if (!$grupo_bd) {
-                    Grupo::create($grupo);
-                } else {
-                    $grupo_bd->update($grupo);
-                    $grupo_bd->save();
-                }
-            }
+        
 
       /*       $this->call([
                 fondosSeeder::class
