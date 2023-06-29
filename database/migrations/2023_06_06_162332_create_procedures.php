@@ -723,7 +723,7 @@ return new class extends Migration {
                 ) tabla;
             END;");
 
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS fondos_db.calendario_fondo_mensual(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_fondo_mensual(in anio int, in corte date)
             begin
                 select
                     c.descripcion ramo,
@@ -742,143 +742,101 @@ return new class extends Migration {
                 )
                 group by c.descripcion,c2.descripcion;
             END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_general(in anio int, in corte date)
-            begin
-                select
-                    clave,
-                    monto_anual,
-                    enero,febrero,marzo,abril,
-                    mayo,junio,julio,agosto,
-                    septiembre,octubre,noviembre,diciembre
-                from (
-                    select 
-                        c.clave upp_clave,
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) clave,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as monto_anual,
-                        sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,
-                        sum(mayo) mayo,sum(junio) junio,sum(julio) julio,sum(agosto) agosto,
-                        sum(septiembre) septiembre,sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
-                    from programacion_presupuesto pp 
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                    join catalogo c on ee.upp_id = c.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c.clave,c.descripcion
-                    union all
-                    select
-                        c4.clave upp_clave,
-                        concat(
-                            ca.llave,'_',
-                            substring(cg.llave,1,2),'_',substring(cg.llave,3,2),'_',
-                            substring(cg.llave,5,3),'_',substring(cg.llave,8,3),
-                            '_',
-                            substring(ee.llave,1,3),'_',substring(ee.llave,3,1),'_',
-                            substring(ee.llave,4,2),
-                            '_',
-                            substring(af.llave,1,1),'_',substring(af.llave,2,1),'_',
-                            substring(af.llave,3,1),'_',substring(af.llave,4,1),'_',
-                            substring(af.llave,5,2),'_',substring(af.llave,7,1),'_',
-                            substring(af.llave,8,1),'_',substring(af.llave,9,2),'_',
-                            substring(af.llave,10,3),'_',substring(af.llave,13,3),
-                            '_',
-                            pp.mes_afectacion,'_',
-                            substring(pp2.llave,1,1),'_',substring(pp2.llave,2,1),'_',
-                            substring(pp2.llave,3,1),'_',substring(pp2.llave,4,2),
-                            '_',
-                            c.clave,'_',
-                            pp.ejercicio,'_',
-                            c2.clave,'_',
-                            substring(f.llave,1,1),'_',substring(f.llave,2,2),'_',
-                            substring(f.llave,4,2),'_',substring(f.llave,6,1),
-                            '_',
-                            c3.clave
-                        ) clave,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as monto_anual,
-                        sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,
-                        sum(mayo) mayo,sum(junio) junio,sum(julio) julio,sum(agosto) agosto,
-                        sum(septiembre) septiembre,sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
-                    from programacion_presupuesto pp
-                    join clasificacion_administrativa ca on pp.clasificacion_administrativa_id = ca.id 
-                    join clasificacion_geografica cg on pp.clasificacion_geografica_id = cg.id 
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-                    join catalogo c on pp.tipo_gasto_id = c.id 
-                    join catalogo c2 on pp.etiquetado_id = c2.id 
-                    join fondo f on pp.fondo_id = f.id 
-                    join catalogo c3 on pp.proyecto_presupuestal_id = c3.id
-                    join catalogo c4 on ee.upp_id = c4.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c4.clave,ca.llave,cg.llave,ee.llave,af.llave,pp.mes_afectacion,
-                    pp2.llave,c.clave,pp.ejercicio,c2.clave,f.llave,c3.clave
-                    order by upp_clave
-                ) tabla;
-            END;");
 
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_general_upp(in anio int, in corte date, in upp varchar(3))
+        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_general(in anio int, in corte date, in uppC varchar(3))
             begin
-                select
+            set @upp := uppC collate utf8mb4_unicode_ci;
+            
+            select
+                upp,
+                clave,
+                monto_anual,
+                enero,febrero,marzo,abril,mayo,
+                junio,julio,agosto,septiembre,
+                octubre,noviembre,diciembre
+            from (
+                select 
                     concat(
-                        ca.llave,'_',
-                        substring(cg.llave,1,2),'_',substring(cg.llave,3,2),'_',
-                        substring(cg.llave,5,3),'_',substring(cg.llave,8,3),
-                        '_',
-                        substring(ee.llave,1,3),'_',substring(ee.llave,4,1),'_',
-                        substring(ee.llave,5,2),
-                        '_',
-                        substring(af.llave,1,1),'_',substring(af.llave,2,1),'_',
-                        substring(af.llave,3,1),'_',substring(af.llave,4,1),'_',
-                        substring(af.llave,5,2),'_',substring(af.llave,7,1),'_',
-                        substring(af.llave,8,1),'_',substring(af.llave,9,2),'_',
-                        substring(af.llave,10,3),'_',substring(af.llave,13,3),
-                        '_',
-                        pp.mes_afectacion,'_',
-                        substring(pp2.llave,1,1),'_',substring(pp2.llave,2,1),'_',
-                        substring(pp2.llave,3,1),'_',substring(pp2.llave,4,2),
-                        '_',
-                        c.clave,'_',
-                        pp.ejercicio,'_',
-                        c2.clave,'_',
-                        substring(f.llave,1,1),'_',substring(f.llave,2,2),'_',
-                        substring(f.llave,4,2),'_',substring(f.llave,6,1),
-                        '_',
-                        c3.clave
-                    ) clave,
-                    sum((enero+febrero+marzo+abril+mayo+junio+
-                    julio+agosto+septiembre+octubre+noviembre+diciembre)) as monto_anual,
-                    sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,
-                    sum(mayo) mayo,sum(junio) junio,sum(julio) julio,sum(agosto) agosto,
-                    sum(septiembre) septiembre,sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
-                from programacion_presupuesto pp
-                join clasificacion_administrativa ca on pp.clasificacion_administrativa_id = ca.id 
-                join clasificacion_geografica cg on pp.clasificacion_geografica_id = cg.id 
-                join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                join area_funcional af on pp.area_funcional_id = af.id 
-                join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-                join catalogo c on pp.tipo_gasto_id = c.id 
-                join catalogo c2 on pp.etiquetado_id = c2.id 
-                join fondo f on pp.fondo_id = f.id 
-                join catalogo c3 on pp.proyecto_presupuestal_id = c3.id
-                join catalogo c4 on ee.upp_id = c4.id 
-                where pp.ejercicio = 23 and pp.deleted_at is null and if  (
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    1 orden,
+                    concat(clv_upp,' ',upp) clave,
+                    sum(total) monto_anual,
+                    sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
+                    sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
+                    sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
+                from pp_aplanado vppa
+                where ejercicio = anio and if (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                ) and c4.clave = '001'
-                group by ca.llave,cg.llave,ee.llave,af.llave,pp.mes_afectacion,
-                pp2.llave,c.clave,pp.ejercicio,c2.clave,f.llave,c3.clave;
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                ) and if(
+                    @upp is not null,
+                    clv_upp = @upp,
+                    clv_upp != ''
+                )
+                group by vppa.clv_upp,vppa.upp,orden,vppa.upp
+                union all
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    2 orden,
+                    concat(
+                        pp.clv_sector_publico,
+                        pp.clv_sector_publico_f,
+                        pp.clv_sector_economia,
+                        pp.clv_subsector_economia,
+                        pp.clv_ente_publico,
+                        '-',pp.clv_entidad_federativa,
+                        '-',pp.clv_region,
+                        '-',pp.clv_municipio,
+                        '-',pp.clv_localidad,
+                        '-',pp.clv_upp,
+                        '-',pp.clv_subsecretaria,
+                        '-',pp.clv_ur,
+                        '-',pp.clv_finalidad,
+                        '-',pp.clv_funcion,
+                        '-',pp.clv_subfuncion,
+                        '-',pp.clv_eje,
+                        '-',pp.clv_linea_accion,
+                        '-',pp.clv_programa_sectorial,
+                        '-',pp.clv_tipologia_conac,
+                        '-',pp.clv_programa,
+                        '-',pp.clv_subprograma,
+                        '-',pp.clv_proyecto,
+                        '-',pp.periodo_presupuestal,
+                        '-',pp.clv_capitulo,
+                        pp.clv_concepto,
+                        pp.clv_partida_generica,
+                        pp.clv_partida_especifica,
+                        '-',pp.clv_tipo_gasto,
+                        '-',pp.anio,
+                        '-',pp.clv_etiquetado,
+                        '-',pp.clv_fuente_financiamiento,
+                        '-',pp.clv_ramo,
+                        '-',pp.clv_fondo_ramo,
+                        '-',pp.clv_capital,
+                        '-',pp.clv_proyecto_obra
+                    ) clave,
+                    total monto_anual,
+                    enero,febrero,marzo,abril,mayo,
+                    junio,julio,agosto,septiembre,
+                    octubre,noviembre,diciembre
+                from pp_aplanado pp
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                ) and if (
+                    @upp is not null,
+                    clv_upp = @upp,
+                    clv_upp != ''
+                )
+                order by upp,orden
+            ) tabla;
             END;");
 
         DB::unprepared("CREATE PROCEDURE IF NOT EXISTS resumen_capitulo_partida(in anio int, in corte date)
@@ -1293,7 +1251,7 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64))
         begin
             
-        set @clave := claveT; 
+        set @clave := claveT collate utf8mb4_unicode_ci; 
             
         set @epp := concat(substring(@clave,1,5),substring(@clave,16,22)); 
         
@@ -1577,7 +1535,6 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_7;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_8;");
         DB::unprepared("DROP PROCEDURE IF EXISTS calendario_fondo_mensual;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS calendario_general;");
         DB::unprepared("DROP PROCEDURE IF EXISTS calendario_general_upp;");
         DB::unprepared("DROP PROCEDURE IF EXISTS resumen_capitulo_partida;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_3;");
