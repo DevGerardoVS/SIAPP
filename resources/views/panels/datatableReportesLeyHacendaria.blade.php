@@ -63,7 +63,7 @@
                 success: function(data) {
                     var par = $('#fechaCorte_filter');
                     par.html('');
-                    par.append(new Option("Elegir fecha de corte", ""));
+                    par.append(new Option("Todo", ""));
                     $.each(data, function(i, val){
                         par.append(new Option(data[i].deleted_at, data[i].deleted_at));
                     });

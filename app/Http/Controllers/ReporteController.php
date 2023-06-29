@@ -86,7 +86,7 @@ class ReporteController extends Controller
     public function proyectoCalendarioGeneral(Request $request){
         $anio = $request->anio;
         $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
-        if(Auth::user()->sudo == 0) $upp = "'".Auth::user()->clv_upp."'"; 
+        if(Auth::user()->clv_upp != null) $upp = "'".Auth::user()->clv_upp."'"; 
         else $upp = $request->upp != "null" ? "'".$request->upp."'"  : "null";
         $dataSet = array();
         $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.")");
@@ -102,7 +102,7 @@ class ReporteController extends Controller
     public function proyectoCalendarioGeneralActividad(Request $request){
         $anio = $request->anio;
         $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
-        if(Auth::user()->sudo == 0) $upp = "'".Auth::user()->clv_upp."'"; 
+        if(Auth::user()->clv_upp != null) $upp = "'".Auth::user()->clv_upp."'"; 
         else $upp = $request->upp != "null" ? "'".$request->upp."'"  : "null";
         $dataSet = array();
         $data = DB::select("CALL proyecto_calendario_actividades(".$anio.", ".$upp.", ".$fecha.")");
@@ -143,7 +143,7 @@ class ReporteController extends Controller
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
         $fechaCorte = !$request->input('fechaCorte') ? $request->fechaCorte_filter : $request->input('fechaCorte');
-        $upp = Auth::user()->sudo == 0 ? Auth::user()->clv_upp : $request->upp_filter;
+        $upp = Auth::user()->clv_upp != null ? Auth::user()->clv_upp : $request->upp_filter;
 
         $ruta = public_path()."/reportes";
 
@@ -170,7 +170,7 @@ class ReporteController extends Controller
                 $nameFile = $nameFile."_".$fechaCorte;
             }
             if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades_upp"){
-                if(Auth::user()->sudo == 0 || $upp != null){
+                if(Auth::user()->clv_upp != null || $upp != null){
                     $parameters["upp"] = $upp;
                     $nameFile = $nameFile."_UPP_".$upp;
                 }

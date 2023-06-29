@@ -9,6 +9,11 @@
     <div class="mx-auto p-4" style="width:90%;">
 
         <h1 class="fw-bold text-center">{{ $titleDesc }}</h1>
+        @if(Auth::user()->clv_upp!=null)
+            @foreach ($upps as $upp)
+            <h6 class="text-center">@if(Auth::user()->clv_upp == $upp->clave) {{$upp->clave}} {{$upp->descripcion}} @endif</h6>
+            @endforeach
+        @endif
         <div class="rounded-pill" style="height: .5em; background-color: rgb(37, 150, 190)"></div>
         <form action="{{route('calendario_fondo_mensual')}}" id="buscarFormA" name="analisis" method="post"> </form>
         <form action="{{route('resumen_capitulo_partida')}}" id="buscarFormB" name="analisis" method="post"><input type="text" id="catalogoB_val"  style="display: none"></form> 
@@ -49,26 +54,22 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
-                <div class="col-sm-3 col-md-3 col-lg-2 text-md-end d-none div_upp">
-                    <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
-                </div>
-                <div class="col-md-6 col-sm-12 d-none div_upp">
-                    @if(Auth::user()->sudo==1)
+            @if(Auth::user()->clv_upp==null)
+                <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
+                    <div class="col-sm-3 col-md-3 col-lg-2 text-md-end d-none div_upp">
+                        <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
+                    </div>
+                    <div class="col-md-6 col-sm-12 d-none div_upp">
                         <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
                             <option value="">Todos</option>
                             @foreach ($upps as $upp)
                                 <option value={{$upp->clave}} {{$upp->descripcion}}>{{$upp->clave}} {{$upp->descripcion}}</option>
                             @endforeach
                         </select>
-                    @else
-                        @foreach ($upps as $upp)
-                        <h6>@if(Auth::user()->clv_upp == $upp->clave) {{$upp->clave}} {{$upp->descripcion}} @endif</h6>
-                        @endforeach
-                    @endif
+                    </div>
+                        
                 </div>
-
-            </div>
+            @endif
             {{-- botones de descarga --}}
             <div class="d-flex flex-wrap justify-content-end mb-5 mt-sm-2 mt-lg-0">
                 <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3 btn_click" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
@@ -81,13 +82,13 @@
                 </button>
             </div>
         </form>
-         
+        
         <br>
 
         <ul class="nav nav-tabs " id="tabs" role="tablist">
-            @if(Auth::user()->sudo==1)
+            @if(Auth::user()->clv_upp==null)
             <li class="nav-item" >
-                <button class="nav-link textoMorado @if(Auth::user()->sudo==1) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->sudo==1)aria-selected="true"@endif>Calendario fondo mensual</button>
+                <button class="nav-link textoMorado @if(Auth::user()->clv_upp==null) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->clv_upp==null)aria-selected="true"@endif>Calendario fondo mensual</button>
             </li>
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="capituloPartida_tab" data-bs-toggle="tab" data-bs-target="#capituloPartida" aria-controls="capituloPartida" aria-selected="false">Resumen capítulo y partida</button>
@@ -97,12 +98,12 @@
             </li>
             @endif
             <li class="nav-item" >
-                <button class="nav-link textoMorado @if(Auth::user()->sudo==0) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->sudo==0)aria-selected="true"@endif>Proyecto calendario general</button>
+                <button class="nav-link textoMorado @if(Auth::user()->clv_upp!=null) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->clv_upp!=null)aria-selected="true"@endif>Proyecto calendario general</button>
             </li>
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Proyecto calendario general de actividades</button>
             </li>
-            @if(Auth::user()->sudo==1)
+            @if(Auth::user()->clv_upp==null)
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Avance de proyectos con actividades por UPP</button>
             </li>
@@ -111,8 +112,8 @@
 
         <div class="tab-content" style="font-size: 12px;">
             {{-- fondo mensual A--}}
-            @if(Auth::user()->sudo==1)
-            <div class="tab-pane @if(Auth::user()->sudo==1) active @endif" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
+            @if(Auth::user()->clv_upp==null)
+            <div class="tab-pane @if(Auth::user()->clv_upp==null) active @endif" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
                 <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
@@ -215,7 +216,7 @@
             </div>
             @endif
             {{-- Proyecto calendario general D--}}
-            <div class="tab-pane @if(Auth::user()->sudo==0) active @endif" id="calendarioGeneral" role="tabpanel" aria-labelledby="calendarioGeneral_tab" >    
+            <div class="tab-pane @if(Auth::user()->clv_upp!=null) active @endif" id="calendarioGeneral" role="tabpanel" aria-labelledby="calendarioGeneral_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
                         <div class="card">
@@ -309,7 +310,7 @@
                 </div>
             </div>
             {{-- Avance de proyectos con actividades por upp F--}}
-            @if(Auth::user()->sudo==1)
+            @if(Auth::user()->clv_upp==null)
             <div class="tab-pane" id="avanceProyectoActividadUPP" role="tabpanel" aria-labelledby="avanceProyectoActividadUPP_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
@@ -368,9 +369,9 @@
                 redrawTable(tabla);
             });
 
-            var user = {!! json_encode((array)auth()->user()->sudo) !!};
+            var user = {!! json_encode((array)auth()->user()->clv_upp) !!};
 
-            if(user[0] == 1){
+            if(user[0] == null){
                 var dt = $('#catalogoA');
                 tabla="#catalogoA";
                 letter="A";
