@@ -75,5 +75,8 @@
 
 	Route::controller(AdminCapturaController::class)->group(function(){
 		Route::get('/admon-capturas','index')->name('index');
+		Route::post('/admon-capturas/clavesPresupuestarias', 'clavesPresupuestarias')->name('claves_presupuestarias');
+		Route::post('/admon-capturas/metasActividades', 'metasActividades')->name('metas_actividades');
+
 	});
 ?>
