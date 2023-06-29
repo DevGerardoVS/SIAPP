@@ -52,8 +52,7 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}">
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
     <!-- Latest compiled and minified CSS -->
@@ -101,15 +100,11 @@
     <script>
         const local = '127.0.0.1';
         if (window.location.hostname != local) {
-            document.addEventListener("contextmenu", (e) => {
-                e.preventDefault()
-            });
-            document.addEventListener("keydown", (e) => {
+            window.onload = function() {
+            document.addEventListener("contextmenu", function(e) {
                 e.preventDefault();
-                if (e.keycode == 123) {
-                    return false;
-                }
-            })
+            }, false);
+        }
         }
     </script>
     <script>
