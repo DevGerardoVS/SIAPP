@@ -37,24 +37,41 @@
                                             <i class="fa fa-eye">Presupuesto por Fondo</i>
                                         </button>
                                     </div>
-                                    <div class="col-md-2"></div>
+                                    <div class="col-md-2 text-right">
+                                        
+                                    </div>
                                     <div class="col-md-2 text-right">
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
-                                    
+                                            </button>
                                         </div>
                                         
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
-                                                <a type="button"id='btnNuevaClave' class="btn btn-success form-control"  href="/calendarizacion-claves-create" ><i class="fa fa-plus">Nueva Clave</i></a>
+                                            <button type="button" id='btnNuevaClave' class="btn btn-success form-control" ><i class="fa fa-plus"> &nbsp;Nueva Clave</i></button>
+                                            <button style="display: none" type="button" class="btn btn-primary form-control"
+                                                name="btn_confirmar" id="btn_confirmar">
+                                                <i class="fa fa-check"> &nbsp;Confirmar Claves</i> 
+                                            </button>
                                         </div>
 
                                     </div>
                                 </div>
                             </div>
-                            <br><br>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <select class="form-control select2" name="filtro_anio" id="filtro_anio">
+                                        <option value="">-- Selecciona un Ejercicio --</option>
+                                        <option value=2022>2022</option>
+                                        <option value=2023>2023</option>
+                                        <option value=2024>2024</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
                             
                                 <div class="table-responsive">
                                     <table id="claves" class="table table-hover table-striped" style="width: 100%">
@@ -99,9 +116,10 @@
     <script src="/js/clavesP/cargamasiva.js"></script>
 
     <script>
-        dao.getData();
-        dao.getRegiones("");
-        dao.getUpp("");
-        dao.getPresupuesAsignado();
+        dao.getPresupuesAsignado('');
+        dao.getData('');
+        
+        
+       
     </script>
 @endsection

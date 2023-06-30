@@ -70,7 +70,8 @@
                                     <div class="col-md-3"><label class="control-label">Region*</label></div>
                                         <div class="col-md-8">
                                             <select class="form-control select2" name="sel_region" id="sel_region" data-live-search="true"></select>
-                                        </div>                            
+                                        </div>      
+                                                             
                                     <div style="clear:both"></div>
                                     <div class="col-md-1"></div>
                                     <div class="col-md-3"><label class="control-label">Municipio*</label></div>
@@ -151,7 +152,8 @@
                                             
                                             <select class="form-control select2" name="sel_fondo" id="sel_fondo"></select>
                                         </div>        
-                                        <input type="hidden" id="tipo" name="tipo">                        
+                                        <input type="hidden" id="tipo" name="tipo">    
+                                        <input type="hidden" id="anio" name="anio" value={{$ejercicio}}>                      
                                     <div style="clear:both"></div>
                                 </div>
                             </form>
@@ -166,7 +168,16 @@
                         <div id="segundaParte">
                             <form id="actividad">
                                 <div class="row">
-                                    <div class="col-md-9"></div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <p id="lbl_ur"></p>
+                                            <div style="clear:both"></div>
+                                            <p id="lbl_fondo"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p id="lbl_sector"></p>
+                                    </div>
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-light" data-toggle="modal"
                                             data-target="#detalle"data-backdrop="static" data-keyboard="false" id="verDetalle">Ver detalle clave presupuestaria

@@ -1,25 +1,29 @@
 var dao = {
-    getData : function(){
+    getData : function(ejercicio){
 		$.ajax({
 			type : "GET",
-			url : "/calendarizacion/claves-get",
+			url : "/calendarizacion/claves-get/"+ ejercicio,
 			dataType : "json",
 			//data : {},
 		}).done(function(_data){
+			console.log("🚀 ~ file: init.js:9 ~ _data:", _data)
 			let data = [];
-			for (let index = 0; index < _data.length; index++) {
-        const clasificacionAdmin = _data[index].clasificacion_administrativa;
-        const centroGestor = _data[index].entidad_federativa + _data[index].region + _data[index].municipio + _data[index].localidad + _data[index].upp + _data[index].subsecretaria + _data[index].ur;
-        const areaFuncional = _data[index].finalidad + _data[index].funcion + _data[index].subfuncion + _data[index].eje + _data[index].linea_accion + _data[index].programa_sectorial + _data[index].tipologia_conac + _data[index].programa_presupuestario + _data[index].subprograma_presupuestario + _data[index].proyecto_presupuestario;
-        const periodoPre = _data[index].periodo_presupuestal;
-        const posicionPre = _data[index].posicion_presupuestaria;
-        const fondo = _data[index].anio + _data[index].etiquetado + _data[index].fuente_financiamiento + _data[index].ramo + _data[index].fondo_ramo + _data[index].capital;
-        const proyectoObra = _data[index].proyecto_obra;
-        let row = _data[index].claveUr +" "+'-'+" "+ _data[index].descripcionUr +" "+'-'+" "+'Presupuesto calendarizado: ';
-        let totalByClave = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(_data[index].totalByClave); 
-        let id = _data[index].id;
-        data.push({'id':id,'clasificacionAdmin':clasificacionAdmin, 'centroGestor':centroGestor,'areaFuncional':areaFuncional,'periodoPre': periodoPre, 'posicionPre':posicionPre,'fondo':fondo,'proyectoObra': proyectoObra,'row': row,'totalByClave': totalByClave});  
+			for (let index = 0; index < _data['claves'].length; index++) {
+        const clasificacionAdmin = _data['claves'][index].clasificacion_administrativa;
+        const centroGestor = _data['claves'][index].entidad_federativa + _data['claves'][index].region + _data['claves'][index].municipio + _data['claves'][index].localidad + _data['claves'][index].upp + _data['claves'][index].subsecretaria + _data['claves'][index].ur;
+        const areaFuncional = _data['claves'][index].finalidad + _data['claves'][index].funcion + _data['claves'][index].subfuncion + _data['claves'][index].eje + _data['claves'][index].linea_accion + _data['claves'][index].programa_sectorial + _data['claves'][index].tipologia_conac + _data['claves'][index].programa_presupuestario + _data['claves'][index].subprograma_presupuestario + _data['claves'][index].proyecto_presupuestario;
+        const periodoPre = _data['claves'][index].periodo_presupuestal;
+        const posicionPre = _data['claves'][index].posicion_presupuestaria;
+        const fondo = _data['claves'][index].anio + _data['claves'][index].etiquetado + _data['claves'][index].fuente_financiamiento + _data['claves'][index].ramo + _data['claves'][index].fondo_ramo + _data['claves'][index].capital;
+        const proyectoObra = _data['claves'][index].proyecto_obra;
+        let row = _data['claves'][index].claveUr +" "+'-'+" "+ _data['claves'][index].descripcionUr +" "+'-'+" "+'Presupuesto calendarizado: ';
+        let totalByClave = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(_data['claves'][index].totalByClave); 
+        let id = _data['claves'][index].id;
+        let estado = _data['claves'][index].estado;
+        data.push({'id':id,'clasificacionAdmin':clasificacionAdmin, 'centroGestor':centroGestor,'areaFuncional':areaFuncional,'periodoPre': periodoPre, 'posicionPre':posicionPre,'fondo':fondo,'proyectoObra': proyectoObra,'row': row,'totalByClave': totalByClave, 'estado':estado});  
 			}
+      // console.log('estatus fuera',_data['estatus'].estatus);
+      // let estatus = _data['estatus'].estatus;
 			_table = $("#claves");
 			_columns = [
 				{"aTargets" : [0], "mData" : 'clasificacionAdmin'},
@@ -31,8 +35,12 @@ var dao = {
 				{"aTargets" : [6], "mData" : "proyectoObra"},
 				{"aTargets" : [7], "mData" : "totalByClave"},
 				{"aTargets" : [8], "mData" : function(o){
-					return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-					+  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
+            if (o.estado == 0) {
+              return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
+            +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
+            }else{
+              return '<p><i class="fa fa-check">&nbsp;Confirmado</i></p>';
+            }
 				}},
 			];
 			_gen.setTableScrollGroupBy(_table, _columns, data);
@@ -84,6 +92,7 @@ var dao = {
     let diciembre = document.getElementById('diciembre').value;
     let total = document.getElementById('totalCalendarizado').value;
     let tipo = document.getElementById('tipo').value;
+    let ejercicio = document.getElementById('anio').value;
     let datos = [{'clasificacionAdministrativa':clasificacionAdministrativa,'entidadFederativa':entidadFederativa,'region':region, 'municipio':municipio,'localidad':localidad,'upp':upp,'subsecretaria':subsecretaria,
     'ur':ur,'finalidad':finalidad,'funcion':funcion,'subfuncion':subfuncion,'eje':eje,'lineaAccion':lineaAccion,'programaSectorial':programaSectorial,
     'conac':conac,'programaPre':programaPre,'subPrograma':subPrograma,'proyectoPre':proyectoPre,'mesAfectacion':mesAfectacion,'capitulo':capitulo,'concepto':concepto,'partidaGen':partidaGen,'partidaEpecifica':partidaEpecifica,'tipoGasto':tipoGasto,
@@ -92,7 +101,7 @@ var dao = {
       $.ajax({
         type: "POST",
         url: '/calendarizacion-guardar-clave',
-        data: {'data': datos}
+        data: {'data': datos,'ejercicio':ejercicio}
       }).done(function (response) {
         if (response != 'done') {
           Swal.fire(
@@ -106,7 +115,7 @@ var dao = {
             'Registro Exitoso',
             'success'
           );
-          window.location.href = 'calendarizacion/claves';
+          window.location.href = '/calendarizacion/claves';
         }
       });
   },
@@ -178,6 +187,7 @@ var dao = {
               'success'
             );
             dao.getData("");
+            dao.getPresupuesAsignado('');
           }
         })
        
@@ -270,6 +280,7 @@ var dao = {
             if (idSelected != '' && val.clv_ur == idSelected) {
               par.append(new Option( data[i].ur, data[i].clv_ur,true,true));
               document.getElementById('ur').innerHTML = data[i].clv_ur;
+              document.getElementById('lbl_ur').innerText ='Ur: '+ data[i].clv_ur + '-' + data[i].ur;
              }else{
               par.append(new Option( data[i].ur, data[i].clv_ur,false,false));
              }
@@ -304,10 +315,10 @@ var dao = {
           });
         });
     },
-	getSubProgramaByProgramaId : function(ur,id,idSelected){
+	getSubProgramaByProgramaId : function(ur,id, upp,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-subprograma-presupuesto/'+ ur + '/'+ id,
+          	url: '/cat-subprograma-presupuesto/'+ ur + '/'+ id + '/'+ upp,
         }).done(function(data){
           var par = $('#sel_sub_programa');
           par.html('');
@@ -399,10 +410,10 @@ var dao = {
           });
         });
     },
-    getFondosByUpp: function (id,idSelected) {
+    getFondosByUpp: function (id,subP, ejercicio,idSelected) {
       $.ajax({
         type:'get',
-        url:'/cat-fondos/'+ id
+        url:'/cat-fondos/'+ id + '/'+ subP +'/'+ejercicio,
       }).done(function (data) {
         var par = $('#sel_fondo');
           par.html('');
@@ -420,6 +431,7 @@ var dao = {
               document.getElementById('ramo').innerHTML = data[i].clv_ramo;
               document.getElementById('fondoRamo').innerHTML = data[i].clv_fondo;
               document.getElementById('capital').innerHTML = data[i].clv_capital;
+              document.getElementById('lbl_fondo').innerText ='Fondo: '+ data[i].clv_fondo + '-' + data[i].fondo_ramo;
              }else{
               par.append(new Option(data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,false,false));
              }
@@ -435,10 +447,10 @@ var dao = {
         document.getElementById('clasificacion').innerHTML = clasificacion;
       });
     },
-    getPresupuestoPorUpp: function (upp,fondo,subPrograma) {
+    getPresupuestoPorUpp: function (upp,fondo,subPrograma,ejercicio) {
       $.ajax({
         type:'get',
-        url:'/presupuesto-upp-asignado/'+ upp +'/' + fondo + '/' + subPrograma,
+        url:'/presupuesto-upp-asignado/'+ upp +'/' + fondo + '/' + subPrograma + '/' + ejercicio,
       }).done(function (data) {
         let presupuesto = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.presupuesto);
         document.getElementById('preFondo').value = presupuesto;
@@ -446,10 +458,11 @@ var dao = {
         document.getElementById('preDisFondo').value = disponible;
       });
     },
-  getPresupuesAsignado : function(){
+  getPresupuesAsignado : function(ejercicio){
+    console.log('ejercicio',ejercicio);
     $.ajax({
       type: 'get',
-      url: '/get-presupuesto-asignado'
+      url: '/get-presupuesto-asignado/'+ ejercicio,
     }).done(function(response){
       let totalAsignado = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response['presupuestoAsignado'][0].totalAsignado);
       let Totcalendarizado = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(response.Totcalendarizado);
@@ -457,13 +470,31 @@ var dao = {
       $('#asignadoUpp').val(totalAsignado);
       $('#calendarizado').val(Totcalendarizado);
       $('#disponibleUpp').val(disponible);
-      if (Totcalendarizado == totalAsignado) {
-        document.getElementById('btnNuevaClave').disabled =true;
-        $('#btnNuevaClave').hide(true);
+      if (response.estatus.estatus && response.estatus.estatus == 'Abierto') {
+        if (Totcalendarizado == totalAsignado || disponible == 0) {
+          //document.getElementById('btnNuevaClave').disabled =true;
+          $('#btnNuevaClave').hide(true);
+          $('#btn_confirmar').show(true);
+        }else{
+          $('#btnNuevaClave').show(true);
+        }
+      }else{
+        //document.getElementById('btnNuevaClave').disabled =true;
+          $('#btnNuevaClave').hide(true);
+          $('#btn_confirmar').hide(true);
       }
+      
       
     });
 
+  },
+  getSector: function (clave) {
+    $.ajax({
+      type:'get',
+      url:'/calendarizacion-get-sector/'+ clave,
+    }).done(function(response){
+      document.getElementById('lbl_sector').innerText = 'Sector: ' + response.sector;
+    });
   },
   getTabla: function () {
     let clasificacionAdministrativa = document.getElementById('clasificacion').innerHTML;
@@ -500,7 +531,6 @@ var dao = {
     let clave = clasificacionAdministrativa + entidadFederativa + region + municipio + localidad + upp + subsecretaria + ur + finalidad + funcion +
       subfuncion + eje + lineaAccion + programaSectorial + conac + programaPre + subPrograma + proyectoPre + mesAfectacion + capitulo + concepto + partidaGen + partidaEpecifica + tipoGasto + anioFondo +
       etiquetado + fuenteFinanciamiento + ramo + fondoRamo + capital + proyectoObra;
-    console.log('Clave Completa', clave);
     $.ajax({
       type: "GET",
       url: "/ver-detalle/" + clave,
@@ -530,12 +560,13 @@ var dao = {
       $('detalle').show(true);
     });
   },
-  getDetallePresupuestoByFondo : function () {
+  getDetallePresupuestoByFondo : function (ejercicio) {
     $.ajax({
       type : 'get',
-      url: '/calendarizacion-claves-presupuesto-fondo',
+      url: '/calendarizacion-claves-presupuesto-fondo/'+ejercicio,
       dataType : "JSON"
     }).done(function (response) {
+      document.getElementById('titleModalpresupuesto').innerText = response[0].upp['clave'] + ' - ' +response[0].upp['descripcion']; 
       _table = $("#tblPresupuestos");
 			_columns = [
 				{"aTargets" : [0], "mData" : 'clv_fondo'},
@@ -548,6 +579,42 @@ var dao = {
 			_gen.setTableScrollFotter(_table, _columns, response);
       $('modalPresupuesto').show(true);
     });
+  },
+  confirmarClaves: function () {
+    Swal.fire({
+      title: '¿Esstás seguro?',
+      text: "Se recomienda que revises tu información antes de confirmar, una vez confirmadas tus claves no podrás editar.",
+      icon: 'warning',
+      showCancelButton: true,
+      cancelButtonColor: '#800e3a',
+      confirmButtonColor: '#000dff',
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Confirmar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          type: "POST",
+          url: '/calendarizacion-confirmar-claves',
+          data: {'id':''}
+        }).done(function (response) {
+          if (response != 'done') {
+            Swal.fire(
+              'Error',
+              'A ocurrido un error intentelo nuevamente o contacte al administrador',
+              'error'
+            );
+          }else{
+            Swal.fire(
+              'Confirmado',
+              'Confirmado de claves realizado correctamente.',
+              'success'
+            );
+            dao.getData("");
+            dao.getPresupuesAsignado('');
+          }
+        })
+      }
+    })
   }
 
 };
@@ -629,7 +696,6 @@ $(document).ready(function(){
     document.getElementById('upp').innerHTML = val;
 		dao.getUninadResponsableByUpp(val,'');
     dao.getPartidaByUpp('');
-    dao.getFondosByUpp(val,'');
 	});
 	$('#sel_unidad_res').change(function(e){
 		e.preventDefault();
@@ -641,20 +707,27 @@ $(document).ready(function(){
 		dao.getLineaDeAccionByUpp(uppId,id,'');
     dao.getAreaFuncional(uppId,id);
     dao.getClasificacionAdmin(uppId,id);
+    var urText = $('#sel_unidad_res').find(":selected").text();
+    document.getElementById('lbl_ur').innerText = 'Ur: '+ id+ '-' + urText;
 	});
 	$('#sel_programa').change(function(e){
 		e.preventDefault();
 		let id = this.value;
     document.getElementById('programaPre').innerHTML = id;
+    var upp = document.getElementById("sel_upp").value;
     var ur = document.getElementById("sel_unidad_res").value;
-		dao.getSubProgramaByProgramaId(ur,id,'');
+		dao.getSubProgramaByProgramaId(ur,id, upp,'');
 	});
 	$('#sel_sub_programa').change(function(e){
 		e.preventDefault();
 		let id = this.value;
     document.getElementById('subPrograma').innerHTML = id;
     var programa = document.getElementById("sel_programa").value;
+    var upp = document.getElementById("sel_upp").value;
+    var ejercicio = document.getElementById('anio').value;
+    console.log("🚀 ~ file: init.js:728 ~ $ ~ ejercicio:", ejercicio)
 		dao.getProyectoBySubPrograma(programa,id,'');
+    dao.getFondosByUpp(upp, id, ejercicio,'');
 	});
   $('#sel_proyecto').change(function (e) {
     e.preventDefault();
@@ -665,6 +738,7 @@ $(document).ready(function(){
     e.preventDefault();
     let clave = this.value;
     document.getElementById('lineaAccion').innerHTML = clave;
+    dao.getSector(clave);
   });
   $('#sel_periodo').change(function (e) {
     e.preventDefault();
@@ -702,7 +776,11 @@ $(document).ready(function(){
     document.getElementById('capital').innerHTML = capital;
     let upp = document.getElementById('sel_upp').value;
     let subPrograma = document.getElementById('sel_sub_programa').value;
-    dao.getPresupuestoPorUpp(upp,fondoRemo,subPrograma);
+    let ejercicio = $('#anio').val();
+    console.log("🚀 ~ file: init.js:779 ~ ejercicio:", ejercicio)
+    dao.getPresupuestoPorUpp(upp,fondoRemo,subPrograma, ejercicio);
+    var fondoText = $('#sel_fondo').find(":selected").text();
+    document.getElementById('lbl_fondo').innerText = 'Fondo: '+ fondoRemo+ '-' + fondoText;
   });
   $('#btnSaveClave').click(function (params) {
     params.preventDefault();
@@ -749,7 +827,7 @@ $(document).ready(function(){
   });
   $('#btnCancelar').click(function (params) {
     params.preventDefault();
-    window.location.href = 'calendarizacion/claves';
+    window.location.href = '/calendarizacion/claves';
   });
   $('#btnCancelarUpdate').click(function (params) {
     params.preventDefault();
@@ -780,12 +858,25 @@ $(document).ready(function(){
      
     }
   });
-
   $('#presupuestoFondo').click(function () {
-      dao.getDetallePresupuestoByFondo();
+    let ejercicio = document.getElementById('filtro_anio').value;
+    dao.getDetallePresupuestoByFondo(ejercicio);
   });
-
-  
+  $('#btn_confirmar').click(function () {
+      dao.confirmarClaves();
+  });
+  $('#filtro_anio').change(function(e){
+		e.preventDefault();
+		let id = this.value;
+    
+		dao.getPresupuesAsignado(id);
+    dao.getData(id);
+	});
+  $('#btnNuevaClave').click(function (e) {
+    let ejercicio = document.getElementById('filtro_anio').value;
+    console.log("🚀 ~ file: init.js:875 ~ ejercicio:", ejercicio)
+    window.location.href = '/calendarizacion-claves-create/'+ejercicio;
+  });
   
 
 });

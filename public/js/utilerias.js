@@ -427,7 +427,6 @@ var _gen = {
         }
         otable = tabla.DataTable().columns.adjust().draw();
         otable.$('[data-toggle="popover"]').popover();
-        console.log('entro aui 5');
     },
     setTableScrollGroupBy: function (
         tabla,
