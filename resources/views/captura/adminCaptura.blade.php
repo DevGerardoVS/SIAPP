@@ -13,42 +13,39 @@ $titleDesc = 'Administración de Captura';
             <form action="{{ route('metas_actividades') }}" id="buscarFormB" name="buscarFormB" method="post"></form>
         </header>
 
+        <br>
         {{-- Form para cambiar los select --}}
         <form id="form" method="POST">
             @csrf
-            <div class="col-md-10 col-sm-12 d-md-flex mt-5">
-                
+            <div class="col-md-10 col-sm-12 d-md-flex">
                 <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
-                    <label for="estatus_filter" class="form-label fw-bold mt-md-1">Estatus:</label>
+                    <label for="estatus_filter" class="form-label fw-bold">Estatus:</label>
                 </div>
                 <div class="col-sm-12 col-md-3 col-lg-2">
                     <select class="form-control filters filters_estatus" id="estatus_filter" name="estatus_filter"
                         autocomplete="estatus_filter">
                         <option value="">Todos</option>
-                        @foreach ($estatus as $est)
-                            <option value={{ $est->estatus }}>{{ $est->estatus }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
-                <div class="col-sm-3 col-md-3 col-lg-2 text-md-end div_upp">
-                    <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
-                </div>
-                <div class="col-md-6 col-sm-12 div_upp">
-                    <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter"
-                        autocomplete="upp_filter">
-                        <option value="">Todos</option>
-                        @foreach ($upps as $upp)
-                            <option value={{ $upp->clave }} {{ $upp->descripcion }}>{{ $upp->clave }}
-                                {{ $upp->descripcion }}</option>
-                        @endforeach
+                        <option value="Abierto">Abierto</option>
+                        <option value="Cerrado">Cerrado</option>
                     </select>
                 </div>
             </div>
         </form>
 
+        {{-- botón modal --}}
+        <div class="d-flex flex-wrap justify-content-md-end justify-content-sm-center mt-sm-3 mt-lg-0 ">
+            <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
+            data-keyboard="false" data-toggle="modal">
+                <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
+                <span class="d-lg-inline align-middle">Apertura y cierre de captura</span> 
+            </button>
+        </div>
 
+        {{-- Llamada al modal --}}
+        @include('captura.modalAperturaCierre')
+        
+        <br>
+        
         <ul class="nav nav-tabs " id="tabs" role="tablist">
             <li class="nav-item">
                 <button class="nav-link textoMorado active" role="tab" type="button" id="clavePresupuestaria_tab"
@@ -178,9 +175,34 @@ $titleDesc = 'Administración de Captura';
             getData(tabla, letter);
         });
 
-        $("#form").on("change", ".filters_upp", function(e) {
-            dt.DataTable().clear().destroy();
-            getData(tabla, letter);
+        // ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨
+        function mostrarAdv(text) {
+        var title = 'Asegúrese de ingresar los parametros requeridos.';
+
+        event.preventDefault();
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            confirmButtonText: 'De acuerdo',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //focus
+            }
         });
+    }
+
+        $('#btnSave').on("click", function () {
+            if ($('#modulo_filter').val() == null || $('#modulo_filter').val() == 0) {
+                var textAux = 'El parametro mes es necesario para continuar.';
+                mostrarAdv(textAux);
+            }
+            console.log($('capturaRadio').val());
+            if ($('capturaRadio').val() == null || $('capturaRadio').val() == 0) {
+                var textAux = 'El parametro mes es necesario para continuar.';
+                mostrarAdv(textAux);
+            }
+        });
+
     </script>
 @endsection

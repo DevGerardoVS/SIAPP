@@ -62,11 +62,9 @@
             var formData = new FormData();
             var csrf_tpken = $("input[name='_token']").val();
             var estatus = $("#estatus_filter").val();
-            var upp = $("#upp_filter").val();
 
             formData.append("_token", csrf_tpken);
             formData.append("estatus", estatus);
-            formData.append("upp", upp);
 
             $.ajax({
                 url: $(ruta).attr("action"),
@@ -109,7 +107,7 @@
                         pageLength: 10,
                         dom: 'frltip',
                         scrollX: true,
-                        "lengthMenu": [10, 25, 50, 75, 100, 150, 200],
+                        "lengthMenu": [10, 25, 50, 80],
                         language: {
                             processing: "Procesando...",
                             lengthMenu: "Mostrar _MENU_ registros",

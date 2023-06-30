@@ -78,6 +78,7 @@
 		Route::get('/admon-capturas','index')->name('index');
 		Route::post('/admon-capturas/clavesPresupuestarias', 'clavesPresupuestarias')->name('claves_presupuestarias');
 		Route::post('/admon-capturas/metasActividades', 'metasActividades')->name('metas_actividades');
+		Route::post('/admon-capturas/update', 'update')->name('admon_capturas_update');
 
 	});
 ?>
