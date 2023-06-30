@@ -1,5 +1,6 @@
-let total = 0;
-let actividades = [];
+var total = 0;
+var actividades = [];
+var ultimo = 1;
 var dao = {
     setStatus: function (id, estatus) {
         Swal.fire({
@@ -74,9 +75,11 @@ var dao = {
 
         $('#uppSelected').removeClass('is-invalid')
         $('#uppSelected').val(0)
+        ultimo=1;
     },
     eliminaFondo: function (i) {
         document.getElementById(i).outerHTML=""
+        totalP();
     },
     filtroPresupuesto: function (){
         var tecla = event.key;
@@ -90,10 +93,6 @@ var dao = {
         }else{
             $('input').removeClass('is-invalid');
         }
-    },
-    total: function(i){
-        total += parseInt($('#presupuesto_'+i).val())
-        console.log(total)
     }
 };
 var init = {
@@ -139,7 +138,7 @@ $(document).ready(function () {
                 url: '/calendarizacion/techos/get-fondos',
                 dataType: "JSON"
             }).done(function (data) {
-                selectFondo = '<select class="form-control filters" id="fondo_'+table_lenght+'" name="fondo_'+table_lenght+'" placeholder="Seleccione un fondo" required>';
+                selectFondo = '<select class="form-control filters" id="fondo_'+ultimo+'" name="fondo_'+ultimo+'" placeholder="Seleccione un fondo" required>';
                 selectFondo += '<option value="">Seleccione fondo</option>';
                 data.forEach(function(item){
                     selectFondo += '<option value="'+item.clv_fondo_ramo+'" >'+item.clv_fondo_ramo+" - "+item.fondo_ramo+'</option>'
@@ -147,9 +146,9 @@ $(document).ready(function () {
                 selectFondo += '</select>';
             });
 
-            row = table.insertRow(table_lenght).outerHTML='<tr id="'+table_lenght+'">\n' +
+            row = table.insertRow(table_lenght).outerHTML='<tr id="'+ultimo+'">\n' +
                 '<td>' +
-                '       <select class="form-control filters" id="tipo_'+table_lenght+'" name="tipo_'+table_lenght+'" placeholder="Seleccione una tipo" required>\n' +
+                '       <select class="form-control filters" id="tipo_'+ultimo+'" name="tipo_'+ultimo+'" placeholder="Seleccione una tipo" required>\n' +
                 '           <option value="">Seleccione un tipo</option>\n'+
                 '           <option value="Operativo">Operativo</option>\n'+
                 '           <option value="RH">RH</option>\n' +
@@ -159,41 +158,44 @@ $(document).ready(function () {
                     + selectFondo +
                 '</td>\n' +
                 '<td>' +
-                '<input type="number" class="form-control totales" min="0" id="presupuesto_'+table_lenght+'" name="presupuesto_'+table_lenght+'" placeholder="$0" onkeydown="dao.filtroPresupuesto()" onkeyup="dao.validCero('+table_lenght+')" onchange="totalP('+table_lenght+')" required>' +
+                '<input type="number" class="form-control totales" min="0" id="presupuesto_'+ultimo+'" name="presupuesto_'+ultimo+'" placeholder="$0" onkeydown="dao.filtroPresupuesto()" onkeyup="dao.validCero('+ultimo+')" onchange="totalP()" required>' +
                 '</td>\n' +
-                '  <td><input type="number" value="2024" class="form-control" id="ejercicio_'+table_lenght+'" name="ejercicio_'+table_lenght+'" disabled placeholder="2024"></td>\n' +
+                '  <td><input type="number" value="2024" class="form-control" id="ejercicio_'+ultimo+'" name="ejercicio_'+ultimo+'" disabled placeholder="2024"></td>\n' +
                 '<td>' +
-                '   <input type="button" value="Eliminar" onclick="dao.eliminaFondo('+table_lenght+')" title="Eliminar fondo" class="btn btn-danger delete" >' +
+                '   <input type="button" value="Eliminar" onclick="dao.eliminaFondo('+ultimo+')" title="Eliminar fondo" class="btn btn-danger delete" >' +
                 '</td>\n' +
-                '</tr>'
+                '</tr>';
+            ultimo ++;
+            totalP()
         }else{
             $('#uppSelected').addClass('is-invalid')
         }
     });
 });
 
-function totalP(i){
+function totalP(){
     total = 0;
-    table = document.getElementById('fondos');
-    table_lenght = (table.rows.length);
 
-    for(let l=1;l<table_lenght;l++){
-        if(isNaN(parseInt($('#presupuesto_'+l).val()))) {
-            total += 0;
-        }else{
-            total += parseInt($('#presupuesto_'+l).val());
+    for(let l=1;l<ultimo;l++){
+        if(!($('#presupuesto_'+l).val() === undefined)){
+            if(isNaN(parseInt($('#presupuesto_'+l).val()))) {
+                total += 0;
+            }else{
+                total += parseInt($('#presupuesto_'+l).val());
+            }
         }
     }
-    $('#total-presupuesto').val('$ '+total)
+    $('#total-presupuesto').val('$ '+total);
 }
 
 function verificarCeros(){
-    table = document.getElementById('fondos');
-    table_lenght = (table.rows.length);
-
-    for(let l=1;l<table_lenght;l++){
-        return $('#presupuesto_'+l).hasClass('is-invalid') == true ?  false :  true;
+    for(let l=1;l<=ultimo;l++){
+        if( $('#presupuesto_'+l).hasClass('is-invalid') == true || $('#presupuesto_'+l).val() == 0){
+            $('#presupuesto_'+l).addClass('is-invalid')
+            return false; 
+        }
     }
+    return true;
 }
 
 $('#btnSave').click(function (e) {
@@ -218,6 +220,7 @@ $('#btnSave').click(function (e) {
             cache: false,
             timeout: 600000
         }).done(function (response) {
+            console.log(response.status)
             if(response.status == 200){
                 $('#cerrar').trigger('click');
                 Swal.fire({

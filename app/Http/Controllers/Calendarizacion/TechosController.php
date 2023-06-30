@@ -65,7 +65,7 @@ class TechosController extends Controller
         foreach ($aKeys as $a){
             $validaForm[$a] = 'required';
         }
-        log::debug($aRepetidos);
+
         $request->validate($validaForm);
 
         //Verifica que no se dupliquen los fondos en el mismo ejercicio
@@ -73,11 +73,10 @@ class TechosController extends Controller
         $repeticion = $data;
         $c = 0;
         foreach ($data as $a){
-            log::debug($c);
             $repeticion = array_slice($repeticion,1);
+            
             foreach ($repeticion as $r){
                 if($r[0] === $a[0] && $r[1] === $a[1]){
-                    log::debug(array_keys($aRepetidos[$c]));
                     return [
                         'status' => 'Repetidos',
                         'error' => "Campos repetidos",
