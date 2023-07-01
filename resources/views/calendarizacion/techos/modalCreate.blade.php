@@ -1,6 +1,6 @@
 <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
                 <h5 class="modal-title" id="exampleModalLabel">Agregar techo financiero</h5>
@@ -12,18 +12,12 @@
             <div class="modal-body">
                 <form id="frm_create_techo">
                     @csrf
-                    <div class="row">
+                    <div class="row align-items-start">
                         <div class="col-sm-1">
-                            <labe>Año</labe>
-                        </div>
-                        <div class="col-sm-2">
-                            <input class="form-control" id="anio" name="anio" type="text" value="2024" onkeydown="return (event.charCode >= 48 && event.charCode <= 57 && event.charCode >= 99 && event.charCode <= 122 )">
-                        </div>
-                        <div class="col-sm-4">
-                            <labe>Unidad Programática Presupuestal: </labe>
+                            <label><b>UPP:</b></label>
                         </div>
                         <?php $upp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->get();?>
-                        <div class="col-sm-5">
+                        <div class="col-sm-7" >
                             <select class="form-control filters" placeholder="Seleccione una UPP" id="uppSelected" name="uppSelected" required>
                                 <option value="0" selected>Seleccione una UPP</option>
                                 @foreach($upp as $u)
@@ -31,12 +25,21 @@
                                 @endforeach
                             </select>
                         </div>
+                    </div> <br>
+                    <div class="row">
+                        <div class="col-sm-1">
+                             <label><b>Año</b></label>
+                        </div>
+                        <div class="col-sm-7">
+                            <input class="form-control" id="anio" name="anio" type="text" value="2024" onkeydown="return (event.charCode >= 48 && event.charCode <= 57 && event.charCode >= 99 && event.charCode <= 122 )">
+                        </div>
+                        <div class="col-sm-4">
+                            <button class="btn btn-primary" id="agregar_fondo">Agregar fondo</button>
+                        </div>
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-md-4">
-                            <button class="btn btn-primary" id="agregar_fondo">Agregar fondo</button>
-                        </div>
+                        
                     </div>
                     <br>
                     <div class="row">

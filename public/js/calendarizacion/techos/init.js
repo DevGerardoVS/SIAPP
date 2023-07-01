@@ -75,6 +75,7 @@ var dao = {
 
         $('#uppSelected').removeClass('is-invalid')
         $('#uppSelected').val(0)
+        $('#total-presupuesto').val("")
         ultimo=1;
     },
     eliminaFondo: function (i) {
@@ -93,7 +94,7 @@ var dao = {
         }else{
             $('input').removeClass('is-invalid');
         }
-    }
+    },
 };
 var init = {
     validateCreate: function (form) {
