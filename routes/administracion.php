@@ -5,7 +5,7 @@
 	use App\Http\Controllers\Administracion\PermisoController;
 	use App\Http\Controllers\Administracion\BitacoraController;
 	use App\Http\Controllers\ReporteController;
-	use App\Http\Controllers\AdminCapturaController;
+	use App\Http\Controllers\AdmonCapturaController;
 	use App\Http\Controllers\Administracion\InicioController;
 
 	Route::controller(SistemasController::class)->group(function () {
@@ -74,11 +74,11 @@
 		Route::post('/Reportes/download/{nombre}', 'downloadReport')->name('downloadReport'); // Descargar reportes
 	});
 
-	Route::controller(AdminCapturaController::class)->group(function(){
+	Route::controller(AdmonCapturaController::class)->group(function(){
 		Route::get('/admon-capturas','index')->name('index');
 		Route::post('/admon-capturas/clavesPresupuestarias', 'clavesPresupuestarias')->name('claves_presupuestarias');
 		Route::post('/admon-capturas/metasActividades', 'metasActividades')->name('metas_actividades');
-		Route::post('/admon-capturas/update', 'update')->name('admon_capturas_update');
+		Route::put('/admon-capturas/update', 'update')->name('admon_capturas_update');
 
 	});
 ?>

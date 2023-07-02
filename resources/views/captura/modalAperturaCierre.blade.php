@@ -12,6 +12,7 @@
             <div class="modal-body">
                 <form id="aperturaCierreForm" action="{{route('admon_capturas_update')}}" method="POST">
                     @csrf
+                    @method('PUT')
                     <div class="col-sm-12">
                         <label for="upp_filter" class="form-label fw-bold mt-md-1">Abrir captura a:</label>
                     </div>
@@ -33,9 +34,9 @@
                         <select class="form-control filters filters_modulo" id="modulo_filter" name="modulo_filter"
                             autocomplete="modulo_filter">
                             <option value="" disabled selected>Seleccione una opción</option>
-                            <option value="cierre_ejercicio_claves">Claves presupuestarias</option>
-                            <option value="cierre_ejercicio_metas">Metas de actividades</option>
-                            <option value="ambos">Ambas</option>
+                            <option value="cierre_ejercicio_claves cec">Claves presupuestarias</option>
+                            <option value="cierre_ejercicio_metas cem">Metas de actividades</option>
+                            <option value="cierre_ejercicio_claves cec, cierre_ejercicio_metas cem">Ambas</option>
                         </select>
                     </div>
                     
@@ -43,12 +44,12 @@
 
                     <div class="form-group text-center">
                         <div class="col-sm-12 col-sm-offset-3">
-                            <label class="radio-inline border p-2 me-5" style="font-size: 1.2em">
-                                <i class="fa fa-unlock"></i> Habilitar captura <input type="radio" name="capturaRadio" value="Habilitar" id="capturaRadioH" class="align-middle fs-5"/> 
+                            <label class="radio-inline border p-2 align-middle me-md-5 me-sm-0" style="font-size: 1.2em">
+                                <i class="fa fa-unlock"></i> Habilitar captura <input type="radio" name="capturaRadio" value="Abierto" id="capturaRadioH" class="align-middle" style="width: 20px; height:20px;"/> 
                             </label>
                             
                             <label class="radio-inline border p-2 align-middle" style="font-size: 1.2em">
-                                <i class="fa fa-lock"></i> Deshabilitar captura <input type="radio" name="capturaRadio" value="Deshabilitar" id="capturaRadioD" class="align-middle" />
+                                <i class="fa fa-lock"></i> Deshabilitar captura <input type="radio" name="capturaRadio" value="Cerrado" id="capturaRadioD" class="align-middle" style="width: 20px; height:20px;" />
                             </label>
                         </div>
                     </div>
@@ -56,7 +57,7 @@
                     <br>
 
                     <div class="d-flex justify-content-evenly">
-                        <button type="button" class="btn btn-primary" id="btnSave">
+                        <button type="submit" class="btn btn-primary" id="btnSave">
                             <span class="btn-label"><i class="fa fa-save text-light fs-5 align-middle p-1"></i></span>
                             <span class="d-lg-inline align-middle">Guardar</span></button>
                         <button id="cerrar" type="button" class="btn btn-secondary colorMorado" data-dismiss="modal"

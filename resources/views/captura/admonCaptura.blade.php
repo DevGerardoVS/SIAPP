@@ -33,7 +33,7 @@ $titleDesc = 'Administración de Captura';
         </form>
 
         {{-- botón modal --}}
-        <div class="d-flex flex-wrap justify-content-md-end justify-content-sm-center mt-sm-3 mt-lg-0 ">
+        <div class="d-flex flex-wrap justify-content-md-end justify-content-sm-center mt-sm-3 mt-lg-0 mt-3">
             <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
             data-keyboard="false" data-toggle="modal">
                 <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
@@ -175,31 +175,31 @@ $titleDesc = 'Administración de Captura';
             getData(tabla, letter);
         });
 
-        // ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨
+        // Comprobar datos del modal
         function mostrarAdv(text) {
-        var title = 'Asegúrese de ingresar los parametros requeridos.';
+            var title = 'Asegúrese de ingresar los parametros requeridos.';
 
-        event.preventDefault();
-        Swal.fire({
-            title: title,
-            text: text,
-            icon: 'warning',
-            confirmButtonText: 'De acuerdo',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                //focus
-            }
-        });
-    }
+            event.preventDefault();
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                confirmButtonText: 'De acuerdo',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //focus
+                }
+            });
+        }
 
         $('#btnSave').on("click", function () {
             if ($('#modulo_filter').val() == null || $('#modulo_filter').val() == 0) {
-                var textAux = 'El parametro mes es necesario para continuar.';
+                var textAux = 'El parametro modulo es necesario para continuar.';
                 mostrarAdv(textAux);
             }
-            console.log($('capturaRadio').val());
-            if ($('capturaRadio').val() == null || $('capturaRadio').val() == 0) {
-                var textAux = 'El parametro mes es necesario para continuar.';
+
+            if (!$('#capturaRadioH').is(':checked')  && !$('#capturaRadioD').is(':checked')) {
+                var textAux = 'Elija la opción habilitar o deshabilitar la captura para continuar.';
                 mostrarAdv(textAux);
             }
         });
