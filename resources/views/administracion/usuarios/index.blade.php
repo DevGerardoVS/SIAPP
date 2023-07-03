@@ -42,6 +42,8 @@
                                                 <th data-hide="phone">Nombre Completo</th>
                                                 <th data-hide="phone">Celular</th>
                                                 <th data-hide="phone">Perfil</th>
+                                                <th data-hide="phone">UPP</th>
+                                                <th data-hide="phone">Grupo</th>
                                                 <th data-hide="phone">Estatus</th>
                                                 <th class="th-administration">Acciones</th>
                                             </tr>
@@ -57,10 +59,6 @@
     </div>
     <script src="/js/administracion/usuarios/init.js"></script>
     <script src="/js/utilerias.js"></script>
-    <script>
-        //En las vistas solo se llaman las funciones del archivo init
-        init.validateCreate($('#frm_create'));
-    </script>
 @endsection
 
 

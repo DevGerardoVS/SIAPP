@@ -104,7 +104,7 @@ class MetasController extends Controller
 	}
 	public function getMetasP(Request $request)
 	{
-		$upp = CatEntes::where('id', auth::user()->id_ente)->firstOrFail();
+		$upp = auth::user()->cve_upp;
 		if ($request->ur_filter != null) {
 			$activs = DB::table("programacion_presupuesto")
 				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
@@ -115,9 +115,12 @@ class MetasController extends Controller
 					'v_epp.proyecto as proyecto'
 				)
 				->where('programacion_presupuesto.ur', '=', $request->ur_filter)
-				->where('programacion_presupuesto.upp', '=', $upp->cve_upp)
-				->groupByRaw('programa_presupuestario')
-				->get();
+				->where('programacion_presupuesto.upp', '=', $upp)
+				->groupByRaw('programa_presupuestario');
+				if($activs!=NULL){
+				$activs = $activs->where('programacion_presupuesto.upp', '=', $upp);
+				}
+				$activs=$activs->get();
 			$dataSet = [];
 			foreach ($activs as $key) {
 				$accion = '<div class="form-check"><input class="form-check-input" type="radio" name="proyecto" id="proyecto" value="' . $key->id . '" checked><label class="form-check-label" for="exampleRadios1"></label></div>';
@@ -240,7 +243,7 @@ class MetasController extends Controller
 	}
 	public function getUrs()
 	{
-		$upp = CatEntes::where('id', auth::user()->id_ente)->firstOrFail();
+		$upp = auth::user()->clv_upp;
 		//$ur = DB::select('');
 		$urs = DB::table('v_epp')
 			->select(
@@ -248,14 +251,16 @@ class MetasController extends Controller
 				'clv_ur',
 				'ur'
 			)->distinct()
-			->where('clv_upp', $upp->cve_upp)
-			->groupByRaw('clv_ur')
-			->get();
+
+			->groupByRaw('clv_ur');
+			if($upp!=NULL){
+			$urs = $urs->where('clv_upp', $upp);
+			}
+			$urs =$urs->get();
 		return $urs;
 	}
 	public function getProgramas($ur)
 	{
-		log::debug($ur);
 		$urs = DB::table('v_epp')
 			->select(
 				'id',
@@ -268,7 +273,7 @@ class MetasController extends Controller
 	}
 	public function getSelects()
 	{
-		$upp = CatEntes::where('id', auth::user()->id_ente)->firstOrFail();
+		$upp = auth::user()->clv_upp;
 		$uMed = DB::table('unidades_medida')
 			->select(
 				'id as clave',
@@ -283,9 +288,13 @@ class MetasController extends Controller
 				'programacion_presupuesto.fondo_ramo as clave',
 				'fondo.ramo',
 			)
-			->where('programacion_presupuesto.upp', '=', $upp->cve_upp)
+
 			->where('fondo.deleted_at', null)
-			->distinct()->get();
+			->distinct();
+			if($upp!= NULL){
+				$fondos =$fondos->where('programacion_presupuesto.upp', '=', $upp);
+			}
+			$fondos =$fondos->get();
 		/* $activ = Http::acceptJson()->get('https://pokeapi.co/api/v2/pokemon/');
 			  $res = json_decode($activ->body()); */
 		$activ = DB::table('actividades_mir')
@@ -309,7 +318,6 @@ class MetasController extends Controller
 	}
 	public function createMeta(Request $request)
 	{
-		log::debug($request);
 		$meta = Metas::create([
 			'proyecto_mir_id ' => intval($request->pMir_id),
 			'actividad_id' => $request->sel_actividad,
@@ -441,7 +449,7 @@ class MetasController extends Controller
 			"anio"=>$date->year,
 			"corte"=>$date->format('Y-m-d'),
 			"logoLeft"=> public_path().'img\escudo.png',
-			"logoRight"=>public_path()."img\escudo.png",
+			"logoRight"=>public_path().'img\escudo.png',
 			"UPP"=>$upp->cve_upp,
             );
 		log::debug($request);
@@ -478,8 +486,8 @@ class MetasController extends Controller
           $format,
           $parameters,
           $database_connection
-        )->execute();
-        //dd($jasper);
+        )->output();
+        dd($jasper);
         return Response::make(file_get_contents(public_path()."/Reportes/".$report.".pdf"), 200, [
             'Content-Type' => 'application/pdf'
         ]);
@@ -488,6 +496,7 @@ class MetasController extends Controller
 	{
 		DB::beginTransaction();
 		try {
+			ini_set('max_execution_time', 1200);
 			$assets = $request->file('cmFile');
 			$import = new MetasImport();
 			$import->onlySheets('Metas');
