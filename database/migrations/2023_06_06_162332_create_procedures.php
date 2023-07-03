@@ -1370,7 +1370,7 @@ return new class extends Migration {
             join actividades_mir am on m.actividad_id = am.id 
             join proyectos_mir pm on am.proyecto_mir_id = pm.id
             join beneficiarios b on m.beneficiario_id = b.id 
-            join unidades_medida um on m.unidad_medidad_id = um.id 
+            join unidades_medida um on m.unidad_medida_id = um.id 
             where pm.ejercicio = anio and 
                 pm.deleted_at is null and if (
                     upp is null,
