@@ -31,6 +31,12 @@ class TechosController extends Controller
             if($request->anio_filter != null){
                 $data =  $data -> where('tf.ejercicio','=',$request->anio_filter);
             }
+            if($request->upp_filter != null && $request->upp_filter != 0){
+                $data = $data -> where('tf.clv_upp','=',$request->upp_filter);
+            }
+            if($request->fondo_filter != null && $request->fondo_filter != 0){
+                $data = $data -> where('tf.clv_fondo','=',$request->fondo_filter);
+            }
 
         $data = $data ->get();
         
