@@ -13,14 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('cat_entes', function (Blueprint $table) {
+        Schema::create('cat_permisos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('cve_upp', 5);
-            $table->string('nombre_upp', 400);
-            $table->string('cve_ur', 5);
-            $table->string('nombre_ur', 400);
-            $table->string('cve_uo', 5);
-            $table->string('nombre_uo', 400);
+            $table->string('nombre', 400);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -133,15 +128,13 @@ return new class extends Migration
         Schema::create('permisos_funciones', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('id_user')->unsigned();
-            $table->integer('id_menu')->unsigned();
-            $table->string('modulo', 50);
-            $table->string('funcion', 70);
-            $table->string('tipo', 50);
-            $table->longText('descripcion');
+            $table->integer('id_permiso')->unsigned();
+            $table->longText('descripcion')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->foreign('id_user')->references('id')->on('adm_users');
-            $table->foreign('id_menu')->references('id')->on('adm_menus');
+            $table->foreign('id_permiso')->references('id')->on('cat_permisos');
+
         });
 
         Schema::create('adm_rel_funciones_grupos', function (Blueprint $table) {
@@ -193,7 +186,7 @@ return new class extends Migration
         Schema::dropIfExists('adm_menus');
         Schema::dropIfExists('adm_grupos');
         Schema::dropIfExists('adm_users');
-        Schema::dropIfExists('cat_entes');
+        Schema::dropIfExists('cat_permisos');
         Schema::dropIfExists('adm_sistemas');
     }
 };
