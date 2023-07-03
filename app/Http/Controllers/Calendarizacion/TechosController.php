@@ -19,19 +19,31 @@ use App\Imports\Techos;
 class TechosController extends Controller
 {
     //Consulta Vista Techos
-    public function getIndex()
-    {
+    public function getIndex(){
         return view('calendarizacion.techos.index');
     }
 
-    public function getTechos(){
+    public function getTechos(Request $request){
+        log::debug($request);
         $dataSet = [];
+        $where_upp = '';
 
         $data = DB::table('techos_financieros as tf')
             ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
-            ->leftJoinSub('select distinct clv_upp, upp from v_entidad_ejecutora','vee','tf.clv_upp','=','vee.clv_upp')
-            ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo')
-            ->get()
+            ->leftJoinSub('select distinct clv_upp, upp from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
+            ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo');
+            if($request->anio_filter != null){
+                $data =  $data -> where('tf.ejercicio','=',$request->anio_filter);
+            }
+            if($request->upp_filter != null && $request->upp_filter != 0){
+                $data = $data -> where('tf.clv_upp','=',$request->upp_filter);
+            }
+            if($request->fondo_filter != null && $request->fondo_filter != 0){
+                $data = $data -> where('tf.clv_fondo','=',$request->fondo_filter);
+            }
+
+        $data = $data ->get();
+        
         ;
 
         foreach ($data as $d){
@@ -58,6 +70,7 @@ class TechosController extends Controller
 
     public function addTecho(Request $request){
         $data = array_chunk(array_slice($request->all(),3),3);
+        $aRepetidos = array_chunk(array_slice($request->all(),3),3,true);
         $aKeys = array_keys(array_slice($request->all(),3));
         $validaForm = [];
 
@@ -72,17 +85,22 @@ class TechosController extends Controller
         $request->validate($validaForm);
 
         //Verifica que no se dupliquen los fondos en el mismo ejercicio
+        // y envia el array con las keys del input duplicado
         $repeticion = $data;
+        $c = 0;
         foreach ($data as $a){
             $repeticion = array_slice($repeticion,1);
+
             foreach ($repeticion as $r){
                 if($r[0] === $a[0] && $r[1] === $a[1]){
                     return [
                         'status' => 'Repetidos',
-                        'error' => "Campos repetidos"
+                        'error' => "Campos repetidos",
+                        'etiqueta' => array_keys($aRepetidos[$c])
                     ];
                 }
             }
+            $c += 1;
         }
 
         //guarda el techo
