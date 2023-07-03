@@ -36,10 +36,9 @@ class CalendarizacionCargaMasivaController extends Controller
      //Obtener datos del excel
      public function loadDataPlantilla(Request $request)	{
         $request->tipo ? $tipoAdm=$request->tipo: $tipoAdm=NULL;
-        Log::debug($tipoAdm);
         // así se checara si tiene permiso
         
-        //Controller::check_upp('Carga masiva');
+        Controller::check_upp('Carga masiva');
 
         ini_set('max_execution_time', 1200);
         //verificar que el usuario tenga permiso
