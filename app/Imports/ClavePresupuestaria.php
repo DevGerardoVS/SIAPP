@@ -3,7 +3,13 @@
 namespace App\Imports;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProgramacionPresupuesto;
+use App\Models\PosicionPresupuestaria;
+use App\Models\Fondos;
 use App\Models\v_epp;
+use App\Models\Obra;
+use App\Models\V_entidad_ejecutora;
+use App\Models\Catalogo;
+use App\Models\calendarizacion\clasi;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use App\Models\calendarizacion\clasificacion_geografica;
@@ -20,39 +26,205 @@ use Illuminate\Validation\Rule;
 use Illuminate\Database\Query\Builder;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
-class ClavePresupuestaria implements ToModel,WithHeadingRow, WithBatchInserts,WithChunkReading,WithValidation,SkipsEmptyRows
+class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,SkipsEmptyRows, WithBatchInserts,WithChunkReading
 {
 
     
     use RemembersRowNumber;
-    use Importable;
+    use Importable,SkipsFailures;
     
     public function prepareForValidation($row,$index)
     {
-        //validacion de codigo admconac
-        $arrayadmconac = str_split($row['admconac'], 1);
-        $valadm= v_epp::select()->where('clv_sector_publico',$arrayadmconac[0])
-        ->where('clv_region',$arrayadmconac[1])
-        ->where('clv_municipio',$arrayadmconac[2])
-        ->where('clv_localidad',$arrayadmconac[3])
-        ->where('clv_localidad',$arrayadmconac[4])
+        ///validaciones de catalogo
+        $valcat= Catalogo::select()
+        ->where('grupo_id','6')
+        ->where('clave',$row['upp'])
         ->count();
-        \Log::debug('//////////// valos de consulta de admconac');
-        \Log::debug($valadm);
+        $valcat >= 1 ? $row['upp'] : $row['upp']=NULL; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','7')
+        ->where('clave',$row['subsecretaria'])
+        ->count();
+        $valcat >= 1 ? $row['subsecretaria'] : $row['subsecretaria']=NULL; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','8')
+        ->where('clave',$row['ur'])
+        ->count();
+        $valcat >= 1 ? $row['ur'] : $row['ur']=NULL; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','9')
+        ->where('clave',$row['finalidad'])
+        ->count();
+        $valcat >= 1 ? $row['finalidad'] : $row['finalidad']=NULL; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','10')
+        ->where('clave',$row['funcion'])
+        ->count();
+        $valcat >= 1 ? $row['funcion'] : $row['funcion']=NULL; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','11')
+        ->where('clave',$row['subfuncion'])
+        ->count();
+        $valcat >= 1 ? $row['subfuncion'] : $row['subfuncion']=NULL; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','12')
+        ->where('clave',$row['eg'])
+        ->count();
+        $valcat >= 1 ? $row['eg'] : $row['eg']=NULL ; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','13')
+        ->where('clave',$row['pt'])
+        ->count();
+        $valcat >= 1 ? $row['pt'] : $row['pt']=NULL; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','14')
+        ->where('clave',$row['ps'])
+        ->count();
+        $valcat >= 1 ? $row['ps'] : $row['ps']=NULL; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','15')
+        ->where('clave',$row['sprconac'])
+        ->count();
+        $valcat >= 1 ? $row['sprconac'] : $row['sprconac']=NULL; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','16')
+        ->where('clave',$row['prg'])
+        ->count();
+        $valcat >= 1 ? $row['prg'] : $row['prg']=NULL; 
+
+        $valcat= Catalogo::select()
+        ->where('grupo_id','18')
+        ->where('clave',$row['py'])
+        ->count();
+        $valcat >= 1 ? $row['py'] : $row['py']=NULL; 
+ 
+        //validacion de año 
+/*       
+        $year = date("y");
+        $year+1 == $row['anio'] ? $row['anio'] : null; 
+*/
+
+        //Validaciones para Obra
+/*         if(Auth::user()->perfil=='operativo'){
+            $valObra = obra::select()
+            ->where('clv_proyecto_obra',$row['obra'])
+            ->count();
+            if($valObra < 1 ){
+                $row['obra']=NULL;
+            }
+        }
+        else{
+            $row['obra'] == '000000'? $row['obra']: $row['obra'] =NULL;
+        } 
+*/
+         
+        //validacion de codigo para posicion presupuestaria falta usuario
+/*         $arraypos = str_split($row['idpartida'], 1);
+        if($arraypos[0]==1){
+            $valpos = PosicionPresupuestaria::select()
+            ->where('clv_capitulo',$arraypos[0])
+            ->where('clv_concepto',$arraypos[1])
+            ->where('clv_partida_generica',$arraypos[2])
+            ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
+            ->where('clv_tipo_gasto',$row['tipogasto'])
+            ->count();
+            if($valpos == 0 ){
+                $row['idpartida']=NULL;
+            }
+        }
+        else{
+            $row['idpartida']=NULL;
+        } */
+
+
+        //validacion de fondos
+        $valfondo = Fondos::select()
+        ->where('clv_etiquetado', $row['no_etiquetado_y_etiquetado'])
+        ->where('clv_fuente_financiamiento',$row['fconac'])
+        ->where('clv_ramo',$row['ramo'])
+        ->where('clv_fondo_ramo', $row['fondo'])
+        ->where('clv_capital',$row['ci'])
+        ->count();
+        if($valfondo < 1 ){
+            $row['no_etiquetado_y_etiquetado']=NULL;
+        }
+
+
+
+        //validacion de codigo admconac
+        if (isset($row['admconac'])) {
+            $arrayadmconac = str_split($row['admconac'], 1);
+
+            $valadm= v_epp::select()
+            ->where('clv_sector_publico',$arrayadmconac[0])
+            ->where('clv_sector_publico_f',$arrayadmconac[1])
+            ->where('clv_sector_economia',$arrayadmconac[2])
+            ->where('clv_subsector_economia',$arrayadmconac[3])
+            ->where('clv_ente_publico',$arrayadmconac[4])
+            ->count();
+            if($valadm < 1 ){
+                $row['admconac']=NULL;
+    
+            }
+        }
+
+        //validacion que el conjunto sea una clave valida
+        $valcomb= v_epp::select()
+        ->where('clv_finalidad',$row['finalidad'])
+        ->where('clv_funcion',$row['funcion'])
+        ->where('clv_subfuncion',$row['subfuncion'])
+        ->where('clv_eje',$row['eg'])
+        ->where('clv_linea_accion',$row['pt'])
+        ->where('clv_programa_sectorial',$row['ps'])
+        ->where('clv_tipologia_conac',$row['sprconac'])
+        ->where('clv_programa',$row['prg'])
+        ->where('clv_subprograma',$row['spr'])
+        ->where('clv_proyecto',$row['py'])
+        ->count();
+        if($valcomb < 1 ){
+            $row['spr']=NULL;
+
+        }
+
+        //validacion de trio upp/ur/sub en vista
+        $valv_eje= V_entidad_ejecutora::select()
+        ->where('clv_upp',$row['upp'])
+        ->where('clv_ur',$row['ur'])
+        ->where('clv_subsecretaria',$row['subsecretaria'])
+        ->count();
+        if($valv_eje < 1 ){
+            $row['ur']=NULL;
+
+        }
+        //validacion de total
+        $suma=$row['enero']+$row['febrero']+$row['marzo']+$row['abril']+$row['mayo']+$row['junio']+$row['julio']+$row['agosto']+$row['septiembre']+$row['octubre']+$row['noviembre']+$row['diciembre'];
+        if($row['total']!=$suma){
+         $row['total']=NULL;
+        }
+
          //validacion de parte clave geografica
-         $valgeo= ProgramacionPresupuesto::select('clv_entidad_federativa')->where('clv_entidad_federativa',$row['ef'])
+         $valgeo= clasificacion_geografica::select()
+         ->where('clv_entidad_federativa',$row['ef'])
          ->where('clv_region',$row['reg'])
          ->where('clv_municipio',$row['mpio'])
-         ->where('clv_localidad','loc')->value('clv_entidad_federativa');
-         \Log::debug('//////////// valos de consulta de clave geografica');
-         \Log::debug($valgeo);
-         $valgeo==$row['ef'] ? $row['ef']=NULL : $row['ef']; 
-        //validacion de tipo de usuario
-      $row['tipo']='RH';
+         ->where('clv_localidad',$row['loc'])->count();
+         $valgeo >= 1 ? $row['ef'] : $row['ef']=NULL; 
+        //validacion de tipo de usuario pendiente
+         $row['tipo']='RH';
        //validacion si la upp tiene firmados claves presupuestales
-       $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->value('estado');
-        $valupp==1 ? $row['upp']=NULL : $row['upp']; 
-        return $row;
+         $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->value('estado');
+         $valupp==1 ? $row['upp']=0 : $row['upp']; 
+         return $row;
     }
 
     public function model(array $row)
@@ -119,30 +291,71 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow, WithBatchInserts,Wi
     {
         return [
             '*.tipo' => Rule::in(['RH', 'Operativo']),
-
-             //validacion 7 verificar que exista
-             '*.ef' =>  'required|string',
-/*              '*.reg' =>  Rule::exists('clasificacion_geografica','clv_region'),                                        
-             '*.mpio' =>  Rule::exists('clasificacion_geografica','clv_municipio'),                                        
-             '*.loc' =>  Rule::exists('clasificacion_geografica','clv_localidad'),                                        
-            */                             
-             
              //validacion 3 verificar que upp este autorizada comentada porque no hay upps autorizadas aun
-/*              '*.upp' => ['required',
+             '*.upp' => ['required',
                 Rule::exists('uppautorizadascpnomina','upp_id')                                        
-            ], */
+            ], 
+            '*.admconac' => 'required|string',
+            '*.subsecretaria' => 'required|string',
+            '*.finalidad' => 'required|string',
+            '*.funcion' => 'required|string',
+            '*.subfuncion' => 'required|string',
+            '*.pt' => 'required|string',
+            '*.ps' => 'required|string',
+            '*.sprconac' =>  'required|string',
+            '*.prg' =>  'required|string',
+            '*.spr' => ['required','string',Rule::in(['UUU'])],
+            '*.py' =>  'required|string',
+            '*.upp' =>  [ 'required','string',Rule::notIn(['0'])], 
+            '*.obra' =>  ['required',
+            Rule::exists('proyectos_obra','clv_proyecto_obra')                                        
+        ],
+            '*.idpartida' =>  'required|string',
+            '*.tipogasto' =>  'required|string',
+            '*.ur' =>  'required',
+            '*.total' => 'required|integer',
+            'enero'    =>  'required|integer',
+            'febrero'    =>  'required|integer',
+            'marzo'    =>  'required|integer',
+            'abril'    =>  'required|integer',
+            'mayo'    =>  'required|integer',
+            'junio'    =>  'required|integer',
+            'julio'    =>  'required|integer',
+            'agosto'    =>  'required|integer',
+            'septiembre'  =>  'required|integer',
+            'octubre'    =>  'required|integer',
+            'noviembre'    =>  'required|integer',
+            'diciembre'    =>  'required|integer',
+           
+           // esta validacion esta comentada de momento porque la plantilla solo tiene año 23
+           // '*.anio' => 'required',                            
+             
+
             
-              '*.upp' =>  'required|string', 
         ];
     }
 
      public function customValidationMessages()
 {
     return [
-        '*.upp.exists' => 'No se pueden registrar las claves porque no esta autorizada la upp ',
+        '*.admconac' => 'La clave de admonac es invalida',
+        '*.upp.exists' => 'El valor de upp asignado no es valido',
+        '*.upp.notIn' => 'No se pueden registrar las claves porque no esta autorizada la upp ',
+        '*.total' => 'El total no coincide con los meses',
+        '*.subsecretaria' =>  'La clave de subsecretaria introducida no es valida',
+        '*.finalidad' =>  'La clave de finalidad introducida no es valida',
+        '*.funcion' =>  'La clave de funcion introducida no es valida',
+        '*.subfuncion' =>  'La clave de subfuncion introducida no es valida',
+        '*.pt' =>  'La clave de pt introducida no es valida',
+        '*.ps' =>  'La clave de ps introducida no es valida',
+        '*.sprconac' =>  'La clave de sprconac introducida no es valida',
+        '*.prg' =>  'La clave de prg introducida no es valida',
+        '*.spr' =>  'La clave de spr introducida no es valida',
+        '*.py' =>  'La clave de py introducida no es valida',
+
     ];
 } 
-
+ 
     public function batchSize(): int
     {
         return 300;
@@ -151,5 +364,5 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow, WithBatchInserts,Wi
     public function chunkSize(): int
     {
         return 300;
-    }
+    } 
 }

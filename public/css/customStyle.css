@@ -539,3 +539,79 @@ th {
     overflow:scroll;
     height: 500px;
 }
+
+.centro-gestor
+{
+  background-color: brown !important;
+  color: aliceblue !important; 
+  border: 1px solid #B9B9B9;
+}
+.area-funcional
+{
+  background-color: dimgrey !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+.periodo-presupuestal
+{
+  background-color: plum !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+.clasificacion-economica
+{
+  background-color: grey !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+.fondo
+{
+  background-color: orangered !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+.inversion
+{
+  background-color: darksalmon !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+td.centro-gestor
+{
+  background-color: brown !important;
+  color: aliceblue !important; 
+  border: 1px solid #B9B9B9;
+}
+td.area-funcional
+{
+  background-color: dimgrey !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+td.periodo-presupuestal
+{
+  background-color: plum !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+td.clasificacion-economica
+{
+  background-color: grey !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+td.fondo
+{
+  background-color: orangered !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+td.inversion
+{
+  background-color: darksalmon !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+.montosR {
+  text-align: right !important;
+}
