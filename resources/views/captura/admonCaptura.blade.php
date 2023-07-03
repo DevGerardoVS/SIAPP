@@ -90,7 +90,7 @@ $titleDesc = 'Administración de Captura';
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light">Clave UPP</th>
-                                            <th class="exportable align-middle text-light">UPP</th>
+                                            <th class="exportable align-middle text-light text-center">UPP</th>
                                             <th class="exportable align-middle text-light">Fecha de último cambio</th>
                                             <th class="exportable align-middle text-light">Estatus</th>
                                             <th class="exportable align-middle text-light">Usuario que actualizó</th>

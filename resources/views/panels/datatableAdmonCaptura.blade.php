@@ -98,10 +98,14 @@
                             defaultContent: "-",
                             targets: "_all"
                         },
+                        {
+                            targets:[1],
+                            className: "text-left"
+                        },
                         ],
                         columns: [
                             { width: "5em"},
-                            { width: "100em"},
+                            { width: "80em"},
                             { width: "10em"},
                             { width: "10em"},
                             { width: "20em"},
