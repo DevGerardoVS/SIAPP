@@ -14,7 +14,7 @@
             var ordenamiento = [];
             var columns_hidden = [];
             const url = $("#buscarForm").attr("action");
-            console.log("url", url);
+            /* console.log("url", url); */
 
             if (dt.attr('data-id') != undefined) {
                 var data_order = dt.attr('data-id').split(",");
@@ -47,7 +47,7 @@
                 type: $("#buscarForm").attr("method"),
                 dataType: 'json',
                 success: function(response) {
-                    console.log("res-DataTable", response)
+                    /* console.log("res-DataTable", response) */
                     if (response?.dataSet?.length == 0) {
                         dt.attr('data-empty', 'true');
                     } else {

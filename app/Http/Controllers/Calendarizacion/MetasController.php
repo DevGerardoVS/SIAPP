@@ -13,7 +13,7 @@ use App\Exports\MetasExport;
 use App\Exports\Calendarizacion\MetasCargaM;
 
 use App\Models\calendarizacion\Metas;
-use App\Models\catalogos\CatEntes;
+use App\Models\catalogos\CatPermisos;
 use Auth;
 use DB;
 use Log;
@@ -444,7 +444,7 @@ class MetasController extends Controller
  	public function downloadActividades()
 	{
 		$date=Carbon::now();
-		$upp = CatEntes::where('id', auth::user()->id_ente)->firstOrFail();
+		$upp = CatPermisos::where('id', auth::user()->id_ente)->firstOrFail();
 		$request=array(
 			"anio"=>$date->year,
 			"corte"=>$date->format('Y-m-d'),
@@ -494,6 +494,7 @@ class MetasController extends Controller
     }
 	public function importPlantilla(Request $request)
 	{
+		Controller::check_upp('Carga masiva');
 		DB::beginTransaction();
 		try {
 			ini_set('max_execution_time', 1200);

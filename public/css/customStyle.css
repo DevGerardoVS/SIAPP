@@ -45,6 +45,11 @@ footer{
     color: white !important;
 
   }
+  .wrap4{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 45%;
+ }
   .center {
     margin: auto;
     width: 50%;
@@ -534,6 +539,12 @@ th {
 .column_numbers{
     text-align: right;
 }
+
+#tableScroll{
+    overflow:scroll;
+    height: 500px;
+}
+
 .centro-gestor
 {
   background-color: brown !important;
