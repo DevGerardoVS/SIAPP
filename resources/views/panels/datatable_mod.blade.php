@@ -2,13 +2,13 @@
 <script type="text/javascript">
 
     function getData(){
-        var dt = $('#catalogo');
+        var dt = $('#genericDataTable');
         dt.DataTable().clear().destroy();
         generaDatatable();
     }
 
     function generaDatatable(){
-        var dt = $('#catalogo');
+        var dt = $('#genericDataTable');
         var orderDt = "";
         var column = "";
         var formatCantidades = [];
@@ -76,9 +76,9 @@
                     processing: true,
                     order: ordenamiento,
                     ServerSide: true,
-                    paging: false,
+                    paging: true,
                     searching: false,
-                    ordering: false,
+                    ordering: true,
                     info: false,
                     language: {
                         processing: "Procesando...",
