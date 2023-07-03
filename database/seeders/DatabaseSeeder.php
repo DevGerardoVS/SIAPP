@@ -128,6 +128,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 1, 'nombre_sistema' => 'Sistema de Calendarizacion','ruta' => 'sistemas', 'logo' => 'logo_expedientes.png', 'logo_min' => 'logo_expedientes_min.png', 'descripcion' => 'Sistema para la adminsitración de expedientes Jurídicos', 'estatus' => 1],
         );
 
+
         protected $menus = array(
             ['id' => 2,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Logs', 'ruta' => '/logs', 'icono' => 'fa-calendar', 'nivel' => 0, 'posicion' => 3, 'descripcion' => 'Módulo de calendario'],
             ['id' => 3,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Usuarios', 'ruta' => '/adm-usuarios', 'icono' => 'fa-user', 'nivel' => 0, 'posicion' => 3, 'descripcion' => 'Módulo para administrar los usuarios del sistema'],
