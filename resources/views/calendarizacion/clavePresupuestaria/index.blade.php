@@ -47,13 +47,19 @@
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2 text-right">
+                                        @if (Auth::user()->clv_upp==NULL)
+                                        <div class="row">
+                                            <button type="button" class="btn colorMorado"
+                                            name="button_modal_carga_adm" id="button_modal_carga_adm">
+                                            <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
+                                        </div>
+                                        @else
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
-                                    
-                                        </div>
-
+                                        </div> 
+                                        @endif
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
                                                 <a type="button"id='btnNuevaClave' class="btn btn-success form-control"  href="/calendarizacion-claves-create" ><i class="fa fa-plus">Nueva Clave</i></a>
@@ -102,6 +108,8 @@
         </section>
     </div>
      @include('calendarizacion.clavePresupuestaria.CargamasivaModal')
+     @include('calendarizacion.clavePresupuestaria.CargamasivaModaladm')
+
     <script src="/js/clavesP/init.js"></script>
     <script src="/js/utilerias.js"></script>
     <script src="/js/clavesP/cargamasiva.js"></script>

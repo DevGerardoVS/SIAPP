@@ -120,57 +120,61 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         $autorizado = uppautorizadascpnomina::where($uppUsuario->cve_upp)->count(); */
         
         //Validaciones para Obra aqui hay que chambear
+         //validacion de tipo de usuario pendiente
+         $arraypos = str_split($row['idpartida'], 1);
+
          if($row['spr']=='UUU'){
+            $row['tipo']='RH';
             $row['obra'] == '000000'? $row['obra']: $row['obra'] =NULL;
-        }
-        else{
+/*         Rule::exists('uppautorizadascpnomina','clv_upp') 
+ */
+             
+
+            if($arraypos[0]==1 ){
+                $valpos = PosicionPresupuestaria::select()
+                ->where('clv_capitulo',$arraypos[0])
+                ->where('clv_concepto',$arraypos[1])
+                ->where('clv_partida_generica',$arraypos[2])
+                ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
+                ->where('clv_tipo_gasto',$row['tipogasto'])
+                ->count();
+                if($valpos < 1  ){
+                    $row['idpartida']=NULL;
+                }
+            }
+
+         }
+         
+         else{
+            $row['tipo']='Operativo';
+
             $valObra = obra::select()
             ->where('clv_proyecto_obra',$row['obra'])
             ->count();
             if($valObra < 1 ){
                 $row['obra']=NULL;
-            }
+
+                $valpos = PosicionPresupuestaria::select()
+                ->where('clv_capitulo',$arraypos[0])
+                ->where('clv_concepto',$arraypos[1])
+                ->where('clv_partida_generica',$arraypos[2])
+                ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
+                ->where('clv_tipo_gasto',$row['tipogasto'])
+                ->count();
+                if($valpos < 1  ){
+                    $row['idpartida']=NULL;
+         }
+        }
+        
+
         } 
 
-/*         Rule::exists('uppautorizadascpnomina','clv_upp') 
- */
+
          
         //validacion de codigo para posicion presupuestaria falta usuario
-         $arraypos = str_split($row['idpartida'], 1);
-        if($arraypos[0]==1 && $row['spr']=='UUU'){
-            $valpos = PosicionPresupuestaria::select()
-            ->where('clv_capitulo',$arraypos[0])
-            ->where('clv_concepto',$arraypos[1])
-            ->where('clv_partida_generica',$arraypos[2])
-            ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
-            ->where('clv_tipo_gasto',$row['tipogasto'])
-            ->count();
-            if($valpos < 1  ){
-                $row['idpartida']=NULL;
-            }
-        }
-        else{
-            $valpos = PosicionPresupuestaria::select()
-            ->where('clv_capitulo',$arraypos[0])
-            ->where('clv_concepto',$arraypos[1])
-            ->where('clv_partida_generica',$arraypos[2])
-            ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
-            ->where('clv_tipo_gasto',$row['tipogasto'])
-            ->count();
-            if($valpos < 1  ){
-                $row['idpartida']=NULL;
-            }        
-        } 
 
-         //validacion de tipo de usuario pendiente
-         if($row['spr']=='UUU'){
-            $row['tipo']='RH';
 
-         }
-         else{
-            $row['tipo']='Operativo';
 
-         }
 
         //validacion de fondos
         $valfondo = Fondos::select()

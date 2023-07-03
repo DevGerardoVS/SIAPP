@@ -1,4 +1,4 @@
-<div class="modal fade bd-example-modal-lg" id="ModalCargaMasiva" name="ModalCargaMasiva" tabindex="-1" role="dialog"
+<div class="modal fade bd-example-modal-lg" id="Modal_admin" name="Modal_admin" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -7,9 +7,8 @@
                 <button type="button" class="btn-close" onclick="limpiarCampos()" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
-            <form action="{{ route('load_data_plantilla') }}" id="Formmodal" method="POST"
-                enctype="multipart/form-data">
-
+            <form action="{{ route('load_data_plantilla') }}" id="Form_Modal_Carga_Masiva"
+                name="Form_Modal_Carga_Masiva" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
@@ -77,30 +76,66 @@
                         </div>
                     </div>
                 </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <div class="d-flex justify-content-center">
-                        <button style="width: 20%; border: 1px solid #555;" type="button" class="btn colorMorado"
-                            onclick="document.getElementById('file').click()">Seleccionar archivo</button>
-                        <input type="file" id="file" name="file" style="display:none" accept=" .xlsx ">
-                        <input id="file_label" style="width: 70%" type="text" readonly
-                            value="Sin archivos seleccionados">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="d-flex justify-content-center">
+                                <button style="width: 20%; border: 1px solid #555;" type="button"
+                                    class="btn colorMorado"
+                                    onclick="document.getElementById('file_adm').click()">Seleccionar archivo</button>
+                                <input type="file" id="file_adm" name="file" style="display:none" class="file_adm"
+                                    accept=".xlsx ">
+                                <input id="fileadm_label" style="width: 70%" type="text" readonly
+                                    value="Sin archivos seleccionados">
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="row " >
+                    <div class="form-group d-flex justify-content-around">
+                        
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input " value="1" type="radio" name="tipo"
+                                    id="Operativo" checked>
+                                <label class="form-check-label " for="tipo">
+                                    Claves tipo Operativo
+                                </label>
+                            </div>
+                        
+
+                        
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" value="2" type="radio" name="tipo"
+                                    id="RH">
+                                <label class="form-check-label" for="tipo">
+                                    Claves tipo RH
+                                </label>
+                            </div>
+                     
+
+                        
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" value="3" type="radio" name="tipo"
+                                    id="all">
+                                <label class="form-check-label" for="tipo">
+                                    Claves tipo Operativo y RH
+                                </label>
+                            </div>
+                      
+
+                    </div>
+                </div>
+
+                <div class="modal-footer-carga">
+                    <button type="button" {{-- onclick="limpiarCampos()" --}} class="btn btn-secondary "
+                        data-bs-dismiss="modal">{{ __('messages.cancelar') }}</button>
+                    <button type="submit" name="aceptar_adm" id="aceptar_Adm" class="btn colorMorado">
+                        <i class="fa fa-upload" style="color: #dfdfdf"></i>
+                        {{ __('messages.cargar_archivo') }}</button>
+                </div>
         </div>
-        <div class="modal-footer-carga">
-            <button type="button" {{-- onclick="limpiarCampos()" --}} class="btn btn-secondary "
-                data-bs-dismiss="modal">{{ __('messages.cancelar') }}</button>
-            <button type="submit" name="aceptar" id="aceptar" class="btn colorMorado">
-                <i class="fa fa-upload" style="color: #dfdfdf"></i>
-                {{ __('messages.cargar_archivo') }}</button>
-        </div>
+        </form>
     </div>
-    </form>
-</div>
 </div>
 
 
@@ -110,14 +145,14 @@
         $("#loading").show();
     });
     //mostrar campos una vez selecionado el municipio
-    $('#file').change(function(e) {
+    $('.file_adm').change(function(e) {
         e.preventDefault();
-        $("#ModalCargaMasiva").find("#file_label").val($('#file')[0].files[0].name)
+        $("#Modal_admin").find("#fileadm_label").val($('#file_adm')[0].files[0].name)
     });
 
-    $('#aceptar').click(function(e) {
+    $('#aceptar_Adm').click(function(e) {
         e.preventDefault();
-        form = $('#ModalCargaMasiva').find("#Formmodal");
+        form = $('#Modal_admin').find("#Form_Modal_Carga_Masiva");
         Swal.fire({
             title: '{{ __('messages.msg_cargando_datos') }}',
             html: ' <b></b>',
