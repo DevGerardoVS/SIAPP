@@ -45,6 +45,11 @@ footer{
     color: white !important;
 
   }
+  .wrap4{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 45%;
+ }
   .center {
     margin: auto;
     width: 50%;
@@ -575,7 +580,14 @@ pointer-events: none;
 .txtL{
   text-align: left !important;
 }
-.centro-gestor{
+.centro-gestor
+#tableScroll{
+    overflow:scroll;
+    height: 500px;
+}
+
+.centro-gestor
+{
   background-color: brown !important;
   color: aliceblue !important; 
   border: 1px solid #B9B9B9;
