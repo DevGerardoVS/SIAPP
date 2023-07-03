@@ -11,6 +11,8 @@ use Auth;
 use DB;
 use Log;
 use App\Models\administracion\UsuarioGrupo;
+use App\Models\administracion\PermisosUpp;
+use App\Models\catalogos\CatPermisos;
 
 class UsuarioController extends Controller
 {
@@ -19,6 +21,32 @@ class UsuarioController extends Controller
 	{
 		Controller::check_permission('getUsuarios');
 		return view('administracion.usuarios.index');
+	}
+	public function getUsers(){
+		$user=DB::table('adm_users')->select('id', 'username')->where('deleted_at', NULL)->get();
+
+		return $user;
+	}
+	public function getModulos(){
+		$modul=DB::table('adm_menus')->select('id', 'nombre_menu as nombre')->where('deleted_at', NULL)->where('padre', 0)->get();
+		return $modul;
+	}
+	public function assignPermisson(Request $request){
+		Log::debug($request);
+		PermisosUpp::create([
+			'id_user'=>$request->id_userP,
+			'id_permiso'=>$request->id_permiso,
+			'descripcion'=>$request->descripcion
+		]);
+		return response()->json("done", 200);
+	}
+	public function createPermisson(Request $request){
+		CatPermisos::create($request->all());
+		return response()->json("done", 200);
+	}
+	public function getPermisson(){
+		$permisos=CatPermisos::where('deleted_at', null)->get();
+		return response()->json($permisos, 200);
 	}
 	//Vista Create Usuario
 	public function getCreate()
@@ -32,7 +60,7 @@ class UsuarioController extends Controller
 	{
 		Controller::check_permission('putUsuarios', false);
 		$query = DB::table('adm_users')
-			->select('adm_users.id', 'adm_users.username', 'adm_users.email', 'adm_users.estatus', 'adm_users.nombre', 'adm_users.p_apellido', 'adm_users.s_apellido',  'adm_users.celular', DB::raw('ifnull(adm_grupos.nombre_grupo, "Sudo") as perfil'), 'adm_users.p_apellido', 'adm_users.s_apellido', 'adm_users.nombre', DB::raw('ifnull(adm_grupos.id, "null") as id_grupo') ,'adm_grupos.nombre_grupo')
+			->select('adm_users.id', 'adm_users.username', 'adm_users.email', 'adm_users.estatus', 'adm_users.nombre', 'adm_users.p_apellido', 'adm_users.s_apellido',  'adm_users.celular', DB::raw('adm_users.sudo as perfil'), 'adm_users.p_apellido', 'adm_users.s_apellido', 'adm_users.nombre', DB::raw('ifnull(adm_grupos.id, "null") as id_grupo') ,'adm_grupos.nombre_grupo')
 			->leftJoin('adm_rel_user_grupo', 'adm_users.id', '=', 'adm_rel_user_grupo.id_usuario')
 			->leftJoin('adm_grupos', 'adm_rel_user_grupo.id_grupo', '=', 'adm_grupos.id')
 			->where('adm_users.deleted_at', '=', null)
@@ -46,9 +74,20 @@ class UsuarioController extends Controller
 	{
 		Controller::check_permission('getUsuarios', false);
 		$query = DB::table('adm_users')
-			->select('adm_users.id', 'adm_users.username', 'adm_users.email', 'adm_users.estatus', DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'), 'adm_users.celular', DB::raw('ifnull(adm_grupos.nombre_grupo, "Sudo") as perfil'), 'adm_users.p_apellido', 'adm_users.s_apellido', 'adm_users.nombre', DB::raw('ifnull(adm_grupos.id, "null") as id_grupo'))
-			->leftJoin('adm_rel_user_grupo', 'adm_users.id', '=', 'adm_rel_user_grupo.id_usuario')
-			->leftJoin('adm_grupos', 'adm_rel_user_grupo.id_grupo', '=', 'adm_grupos.id')
+			->select(
+				'adm_users.id',
+				'adm_users.username',
+				'adm_users.email',
+				'adm_users.estatus',
+				DB::raw("IFNULL(adm_users.clv_upp, NULL) AS upp"),
+				 DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'),
+				'adm_users.celular',
+				 DB::raw('adm_grupos.nombre_grupo as grupo'),
+				 DB::raw('adm_users.sudo as perfil'),
+				'adm_users.p_apellido', 'adm_users.s_apellido',
+				'adm_users.nombre',
+				 DB::raw('ifnull(adm_grupos.id, "null") as id_grupo'))
+			->leftJoin('adm_grupos', 'adm_grupos.id', '=', 'adm_users.id_grupo')
 			->where('adm_users.deleted_at', '=', null)
             ->orderby('adm_users.estatus');
 
@@ -72,7 +111,8 @@ class UsuarioController extends Controller
 				$key->email,
 				$key->nombre_completo,
 				$key->celular,
-				$key->perfil,
+				$key->perfil != '0' ? "Administrador" : "UPP",
+				$key->grupo,
 				$key->estatus == 1 ? "Activo" : "Inactivo",
 				$accion,
 			);
@@ -92,7 +132,7 @@ class UsuarioController extends Controller
 	//Inserta Usuario
 	public function postStore(Request $request)
 	{
-		if ($request->id_user != 0) {
+		if ($request->id_user != NULL) {
 			$this->postUpdate($request);
 		} else {
 			Controller::check_permission('postUsuarios');
@@ -144,6 +184,16 @@ class UsuarioController extends Controller
 		$grupos_asignados = DB::select('SELECT id, nombre_grupo FROM adm_grupos WHERE id IN (SELECT id_grupo FROM adm_rel_user_grupo WHERE id_usuario = ?) AND deleted_at IS NULL', [$id]);
 		$grupos = ["disponibles" => $grupos_disponibles, "asignados" => $grupos_asignados];
 		return view('administracion.usuarios.grupos', compact('usuario'), compact('grupos'));
+	}
+	public function getUpp()
+	{
+		$upp = DB::table('catalogo')->select(
+			'id',
+			'clave',
+			'descripcion'
+		)->where('grupo_id','=',6)
+		->get();
+		return $upp;
 	}
 
 	//Inserta Roles

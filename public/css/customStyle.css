@@ -6,12 +6,15 @@
 body {
     font-family: gibsonFont;
     display: flex;
+    min-height: 100vh;
+    flex-direction: column;
 }
  
  #app{
     /* min-height: 95vh; */
    width: 100vw;
    min-height: 95vh;
+   display: contents; /*Nueva propiedad*/
 } 
 .containerlogin{
  
@@ -20,12 +23,38 @@ body {
  height: 100vh;
 }
 
+nav{
+  display: flex !important;
+  position: sticky !important;
+  z-index: 1;
+  top: 0;
+}
+
+footer{
+  margin-top: auto;
+  height: 8vh;
+  background-image: url('/img/footer.jpg'); 
+  background-repeat: no-repeat; 
+  background-position: center; 
+  background-size: cover;
+}
 
  
 .colorMorado{
     background-color: #6A0F49 !important;
     color: white !important;
 
+  }
+  .wrap4{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 45%;
+ }
+  .center {
+    margin: auto;
+    width: 50%;
+    border: 3px solid green;
+    padding: 10px;
   }
   .colorgriss{
     background-color: #FFFFFF !important;
@@ -77,6 +106,7 @@ body {
   .imgSitioOficial{
     width: 8%;
   }
+
 
   #logo_cocotra{
     text-align: left;
@@ -479,6 +509,7 @@ input[type=date]{
 }
 
 .footerMessageMain{
+  transform: translateY(100%);
   font-size: 110%;
 }
 
@@ -507,4 +538,85 @@ th {
 
 .column_numbers{
     text-align: right;
+}
+
+#tableScroll{
+    overflow:scroll;
+    height: 500px;
+}
+
+.centro-gestor
+{
+  background-color: brown !important;
+  color: aliceblue !important; 
+  border: 1px solid #B9B9B9;
+}
+.area-funcional
+{
+  background-color: dimgrey !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+.periodo-presupuestal
+{
+  background-color: plum !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+.clasificacion-economica
+{
+  background-color: grey !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+.fondo
+{
+  background-color: orangered !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+.inversion
+{
+  background-color: darksalmon !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+td.centro-gestor
+{
+  background-color: brown !important;
+  color: aliceblue !important; 
+  border: 1px solid #B9B9B9;
+}
+td.area-funcional
+{
+  background-color: dimgrey !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+td.periodo-presupuestal
+{
+  background-color: plum !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+td.clasificacion-economica
+{
+  background-color: grey !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+td.fondo
+{
+  background-color: orangered !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+td.inversion
+{
+  background-color: darksalmon !important;
+  color: aliceblue !important;
+  border: 1px solid #B9B9B9; 
+}
+.montosR {
+  text-align: right !important;
 }
