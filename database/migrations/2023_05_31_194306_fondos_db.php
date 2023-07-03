@@ -439,5 +439,6 @@ return new class extends Migration
         Schema::dropIfExists('proyectos_obra');
         Schema::dropIfExists('actividades_mir');
         Schema::dropIfExists('proyectos_mir');
+        Schema::dropIfExists('tipo_actividad_upp');
     }
 };
