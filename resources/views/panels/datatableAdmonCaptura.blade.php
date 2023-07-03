@@ -7,10 +7,6 @@
             var orderDt = "";
             var column = "";
             var ruta;
-            var formatRight = [];
-            var formatLeft = [];
-            var formatCenter = [];
-            var bold = [];
 
             switch (rt) {
                 case "A":
@@ -22,43 +18,6 @@
                 default:
                     break;
             }
-
-            if (dt.attr('data-bold') != undefined) {
-                bold = dt.attr('data-bold').split(",");
-                for (var i in bold) {
-                    if (bold[i] != "") {
-                        bold[i] = parseInt(bold[i]);
-                    }
-                }
-            }
-
-            if (dt.attr('data-right') != undefined) {
-                formatRight = dt.attr('data-right').split(",");
-                for (var i in formatRight) {
-                    if (formatRight[i] != "") {
-                        formatRight[i] = parseInt(formatRight[i]);
-                    }
-                }
-            }
-
-            if (dt.attr('data-left') != undefined) {
-                formatLeft = dt.attr('data-left').split(",");
-                for (var i in formatLeft) {
-                    if (formatLeft[i] != "") {
-                        formatLeft[i] = parseInt(formatLeft[i]);
-                    }
-                }
-            }
-
-            if (dt.attr('data-center') != undefined) {
-                formatCenter = dt.attr('data-center').split(",");
-                for (var i in formatCenter) {
-                    if (formatCenter[i] != "") {
-                        formatCenter[i] = parseInt(formatCenter[i]);
-                    }
-                }
-            }
-
             var formData = new FormData();
             var csrf_tpken = $("input[name='_token']").val();
             var estatus = $("#estatus_filter").val();
@@ -134,22 +93,18 @@
                                 }
                             },
                         },
-                        columnDefs: [{
-                                defaultContent: "-",
-                                targets: "_all"
-                            },
-                            {
-                                targets: formatRight,
-                                className: 'text-right txtR'
-                            },
-                            {
-                                targets: formatLeft,
-                                className: 'text-left txtL'
-                            },
-                            {
-                                targets: formatCenter,
-                                className: 'text-center'
-                            }
+                        columnDefs: [
+                        {
+                            defaultContent: "-",
+                            targets: "_all"
+                        },
+                        ],
+                        columns: [
+                            { width: "5em"},
+                            { width: "100em"},
+                            { width: "10em"},
+                            { width: "10em"},
+                            { width: "20em"},
                         ],
                     });
                     redrawTable(tabla);

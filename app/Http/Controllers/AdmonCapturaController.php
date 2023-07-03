@@ -101,58 +101,10 @@ class AdmonCapturaController extends Controller
             $actualizar = str_contains($request->modulo_filter,',') ? DB::update("update $modulo set cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = >'$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_upp") : DB::update("update $modulo set estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_upp");
 
             DB::commit();
-            return redirect()->back();
+            return redirect()->route("index")->withSuccess('Los datos fueron modificados');
         } catch (\Exception $e) {
             DB::rollBack();
-            dd('error');
+            return back()->withErrors(['msg'=>'Ocurrió un error al modificar los datos']);
         }
-       
-        // dd($comprobacion);
-        // try {//-----------------------------
-        //     DB::beginTransaction();
-        //     // $upp_filter
-        //     // $modulo_filter
-        //     // $capturaRadio}
-
-        //      //archivo
-        //     $fileExt = $request->archivo->getClientOriginalExtension();
-        //     $municipio = Municipio::findOrFail(Auth::user()->idMunicipio);
-        //     $fondo = Fondo::findOrFail($comprobacion->idFondo);
-        //     $tipo = TipoDocumento::findOrFail($comprobacion->idTipo);
-        //     $mes = Mese::findOrFail($comprobacion->idMes);
-
-        //     $fileName = str_replace(" ", "_", $municipio->nombre . "_" . $fondo->acronimo . "_". $mes->nombre . "_" . $comprobacion->anio . "_" . $tipo->nombre . "." . $fileExt);
-        //     $ruta = $request->archivo->storeAs('public/comprobaciones', $fileName);
-            
-        //     $prevData = Comprobacion::where('id', $auxId)->first();//* Bitacora
-            
-        //     $comprobacion->idMunicipio = Auth::user()->idMunicipio;
-        //     $doesExist = Storage::disk('s3')->has($ruta);  
-        //     if($doesExist == 1 && $doesExist != null && $doesExist != ''){
-        //         $comprobacion->rutaArchivo = $ruta;
-        //     }
-        //     $comprobacion->nombreArchivo = pathinfo($fileName, PATHINFO_FILENAME);
-        //     $comprobacion->nombreOriginalArchivo = request()->archivo->getClientOriginalName();
-        //     $comprobacion->tipoArchivo = request()->archivo->extension();
-
-        //     $comprobacion->save();
-
-        //     $newData = Comprobacion::where('id', $auxId)->first();//* Bitacora
-
-        //     BitacoraHelper::crearBitacora("Editar Comprobacion", "Modificacion", "comprobaciones", $prevData, $newData);
-
-        //     $successMSG = "La comprobacion fue editada.";
-
-        //     //$this->llenarPlantilla();
-            
-        //     DB::commit();
-
-        //     return redirect()->route($auxRoute)->withSuccess($successMSG);
-        // }
-        // catch (\Exception $e) {
-        //     DB::rollBack();
-        //     dd('error');
-        //     return back()->withErrors(['msg'=>'error']);
-        // }
     }
 }

@@ -13,12 +13,30 @@ $titleDesc = 'Administración de Captura';
             <form action="{{ route('metas_actividades') }}" id="buscarFormB" name="buscarFormB" method="post"></form>
         </header>
 
+        @if (session()->has('success'))
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <h4>{{ session()->get('success') }}</h4>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+         @endif
+
+         @if($errors->any())
+         <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+             <h4>{{$errors->first()}}</h4>
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+             </button>
+         </div>
+         @endif
+
         <br>
         {{-- Form para cambiar los select --}}
         <form id="form" method="POST">
             @csrf
             <div class="col-md-10 col-sm-12 d-md-flex">
-                <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
+                <div class="col-sm-3 col-md-3 col-lg-2 text-md-end mt-md-1">
                     <label for="estatus_filter" class="form-label fw-bold">Estatus:</label>
                 </div>
                 <div class="col-sm-12 col-md-3 col-lg-2">
@@ -33,7 +51,7 @@ $titleDesc = 'Administración de Captura';
         </form>
 
         {{-- botón modal --}}
-        <div class="d-flex flex-wrap justify-content-md-end justify-content-sm-center mt-sm-3 mt-lg-0 mt-3">
+        <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
             <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
             data-keyboard="false" data-toggle="modal">
                 <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
@@ -68,7 +86,7 @@ $titleDesc = 'Administración de Captura';
                             <div class="card-body">
                                 <table
                                     class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoA" data-right="" data-left="" data-center="" style="width:100%">
+                                    id="catalogoA" style="width:100%">
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light">Clave UPP</th>
@@ -92,7 +110,7 @@ $titleDesc = 'Administración de Captura';
                             <div class="card-body">
                                 <table
                                     class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoB" data-right="" data-left="" data-center="" style="width:100%">
+                                    id="catalogoB" style="width:100%">
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light">Clave UPP</th>
@@ -111,7 +129,7 @@ $titleDesc = 'Administración de Captura';
         </div>
 
         @isset($dataSet)
-            @include('panels.datatableAdminCaptura')
+            @include('panels.datatableAdmonCaptura')
         @endisset
     </div>
 
@@ -120,6 +138,10 @@ $titleDesc = 'Administración de Captura';
         var tabla;
         var letter;
         $(document).ready(function() {
+
+            $(".alert").delay(4000).slideUp(200, function() {
+                $(this).alert('close');
+            });
 
             $.ajaxSetup({
                 headers: {
@@ -185,10 +207,6 @@ $titleDesc = 'Administración de Captura';
                 text: text,
                 icon: 'warning',
                 confirmButtonText: 'De acuerdo',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    //focus
-                }
             });
         }
 
