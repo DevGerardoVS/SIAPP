@@ -1,4 +1,5 @@
 let flag = false;
+let namePer = ['leer', 'escribir', 'editar', 'eliminar'];
 var dao = {
     setStatus: function (id, estatus) {
         Swal.fire({
@@ -84,7 +85,37 @@ var dao = {
             par.append(new Option("-- Selecciona Grupo --", ""));
             document.getElementById("id_grupo").options[0].disabled = true;
             $.each(data, function (i, val) {
-                par.append(new Option(data[i].nombre_grupo, data[i].id));
+                par.append(new Option(val.nombre_grupo, val.id));
+            });
+        });
+    },
+    getUsers: function () {
+        $.ajax({
+            type: "GET",
+            url: '/users/permissos',
+            dataType: "JSON"
+        }).done(function (data) {
+            var par = $('#id_userP');
+            par.html('');
+            par.append(new Option("-- Selecciona usuario --", ""));
+            document.getElementById("id_userP").options[0].disabled = true;
+            $.each(data, function (i, val) {
+                par.append(new Option(val.username, val.id));
+            });
+        });
+    },
+    getPermisos: function () {
+        $.ajax({
+            type: "GET",
+            url: '/users/permissos/get',
+            dataType: "JSON"
+        }).done(function (data) {
+            var par = $('#id_permiso');
+            par.html('');
+            par.append(new Option("-- Selecciona usuario --", ""));
+            document.getElementById("id_permiso").options[0].disabled = true;
+            $.each(data, function (i, val) {
+                par.append(new Option(val.nombre, val.id));
             });
         });
     },
@@ -106,6 +137,10 @@ var dao = {
     crearUsuario: function () {
         var form = $('#frm_create')[0];
         var data = new FormData(form);
+        if ($("#id_grupo").val() != '4') {
+            data.append('clv_upp', null);
+        }
+
         $.ajax({
             type: "POST",
             url: 'adm-usuarios/store',
@@ -123,9 +158,54 @@ var dao = {
                 showConfirmButton: false,
                 timer: 1500
             });
-           
+
             dao.limpiarFormularioCrear();
             getData();
+        });
+    },
+    assignPermisos: function () {
+        var form = $('#frm_permisos')[0];
+        var data = new FormData(form);
+        $.ajax({
+            type: "POST",
+            url: '/users/permissos/assign',
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000
+        }).done(function (response) {
+            $('#cerrar').trigger('click');
+            Swal.fire({
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
+    },
+    crearPermisos: function () {
+        var form = $('#permisos_frm')[0];
+        var data = new FormData(form);
+        $.ajax({
+            type: "POST",
+            url: '/users/permissos/create',
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000
+        }).done(function (response) {
+            $('#cerrar').trigger('click');
+            dao.getPermisos();
+            Swal.fire({
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            });
         });
     },
     editarUsuario: function (id) {
@@ -138,7 +218,7 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            console.log("response",response)
+            console.log("response", response)
             const {
                 id,
                 username,
@@ -179,7 +259,9 @@ var dao = {
             'in_pass_conf',
             'in_celular',
             'id_grupo',
-            'clv_upp'
+            'clv_upp',
+            'id_permiso',
+            'id_userP'
         ];
         inps.forEach(e => {
             $('#' + e).val('').removeClass('has-error').removeClass('d-block');
@@ -194,6 +276,8 @@ var dao = {
         $("#clv_upp").find('option').remove();
         $('#divUpp').hide();
         dao.getPerfil();
+        dao.getUsers();
+        dao.getPermisos();
         $('.form-group').removeClass('has-error');
         $("#id_grupo").show();
         $("#labelGrupo").show();
@@ -202,7 +286,7 @@ var dao = {
     },
 };
 var init = {
-    validateCreate: function (form,flag) {
+    validateCreate: function (form, flag) {
 
         let rm =
         {
@@ -211,11 +295,13 @@ var init = {
                 nombre: { required: true },
                 p_apellido: { required: true },
                 s_apellido: { required: true },
-                email: {required: true, email: true},
+                email: { required: true, email: true },
                 password: { required: true },
                 in_pass_conf: { required: true, equalTo: "#password" },
-                in_celular: { required: true,
-                    phoneUS: true},
+                in_celular: {
+                    required: true,
+                    phoneUS: true
+                },
                 id_grupo: { required: true },
                 sudo: { required: true },
                 clv_upp: { required: flag }
@@ -236,40 +322,72 @@ var init = {
 
             }
         }
-        console.log("rm",rm)
-        _gen.validate(form,rm );
+        _gen.validate(form, rm);
+
+    },
+    validatePermiso: function (form) {
+
+        let rm =
+        {
+            rules: {
+                id_userP: { required: true },
+                id_permiso: { required: true },
+                descripcion: { required: false }
+            },
+            messages: {
+                id_userP: { required: "Este campo es requerido" },
+                id_permiso: { required: "Este campo es requerido" },
+                descripcion: { required: "Este campo es requerido" }
+            }
+        }
+        _gen.validate(form, rm);
 
     },
 };
 
 $(document).ready(function () {
     getData();
-    init.validateCreate($('#frm_create'),flag);
+    init.validateCreate($('#frm_create'), flag);
+    init.validatePermiso($('#frm_permisos'));
     dao.getPerfil();
-    $("#sudo").change(function () {
-        if (this.value != '1') {
+    dao.getUsers();
+    dao.getPermisos();
+    $("#id_grupo").change(function () {
+        if (this.value == '4') {
             $('#divUpp').show();
             dao.getUpp();
             flag = true;
         } else {
             $('#divUpp').hide();
-            $("#clv_upp option[value='"+ NULL +"']").attr("selected",true);
+            $("#clv_upp option[value='']").attr("selected", true);
+            $("#clv_upp").val("")
         }
-     });
-    
+    });
+
     $('#exampleModal').modal({
         backdrop: 'static',
         keyboard: false
     })
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        init.validateCreate($('#frm_create'),flag);
+        init.validateCreate($('#frm_create'), flag);
         if ($('#frm_create').valid()) {
             dao.crearUsuario();
         }
         $('#email-error').text("Este campo es requerido").addClass('has-error');;
         $('#in_celular-error').text("Este campo es requerido").addClass('has-error');;
     });
+    $('#btnSaveP').click(function (e) {
+        if ($('#frm_permisos').valid()) {
+            dao.assignPermisos();
+        }
+
+    });
+/*funcion para agregar permisos al catalogo     
+$('#btnSaveCreate').click(function (e) {
+        dao.crearPermisos();
+
+    }); */
     $("#email").change(function () {
         var regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         regex.test($("#email").val());

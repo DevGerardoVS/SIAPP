@@ -11,6 +11,8 @@ use Auth;
 use DB;
 use Log;
 use App\Models\administracion\UsuarioGrupo;
+use App\Models\administracion\PermisosUpp;
+use App\Models\catalogos\CatPermisos;
 
 class UsuarioController extends Controller
 {
@@ -19,6 +21,32 @@ class UsuarioController extends Controller
 	{
 		Controller::check_permission('getUsuarios');
 		return view('administracion.usuarios.index');
+	}
+	public function getUsers(){
+		$user=DB::table('adm_users')->select('id', 'username')->where('deleted_at', NULL)->get();
+
+		return $user;
+	}
+	public function getModulos(){
+		$modul=DB::table('adm_menus')->select('id', 'nombre_menu as nombre')->where('deleted_at', NULL)->where('padre', 0)->get();
+		return $modul;
+	}
+	public function assignPermisson(Request $request){
+		Log::debug($request);
+		PermisosUpp::create([
+			'id_user'=>$request->id_userP,
+			'id_permiso'=>$request->id_permiso,
+			'descripcion'=>$request->descripcion
+		]);
+		return response()->json("done", 200);
+	}
+	public function createPermisson(Request $request){
+		CatPermisos::create($request->all());
+		return response()->json("done", 200);
+	}
+	public function getPermisson(){
+		$permisos=CatPermisos::where('deleted_at', null)->get();
+		return response()->json($permisos, 200);
 	}
 	//Vista Create Usuario
 	public function getCreate()
@@ -84,7 +112,6 @@ class UsuarioController extends Controller
 				$key->nombre_completo,
 				$key->celular,
 				$key->perfil != '0' ? "Administrador" : "UPP",
-				$key->upp != NULL ? $key->upp : " ",
 				$key->grupo,
 				$key->estatus == 1 ? "Activo" : "Inactivo",
 				$accion,
@@ -105,7 +132,6 @@ class UsuarioController extends Controller
 	//Inserta Usuario
 	public function postStore(Request $request)
 	{
-		log::debug($request);
 		if ($request->id_user != NULL) {
 			$this->postUpdate($request);
 		} else {
@@ -119,8 +145,6 @@ class UsuarioController extends Controller
 				return response()->json("emailDuplicate", 200);
 			}
 			$user = User::create($request->all());
-			log::debug($user);
-
 			UsuarioGrupo::create([
 				'id_grupo' => $request->id_grupo,
 				'id_usuario' => $user->id
