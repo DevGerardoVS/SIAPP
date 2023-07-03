@@ -23,6 +23,11 @@
 		Route::post('adm-usuarios/grupos', 'postGrupos');
 		Route::get('grupos', 'grupos');
 		Route::get('/upp/get', 'getUpp');
+		Route::get('/users/permissos', 'getUsers');
+		Route::get('/users/menu', 'getModulos');
+		Route::post('/users/permissos/create', 'createPermisson');
+		Route::post('/users/permissos/assign', 'assignPermisson');
+		Route::get('/users/permissos/get', 'getPermisson');
 	});
 
 	Route::controller(InicioController::class)->group(function (){

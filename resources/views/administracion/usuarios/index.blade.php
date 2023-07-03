@@ -1,5 +1,7 @@
 @extends('layouts.app')
 @include('administracion.usuarios.modalCreate')
+@include('administracion.usuarios.permisosModal')
+@include('administracion.usuarios.modalCreatePermisos')
 @include('panels.datatable')
 @section('content')
     <div class="container">
@@ -28,7 +30,16 @@
                                         <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
                                             data-target=".bd-example-modal-lg" data-backdrop="static"
                                             data-keyboard="false">Agregar Usuario</button>
+                                            <button type="button" class="btn btn-dark" data-toggle="modal" id="btnNew"
+                                            data-target=".bd-permisos-modal-lg" data-backdrop="static"
+                                            data-keyboard="false">Permisos  adicionales</button>
+
+                                            {{-- es para añadir permisos al catalogo 
+                                                <button type="button" class="btn btn-dark" data-toggle="modal" id="btnNew"
+                                            data-target=".createpermiso" data-backdrop="static"
+                                            data-keyboard="false">Permisos adicionales</button> --}}
                                     </div>
+        
                                 </div>
                             </div>
                             <br><br>
@@ -42,7 +53,6 @@
                                                 <th data-hide="phone">Nombre Completo</th>
                                                 <th data-hide="phone">Celular</th>
                                                 <th data-hide="phone">Perfil</th>
-                                                <th data-hide="phone">UPP</th>
                                                 <th data-hide="phone">Grupo</th>
                                                 <th data-hide="phone">Estatus</th>
                                                 <th class="th-administration">Acciones</th>
