@@ -138,8 +138,9 @@ class ReporteController extends Controller
 
     public function downloadReport(Request $request, $nombre){ 
         ini_set('max_execution_time', 300); // Tiempo máximo de ejecución 
-        date_default_timezone_set('America/Mexico_City');
-        setlocale(LC_TIME, 'es_VE.UTF-8','esp');
+        // date_default_timezone_set('America/Mexico_City');
+        // setlocale(LC_TIME, 'es_VE.UTF-8','esp');
+        // ob_start();
 
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
@@ -151,12 +152,13 @@ class ReporteController extends Controller
         try {
         
             //Eliminación si ya existe reporte
-            if(File::exists($ruta."/".$report.".pdf")) {
-                File::delete($ruta."/".$report.".pdf");
-            }
+            // if(File::exists($ruta."/".$report.".pdf")) {
+            //     File::delete($ruta."/".$report.".pdf");
+            // }
             $logo = public_path()."/img/logo.png";
             $report_path = app_path() ."/Reportes/".$report.".jasper";
             $format = array($request->action);
+            // $format = array("xls");
             $output_file =  public_path()."/reportes";
             $file = public_path()."/reportes/".$report;
             $nameFile = "EF_".$anio."_".$report;
@@ -186,11 +188,10 @@ class ReporteController extends Controller
             $format,
             $parameters,
             $database_connection
-            // )->output();
-            // dd($jasper);
             )->execute();
 
-            return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->file($file.".xls")->deleteFileAfterSend(); 
+            ob_end_clean();
+            return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
         } catch (\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
             return back()->withErrors(['msg'=>'Hubo un error al descargar el archivo']);
