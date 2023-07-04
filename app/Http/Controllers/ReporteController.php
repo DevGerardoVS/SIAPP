@@ -187,7 +187,7 @@ class ReporteController extends Controller
             $parameters,
             $database_connection
             )->output();
-            Log::debug($jasper);            // )->execute();
+            dd($jasper);            // )->execute();
 
             return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
         } catch (\Exception $exp) {
