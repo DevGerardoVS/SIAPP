@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\File;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -30,6 +31,13 @@ class AppServiceProvider extends ServiceProvider
             \URL::forceScheme('https');
         }
         Schema::defaultStringLength(191);
+
+
+        File::afterCreating(function ($file)
+    {
+        chmod($file->getPathname(),0777);
+    }
+    );
     }
     
 }
