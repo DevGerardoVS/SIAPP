@@ -4,6 +4,8 @@
 	use App\Http\Controllers\Administracion\GrupoController;
 	use App\Http\Controllers\Administracion\PermisoController;
 	use App\Http\Controllers\Administracion\BitacoraController;
+	use App\Http\Controllers\ReporteController;
+	use App\Http\Controllers\AdmonCapturaController;
 	use App\Http\Controllers\Administracion\InicioController;
 
 	Route::controller(SistemasController::class)->group(function () {
@@ -22,6 +24,12 @@
 		Route::post('adm-usuarios/eliminar', 'postDelete');
 		Route::post('adm-usuarios/grupos', 'postGrupos');
 		Route::get('grupos', 'grupos');
+		Route::get('/upp/get', 'getUpp');
+		Route::get('/users/permissos', 'getUsers');
+		Route::get('/users/menu', 'getModulos');
+		Route::post('/users/permissos/create', 'createPermisson');
+		Route::post('/users/permissos/assign', 'assignPermisson');
+		Route::get('/users/permissos/get', 'getPermisson');
 	});
 
 	Route::controller(InicioController::class)->group(function (){
@@ -53,5 +61,29 @@
 	Route::controller(BitacoraController::class)->group(function () {
 		Route::get('/adm-bitacora', 'getIndex');
 		Route::post('/adm-bitacora/data/{fecha?}', 'getBitacora')->name('getBitacora');
+	});
+
+	Route::controller(ReporteController::class)->group(function(){
+		Route::get('/Reportes/ley-planeacion','indexPlaneacion')->name('index_planeacion');
+		Route::get('/Reportes/administrativos', 'indexAdministrativo')->name('index_administrativo');
+		
+		// Reportes administrativos
+		Route::post('/Reportes/administrativos/calendarioFondoMensual', 'calendarioFondoMensual')->name('calendario_fondo_mensual');
+    	Route::post('/Reportes/administrativos/resumenCapituloPartida', 'resumenCapituloPartida')->name('resumen_capitulo_partida');
+    	Route::post('/Reportes/administrativos/proyectoCalendarioGeneral', 'proyectoCalendarioGeneral')->name('proyecto_calendario_general');
+    	Route::post('/Reportes/administrativos/proyectoAvanceGeneral', 'proyectoAvanceGeneral')->name('proyecto_avance_general');
+    	Route::post('/Reportes/administrativos/proyectoCalendarioGeneralActividad', 'proyectoCalendarioGeneralActividad')->name('proyecto_calendario_general_actividad');
+    	Route::post('/Reportes/administrativos/avanceProyectoActividadUPP', 'avanceProyectoActividadUPP')->name('avance_proyecto_actividad_upp');
+
+		Route::post('/Reportes/data-fecha-corte/{ejercicio?}','getFechaCorte')->name('get_fecha_corte'); // Obtener fecha de acuerdo al año
+		Route::post('/Reportes/download/{nombre}', 'downloadReport')->name('downloadReport'); // Descargar reportes
+	});
+
+	Route::controller(AdmonCapturaController::class)->group(function(){
+		Route::get('/admon-capturas','index')->name('index');
+		Route::post('/admon-capturas/clavesPresupuestarias', 'clavesPresupuestarias')->name('claves_presupuestarias');
+		Route::post('/admon-capturas/metasActividades', 'metasActividades')->name('metas_actividades');
+		Route::put('/admon-capturas/update', 'update')->name('admon_capturas_update');
+
 	});
 ?>

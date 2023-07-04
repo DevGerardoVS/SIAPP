@@ -25,7 +25,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings,WithTit
     }
     public function headings(): array
     {
-        return ["UPP", "UR", "PRG", "SPR", "PY", "FONDO", "CVE_ACT", "ACTIVIDAD", "CVE_CAL", "TIPO_CALENDARIO", "TOTAL_METAS", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE", "CVE_BENEF", "BENEFICIARIO", "CVE_UM", "UNIDAD_MEDIDA"];
+        return ["UPP", "UR", "PRG", "SPR", "PY", "FONDO", "CVE_ACT", "ACTIVIDAD", "CVE_CAL", "TIPO_CALENDARIO", "TOTAL_METAS", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE", "CVE_BENEF", "BENEFICIARIO","N.BENEFICIARIOS" ,"CVE_UM", "UNIDAD_MEDIDA"];
 
     }
     public function styles(Worksheet $sheet)
@@ -46,7 +46,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings,WithTit
             AfterSheet::class=> function(AfterSheet $event){
                 $sheet = $event -> sheet;
                 $event->sheet->getDelegate()
-                ->getStyle('A1:AA'.$this->filas)
+                ->getStyle('A1:AB'.$this->filas)
                 ->applyFromArray(['alignment'=>['wrapText'=>true]]);
 
                 $styleArray = [
@@ -58,7 +58,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings,WithTit
                     ],
                 ];
     
-                $event->sheet->getStyle('A1:AA'.$this->filas)->applyFromArray($styleArray);
+                $event->sheet->getStyle('A1:AB'.$this->filas)->applyFromArray($styleArray);
                },
              
         ];
