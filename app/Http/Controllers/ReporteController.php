@@ -151,6 +151,7 @@ class ReporteController extends Controller
             $logo = public_path()."/img/logo.png";
             $report_path = app_path() ."/Reportes/".$report.".jasper";
             $format = array($request->action);
+            // $format = array("xls");
             $output_file =  public_path()."/reportes";
             $file = public_path()."/reportes/".$report;
             $nameFile = "EF_".$anio."_".$report;
