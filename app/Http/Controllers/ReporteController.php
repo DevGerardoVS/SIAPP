@@ -186,11 +186,11 @@ class ReporteController extends Controller
             $format,
             $parameters,
             $database_connection
-            )->output();
-            dd($jasper);
-            // )->execute();
+            // )->output();
+            // dd($jasper);
+            )->execute();
 
-            return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
+            return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->file($file.".xls")->deleteFileAfterSend(); 
         } catch (\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
             return back()->withErrors(['msg'=>'Hubo un error al descargar el archivo']);
