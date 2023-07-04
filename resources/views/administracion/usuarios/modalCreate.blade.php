@@ -71,20 +71,9 @@
                             </select>
                             <h6 id="label_idGrupo"></h6>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label class="control-label">Perfil</label>
-                            <select name="sudo" id="sudo" class="form-control">
-                                <option value="NULL" disabled selected>-Selecciona perfil-</option>
-                                <option value="1">Administrador</option>
-                                <option value="0">UPP</option>
-                            </select>
-                            <h6 id="label_idGrupo"></h6>
-                        </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
-                        <div class="form-group col-md-8" id='divUpp' style="display: none">
+                        <div class="form-group col-md-4" id='divUpp' style="display: none">
                             <label class="control-label">UPP</label>
-                            <select name="clv_upp" id="clv_upp" class="form-control">
+                            <select name="clv_upp" id="clv_upp" class="form-control" value="null">
                             </select>
                         </div>
                     </div>

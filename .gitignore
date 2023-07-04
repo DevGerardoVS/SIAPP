@@ -24,3 +24,5 @@ Homestead.json
 /.idea
 /.idea/workspace.xml
 composer.lock
+composer.json
+composer.lock
