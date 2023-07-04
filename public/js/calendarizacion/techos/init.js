@@ -89,12 +89,13 @@ var dao = {
             contentType: false,
             cache: false,
         }).done(function (response) {
+            console.log(response);
             if (response != 'done') {
               Swal.fire(
                   {
                       showCloseButton: true,
                       title: 'Error',
-                      text: 'Ya existen datos con la upp y fondo',
+                      text: response.message,
                       icon: 'error',
                   }
                 

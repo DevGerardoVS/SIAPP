@@ -15,6 +15,8 @@ use function Psy\debug;
 use App\Exports\PlantillaTechosExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\Techos;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class TechosController extends Controller
 {
@@ -122,13 +124,6 @@ class TechosController extends Controller
         }
     }
 
-    public function exportView(){
-        $upps = DB::table('v_entidad_ejecutora')->select('clv_upp','upp')->distinct()->get();
-        return view('calendarizacion.techos.plantillaCargaTechos',[
-            "upps" => $upps
-        ]);
-    }
-
     public function exportPlantilla(){
         //Si no coloco estas lineas Falla/
         ob_end_clean();
@@ -142,28 +137,64 @@ class TechosController extends Controller
         DB::beginTransaction();
         try {
             ini_set('max_execution_time', 1200);
-            Log::debug($request->file('cmFile'));
+            Schema::create('temp_techos', function (Blueprint $table) {
+                $table->temporary();
+                $table->increments('id');
+                $table->string('clv_upp', 3)->nullable(false);
+                $table->string('clv_fondo', 2)->nullable(false);
+                $table->integer('ejercicio')->default(null);
+                $table->enum('tipo', ['Operativo', 'RH'])->nulleable(false);
+                $table->bigInteger('presupuesto')->nullable(false);
+            });
             Excel::import(new Techos, $request->file('cmFile'));
             DB::commit();
-            return response()->json("done", 200); 
-        }catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            return response()->json("done", 200);
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             DB::rollback();
             $failures = $e->failures();
+            $error = '';
+            $value = '';
             foreach ($failures as $failure) {
                 $failure->row(); // row that went wrong
                 $failure->attribute(); // either heading key (if using heading row concern) or column index
-                $failure->errors(); // Actual error messages from Laravel validator
-                $failure->values(); // The values of the row that has failed.
-                Log::debug($failure->row());
-                Log::debug($failure->attribute());
-                Log::debug($failure->errors());
-                Log::debug($failure->values());
+                $value = [$failure->values()]; // The values of the row that has failed.
+                $error = [$failure->errors()]; // Actual error messages from Laravel validator
+                /* Log::debug($failure->row());
+                   Log::debug($failure->attribute());
+                   Log::debug($failure->errors());
+                   Log::debug($failure->values()); */
             }
-            $returnData = array(
-               'status' => 'error',
-               'title' => 'Error',
-               'message' => 'error de validacion',
-             );
+            if ($error != '') {
+                if (!empty($value[0]['fondo'])) {
+                    $returnData = array(
+                        'status' => 'error',
+                        'title' => 'Error',
+                        'message' => $error,
+                    );
+                } else {
+                    $returnData = array(
+                        'status' => 'error',
+                        'title' => 'Error',
+                        'message' => $error,
+                    );
+                }
+            }
+            if ($value != '') {
+                if (!empty($value[0]['fondo'])) {
+                    $returnData = array(
+                        'status' => 'error',
+                        'title' => 'Error',
+                        'message' => $error,
+                    );
+                } else {
+                    $returnData = array(
+                        'status' => 'error',
+                        'title' => 'Error',
+                        'message' => $value,
+                    );
+                }
+            }
+
             return response()->json($returnData);
         }
     }
