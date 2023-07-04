@@ -30,7 +30,7 @@ class PresupuestosImport implements ToModel, WithProgressBar, SkipsEmptyRows, Wi
     //    public function run()\n
     //    {\n";
 
-    public $file_content="insert into adm_users (clv_upp, sudo, nombre, p_apellido, s_apellido, email, celular, username) values \n";
+    public $file_content="insert into adm_users (clv_upp, id_grupo, nombre, p_apellido, s_apellido, email, celular, username) values \n";
 
 
     /**
@@ -47,7 +47,7 @@ class PresupuestosImport implements ToModel, WithProgressBar, SkipsEmptyRows, Wi
         $row[1].",".$row[2].",".$row[3].",".$row[4].",".$row[5].",'".$row[6]."',".$row[7].",".$row[8].",".$row[9].",".$row[10].",".$row[11].",".$row[12].",'".$row[13]."','".$row[14]."','".$row[15]."','".$row[16]."','".$row[17]."','".$row[18]."','".$row[19]."',".$row[34].",".$row[21].",".$row[22].",".$row[23].",".$row[24].",".$row[25].",'".$row[26]."',".$row[27].",".$row[31].","."2023".",".$row[36].",".$row[37].",".$row[38].",".$row[39].",".$row[40].",".$row[41].",".$row[42].",".$row[43].",".$row[44].",".$row[45].",".$row[46].",".$row[47].",".$row[35].", 0 ,'".$tipo."', 'SEEDER'".")\");\n";
         */
 
-        $this->file_content .= "('".$row[0]."',".'0'.",'".$row[3]."','".$row[4]."','".$row[5]."','".$row[7]."','".$row[6]."','".$row[2]."'),\n";
+        $this->file_content .= "('".$row[0]."',".'4'.",'".$row[3]."','".$row[4]."','".$row[5]."','".$row[7]."','".$row[6]."','".$row[2]."'),\n";
 
         //$this->output->title('row '.$row[0]);
         /*return new ProgramacionPresupuesto([
