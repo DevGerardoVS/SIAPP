@@ -5,6 +5,9 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\File;
+
+
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -32,12 +35,12 @@ class AppServiceProvider extends ServiceProvider
         }
         Schema::defaultStringLength(191);
 
-
-        File::afterCreating(function ($file)
-    {
-        chmod($file->getPathname(),0777);
-    }
-    );
+        File::macro('createWithPermissions', function ($path, $permissions) {
+            umask(0);
+            $handle = fopen($path, 'x');
+            fclose($handle);
+            chmod($path, $permissions);
+        });
     }
     
 }
