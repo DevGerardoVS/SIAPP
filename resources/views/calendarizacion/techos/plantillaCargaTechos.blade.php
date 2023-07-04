@@ -16,8 +16,8 @@
     <tbody>
         @foreach ($upps as $upp)
             <tr class="table-secondary">
-                <td>2024</td>
-                <td>{{ $upp->clv_upp }}</td>
+                <td>{{ $ejercicio}}</td>
+                <td>{{ $upp->clave }}</td>
                 <td>09</td>
                 <td></td>
                 <td></td>
