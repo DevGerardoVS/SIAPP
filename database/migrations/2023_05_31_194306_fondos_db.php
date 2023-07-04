@@ -365,8 +365,8 @@ return new class extends Migration
             $table->integer('subprograma_id')->unsigned()->nullable(false);
             $table->integer('proyecto_id')->unsigned()->nullable(false);
             $table->integer('ejercicio')->unsigned()->nullable(false);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
             $table->string('deleted_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
@@ -386,12 +386,24 @@ return new class extends Migration
             $table->increments('id');
             $table->string('clv_proyecto_obra',6)->nullable(false);
             $table->string('proyecto_obra',255)->nullable(false);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
             $table->string('deleted_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
             $table->string('created_user',45)->nullable(false);
+        });
+
+        Schema::create('tipo_actividad_upp', function (Blueprint $table){
+            $table->increments('id');
+            $table->string('clv_upp',3)->nullable(false);
+            $table->integer('tipo')->nullable(false)->comment('0 - Continuo, 1 - Acumulativo, 2 - Especial');
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->string('created_user',45)->nullable(false);
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->string('updated_user',45)->nullable(true);
+            $table->softDeletes();
+            $table->string('deleted_user',45)->nullable(true);
         });
     }
 
@@ -427,5 +439,6 @@ return new class extends Migration
         Schema::dropIfExists('proyectos_obra');
         Schema::dropIfExists('actividades_mir');
         Schema::dropIfExists('proyectos_mir');
+        Schema::dropIfExists('tipo_actividad_upp');
     }
 };
