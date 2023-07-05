@@ -16,20 +16,54 @@ class ConfiguracionesController extends Controller
 		return view('administracion.configuraciones.index');
 	}
 
-    public static function GetConfiguraciones(){
+    public function GetUpps(){
         try {
-            $anio_act = date('Y')-1;
             $dataSet = array();
-            $data = DB::table('inicio_a')->get();
+
+            $dataSet = DB::table('catalogo')
+                ->select('clave', 'descripcion')
+                ->where('grupo_id', 6)
+                ->get();
+
+            return response()->json([
+                "dataSet" => $dataSet,
+                "catalogo" => "Configuraciones",
+            ]);
+
+        } catch(\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+        }
+    }
+
+    public static function GetConfiguraciones(Request $request){
+        try {
+            $dataSet = array();
+            $array_where = [];
+            $filter = $request->filter;
+
+            if($filter!=null || $filter!='') array_push($array_where, ['clave','=',$filter]);
+
+            $data = DB::table('tipo_actividad_upp')
+                ->select('clave', 'descripcion','tipo')
+                ->rightJoin('catalogo','tipo_actividad_upp.clv_upp','=','catalogo.clave')
+                ->where('grupo_id', 6)
+                ->where($array_where)
+                ->get();
+
 
             foreach ($data as $d) {
-                $ds = array(number_format($d->presupuesto_asignado, 2, '.', ',') , number_format($d->presupuesto_calendarizado, 2, '.', ','), number_format($d->disponible, 2, '.', ',') , number_format($d->avance, 2, '.', ','));
+                //$d->tipo 
+                $ds = array($d->clave , $d->descripcion, 
+                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></div>',
+                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></div>',
+                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></div>');
                 $dataSet[] = $ds;
             }
 
             return response()->json([
                 "dataSet" => $dataSet,
-                "catalogo" => "inicio",
+                "catalogo" => "Configuraciones",
             ]);
 
         } catch(\Exception $exp) {
