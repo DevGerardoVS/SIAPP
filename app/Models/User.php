@@ -22,7 +22,7 @@ class User extends Authenticatable
     protected $table = 'adm_users';
 
     protected $fillable = [
-        'id_ente',
+        'id_grupo',
         'nombre',
         'p_apellido',
         's_apellido',
@@ -31,6 +31,7 @@ class User extends Authenticatable
         'username',
         'password',
         'sudo',
+        'clv_upp',
         'status'
     ];
 
@@ -43,7 +44,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
         'created_at',
         'updated_at'
     ];

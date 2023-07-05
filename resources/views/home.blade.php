@@ -55,9 +55,9 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        
+
         getDatos();
-        
+
     });
 
     function getDatos(){
@@ -121,7 +121,7 @@
                            className: 'text-right'
                        },
                    ],
-                  
+
                });
             },
             error: function(response) {
@@ -144,7 +144,7 @@
         }
 
         try{
-            
+
             $.ajax({
             url:"{{route('inicio_b')}}",
             type: "POST",
@@ -205,7 +205,7 @@
                            className: 'text-right'
                        },
                    ],
-                  
+
                });
             },
             error: function(response) {
@@ -228,6 +228,6 @@
         }
     }
 
-    
+
 </script>
 @endsection

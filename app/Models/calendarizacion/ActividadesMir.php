@@ -1,31 +1,28 @@
 <?php
 
-namespace App\Models\catalogos;
+namespace App\Models\calendarizacion;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CatEntes extends Model
+class ActividadesMir extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'cat_entes';
+    protected $table = 'actividades_mir';
 
     protected $fillable = [
-    	'cve_upp',
-    	'nombre_upp',
-    	'cve_ur',
-    	'nombre_ur',
-    	'cve_uo',
-    	'nombre_uo',
-
+        'proyecto_mir_id',
+        'clv_actividad',
+        'actividad',
+        'estatus'
     ];
 
     protected $dates = ['deleted_at'];
 
     protected $hidden = [
-    	'created_at', 
-    	'updated_at'
+        'created_at',
+        'updated_at'
     ];
 }

@@ -1,42 +1,8 @@
+const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
+
 let actividades = [];
 var dao = {
-    setStatus: function (id, estatus) {
-        Swal.fire({
-            title: 'Confirmar Activación/Desactivación',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "/adm-usuarios/status",
-                    data: {
-                        id: id,
-                        estatus: estatus
-                    }
-                }).done(function (data) {
-                    if (data != "done") {
-                        Swal.fire(
-                            'Error!',
-                            'Hubo un problema al querer realizar la acción, contacte a soporte',
-                            'Error'
-                        );
-                    } else {
-                        Swal.fire(
-                            'Éxito!',
-                            'La acción se ha realizado correctamente',
-                            'success'
-                        );
-                        getData();
-                    }
-                });
-            }
-        });
-    },
-    eliminarUsuario: function (id) {
+    eliminar: function (id) {
         Swal.fire({
             title: '¿Seguro que quieres eliminar este usuario?',
             text: "Esta accion es irreversible",
@@ -49,7 +15,7 @@ var dao = {
             if (result.isConfirmed) {
                 $.ajax({
                     type: "POST",
-                    url: "/adm-usuarios/eliminar",
+                    url: "/calendarizacion/detelet",
                     data: {
                         id: id
                     }
@@ -66,7 +32,6 @@ var dao = {
                             'La acción se ha realizado correctamente',
                             'success'
                         );
-                        getData();
                     }
                 });
 
@@ -76,35 +41,48 @@ var dao = {
 
 
     },
-    getAnio: function () {
-        let anio = [2022, 2023, 2024, 2025];
-        var par = $('#anio_filter');
-        par.html('');
-        par.append(new Option("-- Año--", ""));
-        document.getElementById("anio_filter").options[0].disabled = true;
-        $.each(anio, function (i, val) {
-            par.append(new Option(anio[i], anio[i]));
+    getUrs: function () {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/urs',
+            dataType: "JSON"
+        }).done(function (data) {
+            var par = $('#ur_filter');
+            par.html('');
+            par.append(new Option("-- URS--", ""));
+            document.getElementById("ur_filter").options[0].disabled = true;
+            $.each(data, function (i, val) {
+                par.append(new Option(data[i].ur, data[i].clv_ur));
+            });
+            par.selectpicker({ search: true });
+
         });
-        /*      $.ajax({
-                 type: "GET",
-                 url: 'grupos',
-                 dataType: "JSON"
-             }).done(function (data) {
-                 var par = $('#id_grupo');
-                 par.html('');
-                 par.append(new Option("-- Selecciona Perfil --", ""));
-                 document.getElementById("id_grupo").options[0].disabled = true;
-                 $.each(data, function (i, val) {
-                     par.append(new Option(data[i].nombre_grupo, data[i].id));
-                 });
-             }); */
     },
-    crearUsuario: function () {
-        var form = $('#frm_create')[0];
+    getProg: function (ur) {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/programas/'+ur,
+            dataType: "JSON"
+        }).done(function (data) {
+            var par = $('#pr_filter');
+            par.html('');
+            par.append(new Option("-- Programa--", ""));
+            document.getElementById("pr_filter").options[0].disabled = true;
+            $.each(data, function (i, val) {
+                par.append(new Option(val.clv_programa,val.programa));
+            });
+            par.selectpicker({ search: true });
+
+        });
+    },
+    crearMeta: function () {
+        var form = $('#actividad')[0];
         var data = new FormData(form);
+        data.append('pMir_id',  $('[name="proyecto"]:checked').val());
+        data.append('sumMetas', $('#sumMetas').val());
         $.ajax({
             type: "POST",
-            url: 'adm-usuarios/store',
+            url: '/calendarizacion/create',
             data: data,
             enctype: 'multipart/form-data',
             processData: false,
@@ -113,129 +91,221 @@ var dao = {
             timeout: 600000
         }).done(function (response) {
             $('#cerrar').trigger('click');
+            dao.limpiar();
             Swal.fire({
                 icon: 'success',
                 title: 'Your work has been saved',
                 showConfirmButton: false,
                 timer: 1500
             });
-
-            dao.limpiarFormularioCrear();
-            getData();
         });
     },
-    editarUsuario: function (id) {
+    crearMetaImp: function () {
+        var form = $('#formFile')[0];
+        var data = new FormData(form);
         $.ajax({
-            type: "GET",
-            url: 'adm-usuarios/update/' + id,
+            type: "POST",
+            url: '/actividades/import',
+            data: data,
             enctype: 'multipart/form-data',
             processData: false,
             contentType: false,
             cache: false,
+        }).done(function (response) {
+            $('#cerrar').trigger('click');
+            Swal.fire({
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: true,
+            });
+        });
+    },
+    importMeta: function () {
+        var form = $('#formFile')[0];
+        var data = new FormData(form);
+        $.ajax({
+            type: "POST",
+            url: '/calendarizacion/create',
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            cache: false,
             timeout: 600000
         }).done(function (response) {
-            console.log("response", response)
-            const {
-                id,
-                username,
-                celular,
-                email,
-                estatus,
-                id_grupo,
-                nombre,
-                p_apellido,
-                s_apellido,
-                perfil,
-                nombre_grupo
-            } = response;
-            $('#id_user').val(id);
-            $('#username').val(username);
-            $('#nombre').val(nombre);
-            $('#p_apellido').val(p_apellido);
-            $('#s_apellido').val(s_apellido);
-            $('#email').val(email);
-            $('#in_celular').val(celular);
-            $('#label_idGrupo').text(perfil).show();
-
-            $("#id_grupo").hide();
-            $("#labelGrupo").hide();
+            Swal.fire({
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
+    },
+    editarMeta: function (id) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Your work has been saved',
+            showConfirmButton: false,
+            timer: 1500
+          })
+    }, getSelect: function () {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/selects',
+            dataType: "JSON"
+        }).done(function (data) {
+            const { unidadM, fondos, beneficiario, actividades,activids } = data;
+            var act = $('#sel_actividad'); 
+            act.html('');
+            act.append(new Option("--Actividad--","true",true,true));
+            document.getElementById("sel_actividad").options[0].disabled = true;
+            $.each(actividades, function (i, val) {
+                act.append(new Option(val.actividad, i));
+            });
+            act.selectpicker({ search: true });
+            var med = $('#medida');
+            med.html('');
+            med.append(new Option("-- Medida--", ""));
+            document.getElementById("medida").options[0].disabled = true;
+            $.each(unidadM, function (i, val) {
+                med.append(new Option(val.unidad_medida, val.clave));
+            }); 
+            med.selectpicker({ search: true });
+            var fond = $('#sel_fondo');
+            fond.html('');
+            fond.append(new Option("-- Fondos--", ""));
+            document.getElementById("sel_fondo").options[0].disabled = true;
+            $.each(fondos, function (i, val) {
+                fond.append(new Option(fondos[i].ramo, fondos[i].clv_fondo_ramo));
+            });
+            fond.selectpicker({ search: true });
+            var tipo_be = $('#tipo_Be');
+            tipo_be.html('');
+            tipo_be.append(new Option("--U. Beneficiarios--", ""));
+            document.getElementById("tipo_Be").options[0].disabled = true;
+            $.each(beneficiario, function (i, val) {
+                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
+            });
+            tipo_be.selectpicker({ search: true });
+            var tipo_AC = $('#tipo_Ac');
+            tipo_AC.html('');
+            tipo_AC.append(new Option("--Tipo Actividad--", ""));
+            document.getElementById("tipo_Ac").options[0].disabled = true;
+            $.each(activids, function (i, val) {
+                tipo_AC.append(new Option(val, i));
+            }); 
+            tipo_AC.selectpicker({ search: true });
 
         });
     },
-    limpiarFormularioCrear: function () {
-
-        inps = [
-            'id_user',
-            'username',
-            'nombre',
-            'p_apellido',
-            's_apellido',
-            'email',
-            'password',
-            'in_pass_conf',
-            'in_celular',
-            'id_grupo'
-        ];
-        inps.forEach(e => {
-            $('#' + e).val('').removeClass('has-error').removeClass('d-block');
-            $('#' + e + '-error').text("").removeClass('has-error').removeClass('d-block');
-
+    limpiar: function () {
+        console.log("limpiando.....")
+        inputs.forEach(e => {
+            $('#' + e + '-error').text("").removeClass('#' + e + '-error');
+            if (e != 'beneficiario') {
+                $('#'+e).selectpicker('destroy');
+            }
         });
-        $("#id_grupo").find('option').remove();
-        dao.getAnio();
-        $('.form-group').removeClass('has-error');
-        $("#id_grupo").show();
-        $("#labelGrupo").show();
-        $("#label_idGrupo").text("").hide();
-
+        dao.getSelect();
+        $('.form-group').removeClass('has-error');  
+        for (let i = 1; i <=12; i++) {
+            $('#' + i).val(0);
+        }
+        $('#sumMetas').val(0);
+        $('#beneficiario').val("");
+        for (let i = 1; i <=12; i++) {
+            $("#" + i).prop('disabled', true); 
+        }
     },
-     edit_row:function (no){
-    document.getElementById("edit_button" + no).style.display = "none";
-    document.getElementById("save_button" + no).style.display = "block";
-
-    var name = document.getElementById("name_row" + no);
-    var country = document.getElementById("country_row" + no);
-    var age = document.getElementById("age_row" + no);
-
-    var name_data = name.innerHTML;
-    var country_data = country.innerHTML;
-    var age_data = age.innerHTML;
-
-    name.innerHTML = "<input type='text' id='name_text" + no + "' value='" + name_data + "'>";
-    country.innerHTML = "<input type='text' id='country_text" + no + "' value='" + country_data + "'>";
-    age.innerHTML = "<input type='text' id='age_text" + no + "' value='" + age_data + "'>";
+    arrEquals: function (numeros) {
+        let duplicados = [];
+        let bool = numeros.length;
+ 
+        const tempArray = [...numeros].sort();
+         
+        for (let i = 0; i <= tempArray.length; i++) {
+          if (tempArray[i + 1] === tempArray[i]) {
+            duplicados.push(tempArray[i]);
+          }
+        }
+        if(bool != duplicados.length)
+        {return false}else{return true}
+      },
+    validateAcu: function () {
+        let e = 0;
+        for (let i = 1; i <= 12; i++) {           
+            let suma = parseInt($('#' + i).val() != "" ? $('#' + i).val() : 0);
+            e += suma;
+        }
+        return e;
     },
-    save_row:function(no) {
-    var name_val = document.getElementById("name_text" + no).value;
-    var country_val = document.getElementById("country_text" + no).value;
-    var age_val = document.getElementById("age_text" + no).value;
-
-    document.getElementById("name_row" + no).innerHTML = name_val;
-    document.getElementById("country_row" + no).innerHTML = country_val;
-    document.getElementById("age_row" + no).innerHTML = age_val;
-
-    document.getElementById("edit_button" + no).style.display = "block";
-    document.getElementById("save_button" + no).style.display = "none";
-}, delete_row:function(no) {
-    document.getElementById("row" + no + "").outerHTML = "";
-},
-
-    add_row: function () {
-        var form = $('#actividad')[0];
-        var data = new FormData(form);
-        const f = {};
-        data.forEach((value, key) => (f[key] = value));
-        console.log(f);
-
-    var table = document.getElementById("actividades");
-    var table_len = (table.rows.length) - 1;
-        var row = table.insertRow(table_len).outerHTML = "<tr'><td>" + f.actividades + "</td><td>" + f.metas + "</td><td>" + f.tipo_AC +
-        "</td><td><input type='button' id='edit_button" + table_len + "' value='Edit' class='edit' onclick='edit_row(" + table_len + ")'> <input type='button' id='save_button" + table_len + "' value='Save' class='save' onclick='save_row(" + table_len + ")'> <input type='button' value='Delete' class='delete' onclick='delete_row(" + table_len + ")'></td></tr>";
-
-    document.getElementById("new_name").value = "";
-    document.getElementById("new_country").value = "";
-    document.getElementById("new_age").value = "";
-}
+    validatEspe: function () {
+        let e = [];
+        for (let i = 1; i <= 12; i++) {           
+            let suma = parseInt($('#' + i).val() != "" ? $('#' + i).val() : 0);
+            e.push(suma)
+        }
+        return Math.max(...e);
+    },
+    validatCont: function () {
+        let e = [];
+        for (let i = 1; i <= 12; i++) { 
+            if($('#' + i).val() != ""){
+                let suma = parseInt($('#' + i).val());
+                e.push(suma);
+            }
+        }
+        if (dao.arrEquals(e)) {
+            return e[0];
+        } else {
+            $('#sumMetas').val("");
+            //$("#btnSave").prop('disabled', true);
+            Swal.fire({
+                icon: 'info',
+                title: 'Tipo de actividad continua',
+                text: 'El valor ingresado de cada mes deben ser iguales',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+    },
+    sumar: function () {
+        let actividad = $("#tipo_Ac option:selected").text();
+        switch (actividad) {
+            case 'Acumulativa':
+                  $('#sumMetas').val(dao.validateAcu());
+                break;
+            case 'Continua':
+                $('#sumMetas').val(dao.validatCont());
+                break;
+            case 'Especial':
+                $('#sumMetas').val(dao.validatEspe());
+                break;
+        
+            default:
+                break;
+        }
+    },
+    valMeses: function () {
+        let e = [];
+        for (let i = 1; i <= 12; i++) { 
+            if($('#' + i).val() != ""){
+                let suma = parseInt($('#' + i).val());
+                e.push(suma);
+            }
+        }
+        if (e>=1) {
+            return true;
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campos vacíos',
+                text: 'Mínimo un mes debe contener una cantidad valida',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+    },
 };
 var init = {
     validateCreate: function (form) {
@@ -269,56 +339,70 @@ var init = {
             }
         });
     },
+    validateFile: function (form) {
+        _gen.validate(form, {
+            rules: {
+                cmFile: { required: true }
+            },
+            messages: {
+                cmFile: { required: "Este campo es requerido" }
+            }
+        });
+    },
 };
 
+var init = {
+    validateCreate: function (form) {
+        _gen.validate(form, {
+            rules: {
+                sel_actividad: { required: true },
+                sel_fondo: { required: true },
+                tipo_Ac: { required: true },
+                beneficiario: { required: true },
+                tipo_Be: { required: true },
+                medida: { required: true }
+            },
+            messages: {
+                sel_actividad: { required: "Este campo es requerido" },
+                sel_fondo: { required: "Este campo es requerido" },
+                tipo_Ac: { required: "Este campo es requerido" },
+                beneficiario: { required: "Este campo es requerido" },
+                tipo_Be: { required: "Este campo es requerido" },
+                medida: { required: "Este campo es requerido" }
+            }
+        });
+    },
+};
 $(document).ready(function () {
     getData();
-    dao.getAnio();
+    dao.getUrs();
+    dao.getSelect();
+    for (let i = 1; i <= 12; i++) {
+        $("#" + i).val(0);
+    }
+    $("#sumMetas").val(0);
+    $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
         keyboard: false
     })
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        if ($('#frm_create').valid()) {
-            dao.crearUsuario();
-        }
-        $('#email-error').text("Este campo es requerido").addClass('has-error');;
-        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');;
-    });
-    $("#email").change(function () {
-        var regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        regex.test($("#email").val());
-        var text = "Ingresa un correo electrónico válido";
-        if (regex.test($("#email").val())) {
-            $('#email-error').text("").removeClass('d-block').removeClass('has-error');
-            $('#email').removeClass('has-error').removeClass('d-block');
-        } else {
-            $('#email-error').text(text).addClass('d-block').addClass('has-error');
-            $('#email').addClass('has-error').addClass('d-block');
+        if ($('#actividad').valid()) {
+            dao.crearMeta();
         }
     });
-    $("#in_celular").change(function () {
-        var regex = /^[a-zA-Z ]+$/;
-        var bol = regex.test($("#in_celular").val());
-        if ($("#in_celular").val() == '') {
-            $('#in_celular-error').text("Este campo es requerido").addClass('d-block').addClass('has-error');
-            $('#in_celular').addClass('d-block').addClass('has-error');
-        }
-        else {
-            if (bol != true) {
-                if ($("#in_celular").val().length != 14) {
-                    $('#in_celular-error').text("El Telefono debe contar con 10 digitos").addClass('d-block').addClass('has-error');
-                    $('#in_celular').addClass('d-block').addClass('has-error');
-                } else {
-                    $('#in_celular-error').text("").removeClass('d-block').removeClass('has-error');
-                    $('#in_celular').removeClass('d-block').removeClass('has-error');
-                }
-            } else {
-                $('#in_celular-error').text("El telefono no puede llevar letras").addClass('d-block').addClass('has-error');
-                $('#in_celular').addClass('d-block').addClass('has-error');
-            }
+    $('#btnSaveM').click(function (e) {
+        e.preventDefault();
+        if ($('#formFile').valid()) {
+            dao.crearMetaImp();
         }
     });
-    $('#in_celular').mask('00-00-00-00-00');
+
+    $('#tipo_Ac').change(() => {
+        for (let i = 1; i <= 12; i++) {
+            $("#" + i).prop('disabled', false);
+        }
+
+    })
 });
