@@ -91,7 +91,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="row " >
+                <div  class="row d-flex justify-content-center" >Atención se borraran los registros no confirmados. Si elige Operativo solo se borraran los operativos y viceversa</div>
+                <div class="row" >
                     <div class="form-group d-flex justify-content-around">
                         
                             <div class="form-check form-check-inline">

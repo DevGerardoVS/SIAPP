@@ -35,6 +35,8 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
     
     public function prepareForValidation($row,$index)
     {
+        
+
         ///validaciones de catalogo
         $valcat= Catalogo::select()
         ->where('grupo_id','6')
@@ -114,20 +116,14 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
 /*         $year = date("y");
         $year+1 == $row['anio'] ? $row['anio'] = date("Y") : NULL;  */
 
-        //verificar que el usuario tenga permiso
-/*         $usuario=auth::user()->id_ente;//si es vacio es administrador
-        $uppUsuario = CatEntes::where('id', auth::user()->id_ente)->first();
-        $autorizado = uppautorizadascpnomina::where($uppUsuario->cve_upp)->count(); */
-        
-        //Validaciones para Obra aqui hay que chambear
+
          //validacion de tipo de usuario pendiente
          $arraypos = str_split($row['idpartida'], 1);
 
          if($row['spr']=='UUU'){
             $row['tipo']='RH';
             $row['obra'] == '000000'? $row['obra']: $row['obra'] =NULL;
-/*         Rule::exists('uppautorizadascpnomina','clv_upp') 
- */
+
              
 
             if($arraypos[0]==1 ){
@@ -226,7 +222,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         }
 
         //validacion de trio upp/ur/sub en vista
-        $valv_eje= V_entidad_ejecutora::select()
+        $valv_eje= v_epp::select()
         ->where('clv_upp',$row['upp'])
         ->where('clv_ur',$row['ur'])
         ->where('clv_subsecretaria',$row['subsecretaria'])

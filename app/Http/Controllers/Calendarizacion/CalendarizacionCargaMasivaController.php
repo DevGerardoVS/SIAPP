@@ -28,86 +28,77 @@ class CalendarizacionCargaMasivaController extends Controller
 {
      //Obtener plantilla para descargar
 	public function getExcel(Request $request)	{
-     $file='plantilla.xlsx';
+      $file='plantilla.xlsx';
 
-    return response()->download(storage_path("templates/{$file}"));
+      return response()->download(storage_path("templates/{$file}"));
 	}
     
      //Obtener datos del excel
      public function loadDataPlantilla(Request $request)	{
         $request->tipo ? $tipoAdm=$request->tipo: $tipoAdm=NULL;
-        // así se checara si tiene permiso
-        
-        Controller::check_upp('Carga masiva');
+        $uppUsuario = auth::user()->clv_upp;
+        $autorizado=0;
+        $EsDelegado=0;
+        $message=[
+            'file'=> 'El archivo debe ser tipo xlsx' 
+          ];
+   
+          $request->validate([
+             'file'=> 'required|mimes:xlsx'
+          ], $message );
 
         ini_set('max_execution_time', 1200);
         //verificar que el usuario tenga permiso
-        $uppUsuario = auth::user()->clv_upp;
-             if($uppUsuario==NULL){
-            $autorizado=1;
-        }else{
-            $autorizado = uppautorizadascpnomina::where($uppUsuario->cve_upp)->count();   
-        }
-
-        if($autorizado>0 ){
-            $message=[
-                'file'=> 'El archivo debe ser tipo xlsx' 
-              ];
-       
-              $request->validate([
-                 'file'=> 'required|mimes:xlsx'
-              ], $message );
-         
-       //verificar si tiene un registro antes 0 es guardado 1 confirmado
+        try {
+            //Validaciones para administrador
+            if($tipoAdm!=NULL ){
+                
+        //verificar si tiene un registro antes 0 es guardado 1 confirmado
         $file=$request->file->storeAs(
             'plantillas', Auth::user()->username.'.xlsx'
-        );
-        $filename='\/app\/plantillas/'.Auth::user()->username.'.xlsx';
-         $arrayupps= array();
-         $arraypresupuesto= array();
-         $errores=0;
-         //wea para identificar usuario
-
-        if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
+            );
+           $filename='\/app\/plantillas/'.Auth::user()->username.'.xlsx';
+           $arrayupps= array();
+           $arraypresupuesto= array();
+           $errores=0;
+           $countO=0;
+           $CountR=0;
+          if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
             $filearray =$xlsx->rows();
             $error=0;
             array_shift($filearray);
+            $ejercicio=date("Y");
             foreach($filearray as $k){
                 //buscar en el array de upps 
                 $var= array_search($k['5'], $arrayupps);
                 
-
-
+               if($k['16']=='UUU'){
+                $CountR++;
+    
+               }
+               else{
+                $CountO++;
+    
+               }
+    
                 //buscar en el array de totales 
                if(array_key_exists($k['5'].$k['16'].$k['24'], $arraypresupuesto) && $k['27']!=''){
-
+    
                 $arraypresupuesto[$k['5'].$k['16'].$k['24']] =  $arraypresupuesto[$k['5'].$k['16'].$k['24']]+$k['27']; 
-
+    
                }else{
                 if($k['27']!='' && $k['5'].$k['24'] !='' ){
                     $arraypresupuesto[$k['5'].$k['16'].$k['24']] = $k['27']; 
                 }
                }
-
+    
                 //Se revisa el valor de var si es 0 significa que existe el key 0 en el array se usa el if para cambiar el valor para evitar que la condicion falle
                 if($var=== 0){
                 $var=true;
                 }
-              $var ==false ? array_push($arrayupps,$k['5']):  NULL ; 
-
+              $var ==false ? array_push($arrayupps,$k['5']) :  NULL ; 
+    
             }
-
-             //validacion para eliminar registros no confirmados 
-            foreach($arrayupps as $u){
-                
-                $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
-
-                if($valupp>0){
-                    $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->forceDelete();
-
-                    }
-            }
-
              //validacion de totales
              foreach($arraypresupuesto as $key=>$value){
               $arraysplit = str_split($key, 3);
@@ -118,29 +109,217 @@ class CalendarizacionCargaMasivaController extends Controller
                else{
                 $tipoFondo='Operativo';
                }
-                 $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo','RH')->where('clv_fondo', $arraysplit[2])->value('presupuesto');
+                 $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio+1)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
                  if($valupp=!$value){
                  $error++;
                 }
-
+    
             }
             if($error>0){
+                
                 return redirect()->back()->withErrors('error','El total presupuestado en las upp no es igual al techo financiero');
+    
+            }
+            switch($tipoAdm){
+                case 1:
+                    if($CountR>0){
+                     return redirect()->back()->withErrors('error','Hay claves de RH en el archivo de cargas masivas');
+                    }
+                     //validacion para eliminar registros no confirmados 
+                    foreach($arrayupps as $u){
+                     $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+                     if($valupp>0){
+                      $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->forceDelete();
+                     }
+                    }
+    
+                    break;
+    
+                case 2:
+                    if($CountO>0){
+                        return redirect()->back()->withErrors('error','Hay claves Operativas en el archivo de cargas masivas');
+                       }
+                    //validacion para eliminar registros no confirmados 
+                    foreach($arrayupps as $key=>$u){
+                     $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+                     if($valupp>0){
+                      $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->forceDelete();
+                     }
+                    }
+    
+                    break;
+                
+                case 3:
+                     //validacion para eliminar registros no confirmados 
+                     foreach($arrayupps as $u){
+                
+                     $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+           
+                      if($valupp>0){
+                       $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->forceDelete();
+                      }
+                    }
+                    break;
+            }
+            
+    
+         }     
+        }
+        //Validaciones para usuarios upps 
+        else{
+
+                $tipousuario=auth::user()->id_grupo;
+
+                $uppsautorizadas = uppautorizadascpnomina::where($uppUsuario->cve_upp)->count();
+                // Checar permiso
+                Controller::check_upp('Carga masiva');
+
+        //verificar si tiene un registro antes 0 es guardado 1 confirmado
+        $file=$request->file->storeAs(
+            'plantillas', Auth::user()->username.'.xlsx'
+            );
+           $filename='\/app\/plantillas/'.Auth::user()->username.'.xlsx';
+           $arrayupps= array();
+           $arraypresupuesto= array();
+           $errores=0;
+           $countO=0;
+           $CountR=0;
+           $ObraCount=0;
+           $DiferenteUpp=0;
+          if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
+            $filearray =$xlsx->rows();
+            $error=0;
+            array_shift($filearray);
+            $ejercicio=date("Y");
+            foreach($filearray as $k){
+                //buscar en el array de upps 
+                $var= array_search($k['5'], $arrayupps);
+                
+               if($k['16']=='UUU'){
+                $CountR++;
+    
+               }
+               else{
+                $CountO++;
+    
+               }
+                if($k['5']!=$uppUsuario){
+                    $DiferenteUpp++;  
+                }
+
+                if($k['5']!='000000'){
+                   $ObraCount++; 
+                }
+                //buscar en el array de totales 
+               if(array_key_exists($k['5'].$k['16'].$k['24'], $arraypresupuesto) && $k['27']!=''){
+    
+                $arraypresupuesto[$k['5'].$k['16'].$k['24']] =  $arraypresupuesto[$k['5'].$k['16'].$k['24']]+$k['27']; 
+    
+               }else{
+                if($k['27']!='' && $k['5'].$k['24'] !='' ){
+                    $arraypresupuesto[$k['5'].$k['16'].$k['24']] = $k['27']; 
+                }
+               }
+    
+                //Se revisa el valor de var si es 0 significa que existe el key 0 en el array se usa el if para cambiar el valor para evitar que la condicion falle
+                if($var=== 0){
+                $var=true;
+                }
+              $var ==false ? array_push($arrayupps,$k['5']) :  NULL ; 
+    
+            }
+             //validacion de totales
+             foreach($arraypresupuesto as $key=>$value){
+              $arraysplit = str_split($key, 3);
+              $tipoFondo='';
+               if($arraysplit[1]=='UUU'){
+                $tipoFondo='RH';
+               }
+               else{
+                $tipoFondo='Operativo';
+               }
+                 $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio+1)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
+                 if($valupp=!$value){
+                 $error++;
+                }
+    
+            }
+            if($error>0){
+                
+                return redirect()->back()->withErrors('error','El total presupuestado en las upp no es igual al techo financiero');
+    
+            }
+            switch($tipousuario){
+                case 4:
+                    if($ObraCount>0){
+                        Controller::check_upp('Registrar obra');
+                        
+                    }
+
+
+                    switch($uppsautorizadas){
+                    case 0: 
+                     //validacion para eliminar registros no confirmados 
+                     foreach($arrayupps as $u){
+                     $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+                      if($valupp>0){
+                       $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->forceDelete();
+                      }
+                    }
+                     break;
+
+                     case 1:
+                        if($CountR>0){
+                            return redirect()->back()->withErrors('error','Hay claves de RH en el archivo de cargas masivas');  
+                           } 
+                           //validacion para eliminar registros no confirmados 
+                           foreach($arrayupps as $u){
+                           $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+                           if($valupp>0){
+                            $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->forceDelete();
+                            }
+                           }
+                        break;
+                    }
+
+    
+                    break;
+    
+                case 5:
+                    if($CountO>0){
+                        return redirect()->back()->withErrors('error','Hay claves Operativas en el archivo de cargas masivas');
+                       }
+                    //validacion para eliminar registros no confirmados 
+                    foreach($arrayupps as $key=>$u){
+                     $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+                     if($valupp>0){
+                      $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->forceDelete();
+                     }
+                    }
+                    break;
+                
 
             }
-        } else {
-            Log::debug(SimpleXLSX::parseError());
-        }    
-          
-    try {
-            (new ClavePresupuestaria)->import($file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+            
+    
+         }  
+            }      
+          } catch (\Throwable $th) {
+            Log::debug($th);
+            return redirect()->back()->withErrors('error','No tiene permisos para hacer carga masiva');
 
+        }
+        //si todo sale bien procedemos al import
+        try {
+            (new ClavePresupuestaria)->import($file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+    
               if(File::exists(storage_path($filename))){
                 File::delete(storage_path($filename));
                 
             }
             return redirect()->back()->withSuccess('Se cargaron correctamente los datos');
-                } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+             } 
+         catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
              $failures = $e->failures();
              if(File::exists(storage_path($filename))){
                 File::delete(storage_path($filename));
@@ -153,26 +332,17 @@ class CalendarizacionCargaMasivaController extends Controller
             } 
        
              return redirect()->back()->withErrors($failures);
-
-
-
+    
+    
+    
             
             } 
-        }else{
-            return redirect()->back()->withErrors('error','No tiene permisos para hacer carga masiva');
 
-        }
         
             
        }
 
-       //pendiente no funciona
-       public function DownloadErrors(Request $request)	{
 
-              $response = Excel::download(new ImportErrorsExport($request->failures), 'Errores.xlsx', \Maatwebsite\Excel\Excel::XLSX);
-             ob_end_clean();
-         
-             return $response;   
-       }
        
+
 }
