@@ -13,8 +13,6 @@ class Metas extends Model
     protected $table = 'metas';
 
     protected $fillable = [
-        'id',
-        'proyecto_mir_id',
         'actividad_id',
         'clv_fondo',
         'estatus',

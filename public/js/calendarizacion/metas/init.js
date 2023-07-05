@@ -111,14 +111,12 @@ var dao = {
             processData: false,
             contentType: false,
             cache: false,
-            timeout: 600000
         }).done(function (response) {
             $('#cerrar').trigger('click');
             Swal.fire({
                 icon: 'success',
                 title: 'Your work has been saved',
                 showConfirmButton: false,
-                timer: 1500
             });
         });
     },
@@ -376,16 +374,14 @@ var init = {
     },
 };
 $(document).ready(function () {
-    getData();    
+    getData();
     dao.getUrs();
     dao.getSelect();
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
     $("#sumMetas").val(0);
-
-   
-   $('input[type=search]').attr('id', 'serchUr');
+    $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
         keyboard: false

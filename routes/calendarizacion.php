@@ -5,34 +5,16 @@
 	use App\Http\Controllers\Calendarizacion\TechosController;
 	use App\Http\Controllers\Calendarizacion\CalendarizacionCargaMasivaController;
 
-	Route::controller(MetasController::class)->group(function () {
-		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
-		Route::get('/calendarizacion/pdf', 'pdfView');
-		Route::post('/calendarizacion/data/', 'getMetasP')->name('metasP');
-		Route::get('/actividades/data', 'getActiv')->name('actividades');
-		Route::get('/actividades/proyecto_calendario', 'proyExcel')->name('ProyExcel');
-		Route::get('/actividades/exportExcel', 'exportExcel')->name('ExportExcel');
-		Route::get('/actividades/exportPdf', 'exportPdf')->name('exportPdf');
-		Route::post('/actividades/import', 'importPlantilla');
-		Route::get('/actividades/jasper', 'downloadActividades')->name('exportjasper');
-        Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
-		Route::get('/nombres/{id?}', 'getNames');
-		Route::get('/calendarizacion/selects', 'getSelects');
-		Route::get('/calendarizacion/urs', 'getUrs');
-		Route::get('/calendarizacion/programas/{ur?}', 'getProgramas');
-		Route::get('/calendarizacion/subprog/{ur?}', 'getSubProg');
-		Route::post('/calendarizacion/create', 'createMeta');
-		Route::post('/calendarizacion/detelet', 'deleteMeta');
-		Route::get('/calendarizacion/update/{id?}','updateMeta');
-		Route::get('/calendarizacion/metasXproyecto', 'getMetasXp')->name('proyectos');
-		
-	});
+	include('metas.php');
 
 	Route::controller(TechosController::class)->group(function () {
         Route::get('/calendarizacion/techos', 'getIndex')->name('index_techos');
-        Route::get('/calendarizacion/techos/get-techos', 'getTechos')->name('getTechos');
+        Route::post('/calendarizacion/techos/get-techos', 'getTechos')->name('getTechos');
         Route::get('/calendarizacion/techos/get-fondos', 'getFondos')->name('getFondos');
         Route::post('/calendarizacion/techos/add-techo', 'addTecho')->name('addTecho');
+        Route::get('/plantillaCargaTechos', 'exportView');
+        Route::get('/exportPlantilla', 'exportPlantilla')->name('exportPlantilla');
+        Route::post('/import-Plantilla', 'importPlantilla')->name('importPlantilla');
     });
 	Route::controller(ClavePreController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');
