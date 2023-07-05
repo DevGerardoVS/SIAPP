@@ -1816,7 +1816,7 @@ return new class extends Migration {
             ) tabla;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists lista_upp(in anio int)
+        DB::unprepared("CREATE PROCEDURE if not exists lista_upp(in tipo int)
             begin
                 if tipo = 0 then
                     select
