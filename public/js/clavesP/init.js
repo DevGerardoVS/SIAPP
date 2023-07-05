@@ -7,7 +7,7 @@ var dao = {
     data:{'ejercicio':ejercicio,'upp':upp, 'ur':ur}
   }).done(function(_data){
     let data = [];
-    let estatus = _data['estatus'].estatus;
+    let estatus = _data['estatus'] != null ? _data['estatus'].estatus : '';
     for (let index = 0; index < _data['claves'].length; index++) {
       const clasificacionAdmin = _data['claves'][index].clasificacion_administrativa;
       const centroGestor = _data['claves'][index].entidad_federativa + _data['claves'][index].region + _data['claves'][index].municipio + _data['claves'][index].localidad + _data['claves'][index].upp + _data['claves'][index].subsecretaria + _data['claves'][index].ur;
@@ -34,7 +34,7 @@ var dao = {
       {"aTargets" : [6], "mData" : "proyectoObra"},
       {"aTargets" : [7], "mData" : "totalByClave"},
       {"aTargets" : [8], "mData" : function(o){
-        if (o.estatus != 'Cerrado') {
+        if (o.estatus != 'Cerrado' && o.estatus != '') {
           if (o.estado == 0) {
             return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
           +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
@@ -472,7 +472,6 @@ var dao = {
       });
     },
   getPresupuesAsignado : function(ejercicio){
-    console.log('ejercicio',ejercicio);
     $.ajax({
       type: 'get',
       url: '/get-presupuesto-asignado/'+ ejercicio,
@@ -483,12 +482,17 @@ var dao = {
       $('#asignadoUpp').val(totalAsignado);
       $('#calendarizado').val(Totcalendarizado);
       $('#disponibleUpp').val(disponible);
-      if (response.estatus.estatus && response.estatus.estatus == 'Abierto') {
-        if (Totcalendarizado == totalAsignado || disponible == 0) {
+      if (response.estatus != null && response.estatus.estatus && response.estatus.estatus == 'Abierto') {
+        if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
           $('#btnNuevaClave').hide(true);
           $('#btn_confirmar').show(true);
         }else{
-          $('#btnNuevaClave').show(true);
+          if (response['presupuestoAsignado'][0].totalAsignado && response['presupuestoAsignado'][0].totalAsignado > 0) {
+            $('#btnNuevaClave').show(true);
+          }else{
+            $('#btnNuevaClave').hide(true);
+          }
+          
         }
       }else{
           $('#btnNuevaClave').hide(true);
@@ -773,7 +777,6 @@ $(document).ready(function(){
     var programa = document.getElementById("sel_programa").value;
     var upp = document.getElementById("sel_upp").value;
     var ejercicio = document.getElementById('anio').value;
-    console.log("🚀 ~ file: init.js:728 ~ $ ~ ejercicio:", ejercicio)
 		dao.getProyectoBySubPrograma(programa,id,'');
     dao.getFondosByUpp(upp, id, ejercicio,'');
 	});

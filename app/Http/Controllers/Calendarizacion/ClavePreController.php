@@ -9,7 +9,6 @@ use Auth;
 use DateTime;
 use DataTables;
 use App\Models\ProgramacionPresupuesto;
-use App\Models\catalogos\CatEntes;
 
 use Illuminate\Validation\ValidationException;
 
@@ -29,7 +28,7 @@ class ClavePreController extends Controller
         return view('calendarizacion.clavePresupuestaria.calendarizacion');
     }
     public function getClaves(Request $request){
-        $uppUsuario = CatEntes::where('id', auth::user()->id_ente)->first();
+        $uppUsuario =  auth::user()->clv_upp;
         $array_where = [];
         $array_whereCierre = [];
         $anio = '';
@@ -248,7 +247,7 @@ class ClavePreController extends Controller
         return response()->json($localidades,200);
     }
     public function getUpp(){
-        $uppUsuario = CatEntes::where('id', auth::user()->id_ente)->first();
+        $uppUsuario = auth::user()->clv_upp;
         $array_where = [];
         if ($uppUsuario && $uppUsuario->cve_upp != 'null') {
             array_push($array_where, ['catalogo.clave', '=', $uppUsuario->cve_upp]);
@@ -427,7 +426,7 @@ class ClavePreController extends Controller
     public function getPresupuestoAsignado($ejercicio = 0){
         $Totcalendarizado = 0;
         $disponible = 0;
-        $uppUsuario = CatEntes::where('id', auth::user()->id_ente)->first();
+        $uppUsuario = auth::user()->clv_upp;
         $array_where = [];
         $array_where2 = [];
         $array_whereCierre = [];
@@ -480,11 +479,10 @@ class ClavePreController extends Controller
             'Totcalendarizado'=>$Totcalendarizado,
             'estatus'=>$estatusCierre
         ];
-
         return response()->json($response,200);
     }
     public function getPanelPresupuestoFondo($ejercicio = 0){
-        $uppUsuario = CatEntes::where('id', auth::user()->id_ente)->first();
+        $uppUsuario = auth::user()->clv_upp;
         $anio = '';
         if ($ejercicio && $ejercicio > 0) {
             $anio = $ejercicio;
@@ -569,7 +567,7 @@ class ClavePreController extends Controller
         return $dataset;
     }
     public function postConfirmarClaves(){
-        $uppUsuario = CatEntes::where('id', auth::user()->id_ente)->first();
+        $uppUsuario = auth::user()->clv_upp;
         $array_where = [];
         if ($uppUsuario && $uppUsuario->cve_upp != 'null') {
             array_push($array_where, ['programacion_presupuesto.upp', '=', $uppUsuario->cve_upp]);
