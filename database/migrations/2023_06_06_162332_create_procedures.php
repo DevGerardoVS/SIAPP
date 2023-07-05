@@ -274,7 +274,7 @@ return new class extends Migration {
                 partida_generica,
                 total,
                 enero,febrero,marzo,abril,mayo,
-                junio,julio,agostom,septiembre,
+                junio,julio,agosto,septiembre,
                 octubre,noviembre,diciembre
             from (
             select 
@@ -1477,8 +1477,8 @@ return new class extends Migration {
             select 
                 clv_upp,
                 upp,
-                clv_fondo_ramo,
-                fondo_ramo,
+                clv_fondo,
+                fondo,
                 clv_capitulo,
                 capitulo,
                 monto_anual,
@@ -1490,33 +1490,45 @@ return new class extends Migration {
                     else ''
                 end estatus
             from (
-                select
+                select 
                     case 
-                        when clv_fondo_ramo != '' then ''
+                        when clv_fondo != '' then ''
                         else clv_upp
                     end clv_upp,
                     case 
-                        when clv_fondo_ramo != '' then ''
+                        when clv_fondo != '' then ''
                         else upp
                     end upp,
-                    clv_fondo_ramo,
-                    fondo_ramo,
-                    clv_capitulo,
+                    case 
+                        when clv_capitulo != '' then ''
+                        else clv_fondo
+                    end clv_fondo,
+                    case 
+                        when clv_capitulo != '' then ''
+                        else fondo
+                    end fondo,
+                    case 
+                        when capitulo = '' then ''
+                        else concat(clv_capitulo,'000')
+                    end clv_capitulo,
                     capitulo,
-                    sum(monto_anual) monto_anual,
+                    case 
+                        when sum(monto_anual) = 0 then sum(calendarizado)
+                        else sum(monto_anual)
+                    end monto_anual,
                     sum(calendarizado) calendarizado,
                     case 
                         when sum(estatus) > 0 then 'Confirmado'
                         else 'Registrado'
                     end estatus
                 from (
-                    select * 
-                        from (
+                    select *
+                    from (
                         select 
-                            pa.clv_upp,
-                            pa.upp,
-                            '' clv_fondo_ramo,
-                            '' fondo_ramo,
+                            clv_upp,
+                            upp,
+                            '' clv_fondo,
+                            '' fondo,
                             '' clv_capitulo,
                             '' capitulo,
                             0 monto_anual,
@@ -1531,10 +1543,10 @@ return new class extends Migration {
                         group by pa.clv_upp,pa.upp
                         union all
                         select 
-                            pa.clv_upp,
-                            pa.upp,
-                            pa.clv_fondo_ramo,
-                            pa.fondo_ramo,
+                            clv_upp,
+                            upp,
+                            clv_fondo_ramo clv_fondo,
+                            fondo_ramo fondo,
                             '' clv_capitulo,
                             '' capitulo,
                             0 monto_anual,
@@ -1546,56 +1558,74 @@ return new class extends Migration {
                             pa.deleted_at is null,
                             pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                         )
-                        group by clv_upp,upp,clv_fondo_ramo,fondo_ramo
-                        order by clv_upp,clv_fondo_ramo
-                    ) pp
-                    union all
-                    select *
-                    from (
-                        select 
-                            c.clave clv_upp,
-                            c.descripcion upp,
-                            '' clv_fondo_ramo,
-                            '' fondo_ramo,
-                            '' clv_capitulo,
-                            '' capitulo,
-                            sum(presupuesto) monto_anual,
-                            0 calendarizado,
-                            0 estatus
-                        from techos_financieros tf 
-                        join catalogo c on tf.clv_upp = c.clave and c.grupo_id = 6
-                        join fondo f on tf.clv_fondo = f.clv_fondo_ramo
-                        where tf.ejercicio = anio and if (
-                            corte is null,
-                            tf.deleted_at is null,
-                            tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by c.clave,c.descripcion
+                        group by pa.clv_upp,pa.upp,pa.clv_fondo_ramo,pa.fondo_ramo
                         union all
                         select 
-                            c.clave clv_upp,
+                            clv_upp,
+                            upp,
+                            clv_fondo_ramo clv_fondo,
+                            fondo_ramo fondo,
+                            clv_capitulo,
+                            capitulo,
+                            0 monto_anual,
+                            sum(total) calendarizado,
+                            0 estatus
+                        from pp_aplanado pa 
+                        where pa.ejercicio = anio and if (
+                            corte is null,
+                            pa.deleted_at is null,
+                            pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                        )
+                        group by pa.clv_upp,pa.upp,pa.clv_fondo_ramo,pa.fondo_ramo,pa.clv_capitulo,pa.capitulo
+                        order by clv_upp,clv_fondo
+                    ) c
+                    union all
+                    select 
+                        *
+                    from (
+                        select 
+                            clv_upp,
                             c.descripcion upp,
-                            f.clv_fondo_ramo,
-                            f.fondo_ramo,
+                            '' clv_fondo,
+                            '' fondo,
                             '' clv_capitulo,
                             '' capitulo,
                             sum(presupuesto) monto_anual,
                             0 calendarizado,
                             0 estatus
                         from techos_financieros tf 
-                        join catalogo c on tf.clv_upp = c.clave and c.grupo_id = 6
+                        join catalogo c on c.clave = tf.clv_upp and c.grupo_id = 6
+                        where tf.ejercicio = anio and if (
+                            corte is null,
+                            tf.deleted_at is null,
+                            tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                        )
+                        group by tf.clv_upp,c.descripcion
+                        union all
+                        select 
+                            clv_upp,
+                            c.descripcion upp,
+                            clv_fondo,
+                            f.fondo_ramo fondo,
+                            '' clv_capitulo,
+                            '' capitulo,
+                            sum(presupuesto) monto_anual,
+                            0 calendarizado,
+                            0 estatus
+                        from techos_financieros tf 
+                        join catalogo c on c.clave = tf.clv_upp and c.grupo_id = 6
                         join fondo f on tf.clv_fondo = f.clv_fondo_ramo
                         where tf.ejercicio = anio and if (
                             corte is null,
                             tf.deleted_at is null,
                             tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                         )
-                        group by c.clave,c.descripcion,clv_fondo_ramo,fondo_ramo
-                        order by clv_upp,clv_fondo_ramo
-                    ) tf
-                ) tabla
-                group by clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo
-            ) tabla2;
+                        group by tf.clv_upp,c.descripcion,tf.clv_fondo,f.fondo_ramo
+                        order by clv_upp,clv_fondo
+                    ) ma
+                ) c2
+                group by c2.clv_upp,c2.upp,c2.clv_fondo,c2.fondo,c2.clv_capitulo,c2.capitulo
+            ) tabla;
         END;");
 
         DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64))
