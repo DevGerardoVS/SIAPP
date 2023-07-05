@@ -58,6 +58,7 @@
 
 	Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
 		Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('getplantilla');
+		Route::post('/calendarizacion/download-errors-excel', 'DownloadErrors')->name('SaveErrors');
 		Route::post('/calendarizacion/load-Data-Plantilla', 'loadDataPlantilla')->name('load_data_plantilla');
 /* 		Route::post('/calendarizacion/load-Data-Plantilla', 'getObra')->name('getObra'); */
 

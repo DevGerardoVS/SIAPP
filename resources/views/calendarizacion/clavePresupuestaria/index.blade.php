@@ -13,10 +13,18 @@
                         <header>
                             <h2>Programación Presupuestal</h2>
                         </header>
+
                         <div>
                             <div class="jarviswidget-editbox">
                             </div>
                             <div class="widget-body-toolbar">
+                                <a href="/calendarizacion/download-errors-excel/{!! $errors !!}" type="button" class="btn colorMorado" id="downloadbtn" name="downloadbtn" style="display:none"></a>
+                                   
+                                   @if(session('success'))
+                                <div class="alert alert-success" role="alert">
+                                        {{ session('success') }}
+                                 </div>                               
+                                     @endif
                                 <div class="row">
                                     <div class="col-md-2">
                                         <label for="asignadoUpp">Asignado:</label>
@@ -42,6 +50,14 @@
                                         
                                     </div>
                                     <div class="col-md-2 text-right">
+                                        @if (Auth::user()->clv_upp==NULL)
+                                        <div class="row">
+                                            <button type="button" class="btn colorMorado"
+                                            name="button_modal_carga_adm" id="button_modal_carga_adm">
+                                            <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
+                                        </div>
+                                        @else
+                                        @if (check_assignFront(1))
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">
@@ -121,6 +137,8 @@
         </section>
     </div>
      @include('calendarizacion.clavePresupuestaria.CargamasivaModal')
+     @include('calendarizacion.clavePresupuestaria.CargamasivaModaladm')
+
     <script src="/js/clavesP/init.js"></script>
     <script src="/js/utilerias.js"></script>
     <script src="/js/clavesP/cargamasiva.js"></script>
@@ -128,8 +146,22 @@
     <script>
         dao.filtroUpp('');
         dao.getData('','','');
-        
-        
-       
+        @if($errors->any())
+        console.log({!! $errors !!});
+        var failures= {!! $errors !!};
+        const fails = [];
+        $.each(failures, function (key, value) {
+        var helper =  value[0].replace('There was an error on row', 'Hay un error en la fila: ');
+        fails.push(helper);
+        });
+
+        Swal.fire({
+                icon: 'error',
+                title: 'Error al importar la carga masiva',
+                text: fails,
+                confirmButtonText: "Aceptar",
+            });
+        @endif
     </script>
 @endsection
+
