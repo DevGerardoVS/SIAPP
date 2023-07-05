@@ -137,7 +137,7 @@ class ReporteController extends Controller
     }
 
     public function downloadReport(Request $request, $nombre){ 
-        ini_set('max_execution_time', 300); // Tiempo máximo de ejecución 
+        ini_set('max_execution_time', 600); // Tiempo máximo de ejecución 
 
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
