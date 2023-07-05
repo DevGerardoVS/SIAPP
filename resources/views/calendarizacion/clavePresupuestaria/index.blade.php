@@ -64,7 +64,8 @@
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
                                             </button>
                                         </div>
-                                        
+                                        @endif
+                                        @endif
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
                                             <button type="button" id='btnNuevaClave' class="btn btn-success form-control" ><i class="fa fa-plus"> &nbsp;Nueva Clave</i></button>

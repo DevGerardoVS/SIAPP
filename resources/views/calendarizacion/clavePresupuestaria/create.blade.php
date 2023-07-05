@@ -2,7 +2,6 @@
 @include('calendarizacion.clavePresupuestaria.modalDetalle')
 @include('panels.datatable')
 @section('content')
-
 <div class="container">
     <section id="widget-grid" class="conteiner">
         <div class="row">
