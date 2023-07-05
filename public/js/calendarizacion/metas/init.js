@@ -116,7 +116,7 @@ var dao = {
             Swal.fire({
                 icon: 'success',
                 title: 'Your work has been saved',
-                showConfirmButton: false,
+                showConfirmButton: true,
             });
         });
     },

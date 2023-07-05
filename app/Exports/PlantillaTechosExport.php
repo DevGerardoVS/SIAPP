@@ -8,14 +8,18 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use DB;
 
-class PlantillaTechosExport implements FromView,WithColumnWidths
+class PlantillaTechosExport implements FromView, WithColumnWidths
 {
     protected $filas;
     public function view(): View
     {
-        $upps = DB::table('v_entidad_ejecutora')->select('clv_upp','upp')->distinct()->get();
-        return view('calendarizacion.techos.plantillaCargaTechos',[
-            "upps" => $upps
+        $ejercicio = DB::table('epp')->max('ejercicio');
+        $upps = DB::table('epp')->select('catalogo.clave')
+            ->join('catalogo', 'catalogo.id', '=', 'epp.upp_id')
+            ->where('epp.ejercicio', $ejercicio)->groupBy('catalogo.clave')->get();
+        return view('calendarizacion.techos.plantillaCargaTechos', [
+            "upps" => $upps,
+            "ejercicio" => $ejercicio,
         ]);
     }
 
@@ -23,10 +27,10 @@ class PlantillaTechosExport implements FromView,WithColumnWidths
     {
         return [
             'A' => 10,
-            'B' => 8,            
-            'C' => 8,            
-            'D' => 20,            
-            'E' => 20   
+            'B' => 8,
+            'C' => 8,
+            'D' => 20,
+            'E' => 20
         ];
     }
 

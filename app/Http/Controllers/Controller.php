@@ -13,6 +13,7 @@ use Auth;
 use DB;
 use Session;
 use Response;
+use Log;
 
 class Controller extends BaseController
 {
@@ -46,21 +47,25 @@ class Controller extends BaseController
     	else
     		abort('401');
     }
-    public static function check_upp($permiso,$bt = true) {
-    	if(Auth::user()->clv_upp != null)
-    		$permiso = true;
-        else
-            $permiso = PermisosUpp::where('id_user', Auth::user()->id)->where('id_permiso',$permiso)->first();
+    public static function check_assign($name,$bt = true) {
+        $permiso = DB::table('permisos_funciones')
+            ->leftJoin('cat_permisos','cat_permisos.id','permisos_funciones.id_permiso')
+            ->select(
+                'id_user',
+                'permisos_funciones.id',
+                'cat_permisos.nombre as permiso')
+            ->where('id_user', Auth::user()->id)
+            ->orWhere('cat_permisos.nombre', $name)->get();
     	if($permiso) {
             if($bt) {
                 $ip = Request::getClientIp();
-                $estructura = PermisosUpp::where('id_user', Auth::user()->id)->where('id_permiso',$permiso)->get();
+                $estructura = $permiso;
                 if(count($estructura) > 0){
                     $estructura = $estructura[0];
                     $fecha_movimiento = \Carbon\Carbon::now()->toDateTimeString();
                     $bitacora = new Bitacora();
                     $bitacora->username = Auth::user()->username;
-                    $bitacora->accion = $estructura->id_permiso;
+                    $bitacora->accion = $estructura->permiso;
                     $bitacora->modulo = 'calendario';
                     $bitacora->ip_origen = $ip;
                     $bitacora->fecha_movimiento = $fecha_movimiento;
@@ -73,5 +78,20 @@ class Controller extends BaseController
         }
     	else
     		abort('401');
+    }
+    public static function check_assignFront($name) {
+        $permiso = DB::table('permisos_funciones')
+            ->leftJoin('cat_permisos','cat_permisos.id','permisos_funciones.id_permiso')
+            ->select(
+                'id_user',
+                'permisos_funciones.id',
+                'cat_permisos.nombre as permiso')
+            ->where('id_user', Auth::user()->id)
+            ->orWhere('cat_permisos.nombre', $name)->get();
+    	if($permiso) {
+    		return true;
+        }
+    	else
+        return false;
     }
 }
