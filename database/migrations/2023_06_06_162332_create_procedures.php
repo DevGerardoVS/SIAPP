@@ -1477,8 +1477,8 @@ return new class extends Migration {
             select 
                 clv_upp,
                 upp,
-                clv_fondo,
-                fondo,
+                clv_fondo clv_fondo_ramo,
+                fondo fondo_ramo,
                 clv_capitulo,
                 capitulo,
                 monto_anual,
