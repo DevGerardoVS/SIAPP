@@ -37,7 +37,7 @@
 	Route::controller(ClavePreController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');
 		Route::get('/calendarizacion-claves-create/{ejercicio?}', 'getCreate');
-		Route::get('/calendarizacion/claves-get/{ejercicio?}', 'getClaves');
+		Route::post('/calendarizacion-claves-get', 'getClaves');
 		Route::get('/cat-regiones', 'getRegiones');
 		Route::get('/cat-municipios/{id?}', 'getMunicipios');
 		Route::get('/cat-localidad/{id?}', 'getLocalidades');		

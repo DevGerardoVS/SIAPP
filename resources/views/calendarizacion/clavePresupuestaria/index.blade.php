@@ -36,6 +36,7 @@
                                         data-target="#modalPresupuesto"data-backdrop="static" data-keyboard="false" id='presupuestoFondo'>
                                             <i class="fa fa-eye">Presupuesto por Fondo</i>
                                         </button>
+                                        <input type="hidden" id="filAnio" name="filAnio">
                                     </div>
                                     <div class="col-md-2 text-right">
                                         
@@ -62,12 +63,21 @@
                             </div>
                             <br>
                             <div class="row">
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <select class="form-control select2" name="filtro_anio" id="filtro_anio">
                                         <option value="">-- Selecciona un Ejercicio --</option>
                                         <option value=2022>2022</option>
                                         <option value=2023>2023</option>
                                         <option value=2024>2024</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-control select2" name="filtro_upp" id="filtro_upp">
+                                        <option value="">-- Selecciona una Unidad Programática --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-control select2" name="filtro_ur" id="filtro_ur">
                                     </select>
                                 </div>
                             </div>
@@ -116,8 +126,8 @@
     <script src="/js/clavesP/cargamasiva.js"></script>
 
     <script>
-        dao.getPresupuesAsignado('');
-        dao.getData('');
+        dao.filtroUpp('');
+        dao.getData('','','');
         
         
        

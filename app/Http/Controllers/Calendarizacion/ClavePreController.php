@@ -7,6 +7,7 @@ use DB;
 use Log;
 use Auth;
 use DateTime;
+use DataTables;
 use App\Models\ProgramacionPresupuesto;
 use App\Models\catalogos\CatEntes;
 
@@ -27,27 +28,35 @@ class ClavePreController extends Controller
     public function getPanelCalendarizacion(){
         return view('calendarizacion.clavePresupuestaria.calendarizacion');
     }
-    public function getClaves( $ejercicio = 0){
+    public function getClaves(Request $request){
         $uppUsuario = CatEntes::where('id', auth::user()->id_ente)->first();
         $array_where = [];
         $array_whereCierre = [];
         $anio = '';
-        if ($ejercicio && $ejercicio > 0) {
-            $anio = $ejercicio;
+        if ($request->ejercicio && $request->ejercicio != '') {
+            $anio = $request->ejercicio;
         }else {
             $anio = date('Y');
         }
-        Log::debug(json_encode($anio));
         if ($uppUsuario && $uppUsuario->cve_upp != 'null') {
             array_push($array_where, ['programacion_presupuesto.upp', '=', $uppUsuario->cve_upp]);
             array_push($array_where, ['programacion_presupuesto.deleted_at', '=', null]);
             array_push($array_where, ['programacion_presupuesto.ejercicio', '=', $anio]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario->cve_upp]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
+            if ($request->ur && $request->ur != '') {
+                array_push($array_where, ['programacion_presupuesto.ur', '=', $request->ur]);
+            }
         }else {
             array_push($array_where, ['programacion_presupuesto.deleted_at', '=', null]);
             array_push($array_where, ['programacion_presupuesto.ejercicio', '=', $anio]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
+            if ($request->upp && $request->upp != '') {
+                array_push($array_where, ['programacion_presupuesto.upp', '=', $request->upp]);
+                if ($request->ur && $request->ur != '') {
+                    array_push($array_where, ['programacion_presupuesto.ur', '=', $request->ur]);
+                }
+            }
         }
         $estatusCierre = DB::table('cierre_ejercicio_claves')
         ->SELECT('ejercicio','estatus')
@@ -69,15 +78,19 @@ class ClavePreController extends Controller
             $join->on('v_entidad_ejecutora.clv_ur','=','programacion_presupuesto.ur');
         })
         ->where($array_where)
-        ->orderBy('v_entidad_ejecutora.clv_ur')
-        ->get();
+        ->orderBy('v_entidad_ejecutora.clv_ur');
+        if ($request->upp && $request->upp != '' || $uppUsuario && $uppUsuario->cve_upp != 'null') {
+           $claves =  $claves->get();
+        }else {
+            $claves =  $claves->limit(1000)->get();
+        }
         $response = [
             'claves'=> $claves,
             'estatus' => $estatusCierre,
         ];
 
         return response()->json($response, 200);
-    }
+    } 
     public function postGuardarClave(Request $request){
         // $ejercicio = date("Y");
         Log::debug(json_encode($request->ejercicio));
@@ -493,26 +506,42 @@ class ClavePreController extends Controller
         }else {
             array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
             array_push($array_where, ['programacion_presupuesto.deleted_at', '=', null]);
+            array_push($array_where, ['techos_financieros.ejercicio', '=', $anio]);
         } 
         $disponible = 0;
         $totalDisponible = 0;
         $totalAsignado = 0;
         $totalCalendarizado = 0;
-        $fondos = DB::table('techos_financieros')
-        ->SELECT('clv_fondo', 'fondo.fondo_ramo' , 'techos_financieros.ejercicio','presupuesto as montoAsignado',DB::raw('SUM(programacion_presupuesto.total) as calendarizado'))
-        ->leftJoin('fondo', 'techos_financieros.clv_fondo', '=' ,'fondo.clv_fondo_ramo')
-        ->leftJoin('programacion_presupuesto', function($join)
-        {
-            $join->on('techos_financieros.clv_upp', '=', 'programacion_presupuesto.upp');
-            $join->on('techos_financieros.clv_fondo', '=', 'programacion_presupuesto.fondo_ramo');
-            $join->on('techos_financieros.ejercicio', '=', 'programacion_presupuesto.ejercicio');
-        })
-        
-        ->DISTINCT()  
-        ->where($array_where)
-        ->groupBy('techos_financieros.clv_fondo')   
-        ->orderBy('techos_financieros.clv_fondo')
-        ->get();
+        $fondos = DB::select("select
+        fondo1,
+        group_concat(descripcion separator '') as descripcion,
+        ejercicio,
+        sum(techos) as montoAsignado,
+        sum(anual) as calendarizado
+    from (
+        select 
+            clv_fondo fondo1,
+            ejercicio,
+            fondo.fondo_ramo descripcion,
+            sum(presupuesto) techos,
+            0 anual
+        from techos_financieros tf
+        LEFT JOIN fondo on tf.clv_fondo = fondo.clv_fondo_ramo
+        WHERE tf.ejercicio = ".$anio." && tf.deleted_at IS NULL
+        group by clv_fondo,descripcion
+        union all
+        select 
+            fondo_ramo fondo1,
+            ejercicio,
+            '' descripcion,
+            0 techos,
+            sum(total) anual
+        from programacion_presupuesto pp 
+        WHERE pp.ejercicio = ".$anio." && PP.deleted_at IS NULL
+        group by fondo_ramo,descripcion
+        order by fondo1
+    ) tabla
+    group by fondo1;");
         foreach ($fondos as $key => $fondo) {
            if ($fondo->montoAsignado != null && $fondo->calendarizado != '') {
                 $disponible = $fondo->montoAsignado - $fondo->calendarizado;
