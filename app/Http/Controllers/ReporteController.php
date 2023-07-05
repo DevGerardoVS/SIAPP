@@ -15,8 +15,9 @@ use function PHPUnit\Framework\isEmpty;
 class ReporteController extends Controller
 {
     public function indexPlaneacion(){
+        $db = $_ENV['DB_DATABASE'];
         $dataSet = array();
-        $names = DB::select('SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="PROCEDURE" AND ROUTINE_SCHEMA="fondos_db" AND ROUTINE_NAME LIKE "%art_20%" AND ROUTINE_NAME NOT LIKE "%a_num_1_%"');
+        $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         return view("reportes.leyHacendaria", [
             'dataSet' => json_encode($dataSet),
@@ -137,8 +138,6 @@ class ReporteController extends Controller
 
     public function downloadReport(Request $request, $nombre){ 
         ini_set('max_execution_time', 300); // Tiempo máximo de ejecución 
-        date_default_timezone_set('America/Mexico_City');
-        setlocale(LC_TIME, 'es_VE.UTF-8','esp');
 
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
@@ -149,13 +148,10 @@ class ReporteController extends Controller
 
         try {
         
-            //Eliminación si ya existe reporte
-            if(File::exists($ruta."/".$report.".pdf")) {
-                File::delete($ruta."/".$report.".pdf");
-            }
             $logo = public_path()."/img/logo.png";
             $report_path = app_path() ."/Reportes/".$report.".jasper";
             $format = array($request->action);
+            // $format = array("xls");
             $output_file =  public_path()."/reportes";
             $file = public_path()."/reportes/".$report;
             $nameFile = "EF_".$anio."_".$report;
@@ -187,6 +183,7 @@ class ReporteController extends Controller
             $database_connection
             )->execute();
 
+            ob_end_clean();
             return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
         } catch (\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());

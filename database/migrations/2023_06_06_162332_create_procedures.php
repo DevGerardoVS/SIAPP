@@ -12,92 +12,385 @@ return new class extends Migration {
      */
     public function up()
     {
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_III(in anio int)
-        BEGIN
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_III(in anio int, in corte date)
+        begin
             select 
-                ct5.clave upp_clave,
-                ct5.descripcion upp,
-                ct6.clave ur_clave,
-                ct6.descripcion ur,
-                ct4.clave programa_presupuestario_clave,
-                ct4.descripcion programa_presupuestario,
-                ct.clave subprograma_presupuestario_clave,
-                ct.descripcion subprograma_presupuestario,
+                va.clv_upp,va.upp,
+                va.clv_ur,va.ur,
+                va.clv_programa,va.programa,
+                va.clv_subprograma,va.subprograma,
                 concat(
-                    ppt.llave,
-                    ct3.clave
-                ) partida_presupuestal_llave,
-                ct2.descripcion partida_presupuestal,
-                sum((enero+febrero+marzo+abril+mayo+junio+
-                julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-            from programacion_presupuesto pp
-            join entidad_ejecutora eet on pp.entidad_ejecutora_id = eet.id
-            join area_funcional aft on pp.area_funcional_id = aft.id
-            join posicion_presupuestaria ppt on pp.posicion_presupuestaria_id = ppt.id
-            join catalogo ct on aft.subprograma_presupuestario_id = ct.id
-            join catalogo ct2 on ppt.partida_especifica_id = ct2.id
-            join catalogo ct3 on pp.tipo_gasto_id = ct3.id
-            join catalogo ct4 on aft.programa_presupuestario_id = ct4.id
-            join catalogo ct5 on eet.upp_id = ct5.id
-            join catalogo ct6 on eet.ur_id = ct6.id
-            where pp.ejercicio = anio and pp.deleted_at is NULL
-            group by ct5.clave,ct5.descripcion,ct6.clave,ct6.descripcion,ct4.clave,
-            ct4.descripcion,ct.clave,ct.descripcion,partida_presupuestal_llave,ct2.descripcion;
+                    va.clv_capitulo,
+                    va.clv_concepto,
+                    va.clv_partida_generica,
+                    va.clv_partida_especifica,
+                    va.clv_tipo_gasto 
+                ) as clv_partida, va.partida_especifica,
+                sum(va.total) importe
+            from pp_aplanado va
+            where va.ejercicio = anio and if  (
+                    corte is null,
+                    va.deleted_at is null,
+                    va.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+            group by 
+                va.clv_upp,va.upp,
+                va.clv_ur,va.ur,
+                va.clv_programa,va.programa,
+                va.clv_subprograma,va.subprograma,
+                va.clv_capitulo,
+                va.clv_concepto,
+                va.clv_partida_generica,
+                va.clv_partida_especifica,
+                va.clv_tipo_gasto,
+                va.partida_especifica;
         END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_a_num_1(in anio int)
-        BEGIN
-            select 
-                ct.descripcion concepto,
-                sum((enero+febrero+marzo+abril+mayo+junio+
-                julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-            from programacion_presupuesto pp
-            join posicion_presupuestaria ppt on pp.posicion_presupuestaria_id = ppt.id
-            join catalogo ct on ppt.concepto_id = ct.id
-            where pp.ejercicio = 23 and pp.deleted_at is NULL
-            group by ct.descripcion;
-        END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_a_num_2(in anio int)
-        BEGIN
-            select 
-        		ct.descripcion,
-        		ct2.descripcion,
-        		sum((enero+febrero+marzo+abril+mayo+junio+
-        		junio+julio+agosto+septiembre+octubre+noviembre+diciembre)) as total
-        	from programacion_presupuesto pp 
-        	join area_funcional aft on pp.area_funcional_id = aft.id 
-        	join catalogo ct on aft.finalidad_id = ct.id 
-        	join catalogo ct2 on aft.funcion_id = ct2.id 
-        	where pp.ejercicio = anio and pp.deleted_at is null 
-        	group by ct.descripcion, ct2.descripcion;
-        END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_10_frac_X_a_num_5(in anio int)
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1(in anio int, in corte date)
         begin
             select 
-                ct.clave capitulo_clave,
-                ct.descripcion capitulo,
-                sum((enero+febrero+marzo+abril+mayo+junio+
-                julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-            from programacion_presupuesto pp
-            join posicion_presupuestaria ppt on pp.posicion_presupuestaria_id = ppt.id 
-            join catalogo ct on ppt.capitulo_id = ct.id
-            where pp.ejercicio = anio and pp.deleted_at is NULL
-            group by ct.clave, ct.descripcion;
+                vppa.upp,
+                sum(total) importe
+            from pp_aplanado vppa
+            where ejercicio = anio and if  (
+                corte is null,
+                deleted_at is null,
+                deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            )
+            group by upp;
         END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_a_num_6(in anio int)
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1_2(in anio int, in corte date)
+        begin
+            select
+                concepto,
+                case 
+                    when importe is null then 0
+                    else importe
+                end importe
+            from (
+                select 
+                    'Poder Ejecutivo' concepto,
+                    sum(pp.total) importe
+                from programacion_presupuesto pp 
+                where pp.clasificacion_administrativa in ('21111','21120')
+                and pp.ejercicio = anio and pp.deleted_at is null and if  (
+                        corte is null,
+                        pp.deleted_at is null,
+                        pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    )
+                union all
+                select 
+                    'Poder Legislativo' concepto,
+                    sum(pp.total) importe
+                from programacion_presupuesto pp 
+                where pp.clasificacion_administrativa in ('21112')
+                and pp.ejercicio = anio and pp.deleted_at is null and if  (
+                        corte is null,
+                        pp.deleted_at is null,
+                        pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    )
+                union all
+                select 
+                    'Poder Judicial' concepto,
+                    sum(pp.total) importe
+                from programacion_presupuesto pp 
+                where pp.clasificacion_administrativa in ('21113')
+                and pp.ejercicio = anio and pp.deleted_at is null and if  (
+                        corte is null,
+                        pp.deleted_at is null,
+                        pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    )
+                union all
+                select 
+                    'Organos Autónomos' concepto,
+                    sum(pp.total) importe
+                from programacion_presupuesto pp 
+                where pp.clasificacion_administrativa in ('21114')
+                and pp.ejercicio = anio and pp.deleted_at is null and if  (
+                        corte is null,
+                        pp.deleted_at is null,
+                        pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    )
+                group by concepto
+            )  tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1_3(in anio int, in corte date)
+        begin
+            select  
+                'Entidades Paraestatales y Fideicomisos No Empresariales y No Financieros' concepto,
+                sum(total) as importe
+            from programacion_presupuesto pp 
+            where pp.clasificacion_administrativa like '21120'
+            and pp.ejercicio = anio and pp.deleted_at is null and if  (
+                corte is null,
+                pp.deleted_at is null,
+                pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            )
+            group by concepto
+            union all 
+            select 
+                'Instituciones Públicas de la Seguridad Social' concepto,
+                0 importe
+            union all
+            select
+                'Entidades Paraestatales Empresariales No Financieras cpn Participaciones Estatal Mayoritaria' concepto,
+                0 importe
+            union all
+            select
+                'Fideicomisos Empresariales No Financieros con Participación Estatal Mayoritaria' concepto,
+                0 importe
+            union all
+            select
+                'Entidades Pararestatales Empresariales Financieras Monetarias con Participación Estatal Mayoritaria' concepto,
+                0 importe
+            union all
+            select
+                'Entidades Pararestatales Empresariales Financieras No Monetarias con Participación Estatal Mayoritaria' concepto,
+                0 importe
+            union all
+            select
+                'Fideicomisos Financieros Públicos con Participación Estatal Mayoritaria' concepto,
+                0 importe;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_2(in anio int, in corte date)
         begin
             select 
-                ct.descripcion concepto,
-                sum((enero+febrero+marzo+abril+mayo+junio+
-                julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-            from programacion_presupuesto pp
-            join catalogo ct on pp.tipo_gasto_id = ct.id
-            where pp.ejercicio = anio and pp.deleted_at is NULL
-            group by ct.clave, ct.descripcion;
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                funcion,
+                importe
+            from (
+                select 
+                    vppa.finalidad,
+                    '' funcion,
+                    sum(total) importe
+                from pp_aplanado vppa
+                where ejercicio = anio and if  (
+                    corte is null,
+                    vppa.deleted_at is null,
+                    vppa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by finalidad
+                union all 
+                select 
+                    vppa.finalidad,
+                    vppa.funcion,
+                    sum(total) importe
+                from pp_aplanado vppa
+                where ejercicio = anio and if  (
+                    corte is null,
+                    vppa.deleted_at is null,
+                    vppa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by vppa.finalidad,vppa.funcion
+                order by finalidad
+            ) tabla;
         END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_b_num_1(in anio int, in corte date)
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_3(in anio int, in corte date)
+        begin
+            select 
+                abuelo,
+                case 
+                    when hijo != '' then ''
+                    else padre
+                end padre,
+                hijo,
+                importe
+            from (
+                select 
+                    'Programas' abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc 
+                join pp_aplanado pa on tc.clave_conac = pa.clv_tipologia_conac
+                where tc.tipo = 0 and ejercicio = anio and if  (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                union all
+                select *
+                from (
+                    select 
+                        '' abuelo,
+                        tc.descripcion padre,
+                        '' hijo,
+                        sum(total) importe
+                    from tipologia_conac tc 
+                    join pp_aplanado pa on tc.clave_conac = pa.clv_tipologia_conac
+                    where tc.tipo = 0 and ejercicio = anio and if  (
+                        corte is null,
+                        pa.deleted_at is null,
+                        pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    )
+                    group by tc.descripcion
+                    union all
+                    select 
+                        '' abuelo,
+                        tc.descripcion padre,
+                        tc.descripcion_conac hijo,
+                        sum(total) importe
+                    from tipologia_conac tc 
+                    join pp_aplanado pa on tc.clave_conac = pa.clv_tipologia_conac
+                    where tc.tipo = 0 and ejercicio = anio and if  (
+                        corte is null,
+                        pa.deleted_at is null,
+                        pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    )
+                    group by tc.descripcion,tc.descripcion_conac
+                    order by padre,hijo
+                ) tabla
+                union all
+                select 
+                    tc.descripcion abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc 
+                join pp_aplanado pa on tc.clave_conac = pa.clv_tipologia_conac
+                where tc.tipo = 1 and ejercicio = anio and if (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by tc.descripcion
+            ) tabla2;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_4(in anio int, in corte date)
+        begin
+            select 
+                case 
+                    when partida_generica != '' then ''
+                    else capitulo
+                end capitulo,
+                partida_generica,
+                total,
+                enero,febrero,marzo,abril,mayo,
+                junio,julio,agostom,septiembre,
+                octubre,noviembre,diciembre
+            from (
+            select 
+                vppa.capitulo,
+                '' partida_generica,
+                sum(total) total,
+                sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
+                sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
+                sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
+            from pp_aplanado vppa
+            where ejercicio = anio and if (
+                corte is null,
+                vppa.deleted_at is null,
+                vppa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            )
+            group by capitulo
+            union all
+            select 
+                vppa.capitulo,
+                vppa.partida_generica,
+                sum(total) total,
+                sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
+                sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
+                sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
+            from pp_aplanado vppa
+            where ejercicio = anio and if  (
+                corte is null,
+                vppa.deleted_at is null,
+                vppa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            )
+            group by capitulo,partida_generica
+            order by capitulo
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_5(in anio int, in corte date)
+        begin
+            select 
+                vppa.capitulo,
+                sum(vppa.total) importe
+            from pp_aplanado vppa
+            where vppa.ejercicio = anio and if (
+                corte is null,
+                vppa.deleted_at is null,
+                vppa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            )
+            group by capitulo;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_6(in anio int, in corte date)
+        begin
+            select 
+                conceptos,
+                sum(importe) importe
+            from (
+                select 
+                    'Gasto Corriente' conceptos,
+                    sum(pp.total) importe
+                from programacion_presupuesto pp 
+                where ((pp.posicion_presupuestaria)*1) not between 45000 and 45999
+                and ((pp.posicion_presupuestaria)*1) not between 40000 and 47999
+                and pp.ejercicio = anio and if (
+                    corte is null,
+                    pp.deleted_at is null,
+                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                union all 
+                select 
+                    'Gasto Capital' conceptos,
+                    sum(pp.total) importe
+                from programacion_presupuesto pp 
+                where ((pp.posicion_presupuestaria)*1) between 50000 and 79999
+                and pp.ejercicio = anio and if (
+                    corte is null,
+                    pp.deleted_at is null,
+                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                union all 
+                select 
+                    'Amortizacion de la Deuda y Disminucion de Pasivos' conceptos,
+                    sum(pp.total) importe
+                from programacion_presupuesto pp 
+                where ((pp.posicion_presupuestaria)*1) between 90000 and 99999
+                and pp.ejercicio = anio and if (
+                    corte is null,
+                    pp.deleted_at is null,
+                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                union all 
+                select 
+                    'Pensiones y Jubilaciones' conceptos,
+                    sum(pp.total) importe
+                from programacion_presupuesto pp 
+                where ((pp.posicion_presupuestaria)*1) between 80000 and 89999
+                and pp.ejercicio = anio and if (
+                    corte is null,
+                    pp.deleted_at is null,
+                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                union all 
+                select 
+                    'Pensiones y Jubilaciones' conceptos,
+                    sum(pp.total) importe
+                from programacion_presupuesto pp 
+                where ((pp.posicion_presupuestaria)*1) between 45000 and 45999
+                and ((pp.posicion_presupuestaria)*1) between 47000 and 47999
+                and pp.ejercicio = anio and if (
+                    corte is null,
+                    pp.deleted_at is null,
+                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+            ) tabla
+            group by conceptos;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_1(in anio int, in corte date)
         begin
             select 
                 case 
@@ -108,645 +401,738 @@ return new class extends Migration {
                 importe
             from (
                 select 
-                    ct2.descripcion etiquetado,
+                    vppa.etiquetado,
                     '' upp,
-                    sum((enero+febrero+marzo+abril+mayo+junio+
-                    julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                from programacion_presupuesto pp
-                join catalogo ct2 on pp.etiquetado_id = ct2.id
-                where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                    sum(total) importe
+                from pp_aplanado vppa
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                group by ct2.descripcion
+                group by etiquetado 
                 union all
                 select 
-                    ct2.descripcion etiquetado,
-                    ct.descripcion upp,
-                    sum((enero+febrero+marzo+abril+mayo+junio+
-                    julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                from programacion_presupuesto pp
-                join entidad_ejecutora eet on pp.entidad_ejecutora_id = eet.id 
-                join catalogo ct on eet.upp_id = ct.id 
-                join catalogo ct2 on pp.etiquetado_id = ct2.id
-                where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                    vppa.etiquetado,
+                    vppa.upp,
+                    sum(total) importe
+                from pp_aplanado vppa
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                group by ct2.descripcion, ct.descripcion
-                order by etiquetado,upp
+                group by vppa.etiquetado,vppa.upp
+                order by etiquetado
             ) tabla;
         END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS art_20_frac_X_b_num_1(in anio int)
-          begin
-              select 
-                  c.descripcion etiquetado,
-                  c2.descripcion upp,
-                  sum((enero+febrero+marzo+abril+mayo+junio+
-                      julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-              from programacion_presupuesto pp 
-              join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-              join catalogo c on pp.etiquetado_id = c.id 
-              join catalogo c2 on ee.upp_id = c2.id 
-              where pp.ejercicio = anio and pp.deleted_at is null
-              group by c.descripcion,c2.descripcion
-              order by c.descripcion;
-          END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS art_20_frac_X_b_num_2(in anio int)
-           begin
-               select 
-                   c.descripcion etiquetado,
-                   c2.descripcion finalidad,
-                   c3.descripcion funcion,
-                   sum((enero+febrero+marzo+abril+mayo+junio+
-                       julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-               from programacion_presupuesto pp 
-               join area_funcional af on pp.area_funcional_id = af.id 
-               join catalogo c on pp.etiquetado_id = c.id 
-               join catalogo c2 on af.finalidad_id = c2.id 
-               join catalogo c3 on af.funcion_id = c3.id 
-               where pp.ejercicio = anio and pp.deleted_at is null
-               group by c.descripcion,c2.descripcion,c3.descripcion
-               order by c.descripcion,c2.descripcion;
-           END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS art_20_frac_X_b_num_4(in anio int)
-           begin
-               select 
-                   c.descripcion etiquetado,
-                   c2.descripcion capitulo,
-                   c3.descripcion concepto,
-                   sum((enero+febrero+marzo+abril+mayo+junio+
-                       julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-               from programacion_presupuesto pp 
-               join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-               join catalogo c on pp.etiquetado_id = c.id 
-               join catalogo c2 on pp2.capitulo_id = c2.id 
-               join catalogo c3 on pp2.concepto_id = c3.id  
-               where pp.ejercicio = anio and pp.deleted_at is null
-               group by c.descripcion,c2.descripcion,c3.descripcion
-               order by c.descripcion,c2.descripcion;
-           END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_b_num_11_1(in anio int)
-           begin
-               select 
-                   c.clave upp_clave,
-                   c.descripcion upp_descripcion,
-                   c2.descripcion subsecretaria_descripcion,
-                   c3.descripcion ur_descripcion,
-                   c4.descripcion fuente_descripcion,
-                   sum((enero+febrero+marzo+abril+mayo+junio+
-                   julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-               from programacion_presupuesto pp
-               join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-               join fondo f on pp.fondo_id = f.id 
-               join catalogo c on ee.upp_id = c.id 
-               join catalogo c2 on ee.subsecretaria_id = c2.id 
-               join catalogo c3 on ee.ur_id = c3.id 
-               join catalogo c4 on f.fuente_financiamiento_id = c4.id 
-               where pp.ejercicio = anio and pp.deleted_at is null
-               group by c.clave,c.descripcion,c2.descripcion,
-               c3.descripcion,c4.descripcion;
-           END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_b_num_11_2(in anio int, in corte date)
-           begin
-               select
-                   case 
-                       when upp != '' then ''
-                       else region
-                   end region,
-                   case 
-                       when upp != '' then ''
-                       else municipio
-                   end municipio,
-                   case 
-                       when upp != '' then ''
-                       else localidad
-                   end localidad,
-                   upp,
-                   importe
-               from (
-                   select
-                       concat(
-                           c.clave,' as ',
-                           c.descripcion
-                       ) region,
-                       concat(
-                           c2.clave,' as ',
-                           c2.descripcion
-                       ) municipio,
-                       concat(
-                           c3.clave,' as ',
-                           c3.descripcion
-                       ) localidad,
-                       '' upp,
-                       sum((enero+febrero+marzo+abril+mayo+junio+
-                       julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                   from programacion_presupuesto pp
-                   join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                   join clasificacion_geografica cg on pp.clasificacion_geografica_id = cg.id 
-                   join catalogo c on cg.region_id = c.id 
-                   join catalogo c2 on cg.municipio_id = c2.id 
-                   join catalogo c3 on cg.localidad_id = c3.id 
-                   where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                   corte is null,
-                   pp.deleted_at is null,
-                   pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-               )
-                   group by c.clave,c.descripcion,c2.clave,c2.descripcion,
-                   c3.clave,c3.descripcion
-                   union all
-                   select
-                       concat(
-                           c.clave,' as ',
-                           c.descripcion
-                       ) region,
-                       concat(
-                           c2.clave,' as ',
-                           c2.descripcion
-                       ) municipio,
-                       concat(
-                           c3.clave,' as ',
-                           c3.descripcion
-                       ) localidad,
-                       concat(
-                       c4.clave,' as ',
-                       c4.descripcion
-                       ) upp,
-                       sum((enero+febrero+marzo+abril+mayo+junio+
-                       julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                   from programacion_presupuesto pp
-                   join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                   join clasificacion_geografica cg on pp.clasificacion_geografica_id = cg.id 
-                   join catalogo c on cg.region_id = c.id 
-                   join catalogo c2 on cg.municipio_id = c2.id 
-                   join catalogo c3 on cg.localidad_id = c3.id 
-                   join catalogo c4 on ee.upp_id = c4.id 
-                   where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                   corte is null,
-                   pp.deleted_at is null,
-                   pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-               )
-                   group by c.clave,c.descripcion,c2.clave,c2.descripcion,
-                   c3.clave,c3.descripcion,c4.clave,c4.descripcion
-                   order by region,municipio,localidad,upp
-               ) tabla;
-           END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_b_num_11_3(in anio int, in corte date)
-            begin
-                select
-                    c.clave eje_clave,
-                    c.descripcion eje,
-                    sum((enero+febrero+marzo+abril+mayo+junio+
-                    julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                from programacion_presupuesto pp
-                join area_funcional af on pp.area_funcional_id = af.id 
-                join catalogo c on af.eje_id = c.id 
-                where pp.ejercicio = anio and pp.deleted_at is null and if  (
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_2(in anio int, in corte date)
+        begin
+            select 
+                case 
+                    when finalidad != '' then ''
+                    else etiquetado
+                end etiquetado,
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                funcion,
+                importe
+            from (
+                select 
+                    etiquetado,
+                    '' finalidad,
+                    '' funcion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                group by c.clave,c.descripcion;
-            END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_b_num_11_4(in anio int, in corte date)
-            begin
-                select
-                    c.clave programa_presupuestario_clave,
-                    c.descripcion programa_presupuestario,
-                    sum((enero+febrero+marzo+abril+mayo+junio+
-                    julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                from programacion_presupuesto pp
-                join area_funcional af on pp.area_funcional_id = af.id 
-                join catalogo c on af.programa_presupuestario_id = c.id 
-                where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                group by etiquetado
+                union all
+                select 
+                    etiquetado,
+                    finalidad,
+                    '' funcion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                group by c.clave,c.descripcion;
-            END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_b_num_11_5(in anio int, in corte date)
-            begin
-                    select
-                    case 
-                        when capitulo != '' then ''
-                        else upp
-                    end upp,
-                    case 
-                        when programa_presupuestario != '' then ''
-                        else capitulo
-                    end capitulo,
-                    programa_presupuestario,
-                    importe
-                from (
-                    select
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) upp,
-                        '' capitulo,
-                        '' programa_presupuestario,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                    join catalogo c on ee.upp_id = c.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                group by etiquetado,finalidad
+                union all
+                select 
+                    etiquetado,
+                    finalidad,
+                    funcion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                    group by c.clave,c.descripcion
-                    union all
-                    select
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) upp,
-                        concat(
-                            c3.clave,'000 ',
-                            c3.descripcion
-                        ) capitulo,
-                        '' programa_presupuestario,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                    join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-                    join catalogo c on ee.upp_id = c.id 
-                    join catalogo c3 on pp2.capitulo_id = c3.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c.clave,c.descripcion,c3.clave,c3.descripcion
-                    union all
-                    select
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) upp,
-                        concat(
-                            c3.clave,'000 ',
-                            c3.descripcion
-                        ) capitulo,
-                        concat(
-                            c2.clave,' as ',
-                            c2.descripcion
-                        ) programa_presupuestario,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id 
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-                    join catalogo c on ee.upp_id = c.id 
-                    join catalogo c2 on af.programa_presupuestario_id = c2.id 
-                    join catalogo c3 on pp2.capitulo_id = c3.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c.clave,c.descripcion,c3.clave,c3.descripcion,c2.clave,c2.descripcion
-                    order by upp,capitulo,programa_presupuestario
-                ) tabla;
-            END;");
+                group by etiquetado,finalidad,funcion
+                order by etiquetado,finalidad,funcion
+            ) tabla;
+        END;");
 
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_b_num_11_6(in anio int, in corte date)
-            begin
-                    select
-                    case 
-                        when funcion != '' then ''
-                        else finalidad
-                    end finalidad,
-                    case 
-                        when subfuncion != '' then ''
-                        else funcion
-                    end funcion,
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_3(in anio int, in corte date)
+        begin
+            select 
+                case 
+                    when finalidad != '' then ''
+                    else etiquetado
+                end etiquetado,
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                funcion,
+                importe
+            from (
+                select 
+                    etiquetado,
+                    '' finalidad,
+                    '' funcion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by etiquetado
+                union all
+                select 
+                    etiquetado,
+                    finalidad,
+                    '' funcion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by etiquetado,finalidad
+                union all
+                select 
+                    etiquetado,
+                    finalidad,
+                    funcion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by etiquetado,finalidad,funcion
+                order by etiquetado,finalidad,funcion
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_4(in anio int, in corte date)
+        begin
+            select 
+                case 
+                    when capitulo != '' then ''
+                    else etiquetado
+                end etiquetado,
+                case 
+                    when concepto != '' then ''
+                    else capitulo
+                end capitulo,
+                concepto,
+                importe
+            from (
+                select 
+                    etiquetado,
+                    '' capitulo,
+                    '' concepto,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by etiquetado
+                union all
+                select 
+                    etiquetado,
+                    capitulo,
+                    '' concepto,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by etiquetado,capitulo
+                union all
+                select 
+                    etiquetado,
+                    capitulo,
+                    concepto,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by etiquetado,capitulo,concepto
+                order by etiquetado,capitulo,concepto
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_10(in anio int, in corte date)
+        begin
+            select 
+                concepto,
+                sum(importe) importe
+            from v_sector_importe vsi
+            where ejercicio = anio and if  (
+                corte is null,
+                deleted_at is null,
+                deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            )
+            group by concepto;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_1(in anio int, in corte date)
+        begin
+            select
+                case 
+                    when subsecretaria != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when ur != '' then ''
+                    else subsecretaria
+                end subsecretaria,
+                case 
+                    when fuente_financiamiento != '' then ''
+                    else ur
+                end ur,
+                fuente_financiamiento,
+                importe
+            from (
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    ''subsecretaria,
+                    '' ur,
+                    '' fuente_financiamiento,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_upp,vppa.upp
+                union all
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    subsecretaria,
+                    '' ur,
+                    '' fuente_financiamiento,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_upp,vppa.upp,subsecretaria
+                union all
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    subsecretaria,
+                    ur,
+                    '' fuente_financiamiento,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_upp,vppa.upp,subsecretaria,ur
+                union all
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    subsecretaria,
+                    ur,
+                    fuente_financiamiento,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_upp,vppa.upp,subsecretaria,ur,fuente_financiamiento
+                order by upp,subsecretaria,ur,fuente_financiamiento
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_2(in anio int, in corte date)
+        begin
+            select
+                case 
+                    when upp != '' then ''
+                    else region 
+                end region,
+                case 
+                    when upp != '' then ''
+                    else municipio
+                end municipio,
+                case 
+                    when upp != '' then ''
+                    else localidad
+                end localidad,
+                clv_upp,
+                upp,
+                importe
+            from (
+                select 
+                    concat (
+                        clv_region,' ',
+                        region
+                    ) as region,
+                    concat (
+                        clv_municipio,' ',
+                        municipio
+                    ) as municipio,
+                    concat(
+                        clv_localidad,' ',
+                        localidad
+                    ) as localidad,
+                    '' clv_upp,
+                    '' upp,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_region,vppa.region,clv_municipio,vppa.municipio,
+                clv_localidad,vppa.localidad
+                union all
+                select 
+                    concat (
+                        clv_region,' ',
+                        region
+                    ) as region,
+                    concat (
+                        clv_municipio,' ',
+                        municipio
+                    ) as municipio,
+                    concat(
+                        clv_localidad,' ',
+                        localidad
+                    ) as localidad,
+                    clv_upp,
+                    upp,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_region,vppa.region,clv_municipio,vppa.municipio,
+                clv_localidad,vppa.localidad,clv_upp,vppa.upp
+                order by region,municipio,localidad,clv_upp
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_3(in anio int,in corte date)
+        begin
+            select 
+                clv_eje,
+                eje,
+                sum(total) importe
+            from pp_aplanado vppa 
+            where ejercicio = anio and if  (
+                corte is null,
+                deleted_at is null,
+                deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            )
+            group by clv_eje,eje;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_4(in anio int, in corte date)
+        begin
+            select 
+            clv_programa,
+            programa,
+            sum(total) importe
+        from pp_aplanado vppa 
+        where ejercicio = anio and if  (
+            corte is null,
+            deleted_at is null,
+            deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+        )
+        group by clv_programa,programa;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_5(in anio int, in corte date)
+        begin
+            select
+                case 
+                    when capitulo != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when programa_presupuestario != '' then ''
+                    else capitulo
+                end capitulo,
+                programa_presupuestario,
+                importe
+            from (
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    '' capitulo,
+                    '' programa_presupuestario,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_upp,vppa.upp
+                union all 
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    concat(
+                        clv_capitulo,'000 ',
+                        capitulo
+                    ) as capitulo,
+                    '' programa_presupuestario,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_upp,vppa.upp,clv_capitulo,vppa.capitulo
+                union all 
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    concat(
+                        clv_capitulo,'000 ',
+                        capitulo
+                    ) as capitulo,
+                    concat(
+                        clv_programa,' ',
+                        programa
+                    ) as programa_presupuestario,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_upp,vppa.upp,clv_capitulo,vppa.capitulo,clv_programa,vppa.programa
+                order by upp,capitulo,programa_presupuestario
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_6(in anio int, in corte date)
+        begin
+            select 
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                case 
+                    when subfuncion != '' then ''
+                    else funcion
+                end funcion,
+                subfuncion,
+                importe
+            from (
+                select 
+                    finalidad,
+                    '' funcion,
+                    '' subfuncion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by vppa.finalidad
+                union all
+                select 
+                    finalidad,
+                    funcion,
+                    '' subfuncion,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by vppa.finalidad,vppa.funcion
+                union all
+                select 
+                    finalidad,
+                    funcion,
                     subfuncion,
-                    importe
-                from (
-                    select
-                        c.descripcion finalidad,
-                        '' funcion,
-                        '' subfuncion,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join catalogo c on af.finalidad_id = c.id  
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                    group by c.descripcion
-                    union all
-                    select
-                        c.descripcion finalidad,
-                        c2.descripcion funcion,
-                        '' subfuncion,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join catalogo c on af.finalidad_id = c.id 
-                    join catalogo c2 on af.funcion_id = c2.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                group by vppa.finalidad,vppa.funcion,vppa.subfuncion
+                order by finalidad,funcion,subfuncion
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_7(in anio int, in corte date)
+        begin
+            select 
+                case 
+                    when ur != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when funcion != '' then ''
+                    else ur
+                end ur,
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                case 
+                    when subfuncion != '' then ''
+                    else funcion
+                end funcion,
+                case 
+                    when partida != '' then ''
+                    else subfuncion
+                end subfuncion,
+                partida,
+                importe
+            from (
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    '' ur,
+                    '' finalidad,
+                    '' funcion,
+                    '' subfuncion,
+                    '' partida,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                    group by c.descripcion,c2.descripcion
-                    union all
-                    select
-                        c.descripcion finalidad,
-                        c2.descripcion funcion,
-                        c3.descripcion subfuncion,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join catalogo c on af.finalidad_id = c.id 
-                    join catalogo c2 on af.funcion_id = c2.id 
-                    join catalogo c3 on af.subfuncion_id = c3.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                group by clv_upp,vppa.upp
+                union all
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    concat(
+                        clv_ur,' ',
+                        ur
+                    ) as ur,
+                    finalidad,
+                    '' funcion,
+                    '' subfuncion,
+                    '' partida,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                    group by c.descripcion,c2.descripcion,c3.descripcion
-                    order by finalidad,funcion,subfuncion
-                ) tabla;
-            END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_b_num_11_7(in anio int, in corte date)
-            begin
-                select
-                    case 
-                        when ur != '' then ''
-                        else upp
-                    end upp,
-                    case 
-                        when funcion != '' then ''
-                        else ur
-                    end ur,
-                    case 
-                        when funcion != '' then ''
-                        else finalidad
-                    end finalidad,
-                    case 
-                        when subfuncion != '' then ''
-                        else funcion
-                    end funcion,
-                    case 
-                        when partida != '' then ''
-                        else subfuncion
-                    end subfuncion,
-                    partida,
-                    importe
-                from (
-                    select
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) upp,
-                        '' ur,
-                        '' finalidad,
-                        '' funcion,
-                        '' subfuncion,
-                        '' partida,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id
-                    join catalogo c on ee.upp_id = c.id  
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                group by clv_upp,vppa.upp,clv_ur,vppa.ur,finalidad
+                union all
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    concat(
+                        clv_ur,' ',
+                        ur
+                    ) as ur,
+                    finalidad,
+                    funcion,
+                    '' subfuncion,
+                    '' partida,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                    group by c.clave,c.descripcion
-                    union all
-                    select
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) upp,
-                        concat(
-                            c2.clave,' as ',
-                            c2.descripcion
-                        ) ur,
-                        c3.descripcion finalidad,
-                        '' funcion,
-                        '' subfuncion,
-                        '' partida,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join catalogo c on ee.upp_id = c.id 
-                    join catalogo c2 on ee.ur_id = c2.id 
-                    join catalogo c3 on af.finalidad_id = c3.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                group by clv_upp,vppa.upp,clv_ur,vppa.ur,finalidad,
+                funcion
+                union all
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    concat(
+                        clv_ur,' ',
+                        ur
+                    ) as ur,
+                    finalidad,
+                    funcion,
+                    subfuncion,
+                    '' partida,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                    group by c.clave,c.descripcion,c2.clave,c2.descripcion,
-                    c3.descripcion
-                    union all
-                    select
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) upp,
-                        concat(
-                            c2.clave,' as ',
-                            c2.descripcion
-                        ) ur,
-                        c3.descripcion finalidad,
-                        c4.descripcion funcion,
-                        '' subfuncion,
-                        '' partida,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join catalogo c on ee.upp_id = c.id 
-                    join catalogo c2 on ee.ur_id = c2.id 
-                    join catalogo c3 on af.finalidad_id = c3.id 
-                    join catalogo c4 on af.funcion_id = c4.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                group by clv_upp,vppa.upp,clv_ur,vppa.ur,finalidad,
+                funcion,subfuncion
+                union all
+                select 
+                    concat(
+                        clv_upp,' ',
+                        upp
+                    ) as upp,
+                    concat(
+                        clv_ur,' ',
+                        ur
+                    ) as ur,
+                    finalidad,
+                    funcion,
+                    subfuncion,
+                    concat(
+                        clv_capitulo,
+                        clv_concepto,
+                        clv_partida_generica,
+                        clv_partida_especifica,' ',
+                        partida_especifica
+                    ) as partida,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                    group by c.clave,c.descripcion,c2.clave,c2.descripcion,
-                    c3.descripcion,c4.descripcion
-                    union all
-                    select
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) upp,
-                        concat(
-                            c2.clave,' as ',
-                            c2.descripcion
-                        ) ur,
-                        c3.descripcion finalidad,
-                        c4.descripcion funcion,
-                        c5.descripcion subfuncion,
-                        '' partida,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join catalogo c on ee.upp_id = c.id 
-                    join catalogo c2 on ee.ur_id = c2.id 
-                    join catalogo c3 on af.finalidad_id = c3.id 
-                    join catalogo c4 on af.funcion_id = c4.id 
-                    join catalogo c5 on af.subfuncion_id = c5.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                group by clv_upp,vppa.upp,clv_ur,vppa.ur,finalidad,
+                funcion,subfuncion,clv_capitulo,clv_concepto,
+                clv_partida_generica,clv_partida_especifica,partida_especifica
+                order by upp,ur,finalidad,funcion,subfuncion,partida
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_8(in anio int, in corte date)
+        begin
+            select 
+                case 
+                    when programa != '' then ''
+                    else clv_upp
+                end clv_upp,
+                case 
+                    when programa != '' then ''
+                    else upp
+                end upp,
+                clv_programa,
+                programa,
+                clv_proyecto_obra,
+                proyecto_obra,
+                importe
+            from (
+                select 
+                    clv_upp,
+                    upp,
+                    '' clv_programa,
+                    '' programa,
+                    '' clv_proyecto_obra,
+                    '' proyecto_obra,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                left join proyectos_obra po on vppa.proyecto_obra = po.clv_proyecto_obra
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    vppa.deleted_at is null,
+                    vppa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                    group by c.clave,c.descripcion,c2.clave,c2.descripcion,
-                    c3.descripcion,c4.descripcion,c5.descripcion
-                    union all
-                    select
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) upp,
-                        concat(
-                            c2.clave,' as ',
-                            c2.descripcion
-                        ) ur,
-                        c3.descripcion finalidad,
-                        c4.descripcion funcion,
-                        c5.descripcion subfuncion,
-                        concat(
-                            pp2.llave,' as ',
-                            c6.descripcion
-                        ) partida,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-                    join catalogo c on ee.upp_id = c.id 
-                    join catalogo c2 on ee.ur_id = c2.id 
-                    join catalogo c3 on af.finalidad_id = c3.id 
-                    join catalogo c4 on af.funcion_id = c4.id 
-                    join catalogo c5 on af.subfuncion_id = c5.id 
-                    join catalogo c6 on pp2.partida_especifica_id = c6.id
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c.clave,c.descripcion,c2.clave,c2.descripcion,
-                    c3.descripcion,c4.descripcion,c5.descripcion,pp2.llave,c6.descripcion
-                    order by upp,ur,finalidad,funcion,subfuncion,partida
-                ) tabla;
-            END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_b_num_11_8(in anio int, in corte date)
-            begin
-                select
-                    case 
-                        when programa != '' then ''
-                        else upp
-                    end upp,
-                    programa_clave,
+                group by clv_upp,vppa.upp
+                union all
+                select 
+                    clv_upp,
+                    upp,
+                    clv_programa,
                     programa,
-                    obra_clave,
-                    obra_accion,
-                    importe
-                from (
-                    select
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) upp,
-                        '' programa_clave,
-                        '' programa,
-                        '' obra_clave,
-                        '' obra_accion,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id
-                    join catalogo c on ee.upp_id = c.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
+                    vppa.clv_proyecto_obra,
+                    vppa.proyecto_obra,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if  (
                     corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    vppa.deleted_at is null,
+                    vppa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 )
-                    group by c.clave,c.descripcion
-                    union all
-                    select
-                        concat(
-                            c.clave,' as ',
-                            c.descripcion
-                        ) upp,
-                        c2.clave programa_clave,
-                        c2.descripcion programa,
-                        c3.clave obra_clave,
-                        c3.descripcion obra_accion,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp
-                    join entidad_ejecutora ee on pp.entidad_ejecutora_id = ee.id
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join catalogo c on ee.upp_id = c.id 
-                    join catalogo c2 on af.programa_presupuestario_id = c2.id 
-                    join catalogo c3 on pp.proyecto_presupuestal_id = c3.id
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c.clave,c.descripcion,c2.clave,c2.descripcion,
-                    c3.clave,c3.descripcion
-                    order by upp,programa,obra_clave
-                ) tabla;
-            END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_fondo_mensual(in anio int, in corte date)
-            begin
-                select
-                    c.descripcion ramo,
-                    c2.descripcion fondo,
-                    sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,
-                    sum(mayo) mayo,sum(junio) junio,sum(julio) julio,sum(agosto) agosto,
-                    sum(septiembre) septiembre,sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
-                from programacion_presupuesto pp
-                join fondo f on pp.fondo_id = f.id 
-                join catalogo c on f.ramo_id = c.id 
-                join catalogo c2 on f.fondo_ramo_id = c2.id 
-                where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                group by c.descripcion,c2.descripcion;
-            END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS calendario_general(in anio int, in corte date, in uppC varchar(3))
-            begin
-            SET CHARACTER SET utf8mb4, NAMES utf8mb4, collation_connection = 'utf8mb4_general_ci';
-            set @upp := uppC collate utf8mb4_unicode_ci;
+                group by clv_upp,vppa.upp,clv_programa,vppa.programa,
+                vppa.clv_proyecto_obra,vppa.proyecto_obra
+                order by upp,programa,proyecto_obra
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists calendario_general(in anio int, in corte date, in uppC varchar(3))
+        begin
+            set @upp := uppC;
             
             select
                 upp,
@@ -808,7 +1194,7 @@ return new class extends Migration {
                         '-',pp.clv_programa,
                         '-',pp.clv_subprograma,
                         '-',pp.clv_proyecto,
-                        '-',pp.periodo_presupuestal,
+                        '-',pp.periodo,
                         '-',pp.clv_capitulo,
                         pp.clv_concepto,
                         pp.clv_partida_generica,
@@ -838,430 +1224,393 @@ return new class extends Migration {
                 )
                 order by upp,orden
             ) tabla;
-            END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS resumen_capitulo_partida(in anio int, in corte date)
-            begin
-                select
-                    concat(
-                        c.clave,'000 ',c.descripcion
-                    ) capitulo,
-                    pp2.llave partida_llave,
-                    c2.descripcion partida,
-                    sum((enero+febrero+marzo+abril+mayo+junio+
-                    julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                from programacion_presupuesto pp
-                join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-                join catalogo c on pp2.capitulo_id = c.id 
-                join catalogo c2 on pp2.partida_especifica_id = c2.id 
-                where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                group by c.clave,c.descripcion,pp2.llave,c2.descripcion;
-            END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_a_num_3(in anio int, in corte date)
-            begin
-                select 
-                    case
-                        when hijo != '' then ''
-                        else padre
-                    end padre,
-                    hijo,
-                    importe
-                from (
-                    select 
-                        case 
-                            when padre is null
-                            then hijo
-                        else padre
-                        end padre,
-                        case 
-                            when padre is null then null
-                            else hijo
-                        end hijo,
-                        importe
-                    from (
-                        select 
-                            cP.descripcion padre,
-                            cH.descripcion hijo,
-                            sum((enero+febrero+marzo+abril+mayo+junio+
-                            julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                        from programacion_presupuesto pp 
-                        join area_funcional af on pp.area_funcional_id = af.id 
-                        join tipologia_conac tc on af.tipologia_conac_id = tc.hijo_id
-                        join catalogo cP on tc.padre_id = cP.id
-                        join catalogo cH on tc.hijo_id = cH.id
-                        where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                        group by cP.descripcion,cH.descripcion
-                        union all
-                        select 
-                            cP.descripcion padre,
-                            ' as ' hijo,
-                            sum((enero+febrero+marzo+abril+mayo+junio+
-                            julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                        from programacion_presupuesto pp
-                        join area_funcional af on pp.area_funcional_id = af.id 
-                        join tipologia_conac tc on af.tipologia_conac_id = tc.hijo_id
-                        join catalogo cP on tc.padre_id = cP.id
-                        where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                        group by cP.descripcion
-                    ) tabla
-                    order by padre, hijo
-                ) Tfinal;
-            END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_art_20_frac_X_b_num_5(in anio int, in corte date)
-            begin
-                select 
-                    case 
-                        when padre != '' then ''
-                        else etiquetado
-                    end etiquetado,
-                    case 
-                        when padre is null then hijo
-                        when hijo != '' then ''
-                        else padre
-                    end padre,
-                    case 
-                        when padre is null then null
-                        else hijo
-                    end hijo,
-                    importe
-                from (
-                    select 
-                        c.descripcion etiquetado,
-                        '' padre,
-                        '' hijo,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp 
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join catalogo c on pp.etiquetado_id = c.id 
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c.descripcion
-                    union all
-                    select 
-                        c.descripcion etiquetado,
-                        cP.descripcion padre,
-                        '' hijo,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp 
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join tipologia_conac tc on af.tipologia_conac_id = tc.hijo_id
-                    join catalogo c on pp.etiquetado_id = c.id 
-                    join catalogo cP on tc.padre_id = cP.id
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c.descripcion,cP.descripcion
-                    union all
-                    select 
-                        c.descripcion etiquetado,
-                        cP.descripcion padre,
-                        cH.descripcion hijo,
-                        sum((enero+febrero+marzo+abril+mayo+junio+
-                        julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                    from programacion_presupuesto pp 
-                    join area_funcional af on pp.area_funcional_id = af.id 
-                    join tipologia_conac tc on af.tipologia_conac_id = tc.hijo_id
-                    join catalogo c on pp.etiquetado_id = c.id 
-                    join catalogo cP on tc.padre_id = cP.id
-                    join catalogo cH on tc.hijo_id = cH.id
-                    where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                    corte is null,
-                    pp.deleted_at is null,
-                    pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                    group by c.descripcion,cP.descripcion,cH.descripcion
-                    order by etiquetado,padre,hijo
-                ) tabla;
-            END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS reporte_resumen_por_capitulo_y_partida(in anio int, in corte date)
-                begin
-                    select
-                        case 
-                            when partida != '' then ''
-                            else capitulo
-                        end capitulo,
-                        partida,
-                        importe
-                    from (
-                        select 
-                            concat(
-                                c.clave,'000 ',
-                                c.descripcion
-                            ) capitulo,
-                            '' partida,
-                            sum((enero+febrero+marzo+abril+mayo+junio+
-                            julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                        from programacion_presupuesto pp 
-                        join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-                        join catalogo c on pp2.capitulo_id = c.id 
-                        where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                        corte is null,
-                        pp.deleted_at is null,
-                        pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                    )
-                        group by c.clave,c.descripcion
-                        union all
-                        select 
-                            concat(
-                                c.clave,'000 ',
-                                c.descripcion
-                            ) capitulo,
-                            concat(
-                                pp2.llave,' as ',
-                                c2.descripcion
-                            ) partida,
-                            sum((enero+febrero+marzo+abril+mayo+junio+
-                            julio+agosto+septiembre+octubre+noviembre+diciembre)) as importe
-                        from programacion_presupuesto pp 
-                        join posicion_presupuestaria pp2 on pp.posicion_presupuestaria_id = pp2.id 
-                        join catalogo c on pp2.capitulo_id = c.id 
-                        join catalogo c2 on pp2.partida_especifica_id = c2.id 
-                        where pp.ejercicio = anio and pp.deleted_at is null and if  (
-                        corte is null,
-                        pp.deleted_at is null,
-                        pp.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                    )
-                        group by c.clave,c.descripcion,pp2.llave,c2.descripcion
-                        order by capitulo,partida
-                    ) tabla;
-                END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS avance_general(in anio int, in corte date)
-                begin
-                        select
-                        case 
-                            when fondo != '' then ''
-                            else upp_clave
-                        end upp_clave,
-                        case 
-                            when fondo != '' then ''
-                            else upp
-                        end upp,
-                        fondo_clave,
-                        fondo,
-                        capitulo_clave,
-                        capitulo,
-                        monto_anual,
-                        calendarizado,
-                        (monto_anual-calendarizado) disponible,
-                        truncate((calendarizado/monto_anual),2) avance
-                    from (
-                        select 
-                            c.clave upp_clave,
-                            c.descripcion upp,
-                            '' fondo_clave,
-                            '' fondo,
-                            '' capitulo_clave,
-                            '' capitulo,
-                            sum(monto_anual) monto_anual,
-                            sum(calendarizado) calendarizado
-                        from v_presupuesto_upp_fondo vpf
-                        join catalogo c on vpf.upp_id = c.id 
-                        where vpf.ejercicio = anio
-                        group by c.clave,c.descripcion
-                        union all
-                        select 
-                            c.clave upp_clave,
-                            c.descripcion upp,
-                            c2.clave fondo_clave,
-                            c2.descripcion fondo,
-                            '' capitulo_clave,
-                            '' capitulo,
-                            monto_anual,
-                            calendarizado
-                        from v_presupuesto_upp_fondo vpf
-                        join catalogo c on vpf.upp_id = c.id 
-                        join catalogo c2 on vpf.fondo_id = c2.id 
-                        where vpf.ejercicio = anio
-                        order by upp_clave,fondo_clave
-                    ) tabla;
-                END;");
-
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS SP_AF_EE(in anio varchar(255), in softdelete int)
-            #Primer valor deben ser los años, ejemplo: SP_AF_EE('2023,2024',1) traera los valores activos del 2023 y 2024
-            #Segundo valor debe ser un entero:
-            #0 = valores en soft-delete 
-            #1 = valores activos
-            #otro = todos
-            #Ejemplo: SP_AF_EE('2022',0) traera los valores inactivos del 2022
-            begin
-                select 
-                    ct1.deleted_at upp_fecha_baja,
-                    ct1.clave upp_clave,
-                    ct1.descripcion upp,
-                    ct2.clave subsecretaria_clave,
-                    ct2.descripcion subsecretaria,
-                    ct3.clave ur_clave,
-                    ct3.descripcion ur,
-                    ct4.clave programa_clave,
-                    ct4.descripcion programa,
-                    ct5.clave subprograma_clave,
-                    ct5.descripcion subprograma,
-                    ct6.clave proyecto_clave,
-                    ct6.descripcion proyecto
-                from area_funcional_entidad_ejecutora afee 
-                join area_funcional aft on afee.area_funcional_id = aft.id 
-                join entidad_ejecutora eet on afee.entidad_ejecutora_id = eet.id 
-                join catalogo ct1 on eet.upp_id = ct1.id 
-                join catalogo ct2 on eet.subsecretaria_id = ct2.id 
-                join catalogo ct3 on eet.ur_id = ct3.id 
-                join catalogo ct4 on aft.programa_presupuestario_id = ct4.id 
-                join catalogo ct5 on aft.subprograma_presupuestario_id = ct5.id 
-                join catalogo ct6 on aft.proyecto_presupuestario_id = ct6.id
-                where find_in_set(ct1.ejercicio, anio) and (case 
-                    when softdelete = 0 then ct1.deleted_at is not null
-                    when softdelete = 1 then ct1.deleted_at is null
-                    else ct1.id >= 1
-                    end);
-            END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS SP_claves_descripciones(
-                in clasAdmin varchar(5),in clasGeo varchar(10),in entiEjec varchar(6),in areaFunc varchar(16),
-                in posPre varchar(5),in tipoGasto varchar(2),in fondoLlave varchar(7),in proyectoObra varchar(6)
-            )
-            begin
-                select 
-                    s.subgrupo,
-                    c.clave,
-                    c.descripcion
-                from catalogo c 
-                join subgrupos s on c.subgrupo_id = s.id
-                where c.id in (
-                    select * from (
-                        select ca.sector_publico_id from clasificacion_administrativa ca where llave like clasAdmin union all
-                        select ca.sector_publico_fnof_id from clasificacion_administrativa ca where llave like clasAdmin union all
-                        select ca.sector_economia_id from clasificacion_administrativa ca where llave like clasAdmin union all
-                        select ca.subsector_economia_id from clasificacion_administrativa ca where llave like clasAdmin union all
-                        select ca.ente_publico_id from clasificacion_administrativa ca where llave like clasAdmin union all
-                        select cg.entidad_federativa_id from clasificacion_geografica cg where llave like clasGeo union all
-                        select cg.region_id from clasificacion_geografica cg where llave like clasGeo union all
-                        select cg.municipio_id from clasificacion_geografica cg where llave like clasGeo union all
-                        select cg.localidad_id from clasificacion_geografica cg where llave like clasGeo union all
-                        select ee.upp_id from entidad_ejecutora ee where llave like entiEjec union all
-                        select ee.subsecretaria_id from entidad_ejecutora ee where llave like entiEjec union all
-                        select ee.ur_id from entidad_ejecutora ee where llave like entiEjec union all
-                        select af.finalidad_id from area_funcional af where llave like areaFunc union all
-                        select af.funcion_id from area_funcional af where llave like areaFunc union all
-                        select af.subfuncion_id from area_funcional af where llave like areaFunc union all
-                        select af.eje_id from area_funcional af where llave like areaFunc union all
-                        select af.linea_accion_id from area_funcional af where llave like areaFunc union all
-                        select af.programa_sectorial_id from area_funcional af where llave like areaFunc union all
-                        select af.tipologia_conac_id from area_funcional af where llave like areaFunc union all
-                        select af.programa_presupuestario_id from area_funcional af where llave like areaFunc union all
-                        select af.subprograma_presupuestario_id from area_funcional af where llave like areaFunc union all
-                        select af.proyecto_presupuestario_id from area_funcional af where llave like areaFunc union all
-                        select pp.capitulo_id from posicion_presupuestaria pp where llave like posPre union all
-                        select pp.concepto_id from posicion_presupuestaria pp where llave like posPre union all
-                        select pp.partida_generica_id from posicion_presupuestaria pp where llave like posPre union all
-                        select pp.partida_especifica_id from posicion_presupuestaria pp where llave like posPre union all
-                        select c.id from catalogo c where c.subgrupo_id = 27 and c.clave = tipoGasto union all
-                        select f.etiquetado_id from fondo f where llave like fondoLlave union all
-                        select f.fuente_financiamiento_id from fondo f where llave like fondoLlave union all
-                        select f.ramo_id from fondo f where llave like fondoLlave union all
-                        select f.fondo_ramo_id from fondo f where llave like fondoLlave union all
-                        select f.capital_id from fondo f where llave like fondoLlave union all
-                        select c.id from catalogo c where subgrupo_id = 33 and clave like proyectoObra
-                    ) as claves
-                );
-            END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS SP_entidad_ejecutora(in softdelete int)
-        begin
-            if softdelete = 3 then
-                select 
-                    c.clave upp_clave,
-                    c.descripcion upp
-                from catalogo c
-                where c.subgrupo_id = 10;
-            else
-                select 
-                    c.clave upp_clave,
-                    c.descripcion upp,
-                    c2.clave subsecretaria_clave,
-                    c2.descripcion subsecretaria,
-                    c3.clave ur_clave,
-                    c3.descripcion ur
-                from entidad_ejecutora ee 
-                join catalogo c on ee.upp_id = c.id 
-                join catalogo c2 on ee.subsecretaria_id = c2.id 
-                join catalogo c3 on ee.ur_id = c3.id 
-                WHERE ( case
-                    when softdelete = 1 then c.deleted_at IS NULL
-                    when softdelete = 0 then c.deleted_at IS NOT NULL 
-                    ELSE ee.id > 0
-                end);
-            end if;
-        END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS clave_presupuestal(in cl varchar(65))
-        begin
-            select 
-                clave,
-                descripcion
-            from (
-                select 
-                    c.subgrupo_id,
-                    c.clave,
-                    c.descripcion
-                from catalogo c 
-                where c.id in
-                (select id from
-                (select @clave:=cl) param,clave_pres1) 
-                union all
-                select 
-                    22.5 subgrupo_id,
-                    mes_afectacion clave,
-                    'Mes de Afectación' descripcion
-                from programacion_presupuesto pp
-                where pp.clave_presupuestal like cl
-                union all
-                select 
-                    27.5 subgrupo_id,
-                    ejercicio clave,
-                    'Año' descripcion
-                from programacion_presupuesto pp
-                where pp.clave_presupuestal like cl
-            ) tabla
-            order by subgrupo_id;
-        END;");
-        DB::unprepared("CREATE PROCEDURE IF NOT EXISTS borrado_logico_presupuestos(in anio int)
-        begin
-            update programacion_presupuesto 
-            set deleted_at = now()
-            where ejercicio = anio and deleted_at is null;
         END;");
         
+        DB::unprepared("CREATE PROCEDURE if not exists calendario_fondo_mensual(in anio int, in corte date)
+        begin
+            select 
+                ramo,
+                fondo_ramo,
+                sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
+                sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
+                sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre,
+                sum(total) importe_total
+            from pp_aplanado vppa 
+            where ejercicio = anio and if  (
+                corte is null,
+                deleted_at is null,
+                deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            )
+            group by ramo,fondo_ramo;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_resumen_por_capitulo_y_partida(in anio int, in corte date)
+        begin
+            select 
+                case 
+                    when partida != '' then ''
+                    else capitulo
+                end capitulo,
+                partida,
+                importe
+            from (
+                select 
+                    concat(
+                        clv_capitulo,'000 ',
+                        capitulo
+                    ) as capitulo,
+                    '' partida,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_capitulo,vppa.capitulo
+                union all
+                select 
+                    concat(
+                        clv_capitulo,'000 ',
+                        capitulo
+                    ) as capitulo,
+                    concat(
+                        clv_capitulo,
+                        clv_concepto,
+                        clv_partida_generica,
+                        clv_partida_especifica,' ',
+                        partida_especifica
+                    ) as partida,
+                    sum(total) importe
+                from pp_aplanado vppa 
+                where ejercicio = anio and if (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_capitulo,vppa.capitulo,clv_concepto,
+                clv_partida_generica,clv_partida_especifica,partida_especifica
+                order by capitulo,partida
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists avance_proyectos_actividades_upp(in anio int, in corte date)
+        begin
+            select 
+            clv_upp,
+            upp,
+            proyectos,
+            actividades,
+            (actividades/proyectos)*100 avance,
+            case 
+                when estatus > 0 then 'Confirmado'
+                else 'Registrado'
+            end estatus
+        from (
+            select 
+                ve.clv_upp,
+                ve.upp,
+                count(proyecto) proyectos,
+                count(distinct proyecto_mir_id) actividades,
+                sum(am.estatus) estatus
+            from v_epp ve
+            left join proyectos_mir pm on 
+                pm.clv_upp = ve.clv_upp and 
+                pm.clv_ur = ve.clv_ur and 
+                pm.clv_programa = ve.clv_programa and 
+                pm.clv_subprograma = ve.clv_subprograma and 
+                pm.clv_proyecto = ve.clv_proyecto
+            left join actividades_mir am on pm.id = am.proyecto_mir_id
+            where pm.ejercicio = anio and if (
+                corte is null,
+                am.deleted_at is null,
+                am.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            )
+            group by clv_upp,upp
+        ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date)
+        begin
+            select 
+                pm.clv_upp,
+                pm.clv_ur,
+                pm.clv_programa,
+                pm.clv_subprograma,
+                pm.clv_proyecto,
+                m.clv_fondo,
+                am.actividad,
+                m.cantidad_beneficiarios,
+                b.beneficiario,
+                um.unidad_medida,
+                case 
+                    when m.tipo = 0 then 'Continua'
+                    when m.tipo = 1 then 'Acumulativa'
+                    when m.tipo = 2 then 'Especial'
+                    else 'No Especificada'
+                end tipo,
+                case 
+                    when m.tipo = 0 then enero
+                    when m.tipo = 1 then total
+                    when m.tipo = 2 then greatest(enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre)
+                end meta_anual,
+                enero,
+                febrero,
+                marzo,
+                abril,
+                mayo,
+                junio,
+                julio,
+                agosto,
+                septiembre,
+                octubre,
+                noviembre,
+                diciembre
+            from metas m
+            join actividades_mir am on m.actividad_id = am.id 
+            join proyectos_mir pm on am.proyecto_mir_id = pm.id
+            join beneficiarios b on m.beneficiario_id = b.id 
+            join unidades_medida um on m.unidad_medida_id = um.id 
+            where pm.ejercicio = anio and 
+                pm.deleted_at is null and if (
+                    upp is null,
+                    pm.clv_upp != '',
+                    pm.clv_upp = upp
+                ) and if (
+                corte is null,
+                am.deleted_at is null,
+                am.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+            );
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_5(in anio int, in corte date)
+        begin
+            select 
+                case 
+                    when abuelo != '' then ''
+                    else etiquetado
+                end etiquetado,
+                case 
+                    when padre != '' then ''
+                    else abuelo
+                end abuelo,
+                case 
+                    when hijo != '' then ''
+                    else padre
+                end padre,
+                hijo,
+                importe
+            from (
+                select 
+                    pa.etiquetado,
+                    1 orden,
+                    0 tipo,
+                    '' abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc 
+                join pp_aplanado pa on tc.clave_conac = pa.clv_tipologia_conac
+                where ejercicio = anio and if  (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by pa.etiquetado
+                union all
+                select 
+                    pa.etiquetado,
+                    2 orden,
+                    tc.tipo,
+                    'Programas' abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc 
+                join pp_aplanado pa on tc.clave_conac = pa.clv_tipologia_conac
+                where tc.tipo = 0 and ejercicio = anio and if  (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by pa.etiquetado,tc.tipo
+                union all
+                select 
+                    pa.etiquetado,
+                    2 orden,
+                    tc.tipo,
+                    'Programas' abuelo,
+                    tc.descripcion padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc 
+                join pp_aplanado pa on tc.clave_conac = pa.clv_tipologia_conac
+                where tc.tipo = 0 and ejercicio = anio and if  (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by pa.etiquetado,tc.tipo,tc.descripcion
+                union all
+                select 
+                    pa.etiquetado,
+                    2 orden,
+                    tc.tipo,
+                    'Programas' abuelo,
+                    tc.descripcion padre,
+                    tc.descripcion_conac hijo,
+                    sum(total) importe
+                from tipologia_conac tc 
+                join pp_aplanado pa on tc.clave_conac = pa.clv_tipologia_conac
+                where ejercicio = anio and if  (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by pa.etiquetado,tc.tipo,tc.descripcion,tc.descripcion_conac
+                order by etiquetado,orden,tipo,padre,hijo
+            ) tabla;
+        END;");
+        
+        DB::unprepared("CREATE PROCEDURE if not exists proyecto_avance_general(in anio int, in corte date)
+        begin
+            select 
+                clv_upp,
+                upp,
+                clv_fondo_ramo,
+                fondo_ramo,
+                clv_capitulo,
+                capitulo,
+                monto_anual,
+                calendarizado,
+                (monto_anual-calendarizado) disponible,
+                (calendarizado/monto_anual)*100 avance,
+                case 
+                    when clv_upp != '' then estatus
+                    else ''
+                end estatus
+            from (
+                select
+                    case 
+                        when clv_fondo_ramo != '' then ''
+                        else clv_upp
+                    end clv_upp,
+                    case 
+                        when clv_fondo_ramo != '' then ''
+                        else upp
+                    end upp,
+                    clv_fondo_ramo,
+                    fondo_ramo,
+                    clv_capitulo,
+                    capitulo,
+                    sum(monto_anual) monto_anual,
+                    sum(calendarizado) calendarizado,
+                    case 
+                        when sum(estatus) > 0 then 'Confirmado'
+                        else 'Registrado'
+                    end estatus
+                from (
+                    select * 
+                        from (
+                        select 
+                            pa.clv_upp,
+                            pa.upp,
+                            '' clv_fondo_ramo,
+                            '' fondo_ramo,
+                            '' clv_capitulo,
+                            '' capitulo,
+                            0 monto_anual,
+                            sum(total) calendarizado,
+                            sum(pa.estado) estatus
+                        from pp_aplanado pa 
+                        where pa.ejercicio = anio and if (
+                            corte is null,
+                            pa.deleted_at is null,
+                            pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                        )
+                        group by pa.clv_upp,pa.upp
+                        union all
+                        select 
+                            pa.clv_upp,
+                            pa.upp,
+                            pa.clv_fondo_ramo,
+                            pa.fondo_ramo,
+                            '' clv_capitulo,
+                            '' capitulo,
+                            0 monto_anual,
+                            sum(total) calendarizado,
+                            0 estatus
+                        from pp_aplanado pa 
+                        where pa.ejercicio = anio and if (
+                            corte is null,
+                            pa.deleted_at is null,
+                            pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                        )
+                        group by clv_upp,upp,clv_fondo_ramo,fondo_ramo
+                        order by clv_upp,clv_fondo_ramo
+                    ) pp
+                    union all
+                    select *
+                    from (
+                        select 
+                            c.clave clv_upp,
+                            c.descripcion upp,
+                            '' clv_fondo_ramo,
+                            '' fondo_ramo,
+                            '' clv_capitulo,
+                            '' capitulo,
+                            sum(presupuesto) monto_anual,
+                            0 calendarizado,
+                            0 estatus
+                        from techos_financieros tf 
+                        join catalogo c on tf.clv_upp = c.clave and c.grupo_id = 6
+                        join fondo f on tf.clv_fondo = f.clv_fondo_ramo
+                        where tf.ejercicio = anio and if (
+                            corte is null,
+                            tf.deleted_at is null,
+                            tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                        )
+                        group by c.clave,c.descripcion
+                        union all
+                        select 
+                            c.clave clv_upp,
+                            c.descripcion upp,
+                            f.clv_fondo_ramo,
+                            f.fondo_ramo,
+                            '' clv_capitulo,
+                            '' capitulo,
+                            sum(presupuesto) monto_anual,
+                            0 calendarizado,
+                            0 estatus
+                        from techos_financieros tf 
+                        join catalogo c on tf.clv_upp = c.clave and c.grupo_id = 6
+                        join fondo f on tf.clv_fondo = f.clv_fondo_ramo
+                        where tf.ejercicio = anio and if (
+                            corte is null,
+                            tf.deleted_at is null,
+                            tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                        )
+                        group by c.clave,c.descripcion,clv_fondo_ramo,fondo_ramo
+                        order by clv_upp,clv_fondo_ramo
+                    ) tf
+                ) tabla
+                group by clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo
+            ) tabla2;
+        END;");
+
         DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64))
         begin
-        SET CHARACTER SET utf8mb4, NAMES utf8mb4, collation_connection = 'utf8mb4_general_ci';
+            
         set @clave := claveT; 
             
         set @epp := concat(substring(@clave,1,5),substring(@clave,16,22)); 
-        
+
         set @clasGeo := ((substring(@clave,6,10))*1); 
-        
+
         set @partida := ((substring(@clave,44,6))*1); 
-        
+
         set @fondo := substring(@clave,52,7); 
-        
+
         set @obra := substring(@clave,59,6); 
             
             select *
@@ -1302,52 +1651,7 @@ return new class extends Migration {
                 select 'Capital/Interes' descripcion,vfl.clv_capital clave,vfl.capital concepto from v_fondo_llaves vfl where vfl.llave like @fondo union all
                 select 'Proyecto de Obra' descripcion,po.clv_proyecto_obra clave,po.proyecto_obra from proyectos_obra po where po.clv_proyecto_obra like @obra
             ) tabla;
-        END;
-        
-        CREATE PROCEDURE if not exists insert_pp_aplanado(in anio int)
-        begin
-            create temporary table if not exists temp_epp_aplanado as
-            select 
-                vppl.id,
-                vel.id v_epp_id
-            from v_programacion_presupuesto_llaves vppl 
-            join v_epp_llaves vel on vppl.epp_llave = vel.llave
-            where vppl.ejercicio = anio and vppl.id not in (
-                select id from pp_identificadores pa
-            );
-        
-            create temporary table if not exists temp_claves_montos_aplanado as
-            select 
-                vppl.id,
-                vcg.id clas_geo_id,
-                vpp.id pos_pre_id,
-                vfl.id fondo_id,
-                po.id obra_id
-            from v_programacion_presupuesto_llaves vppl 
-            join v_clasificacion_geografica vcg on vppl.clas_geo_llave = vcg.clasificacion_geografica_llave
-            join v_posicion_presupuestaria_llaves vpp on vppl.posicion_presupuestaria_llave = vpp.posicion_presupuestaria_llave 
-            join v_fondo_llaves vfl on vppl.fondo_llave = vfl.llave 
-            join proyectos_obra po on vppl.proyecto_obra = po.clv_proyecto_obra
-            where vppl.ejercicio = anio and vppl.id not in (
-                select id from pp_identificadores pa
-            );
-        
-            insert into pp_identificadores
-            select 
-                tea.id,
-                tea.v_epp_id,
-                tma.clas_geo_id,
-                tma.pos_pre_id,
-                tma.fondo_id,
-                tma.obra_id
-            from temp_epp_aplanado tea
-            join temp_claves_montos_aplanado tma on tea.id = tma.id
-            order by id;
-            
-            drop temporary table temp_epp_aplanado;
-            
-            drop temporary table temp_claves_montos_aplanado;
-        END");
+        END;");
 
         DB::unprepared("CREATE PROCEDURE if not exists insert_pp_aplanado(in anio int)
         begin
@@ -1360,7 +1664,7 @@ return new class extends Migration {
             where vppl.ejercicio = anio and vppl.id not in (
                 select id from pp_identificadores pa
             );
-        
+
             create temporary table if not exists temp_claves_montos_aplanado as
             select 
                 vppl.id,
@@ -1376,7 +1680,7 @@ return new class extends Migration {
             where vppl.ejercicio = anio and vppl.id not in (
                 select id from pp_identificadores pa
             );
-        
+
             insert into pp_identificadores
             select 
                 tea.id,
@@ -1392,7 +1696,7 @@ return new class extends Migration {
             drop temporary table temp_epp_aplanado;
             
             drop temporary table temp_claves_montos_aplanado;
-        END");
+        END;");
 
         DB::unprepared("CREATE PROCEDURE if not exists SP_AF_EE(in anio int)
         begin
@@ -1510,7 +1814,34 @@ return new class extends Migration {
                 order by clv_upp,clv_subsecretaria,clv_ur,clv_programa,
                     clv_subprograma,clv_proyecto
             ) tabla;
-        END");
+        END;");
+
+        DB::unprepared("CREATE PROCEDURE if not exists lista_upp(in anio int)
+            begin
+                if tipo = 0 then
+                    select
+                        clave clv_upp,
+                        descripcion upp,
+                        null fecha_baja
+                    from catalogo c 
+                    where grupo_id = 6 and deleted_at is null;
+                elseif tipo = 1  then
+                    select #SOLO INACTIVOS
+                        clave clv_upp,
+                        descripcion upp, 
+                        DATE_FORMAT(deleted_at, '%Y-%m-%d') fecha_baja
+                    from catalogo c 
+                    where grupo_id = 6 and deleted_at is not null;
+                else 
+                    select 
+                        clave clv_upp,
+                        descripcion upp, 
+                        DATE_FORMAT(deleted_at, '%Y-%m-%d') fecha_baja
+                    from catalogo c 
+                    where grupo_id = 6;
+                end if;
+            END;
+        ");
     }
 
     /**
@@ -1520,13 +1851,24 @@ return new class extends Migration {
      */
     public function down()
     {
-        DB::unprepared("DROP PROCEDURE IF EXISTS v_presupuesto_upp_fondo");
-        DB::unprepared("DROP PROCEDURE IF EXISTS v_presupuesto_calendarizado");
-        DB::unprepared("DROP PROCEDURE IF EXISTS borrado_logico_presupuestos");
-        DB::unprepared("DROP PROCEDURE IF EXISTS clave_presupuestal");
-        DB::unprepared("DROP PROCEDURE IF EXISTS SP_entidad_ejecutora");
-        DB::unprepared("DROP PROCEDURE IF EXISTS SP_AF_EE");
-        DB::unprepared("DROP PROCEDURE IF EXISTS SP_claves_descripciones");
+        DB::unprepared("DROP PROCEDURE IF EXISTS avance_proyectos_actividades_upp;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS calendario_fondo_mensual;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS calendario_general;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS conceptos_clave;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS insert_pp_aplanado;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS proyecto_avance_general;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS proyecto_calendario_actividades;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_III;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_1;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_1_2;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_1_3;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_2;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_3;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_4;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_5;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_6;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_1;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_10;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_1;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_2;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_3;");
@@ -1535,22 +1877,12 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_6;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_7;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_8;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS calendario_fondo_mensual;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS calendario_general_upp;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS resumen_capitulo_partida;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_3;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_2;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_3;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_4;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_5;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_resumen_por_capitulo_y_partida;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS avance_general;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_11_1");
-        DB::unprepared("DROP PROCEDURE IF EXISTS art_20_frac_X_b_num_4");
-        DB::unprepared("DROP PROCEDURE IF EXISTS art_20_frac_X_b_num_2");
-        DB::unprepared("DROP PROCEDURE IF EXISTS art_20_frac_X_b_num_1");
-        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_1");
-        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_6");
-        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_10_frac_X_a_num_5");
-        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_2");
-        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_a_num_1");
-        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_III");
+        DB::unprepared("DROP PROCEDURE IF EXISTS SP_AF_EE;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS lista_upp;");
     }
 };

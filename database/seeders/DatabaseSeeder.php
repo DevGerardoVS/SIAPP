@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 2, 'nombre_grupo' => 'Gobdigital', 'estatus' => 0],
             ['id' => 3, 'nombre_grupo' => 'Auditor', 'estatus' => 0],
             ['id' => 4, 'nombre_grupo' => 'Upp', 'estatus' => 0],
+            ['id' => 5, 'nombre_grupo' => 'Delegacion', 'estatus' => 0],
         );
 
     protected $cat_users = array(
@@ -172,6 +173,11 @@ class DatabaseSeeder extends Seeder
         ['id_menu' => 11],
         ['id_menu' => 12],
         ['id_menu' => 13]
+    );
+    protected $menuDel =array(
+        ['id_menu' => 7 ], 
+        ['id_menu' => 8 ], 
+        ['id_menu' => 10 ]
     );
 
         protected $funciones = array(
@@ -322,6 +328,18 @@ class DatabaseSeeder extends Seeder
             foreach ($this->menuAuditor as $m) {
                 MenuGrupo::create([
                     'id_grupo' => 3,
+                    'id_menu' => $m['id_menu']
+                ]);
+
+            }
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+            try {
+                echo "\n    -Carga rel Menu grupo Delegacion";
+            foreach ($this->menuDel as $m) {
+                MenuGrupo::create([
+                    'id_grupo' => 5,
                     'id_menu' => $m['id_menu']
                 ]);
 
