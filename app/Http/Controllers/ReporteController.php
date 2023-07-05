@@ -138,9 +138,6 @@ class ReporteController extends Controller
 
     public function downloadReport(Request $request, $nombre){ 
         ini_set('max_execution_time', 300); // Tiempo máximo de ejecución 
-        // date_default_timezone_set('America/Mexico_City');
-        // setlocale(LC_TIME, 'es_VE.UTF-8','esp');
-        // ob_start();
 
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
@@ -151,10 +148,6 @@ class ReporteController extends Controller
 
         try {
         
-            //Eliminación si ya existe reporte
-            // if(File::exists($ruta."/".$report.".pdf")) {
-            //     File::delete($ruta."/".$report.".pdf");
-            // }
             $logo = public_path()."/img/logo.png";
             $report_path = app_path() ."/Reportes/".$report.".jasper";
             $format = array($request->action);
