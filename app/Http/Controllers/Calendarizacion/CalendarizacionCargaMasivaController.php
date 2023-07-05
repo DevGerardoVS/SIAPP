@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\calendarizacion\clasificacion_geografica;
 use App\Models\TechosFinancieros;
+use App\Models\cierreEjercicio;
 use Carbon\Carbon;
 use App\Exports\ImportErrorsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -109,8 +110,9 @@ class CalendarizacionCargaMasivaController extends Controller
                else{
                 $tipoFondo='Operativo';
                }
-                 $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio+1)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
-                 if($valupp=!$value){
+                 $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio+1)->count();
+                 $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
+                 if($valuepresupuesto=!$value || $VerifyEjercicio<0){
                  $error++;
                 }
     
@@ -172,7 +174,7 @@ class CalendarizacionCargaMasivaController extends Controller
 
                 $uppsautorizadas = uppautorizadascpnomina::where($uppUsuario->cve_upp)->count();
                 // Checar permiso
-                Controller::check_upp('Carga masiva');
+                Controller::check_assignFront('Carga masiva');
 
         //verificar si tiene un registro antes 0 es guardado 1 confirmado
         $file=$request->file->storeAs(
@@ -238,8 +240,9 @@ class CalendarizacionCargaMasivaController extends Controller
                else{
                 $tipoFondo='Operativo';
                }
+                 $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio+1)->count();
                  $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio+1)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
-                 if($valupp=!$value){
+                 if($valuepresupuesto=!$value || $VerifyEjercicio<0){
                  $error++;
                 }
     
@@ -252,7 +255,7 @@ class CalendarizacionCargaMasivaController extends Controller
             switch($tipousuario){
                 case 4:
                     if($ObraCount>0){
-                        Controller::check_upp('Registrar obra');
+                        Controller::check_assignFront('Registrar obra');
                         
                     }
 

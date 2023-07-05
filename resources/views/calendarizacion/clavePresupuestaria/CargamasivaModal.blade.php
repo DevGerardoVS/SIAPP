@@ -77,30 +77,32 @@
                         </div>
                     </div>
                 </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <div class="d-flex justify-content-center">
-                        <button style="width: 20%; border: 1px solid #555;" type="button" class="btn colorMorado"
-                            onclick="document.getElementById('file').click()">Seleccionar archivo</button>
-                        <input type="file" id="file" name="file" style="display:none" accept=" .xlsx ">
-                        <input id="file_label" style="width: 70%" type="text" readonly
-                            value="Sin archivos seleccionados">
+                <div class="row d-flex justify-content-center">Atención se borraran los registros no confirmados</div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="d-flex justify-content-center">
+                                <button style="width: 20%; border: 1px solid #555;" type="button"
+                                    class="btn colorMorado"
+                                    onclick="document.getElementById('file').click()">Seleccionar archivo</button>
+                                <input type="file" id="file" name="file" style="display:none"
+                                    accept=" .xlsx ">
+                                <input id="file_label" style="width: 70%" type="text" readonly
+                                    value="Sin archivos seleccionados">
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="modal-footer-carga">
+                    <button type="button" {{-- onclick="limpiarCampos()" --}} class="btn btn-secondary "
+                        data-bs-dismiss="modal">{{ __('messages.cancelar') }}</button>
+                    <button type="submit" name="aceptar" id="aceptar" class="btn colorMorado">
+                        <i class="fa fa-upload" style="color: #dfdfdf"></i>
+                        {{ __('messages.cargar_archivo') }}</button>
+                </div>
         </div>
-        <div class="modal-footer-carga">
-            <button type="button" {{-- onclick="limpiarCampos()" --}} class="btn btn-secondary "
-                data-bs-dismiss="modal">{{ __('messages.cancelar') }}</button>
-            <button type="submit" name="aceptar" id="aceptar" class="btn colorMorado">
-                <i class="fa fa-upload" style="color: #dfdfdf"></i>
-                {{ __('messages.cargar_archivo') }}</button>
-        </div>
+        </form>
     </div>
-    </form>
-</div>
 </div>
 
 

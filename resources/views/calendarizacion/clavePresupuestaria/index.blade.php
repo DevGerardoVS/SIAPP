@@ -54,11 +54,14 @@
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
                                         </div>
                                         @else
+                                        @if (check_assignFront('Carga masiva'))
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
-                                        </div> 
+                                        </div>    
+                                        @endif
+
                                         @endif
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
