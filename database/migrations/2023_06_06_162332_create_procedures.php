@@ -1815,6 +1815,33 @@ return new class extends Migration {
                     clv_subprograma,clv_proyecto
             ) tabla;
         END;");
+
+        DB::unprepared("CREATE PROCEDURE if not exists lista_upp(in anio int)
+            begin
+                if tipo = 0 then
+                    select
+                        clave clv_upp,
+                        descripcion upp,
+                        null fecha_baja
+                    from catalogo c 
+                    where grupo_id = 6 and deleted_at is null;
+                elseif tipo = 1  then
+                    select #SOLO INACTIVOS
+                        clave clv_upp,
+                        descripcion upp, 
+                        DATE_FORMAT(deleted_at, '%Y-%m-%d') fecha_baja
+                    from catalogo c 
+                    where grupo_id = 6 and deleted_at is not null;
+                else 
+                    select 
+                        clave clv_upp,
+                        descripcion upp, 
+                        DATE_FORMAT(deleted_at, '%Y-%m-%d') fecha_baja
+                    from catalogo c 
+                    where grupo_id = 6;
+                end if;
+            END;
+        ");
     }
 
     /**
@@ -1856,5 +1883,6 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_X_b_num_5;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_resumen_por_capitulo_y_partida;");
         DB::unprepared("DROP PROCEDURE IF EXISTS SP_AF_EE;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS lista_upp;");
     }
 };
