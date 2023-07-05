@@ -182,10 +182,7 @@ class ReporteController extends Controller
             $format,
             $parameters,
             $database_connection
-            )->output();
-
-            dd($jasper);
-            // )->execute();
+            )->execute();
 
             ob_end_clean();
             return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
