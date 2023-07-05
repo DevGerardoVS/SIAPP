@@ -172,9 +172,16 @@ class CalendarizacionCargaMasivaController extends Controller
 
                 $tipousuario=auth::user()->id_grupo;
 
-                $uppsautorizadas = uppautorizadascpnomina::where($uppUsuario->cve_upp)->count();
+                $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$uppUsuario)->count();
                 // Checar permiso
-                Controller::check_assignFront('Carga masiva');
+                if(Controller::check_assignFront(1)){
+                }
+                else{
+                    Log::debug("No tiene permiso para subir carga masiva");
+                    return redirect()->back()->withErrors('error','No tiene permiso para subir carga masiva');
+
+                }
+                
 
         //verificar si tiene un registro antes 0 es guardado 1 confirmado
         $file=$request->file->storeAs(
@@ -208,8 +215,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 if($k['5']!=$uppUsuario){
                     $DiferenteUpp++;  
                 }
-
-                if($k['5']!='000000'){
+                if($k['26']!='000000'){
                    $ObraCount++; 
                 }
                 //buscar en el array de totales 
@@ -248,18 +254,25 @@ class CalendarizacionCargaMasivaController extends Controller
     
             }
             if($error>0){
-                
+                Log::debug($VerifyEjercicio.'///Error en verify');
+                Log::debug($valuepresupuesto.'///Error en verify');
                 return redirect()->back()->withErrors('error','El total presupuestado en las upp no es igual al techo financiero');
     
             }
             switch($tipousuario){
                 case 4:
                     if($ObraCount>0){
-                        Controller::check_assignFront('Registrar obra');
+                        if(Controller::check_assignFront(3)){
                         
+                        }
+                        else{
+                            Log::debug("Se activo el if de obra");
+                            return redirect()->back()->withErrors('error','No tiene permiso para registrar obras');
+        
+                        }
+                        Log::debug("Entro al if obra count pero no se activo el error del check");
+
                     }
-
-
                     switch($uppsautorizadas){
                     case 0: 
                      //validacion para eliminar registros no confirmados 
@@ -273,6 +286,7 @@ class CalendarizacionCargaMasivaController extends Controller
 
                      case 1:
                         if($CountR>0){
+                            Log::debug("Se activo el if de registros en rh para upp autorizada");
                             return redirect()->back()->withErrors('error','Hay claves de RH en el archivo de cargas masivas');  
                            } 
                            //validacion para eliminar registros no confirmados 
@@ -290,6 +304,7 @@ class CalendarizacionCargaMasivaController extends Controller
     
                 case 5:
                     if($CountO>0){
+                        Log::debug("Se activo el if de registros en operativos para en delegacion");
                         return redirect()->back()->withErrors('error','Hay claves Operativas en el archivo de cargas masivas');
                        }
                     //validacion para eliminar registros no confirmados 

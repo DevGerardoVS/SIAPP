@@ -113,8 +113,8 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
  
         //validacion de año 
       
-/*         $year = date("y");
-        $year+1 == $row['anio'] ? $row['anio'] = date("Y") : NULL;  */
+        $year = date("y");
+        $year+1 == $row['ano'] ? $row['ano'] = date("Y") : NULL;  
 
 
          //validacion de tipo de usuario pendiente
@@ -159,8 +159,8 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
                 ->count();
                 if($valpos < 1  ){
                     $row['idpartida']=NULL;
-         }
-        }
+                }
+           }
         
 
         } 
