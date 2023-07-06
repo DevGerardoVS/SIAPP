@@ -208,8 +208,6 @@ class TechosController extends Controller
         log::debug($request);
         
         try{
-            ob_end_clean();
-            ob_start();
             return Excel::download(new TechosExportPDF($request->anio_filter_pdf),'Techos_Financieros.pdf');
         }catch (Throwable $e){
             DB::rollBack();
