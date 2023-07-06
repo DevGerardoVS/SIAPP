@@ -88,7 +88,7 @@
                                         <option value=2024>2024</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" id="divFiltroUpp" style="display: none">
                                     <select class="form-control select2" name="filtro_upp" id="filtro_upp">
                                         <option value="">-- Selecciona una Unidad Programática --</option>
                                     </select>
@@ -145,6 +145,13 @@
     <script src="/js/clavesP/cargamasiva.js"></script>
 
     <script>
+        let upp = "{{$uppUsuario}}";
+        if (upp && upp != '') {
+            document.getElementById('filtro_upp').value = upp;
+            dao.filtroUr(upp);
+        }else{
+            $('#divFiltroUpp').show();
+        }
         dao.filtroUpp('');
         dao.getData('','','');
         @if($errors->any())

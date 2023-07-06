@@ -154,6 +154,15 @@
                                         <input type="hidden" id="tipo" name="tipo">    
                                         <input type="hidden" id="anio" name="anio" value={{$ejercicio}}>                      
                                     <div style="clear:both"></div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                                <div class="row" id="obras" style="display: none;">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Proyecto Obra*</label></div>
+                                        <div class="col-md-8">
+                                            <select class="form-control select2" name="sel_obra" id="sel_obra" data-live-search="true" style="width: 600px;">
+                                            </select>
+                                        </div>
                                 </div>
                             </form>
                             <div class="row">
@@ -276,7 +285,6 @@
     <script src="/js/clavesP/cargamasiva.js"></script>
 
     <script>
-        //dao.getData();
         dao.getRegiones("");
         dao.getUpp("");
     </script>

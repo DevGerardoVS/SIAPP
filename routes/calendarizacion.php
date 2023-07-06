@@ -29,8 +29,8 @@
 		Route::get('/cat-subprograma-presupuesto/{ur?}/{id?}/{upp?}', 'getSubProgramas');
 		Route::get('/cat-proyecyo/{programa?}/{id?}', 'getProyectos');
 		Route::get('/cat-linea-accion/{uppId?}/{id?}', 'getLineaAccion');
-		Route::get('/get-presupuesto-asignado/{ejercicio?}', 'getPresupuestoAsignado');
-		Route::get('/calendarizacion-claves-presupuesto-fondo/{ejercicio?}', 'getPanelPresupuestoFondo');
+		Route::get('/get-presupuesto-asignado/{ejercicio?}/{upp?}', 'getPresupuestoAsignado');
+		Route::get('/calendarizacion-claves-presupuesto-fondo/{ejercicio?}/{clvUpp?}', 'getPanelPresupuestoFondo');
 		Route::post('/calendarizacion-eliminar-clave', 'postEliminarClave');
 		Route::post('/calendarizacion-guardar-clave', 'postGuardarClave');
 		Route::get('/calendarizacion/get-calendarizacion-panel', 'getPanelCalendarizacion');
@@ -45,6 +45,8 @@
 		Route::post('/calendarizacion-editar-clave', 'postEditarClave');
 		Route::post('/calendarizacion-confirmar-claves', 'postConfirmarClaves');
 		Route::get('/calendarizacion-get-sector/{clave?}', 'getSector');
+		Route::get('/cat-obras/{val?}', 'getObras');
+		
 		
 
 		

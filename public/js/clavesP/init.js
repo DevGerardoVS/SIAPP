@@ -49,12 +49,12 @@ var dao = {
     ];
     _gen.setTableScrollGroupBy(_table, _columns, data);
    
-    dao.getPresupuesAsignado(ejercicioActual);
+    dao.getPresupuesAsignado(ejercicioActual,upp);
     $("#filtro_anio option[value="+ ejercicioActual +"]").attr("selected",true);
     
     
   });
-},
+  },
   postCreate: function () {
     let clasificacionAdministrativa = document.getElementById('clasificacion').innerHTML;
     let entidadFederativa = document.getElementById('entidadFederativa').innerHTML;
@@ -226,7 +226,7 @@ var dao = {
             
           });
         });
-    },
+  },
 	getMunicipiosByRegion : function(id,idSelected){
         $.ajax({
           	type : "get",
@@ -244,7 +244,7 @@ var dao = {
             }
           });
         });
-    },
+  },
 	getLocalidadByMunicipio : function(id, idSelected){
         $.ajax({
           	type : "get",
@@ -262,7 +262,7 @@ var dao = {
             }
           });
         });
-    },
+  },
 	getUpp : function(id){
         $.ajax({
           	type : "get",
@@ -280,7 +280,7 @@ var dao = {
             }
           });
         });
-    },
+  },
 	getUninadResponsableByUpp : function(id,idSelected){
         $.ajax({
           	type : "get",
@@ -300,7 +300,7 @@ var dao = {
             
           });
         });
-    },
+  },
   getSubSecretaria :function (upp,ur) {
     $.ajax({
       type: 'get',
@@ -327,7 +327,7 @@ var dao = {
             
           });
         });
-    },
+  },
 	getSubProgramaByProgramaId : function(ur,id, upp,idSelected){
         $.ajax({
           	type : "get",
@@ -346,7 +346,7 @@ var dao = {
             
           });
         });
-    },
+  },
 	getProyectoBySubPrograma : function(programa,id, idSelected){
         $.ajax({
           	type : "get",
@@ -365,7 +365,7 @@ var dao = {
             
           });
         });
-    },
+  },
 	getLineaDeAccionByUpp : function(uppId,id,idSelected){
         $.ajax({
           	type : "get",
@@ -385,21 +385,20 @@ var dao = {
              }
           });
         });
-    },
-    getAreaFuncional: function (uppId,id) {
-      $.ajax({
-        type:'get',
-        url: '/cat-area-funcional/'+uppId +'/'+id,
-      }).done(function (data) {
-        document.getElementById('finalidad').innerHTML = data.clv_finalidad;
-        document.getElementById('funcion').innerHTML = data.clv_funcion;
-        document.getElementById('subfuncion').innerHTML = data.clv_subfuncion;
-        document.getElementById('eje').innerHTML = data.clv_eje;
-        document.getElementById('programaSectorial').innerHTML = data.clv_programa_sectorial;
-        document.getElementById('conac').innerHTML = data.clv_tipologia_conac;
-      });
-    },
-
+  },
+  getAreaFuncional: function (uppId,id) {
+    $.ajax({
+      type:'get',
+      url: '/cat-area-funcional/'+uppId +'/'+id,
+    }).done(function (data) {
+      document.getElementById('finalidad').innerHTML = data.clv_finalidad;
+      document.getElementById('funcion').innerHTML = data.clv_funcion;
+      document.getElementById('subfuncion').innerHTML = data.clv_subfuncion;
+      document.getElementById('eje').innerHTML = data.clv_eje;
+      document.getElementById('programaSectorial').innerHTML = data.clv_programa_sectorial;
+      document.getElementById('conac').innerHTML = data.clv_tipologia_conac;
+    });
+  },
 	getPartidaByUpp : function(id){
         $.ajax({
           	type : "get",
@@ -422,59 +421,59 @@ var dao = {
              }
           });
         });
-    },
-    getFondosByUpp: function (id,subP, ejercicio,idSelected) {
-      $.ajax({
-        type:'get',
-        url:'/cat-fondos/'+ id + '/'+ subP +'/'+ejercicio,
-      }).done(function (data) {
-        var par = $('#sel_fondo');
-          par.html('');
-          par.append(new Option("-- Selecciona un Fondo --", ""));
-          $.each(data, function(i, val){
-            let fondo = val.ejercicio + val.clv_etiquetado + val.clv_fuente_financiamiento + val.clv_ramo + val.clv_fondo + val.clv_capital;
-            if (idSelected != '' && fondo == idSelected) {
-              par.append(new Option(data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,true,true));
-              let ejercicio = data[i].ejercicio;
-              let anioText = ejercicio.toString();
-              let anio = anioText.substring(2,4);
-              document.getElementById('anioFondo').innerHTML = anio;
-              document.getElementById('etiquetado').innerHTML = data[i].clv_etiquetado;
-              document.getElementById('fuenteFinanciamiento').innerHTML = data[i].clv_fuente_financiamiento;
-              document.getElementById('ramo').innerHTML = data[i].clv_ramo;
-              document.getElementById('fondoRamo').innerHTML = data[i].clv_fondo;
-              document.getElementById('capital').innerHTML = data[i].clv_capital;
-              document.getElementById('lbl_fondo').innerText ='Fondo: '+ data[i].clv_fondo + '-' + data[i].fondo_ramo;
-             }else{
-              par.append(new Option(data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,false,false));
-             }
-          });
-      });
-    },
-    getClasificacionAdmin:function (upp,ur) {
-      $.ajax({
-        type:'get',
-        url: '/cat-clasificacion-administrativa/'+ upp + '/' + ur,
-      }).done(function (data) {
-        let clasificacion = data.clv_sector_publico + data.clv_sector_publico_f + data.clv_sector_economia + data.clv_subsector_economia + data.clv_ente_publico;
-        document.getElementById('clasificacion').innerHTML = clasificacion;
-      });
-    },
-    getPresupuestoPorUpp: function (upp,fondo,subPrograma,ejercicio) {
-      $.ajax({
-        type:'get',
-        url:'/presupuesto-upp-asignado/'+ upp +'/' + fondo + '/' + subPrograma + '/' + ejercicio,
-      }).done(function (data) {
-        let presupuesto = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.presupuesto);
-        document.getElementById('preFondo').value = presupuesto;
-        let disponible = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.disponible);
-        document.getElementById('preDisFondo').value = disponible;
-      });
-    },
-  getPresupuesAsignado : function(ejercicio){
+  },
+  getFondosByUpp: function (id,subP, ejercicio,idSelected) {
+    $.ajax({
+      type:'get',
+      url:'/cat-fondos/'+ id + '/'+ subP +'/'+ejercicio,
+    }).done(function (data) {
+      var par = $('#sel_fondo');
+        par.html('');
+        par.append(new Option("-- Selecciona un Fondo --", ""));
+        $.each(data, function(i, val){
+          let fondo = val.ejercicio + val.clv_etiquetado + val.clv_fuente_financiamiento + val.clv_ramo + val.clv_fondo + val.clv_capital;
+          if (idSelected != '' && fondo == idSelected) {
+            par.append(new Option(data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,true,true));
+            let ejercicio = data[i].ejercicio;
+            let anioText = ejercicio.toString();
+            let anio = anioText.substring(2,4);
+            document.getElementById('anioFondo').innerHTML = anio;
+            document.getElementById('etiquetado').innerHTML = data[i].clv_etiquetado;
+            document.getElementById('fuenteFinanciamiento').innerHTML = data[i].clv_fuente_financiamiento;
+            document.getElementById('ramo').innerHTML = data[i].clv_ramo;
+            document.getElementById('fondoRamo').innerHTML = data[i].clv_fondo;
+            document.getElementById('capital').innerHTML = data[i].clv_capital;
+            document.getElementById('lbl_fondo').innerText ='Fondo: '+ data[i].clv_fondo + '-' + data[i].fondo_ramo;
+            }else{
+            par.append(new Option(data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,false,false));
+            }
+        });
+    });
+  },
+  getClasificacionAdmin:function (upp,ur) {
+    $.ajax({
+      type:'get',
+      url: '/cat-clasificacion-administrativa/'+ upp + '/' + ur,
+    }).done(function (data) {
+      let clasificacion = data.clv_sector_publico + data.clv_sector_publico_f + data.clv_sector_economia + data.clv_subsector_economia + data.clv_ente_publico;
+      document.getElementById('clasificacion').innerHTML = clasificacion;
+    });
+  },
+  getPresupuestoPorUpp: function (upp,fondo,subPrograma,ejercicio) {
+    $.ajax({
+      type:'get',
+      url:'/presupuesto-upp-asignado/'+ upp +'/' + fondo + '/' + subPrograma + '/' + ejercicio,
+    }).done(function (data) {
+      let presupuesto = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.presupuesto);
+      document.getElementById('preFondo').value = presupuesto;
+      let disponible = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.disponible);
+      document.getElementById('preDisFondo').value = disponible;
+    });
+  },
+  getPresupuesAsignado : function(ejercicio, upp){
     $.ajax({
       type: 'get',
-      url: '/get-presupuesto-asignado/'+ ejercicio,
+      url: '/get-presupuesto-asignado/'+ ejercicio+'/'+upp,
     }).done(function(response){
       let totalAsignado = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response['presupuestoAsignado'][0].totalAsignado);
       let Totcalendarizado = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(response.Totcalendarizado);
@@ -575,10 +574,10 @@ var dao = {
       $('detalle').show(true);
     });
   },
-  getDetallePresupuestoByFondo : function (ejercicio) {
+  getDetallePresupuestoByFondo : function (ejercicio,clvUpp) {
     $.ajax({
       type : 'get',
-      url: '/calendarizacion-claves-presupuesto-fondo/'+ejercicio,
+      url: '/calendarizacion-claves-presupuesto-fondo/'+ejercicio+'/'+clvUpp,
       dataType : "JSON"
     }).done(function (response) {
       document.getElementById('titleModalpresupuesto').innerText = response[0].upp['clave'] + ' - ' +response[0].upp['descripcion']; 
@@ -650,24 +649,49 @@ var dao = {
         }
       });
     });
-},
-filtroUr : function(id){
-  $.ajax({
-    type : "get",
-    url: '/cat-unidad-responsable/'+ id,
-}).done(function(data){
-  var par = $('#filtro_ur');
-  par.html('');
-  par.append(new Option("-- Selecciona una Unidad Responsable --", ""));
-  $.each(data, function(i, val){
-    if (id != '' && val.clv_ur == id) {
-      par.append(new Option( data[i].ur, data[i].clv_ur,true,true));
-     }else{
-      par.append(new Option( data[i].ur, data[i].clv_ur,false,false));
-     }
+  },
+  filtroUr : function(id){
+    $.ajax({
+      type : "get",
+      url: '/cat-unidad-responsable/'+ id,
+  }).done(function(data){
+    var par = $('#filtro_ur');
+    par.html('');
+    par.append(new Option("-- Selecciona una Unidad Responsable --", ""));
+    $.each(data, function(i, val){
+      if (id != '' && val.clv_ur == id) {
+        par.append(new Option( data[i].ur, data[i].clv_ur,true,true));
+      }else{
+        par.append(new Option( data[i].ur, data[i].clv_ur,false,false));
+      }
+    });
   });
-});
-},
+  },
+  getObras: function(val, idSelected = ''){
+    $.ajax({
+      type: "get",
+      url: '/cat-obras/'+ val,
+    }).done(function (data) {
+      if (data.permisoObra == 200) {
+        $('#obras').show('');
+        var par = $('#sel_obra');
+        par.html('');
+        par.append(new Option("-- Selecciona un Proyecto - Obra --", ""));
+        $.each(data.obras, function(i, val){
+          if (idSelected != '' && val.clv_proyecto_obra == idSelected) {
+            par.append(new Option(data.obras[i].proyecto_obra , data.obras[i].clv_proyecto_obra,true,true));
+            document.getElementById('proyectoObra').innerHTML = data.obras[i].proyecto_obra ;
+           }else{
+            par.append(new Option(data.obras[i].proyecto_obra , data.obras[i].clv_proyecto_obra,false,false));
+           }
+        });
+        
+      }else{
+        $('#obras').hide(true);
+        document.getElementById('proyectoObra').innerHTML = '000000' ;
+      }
+    });
+  },
 
 };
 var init = {
@@ -725,7 +749,9 @@ function calucalarCalendario() {
 
 $(document).ready(function(){
   $("#segundaParte").hide();
-  $('.select2').select2();
+  $('.select2').select2({
+    theme: "classic"
+  });
 	$('#sel_region').change(function(e){
 		e.preventDefault();
 		let id = this.value;
@@ -748,6 +774,7 @@ $(document).ready(function(){
     document.getElementById('upp').innerHTML = val;
 		dao.getUninadResponsableByUpp(val,'');
     dao.getPartidaByUpp('');
+    dao.getObras(val);
 	});
 	$('#sel_unidad_res').change(function(e){
 		e.preventDefault();
@@ -832,6 +859,11 @@ $(document).ready(function(){
     var fondoText = $('#sel_fondo').find(":selected").text();
     document.getElementById('lbl_fondo').innerText = 'Fondo: '+ fondoRemo+ '-' + fondoText;
   });
+  $('#sel_obra').change(function (e) {
+    e.preventDefault();
+    let clave = this.value;
+    document.getElementById('proyectoObra').innerHTML = clave;
+  });
   $('#btnSaveClave').click(function (params) {
     params.preventDefault();
     init.validateClave($('#frm_create_clave'));
@@ -910,7 +942,8 @@ $(document).ready(function(){
   });
   $('#presupuestoFondo').click(function () {
     let ejercicio = document.getElementById('filtro_anio').value;
-    dao.getDetallePresupuestoByFondo(ejercicio);
+    let clvUpp = document.getElementById('filtro_upp').value;
+    dao.getDetallePresupuestoByFondo(ejercicio,clvUpp);
   });
   $('#btn_confirmar').click(function () {
       dao.confirmarClaves();
