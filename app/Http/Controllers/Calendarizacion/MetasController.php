@@ -57,7 +57,7 @@ class MetasController extends Controller
 				$key->total,
 				$key->cantidad_beneficiarios,
 				$key->beneficiario_id,
-				$key->unidad_medidad_id,
+				$key->unidad_medida_id,
 				$accion
 			);
 			$dataSet[] = $i;
@@ -104,7 +104,8 @@ class MetasController extends Controller
 	}
 	public function getMetasP(Request $request)
 	{
-		$upp = auth::user()->cve_upp;
+		$dataSet = [];
+		$upp = auth::user()->clv_upp;
 		if ($request->ur_filter != null) {
 			$activs = DB::table("programacion_presupuesto")
 				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
@@ -115,23 +116,19 @@ class MetasController extends Controller
 					'v_epp.proyecto as proyecto'
 				)
 				->where('programacion_presupuesto.ur', '=', $request->ur_filter)
-				->where('programacion_presupuesto.upp', '=', $upp)
 				->groupByRaw('programa_presupuestario');
-				if($activs!=NULL){
+			if ($upp != null) {
 				$activs = $activs->where('programacion_presupuesto.upp', '=', $upp);
-				}
-				$activs=$activs->get();
-			$dataSet = [];
+			}
+			$activs = $activs->get();
+			log::debug("UPP:".$upp."- UR:".$request->ur_filter);
+
 			foreach ($activs as $key) {
 				$accion = '<div class="form-check"><input class="form-check-input" type="radio" name="proyecto" id="proyecto" value="' . $key->id . '" checked><label class="form-check-label" for="exampleRadios1"></label></div>';
 				$dataSet[] = [$key->programa, $key->subprograma, $key->proyecto, $accion];
 			}
-			return response()->json(["dataSet" => $dataSet], 200);
-		} else {
-			return response()->json(["dataSet" => []], 200);
 		}
-
-
+		return response()->json(["dataSet" => $dataSet], 200);
 	}
 	public function getMetas()
 	{
@@ -244,14 +241,12 @@ class MetasController extends Controller
 	public function getUrs()
 	{
 		$upp = auth::user()->clv_upp;
-		//$ur = DB::select('');
 		$urs = DB::table('v_epp')
 			->select(
 				'id',
 				'clv_ur',
 				'ur'
 			)->distinct()
-
 			->groupByRaw('clv_ur');
 			if($upp!=NULL){
 			$urs = $urs->where('clv_upp', $upp);
@@ -319,13 +314,12 @@ class MetasController extends Controller
 	public function createMeta(Request $request)
 	{
 		$meta = Metas::create([
-			'proyecto_mir_id ' => intval($request->pMir_id),
 			'actividad_id' => $request->sel_actividad,
 			'clv_fondo' => $request->sel_fondo,
 			'estatus' => 0,
 			'tipo' => $request->tipo_Ac,
 			'beneficiario_id' => $request->tipo_Be,
-			'unidad_medidad_id' => intval($request->medida),
+			'unidad_medida_id' => intval($request->medida),
 			'cantidad_beneficiarios' => $request->beneficiario,
 			'total' => $request->sumMetas,
 			'enero' => $request[1] != NULL ? $request[1] : 0,
@@ -350,7 +344,7 @@ class MetasController extends Controller
 			->leftJoin('actividades_mir', 'actividades_mir.id', '=', 'metas.actividad_id')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
-			->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medidad_id')
+			->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 			->select(
 				'metas.id',
 				'actividades_mir.actividad',
@@ -450,7 +444,7 @@ class MetasController extends Controller
 			"corte"=>$date->format('Y-m-d'),
 			"logoLeft"=> public_path().'img\escudo.png',
 			"logoRight"=>public_path().'img\escudo.png',
-			"UPP"=>$upp->cve_upp,
+			"UPP"=>$upp->clv_upp,
             );
 		log::debug($request);
 		return $this->jasper($request);
@@ -494,7 +488,7 @@ class MetasController extends Controller
     }
 	public function importPlantilla(Request $request)
 	{
-		Controller::check_upp('Carga masiva');
+		
 		DB::beginTransaction();
 		try {
 			ini_set('max_execution_time', 1200);

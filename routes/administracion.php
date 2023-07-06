@@ -7,6 +7,7 @@
 	use App\Http\Controllers\ReporteController;
 	use App\Http\Controllers\AdmonCapturaController;
 	use App\Http\Controllers\Administracion\InicioController;
+	use App\Http\Controllers\Administracion\ConfiguracionesController;
 
 	Route::controller(SistemasController::class)->group(function () {
 		Route::get('/sistemas/panel', 'getPanel');
@@ -35,6 +36,13 @@
 	Route::controller(InicioController::class)->group(function (){
 		Route::post('adm-inicio/a', 'GetInicioA')->name('inicio_a');
 		Route::post('adm-inicio/b', 'GetInicioB')->name('inicio_b');
+	});
+
+	Route::controller(ConfiguracionesController::class)->group(function (){
+		Route::get('/adm-configuracion', 'getIndex')->name('index_configuraciones');
+		Route::post('/amd-configuracion/data', 'GetConfiguraciones')->name('configuraciones');
+		Route::post('/amd-configuracion/upps', 'GetUpps')->name('getUpps');
+		Route::post('/amd-configuracion/update', 'updateUpps')->name('updateUpps');
 	});
 
 	Route::controller(GrupoController::class)->group(function () {

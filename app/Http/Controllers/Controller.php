@@ -47,7 +47,7 @@ class Controller extends BaseController
     	else
     		abort('401');
     }
-    public static function check_upp($name,$bt = true) {
+    public static function check_assign($name,$bt = true) {
         $permiso = DB::table('permisos_funciones')
             ->leftJoin('cat_permisos','cat_permisos.id','permisos_funciones.id_permiso')
             ->select(
@@ -78,5 +78,19 @@ class Controller extends BaseController
         }
     	else
     		abort('401');
+    }
+    public static function check_assignFront($name) {
+        $permiso = DB::table('permisos_funciones')
+            ->select(
+                'id_user',
+                'id_permiso',
+                )
+        ->where('id_user', auth::user()->id)
+        ->where('id_permiso', $name)->get();
+    	if(count($permiso)) {
+    		return true;
+        }
+    	else
+        return false;
     }
 }
