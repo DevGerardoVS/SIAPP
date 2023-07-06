@@ -146,6 +146,41 @@ function getUpps(){
     });
 }
 
+function updateData(id,field){
+	var formData = new FormData();
+	var csrf_tpken = $("input[name='_token']").val();
+	formData.append("_token",csrf_tpken);
+	formData.append("id",id);
+	formData.append("field",field);
+	$.ajax({
+        url:"/amd-configuracion/update",
+		data: formData,
+        type: "POST",
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success:function(response){
+            response = response.dataSet;
+            console.log(response);
+            
+        },
+        error: function(response) {
+            var mensaje="";
+            $.each(response.responseJSON.errors, function( key, value ) {
+                mensaje += value+"\n";
+            });
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensaje,
+                confirmButtonText: "Aceptar",
+            });
+            //$('#errorModal').modal('show');
+            console.log('Error: ' +  JSON.stringify(response.responseJSON));
+        }
+    });
+}
+
 $(document).ready(function () {
 	getData();
 
@@ -166,4 +201,5 @@ $(document).ready(function () {
 		$("#filter").val($("#upps").val());
 		getData();
 	});
+
 });
