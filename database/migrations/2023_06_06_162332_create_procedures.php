@@ -23,8 +23,7 @@ return new class extends Migration {
                     va.clv_capitulo,
                     va.clv_concepto,
                     va.clv_partida_generica,
-                    va.clv_partida_especifica,
-                    va.clv_tipo_gasto 
+                    va.clv_partida_especifica
                 ) as clv_partida, va.partida_especifica,
                 sum(va.total) importe
             from pp_aplanado va
@@ -1194,7 +1193,7 @@ return new class extends Migration {
                         '-',pp.clv_programa,
                         '-',pp.clv_subprograma,
                         '-',pp.clv_proyecto,
-                        '-',pp.periodo,
+                        '-',pp.periodo_presupuestal,
                         '-',pp.clv_capitulo,
                         pp.clv_concepto,
                         pp.clv_partida_generica,
