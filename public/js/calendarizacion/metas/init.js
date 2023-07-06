@@ -100,6 +100,7 @@ var dao = {
             });
         });
     },
+  
     crearMetaImp: function () {
         var form = $('#formFile')[0];
         var data = new FormData(form);
@@ -113,11 +114,13 @@ var dao = {
             cache: false,
         }).done(function (response) {
             $('#cerrar').trigger('click');
+            console.log("res",response)
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: true,
+                icon: response.icon,
+                title: response.title,
+                text: response.text
             });
+
         });
     },
     importMeta: function () {
@@ -132,14 +135,18 @@ var dao = {
             contentType: "application/x-www-form-urlencoded;charset=utf-8",
             cache: false,
             timeout: 600000
-        }).done(function (response) {
+        }).success(function (response) {
+            console.log(response)
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
+                icon: response.status,
+                title: response.title,
+                message: response.message,
                 showConfirmButton: false,
                 timer: 1500
             });
-        });
+        }).fail(function (error, status, err) {
+                console.log("error-", error);
+            });
     },
     editarMeta: function (id) {
         Swal.fire({
@@ -311,50 +318,6 @@ var init = {
     validateCreate: function (form) {
         _gen.validate(form, {
             rules: {
-                username: { required: true },
-                nombre: { required: true },
-                p_apellido: { required: true },
-                s_apellido: { required: true },
-                email: { required: true, email: true },
-                password: { required: true },
-                in_pass_conf: { required: true, equalTo: "#password" },
-                in_celular: {
-                    required: true,
-                    phoneUS: true
-                },
-                id_grupo: { required: true }
-
-            },
-            messages: {
-                username: { required: "Este campo es requerido" },
-                nombre: { required: "Este campo es requerido" },
-                p_apellido: { required: "Este campo es requerido" },
-                s_apellido: { required: "Este campo es requerido" },
-                email: { required: "Este campo es requerido" },
-                password: { required: "Este campo es requerido" },
-                in_pass_conf: { required: "Este campo es requerido" },
-                in_celular: { required: "Este campo es requerido" },
-                id_grupo: { required: "Este campo es requerido" }
-
-            }
-        });
-    },
-    validateFile: function (form) {
-        _gen.validate(form, {
-            rules: {
-                cmFile: { required: true }
-            },
-            messages: {
-                cmFile: { required: "Este campo es requerido" }
-            }
-        });
-    },
-};
-
-var init = {
-    validateCreate: function (form) {
-        _gen.validate(form, {
-            rules: {
                 sel_actividad: { required: true },
                 sel_fondo: { required: true },
                 tipo_Ac: { required: true },
@@ -369,6 +332,16 @@ var init = {
                 beneficiario: { required: "Este campo es requerido" },
                 tipo_Be: { required: "Este campo es requerido" },
                 medida: { required: "Este campo es requerido" }
+            }
+        });
+    },
+    validateFile: function (form) {
+        _gen.validate(form, {
+            rules: {
+                cmFile: { required: true }
+            },
+            messages: {
+                cmFile: { required: "Este campo es requerido" }
             }
         });
     },
