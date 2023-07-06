@@ -15,7 +15,10 @@
         Route::get('/plantillaCargaTechos', 'exportView');
         Route::get('/exportPlantilla', 'exportPlantilla')->name('exportPlantilla');
         Route::post('/import-Plantilla', 'importPlantilla')->name('importPlantilla');
+        Route::get('/calendarizacion/techos/export-excel', 'exportExcel')->name('exportExcel');
+        Route::get('/calendarizacion/techos/export-pdf', 'exportPDF')->name('exportPDF');
     });
+
 	Route::controller(ClavePreController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');
 		Route::get('/calendarizacion-claves-create', 'getCreate');
@@ -43,13 +46,7 @@
 		Route::get('/ver-detalle/{clave?}', 'getConceptosClave')->name('detalle');
 		Route::get('/clave-update/{id?}', 'getPanelUpdate');
 		Route::post('/calendarizacion-editar-clave', 'postEditarClave');
-		
-
-		
-		
-		
-		
-		
+	
 	});
 
 	Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {

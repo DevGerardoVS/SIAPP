@@ -4,16 +4,22 @@ namespace App\Http\Controllers\Calendarizacion;
 
 use App\Http\Controllers\Controller;
 use App\Models\calendarizacion\TechosFinancieros;
+use App\Exports\PlantillaTechosExport;
+use App\Exports\TechosExport;
+use App\Exports\TechosExportPDF;
+
 use Carbon\Carbon;
 use Dompdf\Exception;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+
 use Throwable;
 use function Psy\debug;
-use App\Exports\PlantillaTechosExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Facades\MPDF;
 use App\Imports\Techos;
 
 class TechosController extends Controller
@@ -24,9 +30,7 @@ class TechosController extends Controller
     }
 
     public function getTechos(Request $request){
-        log::debug($request);
         $dataSet = [];
-        $where_upp = '';
 
         $data = DB::table('techos_financieros as tf')
             ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
@@ -183,6 +187,36 @@ class TechosController extends Controller
                'message' => 'error de validacion',
              );
             return response()->json($returnData);
+        }
+    }
+
+    public function exportExcel(Request $request){
+        try{
+            ob_end_clean();
+            ob_start();
+            return Excel::download(new TechosExport($request->anio_filter_export),'Techos_Financieros.xlsx');
+        }catch (Throwable $e){
+            DB::rollBack();
+            report($e);
+            return [
+                'error' => $e
+            ];
+        }
+    }
+    
+    public function exportPDF(Request $request){
+        log::debug($request);
+        
+        try{
+            ob_end_clean();
+            ob_start();
+            return Excel::download(new TechosExportPDF($request->anio_filter_pdf),'Techos_Financieros.pdf');
+        }catch (Throwable $e){
+            DB::rollBack();
+            report($e);
+            return [
+                'error' => $e
+            ];
         }
     }
 }

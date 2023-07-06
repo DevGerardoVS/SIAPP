@@ -47,19 +47,22 @@ var dao = {
         $.each(anio, function (i, val) {
             par.append(new Option(anio[i], anio[i]));
         });
-        /*      $.ajax({
-                 type: "GET",
-                 url: 'grupos',
-                 dataType: "JSON"
-             }).done(function (data) {
-                 var par = $('#id_grupo');
-                 par.html('');
-                 par.append(new Option("-- Selecciona Perfil --", ""));
-                 document.getElementById("id_grupo").options[0].disabled = true;
-                 $.each(data, function (i, val) {
-                     par.append(new Option(data[i].nombre_grupo, data[i].id));
-                 });
-             }); */
+
+        var ex = $('#anio_filter_export');
+        ex.html('');
+        ex.append(new Option("Todos", 0));
+        document.getElementById("anio_filter_export").options[0].disabled = false;
+        $.each(anio, function (i, val) {
+            ex.append(new Option(anio[i], anio[i]));
+        });
+        
+        var pdf = $('#anio_filter_pdf');
+        pdf.html('');
+        pdf.append(new Option("Todos", 0));
+        document.getElementById("anio_filter_pdf").options[0].disabled = false;
+        $.each(anio, function (i, val) {
+            pdf.append(new Option(anio[i], anio[i]));
+        });
     },
     limpiarFormularioCrear: function () {
         $('#fondos').empty()
@@ -242,6 +245,28 @@ $(document).ready(function () {
             dao.cargaMasiva();
         }
     });
+
+    $('#btnExport').on('click',function(){
+        document.all["formExport"].submit();
+        $('#exportExcel').modal('hide')
+    })
+    
+    $('#btnExportPDF').on('click',function(){
+        document.all["formExportPDF"].submit();
+        $('#exportPDF').modal('hide')
+    })
+
+   /*  $('#btnExport').on('click', function(e){
+        console.log("Export Excel")
+
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/techos/export-excel',
+            dataType: "JSON"
+        }).done(function (data) {
+            console.log(data)
+        });
+    }) */
 });
 
 function totalP(){
