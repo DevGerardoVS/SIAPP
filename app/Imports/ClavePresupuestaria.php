@@ -141,15 +141,13 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
 
          }
          
-         else{
+        else{
             $row['tipo']='Operativo';
 
             $valObra = obra::select()
             ->where('clv_proyecto_obra',$row['obra'])
             ->count();
-            if($valObra < 1 ){
-                $row['obra']=NULL;
-
+            if($valObra > 0 ){
                 $valpos = PosicionPresupuestaria::select()
                 ->where('clv_capitulo',$arraypos[0])
                 ->where('clv_concepto',$arraypos[1])
@@ -160,11 +158,16 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
                 if($valpos < 1  ){
                     $row['idpartida']=NULL;
                 }
+
+           }
+           else{
+                //la obra no existe
+                $row['obra']=NULL;
            }
         
 
         } 
-
+        
 
          
         //validacion de codigo para posicion presupuestaria falta usuario
@@ -215,8 +218,9 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         ->where('clv_programa',$row['prg'])
         ->where('clv_subprograma',$row['spr'])
         ->where('clv_proyecto',$row['py'])
-        ->count();
-        if($valcomb < 1 ){
+        ->get();
+        \Log::debug($valcomb);
+        if(count($valcomb) < 1 ){
             $row['spr']=NULL;
 
         }
