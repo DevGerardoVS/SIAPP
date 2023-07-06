@@ -283,7 +283,6 @@ class CalendarizacionCargaMasivaController extends Controller
 
                      case 1:
                         if($CountR>0){
-                            Log::debug("Se activo el if de registros en rh para upp autorizada");
                             return redirect()->back()->withErrors('error','Hay claves de RH en el archivo de cargas masivas');  
                            } 
                            //validacion para eliminar registros no confirmados 
@@ -301,7 +300,6 @@ class CalendarizacionCargaMasivaController extends Controller
     
                 case 5:
                     if($CountO>0){
-                        Log::debug("Se activo el if de registros en operativos para en delegacion");
                         return redirect()->back()->withErrors('error','Hay claves Operativas en el archivo de cargas masivas');
                        }
                     //validacion para eliminar registros no confirmados 
