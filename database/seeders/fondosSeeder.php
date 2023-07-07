@@ -18139,8 +18139,8 @@ class fondosSeeder extends Seeder
         (12973,'16','Michoacán','02','REGIÓN II, BAJÍO','113','JOSÉ SIXTO VERDUZCO','036','UNIÓN JUÁREZ (AGUA GORDA)',null,'SEEDER',null,null,now(),now()),
         (12974,'16','Michoacán','02','REGIÓN II, BAJÍO','113','JOSÉ SIXTO VERDUZCO','037','VÁZQUEZ LOS (LAS CASITAS)',null,'SEEDER',null,null,now(),now()),
         (12975,'16','Michoacán','02','REGIÓN II, BAJÍO','113','JOSÉ SIXTO VERDUZCO','038','ZAPOTE DE PARRAS EL',null,'SEEDER',null,null,now(),now()),
-        (12976,'16','Michoacán','00','REGIÓN I A X','998','INTERMUNICIPAL','001','COBERTURA INTERMUNICIPAL',null,'SEEDER',null,null,now(),now()),
-        (12977,'16','Michoacán','00','REGIÓN I A X','999','ESTATAL','999','COBERTURA ESTATAL',null,'SEEDER',null,null,now(),now());
+        (12976,'16','Michoacán','00','Michoacán de Ocampo','998','INTERMUNICIPAL','001','COBERTURA INTERMUNICIPAL',null,'SEEDER',null,null,now(),now()),
+        (12977,'16','Michoacán','00','Michoacán de Ocampo','999','ESTATAL','999','COBERTURA ESTATAL',null,'SEEDER',null,null,now(),now());
         ");
 
         DB::unprepared("INSERT INTO fondo(id,clv_etiquetado, etiquetado, clv_fuente_financiamiento, fuente_financiamiento, clv_ramo, ramo, clv_fondo_ramo, fondo_ramo, clv_capital, capital, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values
