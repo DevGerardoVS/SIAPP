@@ -30,9 +30,14 @@ class CalendarizacionCargaMasivaController extends Controller
      //Obtener plantilla para descargar
 	public function getExcel(Request $request)	{
       $file='plantilla.xlsx';
+/*        return response()->download(storage_path("templates/{$file}"));
+ */       return \Storage::download("templates/{$file}");
 
-      return response()->download(storage_path("templates/{$file}"));
-	}
+ 
+
+}
+
+    
     
      //Obtener datos del excel
      public function loadDataPlantilla(Request $request)	{

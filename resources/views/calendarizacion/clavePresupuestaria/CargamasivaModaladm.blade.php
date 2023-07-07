@@ -35,7 +35,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <a href="/calendarizacion/get-plantilla" type="button" class="btn colorMorado"
-                                    id="downloadbtn" name="downloadbtn">
+                                    id="downloadbtnadm" name="downloadbtnadm">
                                     <i class="fa fa-download" style="color: #dfdfdf"></i>
                                     {{ __('messages.descargar_plantilla') }}</a>
 
