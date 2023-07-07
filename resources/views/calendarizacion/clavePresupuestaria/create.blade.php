@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @include('calendarizacion.clavePresupuestaria.modalDetalle')
+@include('calendarizacion.clavePresupuestaria.modalImgClave')
 @include('panels.datatable')
 @section('content')
 <div class="container">
@@ -18,7 +19,7 @@
                             <div class="col-md-2" style="background-color: brown"><p style="color: aliceblue">Centro Gestor</p> </div>
                             <div class="col-md-2" style="background-color: dimgrey"><p style="color: aliceblue">Área Funcional</p></div>
                             <div class="col-md-2" style="background-color: plum"><p style="color: aliceblue">Período Presupuestal</p></div>
-                            <div class="col-md-2" style="background-color: grey"><p style="color: aliceblue">Clacificación Económica</p></div>
+                            <div class="col-md-2" style="background-color: grey"><p style="color: aliceblue">Clasificación Económica</p></div>
                             <div class="col-md-2" style="background-color: orangered"><p style="color: aliceblue">Fondo</p></div>
                             <div class="col-md-2" style="background-color: darksalmon"><p style="color: aliceblue">Inversión Pública</p></div>
                         </div>
@@ -62,6 +63,15 @@
                             </table>
                         </div>   
                         <div id="primeraParte">
+                            <div class="row">
+                                <div class="col-md-8"></div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-light" data-toggle="modal"
+                                        data-target="#imgClave" data-backdrop="static" data-keyboard="false" id="imgClave">¿Cómo está construida la clave presupuestaria?
+                                </button>
+                                </div>
+                            </div>
+                            <br>
                             <form class="form-horizontal" id="frm_create_clave">
                                 @csrf
                                 <div class="row">

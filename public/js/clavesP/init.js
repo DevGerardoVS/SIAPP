@@ -237,10 +237,10 @@ var dao = {
           par.append(new Option("-- Selecciona una Region --", ""));
           $.each(data, function(i, val){
             if (val.clv_region == id) {
-              par.append(new Option(data[i].region, data[i].clv_region,true,true));
+              par.append(new Option(data[i].clv_region+ ' - '+data[i].region, data[i].clv_region,true,true));
               document.getElementById("region").innerHTML = data[i].clv_region;
             }else{
-              par.append(new Option(data[i].region, data[i].clv_region,false,false));
+              par.append(new Option(data[i].clv_region+ ' - '+data[i].region, data[i].clv_region,false,false));
             }
             
           });
@@ -256,10 +256,10 @@ var dao = {
           par.append(new Option("-- Selecciona un Municipio --", ""));
           $.each(data, function(i, val){
             if (idSelected != '' && val.clv_municipio == idSelected) {
-              par.append(new Option( data[i].municipio , data[i].clv_municipio,true,true));
+              par.append(new Option(data[i].clv_municipio+ ' - '+ data[i].municipio , data[i].clv_municipio,true,true));
               document.getElementById("municipio").innerHTML = data[i].clv_municipio;
             }else{
-              par.append(new Option( data[i].municipio , data[i].clv_municipio,false,false));
+              par.append(new Option(data[i].clv_municipio+ ' - '+ data[i].municipio , data[i].clv_municipio,false,false));
             }
           });
         });
@@ -274,10 +274,10 @@ var dao = {
           par.append(new Option("-- Selecciona una Localidad --", ""));
           $.each(data, function(i, val){
             if (idSelected != '' && val.clv_localidad == idSelected) {
-              par.append(new Option(data[i].localidad, data[i].clv_localidad,true,true));
+              par.append(new Option(data[i].clv_localidad+ ' - '+ data[i].localidad, data[i].clv_localidad,true,true));
               document.getElementById('localidad').innerHTML = data[i].clv_localidad;
             }else{
-              par.append(new Option(data[i].localidad, data[i].clv_localidad,false,false));
+              par.append(new Option(data[i].clv_localidad+ ' - '+ data[i].localidad, data[i].clv_localidad,false,false));
             }
           });
         });
@@ -292,10 +292,10 @@ var dao = {
           par.append(new Option("-- Selecciona una Unidad Programática --", ""));
           $.each(data, function(i, val){
             if (id != '' && val.clave == id) {
-             par.append(new Option(data[i].descripcion , data[i].clave,true,true));
+             par.append(new Option(data[i].clave+ ' - '+ data[i].descripcion , data[i].clave,true,true));
              document.getElementById('upp').innerHTML = data[i].clave;
             }else{
-             par.append(new Option(data[i].descripcion , data[i].clave,false,false));
+             par.append(new Option(data[i].clave+ ' - '+ data[i].descripcion , data[i].clave,false,false));
             }
           });
         });
@@ -310,11 +310,11 @@ var dao = {
           par.append(new Option("-- Selecciona una Unidad Responsable --", ""));
           $.each(data, function(i, val){
             if (idSelected != '' && val.clv_ur == idSelected) {
-              par.append(new Option( data[i].ur, data[i].clv_ur,true,true));
+              par.append(new Option(data[i].clv_ur+ ' - '+ data[i].ur, data[i].clv_ur,true,true));
               document.getElementById('ur').innerHTML = data[i].clv_ur;
               document.getElementById('lbl_ur').innerText ='Ur: '+ data[i].clv_ur + '-' + data[i].ur;
              }else{
-              par.append(new Option( data[i].ur, data[i].clv_ur,false,false));
+              par.append(new Option(data[i].clv_ur+ ' - '+ data[i].ur, data[i].clv_ur,false,false));
              }
             
           });
@@ -338,10 +338,10 @@ var dao = {
           par.append(new Option("-- Selecciona un Programa Presupuestario --", ""));
           $.each(data, function(i, val){
             if (idSelected != '' && val.clv_programa == idSelected) {
-              par.append(new Option(data[i].programa, data[i].clv_programa,true,true));
+              par.append(new Option(data[i].clv_programa+ ' - '+ data[i].programa, data[i].clv_programa,true,true));
               document.getElementById('programaPre').innerHTML = data[i].clv_programa;
              }else{
-              par.append(new Option(data[i].programa, data[i].clv_programa,false,false));
+              par.append(new Option(data[i].clv_programa+ ' - '+ data[i].programa, data[i].clv_programa,false,false));
              }
             
           });
@@ -357,10 +357,10 @@ var dao = {
           par.append(new Option("-- Selecciona un Sub Programa Presupuestario --", ""));
           $.each(data, function(i, val){
             if (idSelected != '' && val.clv_subprograma == idSelected) {
-              par.append(new Option( data[i].subprograma, data[i].clv_subprograma,true,true));
+              par.append(new Option(data[i].clv_subprograma+ ' - '+ data[i].subprograma, data[i].clv_subprograma,true,true));
               document.getElementById('subPrograma').innerHTML = data[i].clv_subprograma;
              }else{
-              par.append(new Option( data[i].subprograma, data[i].clv_subprograma,false,false));
+              par.append(new Option(data[i].clv_subprograma+ ' - '+ data[i].subprograma, data[i].clv_subprograma,false,false));
              }
             
           });
@@ -376,10 +376,10 @@ var dao = {
           par.append(new Option("-- Selecciona un Proyecto --", ""));
           $.each(data, function(i, val){
             if (idSelected != '' && val.clv_proyecto == idSelected) {
-              par.append(new Option(data[i].proyecto , data[i].clv_proyecto,true,true));
+              par.append(new Option(data[i].clv_proyecto+ ' - '+ data[i].proyecto , data[i].clv_proyecto,true,true));
               document.getElementById('proyectoPre').innerHTML = data[i].clv_proyecto;
              }else{
-              par.append(new Option(data[i].proyecto , data[i].clv_proyecto,false,false));
+              par.append(new Option(data[i].clv_proyecto+ ' - '+  data[i].proyecto , data[i].clv_proyecto,false,false));
              }
             
           });
@@ -395,12 +395,12 @@ var dao = {
           par.append(new Option("-- Selecciona una Linea de Acción --", ""));
           $.each(data, function(i, val){
             if (idSelected != '' && val.clv_linea_accion == idSelected) {
-              par.append(new Option(data[i].linea_accion , data[i].clv_linea_accion,true,true));
+              par.append(new Option(data[i].clv_linea_accion+ ' - '+  data[i].linea_accion , data[i].clv_linea_accion,true,true));
               document.getElementById('lineaAccion').innerHTML = data[i].clv_linea_accion ;
               let periodo = '01-ENE';
               document.getElementById('mesAfectacion').innerHTML = periodo;
              }else{
-              par.append(new Option(data[i].linea_accion , data[i].clv_linea_accion,false,false));
+              par.append(new Option(data[i].clv_linea_accion+ ' - '+ data[i].linea_accion , data[i].clv_linea_accion,false,false));
              }
           });
         });
@@ -429,14 +429,14 @@ var dao = {
           $.each(data, function(i, val){
             let partida = val.clv_capitulo + val.clv_concepto + val.clv_partida_generica + val.clv_partida_especifica + val.clv_tipo_gasto;
             if (id != '' && partida == id) {
-              par.append(new Option(data[i].partida_especifica, data[i].clv_capitulo + data[i].clv_concepto + data[i].clv_partida_generica + data[i].clv_partida_especifica + data[i].clv_tipo_gasto,true,true));
+              par.append(new Option(data[i].clv_partida_especifica+ '-'+ data[i].partida_especifica, data[i].clv_capitulo + data[i].clv_concepto + data[i].clv_partida_generica + data[i].clv_partida_especifica + data[i].clv_tipo_gasto,true,true));
               document.getElementById('capitulo').innerHTML = data[i].clv_capitulo;
               document.getElementById('concepto').innerHTML = data[i].clv_concepto;
               document.getElementById('partidaGen').innerHTML = data[i].clv_partida_generica;
               document.getElementById('partidaEpecifica').innerHTML = data[i].clv_partida_especifica;
               document.getElementById('tipoGasto').innerHTML = data[i].clv_tipo_gasto;
              }else{
-              par.append(new Option(data[i].partida_especifica, data[i].clv_capitulo + data[i].clv_concepto + data[i].clv_partida_generica + data[i].clv_partida_especifica + data[i].clv_tipo_gasto,false,false));
+              par.append(new Option(data[i].clv_partida_especifica+ '-'+ data[i].partida_especifica, data[i].clv_capitulo + data[i].clv_concepto + data[i].clv_partida_generica + data[i].clv_partida_especifica + data[i].clv_tipo_gasto,false,false));
              }
           });
         });
@@ -452,7 +452,7 @@ var dao = {
         $.each(data, function(i, val){
           let fondo = val.ejercicio + val.clv_etiquetado + val.clv_fuente_financiamiento + val.clv_ramo + val.clv_fondo + val.clv_capital;
           if (idSelected != '' && fondo == idSelected) {
-            par.append(new Option(data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,true,true));
+            par.append(new Option(data[i].clv_fondo+ '-'+ data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,true,true));
             let ejercicio = data[i].ejercicio;
             let anioText = ejercicio.toString();
             let anio = anioText.substring(2,4);
@@ -464,7 +464,7 @@ var dao = {
             document.getElementById('capital').innerHTML = data[i].clv_capital;
             document.getElementById('lbl_fondo').innerText ='Fondo: '+ data[i].clv_fondo + '-' + data[i].fondo_ramo;
             }else{
-            par.append(new Option(data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,false,false));
+            par.append(new Option(data[i].clv_fondo+ '-'+  data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,false,false));
             }
         });
     });
@@ -658,10 +658,10 @@ var dao = {
       par.append(new Option("-- Selecciona una Unidad Programática --", ""));
       $.each(data, function(i, val){
         if (id != '' && val.clave == id) {
-         par.append(new Option(data[i].descripcion , data[i].clave,true,true));
+         par.append(new Option(data[i].clave+ '-'+ data[i].descripcion , data[i].clave,true,true));
          document.getElementById('upp').innerHTML = data[i].clave;
         }else{
-         par.append(new Option(data[i].descripcion , data[i].clave,false,false));
+         par.append(new Option(data[i].clave+ '-'+ data[i].descripcion , data[i].clave,false,false));
         }
       });
     });
@@ -676,9 +676,9 @@ var dao = {
     par.append(new Option("-- Selecciona una Unidad Responsable --", ""));
     $.each(data, function(i, val){
       if (id != '' && val.clv_ur == id) {
-        par.append(new Option( data[i].ur, data[i].clv_ur,true,true));
+        par.append(new Option(data[i].clv_ur+ '-'+ data[i].ur, data[i].clv_ur,true,true));
       }else{
-        par.append(new Option( data[i].ur, data[i].clv_ur,false,false));
+        par.append(new Option(data[i].clv_ur+ '-'+ data[i].ur, data[i].clv_ur,false,false));
       }
     });
   });
@@ -695,10 +695,10 @@ var dao = {
         par.append(new Option("-- Selecciona un Proyecto - Obra --", ""));
         $.each(data.obras, function(i, val){
           if (idSelected != '' && val.clv_proyecto_obra == idSelected) {
-            par.append(new Option(data.obras[i].proyecto_obra , data.obras[i].clv_proyecto_obra,true,true));
+            par.append(new Option(data[i].clv_proyecto_obra+ '-'+ data.obras[i].proyecto_obra , data.obras[i].clv_proyecto_obra,true,true));
             document.getElementById('proyectoObra').innerHTML = data.obras[i].proyecto_obra ;
            }else{
-            par.append(new Option(data.obras[i].proyecto_obra , data.obras[i].clv_proyecto_obra,false,false));
+            par.append(new Option(data[i].clv_proyecto_obra+ '-'+ data.obras[i].proyecto_obra , data.obras[i].clv_proyecto_obra,false,false));
            }
         });
         

@@ -539,6 +539,7 @@ class ClavePreController extends Controller
             ->get();
         if ($uppUsuario && $uppUsuario != null) {
             $arrayTechos = $arrayTechos."&& tf.clv_upp = ".$uppUsuario;
+            $arrayProgramacion = $arrayProgramacion."&& PP.upp = ".$uppUsuario;
             $upp =  DB::table('catalogo')
             ->SELECT('clave','descripcion')
             ->where('grupo_id', 6)
