@@ -60,9 +60,9 @@ class ConfiguracionesController extends Controller
                 $especial = $d->Especial==1? ' checked' : '';
 
                 $ds = array($d->clave , $d->descripcion, 
-                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData('.$d->clave.',\'acumulative\')" id="'.$d->clave.'"'.$acumulativa.'></div>',
-                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData('.$d->clave.',\'continue\')" id="'.$d->clave.'"'.$continua.'></div>',
-                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData('.$d->clave.',\'especial\')" id="'.$d->clave.'"'.$especial.'></div>');
+                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'acumulativa\')" id="'.$d->clave.'_a" '.$acumulativa.'></div>',
+                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'continua\')" id="'.$d->clave.'_c" '.$continua.'></div>',
+                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'especial\')" id="'.$d->clave.'_e" '.$especial.'></div>');
                 $dataSet[] = $ds;
             }
 
@@ -80,11 +80,63 @@ class ConfiguracionesController extends Controller
     public static function updateUpps(Request $request){
         try {
             $dataSet = array();
-            $array_where = [];
+            $array_data_act = [];
+            $data_old_act = [];
 
-           $tipo_actividad = TipoActividadUpp::where()->first();
+            $tipo_actividad = TipoActividadUpp::where('clv_upp',$request->id)->firstOrFail();
+
+            if(!empty($tipo_actividad)){
+
+                $data_old_act = array(
+                    'id' => $tipo_actividad->id,
+                    'clv_upp' => $tipo_actividad->clv_upp,
+                    'Continua' => $tipo_actividad->continua,
+                    'Acumulativa' => $tipo_actividad->acumulativa,
+                    'Especial' => $tipo_actividad->especial,
+                    'created_at' => $tipo_actividad->usuario_creacion,
+                    'updated_user' => $tipo_actividad->usuario_modificacion,
+                    'created_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->created_at)),
+                    'updated_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->updated_at)),
+                );
+
+                switch($request->field){
+                    case "continua":
+                        $tipo_actividad->Continua = $request->value;
+                        break;
+                    case "acumulativa":
+                        $tipo_actividad->Acumulativa = $request->value;
+                        break;
+                    case "especial":
+                        $tipo_actividad->Especial = $request->value;
+                        break;
+                }
+                
+
+            }
+
+            $tipo_actividad->updated_user = Auth::user()->username;
+            $tipo_actividad->save();
+
+            $data_new_act = array(
+                'id' => $tipo_actividad->id,
+                'clv_upp' => $tipo_actividad->descripcion,
+                'Continua' => $tipo_actividad,
+                'Acumulativa' => $tipo_actividad,
+                'Especial' => $tipo_actividad->estatus,
+                'created_at' => $tipo_actividad->created_at,
+                'updated_user' => $tipo_actividad->updated_user,
+                'created_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->created_at)),
+                'updated_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->updated_at)),
+            );
            
+            $array_data_act = array(
+                'tabla'=>'tipo_actividad_upp',
+                'anterior'=>$data_old_act,
+                'nuevo'=>$data_new_act
+            );
 
+            BitacoraHelper::saveBitacora(BitacoraHelper::getIp(),"tipo_actividad_upp", "Edicion",json_encode($array_data_act));
+            
             return response()->json([
                 "dataSet" => $dataSet,
                 "catalogo" => "Configuraciones",
