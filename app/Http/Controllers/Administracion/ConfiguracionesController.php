@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\administracion\TipoActividadUpp;
+use App\Helpers\BitacoraHelper;
 
 class ConfiguracionesController extends Controller
 {
@@ -99,6 +100,9 @@ class ConfiguracionesController extends Controller
                     'updated_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->updated_at)),
                 );
 
+                if($request->value=='true') $request->value = 1;
+                else $request->value = 0;
+
                 switch($request->field){
                     case "continua":
                         $tipo_actividad->Continua = $request->value;
@@ -109,13 +113,18 @@ class ConfiguracionesController extends Controller
                     case "especial":
                         $tipo_actividad->Especial = $request->value;
                         break;
+                    default:
+                        break;
                 }
                 
 
             }
 
+            
             $tipo_actividad->updated_user = Auth::user()->username;
             $tipo_actividad->save();
+           
+
 
             $data_new_act = array(
                 'id' => $tipo_actividad->id,
