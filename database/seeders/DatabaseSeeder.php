@@ -209,8 +209,8 @@ class DatabaseSeeder extends Seeder
             ['id' => 23,  'id_sistema' => 1,'id_menu' => 13, 'modulo' => 'Reportes', 'funcion' => 'getAdministrativos', 'tipo' => 'consulta', 'descripcion' => 'Vista Administrativos'],
             ['id' => 24,  'id_sistema' => 1,'id_menu' => 14, 'modulo' => 'Reportes', 'funcion' => 'getCaptura', 'tipo' => 'consulta', 'descripcion' => 'Vista Admon Captura'],
             ['id' => 25,  'id_sistema' => 1,'id_menu' => 2, 'modulo' => 'Logs', 'funcion' => 'getLogs', 'tipo' => 'consulta', 'descripcion' => 'Vista de Logs'],
-            ['id' => 26,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Configuraciones', 'funcion' => 'viewPostUpps', 'tipo' => 'Consulta', 'descripcion' => 'Obtener todos los tipos de actividad por upp a la BD'],
-            ['id' => 27,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Configuraciones', 'funcion' => 'updateUpps', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar un tipo de actividad por upp a la BD'],
+            ['id' => 26,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'viewPostUpps', 'tipo' => 'Consulta', 'descripcion' => 'Obtener todos los tipos de actividad por upp a la BD'],
+            ['id' => 27,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'updateUpps', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar un tipo de actividad por upp a la BD'],
         );
 
     public function run()
