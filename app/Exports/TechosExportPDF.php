@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Invoice;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\Exportable;
 
 /* use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -72,8 +73,9 @@ class TechosExportPDF implements FromCollection, WithHeadings, WithStyles,WithEv
     }
 } */
 
-class TechosExportPDF implements FromView
-{
+class TechosExportPDF implements FromView{
+
+    use Exportable;
 
     public function __construct( int $ejercicio){
         $this->ejercicio = $ejercicio;
