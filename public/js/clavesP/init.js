@@ -113,11 +113,30 @@ var dao = {
         data: {'data': datos,'ejercicio':ejercicio}
       }).done(function (response) {
         if (response != 'done') {
-          Swal.fire(
-            'Error',
-            'A ocurrido un error por favor intentalo de nuevo...',
-            'error'
-          );
+          switch (response) {
+            case 'duplicado':
+              Swal.fire(
+                'Advertencia',
+                'Esta clave ya ha sido registrada.',
+                'warning'
+              );
+              break;
+              case 'cantidadNoDisponible':
+              Swal.fire(
+                'Advertencia',
+                'No es posible rebasar el limite del presupuesto.',
+                'warning'
+              );
+              break;
+          
+            default:
+              Swal.fire(
+                'Error',
+                'A ocurrido un error por favor intentalo de nuevo...',
+                'error'
+              );
+              break;
+          }
         }else{
           Swal.fire(
             'Exito',
@@ -623,10 +642,7 @@ var dao = {
               'Confirmado de claves realizado correctamente.',
               'success'
             );
-            let ejercicio = document.getElementById('filtro_anio').value;
-            let upp = document.getElementById('filtro_upp').value;
-            let ur = document.getElementById('filtro_ur').value;
-            dao.getData(ejercicio,upp,ur);
+            window.location.href = '/calendarizacion/metas';
           }
         })
       }
