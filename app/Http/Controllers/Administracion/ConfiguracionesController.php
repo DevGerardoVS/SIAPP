@@ -15,6 +15,7 @@ class ConfiguracionesController extends Controller
     //
     public function getIndex()
 	{
+        Controller::check_permission('viewPostUpps', false);
 		return view('administracion.configuraciones.index');
 	}
 
@@ -79,6 +80,7 @@ class ConfiguracionesController extends Controller
     }
 
     public static function updateUpps(Request $request){
+        Controller::check_permission('updateUpps');
         try {
             $dataSet = array();
             $array_data_act = [];
