@@ -155,7 +155,7 @@
         dao.filtroUpp('');
         dao.getData('','','');
         @if($errors->any())
-        console.log({!! $errors !!});
+        console.log({!! session()->get('error') !!});
         var failures= {!! $errors !!};
         const fails = [];
         $.each(failures, function (key, value) {

@@ -191,7 +191,7 @@ class CalendarizacionCargaMasivaController extends Controller
            $arrayupps= array();
            $arraypresupuesto= array();
            $errores=0;
-           $countO=0;
+           $OperativoCount=0;
            $CountR=0;
            $ObraCount=0;
            $DiferenteUpp=0;
@@ -209,7 +209,7 @@ class CalendarizacionCargaMasivaController extends Controller
     
                }
                else{
-                $CountO++;
+                $OperativoCount++;
     
                }
                 if($k['5']!=$uppUsuario){
@@ -254,8 +254,7 @@ class CalendarizacionCargaMasivaController extends Controller
     
             }
             if($error>0){
-                Log::debug($VerifyEjercicio.'///Error en verify');
-                Log::debug($valuepresupuesto.'///Error en verify');
+
                 return redirect()->back()->withErrors('error','El total presupuestado en las upp no es igual al techo financiero');
     
             }
@@ -266,11 +265,9 @@ class CalendarizacionCargaMasivaController extends Controller
                         
                         }
                         else{
-                            Log::debug("Se activo el if de obra");
                             return redirect()->back()->withErrors('error','No tiene permiso para registrar obras');
         
                         }
-                        Log::debug("Entro al if obra count pero no se activo el error del check");
 
                     }
                     switch($uppsautorizadas){
@@ -286,7 +283,6 @@ class CalendarizacionCargaMasivaController extends Controller
 
                      case 1:
                         if($CountR>0){
-                            Log::debug("Se activo el if de registros en rh para upp autorizada");
                             return redirect()->back()->withErrors('error','Hay claves de RH en el archivo de cargas masivas');  
                            } 
                            //validacion para eliminar registros no confirmados 
@@ -304,7 +300,6 @@ class CalendarizacionCargaMasivaController extends Controller
     
                 case 5:
                     if($CountO>0){
-                        Log::debug("Se activo el if de registros en operativos para en delegacion");
                         return redirect()->back()->withErrors('error','Hay claves Operativas en el archivo de cargas masivas');
                        }
                     //validacion para eliminar registros no confirmados 
