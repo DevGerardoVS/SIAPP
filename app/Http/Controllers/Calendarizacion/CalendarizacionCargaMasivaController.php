@@ -12,7 +12,7 @@ use App\Models\calendarizacion\clasificacion_geografica;
 use App\Models\TechosFinancieros;
 use App\Models\cierreEjercicio;
 use Carbon\Carbon;
-use App\Exports\ImportErrorsExport;
+use App\Exports\PlantillaExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\catalogos\CatEntes;
 use App\Models\uppautorizadascpnomina;
@@ -29,10 +29,11 @@ class CalendarizacionCargaMasivaController extends Controller
 {
      //Obtener plantilla para descargar
 	public function getExcel(Request $request)	{
-      $file='plantilla.xlsx';
-/*        return response()->download(storage_path("templates/{$file}"));
- */       return \Storage::download("templates/{$file}");
+        ob_end_clean();
+        ob_start();
 
+
+   return Excel::download(new PlantillaExport, 'Plantilla.xlsx');
  
 
 }
