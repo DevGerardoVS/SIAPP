@@ -81,14 +81,13 @@ class Controller extends BaseController
     }
     public static function check_assignFront($name) {
         $permiso = DB::table('permisos_funciones')
-            ->leftJoin('cat_permisos','cat_permisos.id','permisos_funciones.id_permiso')
             ->select(
                 'id_user',
-                'permisos_funciones.id',
-                'cat_permisos.nombre as permiso')
-            ->where('id_user', Auth::user()->id)
-            ->orWhere('cat_permisos.nombre', $name)->get();
-    	if($permiso) {
+                'id_permiso',
+                )
+        ->where('id_user', auth::user()->id)
+        ->where('id_permiso', $name)->get();
+    	if(count($permiso)) {
     		return true;
         }
     	else
