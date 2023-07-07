@@ -138,10 +138,10 @@ class UsuarioController extends Controller
 			$validaUserName = User::where('username', $request->username)->get();
 			$validaEmail = User::where('email', $request->email)->get();
 			if ($validaUserName->isEmpty() == false) {
-				return response()->json("userDuplicate", 200);
+				return response()->json(["icon"=>'info',"title"=>"Username duplicado"], 200);
 			}
 			if ($validaEmail->isEmpty() == false) {
-				return response()->json("emailDuplicate", 200);
+				return response()->json(["icon"=>'info',"title"=>"email duplicado"], 200);
 			}
 			$user = User::create($request->all());
 			UsuarioGrupo::create([
@@ -149,7 +149,7 @@ class UsuarioController extends Controller
 				'id_usuario' => $user->id
 			]);
 
-			return response()->json("done", 200);
+			return response()->json(["success"=>'info',"title"=>"Usuario guardado"], 200);
 		}
 	}
 	//Reset Password
