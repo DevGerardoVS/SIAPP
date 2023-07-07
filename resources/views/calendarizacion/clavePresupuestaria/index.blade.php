@@ -44,8 +44,11 @@
                                         data-target="#modalPresupuesto"data-backdrop="static" data-keyboard="false" id='presupuestoFondo'>
                                             <i class="fa fa-eye">Presupuesto por Fondo</i>
                                         </button>
+                                        <input type="hidden" id="filAnio" name="filAnio">
                                     </div>
-                                    <div class="col-md-2"></div>
+                                    <div class="col-md-2 text-right">
+                                        
+                                    </div>
                                     <div class="col-md-2 text-right">
                                         @if (Auth::user()->clv_upp==NULL)
                                         <div class="row">
@@ -59,19 +62,43 @@
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
-                                        </div>    
+                                            </button>
+                                        </div>
                                         @endif
-
                                         @endif
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
-                                                <a type="button"id='btnNuevaClave' class="btn btn-success form-control"  href="/calendarizacion-claves-create" ><i class="fa fa-plus">Nueva Clave</i></a>
+                                            <button type="button" id='btnNuevaClave' class="btn btn-success form-control" ><i class="fa fa-plus"> &nbsp;Nueva Clave</i></button>
+                                            <button style="display: none" type="button" class="btn btn-primary form-control"
+                                                name="btn_confirmar" id="btn_confirmar">
+                                                <i class="fa fa-check"> &nbsp;Confirmar Claves</i> 
+                                            </button>
                                         </div>
 
                                     </div>
                                 </div>
                             </div>
-                            <br><br>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <select class="form-control select2" name="filtro_anio" id="filtro_anio">
+                                        <option value="">-- Selecciona un Ejercicio --</option>
+                                        <option value=2022>2022</option>
+                                        <option value=2023>2023</option>
+                                        <option value=2024>2024</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4" id="divFiltroUpp" style="display: none">
+                                    <select class="form-control select2" name="filtro_upp" id="filtro_upp">
+                                        <option value="">-- Selecciona una Unidad Programática --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-control select2" name="filtro_ur" id="filtro_ur">
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
                             
                                 <div class="table-responsive">
                                     <table id="claves" class="table table-hover table-striped" style="width: 100%">
@@ -118,11 +145,15 @@
     <script src="/js/clavesP/cargamasiva.js"></script>
 
     <script>
-        dao.getData();
-        dao.getRegiones("");
-        dao.getUpp("");
-        dao.getPresupuesAsignado();
-
+        let upp = "{{$uppUsuario}}";
+        if (upp && upp != '') {
+            document.getElementById('filtro_upp').value = upp;
+            dao.filtroUr(upp);
+        }else{
+            $('#divFiltroUpp').show();
+        }
+        dao.filtroUpp('');
+        dao.getData('','','');
         @if($errors->any())
         console.log({!! session()->get('error') !!});
         var failures= {!! $errors !!};
