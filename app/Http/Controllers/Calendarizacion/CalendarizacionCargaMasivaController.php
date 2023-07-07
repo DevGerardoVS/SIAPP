@@ -12,7 +12,7 @@ use App\Models\calendarizacion\clasificacion_geografica;
 use App\Models\TechosFinancieros;
 use App\Models\cierreEjercicio;
 use Carbon\Carbon;
-use App\Exports\ImportErrorsExport;
+use App\Exports\PlantillaExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\catalogos\CatEntes;
 use App\Models\uppautorizadascpnomina;
@@ -29,10 +29,16 @@ class CalendarizacionCargaMasivaController extends Controller
 {
      //Obtener plantilla para descargar
 	public function getExcel(Request $request)	{
-      $file='plantilla.xlsx';
+        ob_end_clean();
+        ob_start();
 
-      return response()->download(storage_path("templates/{$file}"));
-	}
+
+   return Excel::download(new PlantillaExport, 'Plantilla.xlsx');
+ 
+
+}
+
+    
     
      //Obtener datos del excel
      public function loadDataPlantilla(Request $request)	{
@@ -260,13 +266,17 @@ class CalendarizacionCargaMasivaController extends Controller
             }
             switch($tipousuario){
                 case 4:
-                    if($ObraCount>0){
+                    if($ObraCount>0 ){
                         if(Controller::check_assignFront(3)){
                         
                         }
                         else{
                             return redirect()->back()->withErrors('error','No tiene permiso para registrar obras');
         
+                        }
+
+                        if($DiferenteUpp>0){
+                            return redirect()->back()->withErrors('error','No tiene permiso para registrar de  otras upps');
                         }
 
                     }
@@ -284,7 +294,10 @@ class CalendarizacionCargaMasivaController extends Controller
                      case 1:
                         if($CountR>0){
                             return redirect()->back()->withErrors('error','Hay claves de RH en el archivo de cargas masivas');  
-                           } 
+                           }
+                           if($DiferenteUpp>0){
+                            return redirect()->back()->withErrors('error','No tiene permiso para registrar de  otras upps');
+                        } 
                            //validacion para eliminar registros no confirmados 
                            foreach($arrayupps as $u){
                            $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
