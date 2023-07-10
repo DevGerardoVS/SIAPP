@@ -17,6 +17,7 @@
         Route::post('/import-Plantilla', 'importPlantilla')->name('importPlantilla');
         Route::get('/calendarizacion/techos/export-excel', 'exportExcel')->name('exportExcel');
         Route::get('/calendarizacion/techos/export-pdf', 'exportPDF')->name('exportPDF');
+        Route::get('/calendarizacion/techos/export-presupuestos', 'exportPresupuestos')->name('exportPresupuestos');
     });
 
 	Route::controller(ClavePreController::class)->group(function () {

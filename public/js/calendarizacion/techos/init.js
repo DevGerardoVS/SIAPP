@@ -63,6 +63,14 @@ var dao = {
         $.each(anio, function (i, val) {
             pdf.append(new Option(anio[i], anio[i]));
         });
+
+        var pdf = $('#anio_filter_presupuestos');
+        pdf.html('');
+        pdf.append(new Option("Todos", 0));
+        document.getElementById("anio_filter_presupuestos").options[0].disabled = false;
+        $.each(anio, function (i, val) {
+            pdf.append(new Option(anio[i], anio[i]));
+        });
     },
     limpiarFormularioCrear: function () {
         $('#fondos').empty()
@@ -254,6 +262,11 @@ $(document).ready(function () {
     $('#btnExportPDF').on('click',function(){
         document.all["formExportPDF"].submit();
         $('#exportPDF').modal('hide')
+    })
+
+    $('#btnExportPresupuestos').on('click',function(){
+        document.all["formExportPresupuestos"].submit();
+        $('#exportPresupuestos').modal('hide')
     })
 
    /*  $('#btnExport').on('click', function(e){

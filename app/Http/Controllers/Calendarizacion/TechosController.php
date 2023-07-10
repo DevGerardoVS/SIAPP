@@ -7,6 +7,7 @@ use App\Models\calendarizacion\TechosFinancieros;
 use App\Exports\PlantillaTechosExport;
 use App\Exports\TechosExport;
 use App\Exports\TechosExportPDF;
+use App\Exports\TechosExportPresupuestos;
 
 use Carbon\Carbon;
 use Dompdf\Exception;
@@ -205,10 +206,25 @@ class TechosController extends Controller
     }
     
     public function exportPDF(Request $request){
-        log::debug($request);
         
         try{
+            ob_end_clean();
+            ob_start();
             return Excel::download(new TechosExportPDF($request->anio_filter_pdf),'Techos_Financieros.pdf');
+        }catch (Throwable $e){
+            DB::rollBack();
+            report($e);
+            return [
+                'error' => $e
+            ];
+        }
+    }
+
+    public function exportPresupuestos(Request $request){
+        try{
+            ob_end_clean();
+            ob_start();
+            return Excel::download(new TechosExportPresupuestos($request->anio_filter_presupuestos),'Presupuestos_Techos_Financieros.xlsx');
         }catch (Throwable $e){
             DB::rollBack();
             report($e);

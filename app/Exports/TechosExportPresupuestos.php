@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class TechosExport implements FromCollection, WithHeadings, WithStyles,WithEvents,WithColumnWidths
+class TechosExportPresupuestos implements FromCollection, WithHeadings, WithStyles,WithEvents, ShouldAutoSize
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -26,7 +26,7 @@ class TechosExport implements FromCollection, WithHeadings, WithStyles,WithEvent
 
     public function collection(){
         $data = DB::table('techos_financieros as tf')
-            ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
+            ->select('tf.clv_upp','tf.clv_fondo','tf.tipo','tf.presupuesto','tf.ejercicio')
             ->leftJoinSub('select distinct clv_upp, upp from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
             ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo');
             if($this->ejercicio != 0){
@@ -41,7 +41,7 @@ class TechosExport implements FromCollection, WithHeadings, WithStyles,WithEvent
     public function headings():array {
         $headings= [];
 
-        return [['Clave UPP','Unidad Programatica Presupuestaria','Tipo', 'Clave Fondo','Fondo','Presupuesto','Ejercicio']];
+        return [['ID UPP','ID Fondo','OPERATIVO','RECURSOS HUMANOS','TECHO PRESUPUESTAL']];
     }
     
     public function styles(Worksheet $sheet){
@@ -52,17 +52,15 @@ class TechosExport implements FromCollection, WithHeadings, WithStyles,WithEvent
         ];
     }
 
-    public function columnWidths(): array{
+    /* public function columnWidths(): array{
         return [
             'A' => 10,
-            'B' => 55,            
-            'C' => 13,            
-            'D' => 13,            
-            'E' => 55,            
-            'F' => 20,            
-            'G' => 25,            
+            'B' => 10,            
+            'C' => 15,            
+            'D' => 15,            
+            'E' => 30         
         ];
-    }
+    } */
     
     public function registerEvents(): array{
         return[
@@ -82,5 +80,4 @@ class TechosExport implements FromCollection, WithHeadings, WithStyles,WithEvent
             }
         ];
     }
-
 }

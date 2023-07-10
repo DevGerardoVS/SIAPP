@@ -5,6 +5,7 @@
 @include('calendarizacion.techos.modalCarga')
 @include('calendarizacion.techos.modalExportExcel')
 @include('calendarizacion.techos.modalExportPDF')
+@include('calendarizacion.techos.modalExportPresupuestos')
 
 @section('content')
 
@@ -64,7 +65,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <button type="button" class="btn btn-outline-success" 
-                                        data-bs-toggle="modal" data-bs-target="#exportPDF">
+                                        data-bs-toggle="modal" data-bs-target="#exportPresupuestos">
                                            <i class="fa fa-file-excel-o"></i> Exportar Presupuestos
                                         </button>
                                     </div>

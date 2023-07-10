@@ -11,10 +11,10 @@
         <table>
             <thead style="background-color: aqua;">
                 <tr class="table-primary">
-                <th><b>ID UPP</b></th>
+                <th><b>Clave UPP</b></th>
                 <th><b>UPP</b></th>
                 <th><b>TIPO</b></th>
-                <th><b>ID FONDO</b></th>
+                <th><b>Clave FONDO</b></th>
                 <th><b>FONDO</b></th>
                 <th><b>PRESUPUESTO</b></th>
                 <th><b>EJERCICIO</b></th>
