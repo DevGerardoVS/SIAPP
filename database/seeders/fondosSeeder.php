@@ -19273,7 +19273,7 @@ class fondosSeeder extends Seeder
             (7,'632','Actividad',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
             (8,'3','Acto',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
             (9,'4','Actuación',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-            (10,'5,'Actualización',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+            (10,'5','Actualización',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
             (11,'824','Actualización a Servidor',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
             (12,'6','Acuerdo',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
             (13,'7','Administración',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),

@@ -128,7 +128,7 @@ return new class extends Migration
 
         Schema::create('unidades_medida',function (Blueprint $table){
             $table->increments('id');
-            $table->integer('clave')->nullable(false);
+            $table->string('clave',4)->nullable(false);
             $table->text('unidad_medida',255);
             $table->integer('ejercicio')->default(null);
             $table->softDeletes();
