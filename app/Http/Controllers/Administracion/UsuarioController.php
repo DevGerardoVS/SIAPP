@@ -99,13 +99,12 @@ class UsuarioController extends Controller
 		$dataSet = [];
 		
 		foreach ($query as $key) {
-			$accion ='<a data-toggle="modal" data-target="#exampleModal" data-backdrop="static" data-keyboard="false" title="Modificar Usuario"
-			class="btn btn-sm"onclick="dao.editarUsuario('.$key->id.')">' .
-                        '<i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' .
-                        '<a data-toggle="tooltip" title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' .$key->id. ', ' .$key->estatus.')">' .
-                        '<i class="fa fa-lock"></i></a>&nbsp;'
-                        /*'<a data-toggle="tooltip" title="Eliminar Usuario" class="btn btn-sm" onclick="dao.eliminarUsuario('.$key->id. ')">' .
-                        '<i class="fa fa-trash" style="color:B40000;" ></i></a>&nbsp;'*/;
+			Auth::user()->id_grupo;
+			$accion = Auth::user()->id_grupo != 3?'<a data-toggle="modal" data-target="#exampleModal" data-backdrop="static" data-keyboard="false" title="Modificar Usuario"
+			class="btn btn-sm"onclick="dao.editarUsuario(' . $key->id . ')">' .
+				'<i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' .
+				'<a data-toggle="tooltip" title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' . $key->id . ', ' . $key->estatus . ')">' .
+				'<i class="fa fa-lock"></i></a>&nbsp;':'';
 			$i = array(
 				$key->username,
 				$key->email,
@@ -139,10 +138,10 @@ class UsuarioController extends Controller
 			$validaUserName = User::where('username', $request->username)->get();
 			$validaEmail = User::where('email', $request->email)->get();
 			if ($validaUserName->isEmpty() == false) {
-				return response()->json("userDuplicate", 200);
+				return response()->json(["icon"=>'info',"title"=>"Username duplicado"], 200);
 			}
 			if ($validaEmail->isEmpty() == false) {
-				return response()->json("emailDuplicate", 200);
+				return response()->json(["icon"=>'info',"title"=>"email duplicado"], 200);
 			}
 			$user = User::create($request->all());
 			UsuarioGrupo::create([
@@ -150,7 +149,7 @@ class UsuarioController extends Controller
 				'id_usuario' => $user->id
 			]);
 
-			return response()->json("done", 200);
+			return response()->json(["success"=>'info',"title"=>"Usuario guardado"], 200);
 		}
 	}
 	//Reset Password

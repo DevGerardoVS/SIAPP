@@ -1,4 +1,3 @@
-let flag = false;
 let namePer = ['leer', 'escribir', 'editar', 'eliminar'];
 var dao = {
     setStatus: function (id, estatus) {
@@ -153,8 +152,8 @@ var dao = {
         }).done(function (response) {
             $('#cerrar').trigger('click');
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
+                icon: response.icon,
+                title: response.title,
                 showConfirmButton: false,
                 timer: 1500
             });
@@ -286,7 +285,7 @@ var dao = {
     },
 };
 var init = {
-    validateCreate: function (form, flag) {
+    validateCreate: function (form) {
 
         let rm =
         {
@@ -303,8 +302,45 @@ var init = {
                     phoneUS: true
                 },
                 id_grupo: { required: true },
+                sudo: { required: true }
+
+            },
+            messages: {
+                username: { required: "Este campo es requerido" },
+                nombre: { required: "Este campo es requerido" },
+                p_apellido: { required: "Este campo es requerido" },
+                s_apellido: { required: "Este campo es requerido" },
+                email: { required: "Este campo es requerido" },
+                password: { required: "Este campo es requerido" },
+                in_pass_conf: { required: "Este campo es requerido" },
+                in_celular: { required: "Este campo es requerido" },
+                id_grupo: { required: "Este campo es requerido" },
+                sudo: { required: "Este campo es requerido" }
+
+            }
+        }
+        _gen.validate(form, rm);
+
+    },
+    valUpp: function (form) {
+
+        let rmUPP =
+        {
+            rules: {
+                username: { required: true },
+                nombre: { required: true },
+                p_apellido: { required: true },
+                s_apellido: { required: true },
+                email: { required: true, email: true },
+                password: { required: true },
+                in_pass_conf: { required: true, equalTo: "#password" },
+                in_celular: {
+                    required: true,
+                    phoneUS: true
+                },
+                id_grupo: { required: true },
                 sudo: { required: true },
-                clv_upp: { required: flag }
+                clv_upp: { required: true }
 
             },
             messages: {
@@ -322,7 +358,7 @@ var init = {
 
             }
         }
-        _gen.validate(form, rm);
+        _gen.validate(form, rmUPP);
 
     },
     validatePermiso: function (form) {
@@ -347,7 +383,6 @@ var init = {
 
 $(document).ready(function () {
     getData();
-    init.validateCreate($('#frm_create'), flag);
     init.validatePermiso($('#frm_permisos'));
     dao.getPerfil();
     dao.getUsers();
@@ -356,11 +391,11 @@ $(document).ready(function () {
         if (this.value == '4') {
             $('#divUpp').show();
             dao.getUpp();
-            flag = true;
+            init.valUpp($('#frm_create'));
         } else {
             $('#divUpp').hide();
             $("#clv_upp option[value='']").attr("selected", true);
-            $("#clv_upp").val("")
+            init.validateCreate($('#frm_create'));
         }
     });
 
@@ -368,14 +403,29 @@ $(document).ready(function () {
         backdrop: 'static',
         keyboard: false
     })
-    $('#btnSave').click(function (e) {
-        e.preventDefault();
-        init.validateCreate($('#frm_create'), flag);
-        if ($('#frm_create').valid()) {
-            dao.crearUsuario();
+    $('#btnSave').click(function () {
+        init.validateCreate($('#frm_create'));
+        let selectValue = $("#id_grupo").find("option:selected").val();
+        if (selectValue != 4) {
+            init.validateCreate($('#frm_create'));
+            if ($('#frm_create').valid()) {
+                dao.crearUsuario();
+            }
         }
-        $('#email-error').text("Este campo es requerido").addClass('has-error');;
-        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');;
+        if (selectValue == 4) {
+                if ($("#clv_upp").val() == null) {
+                init.valUpp($('#frm_create'));
+                if ($('#frm_create').valid()) {
+                    dao.crearUsuario();
+                }
+            } else {
+                $('#clv_upp-error').text("Este campo es requerido").addClass('has-error');
+            }
+            
+        }
+        $('#email-error').text("Este campo es requerido").addClass('has-error');
+        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');
+        $('#clv_upp-error').text("Este campo es requerido").addClass('has-error');
     });
     $('#btnSaveP').click(function (e) {
         if ($('#frm_permisos').valid()) {
