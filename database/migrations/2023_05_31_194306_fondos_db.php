@@ -397,7 +397,9 @@ return new class extends Migration
         Schema::create('tipo_actividad_upp', function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_upp',3)->nullable(false);
-            $table->integer('tipo')->nullable(false)->comment('0 - Continuo, 1 - Acumulativo, 2 - Especial');
+            $table->boolean('Continua')->default(false);
+            $table->boolean('Acumulativa')->default(false);
+            $table->boolean('Especial')->default(false);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('created_user',45)->nullable(false);
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

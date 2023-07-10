@@ -1064,7 +1064,7 @@ $.ajaxSetup({
     async: false,
     success: function (data) { },
     error: function (error, status, err) {
-        console.log("error-".error);
+        console.log("error-",error);
         if (error.status == 401)
         Swal.fire({
             icon: 'warning',
@@ -1077,6 +1077,27 @@ $.ajaxSetup({
             icon: 'error',
             title: 'Error del servidor',
             text: 'Ha ocurrido un error interno. Intentelo más tarde o contacte a soporte técnico',
+            showConfirmButton: true,
+        });
+        else if (error.status == 422)
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'El documento contiene campos vacios',
+            showConfirmButton: true,
+        });
+        else if (error.status == 423)
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'El documento esta vacio',
+            showConfirmButton: true,
+        });
+        else if (error.status == 424)
+        Swal.fire({
+            icon: 'error',
+            title: 'Error del servidor',
+            text: 'El Proyecto Ingresado no existe',
             showConfirmButton: true,
         });
     },

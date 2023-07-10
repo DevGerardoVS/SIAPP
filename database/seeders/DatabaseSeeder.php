@@ -143,7 +143,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 11,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Reportes', 'ruta' => '/Reportes', 'icono' => 'fa-flag-checkered', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Reportes'],
             ['id' => 12,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'ley Planeacion Hacienda', 'ruta' => '/Reportes/ley-planeacion', 'icono' => 'fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Reportes'],
             ['id' => 13,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Administrativos', 'ruta' => '/Reportes/administrativos', 'icono' => 'fa-flag-checkered', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Reportes'],
-            ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administracio de captura', 'ruta' => '/admon-capturas', 'icono' => ' fa-crosshairs', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
+            ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administracion de captura', 'ruta' => '/admon-capturas', 'icono' => ' fa-crosshairs', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
         );
     protected $menuUpp = array(
         ['id_menu' => 7 ], 
@@ -197,7 +197,16 @@ class DatabaseSeeder extends Seeder
             ['id' => 14,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'getPermisos', 'tipo' => 'Consulta', 'descripcion' => 'Consulta de permisos'],
             ['id' => 15,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'postPermisos', 'tipo' => 'Insercion', 'descripcion' => 'Crear registro de permisos'],
             ['id' => 16,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
-            ['id' => 16,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
+            ['id' => 17,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
+            ['id' => 18,  'id_sistema' => 1,'id_menu' => 7, 'modulo' => 'Calendarizacion', 'funcion' => 'getCalendarizacion', 'tipo' => 'consulta', 'descripcion' => 'Vista de el modulo'],
+            ['id' => 19,  'id_sistema' => 1,'id_menu' => 8, 'modulo' => 'Calendarizacion', 'funcion' => 'getClaves', 'tipo' => 'consulta', 'descripcion' => 'Vista claves presupuestarias'],
+            ['id' => 20,  'id_sistema' => 1,'id_menu' => 9, 'modulo' => 'Calendarizacion', 'funcion' => 'getMetas', 'tipo' => 'consulta', 'descripcion' => 'Vista Metas'],
+            ['id' => 21,  'id_sistema' => 1,'id_menu' => 10, 'modulo' => 'Calendarizacion', 'funcion' => 'getTechos', 'tipo' => 'consulta', 'descripcion' => 'Vista Techos Financieros'],
+            ['id' => 22,  'id_sistema' => 1,'id_menu' => 11, 'modulo' => 'Reportes', 'funcion' => 'getModulo', 'tipo' => 'consulta', 'descripcion' => 'Vista Modulo reportes'],
+            ['id' => 23,  'id_sistema' => 1,'id_menu' => 12, 'modulo' => 'Reportes', 'funcion' => 'getPlaneacion', 'tipo' => 'consulta', 'descripcion' => 'Vista planeacion'],
+            ['id' => 24,  'id_sistema' => 1,'id_menu' => 13, 'modulo' => 'Reportes', 'funcion' => 'getAdministrativos', 'tipo' => 'consulta', 'descripcion' => 'Vista Administrativos'],
+            ['id' => 24,  'id_sistema' => 1,'id_menu' => 14, 'modulo' => 'Reportes', 'funcion' => 'getCaptura', 'tipo' => 'consulta', 'descripcion' => 'Vista Admon Captura'],
+            ['id' => 25,  'id_sistema' => 1,'id_menu' => 2, 'modulo' => 'Logs', 'funcion' => 'getLogs', 'tipo' => 'consulta', 'descripcion' => 'Vista de Logs'],
         );
 
     public function run()
