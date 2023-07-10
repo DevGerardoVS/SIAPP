@@ -200,7 +200,7 @@
         }
         if (upp != '') {
             dao.getUpp(upp);
-            dao.getFondosByUpp(upp,fondo_ramo);
+            dao.getFondosByUpp(upp,subprograma_presupuestario,fondo_ramo);
         }
         if (ur != '') {
             dao.getUninadResponsableByUpp(upp,ur);
@@ -212,7 +212,7 @@
             dao.getProgramaPresupuestarioByur(upp,ur,programa_presupuestario);
         }
         if (subprograma_presupuestario != '') {
-            dao.getSubProgramaByProgramaId(ur,programa_presupuestario,subprograma_presupuestario);
+            dao.getSubProgramaByProgramaId(ur,programa_presupuestario,upp,subprograma_presupuestario);
         }
         if (proyecto_presupuestario != '') {
             dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario);

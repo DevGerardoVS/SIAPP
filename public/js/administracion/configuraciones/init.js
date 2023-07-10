@@ -149,9 +149,29 @@ function getUpps(){
 function updateData(id,field){
 	var formData = new FormData();
 	var csrf_tpken = $("input[name='_token']").val();
+	var tipo;
+	console.log(field);
+
+	switch(field){
+		case "continua":
+			tipo="c";
+			break;
+		case "acumulativa":
+			tipo="a";
+			break;
+		case "especial":
+			tipo="e";
+			break;
+		default:
+			break;
+	}
+	
+	var value = $("#"+id+"_"+tipo)[0].checked;
+	console.log(value);
 	formData.append("_token",csrf_tpken);
 	formData.append("id",id);
 	formData.append("field",field);
+	formData.append("value",value);
 	$.ajax({
         url:"/amd-configuracion/update",
 		data: formData,

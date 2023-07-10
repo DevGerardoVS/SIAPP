@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
-                <h5 class="modal-title" id="permisosModalLabel">Agregar usuario</h5>
+                <h5 class="modal-title" id="permisosModalLabel">Agregar permiso adicional</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <a aria-hidden="true" style="color: whitesmoke" onclick="dao.limpiarFormularioCrear()">&times;</a>
                 </button>
@@ -28,7 +28,7 @@
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-8">
                             <label class="control-label">Descripcion</label>
-                            <textarea class="form-control" placeholder="Leave a comment here" id="descripcion" name="descripcion"
+                            <textarea class="form-control" placeholder="agrerga una descripcion" id="descripcion" name="descripcion"
                                 style="height: 100px"></textarea>
                         </div>
                     </div>
