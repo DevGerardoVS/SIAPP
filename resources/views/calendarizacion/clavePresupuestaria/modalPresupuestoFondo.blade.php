@@ -16,10 +16,12 @@
                         <tr>
                             <th class="colorMorado">ID Fondo</th>
                             <th class="colorMorado">Fondo</th>
-                            <th class="colorMorado">Ejercicio</th>
-                            <th class="colorMorado">Monto Asignado</th>
+                            <th class="colorMorado">Operativo</th>
+                            <th class="colorMorado">Recursos Humanos</th>
+                            <th class="colorMorado">Techo presupuestal</th>
                             <th class="colorMorado">Calendarizado</th>
                             <th class="colorMorado">Disponible</th>
+                            <th class="colorMorado">Ejercicio</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -27,7 +29,10 @@
                         </tbody>
                         <tfoot >
                             <tr>
-                                <th class="colorMorado" colspan="3"> Total:</th>
+                                <th class="colorMorado" colspan="2"> Total:</th>
+                                <th class="colorMorado"></th>
+                                <th class="colorMorado"></th>
+                                <th class="colorMorado"></th>
                                 <th class="colorMorado"></th>
                                 <th class="colorMorado"></th>
                                 <th class="colorMorado"></th>
