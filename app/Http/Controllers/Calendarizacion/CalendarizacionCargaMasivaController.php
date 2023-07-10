@@ -29,6 +29,7 @@ class CalendarizacionCargaMasivaController extends Controller
 {
      //Obtener plantilla para descargar
 	public function getExcel(Request $request)	{
+        /*Si no coloco estas lineas Falla*/
         ob_end_clean();
         ob_start();
 
