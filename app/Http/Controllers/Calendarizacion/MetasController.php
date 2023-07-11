@@ -107,9 +107,11 @@ class MetasController extends Controller
 	}
 	public function getMetasP(Request $request)
 	{
+		Log::debug($request);
+		Log::debug(isset($request->upp_filter));
 		$dataSet = [];
-		$upp = auth::user()->clv_upp;
-		if ($request->ur_filter != null) {
+		$upp = isset($request->upp_filter) ?$request->upp_filter:auth::user()->clv_upp;
+		if ($request->ur_filter != null && $upp !='') {
 			$activs = DB::table("programacion_presupuesto")
 				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
 				->select(
@@ -119,17 +121,14 @@ class MetasController extends Controller
 					'v_epp.proyecto as proyecto'
 				)
 				->where('programacion_presupuesto.ur', '=', $request->ur_filter)
-				->groupByRaw('programa_presupuestario');
-			if ($upp != null) {
-				$activs = $activs->where('programacion_presupuesto.upp', '=', $upp);
-			}
-			$activs = $activs->get();
-			log::debug("UPP:" . $upp . "- UR:" . $request->ur_filter);
-
+				->where('programacion_presupuesto.upp', '=', $upp)
+				->groupByRaw('programa_presupuestario')->get();
+				
 			foreach ($activs as $key) {
 				$accion = '<div class="form-check"><input class="form-check-input" type="radio" name="proyecto" id="proyecto" value="' . $key->id . '" checked><label class="form-check-label" for="exampleRadios1"></label></div>';
 				$dataSet[] = [$key->programa, $key->subprograma, $key->proyecto, $accion];
 			}
+			Log::debug($dataSet);
 		}
 		return response()->json(["dataSet" => $dataSet], 200);
 	}
@@ -241,9 +240,9 @@ class MetasController extends Controller
 		}
 		return $dataSet;
 	}
-	public function getUrs()
+	public function getUrs($_upp)
 	{
-		$upp = auth::user()->clv_upp;
+		$upp = $_upp != null?$_upp:auth::user()->clv_upp;
 		$urs = DB::table('v_epp')
 			->select(
 				'id',
@@ -256,6 +255,18 @@ class MetasController extends Controller
 		}
 		$urs = $urs->get();
 		return $urs;
+	}
+	public function getUpps()
+	{
+		$upps = DB::table('v_epp')
+			->select(
+				'id',
+				'clv_upp',
+				'upp'
+			)->distinct()
+			->groupByRaw('clv_upp')
+			->get();
+		return $upps;
 	}
 	public function getProgramas($ur)
 	{

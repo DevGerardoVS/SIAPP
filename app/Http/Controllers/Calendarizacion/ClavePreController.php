@@ -523,20 +523,27 @@ class ClavePreController extends Controller
         return response()->json($response,200);
     }
     public function getPanelPresupuestoFondo($ejercicio = 0, $clvUpp = ''){
+        $disponible = 0;
+        $totalDisponible = 0;
+        $totalAsignado = 0;
+        $totalCalendarizado = 0;
         $uppUsuario = Auth::user()->clv_upp;
         $anio = '';
+        $upp = ['clave'=>'000','descripcion'=>'Detalle General'];
+        $array_where = [];
+        $array_where2 = [];
         if ($ejercicio && $ejercicio > 0) {
             $anio = $ejercicio;
         }else {
             $anio = date('Y');
         }
-        $upp = ['clave'=>'000','descripcion'=>'Detalle General'];
-        $arrayTechos = "tf.deleted_at IS NULL  && tf.ejercicio = ".$anio;
-        $arrayProgramacion = "PP.deleted_at IS NULL && PP.ejercicio = ".$anio;
         $uppAutorizados = DB::table('uppautorizadascpnomina')
             ->SELECT('clv_upp')
             ->WHERE('clv_upp','=', $clvUpp != '' ? $clvUpp : $uppUsuario)
             ->get();
+        $arrayTechos = "tf.deleted_at IS NULL  && tf.ejercicio = ".$anio;
+        $arrayProgramacion = "PP.deleted_at IS NULL && PP.ejercicio = ".$anio;
+        
         if ($uppUsuario && $uppUsuario != null) {
             $arrayTechos = $arrayTechos."&& tf.clv_upp = ".$uppUsuario;
             $arrayProgramacion = $arrayProgramacion."&& PP.upp = ".$uppUsuario;
@@ -552,57 +559,88 @@ class ClavePreController extends Controller
             }
         } 
         if ($uppAutorizados && count($uppAutorizados) > 0) {
-            $arrayTechos = $arrayTechos." && tf.tipo = 'Operativo' ";
-            $arrayProgramacion = $arrayProgramacion." && PP.tipo = 'Operativo' ";
-        }
-        $disponible = 0;
-        $totalDisponible = 0;
-        $totalAsignado = 0;
-        $totalCalendarizado = 0;
-        $fondos = DB::select("select
-            fondo1,
-            group_concat(descripcion separator '') as descripcion,
-            ejercicio,
-            sum(techos) as montoAsignado,
-            sum(anual) as calendarizado
+            $fondos = DB::select("
+            select 
+                clv_fondo,
+                f.fondo_ramo,
+                0 RH,
+                sum(Operativo) Operativo,
+                sum(Operativo) techos_presupuestal,
+                sum(calendarizado) calendarizado,
+                sum(Operativo) - calendarizado disponible,
+                ejercicio
+            from (
+                select 
+                    clv_fondo,
+                    0 RH,
+                    sum(presupuesto) Operativo,
+                    0 calendarizado,
+                    ejercicio
+                from techos_financieros tf
+                where tf.tipo = 'Operativo' && ".$arrayTechos."
+                group by clv_fondo
+                union all 
+                select 
+                    fondo_ramo clv_fondo,
+                    0 RH,
+                    0 Operativo,
+                    sum(total) calendarizado,
+                    ejercicio
+                from programacion_presupuesto pp
+                where pp.tipo = 'Operativo' && ".$arrayProgramacion."
+                group by clv_fondo
+            ) tabla
+            join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
+            group by clv_fondo,f.fondo_ramo;");
+        }else {
+            $fondos = DB::select("select 
+            clv_fondo,
+            f.fondo_ramo,
+            sum(RH) RH,
+            sum(Operativo) Operativo,
+            sum(RH+Operativo) techos_presupuestal,
+            sum(calendarizado) calendarizado,
+            sum((RH+Operativo)-calendarizado) disponible,
+            ejercicio
         from (
             select 
-                clv_fondo fondo1,
-                ejercicio,
-                fondo.fondo_ramo descripcion,
-                sum(presupuesto) techos,
-                0 anual
+                clv_fondo,
+                sum(presupuesto) RH,
+                0 Operativo,
+                0 calendarizado,
+                ejercicio
             from techos_financieros tf
-            LEFT JOIN fondo on tf.clv_fondo = fondo.clv_fondo_ramo
-            WHERE ".$arrayTechos." 
-            group by clv_fondo,descripcion
+            where tf.tipo = 'RH' &&".$arrayTechos." 
+            group by clv_fondo
             union all
             select 
-                fondo_ramo fondo1,
-                ejercicio,
-                '' descripcion,
-                0 techos,
-                sum(total) anual
-            from programacion_presupuesto pp 
-            WHERE ".$arrayProgramacion."
-            group by fondo_ramo,descripcion
-            order by fondo1
+                clv_fondo,
+                0 RH,
+                sum(presupuesto) Operativo,
+                0 calendarizado,
+                ejercicio
+            from techos_financieros tf
+            where tf.tipo = 'Operativo' &&".$arrayTechos." 
+            group by clv_fondo
+            union all 
+            select 
+                fondo_ramo clv_fondo,
+                0 RH,
+                0 Operativo,
+                sum(total) calendarizado,
+                ejercicio
+            from programacion_presupuesto pp
+            where ".$arrayProgramacion."
+            group by clv_fondo
         ) tabla
-        group by fondo1;");
-        foreach ($fondos as $key => $fondo) {
-           if ($fondo->montoAsignado != null && $fondo->calendarizado != '') {
-                $disponible = $fondo->montoAsignado - $fondo->calendarizado;
-                $fondo->disponible = $disponible;
-               
-           }
-           else {
-                $disponible = $fondo->montoAsignado;
-                $fondo->disponible = $disponible;
-           }
-           $fondo->upp = $upp;
+        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
+        group by clv_fondo,f.fondo_ramo;");
         }
-         
-        return response()->json($fondos,200);
+        $response = [
+            'fondos' => $fondos,
+            'upp' => $upp
+        ];
+        return response()->json($response,200);
     }
     public function getConceptosClave($clave){
       $clave = DB::select("CALL conceptos_clave('$clave')");
