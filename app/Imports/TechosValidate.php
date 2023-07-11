@@ -13,8 +13,6 @@ class TechosValidate
 {
     public static function validate($row)
     {
-        $rehu = 0;
-        $op = 0;
         if (count($row) >= 1) {
             $index = 1;
             $colum = TechosValidate::columnas($row[0], 0);
@@ -254,7 +252,6 @@ class TechosValidate
 
     public static function columnas($row, $index)
     {
-        Log::debug("coplum");
         for ($i = 0; $i < count($row); $i++) {
             if (count($row) < 5) {
                 return ["status" => true, "error" => 'No se debe eliminar filas de la plantilla'];

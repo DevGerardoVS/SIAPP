@@ -47,7 +47,6 @@ class TechosController extends Controller
 
         $data = $data ->get();
         
-        ;
 
         foreach ($data as $d){
             $button2 = '<a class="btn btn-secondary" onclick="" data-toggle="modal" data-target="#createGroup" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil" style="font-size: large; color: white"></i></a>';
@@ -163,7 +162,6 @@ class TechosController extends Controller
 				$filearray = $xlsx->rows();
 				array_shift($filearray);
 				$resul = TechosValidate::validate($filearray);
-                Log::debug($resul);
 				if($resul=='done'){
 					DB::commit();
 				}
