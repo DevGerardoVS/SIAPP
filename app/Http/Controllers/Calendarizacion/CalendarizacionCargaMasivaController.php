@@ -125,14 +125,15 @@ class CalendarizacionCargaMasivaController extends Controller
     
             }
             if($error>0){
-                
-                return redirect()->back()->withErrors('error','El total presupuestado en las upp no es igual al techo financiero');
+                return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero']);
+
     
             }
             switch($tipoAdm){
                 case 1:
                     if($CountR>0){
-                     return redirect()->back()->withErrors('error','Hay claves de RH en el archivo de cargas masivas');
+                     return redirect()->back()->withErrors(['error' => 'Hay claves de RH en el archivo de cargas masivas']);
+
                     }
                      //validacion para eliminar registros no confirmados 
                     foreach($arrayupps as $u){
@@ -146,7 +147,8 @@ class CalendarizacionCargaMasivaController extends Controller
     
                 case 2:
                     if($CountO>0){
-                        return redirect()->back()->withErrors('error','Hay claves Operativas en el archivo de cargas masivas');
+                        return redirect()->back()->withErrors(['error' => 'Hay claves Operativas en el archivo de cargas masivas']);
+
                        }
                     //validacion para eliminar registros no confirmados 
                     foreach($arrayupps as $key=>$u){
@@ -183,8 +185,8 @@ class CalendarizacionCargaMasivaController extends Controller
                 if(Controller::check_assignFront(1)){
                 }
                 else{
-                    Log::debug("No tiene permiso para subir carga masiva");
-                    return redirect()->back()->withErrors('error','No tiene permiso para subir carga masiva');
+                    return redirect()->back()->withErrors(['error' => 'No tiene permiso para subir carga masiva']);
+
 
                 }
                 
@@ -200,6 +202,7 @@ class CalendarizacionCargaMasivaController extends Controller
           if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
             $filearray =$xlsx->rows();
             $error=0;
+            $Añoerr=0;
             array_shift($filearray);
             $ejercicio=date("Y");
             foreach($filearray as $k){
@@ -252,14 +255,23 @@ class CalendarizacionCargaMasivaController extends Controller
 
                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio+1)->count();
                  $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio+1)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
-                 if($valuepresupuesto=!$value || $VerifyEjercicio<0){
+                 if($valuepresupuesto=!$value ){
                  $error++;
+                }
+                if($VerifyEjercicio<0){
+                    $Añoerr++;
+
                 }
     
             }
             if($error>0){
 
-                return redirect()->back()->withErrors('error','El total presupuestado en las upp no es igual al techo financiero');
+                return redirect()->back()->withErrors(['error' => 'El total presupuestado en las upp no es igual al techo financiero']);
+    
+            }
+            if($Añoerr>0){
+
+                return redirect()->back()->withErrors(['error' => 'El año seleccionado no es valido']);
     
             }
             switch($tipousuario){
@@ -267,15 +279,15 @@ class CalendarizacionCargaMasivaController extends Controller
 
                     if($DiferenteUpp>0){
                         Log::debug("No tiene permiso para subir de diferente upp");
-                        return redirect()->back()->withErrors('error','No tiene permiso para registrar de  otras upps');
+                        return redirect()->back()->withErrors(['error' => 'No tiene permiso para registrar de  otras upps']);
                     }
                     if($ObraCount>0 ){
                         if(Controller::check_assignFront(3)){
                         
                         }
                         else{
-                            return redirect()->back()->withErrors('error','No tiene permiso para registrar obras');
-        
+                            return redirect()->back()->withErrors(['error' => 'No tiene permiso para registrar obras']);
+
                         }
 
 
@@ -293,10 +305,11 @@ class CalendarizacionCargaMasivaController extends Controller
 
                      case 1:
                         if($CountR>0){
-                            return redirect()->back()->withErrors('error','Hay claves de RH en el archivo de cargas masivas');  
+                            return redirect()->back()->withErrors(['error' => 'Hay claves de RH en el archivo de cargas masivas']);
                            }
                            if($DiferenteUpp>0){
-                            return redirect()->back()->withErrors('error','No tiene permiso para registrar de  otras upps');
+                            return redirect()->back()->withErrors(['error' => 'No tiene permiso para registrar de  otras upps']);
+
                         } 
                            //validacion para eliminar registros no confirmados 
                            foreach($arrayupps as $u){
@@ -313,7 +326,8 @@ class CalendarizacionCargaMasivaController extends Controller
     
                 case 5:
                     if($CountO>0){
-                        return redirect()->back()->withErrors('error','Hay claves Operativas en el archivo de cargas masivas');
+                        return redirect()->back()->withErrors(['error' => 'Hay claves Operativas en el archivo de cargas masivas']);
+
                        }
                     //validacion para eliminar registros no confirmados 
                     foreach($arrayupps as $key=>$u){
@@ -332,7 +346,7 @@ class CalendarizacionCargaMasivaController extends Controller
             }      
           } catch (\Throwable $th) {
             Log::debug($th);
-            return redirect()->back()->withErrors('error','No tiene permisos para hacer carga masiva');
+            return redirect()->back()->withErrors(['error' => 'No tiene permisos para hacer carga masiva']);
 
         }
         //si todo sale bien procedemos al import
