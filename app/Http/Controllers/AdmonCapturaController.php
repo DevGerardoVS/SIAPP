@@ -12,6 +12,7 @@ class AdmonCapturaController extends Controller
 {
     //
     public function index(){
+        Controller::check_permission('getCaptura');
         $dataSet = array();
         $anio_activo = DB::select('SELECT ejercicio FROM cierre_ejercicio_claves WHERE activos = 1 LIMIT 1');
         $anio = $anio_activo[0]->ejercicio;
@@ -88,6 +89,7 @@ class AdmonCapturaController extends Controller
     }
 
     public function update(Request $request){
+        Controller::check_permission('getCaptura');
         $upp = $request->upp_filter;
         $modulo = $request->modulo_filter;
         $habilitar = $request->capturaRadio;

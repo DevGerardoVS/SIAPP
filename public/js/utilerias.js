@@ -375,31 +375,47 @@ var _gen = {
                         return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
                     };
                     // Total calendarizado...
-                    total = api
-                        .column(4)
+                    totalOp = api
+                        .column(2)
                         .data()
                         .reduce(function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0);
                     //Total asignado...
-                        totalAsignado = api
+                        totalRh = api
                         .column(3)
                         .data()
                         .reduce(function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0);
                     //totalDisponible
-                    totalDisponible = api
+                    totalTechos = api
+                        .column(4)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                        totalCal = api
+                        .column(5)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                        totalDis = api
                         .column(5)
                         .data()
                         .reduce(function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0);
                     // Update footer
-
-                    $(api.column(4).footer()).html('$'+ total);
-                    $(api.column(3).footer()).html('$'+ totalAsignado);
-                    $(api.column(5).footer()).html('$'+ totalDisponible);
+                    operativo = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalOp);
+                    $(api.column(2).footer()).html(operativo);
+                    $(api.column(3).footer()).html('$'+ totalRh);
+                    $(api.column(4).footer()).html('$'+ totalTechos);
+                    $(api.column(5).footer()).html('$'+ totalCal);
+                    $(api.column(6).footer()).html('$'+ totalDis);
+                    
                 },
                 preDrawCallback: function () {
                     if (!responsiveHelper_datatable_tabletools) {

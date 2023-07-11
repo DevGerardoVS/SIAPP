@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers\Calendarizacion;
 
+use App\Exports\TechosExport;
+use App\Exports\TechosExportPDF;
+use App\Exports\TechosExportPresupuestos;
 use App\Http\Controllers\Controller;
+use App\Imports\TechosValidate;
 use Carbon\Carbon;
 use Dompdf\Exception;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Throwable;
-use App\Exports\PlantillaTechosExport;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\TechosValidate;
 
 use Shuchkin\SimpleXLSX;
+use Throwable;
+use function Psy\debug;
+use App\Exports\PlantillaTechosExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TechosController extends Controller
 {
@@ -24,9 +29,7 @@ class TechosController extends Controller
     }
 
     public function getTechos(Request $request){
-        log::debug($request);
         $dataSet = [];
-        $where_upp = '';
 
         $data = DB::table('techos_financieros as tf')
             ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
@@ -169,5 +172,48 @@ class TechosController extends Controller
         } catch (\Exception $e) {
 			DB::rollback();
 		}
+    }
+    
+    public function exportExcel(Request $request){
+        try{
+            ob_end_clean();
+            ob_start();
+            return Excel::download(new TechosExport($request->anio_filter_export),'Techos_Financieros.xlsx');
+        }catch (Throwable $e){
+            DB::rollBack();
+            report($e);
+            return [
+                'error' => $e
+            ];
+        }
+    }
+    
+    public function exportPDF(Request $request){
+        
+        try{
+            ob_end_clean();
+            ob_start();
+            return Excel::download(new TechosExportPDF($request->anio_filter_pdf),'Techos_Financieros.pdf');
+        }catch (Throwable $e){
+            DB::rollBack();
+            report($e);
+            return [
+                'error' => $e
+            ];
+        }
+    }
+
+    public function exportPresupuestos(Request $request){
+        try{
+            ob_end_clean();
+            ob_start();
+            return Excel::download(new TechosExportPresupuestos($request->anio_filter_presupuestos),'Presupuestos_Techos_Financieros.xlsx');
+        }catch (Throwable $e){
+            DB::rollBack();
+            report($e);
+            return [
+                'error' => $e
+            ];
+        }
     }
 }
