@@ -16,7 +16,7 @@ return new class extends Migration
 
         Schema::create('grupos', function (Blueprint $table){
             $table->increments('id');
-            $table->integer('grupo')->nullable(false);
+            $table->string('grupo',100)->nullable(false);
             $table->softDeletes();
             $table->string('created_user',45)->nullable(false);
             $table->string('updated_user',45)->nullable(true);
