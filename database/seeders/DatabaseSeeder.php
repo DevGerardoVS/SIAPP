@@ -34,10 +34,10 @@ class DatabaseSeeder extends Seeder
         );
 
     protected $cat_users = array(
-        ['id' => 1, 'id_grupo' => 2, 'nombre' => 'Gob', 'p_apellido' => 'Digital', 's_apellido' => 'siapp', 'celular' => '00-00-00-00-00', 'email' => 'control@gmail.com', 'username' => 'control', 'password' => 'valida2022', 'sudo' => 1, 'clv_upp' => NULL],
+        ['id' => 1, 'id_grupo' => 2, 'nombre' => 'Gob', 'p_apellido' => 'Digital', 's_apellido' => 'siapp', 'celular' => '00-00-00-00-00', 'email' => 'control@gmail.com', 'username' => 'control', 'password' => 'CasaMata', 'sudo' => 1, 'clv_upp' => NULL],
         ['id' => 2, 'id_grupo' => 1, 'nombre' => 'sudo', 'p_apellido' => 'admin', 's_apellido' => 'sedj', 'celular' => '00-00-00-00-00', 'email' => 'prueba1@gmail.com', 'username' => 'administrador', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 3, 'id_grupo' => 1, 'nombre' => 'Francisco', 'p_apellido' => 'Méndez', 's_apellido' => 'Chávez', 'celular' => '44-32-21-90-95', 'email' => 'pacomendez2308@gmail.com', 'username' => 'depExpedientes', 'password' => 'depExpedientes.22', 'sudo' => 0, 'clv_upp' => NULL],
-        ['id' => 4, 'id_grupo' => 3, 'nombre' => 'auditor', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Auditor', 'password' => 'valida23', 'sudo' => 0, 'clv_upp' => '007'],
+        ['id' => 4, 'id_grupo' => 3, 'nombre' => 'auditor', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Auditor', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '007'],
         ['id' => 5, 'id_grupo' => 1, 'nombre' => 'UnidadR', 'p_apellido' => 'u', 's_apellido' => 'pp', 'celular' => '44-32-21-90-95', 'email' => 'upp_user@gmail.com', 'username' => 'upp', 'password' => 'valida23', 'sudo' => 0, 'clv_upp' => '002'],
         ['id' => 6, 'id_grupo' => 1, 'nombre' => 'Luis', 'p_apellido' => 'Pardo', 's_apellido' => 'Escutia', 'celular' => '4400000081', 'email' => 'rosario.escutia+81@correo.michoacan.gob.mx', 'username' => 'LPARDO', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 7, 'id_grupo' => 2, 'nombre' => 'Mario', 'p_apellido' => 'Delgado', 's_apellido' => 'Murillo', 'celular' => '4400000082', 'email' => 'rosario.escutia+82@correo.michoacan.gob.mx', 'username' => 'DELEGACION', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
