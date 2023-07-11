@@ -39,7 +39,70 @@ class ConfiguracionesController extends Controller
         }
     }
 
+    public function GetUppsAuto(){
+        try {
+            $dataSet = array();
+            //select epp.upp_id, catalogo.descripcion from epp inner join catalogo on catalogo.clave=epp.upp_id where catalogo.grupo_id=6 group by upp_id order by upp_id;
+            $dataSet = DB::table('epp')
+                ->select('epp.upp_id', 'catalogo.descripcion')
+                ->join('catalogo', 'catalogo.clave','=','epp.upp_id')
+                ->where('grupo_id', 6)
+                ->groupBy('upp_id')
+                ->orderBy('upp_id')
+                ->get();
+
+            return response()->json([
+                "dataSet" => $dataSet,
+                "catalogo" => "Configuraciones",
+            ]);
+
+        } catch(\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+        }
+    }
+
     public static function GetConfiguraciones(Request $request){
+        try {
+            $dataSet = array();
+            $array_where = [];
+            $filter = $request->filter;
+
+            if($filter!=null || $filter!='') array_push($array_where, ['clave','=',$filter]);
+
+            $data = DB::table('tipo_actividad_upp')
+                ->select('clave', 'descripcion','Acumulativa','Continua','Especial')
+                ->join('catalogo','tipo_actividad_upp.clv_upp','=','catalogo.clave')
+                ->where('grupo_id', 6)
+                ->where($array_where)
+                ->get();
+
+            $i=0;
+            foreach ($data as $d) {
+                //$d->tipo 
+                $acumulativa = $d->Acumulativa==1? ' checked' : '';
+                $continua = $d->Continua==1? ' checked' : '';
+                $especial = $d->Especial==1? ' checked' : '';
+
+                $ds = array($d->clave , $d->descripcion, 
+                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'acumulativa\')" id="'.$d->clave.'_a" '.$acumulativa.'></div>',
+                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'continua\')" id="'.$d->clave.'_c" '.$continua.'></div>',
+                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'especial\')" id="'.$d->clave.'_e" '.$especial.'></div>');
+                $dataSet[] = $ds;
+            }
+
+            return response()->json([
+                "dataSet" => $dataSet,
+                "catalogo" => "Configuraciones",
+            ]);
+
+        } catch(\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+        }
+    }
+
+    public static function GetAutorizadas(Request $request){
         try {
             $dataSet = array();
             $array_where = [];

@@ -43,7 +43,7 @@
             <div class="circle"></div>
             <div class="circle-rosa"></div>
             <div id="uno" class="cal">
-                <h1 id="_mir" class="title ">MIR - Matríz de Indicadores para Resultados</h1>
+                <h1 id="_mir" class="title ">MML - Metodología de Marco Lógico</h1>
             </div>
 
             <div id="dos" class="cal">

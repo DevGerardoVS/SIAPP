@@ -114,6 +114,7 @@ var init = {
 	},
 };
 
+
 function getUpps(){
     $.ajax({
         url:"/amd-configuracion/upps",
@@ -123,11 +124,11 @@ function getUpps(){
         contentType: false,
         success:function(response){
             response = response.dataSet;
-            console.log(response);
             var $dropdown = $("#upps");
             $.each(response, function(key, value) {
                 $dropdown.append('<option value="' + value.clave + '">' + value.descripcion + '</option>');
             });
+
         },
         error: function(response) {
             var mensaje="";
@@ -145,6 +146,68 @@ function getUpps(){
         }
     });
 }
+
+function getUppsAuto(){
+    $.ajax({
+        url:"/amd-configuracion/upps-auto",
+        type: "POST",
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success:function(response){
+            response = response.dataSet;
+            var $dropdown = $("#upps_auto");
+            $.each(response, function(key, value) {
+                $dropdown.append('<option value="' + value.clave + '">' + value.descripcion + '</option>');
+            });
+
+        },
+        error: function(response) {
+            var mensaje="";
+            $.each(response.responseJSON.errors, function( key, value ) {
+                mensaje += value+"\n";
+            });
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensaje,
+                confirmButtonText: "Aceptar",
+            });
+            //$('#errorModal').modal('show');
+            console.log('Error: ' +  JSON.stringify(response.responseJSON));
+        }
+    });
+
+	//llenamos la tabla
+	/*$.ajax({
+        url:"/amd-configuracion/data-auto",
+        type: "POST",
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success:function(response){
+            response = response.dataSet;
+            
+
+        },
+        error: function(response) {
+            var mensaje="";
+            $.each(response.responseJSON.errors, function( key, value ) {
+                mensaje += value+"\n";
+            });
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensaje,
+                confirmButtonText: "Aceptar",
+            });
+            //$('#errorModal').modal('show');
+            console.log('Error: ' +  JSON.stringify(response.responseJSON));
+        }
+    });*/
+
+}
+
 
 function updateData(id,field){
 	var formData = new FormData();
@@ -167,7 +230,7 @@ function updateData(id,field){
 	}
 	
 	var value = $("#"+id+"_"+tipo)[0].checked;
-	console.log(value);
+	//console.log(value);
 	formData.append("_token",csrf_tpken);
 	formData.append("id",id);
 	formData.append("field",field);
@@ -222,4 +285,5 @@ $(document).ready(function () {
 		getData();
 	});
 
+	
 });

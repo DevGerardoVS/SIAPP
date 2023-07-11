@@ -43,6 +43,8 @@
 		Route::post('/amd-configuracion/data', 'GetConfiguraciones')->name('configuraciones');
 		Route::post('/amd-configuracion/upps', 'GetUpps')->name('getUpps');
 		Route::post('/amd-configuracion/update', 'updateUpps')->name('updateUpps');
+		Route::post('/amd-configuracion/upps-auto', 'GetUppsAuto')->name('getUppsAuto');
+		Route::post('/amd-configuracion/data-auto', 'GetAutorizadas')->name('uppsAutorizadas');
 	});
 
 	Route::controller(GrupoController::class)->group(function () {
