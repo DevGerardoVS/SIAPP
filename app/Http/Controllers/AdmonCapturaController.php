@@ -93,13 +93,13 @@ class AdmonCapturaController extends Controller
         $habilitar = $request->capturaRadio;
         $usuario = Auth::user()->username;
         $checar_upp = '';
-        if($upp != null) $checar_upp = "AND clv_upp = $upp";
+        if($upp != null) $checar_upp = "AND clv_upp = '$upp'";
 
         try {
             DB::beginTransaction();
             
             $actualizar = str_contains($request->modulo_filter,',') ? DB::update("update $modulo set cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = >'$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_upp") : DB::update("update $modulo set estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_upp");
-
+            
             DB::commit();
             return redirect()->route("index")->withSuccess('Los datos fueron modificados');
         } catch (\Exception $e) {

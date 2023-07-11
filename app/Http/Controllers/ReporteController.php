@@ -137,7 +137,7 @@ class ReporteController extends Controller
     }
 
     public function downloadReport(Request $request, $nombre){ 
-        ini_set('max_execution_time', 300); // Tiempo máximo de ejecución 
+        ini_set('max_execution_time', 600); // Tiempo máximo de ejecución 
 
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
@@ -148,7 +148,8 @@ class ReporteController extends Controller
 
         try {
         
-            $logo = public_path()."/img/logo.png";
+            $logoLeft = public_path()."/img/escudoBN.png";
+            $logoRight = public_path()."/img/logo.png";
             $report_path = app_path() ."/Reportes/".$report.".jasper";
             $format = array($request->action);
             // $format = array("xls");
@@ -157,8 +158,8 @@ class ReporteController extends Controller
             $nameFile = "EF_".$anio."_".$report;
             $parameters = array(
                 "anio" => $anio,
-                "logoLeft" => $logo,
-                "logoRight" => $logo,
+                "logoLeft" => $logoLeft,
+                "logoRight" => $logoRight,
             );
         
             if($fechaCorte != null) {

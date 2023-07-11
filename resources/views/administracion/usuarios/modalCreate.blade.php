@@ -73,7 +73,8 @@
                         </div>
                         <div class="form-group col-md-4" id='divUpp' style="display: none">
                             <label class="control-label">UPP</label>
-                            <select name="clv_upp" id="clv_upp" class="form-control" value="null">
+                            <select name="clv_upp" id="clv_upp" class="form-control" required>
+                                <span id="clv_upp-error"></span>
                             </select>
                         </div>
                     </div>
