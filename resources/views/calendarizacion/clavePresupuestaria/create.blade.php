@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @include('calendarizacion.clavePresupuestaria.modalDetalle')
+@include('calendarizacion.clavePresupuestaria.modalImgClave')
 @include('panels.datatable')
 @section('content')
-
 <div class="container">
     <section id="widget-grid" class="conteiner">
         <div class="row">
@@ -19,7 +19,7 @@
                             <div class="col-md-2" style="background-color: brown"><p style="color: aliceblue">Centro Gestor</p> </div>
                             <div class="col-md-2" style="background-color: dimgrey"><p style="color: aliceblue">Área Funcional</p></div>
                             <div class="col-md-2" style="background-color: plum"><p style="color: aliceblue">Período Presupuestal</p></div>
-                            <div class="col-md-2" style="background-color: grey"><p style="color: aliceblue">Clacificación Económica</p></div>
+                            <div class="col-md-2" style="background-color: grey"><p style="color: aliceblue">Clasificación Económica</p></div>
                             <div class="col-md-2" style="background-color: orangered"><p style="color: aliceblue">Fondo</p></div>
                             <div class="col-md-2" style="background-color: darksalmon"><p style="color: aliceblue">Inversión Pública</p></div>
                         </div>
@@ -63,6 +63,15 @@
                             </table>
                         </div>   
                         <div id="primeraParte">
+                            <div class="row">
+                                <div class="col-md-8"></div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-light" data-toggle="modal"
+                                        data-target="#imgClave" data-backdrop="static" data-keyboard="false" id="imgClave">¿Cómo está construida la clave presupuestaria?
+                                </button>
+                                </div>
+                            </div>
+                            <br>
                             <form class="form-horizontal" id="frm_create_clave">
                                 @csrf
                                 <div class="row">
@@ -70,7 +79,8 @@
                                     <div class="col-md-3"><label class="control-label">Region*</label></div>
                                         <div class="col-md-8">
                                             <select class="form-control select2" name="sel_region" id="sel_region" data-live-search="true"></select>
-                                        </div>                            
+                                        </div>      
+                                                             
                                     <div style="clear:both"></div>
                                     <div class="col-md-1"></div>
                                     <div class="col-md-3"><label class="control-label">Municipio*</label></div>
@@ -151,8 +161,18 @@
                                             
                                             <select class="form-control select2" name="sel_fondo" id="sel_fondo"></select>
                                         </div>        
-                                        <input type="hidden" id="tipo" name="tipo">                        
+                                        <input type="hidden" id="tipo" name="tipo">    
+                                        <input type="hidden" id="anio" name="anio" value={{$ejercicio}}>                      
                                     <div style="clear:both"></div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                                <div class="row" id="obras" style="display: none;">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Proyecto Obra*</label></div>
+                                        <div class="col-md-8">
+                                            <select class="form-control select2" name="sel_obra" id="sel_obra" data-live-search="true" style="width: 600px;">
+                                            </select>
+                                        </div>
                                 </div>
                             </form>
                             <div class="row">
@@ -166,7 +186,16 @@
                         <div id="segundaParte">
                             <form id="actividad">
                                 <div class="row">
-                                    <div class="col-md-9"></div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <p id="lbl_ur"></p>
+                                            <div style="clear:both"></div>
+                                            <p id="lbl_fondo"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p id="lbl_sector"></p>
+                                    </div>
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-light" data-toggle="modal"
                                             data-target="#detalle"data-backdrop="static" data-keyboard="false" id="verDetalle">Ver detalle clave presupuestaria
@@ -266,7 +295,6 @@
     <script src="/js/clavesP/cargamasiva.js"></script>
 
     <script>
-        //dao.getData();
         dao.getRegiones("");
         dao.getUpp("");
     </script>

@@ -5,21 +5,20 @@
         <div class="row containerlogin" style=" min-width:100%; ">
             <div class="  col-sm-6 text-center  ladizqlogin">
                 <div style="padding-top: 18%">
-                    {{--<h2 style="padding-top: 5%"> <b>Sistema Integral de Análisis Programático Presupuestal </b> </h2>--}}
+                    {{-- <h2 style="padding-top: 5%"> <b>Sistema Integral de Análisis Programático Presupuestal </b> </h2> --}}
                 </div>
 
                 <div style="text-align: left;">
-                <img src="{{ asset('/img/LogosGD/Group20.png') }}" style="width: 75%; left" 
-                    alt="alt text">
+                    <img src="{{ asset('/img/LogosGD/Group20.png') }}" style="width: 75%; left" alt="alt text">
                 </div>
-                
+
                 <!-- Copyright -->
 
                 <!-- Copyright -->
             </div>
-      
+
             <div class="col-sm-6">
-                
+
                 @php
                     $logouttrue = false;
                     $previus = false;
@@ -31,18 +30,30 @@
                     }
                     
                 @endphp
-               
                 <div class="card-body">
                     <div class="  " style="text-align: center; padding-top: 34%;padding-bottom: 4%;">
                         <!--<img src="{{ asset('/img/LogosGD/GDVertical.png') }}" style="width: 30%" class="css-class"
-                            alt="alt text">-->
+                                    alt="alt text">-->
                     </div>
-
+                    @if (isset($errors) && $errors->any())
+                        <br>
+                        <br>
+                        <div class="alert alert-danger">
+                            <ul style="text-align: center; ">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-                        <h5 class="text-center" style="font-size: 24px; "><b>Sistema Integral de Análisis Programático Presupuestal </b> </h5>
+                        <h5 class="text-center" style="font-size: 24px; ">
+                            <b>Calendarización y Asignación de Presupuest</b>
+                        </h5>
                         <br>
                         {{-- <h5 class="text-center" style="font-size: 24px; padding-bottom: 3%">En Línea </h5> --}}
+
                         <h5 class="text-center" style="font-size: 24px">Inicio de sesión</h5>
                         <br>
                         <div class="row mb-3" style="text-align: center; ">
@@ -106,10 +117,18 @@
                     <a href="https://www.michoacan.gob.mx">
                         Gobierno del Estado de Michoacán
                     </a>
-                </div> 
+                </div>
             </div>
         </div>
     </div>
+    @if (session()->has('success'))
+        <br>
+        <br>
+        <div class="alert alert-success">
+            {{ session()->get('success') }}
+        </div>
+    @endif
+    <!--Valida si hay errores por el metodo validate-->
 
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script>
@@ -125,11 +144,11 @@
                     dangerMode: true,
                 })
                 .then((willDelete) => {
-                    // if (willDelete) {
-                    //     window.location.href = '/login';
-                    // } else {
-                    //     window.location.href = '/login';
-                    // }
+                    if (willDelete) {
+                        window.location.href = '/login';
+                    } else {
+                        window.location.href = '/login';
+                    }
                 });
         @endif
     </script>

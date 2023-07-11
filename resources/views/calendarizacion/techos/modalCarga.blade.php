@@ -12,14 +12,14 @@
                 <form id="importPlantilla">
                     <br>
                     <div class="wrap1">
-                        <label><b>Lea las instrucciones para asegurar el funcionamiento correcto del
-                                proceso:</b></label>
+                        <label><b>Lea las instrucciones para asegurar el funcionamiento correcto del proceso:</b></label>
                         <ul style="width:75%; float:left;">
-                            <li><b>Asegúrese de utilizar la plantilla</b> para el correcto funcionamiento de la carga masiva.</li>
-                            <li>Llenar la plantilla con el presupuesto <b>Operativo</b> y <b>Recursos Humanos</b>.</li>
-                            <li><b>Agregar las filas necesarias</b> para los fondos diferentes a la plantilla.
-                            <li>Los valores no especificados, en cero o con celdas vacías <b>no se guardaran</b>.</li>
-                            </li>
+                            <li>1.- <b>Descargue y utilice la plantilla</b> para el correcto funcionamiento de la carga masiva.</li>
+                            <li>2.- Llenar la plantilla con el presupuesto <b>Operativo</b> y <b>Recursos Humanos</b>.</li>
+                            <li>3.- <b>Agregar las filas necesarias</b> para los fondos diferentes a la plantilla.</li>
+                            <li>4.- Los valores no especificados, en cero o con celdas vacías <b>no se guardaran</b>.</li>
+                            <br>
+                            <label><b>Nota:</b> Si ya existe presupuesto registrado para la upp y fondo este se actualizara.</label>
                         </ul>
                         <a class="btn-primary text-center" style="float:left; text-decoration:none; width:20%;"
                             href="{{ route('exportPlantilla') }}">

@@ -38,7 +38,7 @@ class MetasHelper{
 				'metas.total',
 				'metas.cantidad_beneficiarios',
 				'metas.beneficiario_id',
-				'metas.unidad_medidad_id'
+				'metas.unidad_medida_id'
 			)
 			->where('metas.deleted_at', '=', null)->get();
             return $query;

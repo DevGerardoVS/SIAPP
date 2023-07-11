@@ -13,14 +13,11 @@ class Metas extends Model
     protected $table = 'metas';
 
     protected $fillable = [
-        'id',
-        'proyecto_mir_id',
-        'actividad_id',
         'clv_fondo',
-        'estatus',
+        'actividad_id',
         'tipo',
         'beneficiario_id',
-        'unidad_medidad_id',
+        'unidad_medida_id',
         'cantidad_beneficiarios',
         'enero',
         'febrero',
@@ -35,6 +32,8 @@ class Metas extends Model
         'noviembre',
         'diciembre',
         'total',
+        'estatus',
+        'created_user'
     ];
 
     protected $dates = ['deleted_at'];
