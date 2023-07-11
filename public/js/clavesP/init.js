@@ -599,17 +599,31 @@ var dao = {
       url: '/calendarizacion-claves-presupuesto-fondo/'+ejercicio+'/'+clvUpp,
       dataType : "JSON"
     }).done(function (response) {
-      document.getElementById('titleModalpresupuesto').innerText = response[0].upp['clave'] + ' - ' +response[0].upp['descripcion']; 
+      let data = [];
+      for (let index = 0; index < response.fondos.length; index++) {
+        const clv_fondo = response.fondos[index].clv_fondo;
+        const fondo_ramo = response.fondos[index].fondo_ramo;
+        const Operativo = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response.fondos[index].Operativo);
+        const RH = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response.fondos[index].RH);
+        const techos_presupuestal =  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response.fondos[index].techos_presupuestal);
+        const calendarizado =  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response.fondos[index].calendarizado);
+        const disponible =  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response.fondos[index].disponible);
+        let ejercicio = response.fondos[index].ejercicio
+        data.push({'clv_fondo':clv_fondo,'fondo_ramo':fondo_ramo,'Operativo':Operativo,'RH':RH ,'techos_presupuestal':techos_presupuestal,'calendarizado':calendarizado,'disponible':disponible, 'ejercicio':ejercicio});  
+      }
+      document.getElementById('titleModalpresupuesto').innerText = response.upp['clave'] + ' - ' +response.upp['descripcion']; 
       _table = $("#tblPresupuestos");
 			_columns = [
-				{"aTargets" : [0], "mData" : 'fondo1'},
-				{"aTargets" : [1], "mData" : "descripcion"},
-				{"aTargets" : [2], "mData" : "ejercicio"},
-				{"aTargets" : [3], "mData" : "montoAsignado"},
-				{"aTargets" : [4], "mData" : "calendarizado"},
-				{"aTargets" : [5], "mData" : "disponible"},
+				{"aTargets" : [0], "mData" : 'clv_fondo'},
+				{"aTargets" : [1], "mData" : "fondo_ramo"},
+				{"aTargets" : [2], "mData" : "Operativo"},
+				{"aTargets" : [3], "mData" : "RH"},
+				{"aTargets" : [4], "mData" : "techos_presupuestal"},
+				{"aTargets" : [5], "mData" : "calendarizado"},
+        {"aTargets" : [6], "mData" : "disponible"},
+        {"aTargets" : [7], "mData" : "ejercicio"},
 			];
-			_gen.setTableScrollFotter(_table, _columns, response);
+			_gen.setTableScrollFotter(_table, _columns, data);
       $('modalPresupuesto').show(true);
     });
   },
