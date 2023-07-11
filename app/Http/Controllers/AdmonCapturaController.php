@@ -89,7 +89,7 @@ class AdmonCapturaController extends Controller
     }
 
     public function update(Request $request){
-        Controller::check_permission('getCaptura');
+        // Controller::check_permission('getCaptura');
         $upp = $request->upp_filter;
         $modulo = $request->modulo_filter;
         $habilitar = $request->capturaRadio;
@@ -100,7 +100,7 @@ class AdmonCapturaController extends Controller
         try {
             DB::beginTransaction();
             
-            $actualizar = str_contains($request->modulo_filter,',') ? DB::update("update $modulo set cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = >'$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_upp") : DB::update("update $modulo set estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_upp");
+            $actualizar = str_contains($request->modulo_filter,',') ? DB::update("update $modulo set cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_upp") : DB::update("update $modulo set estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_upp");
             
             DB::commit();
             return redirect()->route("index")->withSuccess('Los datos fueron modificados');
