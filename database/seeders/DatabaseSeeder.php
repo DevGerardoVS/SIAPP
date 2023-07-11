@@ -215,6 +215,7 @@ class DatabaseSeeder extends Seeder
             fondosSeeder::class,
             pp_identificadoresSeeder::class,
             ProgramacionPresupuestoSeeder::class,
+            prueba2024::class
         ]);
         
         echo "\nInicializacion de Catalogos del Sistema";
