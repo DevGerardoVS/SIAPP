@@ -13,6 +13,8 @@ use App\Models\administracion\Grupo;
 use App\Models\administracion\UsuarioGrupo;
 use App\Models\administracion\SistemaGrupo;
 use App\Models\administracion\MenuGrupo;
+use App\Models\administracion\Permisos;
+use App\Models\administracion\PermisosUpp;
 
 use DB;
 
@@ -34,10 +36,10 @@ class DatabaseSeeder extends Seeder
         );
 
     protected $cat_users = array(
-        ['id' => 1, 'id_grupo' => 2, 'nombre' => 'Gob', 'p_apellido' => 'Digital', 's_apellido' => 'siapp', 'celular' => '00-00-00-00-00', 'email' => 'control@gmail.com', 'username' => 'control', 'password' => 'valida2022', 'sudo' => 1, 'clv_upp' => NULL],
+        ['id' => 1, 'id_grupo' => 2, 'nombre' => 'Gob', 'p_apellido' => 'Digital', 's_apellido' => 'siapp', 'celular' => '00-00-00-00-00', 'email' => 'control@gmail.com', 'username' => 'control', 'password' => 'CasaMata', 'sudo' => 1, 'clv_upp' => NULL],
         ['id' => 2, 'id_grupo' => 1, 'nombre' => 'sudo', 'p_apellido' => 'admin', 's_apellido' => 'sedj', 'celular' => '00-00-00-00-00', 'email' => 'prueba1@gmail.com', 'username' => 'administrador', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 3, 'id_grupo' => 1, 'nombre' => 'Francisco', 'p_apellido' => 'Méndez', 's_apellido' => 'Chávez', 'celular' => '44-32-21-90-95', 'email' => 'pacomendez2308@gmail.com', 'username' => 'depExpedientes', 'password' => 'depExpedientes.22', 'sudo' => 0, 'clv_upp' => NULL],
-        ['id' => 4, 'id_grupo' => 3, 'nombre' => 'auditor', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Auditor', 'password' => 'valida23', 'sudo' => 0, 'clv_upp' => '007'],
+        ['id' => 4, 'id_grupo' => 3, 'nombre' => 'auditor', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Auditor', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '007'],
         ['id' => 5, 'id_grupo' => 1, 'nombre' => 'UnidadR', 'p_apellido' => 'u', 's_apellido' => 'pp', 'celular' => '44-32-21-90-95', 'email' => 'upp_user@gmail.com', 'username' => 'upp', 'password' => 'valida23', 'sudo' => 0, 'clv_upp' => '002'],
         ['id' => 6, 'id_grupo' => 1, 'nombre' => 'Luis', 'p_apellido' => 'Pardo', 's_apellido' => 'Escutia', 'celular' => '4400000081', 'email' => 'rosario.escutia+81@correo.michoacan.gob.mx', 'username' => 'LPARDO', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 7, 'id_grupo' => 2, 'nombre' => 'Mario', 'p_apellido' => 'Delgado', 's_apellido' => 'Murillo', 'celular' => '4400000082', 'email' => 'rosario.escutia+82@correo.michoacan.gob.mx', 'username' => 'DELEGACION', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
@@ -144,6 +146,8 @@ class DatabaseSeeder extends Seeder
             ['id' => 12,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'ley Planeacion Hacienda', 'ruta' => '/Reportes/ley-planeacion', 'icono' => 'fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Reportes'],
             ['id' => 13,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Administrativos', 'ruta' => '/Reportes/administrativos', 'icono' => 'fa-flag-checkered', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Reportes'],
             ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administracion de captura', 'ruta' => '/admon-capturas', 'icono' => ' fa-crosshairs', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
+            ['id' => 15,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Configuraciones', 'ruta' => '/adm-configuracion', 'icono' => ' fa-crosshairs', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de configuraciones'],
+
         );
     protected $menuUpp = array(
         ['id_menu' => 7 ], 
@@ -154,15 +158,15 @@ class DatabaseSeeder extends Seeder
     );
     protected $menuAdmin = array(
         ['id_menu' => 3 ], 
-        ['id_menu' => 4 ], 
-        ['id_menu' => 5 ],
         ['id_menu' => 7 ], 
         ['id_menu' => 8 ], 
         ['id_menu' => 9 ], 
         ['id_menu' => 10],
         ['id_menu' => 11],
         ['id_menu' => 12],
-        ['id_menu' => 13]
+        ['id_menu' => 13],
+        ['id_menu' => 14],
+        ['id_menu' => 15]
     );
     protected $menuAuditor = array(
         ['id_menu' => 3 ], 
@@ -185,36 +189,142 @@ class DatabaseSeeder extends Seeder
             ['id' => 2,  'id_sistema' => 1,'id_menu' => 3, 'modulo' => 'Usuarios', 'funcion' => 'postUsuarios', 'tipo' => 'Insercion', 'descripcion' => 'Insertar un usuario a la BD'],
             ['id' => 3,  'id_sistema' => 1,'id_menu' => 3, 'modulo' => 'Usuarios', 'funcion' => 'putUsuarios', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar un usuario a la BD'],
             ['id' => 4,  'id_sistema' => 1,'id_menu' => 3, 'modulo' => 'Usuarios', 'funcion' => 'deleteUsuarios', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar un usuario a la BD'],
-            ['id' => 5,  'id_sistema' => 1,'id_menu' => 3, 'modulo' => 'Usuarios', 'funcion' => 'viewPostUsuarios', 'tipo' => 'Vista', 'descripcion' => 'Vista create usuario'],
-            ['id' => 6,  'id_sistema' => 1,'id_menu' => 3, 'modulo' => 'Usuarios', 'funcion' => 'viewPutUsuarios', 'tipo' => 'Vista', 'descripcion' => 'Vista Update usuario'],
-            ['id' => 7,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Grupos', 'funcion' => 'getGrupos', 'tipo' => 'Consulta', 'descripcion' => 'Insertar un grupo a la BD'],
-            ['id' => 8,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Grupos', 'funcion' => 'postGrupos', 'tipo' => 'Insercion', 'descripcion' => 'Insertar un grupo a la BD'],
-            ['id' => 9,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Grupos', 'funcion' => 'putGrupos', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar un grupo a la BD'],
-            ['id' => 10,  'id_sistema' => 1,'id_menu' =>5, 'modulo' => 'Grupos', 'funcion' => 'deleteGrupos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar un grupo a la BD'],
-            ['id' => 11,  'id_sistema' => 1,'id_menu' =>5, 'modulo' => 'Grupos', 'funcion' => 'viewPostGrupos', 'tipo' => 'Vista', 'descripcion' => 'Vista create grupo'],
-            ['id' => 12,  'id_sistema' => 1,'id_menu' =>5, 'modulo' => 'Grupos', 'funcion' => 'viewPutGrupos', 'tipo' => 'Vista', 'descripcion' => 'Vista update grupo'],
-            ['id' => 13,  'id_sistema' => 1,'id_menu' => 6, 'modulo' => 'Bitacora', 'funcion' => 'getBitacora', 'tipo' => 'Consulta', 'descripcion' => 'Consulta de registros de la bitácora'],
-            ['id' => 14,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'getPermisos', 'tipo' => 'Consulta', 'descripcion' => 'Consulta de permisos'],
-            ['id' => 15,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'postPermisos', 'tipo' => 'Insercion', 'descripcion' => 'Crear registro de permisos'],
-            ['id' => 16,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
-            ['id' => 17,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
-            ['id' => 18,  'id_sistema' => 1,'id_menu' => 7, 'modulo' => 'Calendarizacion', 'funcion' => 'getCalendarizacion', 'tipo' => 'consulta', 'descripcion' => 'Vista de el modulo'],
-            ['id' => 19,  'id_sistema' => 1,'id_menu' => 8, 'modulo' => 'Calendarizacion', 'funcion' => 'getClaves', 'tipo' => 'consulta', 'descripcion' => 'Vista claves presupuestarias'],
-            ['id' => 20,  'id_sistema' => 1,'id_menu' => 9, 'modulo' => 'Calendarizacion', 'funcion' => 'getMetas', 'tipo' => 'consulta', 'descripcion' => 'Vista Metas'],
-            ['id' => 21,  'id_sistema' => 1,'id_menu' => 10, 'modulo' => 'Calendarizacion', 'funcion' => 'getTechos', 'tipo' => 'consulta', 'descripcion' => 'Vista Techos Financieros'],
-            ['id' => 22,  'id_sistema' => 1,'id_menu' => 11, 'modulo' => 'Reportes', 'funcion' => 'getModulo', 'tipo' => 'consulta', 'descripcion' => 'Vista Modulo reportes'],
-            ['id' => 23,  'id_sistema' => 1,'id_menu' => 12, 'modulo' => 'Reportes', 'funcion' => 'getPlaneacion', 'tipo' => 'consulta', 'descripcion' => 'Vista planeacion'],
-            ['id' => 24,  'id_sistema' => 1,'id_menu' => 13, 'modulo' => 'Reportes', 'funcion' => 'getAdministrativos', 'tipo' => 'consulta', 'descripcion' => 'Vista Administrativos'],
-            ['id' => 24,  'id_sistema' => 1,'id_menu' => 14, 'modulo' => 'Reportes', 'funcion' => 'getCaptura', 'tipo' => 'consulta', 'descripcion' => 'Vista Admon Captura'],
-            ['id' => 25,  'id_sistema' => 1,'id_menu' => 2, 'modulo' => 'Logs', 'funcion' => 'getLogs', 'tipo' => 'consulta', 'descripcion' => 'Vista de Logs'],
+            ['id' => 5,  'id_sistema' => 1,'id_menu' => 3, 'modulo' => 'Usuarios', 'funcion' => 'viewPostUsuarios', 'tipo' => 'Vista', 'descripcion' => 'Vista create usuario'],  
+            
+            ['id' => 6,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Grupos', 'funcion' => 'getGrupos', 'tipo' => 'Consulta', 'descripcion' => 'Insertar un grupo a la BD'],
+            ['id' => 7,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Grupos', 'funcion' => 'postGrupos', 'tipo' => 'Insercion', 'descripcion' => 'Insertar un grupo a la BD'],
+            ['id' => 8,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Grupos', 'funcion' => 'putGrupos', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar un grupo a la BD'],
+            ['id' => 9,  'id_sistema' => 1,'id_menu' =>5, 'modulo' => 'Grupos', 'funcion' => 'deleteGrupos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar un grupo a la BD'],
+            ['id' => 10,  'id_sistema' => 1,'id_menu' =>5, 'modulo' => 'Grupos', 'funcion' => 'viewPostGrupos', 'tipo' => 'Vista', 'descripcion' => 'Vista create grupo'],
+            
+            ['id' => 11,  'id_sistema' => 1,'id_menu' => 6, 'modulo' => 'Bitacora', 'funcion' => 'getBitacora', 'tipo' => 'Consulta', 'descripcion' => 'Consulta de registros de la bitácora'],
+            ['id' => 12,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'getPermisos', 'tipo' => 'Consulta', 'descripcion' => 'Consulta de permisos'],
+            ['id' => 13,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'postPermisos', 'tipo' => 'Insercion', 'descripcion' => 'Crear registro de permisos'],
+            ['id' => 14,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
+            ['id' => 15,  'id_sistema' => 1,'id_menu' => 5, 'modulo' => 'Permisos', 'funcion' => 'deletePermisos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminar registro de permisos'],
+            
+            ['id' => 16,  'id_sistema' => 1,'id_menu' => 8, 'modulo' => 'Claves presupuestarias', 'funcion' => 'getClaves', 'tipo' => 'consulta', 'descripcion' => 'consulta claves presupuestarias'],
+            ['id' => 17,  'id_sistema' => 1,'id_menu' => 8, 'modulo' => 'Claves presupuestarias', 'funcion' => 'postClaves', 'tipo' => 'Insercion', 'descripcion' => 'Insercion claves presupuestarias'],
+            ['id' => 18,  'id_sistema' => 1,'id_menu' => 8, 'modulo' => 'Claves presupuestarias', 'funcion' => 'putClaves', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizacion claves presupuestarias'],
+            ['id' => 19,  'id_sistema' => 1,'id_menu' => 8, 'modulo' => 'Claves presupuestarias', 'funcion' => 'deleteClaves', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminacion claves presupuestarias'],
+           
+            ['id' => 20,  'id_sistema' => 1,'id_menu' => 9, 'modulo' => 'Metas', 'funcion' => 'getMetas', 'tipo' => 'consulta', 'descripcion' => 'consulta Metas '],
+            ['id' => 21,  'id_sistema' => 1,'id_menu' => 9, 'modulo' => 'Metas', 'funcion' => 'postMetas', 'tipo' => 'Insercion', 'descripcion' => 'Insercion Metas '],
+            ['id' => 22,  'id_sistema' => 1,'id_menu' => 9, 'modulo' => 'Metas', 'funcion' => 'putMetas', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizacion Metas '],
+            ['id' => 23,  'id_sistema' => 1,'id_menu' => 9, 'modulo' => 'Metas', 'funcion' => 'deleteMetas', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminacion Metas '],
+            
+            ['id' => 24,  'id_sistema' => 1,'id_menu' => 10, 'modulo' => 'Techos financieros', 'funcion' => 'getTechos', 'tipo' => 'consulta', 'descripcion' => 'consulta Techos Financieros'],
+            ['id' => 25,  'id_sistema' => 1,'id_menu' => 10, 'modulo' => 'Techos financieros', 'funcion' => 'postTechos', 'tipo' => 'Insercion', 'descripcion' => 'Insercion Techos Financieros'],
+            ['id' => 26,  'id_sistema' => 1,'id_menu' => 10, 'modulo' => 'Techos financieros', 'funcion' => 'putTechos', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizacion Techos Financieros'],
+            ['id' => 27,  'id_sistema' => 1,'id_menu' => 10, 'modulo' => 'Techos financieros', 'funcion' => 'deleteTechos', 'tipo' => 'Eliminacion', 'descripcion' => 'Eliminacion Techos Financieros'],
+            
+            ['id' => 28,  'id_sistema' => 1,'id_menu' => 12, 'modulo' => 'ley Planeacion Hacienda', 'funcion' => 'getPlaneacion', 'tipo' => 'consulta', 'descripcion' => 'consulta planeacion'],
+            ['id' => 29,  'id_sistema' => 1,'id_menu' => 12, 'modulo' => 'ley Planeacion Hacienda', 'funcion' => 'postPlaneacion', 'tipo' => 'Insercion', 'descripcion' => 'insertar planeacion'],
+            ['id' => 30,  'id_sistema' => 1,'id_menu' => 12, 'modulo' => 'ley Planeacion Hacienda', 'funcion' => 'putPlaneacion', 'tipo' => 'Actualizacion', 'descripcion' => 'actualizar planeacion'],
+            ['id' => 31,  'id_sistema' => 1,'id_menu' => 12, 'modulo' => 'ley Planeacion Hacienda', 'funcion' => 'deletePlaneacion', 'tipo' => 'Eliminacion', 'descripcion' => 'eliminar planeacion'],
+            
+            ['id' => 32,  'id_sistema' => 1,'id_menu' => 13, 'modulo' => 'Administrativos', 'funcion' => 'getAdmon', 'tipo' => 'consulta', 'descripcion' => 'consulta Administrativos'],
+            ['id' => 33,  'id_sistema' => 1,'id_menu' => 13, 'modulo' => 'Administrativos', 'funcion' => 'postAdmon', 'tipo' => 'Insercion', 'descripcion' => 'insertar Administrativos'],
+            ['id' => 34,  'id_sistema' => 1,'id_menu' => 13, 'modulo' => 'Administrativos', 'funcion' => 'putAdmon', 'tipo' => 'Actualizacion', 'descripcion' => 'actualizar Administrativos'],
+            ['id' => 35,  'id_sistema' => 1,'id_menu' => 13, 'modulo' => 'Administrativos', 'funcion' => 'deleteAdmon', 'tipo' => 'Eliminacion', 'descripcion' => 'eliminar Administrativos'],
+            
+            ['id' => 36,  'id_sistema' => 1,'id_menu' => 14, 'modulo' => 'Administracion de captura', 'funcion' => 'getCaptura', 'tipo' => 'consulta', 'descripcion' => 'consulta Admon Captura'],
+            ['id' => 37,  'id_sistema' => 1,'id_menu' => 14, 'modulo' => 'Administracion de captura', 'funcion' => 'postCaptura', 'tipo' => 'Insercion', 'descripcion' => 'insertar Admon Captura'],
+            ['id' => 38,  'id_sistema' => 1,'id_menu' => 14, 'modulo' => 'Administracion de captura', 'funcion' => 'putCaptura', 'tipo' => 'Actualizacion', 'descripcion' => 'actualizar Admon Captura'],
+            ['id' => 39,  'id_sistema' => 1,'id_menu' => 14, 'modulo' => 'Administracion de captura', 'funcion' => 'deleteCaptura', 'tipo' => 'Eliminacion', 'descripcion' => 'eliminar Admon Captura'],
+            
+            ['id' => 40,  'id_sistema' => 1,'id_menu' => 2, 'modulo' => 'Logs', 'funcion' => 'getLogs', 'tipo' => 'consulta', 'descripcion' => 'Vista de Logs'],
+            ['id' => 41,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'viewPostUpps', 'tipo' => 'Consulta', 'descripcion' => 'Obtener todos los tipos de actividad por upp a la BD'],
+            ['id' => 42,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'updateUpps', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar un tipo de actividad por upp a la BD'],
         );
 
+        protected $relFunGroup=array(
+            /* admin */
+            /* usuarios */
+            ['id'=>1,'id_grupo'=>1,'id_funcion'=>1],
+            ['id'=>2,'id_grupo'=>1,'id_funcion'=>2],
+            ['id'=>3,'id_grupo'=>1,'id_funcion'=>3],
+            ['id'=>4,'id_grupo'=>1,'id_funcion'=>4],
+            ['id'=>5,'id_grupo'=>1,'id_funcion'=>5],
+            /* claves */
+            ['id'=>6,'id_grupo'=>1,'id_funcion'=>16],
+            ['id'=>7,'id_grupo'=>1,'id_funcion'=>17],
+            ['id'=>8,'id_grupo'=>1,'id_funcion'=>18],
+            ['id'=>9,'id_grupo'=>1,'id_funcion'=>19],
+            /* metas */
+            ['id'=>10,'id_grupo'=>1,'id_funcion'=>20],
+            ['id'=>11,'id_grupo'=>1,'id_funcion'=>21],
+            ['id'=>12,'id_grupo'=>1,'id_funcion'=>22],
+            ['id'=>13,'id_grupo'=>1,'id_funcion'=>23],
+            /* techos */
+            ['id'=>14,'id_grupo'=>1,'id_funcion'=>24],
+            ['id'=>15,'id_grupo'=>1,'id_funcion'=>25],
+            ['id'=>16,'id_grupo'=>1,'id_funcion'=>26],
+            ['id'=>17,'id_grupo'=>1,'id_funcion'=>27],
+            /* planeacion */
+            ['id'=>18,'id_grupo'=>1,'id_funcion'=>28],
+            ['id'=>19,'id_grupo'=>1,'id_funcion'=>29],
+            ['id'=>20,'id_grupo'=>1,'id_funcion'=>30],
+            ['id'=>21,'id_grupo'=>1,'id_funcion'=>31],
+            /* administrativos */
+            ['id'=>22,'id_grupo'=>1,'id_funcion'=>32],
+            ['id'=>23,'id_grupo'=>1,'id_funcion'=>33],
+            ['id'=>24,'id_grupo'=>1,'id_funcion'=>34],
+            ['id'=>25,'id_grupo'=>1,'id_funcion'=>35],
+            /* admin captura */
+            ['id'=>26,'id_grupo'=>1,'id_funcion'=>36],
+            ['id'=>27,'id_grupo'=>1,'id_funcion'=>37],
+            ['id'=>28,'id_grupo'=>1,'id_funcion'=>38],
+            ['id'=>29,'id_grupo'=>1,'id_funcion'=>39],
+            /* upp */
+            /* planeacion */
+            ['id'=>30,'id_grupo'=>4,'id_funcion'=>28],
+            ['id'=>31,'id_grupo'=>4,'id_funcion'=>29],
+            ['id'=>32,'id_grupo'=>4,'id_funcion'=>30],
+            ['id'=>33,'id_grupo'=>4,'id_funcion'=>31],
+            /* administrativos */
+            ['id'=>34,'id_grupo'=>4,'id_funcion'=>32],
+            ['id'=>35,'id_grupo'=>4,'id_funcion'=>33],
+            ['id'=>36,'id_grupo'=>4,'id_funcion'=>34],
+            ['id'=>37,'id_grupo'=>4,'id_funcion'=>35],
+            /* claves */
+            ['id'=>38,'id_grupo'=>4,'id_funcion'=>16],
+            ['id'=>39,'id_grupo'=>4,'id_funcion'=>17],
+            ['id'=>40,'id_grupo'=>4,'id_funcion'=>18],
+            ['id'=>41,'id_grupo'=>4,'id_funcion'=>19],
+            /* metas */
+            ['id'=>42,'id_grupo'=>4,'id_funcion'=>20],
+            ['id'=>43,'id_grupo'=>4,'id_funcion'=>21],
+            ['id'=>44,'id_grupo'=>4,'id_funcion'=>22],
+            ['id'=>45,'id_grupo'=>4,'id_funcion'=>23],
+            /* claves delegacion */
+            ['id'=>46,'id_grupo'=>5,'id_funcion'=>16],
+            ['id'=>47,'id_grupo'=>5,'id_funcion'=>17],
+            ['id'=>48,'id_grupo'=>5,'id_funcion'=>18],
+            ['id'=>49,'id_grupo'=>5,'id_funcion'=>19],
+
+            ['id'=>50,'id_grupo'=>2,'id_funcion'=>40],
+            ['id'=>51,'id_grupo'=>2,'id_funcion'=>11],
+            ['id'=>52,'id_grupo'=>2,'id_funcion'=>12],
+            ['id'=>53,'id_grupo'=>2,'id_funcion'=>13],
+            ['id'=>54,'id_grupo'=>2,'id_funcion'=>14],
+            ['id'=>55,'id_grupo'=>2,'id_funcion'=>15],
+            /* auditor */
+            ['id'=>56,'id_grupo'=>3,'id_funcion'=>1],
+            ['id'=>57,'id_grupo'=>3,'id_funcion'=>16],
+            ['id'=>58,'id_grupo'=>3,'id_funcion'=>20],
+            ['id'=>59,'id_grupo'=>3,'id_funcion'=>24],
+            ['id'=>60,'id_grupo'=>3,'id_funcion'=>28],
+            ['id'=>61,'id_grupo'=>3,'id_funcion'=>32],
+            ['id'=>62,'id_grupo'=>3,'id_funcion'=>36]
+        );
     public function run()
     {
         $this->call([
             fondosSeeder::class,
             pp_identificadoresSeeder::class,
             ProgramacionPresupuestoSeeder::class,
+            prueba2024::class
         ]);
         
         echo "\nInicializacion de Catalogos del Sistema";
@@ -344,6 +454,7 @@ class DatabaseSeeder extends Seeder
             } catch (\Throwable $th) {
                 throw $th;
             }
+
             try {
                 echo "\n    -Carga rel Menu grupo Delegacion";
             foreach ($this->menuDel as $m) {
@@ -352,6 +463,28 @@ class DatabaseSeeder extends Seeder
                     'id_menu' => $m['id_menu']
                 ]);
 
+            }
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+
+            try {
+                echo "\n    -Carga rel grupo funcion";
+            foreach ($this->relFunGroup as $m) {
+                Permisos::create($m);
+            }
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+
+            try {
+                echo "\n    -Carga permisos adicionales";
+                $user = User::where('deleted_at', null)->where('id_grupo', 1)->get();
+            foreach ($user as $m) {
+                PermisosUpp::create([
+                    'id_user'=>$m->id,
+                    'id_permiso'=>1
+                ]);
             }
             } catch (\Throwable $th) {
                 throw $th;

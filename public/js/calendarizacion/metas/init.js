@@ -41,18 +41,36 @@ var dao = {
 
 
     },
-    getUrs: function () {
+    getUrs: function (upp) {
+        console.log("upp",upp);
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/urs',
+            url: '/calendarizacion/urs/'+upp,
             dataType: "JSON"
         }).done(function (data) {
-            var par = $('#ur_filter');
+            var par = $('#ur_filter'); 
             par.html('');
             par.append(new Option("-- URS--", ""));
             document.getElementById("ur_filter").options[0].disabled = true;
             $.each(data, function (i, val) {
                 par.append(new Option(data[i].ur, data[i].clv_ur));
+            });
+            par.selectpicker({ search: true });
+
+        });
+    },
+    getUpps: function () {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/upps/',
+            dataType: "JSON"
+        }).done(function (data) {
+            var par = $('#upp_filter');
+            par.html('');
+            par.append(new Option("-- UPPS--", ""));
+            document.getElementById("upp_filter").options[0].disabled = true;
+            $.each(data, function (i, val) {
+                par.append(new Option(data[i].upp, data[i].clv_upp));
             });
             par.selectpicker({ search: true });
 
@@ -348,7 +366,21 @@ var init = {
 };
 $(document).ready(function () {
     getData();
-    dao.getUrs();
+    if ($('#upp').val() == '') {
+        console.log("sinUPP");
+        dao.getUpps();
+        $('#ur_filter').prop('disabled', 'disabled');
+        $('#upp_filter').change(() => {
+            $('#ur_filter').prop('disabled', false);
+            dao.getUrs($('#upp_filter').val());
+        });
+    } else {
+        $('#ur_filter').prop('disabled', false);
+        $('#ur_filter').empty(); 
+        dao.getUrs($('#upp').val());
+        
+    }
+    
     dao.getSelect();
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
@@ -377,5 +409,5 @@ $(document).ready(function () {
             $("#" + i).prop('disabled', false);
         }
 
-    })
+    });
 });

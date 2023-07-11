@@ -15,7 +15,11 @@
         Route::get('/plantillaCargaTechos', 'exportView');
         Route::get('/exportPlantilla', 'exportPlantilla')->name('exportPlantilla');
         Route::post('/import-Plantilla', 'importPlantilla')->name('importPlantilla');
+        Route::get('/calendarizacion/techos/export-excel', 'exportExcel')->name('exportExcel');
+        Route::get('/calendarizacion/techos/export-pdf', 'exportPDF')->name('exportPDF');
+        Route::get('/calendarizacion/techos/export-presupuestos', 'exportPresupuestos')->name('exportPresupuestos');
     });
+
 	Route::controller(ClavePreController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');
 		Route::get('/calendarizacion-claves-create/{ejercicio?}', 'getCreate');
@@ -46,15 +50,6 @@
 		Route::post('/calendarizacion-confirmar-claves', 'postConfirmarClaves');
 		Route::get('/calendarizacion-get-sector/{clave?}', 'getSector');
 		Route::get('/cat-obras/{val?}', 'getObras');
-		
-		
-
-		
-
-		
-		
-		
-		
 		
 	});
 
