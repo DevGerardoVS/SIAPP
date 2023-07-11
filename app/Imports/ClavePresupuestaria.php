@@ -358,8 +358,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             'noviembre'    =>  'required|integer',
             'diciembre'    =>  'required|integer',
            
-           // esta validacion esta comentada de momento porque la plantilla solo tiene año 23
-           // '*.anio' => 'required',                            
+                         
              
 
             
