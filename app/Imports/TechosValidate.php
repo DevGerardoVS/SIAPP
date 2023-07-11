@@ -51,15 +51,24 @@ class TechosValidate
                         );
                         return $error;
                     }
-                    /* $upp = DB::table('epp')->select('catalogo.clave')->join('catalogo', 'catalogo.id', '=', 'epp.upp_id')->where('epp.ejercicio', $ejercicio)->where('catalogo.clave', $row[$i][1])->groupBy('catalogo.clave')->get();
+                    $upp = DB::table('epp')->select('catalogo.clave')->join('catalogo', 'catalogo.id', '=', 'epp.upp_id')->where('epp.ejercicio', $row[$i][0])->where('catalogo.clave', $row[$i][1])->groupBy('catalogo.clave')->get();
                     if(count($upp) == 0){
                         $error = array(
                             "icon" => 'error',
                             "title" => 'Error',
-                            "text" => 'La upp  ' . $row[$i][0] . ' no esta activa. Revisa la fila: "' . $index . '"'
+                            "text" => 'La upp  ' . $row[$i][1] . ' no es valida. Revisa la fila: "' . $index . '"'
                         );
                         return $error;
-                    } */
+                    }
+                    $fondo =  DB::table('fondo')->select('clv_fondo_ramo')->where('clv_fondo_ramo', $row[$i][2])->get();
+                    if(count($fondo) == 0){
+                        $error = array(
+                            "icon" => 'error',
+                            "title" => 'Error',
+                            "text" => 'El fondo  ' . $row[$i][2] . ' no es valido. Revisa la fila: "' . $index . '"'
+                        );
+                        return $error;
+                    }
                     if ($row[$i][3] != '') {
                         if (!is_numeric($row[$i][3])) {
                             $error = array(
