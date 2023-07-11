@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Calendarizacion;
 
 use App\Http\Controllers\Controller;
-use App\Models\calendarizacion\TechosFinancieros;
 use Carbon\Carbon;
 use Dompdf\Exception;
 use Illuminate\Http\Request;
@@ -11,12 +10,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
-use function Psy\debug;
 use App\Exports\PlantillaTechosExport;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\Techos;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use App\Imports\TechosValidate;
+
+use Shuchkin\SimpleXLSX;
 
 class TechosController extends Controller
 {
@@ -152,68 +150,24 @@ class TechosController extends Controller
 
     public function importPlantilla(Request $request)
     {
+        $this->validate($request, [
+            'cmFile' => 'required|file|mimes:xls,xlsx'
+        ]);
+        $the_file = $request->file('cmFile');
         DB::beginTransaction();
-        try {
-            ini_set('max_execution_time', 1200);
-            Schema::create('temp_techos', function (Blueprint $table) {
-                $table->temporary();
-                $table->increments('id');
-                $table->string('clv_upp', 3)->nullable(false);
-                $table->string('clv_fondo', 2)->nullable(false);
-                $table->integer('ejercicio')->default(null);
-                $table->enum('tipo', ['Operativo', 'RH'])->nulleable(false);
-                $table->bigInteger('presupuesto')->nullable(false);
-            });
-            Excel::import(new Techos, $request->file('cmFile'));
-            DB::commit();
-            return response()->json("done", 200);
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            DB::rollback();
-            $failures = $e->failures();
-            $error = '';
-            $value = '';
-            foreach ($failures as $failure) {
-                $failure->row(); // row that went wrong
-                $failure->attribute(); // either heading key (if using heading row concern) or column index
-                $value = [$failure->values()]; // The values of the row that has failed.
-                $error = [$failure->errors()]; // Actual error messages from Laravel validator
-                /* Log::debug($failure->row());
-                   Log::debug($failure->attribute());
-                   Log::debug($failure->errors());
-                   Log::debug($failure->values()); */
-            }
-            if ($error != '') {
-                if (!empty($value[0]['fondo'])) {
-                    $returnData = array(
-                        'status' => 'error',
-                        'title' => 'Error',
-                        'message' => $error,
-                    );
-                } else {
-                    $returnData = array(
-                        'status' => 'error',
-                        'title' => 'Error',
-                        'message' => $error,
-                    );
-                }
-            }
-            if ($value != '') {
-                if (!empty($value[0]['fondo'])) {
-                    $returnData = array(
-                        'status' => 'error',
-                        'title' => 'Error',
-                        'message' => $error,
-                    );
-                } else {
-                    $returnData = array(
-                        'status' => 'error',
-                        'title' => 'Error',
-                        'message' => $value,
-                    );
-                }
-            }
-
-            return response()->json($returnData);
-        }
+        try{
+            if ($xlsx = SimpleXLSX::parse($the_file)) {
+				$filearray = $xlsx->rows();
+				array_shift($filearray);
+				$resul = TechosValidate::validate($filearray);
+                Log::debug($resul);
+				if($resul=='done'){
+					DB::commit();
+				}
+				return response()->json($resul);
+			}
+        } catch (\Exception $e) {
+			DB::rollback();
+		}
     }
 }
