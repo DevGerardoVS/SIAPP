@@ -110,11 +110,10 @@ var dao = {
               Swal.fire(
                   {
                       showCloseButton: true,
-                      title: 'Error',
-                      text: response.message,
-                      icon: 'error',
+                      title: response.title,
+                      text: response.text,
+                      icon: response.icon,
                   }
-                
               );
             }else{
                 Swal.fire({
@@ -132,6 +131,14 @@ var dao = {
             }
         }).fail(function (response){
             console.log(response);
+            Swal.fire(
+                {
+                    showCloseButton: true,
+                    title: response.title,
+                    text: response.text,
+                    icon: response.icon,
+                }
+            );
         })
     },
     filtroPresupuesto: function (i){
