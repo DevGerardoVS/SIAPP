@@ -15,6 +15,7 @@ use function PHPUnit\Framework\isEmpty;
 class ReporteController extends Controller
 {
     public function indexPlaneacion(){
+        Controller::check_permission('getPlaneacion');
         $db = $_ENV['DB_DATABASE'];
         $dataSet = array();
         $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
@@ -27,6 +28,7 @@ class ReporteController extends Controller
     }
 
     public function indexAdministrativo(){
+        Controller::check_permission('getAdministrativos');
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');

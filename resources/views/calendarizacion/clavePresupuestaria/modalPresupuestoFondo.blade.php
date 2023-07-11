@@ -2,13 +2,13 @@
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
           <div class="modal-header" style=" border-bottom: 5px solid #17a2b8;">
-              <h5 class="modal-title col-11 text-center font-weight-bold">Detalle clave presupuestaria</h5>
+              <h5 class="modal-title col-11 text-center font-weight-bold">Detalle presupuesto por fondo</h5>
               <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
               </button>
           </div>
           <div class="modal-body">
-          <h6 id='titleModalpresupuesto' class="modal-title col-11 text-center font-weight-bold text-secondary">007 - Secretaría de Finannzas y Administración</h6>
+          <h6 id='titleModalpresupuesto' class="modal-title col-11 text-center font-weight-bold text-secondary"></h6>
           <br>
             <div class="table-responsive" style='overflow:auto; width:100%;position:relative;'>
                 <table id="tblPresupuestos" class="table table-hover table-striped" style='overflow:auto; width:100%;position:relative;'>
@@ -16,10 +16,12 @@
                         <tr>
                             <th class="colorMorado">ID Fondo</th>
                             <th class="colorMorado">Fondo</th>
-                            <th class="colorMorado">Ejercicio</th>
-                            <th class="colorMorado">Monto Asignado</th>
+                            <th class="colorMorado">Operativo</th>
+                            <th class="colorMorado">Recursos Humanos</th>
+                            <th class="colorMorado">Techo presupuestal</th>
                             <th class="colorMorado">Calendarizado</th>
                             <th class="colorMorado">Disponible</th>
+                            <th class="colorMorado">Ejercicio</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -27,7 +29,10 @@
                         </tbody>
                         <tfoot >
                             <tr>
-                                <th class="colorMorado" colspan="3"> Total:</th>
+                                <th class="colorMorado" colspan="2"> Total:</th>
+                                <th class="colorMorado"></th>
+                                <th class="colorMorado"></th>
+                                <th class="colorMorado"></th>
                                 <th class="colorMorado"></th>
                                 <th class="colorMorado"></th>
                                 <th class="colorMorado"></th>

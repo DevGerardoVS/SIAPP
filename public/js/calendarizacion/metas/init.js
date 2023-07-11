@@ -41,18 +41,36 @@ var dao = {
 
 
     },
-    getUrs: function () {
+    getUrs: function (upp) {
+        console.log("upp",upp);
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/urs',
+            url: '/calendarizacion/urs/'+upp,
             dataType: "JSON"
         }).done(function (data) {
-            var par = $('#ur_filter');
+            var par = $('#ur_filter'); 
             par.html('');
             par.append(new Option("-- URS--", ""));
             document.getElementById("ur_filter").options[0].disabled = true;
             $.each(data, function (i, val) {
                 par.append(new Option(data[i].ur, data[i].clv_ur));
+            });
+            par.selectpicker({ search: true });
+
+        });
+    },
+    getUpps: function () {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/upps/',
+            dataType: "JSON"
+        }).done(function (data) {
+            var par = $('#upp_filter');
+            par.html('');
+            par.append(new Option("-- UPPS--", ""));
+            document.getElementById("upp_filter").options[0].disabled = true;
+            $.each(data, function (i, val) {
+                par.append(new Option(data[i].upp, data[i].clv_upp));
             });
             par.selectpicker({ search: true });
 
@@ -100,6 +118,7 @@ var dao = {
             });
         });
     },
+  
     crearMetaImp: function () {
         var form = $('#formFile')[0];
         var data = new FormData(form);
@@ -113,11 +132,13 @@ var dao = {
             cache: false,
         }).done(function (response) {
             $('#cerrar').trigger('click');
+            console.log("res",response)
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: true,
+                icon: response.icon,
+                title: response.title,
+                text: response.text
             });
+
         });
     },
     importMeta: function () {
@@ -132,14 +153,18 @@ var dao = {
             contentType: "application/x-www-form-urlencoded;charset=utf-8",
             cache: false,
             timeout: 600000
-        }).done(function (response) {
+        }).success(function (response) {
+            console.log(response)
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
+                icon: response.status,
+                title: response.title,
+                message: response.message,
                 showConfirmButton: false,
                 timer: 1500
             });
-        });
+        }).fail(function (error, status, err) {
+                console.log("error-", error);
+            });
     },
     editarMeta: function (id) {
         Swal.fire({
@@ -311,50 +336,6 @@ var init = {
     validateCreate: function (form) {
         _gen.validate(form, {
             rules: {
-                username: { required: true },
-                nombre: { required: true },
-                p_apellido: { required: true },
-                s_apellido: { required: true },
-                email: { required: true, email: true },
-                password: { required: true },
-                in_pass_conf: { required: true, equalTo: "#password" },
-                in_celular: {
-                    required: true,
-                    phoneUS: true
-                },
-                id_grupo: { required: true }
-
-            },
-            messages: {
-                username: { required: "Este campo es requerido" },
-                nombre: { required: "Este campo es requerido" },
-                p_apellido: { required: "Este campo es requerido" },
-                s_apellido: { required: "Este campo es requerido" },
-                email: { required: "Este campo es requerido" },
-                password: { required: "Este campo es requerido" },
-                in_pass_conf: { required: "Este campo es requerido" },
-                in_celular: { required: "Este campo es requerido" },
-                id_grupo: { required: "Este campo es requerido" }
-
-            }
-        });
-    },
-    validateFile: function (form) {
-        _gen.validate(form, {
-            rules: {
-                cmFile: { required: true }
-            },
-            messages: {
-                cmFile: { required: "Este campo es requerido" }
-            }
-        });
-    },
-};
-
-var init = {
-    validateCreate: function (form) {
-        _gen.validate(form, {
-            rules: {
                 sel_actividad: { required: true },
                 sel_fondo: { required: true },
                 tipo_Ac: { required: true },
@@ -372,10 +353,34 @@ var init = {
             }
         });
     },
+    validateFile: function (form) {
+        _gen.validate(form, {
+            rules: {
+                cmFile: { required: true }
+            },
+            messages: {
+                cmFile: { required: "Este campo es requerido" }
+            }
+        });
+    },
 };
 $(document).ready(function () {
     getData();
-    dao.getUrs();
+    if ($('#upp').val() == '') {
+        console.log("sinUPP");
+        dao.getUpps();
+        $('#ur_filter').prop('disabled', 'disabled');
+        $('#upp_filter').change(() => {
+            $('#ur_filter').prop('disabled', false);
+            dao.getUrs($('#upp_filter').val());
+        });
+    } else {
+        $('#ur_filter').prop('disabled', false);
+        $('#ur_filter').empty(); 
+        dao.getUrs($('#upp').val());
+        
+    }
+    
     dao.getSelect();
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
@@ -404,5 +409,5 @@ $(document).ready(function () {
             $("#" + i).prop('disabled', false);
         }
 
-    })
+    });
 });

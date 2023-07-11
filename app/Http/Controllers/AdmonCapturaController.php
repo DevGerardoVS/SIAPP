@@ -12,6 +12,7 @@ class AdmonCapturaController extends Controller
 {
     //
     public function index(){
+        Controller::check_permission('getCaptura');
         $dataSet = array();
         $anio_activo = DB::select('SELECT ejercicio FROM cierre_ejercicio_claves WHERE activos = 1 LIMIT 1');
         $anio = $anio_activo[0]->ejercicio;
@@ -88,18 +89,19 @@ class AdmonCapturaController extends Controller
     }
 
     public function update(Request $request){
+        Controller::check_permission('getCaptura');
         $upp = $request->upp_filter;
         $modulo = $request->modulo_filter;
         $habilitar = $request->capturaRadio;
         $usuario = Auth::user()->username;
         $checar_upp = '';
-        if($upp != null) $checar_upp = "AND clv_upp = $upp";
+        if($upp != null) $checar_upp = "AND clv_upp = '$upp'";
 
         try {
             DB::beginTransaction();
             
             $actualizar = str_contains($request->modulo_filter,',') ? DB::update("update $modulo set cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = >'$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_upp") : DB::update("update $modulo set estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_upp");
-
+            
             DB::commit();
             return redirect()->route("index")->withSuccess('Los datos fueron modificados');
         } catch (\Exception $e) {
