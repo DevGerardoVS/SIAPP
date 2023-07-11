@@ -157,16 +157,25 @@ class TechosController extends Controller
         ]);
         $the_file = $request->file('cmFile');
         DB::beginTransaction();
-        try{
+        try {
             if ($xlsx = SimpleXLSX::parse($the_file)) {
-				$filearray = $xlsx->rows();
-				array_shift($filearray);
-				$resul = TechosValidate::validate($filearray);
-				if($resul=='done'){
-					DB::commit();
-				}
-				return response()->json($resul);
-			}
+                $filearray = $xlsx->rows();
+                if ($filearray[0][0] == 'EJERCICIO' && $filearray[0][1] == 'UPP' && $filearray[0][2] == 'FONDO' && $filearray[0][3] == 'OPERATIVO' && $filearray[0][4] == 'RECURSOS HUMANOS') {
+                    array_shift($filearray);
+                    $resul = TechosValidate::validate($filearray);
+                    if ($resul == 'done') {
+                        DB::commit();
+                    }
+                    return response()->json($resul);
+                } else {
+                    $error = array(
+                        "icon" => 'error',
+                        "title" => 'Error',
+                        "text" => 'Ingresa la plantilla sin modificaciones'
+                    );
+                    return response()->json($error);
+                }
+            }
         } catch (\Exception $e) {
 			DB::rollback();
 		}
