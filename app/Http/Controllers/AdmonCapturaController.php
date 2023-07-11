@@ -16,7 +16,7 @@ class AdmonCapturaController extends Controller
         $dataSet = array();
         $anio_activo = DB::select('SELECT ejercicio FROM cierre_ejercicio_claves WHERE activos = 1 LIMIT 1');
         $anio = $anio_activo[0]->ejercicio;
-        $upps = DB::select('SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND activos = 1 ORDER BY clave ASC');
+        $upps = DB::select('SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND activos = 1 AND c.deleted_at is null ORDER BY clave ASC');
         return view("captura.admonCaptura", [
             'dataSet' => json_encode($dataSet),
             'anio' => $anio,
@@ -39,6 +39,7 @@ class AdmonCapturaController extends Controller
         })
         ->select("cec.clv_upp", "c.descripcion", "cec.estatus", "cec.updated_at", "cec.updated_user")
         ->where("c.grupo_id", "=", 6)
+        ->where("c.deleted_at", "=", null)
         ->where("cec.activos", "=", 1)
         ->where($array_where)
         ->orderBy("cec.estatus","desc")
@@ -71,6 +72,7 @@ class AdmonCapturaController extends Controller
         })
         ->select("cem.clv_upp", "c.descripcion", "cem.estatus", "cem.updated_at", "cem.updated_user")
         ->where("c.grupo_id", "=", 6)
+        ->where("c.deleted_at", "=", null)
         ->where("cem.activos", "=", 1)
         ->where($array_where)
         ->orderBy("cem.estatus","desc")
