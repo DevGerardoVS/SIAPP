@@ -45,8 +45,6 @@ class CalendarizacionCargaMasivaController extends Controller
      public function loadDataPlantilla(Request $request)	{
         $request->tipo ? $tipoAdm=$request->tipo: $tipoAdm=NULL;
         $uppUsuario = auth::user()->clv_upp;
-        $autorizado=0;
-        $EsDelegado=0;
         $message=[
             'file'=> 'El archivo debe ser tipo xlsx' 
           ];
@@ -56,16 +54,18 @@ class CalendarizacionCargaMasivaController extends Controller
           ], $message );
 
         ini_set('max_execution_time', 1200);
-        //verificar que el usuario tenga permiso
-        try {
-            //Validaciones para administrador
-            if($tipoAdm!=NULL ){
-                
+
         //verificar si tiene un registro antes 0 es guardado 1 confirmado
         $file=$request->file->storeAs(
             'plantillas', Auth::user()->username.'.xlsx'
             );
            $filename='\/app\/plantillas/'.Auth::user()->username.'.xlsx';
+        //verificar que el usuario tenga permiso
+        try {
+            //Validaciones para administrador
+            if($tipoAdm!=NULL ){
+                
+
            $arrayupps= array();
            $arraypresupuesto= array();
            $errores=0;
@@ -176,7 +176,6 @@ class CalendarizacionCargaMasivaController extends Controller
         }
         //Validaciones para usuarios upps 
         else{
-
                 $tipousuario=auth::user()->id_grupo;
 
                 $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$uppUsuario)->count();
@@ -190,11 +189,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 }
                 
 
-        //verificar si tiene un registro antes 0 es guardado 1 confirmado
-        $file=$request->file->storeAs(
-            'plantillas', Auth::user()->username.'.xlsx'
-            );
-           $filename='\/app\/plantillas/'.Auth::user()->username.'.xlsx';
+
            $arrayupps= array();
            $arraypresupuesto= array();
            $errores=0;
@@ -223,6 +218,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     $DiferenteUpp++;  
                 }
                 if($k['26']!='000000'){
+                    
                    $ObraCount++; 
                 }
                 //buscar en el array de totales 
@@ -253,6 +249,7 @@ class CalendarizacionCargaMasivaController extends Controller
                else{
                 $tipoFondo='Operativo';
                }
+
                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio+1)->count();
                  $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio+1)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
                  if($valuepresupuesto=!$value || $VerifyEjercicio<0){
@@ -267,6 +264,11 @@ class CalendarizacionCargaMasivaController extends Controller
             }
             switch($tipousuario){
                 case 4:
+
+                    if($DiferenteUpp>0){
+                        Log::debug("No tiene permiso para subir de diferente upp");
+                        return redirect()->back()->withErrors('error','No tiene permiso para registrar de  otras upps');
+                    }
                     if($ObraCount>0 ){
                         if(Controller::check_assignFront(3)){
                         
@@ -276,9 +278,6 @@ class CalendarizacionCargaMasivaController extends Controller
         
                         }
 
-                        if($DiferenteUpp>0){
-                            return redirect()->back()->withErrors('error','No tiene permiso para registrar de  otras upps');
-                        }
 
                     }
                     switch($uppsautorizadas){
@@ -310,7 +309,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     }
 
     
-                    break;
+                   break;
     
                 case 5:
                     if($CountO>0){
