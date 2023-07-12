@@ -63,8 +63,7 @@ class CalendarizacionCargaMasivaController extends Controller
         //verificar que el usuario tenga permiso
         try {
             //Validaciones para administrador
-            if($tipoAdm!=NULL ){
-                
+        if($tipoAdm!=NULL ){
 
            $arrayupps= array();
            $arraypresupuesto= array();
@@ -85,7 +84,7 @@ class CalendarizacionCargaMasivaController extends Controller
     
                }
                else{
-                $CountO++;
+                $countO++;
     
                }
     
@@ -278,7 +277,6 @@ class CalendarizacionCargaMasivaController extends Controller
                 case 4:
 
                     if($DiferenteUpp>0){
-                        Log::debug("No tiene permiso para subir de diferente upp");
                         return redirect()->back()->withErrors(['error' => 'No tiene permiso para registrar de  otras upps']);
                     }
                     if($ObraCount>0 ){
@@ -346,12 +344,12 @@ class CalendarizacionCargaMasivaController extends Controller
             }      
           } catch (\Throwable $th) {
             Log::debug($th);
-            return redirect()->back()->withErrors(['error' => 'No tiene permisos para hacer carga masiva']);
+            return redirect()->back()->withErrors(['error' => 'La información introducida es invalida']);
 
         }
         //si todo sale bien procedemos al import
         try {
-            (new ClavePresupuestaria)->import($file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+            (new ClavePresupuestaria)->import($filename, 'local', \Maatwebsite\Excel\Excel::XLSX);
     
               if(File::exists(storage_path($filename))){
                 File::delete(storage_path($filename));
