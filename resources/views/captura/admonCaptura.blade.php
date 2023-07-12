@@ -210,15 +210,48 @@ $titleDesc = 'Administración de Captura';
             });
         }
 
-        $('#btnSave').on("click", function () {
+        function comprobarModulo() {
+            var checarModulo = false;
             if ($('#modulo_filter').val() == null || $('#modulo_filter').val() == 0) {
                 var textAux = 'El parametro modulo es necesario para continuar.';
                 mostrarAdv(textAux);
-            }
+            }else checarModulo = true;
 
+            return checarModulo;
+        }
+
+        function comprobarRadio(){
+            var checarRadio = false;
             if (!$('#capturaRadioH').is(':checked')  && !$('#capturaRadioD').is(':checked')) {
                 var textAux = 'Elija la opción habilitar o deshabilitar la captura para continuar.';
                 mostrarAdv(textAux);
+            }else checarRadio = true;
+
+            return checarRadio;
+        }
+
+        $('#btnSave').on("click", function () {
+            comprobarModulo();
+            comprobarRadio();
+            if(comprobarModulo() && comprobarRadio()){
+                event.preventDefault();
+                Swal.fire({
+                    title: "¿Quieres revertir el estado?",
+                    text: "Sí para que puedan modifcar el presupuesto, en caso contrario dar click en no",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#00ff00',
+                    cancelButtonColor: '#ff0000',
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'No',
+                    showCloseButton: true,
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $("#estado").val("activo");
+                        $("#aperturaCierreForm").submit();
+                    } else if (result.dismiss == "cancel") $("#aperturaCierreForm").submit();
+                });
             }
         });
 

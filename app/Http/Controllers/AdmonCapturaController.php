@@ -91,22 +91,34 @@ class AdmonCapturaController extends Controller
     }
 
     public function update(Request $request){
-        // Controller::check_permission('getCaptura');
+        Controller::check_permission('getCaptura');
         $upp = $request->upp_filter;
         $modulo = $request->modulo_filter;
         $habilitar = $request->capturaRadio;
+        $estado = $request->estado;
         $usuario = Auth::user()->username;
-        $checar_upp = '';
-        if($upp != null) $checar_upp = "AND clv_upp = '$upp'";
+        $checar_upp_cierre = '';
+        $checar_upp_PP = '';
+        if($upp != null){
+            $checar_upp_cierre = "AND clv_upp = '$upp'";
+            $checar_upp_PP = "WHERE upp = '$upp'";
+            $checar_upp_metas = "WHERE upp = '$upp'";
+        }  
 
         try {
             DB::beginTransaction();
             
-            $actualizar = str_contains($request->modulo_filter,',') ? DB::update("update $modulo set cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_upp") : DB::update("update $modulo set estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_upp");
+            $actualizarCierres = str_contains($modulo,',') ? DB::update("UPDATE $modulo SET cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_upp_cierre") : DB::update("UPDATE $modulo SET estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_upp_cierre");
             
+            if($estado == "activo"){
+                $actualizarPP = DB::update("UPDATE programacion_presupuesto SET estado = 0 $checar_upp_PP");
+                $actualizarMetas = DB::update("UPDATE programacion_presupuesto SET estado = 0 $checar_upp_metas");
+            }
+
             DB::commit();
             return redirect()->route("index")->withSuccess('Los datos fueron modificados');
         } catch (\Exception $e) {
+            dd($e);
             DB::rollBack();
             return back()->withErrors(['msg'=>'Ocurrió un error al modificar los datos']);
         }
