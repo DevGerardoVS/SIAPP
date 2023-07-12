@@ -349,7 +349,7 @@ class CalendarizacionCargaMasivaController extends Controller
         }
         //si todo sale bien procedemos al import
         try {
-            (new ClavePresupuestaria)->import($filename, 'local', \Maatwebsite\Excel\Excel::XLSX);
+            (new ClavePresupuestaria)->import($request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
     
               if(File::exists(storage_path($filename))){
                 File::delete(storage_path($filename));
