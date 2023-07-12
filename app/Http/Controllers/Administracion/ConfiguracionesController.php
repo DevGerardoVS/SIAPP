@@ -108,26 +108,23 @@ class ConfiguracionesController extends Controller
             $array_where = [];
             $filter = $request->filter;
 
-            if($filter!=null || $filter!='') array_push($array_where, ['clave','=',$filter]);
-
-            $data = DB::table('tipo_actividad_upp')
-                ->select('clave', 'descripcion','Acumulativa','Continua','Especial')
-                ->join('catalogo','tipo_actividad_upp.clv_upp','=','catalogo.clave')
+            //if($filter!=null || $filter!='') array_push($array_where, ['clave','=',$filter]);
+            
+            $data = DB::table('epp')
+                ->select('epp.upp_id', 'catalogo.descripcion',DB::raw('if(uppautorizadascpnomina.deleted_at is null,1,0) as autorizado'))
+                ->join('catalogo','catalogo.clave','=','epp.upp_id')
+                ->leftJoin('uppautorizadascpnomina','uppautorizadascpnomina.clv_upp','=','epp.upp_id')
                 ->where('grupo_id', 6)
-                ->where($array_where)
+                ->groupBy('upp_id')
+                ->orderBy('upp_id')
                 ->get();
 
-            $i=0;
             foreach ($data as $d) {
                 //$d->tipo 
-                $acumulativa = $d->Acumulativa==1? ' checked' : '';
-                $continua = $d->Continua==1? ' checked' : '';
-                $especial = $d->Especial==1? ' checked' : '';
+                $autorizado = $d->autorizado==1? ' checked' : '';
 
-                $ds = array($d->clave , $d->descripcion, 
-                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'acumulativa\')" id="'.$d->clave.'_a" '.$acumulativa.'></div>',
-                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'continua\')" id="'.$d->clave.'_c" '.$continua.'></div>',
-                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'especial\')" id="'.$d->clave.'_e" '.$especial.'></div>');
+                $ds = array($d->upp_id , $d->descripcion, '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateDataAutorizado(\''.$d->upp_id.'\',\'autorizado\')" id="'.$d->upp_id.'_a" '.$autorizado.'></div>');
+                
                 $dataSet[] = $ds;
             }
 

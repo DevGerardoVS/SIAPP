@@ -148,6 +148,13 @@ function getUpps(){
 }
 
 function getUppsAuto(){
+
+	$('#buscarForm').attr('action', "/amd-configuracion/data-auto");
+
+	$('.table-a').removeAttr("id");
+	$('.table-b').removeAttr("id");
+	$('.table-b').attr("id","catalogo");
+
     $.ajax({
         url:"/amd-configuracion/upps-auto",
         type: "POST",
@@ -177,6 +184,8 @@ function getUppsAuto(){
             console.log('Error: ' +  JSON.stringify(response.responseJSON));
         }
     });
+
+	getData();
 
 	//llenamos la tabla
 	/*$.ajax({
@@ -265,9 +274,12 @@ function updateData(id,field){
 }
 
 $(document).ready(function () {
+
 	getData();
 
     getUpps();
+	
+	
 
 	$('#createGroup').modal({
 		backdrop: 'static',

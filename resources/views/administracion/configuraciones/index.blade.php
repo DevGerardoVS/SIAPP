@@ -20,42 +20,42 @@
                                 <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Tipo de actividad por UPP</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" onclick="getUppsAuto()" aria-selected="false">UPP's autorizadas para delegación</button>
+                                <button class="nav-link" id="autorizadas-tab" data-bs-toggle="tab" data-bs-target="#auto" type="button" role="tab" aria-controls="profile" onclick="getUppsAuto()" aria-selected="false">UPP's autorizadas para delegación</button>
                             </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <br>
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                <div>
-                                    <div class="jarviswidget-editbox">
-                                    </div>
-                                    <div class="widget-body-toolbar">
-                                        <div class="row">
-                                            <div class="col-xs-9 col-sm-5 col-md-5 col-lg-5">
-                                            </div>
-                                            <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
-                                                <select id="upps" class="form-select">
-                                                    <option value="">Todas las UPP's</option>
-                                                </select>
-                                            </div>
+                                
+                                <div class="jarviswidget-editbox">
+                                </div>
+                                <div class="widget-body-toolbar">
+                                    <div class="row">
+                                        <div class="col-xs-9 col-sm-5 col-md-5 col-lg-5">
+                                        </div>
+                                        <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
+                                            <select id="upps" class="form-select">
+                                                <option value="">Todas las UPP's</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <br>
-                                    <table id="catalogo" class="table table-striped table-bordered text-center "
-                                        style="width:100%">
-                                        <thead>
-                                            <tr class="colorMorado">
-                                                <th>Clave UPP</th>
-                                                <th>UPP</th>
-                                                <th>Acumulativa</th>
-                                                <th>Continua</th>
-                                                <th>Especial</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
                                 </div>
+                                <br>
+                                <table id="" class="table table-striped table-bordered text-center table-a"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr class="colorMorado">
+                                            <th>Clave UPP</th>
+                                            <th>UPP</th>
+                                            <th>Acumulativa</th>
+                                            <th>Continua</th>
+                                            <th>Especial</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                
                             </div>
-                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="tab-pane fade" id="auto" role="tabpanel" aria-labelledby="autorizadas-tab">
                                 <div class="widget-body-toolbar">
                                     <div class="row">
                                         <div class="col-xs-9 col-sm-5 col-md-5 col-lg-5">
@@ -68,7 +68,7 @@
                                     </div>
                                 </div>
                                 <br>
-                                <table id="catalogo2" class="table table-striped table-bordered text-center "
+                                <table id="" class="table table-striped table-bordered text-center table-b"
                                     style="width:100%">
                                     <thead>
                                         <tr class="colorMorado">
