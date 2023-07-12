@@ -76,6 +76,7 @@ class CalendarizacionCargaMasivaController extends Controller
             array_shift($filearray);
             $ejercicio=date("Y");
             foreach($filearray as $k){
+
                 //buscar en el array de upps 
                 $var= array_search($k['5'], $arrayupps);
                 
@@ -206,6 +207,7 @@ class CalendarizacionCargaMasivaController extends Controller
             $ejercicio=date("Y");
             foreach($filearray as $k){
                 //buscar en el array de upps 
+
                 $var= array_search($k['5'], $arrayupps);
                 
                if($k['16']=='UUU'){
