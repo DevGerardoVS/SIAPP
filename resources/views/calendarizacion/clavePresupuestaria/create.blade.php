@@ -296,7 +296,8 @@
 
     <script>
         dao.getRegiones("");
-        dao.getUpp("");
+        let ejercicio = document.getElementById('anio').value;
+        dao.getUpp(ejercicio,'');
     </script>
     
 @endsection
