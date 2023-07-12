@@ -55,7 +55,8 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}">
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.3/xlsx.full.min.js"></script>
+ 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
     <!-- Latest compiled and minified CSS -->
@@ -117,54 +118,54 @@
         }
     </script>
     <script>
-        var tiempo = parseInt("{{ $_ENV['SESSION_INACTIVITYTIME'] }}") * 60;
-        var reloj = setInterval(function() {
-            if (tiempo <= 0) {
-                clearInterval(reloj);
-            }
+        // var tiempo = parseInt("{{ $_ENV['SESSION_INACTIVITYTIME'] }}") * 60;
+        // var reloj = setInterval(function() {
+        //     if (tiempo <= 0) {
+        //         clearInterval(reloj);
+        //     }
 
-            tiempo -= 1;
-            if (tiempo == 0) {
+        //     tiempo -= 1;
+        //     if (tiempo == 0) {
 
 
-                var urlacctual = "{{ Request::path() }}";
-                if (urlacctual != 'login') {
-                    Swal.fire({
-                        title: 'Su sesión ha expirado',
-                        text: '¿Desea iniciar sesión nuevamente?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Sí, iniciar sesión',
-                        cancelButtonText: 'No, cerrar sesión',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "{{ route('login') }}";
-                        } else {
-                            $.ajax({
-                                type: "POST",
-                                url: "{{ route('logout') }}",
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                data: `{
-                                    "c": 78912,
-                                    "Customer": "Jason Sweet",
-                                    csrf: "{{ csrf_token() }}"
-                                }`,
-                                success: function(result) {
-                                    window.location.href = "{{ route('login') }}";
-                                },
-                                dataType: "json"
-                            });
-                            window.location.href = "{{ route('logout') }}";
-                            // window.location.href = "{{ route('logout') }}";
-                        }
-                    });
-                }
-            }
-        }, 1000);
+        //         var urlacctual = "{{ Request::path() }}";
+        //         if (urlacctual != 'login') {
+        //             Swal.fire({
+        //                 title: 'Su sesión ha expirado',
+        //                 text: '¿Desea iniciar sesión nuevamente?',
+        //                 icon: 'warning',
+        //                 showCancelButton: true,
+        //                 confirmButtonColor: '#3085d6',
+        //                 cancelButtonColor: '#d33',
+        //                 confirmButtonText: 'Sí, iniciar sesión',
+        //                 cancelButtonText: 'No, cerrar sesión',
+        //             }).then((result) => {
+        //                 if (result.isConfirmed) {
+        //                     window.location.href = "{{ route('login') }}";
+        //                 } else {
+        //                     $.ajax({
+        //                         type: "POST",
+        //                         url: "{{ route('logout') }}",
+        //                         headers: {
+        //                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                         },
+        //                         data: `{
+        //                             "c": 78912,
+        //                             "Customer": "Jason Sweet",
+        //                             csrf: "{{ csrf_token() }}"
+        //                         }`,
+        //                         success: function(result) {
+        //                             window.location.href = "{{ route('login') }}";
+        //                         },
+        //                         dataType: "json"
+        //                     });
+        //                     window.location.href = "{{ route('logout') }}";
+        //                     // window.location.href = "{{ route('logout') }}";
+        //                 }
+        //             });
+        //         }
+        //     }
+        // }, 1000);
     </Script>
     {{-- Page Scripts --}}
     @yield('page_scripts')

@@ -39,14 +39,13 @@ class LoginController extends Controller
      */
 
     public function login(Request $request) {
-        log::debug("::: ". $request['email']);
-        $verificacion = Auth::attempt(['email' => $request['email'], 'password' => $request['password']]);
 
         if(Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             if(Auth::user()->estatus == 1)
                 return redirect('/');
             else
-                return Redirect::back()->withInput()->withErrors('Error');
+                Auth::logout();
+                return back()->withErrors('Este usuario ha sido deshabilitado');
         }
         return Redirect::back()->withInput()->withErrors('Error');
 

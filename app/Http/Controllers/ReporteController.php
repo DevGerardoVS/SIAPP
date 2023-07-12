@@ -15,6 +15,7 @@ use function PHPUnit\Framework\isEmpty;
 class ReporteController extends Controller
 {
     public function indexPlaneacion(){
+        Controller::check_permission('getPlaneacion');
         $db = $_ENV['DB_DATABASE'];
         $dataSet = array();
         $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
@@ -27,6 +28,7 @@ class ReporteController extends Controller
     }
 
     public function indexAdministrativo(){
+        Controller::check_permission('getAdministrativos');
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
@@ -137,7 +139,7 @@ class ReporteController extends Controller
     }
 
     public function downloadReport(Request $request, $nombre){ 
-        ini_set('max_execution_time', 300); // Tiempo máximo de ejecución 
+        ini_set('max_execution_time', 600); // Tiempo máximo de ejecución 
 
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
@@ -148,7 +150,8 @@ class ReporteController extends Controller
 
         try {
         
-            $logo = public_path()."/img/logo.png";
+            $logoLeft = public_path()."/img/escudoBN.png";
+            $logoRight = public_path()."/img/logo.png";
             $report_path = app_path() ."/Reportes/".$report.".jasper";
             $format = array($request->action);
             // $format = array("xls");
@@ -157,8 +160,8 @@ class ReporteController extends Controller
             $nameFile = "EF_".$anio."_".$report;
             $parameters = array(
                 "anio" => $anio,
-                "logoLeft" => $logo,
-                "logoRight" => $logo,
+                "logoLeft" => $logoLeft,
+                "logoRight" => $logoRight,
             );
         
             if($fechaCorte != null) {

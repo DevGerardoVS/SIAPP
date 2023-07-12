@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Calendarizacion;
 
+use App\Imports\utils\FunFormats;
+use App\Models\calendarizacion\ActividadesMir;
+use App\Models\calendarizacion\ProyectosMir;
 use App\Models\Catalogo;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -22,7 +25,7 @@ use App\Helpers\Calendarizacion\MetasHelper;
 use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
-use App\Imports\MetasImport;
+use Shuchkin\SimpleXLSX;
 
 
 
@@ -104,9 +107,11 @@ class MetasController extends Controller
 	}
 	public function getMetasP(Request $request)
 	{
+		Log::debug($request);
+		Log::debug(isset($request->upp_filter));
 		$dataSet = [];
-		$upp = auth::user()->clv_upp;
-		if ($request->ur_filter != null) {
+		$upp = isset($request->upp_filter) ?$request->upp_filter:auth::user()->clv_upp;
+		if ($request->ur_filter != null && $upp !='') {
 			$activs = DB::table("programacion_presupuesto")
 				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
 				->select(
@@ -116,17 +121,14 @@ class MetasController extends Controller
 					'v_epp.proyecto as proyecto'
 				)
 				->where('programacion_presupuesto.ur', '=', $request->ur_filter)
-				->groupByRaw('programa_presupuestario');
-			if ($upp != null) {
-				$activs = $activs->where('programacion_presupuesto.upp', '=', $upp);
-			}
-			$activs = $activs->get();
-			log::debug("UPP:".$upp."- UR:".$request->ur_filter);
-
+				->where('programacion_presupuesto.upp', '=', $upp)
+				->groupByRaw('programa_presupuestario')->get();
+				
 			foreach ($activs as $key) {
 				$accion = '<div class="form-check"><input class="form-check-input" type="radio" name="proyecto" id="proyecto" value="' . $key->id . '" checked><label class="form-check-label" for="exampleRadios1"></label></div>';
 				$dataSet[] = [$key->programa, $key->subprograma, $key->proyecto, $accion];
 			}
+			Log::debug($dataSet);
 		}
 		return response()->json(["dataSet" => $dataSet], 200);
 	}
@@ -238,9 +240,9 @@ class MetasController extends Controller
 		}
 		return $dataSet;
 	}
-	public function getUrs()
+	public function getUrs($_upp)
 	{
-		$upp = auth::user()->clv_upp;
+		$upp = $_upp != null?$_upp:auth::user()->clv_upp;
 		$urs = DB::table('v_epp')
 			->select(
 				'id',
@@ -248,11 +250,23 @@ class MetasController extends Controller
 				'ur'
 			)->distinct()
 			->groupByRaw('clv_ur');
-			if($upp!=NULL){
+		if ($upp != NULL) {
 			$urs = $urs->where('clv_upp', $upp);
-			}
-			$urs =$urs->get();
+		}
+		$urs = $urs->get();
 		return $urs;
+	}
+	public function getUpps()
+	{
+		$upps = DB::table('v_epp')
+			->select(
+				'id',
+				'clv_upp',
+				'upp'
+			)->distinct()
+			->groupByRaw('clv_upp')
+			->get();
+		return $upps;
 	}
 	public function getProgramas($ur)
 	{
@@ -286,12 +300,12 @@ class MetasController extends Controller
 
 			->where('fondo.deleted_at', null)
 			->distinct();
-			if($upp!= NULL){
-				$fondos =$fondos->where('programacion_presupuesto.upp', '=', $upp);
-			}
-			$fondos =$fondos->get();
+		if ($upp != NULL) {
+			$fondos = $fondos->where('programacion_presupuesto.upp', '=', $upp);
+		}
+		$fondos = $fondos->get();
 		/* $activ = Http::acceptJson()->get('https://pokeapi.co/api/v2/pokemon/');
-			  $res = json_decode($activ->body()); */
+					$res = json_decode($activ->body()); */
 		$activ = DB::table('actividades_mir')
 			->select(
 				'id',
@@ -396,8 +410,8 @@ class MetasController extends Controller
 	{
 		//Controller::check_permission('deleteUsuarios');
 		Metas::where('id', $request->id)->delete();
-		
-		 
+
+
 	}
 	public function updateMeta($id)
 	{
@@ -407,101 +421,105 @@ class MetasController extends Controller
 		return $query;
 	}
 	public function exportExcel(Request $request)
-    {
-		   /*Si no coloco estas lineas Falla*/
-		   ob_end_clean();
-		   ob_start();
-		   /*Si no coloco estas lineas Falla*/
-        return Excel::download(new MetasExport(), 'Proyecto con actividades.xlsx',\Maatwebsite\Excel\Excel::XLSX);
-    }
+	{
+		/*Si no coloco estas lineas Falla*/
+		ob_end_clean();
+		ob_start();
+		/*Si no coloco estas lineas Falla*/
+		return Excel::download(new MetasExport(), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+	}
 	public function proyExcel()
-    {
-		   /*Si no coloco estas lineas Falla*/
-		   ob_end_clean();
-		   ob_start();
-		   /*Si no coloco estas lineas Falla*/
-        return Excel::download(new MetasCargaM(), 'CargaMasiva.xlsx');
-    }
+	{
+		/*Si no coloco estas lineas Falla*/
+		ob_end_clean();
+		ob_start();
+		/*Si no coloco estas lineas Falla*/
+		return Excel::download(new MetasCargaM(), 'CargaMasiva.xlsx');
+	}
 	public function pdfView()
-    {
+	{
 		$data = MetasHelper::actividades();
 		return view('calendarizacion.metas.proyectoPDF', compact('data'));
-    }
-	
+	}
+
 	public function exportPdf(Request $request)
-    {
+	{
 		$data = MetasHelper::actividades();
-		  view()->share('data',$data);
+		view()->share('data', $data);
 		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF');
 		return $pdf->download('Proyecto con actividades.pdf');
-    }
- 	public function downloadActividades()
+	}
+	public function downloadActividades()
 	{
-		$date=Carbon::now();
+		$date = Carbon::now();
 		$upp = CatPermisos::where('id', auth::user()->id_ente)->firstOrFail();
-		$request=array(
-			"anio"=>$date->year,
-			"corte"=>$date->format('Y-m-d'),
-			"logoLeft"=> public_path().'img\escudo.png',
-			"logoRight"=>public_path().'img\escudo.png',
-			"UPP"=>$upp->clv_upp,
-            );
+		$request = array(
+			"anio" => $date->year,
+			"corte" => $date->format('Y-m-d'),
+			"logoLeft" => public_path() . 'img\escudo.png',
+			"logoRight" => public_path() . 'img\escudo.png',
+			"UPP" => $upp->clv_upp,
+		);
 		log::debug($request);
 		return $this->jasper($request);
 
-	} 
-	public function jasper($request){ 
-        date_default_timezone_set('America/Mexico_City');
-        
-        setlocale(LC_TIME, 'es_VE.UTF-8','esp');
-        $fecha = date('d-m-Y');
-        $marca = strtotime($fecha);
-        $fechaCompleta = strftime('%A %e de %B de %Y', $marca);
-        $report =  "Reporte_Calendario_UPP";
-      
-        $ruta = public_path()."/Reportes";
-        //Eliminación si ya existe reporte
-        if(File::exists($ruta."/".$report.".pdf")) {
-            File::delete($ruta."/".$report.".pdf");
-        }
-        $report_path = app_path() ."/Reportes/".$report.".jasper";
-        $format = array('pdf');
-        $output_file =  public_path()."/Reportes";
+	}
+	public function jasper($request)
+	{
+		date_default_timezone_set('America/Mexico_City');
+
+		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
+		$fecha = date('d-m-Y');
+		$marca = strtotime($fecha);
+		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
+		$report = "Reporte_Calendario_UPP";
+
+		$ruta = public_path() . "/Reportes";
+		//Eliminación si ya existe reporte
+		if (File::exists($ruta . "/" . $report . ".pdf")) {
+			File::delete($ruta . "/" . $report . ".pdf");
+		}
+		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
+		$format = array('pdf');
+		$output_file = public_path() . "/Reportes";
 
 		$parameters = $request;
 
-        $database_connection = \Config::get('database.connections.mysql');
+		$database_connection = \Config::get('database.connections.mysql');
 
 
-        $jasper = new PHPJasper;
-        $jasper->process(
-          $report_path,
-          $output_file,
-          $format,
-          $parameters,
-          $database_connection
-        )->output();
-        dd($jasper);
-        return Response::make(file_get_contents(public_path()."/Reportes/".$report.".pdf"), 200, [
-            'Content-Type' => 'application/pdf'
-        ]);
-    }
+		$jasper = new PHPJasper;
+		$jasper->process(
+			$report_path,
+			$output_file,
+			$format,
+			$parameters,
+			$database_connection
+		)->output();
+		dd($jasper);
+		return Response::make(file_get_contents(public_path() . "/Reportes/" . $report . ".pdf"), 200, [
+			'Content-Type' => 'application/pdf'
+		]);
+	}
 	public function importPlantilla(Request $request)
 	{
-		
 		DB::beginTransaction();
 		try {
-			ini_set('max_execution_time', 1200);
 			$assets = $request->file('cmFile');
-			$import = new MetasImport();
-			$import->onlySheets('Metas');
-			Excel::import($import, $assets, 'UTF-8');
-			DB::commit();
-			return redirect('/')->with('success', 'All good!');
+			if ($xlsx = SimpleXLSX::parse($assets)) {
+				$filearray = $xlsx->rows();
+				array_shift($filearray);
+				$resul = FunFormats::saveImport($filearray);
+				if($resul['icon']=='success'){
+					DB::commit();
+				}
+				return response()->json($resul);
+			}
+			
 		} catch (\Exception $e) {
 			DB::rollback();
-			return $e->getMessage();
 		}
+
 
 	}
 }
