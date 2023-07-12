@@ -323,7 +323,6 @@ return new class extends Migration
             $table->integer('noviembre')->default(null);
             $table->integer('diciembre')->default(null);
             $table->integer('total')->default(null);
-            $table->integer('ejercicio')->nullable(false);
             $table->integer('estatus')->nullable(false);
             $table->softDeletes();
             $table->string('created_user',45)->nullable(false);
