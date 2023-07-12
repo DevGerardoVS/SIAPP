@@ -6,9 +6,11 @@ use App\Invoice;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use DB;
 
-class PlantillaTechosExport implements FromView, WithColumnWidths
+class PlantillaTechosExport implements FromView, WithColumnWidths, WithColumnFormatting 
 {
     protected $filas;
     public function view(): View
@@ -34,4 +36,13 @@ class PlantillaTechosExport implements FromView, WithColumnWidths
         ];
     }
 
+    public function columnFormats(): array{
+        return [
+            'A' =>  NumberFormat::FORMAT_TEXT,
+            'B' => NumberFormat::FORMAT_TEXT,
+            'C' => NumberFormat::FORMAT_TEXT,
+            'D' =>  NumberFormat::FORMAT_NUMBER,
+            'E' => NumberFormat::FORMAT_NUMBER ,
+        ];
+    }
 }

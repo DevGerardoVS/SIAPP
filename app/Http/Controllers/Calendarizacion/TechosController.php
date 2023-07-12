@@ -157,6 +157,7 @@ class TechosController extends Controller
         ]);
         $the_file = $request->file('cmFile');
         DB::beginTransaction();
+        ini_set('max_execution_time', 1200);
         try {
             if ($xlsx = SimpleXLSX::parse($the_file)) {
                 $filearray = $xlsx->rows();
@@ -171,7 +172,7 @@ class TechosController extends Controller
                     $error = array(
                         "icon" => 'error',
                         "title" => 'Error',
-                        "text" => 'Ingresa la plantilla sin modificaciones'
+                        "text" => 'Ingresa la plantilla sin eliminar filas'
                     );
                     return response()->json($error);
                 }
