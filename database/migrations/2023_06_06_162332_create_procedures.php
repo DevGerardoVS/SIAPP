@@ -1681,34 +1681,63 @@ return new class extends Migration {
         begin
             create temporary table if not exists temp_epp_aplanado as
             select 
-                vppl.id,
-                vel.id v_epp_id
-            from v_programacion_presupuesto_llaves vppl 
-            join v_epp_llaves vel on vppl.epp_llave = vel.llave
-            where vppl.ejercicio = anio and vel.ejercicio = anio and vppl.id not in (
-                select id from pp_identificadores pa
-            );
+				pp.id,
+				ve.id v_epp_id
+			from programacion_presupuesto pp
+			join v_epp ve 
+				on ve.clv_upp = pp.upp 
+				and ve.clv_subsecretaria = pp.subsecretaria 
+				and ve.clv_ur = pp.ur
+				and ve.clv_finalidad = pp.finalidad 
+				and ve.clv_funcion = pp.funcion 
+				and ve.clv_subfuncion = pp.subfuncion 
+				and ve.clv_eje = pp.eje
+				and ve.clv_linea_accion = pp.linea_accion 
+				and ve.clv_programa_sectorial = pp.programa_sectorial 
+				and ve.clv_tipologia_conac = pp.tipologia_conac 
+				and ve.clv_programa = pp.programa_presupuestario 
+				and ve.clv_subprograma = pp.subprograma_presupuestario 
+				and ve.clv_proyecto = pp.proyecto_presupuestario
+			where pp.ejercicio = anio 
+				and ve.ejercicio = anio 
+				and pp.id not in (
+				select id from pp_identificadores pa
+			);
 
             create temporary table if not exists temp_claves_montos_aplanado as
             select 
-                vppl.id,
-                vcg.id clas_geo_id,
-                vpp.id pos_pre_id,
-                vfl.id fondo_id,
-                po.id obra_id
-            from v_programacion_presupuesto_llaves vppl 
-            join v_clasificacion_geografica vcg on vppl.clas_geo_llave = vcg.clasificacion_geografica_llave
-            join v_posicion_presupuestaria_llaves vpp on vppl.posicion_presupuestaria_llave = vpp.posicion_presupuestaria_llave 
-            join v_fondo_llaves vfl on vppl.fondo_llave = vfl.llave 
-            join proyectos_obra po on vppl.proyecto_obra = po.clv_proyecto_obra
-            where vppl.ejercicio = anio
-            and vcg.deleted_at is null
-            and vpp.deleted_at is null
-            and vfl.deleted_at is null
-            and po.deleted_at is null
-            and vppl.id not in (
-                select id from pp_identificadores pa
-            );
+				pp.id,
+				cg.id clas_geo_id,
+				p.id pos_pre_id,
+				f.id fondo_id,
+				po.id obra_id
+			from programacion_presupuesto pp 
+			join clasificacion_geografica cg 
+				on cg.clv_entidad_federativa = pp.entidad_federativa 
+				and cg.clv_region = pp.region 
+				and cg.clv_municipio = pp.municipio 
+				and cg.clv_localidad = pp.localidad
+			join posicion_presupuestaria p
+				on p.clv_capitulo = substring(pp.posicion_presupuestaria,1,1)
+				and p.clv_concepto = substring(pp.posicion_presupuestaria,2,1)
+				and p.clv_partida_generica = substring(pp.posicion_presupuestaria,3,1)
+				and p.clv_partida_especifica = substring(pp.posicion_presupuestaria,4,2)
+				and p.clv_tipo_gasto = pp.tipo_gasto
+			join fondo f 
+				on f.clv_etiquetado = pp.etiquetado 
+				and f.clv_fuente_financiamiento = pp.fuente_financiamiento 
+				and f.clv_ramo = pp.ramo 
+				and f.clv_fondo_ramo = pp.fondo_ramo 
+				and f.clv_capital = pp.capital
+			join proyectos_obra po on pp.proyecto_obra = po.clv_proyecto_obra
+			where pp.ejercicio = anio
+				and cg.deleted_at is null
+				and p.deleted_at is null
+				and f.deleted_at is null
+				and po.deleted_at is null
+				and pp.id not in (
+				select id from pp_identificadores pa
+			);
 
             insert into pp_identificadores
             select 
