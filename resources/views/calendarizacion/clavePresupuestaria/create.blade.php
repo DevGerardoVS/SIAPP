@@ -132,7 +132,7 @@
                                         </div>                                
                                     <div style="clear:both"></div>
                                     <div class="col-md-1"></div>
-                                    <div class="col-md-3"><label class="control-label">Linia de Acción*</label></div>
+                                    <div class="col-md-3"><label class="control-label">Linea de Acción*</label></div>
                                         <div class="col-md-8">
                                             
                                             <select class="form-control select2" name="sel_linea" id="sel_linea"></select>
@@ -296,7 +296,8 @@
 
     <script>
         dao.getRegiones("");
-        dao.getUpp("");
+        let ejercicio = document.getElementById('anio').value;
+        dao.getUpp(ejercicio,'');
     </script>
     
 @endsection

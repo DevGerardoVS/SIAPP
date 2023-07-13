@@ -1,7 +1,12 @@
 @extends('layouts.app')
 @include('panels.datatable')
+
 @include('calendarizacion.techos.modalCreate')
 @include('calendarizacion.techos.modalCarga')
+@include('calendarizacion.techos.modalExportExcel')
+@include('calendarizacion.techos.modalExportPDF')
+@include('calendarizacion.techos.modalExportPresupuestos')
+
 @section('content')
 
 <div class="container">
@@ -47,24 +52,36 @@
                                 <br>
                                 <div class="row">
                                     <div class="col-md-2">
-                                    <button type="button" class="btn btn-outline-success" data-toggle="" id="btnExport"
-                                            data-target=".excel" data-backdrop="static"
-                                            data-keyboard="false"><i class="fa fa-file-excel-o"></i> Exportar Excel
-                                    </button>
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-outline-secondary" data-toggle="" id="btnCarga"
-                                            data-target=".carga-masiva" data-backdrop="static"
-                                            data-keyboard="false"><i class="fa fa-file-text-o" aria-hidden="true"></i> Carga masiva
-                                    </button>
-                                </div>
-                                <div class="col-md-6"></div>
-                                <div class="col-md-2 text-center">
-                                    <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
-                                            data-target=".bd-example-modal-lg" data-backdrop="static"
-                                            data-keyboard="false"><i class="fa fa-plus"></i> Agregar
-                                    </button>
-                                </div>
+                                        <button type="button" class="btn btn-outline-success" 
+                                        data-bs-toggle="modal" data-bs-target="#exportExcel">
+                                            <i class="fa fa-file-excel-o"></i> Exportar Excel
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-outline-danger" 
+                                        data-bs-toggle="modal" data-bs-target="#exportPDF">
+                                            <i class="fa fa-file-excel-o"></i> Exportar PDF
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-outline-success" 
+                                        data-bs-toggle="modal" data-bs-target="#exportPresupuestos">
+                                           <i class="fa fa-file-excel-o"></i> Exportar Presupuestos
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-outline-secondary" data-toggle="" id="btnCarga"
+                                                data-target=".carga-masiva" data-backdrop="static"
+                                                data-keyboard="false"><i class="fa fa-file-text-o" aria-hidden="true"></i> Carga masiva
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-2 text-center">
+                                        <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
+                                                data-target=".bd-example-modal-lg" data-backdrop="static"
+                                                data-keyboard="false"><i class="fa fa-plus"></i> Agregar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

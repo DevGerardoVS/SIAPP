@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
 use Auth;
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Redirect;
 
 class LoginController extends Controller
@@ -21,7 +23,7 @@ class LoginController extends Controller
     | redirecting them to your home screen. The controller uses a trait
     | to conveniently provide its functionality to your applications.
     |
-    */
+     */
 
     use AuthenticatesUsers;
 
@@ -38,21 +40,21 @@ class LoginController extends Controller
      * @return void
      */
 
-    public function login(Request $request) {
-        log::debug("::: ". $request['email']);
-        $verificacion = Auth::attempt(['email' => $request['email'], 'password' => $request['password']]);
+    public function login(Request $request)
+    {
 
-        if(Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
-            if(Auth::user()->estatus == 1)
-                return redirect('/');
-            else
-                return Redirect::back()->withInput()->withErrors('Error');
-        }
+        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
+            if (Auth::user()->estatus == 1) {Session::put('last_activity', Carbon::now());
+                return redirect('/');} else {
+                Auth::logout();
+                return back()->withErrors('Este usuario ha sido deshabilitado');
+            }}
         return Redirect::back()->withInput()->withErrors('Error');
 
     }
 
-    public function logout() {
+    public function logout()
+    {
         Auth::logout();
         return redirect('/');
     }
@@ -62,9 +64,11 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function redirectTo() {
-        if (session()->has('redirect_to'))
+    public function redirectTo()
+    {
+        if (session()->has('redirect_to')) {
             return session()->pull('redirect_to');
+        }
 
         return $this->redirectTo;
     }

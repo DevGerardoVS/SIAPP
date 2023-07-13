@@ -282,28 +282,28 @@ var dao = {
           });
         });
   },
-	getUpp : function(id){
+	getUpp : function(ejercicio,id){
         $.ajax({
           	type : "get",
-          	url: '/cat-upp',
+          	url: '/cat-upp/'+ ejercicio,
         }).done(function(data){
           var par = $('#sel_upp');
           par.html('');
           par.append(new Option("-- Selecciona una Unidad Programática --", ""));
           $.each(data, function(i, val){
             if (id != '' && val.clave == id) {
-             par.append(new Option(data[i].clave+ ' - '+ data[i].descripcion , data[i].clave,true,true));
+             par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,true,true));
              document.getElementById('upp').innerHTML = data[i].clave;
             }else{
-             par.append(new Option(data[i].clave+ ' - '+ data[i].descripcion , data[i].clave,false,false));
+             par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,false,false));
             }
           });
         });
   },
-	getUninadResponsableByUpp : function(id,idSelected){
+	getUninadResponsableByUpp : function(id,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-unidad-responsable/'+ id,
+          	url: '/cat-unidad-responsable/'+ id+'/'+ejercicio,
         }).done(function(data){
           var par = $('#sel_unidad_res');
           par.html('');
@@ -320,18 +320,18 @@ var dao = {
           });
         });
   },
-  getSubSecretaria :function (upp,ur) {
+  getSubSecretaria :function (upp,ur,ejercicio) {
     $.ajax({
       type: 'get',
-      url: '/cat-subSecretaria/'+ upp + '/' + ur,
+      url: '/cat-subSecretaria/'+ upp + '/' + ur + '/'+ejercicio,
     }).done(function (data) {
       document.getElementById('subsecretaria').innerHTML = data.clv_subsecretaria;
     });
   },
-	getProgramaPresupuestarioByur : function(uppId,id,idSelected){
+	getProgramaPresupuestarioByur : function(uppId,id,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-programa-presupuestario/'+ uppId + '/' + id,
+          	url: '/cat-programa-presupuestario/'+ uppId + '/' + id + '/'+ ejercicio,
         }).done(function(data){
           var par = $('#sel_programa');
           par.html('');
@@ -347,10 +347,10 @@ var dao = {
           });
         });
   },
-	getSubProgramaByProgramaId : function(ur,id, upp,idSelected){
+	getSubProgramaByProgramaId : function(ur,id, upp,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-subprograma-presupuesto/'+ ur + '/'+ id + '/'+ upp,
+          	url: '/cat-subprograma-presupuesto/'+ ur + '/'+ id + '/'+ upp + '/' + ejercicio,
         }).done(function(data){
           var par = $('#sel_sub_programa');
           par.html('');
@@ -366,10 +366,10 @@ var dao = {
           });
         });
   },
-	getProyectoBySubPrograma : function(programa,id, idSelected){
+	getProyectoBySubPrograma : function(programa,id, upp, ur,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-proyecyo/'+ programa + '/' + id,
+          	url: '/cat-proyecyo/'+ programa + '/' + id+'/'+ upp + '/' + ur+'/' +ejercicio,
         }).done(function(data){
           var par = $('#sel_proyecto');
           par.html('');
@@ -385,10 +385,10 @@ var dao = {
           });
         });
   },
-	getLineaDeAccionByUpp : function(uppId,id,idSelected){
+	getLineaDeAccionByUpp : function(uppId,id,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-linea-accion/'+ uppId + '/' + id,
+          	url: '/cat-linea-accion/'+ uppId + '/' + id+'/'+ejercicio,
         }).done(function(data){
           var par = $('#sel_linea');
           par.html('');
@@ -405,10 +405,10 @@ var dao = {
           });
         });
   },
-  getAreaFuncional: function (uppId,id) {
+  getAreaFuncional: function (uppId,id,ejercicio) {
     $.ajax({
       type:'get',
-      url: '/cat-area-funcional/'+uppId +'/'+id,
+      url: '/cat-area-funcional/'+uppId +'/'+id+'/'+ejercicio,
     }).done(function (data) {
       document.getElementById('finalidad').innerHTML = data.clv_finalidad;
       document.getElementById('funcion').innerHTML = data.clv_funcion;
@@ -566,7 +566,7 @@ var dao = {
       etiquetado + fuenteFinanciamiento + ramo + fondoRamo + capital + proyectoObra;
     $.ajax({
       type: "GET",
-      url: "/ver-detalle/" + clave,
+      url: "/ver-detalle/" + clave + "/" + anioFondo,
       dataType: "json"
     }).done(function (data) {
       $("#detalleClave").empty();
@@ -599,17 +599,31 @@ var dao = {
       url: '/calendarizacion-claves-presupuesto-fondo/'+ejercicio+'/'+clvUpp,
       dataType : "JSON"
     }).done(function (response) {
-      document.getElementById('titleModalpresupuesto').innerText = response[0].upp['clave'] + ' - ' +response[0].upp['descripcion']; 
+      let data = [];
+      for (let index = 0; index < response.fondos.length; index++) {
+        const clv_fondo = response.fondos[index].clv_fondo;
+        const fondo_ramo = response.fondos[index].fondo_ramo;
+        const Operativo = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response.fondos[index].Operativo);
+        const RH = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response.fondos[index].RH);
+        const techos_presupuestal =  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response.fondos[index].techos_presupuestal);
+        const calendarizado =  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response.fondos[index].calendarizado);
+        const disponible =  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response.fondos[index].disponible);
+        let ejercicio = response.fondos[index].ejercicio
+        data.push({'clv_fondo':clv_fondo,'fondo_ramo':fondo_ramo,'Operativo':Operativo,'RH':RH ,'techos_presupuestal':techos_presupuestal,'calendarizado':calendarizado,'disponible':disponible, 'ejercicio':ejercicio});  
+      }
+      document.getElementById('titleModalpresupuesto').innerText = response.upp['clave'] + ' - ' +response.upp['descripcion']; 
       _table = $("#tblPresupuestos");
 			_columns = [
-				{"aTargets" : [0], "mData" : 'fondo1'},
-				{"aTargets" : [1], "mData" : "descripcion"},
-				{"aTargets" : [2], "mData" : "ejercicio"},
-				{"aTargets" : [3], "mData" : "montoAsignado"},
-				{"aTargets" : [4], "mData" : "calendarizado"},
-				{"aTargets" : [5], "mData" : "disponible"},
+				{"aTargets" : [0], "mData" : 'clv_fondo'},
+				{"aTargets" : [1], "mData" : "fondo_ramo"},
+				{"aTargets" : [2], "mData" : "Operativo"},
+				{"aTargets" : [3], "mData" : "RH"},
+				{"aTargets" : [4], "mData" : "techos_presupuestal"},
+				{"aTargets" : [5], "mData" : "calendarizado"},
+        {"aTargets" : [6], "mData" : "disponible"},
+        {"aTargets" : [7], "mData" : "ejercicio"},
 			];
-			_gen.setTableScrollFotter(_table, _columns, response);
+			_gen.setTableScrollFotter(_table, _columns, data);
       $('modalPresupuesto').show(true);
     });
   },
@@ -648,28 +662,28 @@ var dao = {
       }
     })
   },
-  filtroUpp : function(id){
+  filtroUpp : function(ejercicio,id){
     $.ajax({
         type : "get",
-        url: '/cat-upp',
+        url: '/cat-upp/'+ejercicio,
     }).done(function(data){
       var par = $('#filtro_upp');
       par.html('');
       par.append(new Option("-- Selecciona una Unidad Programática --", ""));
       $.each(data, function(i, val){
         if (id != '' && val.clave == id) {
-         par.append(new Option(data[i].clave+ '-'+ data[i].descripcion , data[i].clave,true,true));
+         par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,true,true));
          document.getElementById('upp').innerHTML = data[i].clave;
         }else{
-         par.append(new Option(data[i].clave+ '-'+ data[i].descripcion , data[i].clave,false,false));
+         par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,false,false));
         }
       });
     });
   },
-  filtroUr : function(id){
+  filtroUr : function(id, ejercicio){
     $.ajax({
       type : "get",
-      url: '/cat-unidad-responsable/'+ id,
+      url: '/cat-unidad-responsable/'+ id+'/'+ejercicio,
   }).done(function(data){
     var par = $('#filtro_ur');
     par.html('');
@@ -788,7 +802,8 @@ $(document).ready(function(){
 		e.preventDefault();
 		let val = this.value;
     document.getElementById('upp').innerHTML = val;
-		dao.getUninadResponsableByUpp(val,'');
+    let ejercicio = document.getElementById('anio').value;
+		dao.getUninadResponsableByUpp(val,ejercicio,'');
     dao.getPartidaByUpp('');
     dao.getObras(val);
 	});
@@ -797,10 +812,11 @@ $(document).ready(function(){
 		let id = this.value;
     document.getElementById('ur').innerHTML = id;
     var uppId = document.getElementById("sel_upp").value;
-    dao.getSubSecretaria(uppId,id);
-		dao.getProgramaPresupuestarioByur(uppId,id,'');
-		dao.getLineaDeAccionByUpp(uppId,id,'');
-    dao.getAreaFuncional(uppId,id);
+    let ejercicio = document.getElementById('anio').value;
+    dao.getSubSecretaria(uppId,id,ejercicio);
+		dao.getProgramaPresupuestarioByur(uppId,id,ejercicio,'');
+		dao.getLineaDeAccionByUpp(uppId,id,ejercicio,'');
+    dao.getAreaFuncional(uppId,id,ejercicio);
     dao.getClasificacionAdmin(uppId,id);
     var urText = $('#sel_unidad_res').find(":selected").text();
     document.getElementById('lbl_ur').innerText = 'Ur: '+ id+ '-' + urText;
@@ -811,7 +827,8 @@ $(document).ready(function(){
     document.getElementById('programaPre').innerHTML = id;
     var upp = document.getElementById("sel_upp").value;
     var ur = document.getElementById("sel_unidad_res").value;
-		dao.getSubProgramaByProgramaId(ur,id, upp,'');
+    let ejercicio = document.getElementById('anio').value;
+		dao.getSubProgramaByProgramaId(ur,id, upp,ejercicio,'');
 	});
 	$('#sel_sub_programa').change(function(e){
 		e.preventDefault();
@@ -820,7 +837,8 @@ $(document).ready(function(){
     var programa = document.getElementById("sel_programa").value;
     var upp = document.getElementById("sel_upp").value;
     var ejercicio = document.getElementById('anio').value;
-		dao.getProyectoBySubPrograma(programa,id,'');
+    var ur = document.getElementById("sel_unidad_res").value;
+		dao.getProyectoBySubPrograma(programa,id,upp,ur ,ejercicio,'');
     dao.getFondosByUpp(upp, id, ejercicio,'');
 	});
   $('#sel_proyecto').change(function (e) {
@@ -968,24 +986,30 @@ $(document).ready(function(){
 		e.preventDefault();
 		let id = this.value;
     document.getElementById('filAnio').value = id;
-    let upp = document.getElementById('filtro_upp').value;
+    let upp = document.getElementById('filUpp').value;
     let ur = document.getElementById('filtro_ur').value;
+    if (upp && upp != '') {
+      dao.filtroUr(upp,id);
+    }
     dao.getData(id,upp,ur);
 	});
   $('#filtro_upp').change(function (e) {
     e.preventDefault();
     let upp = this.value;
     let ejercicio = document.getElementById('filtro_anio').value;
+    document.getElementById('filUpp').value = upp;
     let ur = document.getElementById('filtro_ur').value;
     dao.getData(ejercicio,upp,ur);
-    dao.filtroUr(upp);
+    console.log('entro desde un comienzo');
+    dao.filtroUr(upp,ejercicio);
   });
   $('#filtro_ur').change(function (e) {
     e.preventDefault();
     let ur = this.value;
     let ejercicio = document.getElementById('filtro_anio').value;
-    let upp = document.getElementById('filtro_upp').value;
-    dao.filtroUr(upp);
+    //let upp = document.getElementById('filtro_upp').value;
+    let upp = document.getElementById('filUpp').value;
+    //dao.filtroUr(upp,ejercicio);
     dao.getData(ejercicio,upp,ur);
   });
   $('#btnNuevaClave').click(function (e) {
