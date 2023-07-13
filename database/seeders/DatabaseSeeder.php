@@ -27,16 +27,15 @@ class DatabaseSeeder extends Seeder
            ['id'=>4,'nombre'=>'Descargar oficio']
         );
         protected $grupos = array(
-
             ['id' => 1, 'nombre_grupo' => 'Administrador', 'estatus' => 0],
             ['id' => 2, 'nombre_grupo' => 'Gobdigital', 'estatus' => 0],
             ['id' => 3, 'nombre_grupo' => 'Auditor', 'estatus' => 0],
             ['id' => 4, 'nombre_grupo' => 'Upp', 'estatus' => 0],
-            ['id' => 5, 'nombre_grupo' => 'Delegacion', 'estatus' => 0],
+            ['id' => 5, 'nombre_grupo' => 'Delegacion', 'estatus' => 0]
         );
 
     protected $cat_users = array(
-        ['id' => 1, 'id_grupo' => 2, 'nombre' => 'Gob', 'p_apellido' => 'Digital', 's_apellido' => 'siapp', 'celular' => '00-00-00-00-00', 'email' => 'control@gmail.com', 'username' => 'control', 'password' => 'CasaMata', 'sudo' => 1, 'clv_upp' => NULL],
+        ['id' => 1, 'id_grupo' => 2, 'nombre' => 'Gob', 'p_apellido' => 'Digital', 's_apellido' => 'siapp', 'celular' => '00-00-00-00-00', 'email' => 'control@gmail.com', 'username' => 'control', 'password' => 'CasaMata', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 2, 'id_grupo' => 1, 'nombre' => 'sudo', 'p_apellido' => 'admin', 's_apellido' => 'sedj', 'celular' => '00-00-00-00-00', 'email' => 'prueba1@gmail.com', 'username' => 'administrador', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 3, 'id_grupo' => 1, 'nombre' => 'Francisco', 'p_apellido' => 'Méndez', 's_apellido' => 'Chávez', 'celular' => '44-32-21-90-95', 'email' => 'pacomendez2308@gmail.com', 'username' => 'depExpedientes', 'password' => 'depExpedientes.22', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 4, 'id_grupo' => 3, 'nombre' => 'auditor', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Auditor', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '007'],
@@ -45,8 +44,8 @@ class DatabaseSeeder extends Seeder
         ['id' => 7, 'id_grupo' => 2, 'nombre' => 'Mario', 'p_apellido' => 'Delgado', 's_apellido' => 'Murillo', 'celular' => '4400000082', 'email' => 'rosario.escutia+82@correo.michoacan.gob.mx', 'username' => 'DELEGACION', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 8, 'id_grupo' => 1, 'nombre' => 'Hugo', 'p_apellido' => 'Arechiga', 's_apellido' => 'Dos Santos', 'celular' => '4400000083', 'email' => 'rosario.escutia+83@correo.michoacan.gob.mx', 'username' => 'HUGOA', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 9, 'id_grupo' => 1, 'nombre' => 'Luis', 'p_apellido' => 'Leon', 's_apellido' => 'Tres', 'celular' => '4400000084', 'email' => 'rosario.escutia+84@correo.michoacan.gob.mx', 'username' => 'LALEON', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
-        ['id' => 10, 'id_grupo' => 4, 'nombre' => 'JORGE', 'p_apellido' => 'RESÉNDIZ', 's_apellido' => 'GARCÍA', 'email' => 'rosario.escutia+2@correo.michoacan.gob.mx', 'celular' => '4400000002', 'username' => 'UPP002', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '001'],
-        ['id' => 11, 'id_grupo' => 4, 'nombre' => 'JULIETA', 'p_apellido' => 'GARCÍA', 's_apellido' => 'ZEPEDA', 'email' => 'rosario.escutia+1@correo.michoacan.gob.mx', 'celular' => '4400000001', 'username' => 'UPP001', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '002'],
+        ['id' => 10, 'id_grupo' => 4, 'nombre' => 'JORGE', 'p_apellido' => 'RESÉNDIZ', 's_apellido' => 'GARCÍA', 'email' => 'rosario.escutia+2@correo.michoacan.gob.mx', 'celular' => '4400000002', 'username' => 'UPP002', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '002'],
+        ['id' => 11, 'id_grupo' => 4, 'nombre' => 'JULIETA', 'p_apellido' => 'GARCÍA', 's_apellido' => 'ZEPEDA', 'email' => 'rosario.escutia+1@correo.michoacan.gob.mx', 'celular' => '4400000001', 'username' => 'UPP001', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '001'],
         ['id' => 12, 'id_grupo' => 4, 'nombre' => 'RAÚL', 'p_apellido' => 'ZEPEDA', 's_apellido' => 'VILLASEÑOR', 'email' => 'rosario.escutia+53@correo.michoacan.gob.mx', 'celular' => '4400000053', 'username' => 'UPP003', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '003'],
         ['id' => 13, 'id_grupo' => 4, 'nombre' => 'CARLOS', 'p_apellido' => 'TORRES', 's_apellido' => 'PIÑA', 'email' => 'rosario.escutia+54@correo.michoacan.gob.mx', 'celular' => '4400000054', 'username' => 'UPP006', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '006'],
         ['id' => 14, 'id_grupo' => 4, 'nombre' => 'LUIS', 'p_apellido' => 'NAVARRO', 's_apellido' => 'GARCÍA', 'email' => 'rosario.escutia+72@correo.michoacan.gob.mx', 'celular' => '4400000072', 'username' => 'UPP007', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '007'],
@@ -155,6 +154,12 @@ class DatabaseSeeder extends Seeder
         ['id_menu' => 9 ], 
         ['id_menu' => 11],
         ['id_menu' => 13]
+    );
+    protected $menugob = array(
+        ['id_menu' => 2 ], 
+        ['id_menu' => 4 ], 
+        ['id_menu' => 5 ], 
+        ['id_menu' => 6]
     );
     protected $menuAdmin = array(
         ['id_menu' => 3 ], 
@@ -430,11 +435,24 @@ class DatabaseSeeder extends Seeder
             } catch (\Throwable $th) {
                 throw $th;
             }
+
             try {
                 echo "\n    -Carga rel Menu grupo Admin";
             foreach ($this->menuAdmin as $m) {
                 MenuGrupo::create([
                     'id_grupo' => 1,
+                    'id_menu' => $m['id_menu']
+                ]);
+
+            }
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+            try {
+                echo "\n    -Carga rel Menu grupo gobdg";
+            foreach ($this->menuAdmin as $m) {
+                MenuGrupo::create([
+                    'id_grupo' => 2,
                     'id_menu' => $m['id_menu']
                 ]);
 

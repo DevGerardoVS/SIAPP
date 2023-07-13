@@ -75,7 +75,7 @@ class FunFormats
                     );
                     return $error;
                 } else {
-                    $actividad = ActividadesMir::where('deleted_at', null)->where('actividades_mir.id', $k[6])->firstOrFail();
+                    $actividad = ActividadesMir::where('deleted_at', null)->where('actividades_mir.id', $k[6])->first();
                     if ($actividad) {
                         $proy = ProyectosMir::where('deleted_at', null)
                             ->where('id', $actividad['proyecto_mir_id'])
@@ -161,7 +161,7 @@ class FunFormats
     }
     public static function isNULLOrEmpy($datos,$index){
 		for ($i=0; $i <count($datos) ; $i++) {
-            Log::debug($datos);
+            Log::debug(count($datos));
             if (count($datos) === 27) {
                 if ($datos[$i] == '') {
                     return ["status" => true, "error" => 'El documento contiene campos vacios en la columna:' . FunFormats::abc($i) . ' fila:' . $index . ''];
@@ -171,8 +171,8 @@ class FunFormats
                 return ["status" => true, "error" => 'No se debe modificar la plantilla'];;
             }
 		}
+        Log::debug("fin del for");
 		return ["status" => false, "error" => null];
-
 	}
 	public static function abc($i){
 		$columns=['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA'];

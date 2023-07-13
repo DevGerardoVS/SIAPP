@@ -5,12 +5,14 @@
                 <label class="control-label">Nombre de la actividad</label>
                 <select class="form-control" aria-placeholder="Selecciona una actividad" id="sel_actividad" data-live-search="true"
                 name="sel_actividad">
+                <option value="">---Actividad---</option>
             </select>
             </div>
             <div class="form-group col-md-6">
                 <label class="control-label">Fondo</label>
                 <select class="form-control" placeholder="Selecciona una actividad" id="sel_fondo" data-live-search="true"
                     name="sel_fondo" autocomplete="anio_filter" placeholder="Seleccione un año">
+                    <option value="">---Fondo---</option>
                 </select>
             </div>
 
