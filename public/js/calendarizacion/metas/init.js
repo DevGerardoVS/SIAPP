@@ -42,20 +42,19 @@ var dao = {
 
     },
     getUrs: function (upp) {
-        console.log("upp",upp);
+        $('#ur_filter').empty();
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/urs/'+upp,
+            url: '/calendarizacion/urs/' + upp,
             dataType: "JSON"
         }).done(function (data) {
-            var par = $('#ur_filter'); 
+            var par = $('#ur_filter');
             par.html('');
             par.append(new Option("-- URS--", ""));
             document.getElementById("ur_filter").options[0].disabled = true;
             $.each(data, function (i, val) {
                 par.append(new Option(data[i].ur, data[i].clv_ur));
             });
-            par.selectpicker({ search: true });
 
         });
     },
@@ -72,14 +71,14 @@ var dao = {
             $.each(data, function (i, val) {
                 par.append(new Option(data[i].upp, data[i].clv_upp));
             });
-            par.selectpicker({ search: true });
+
 
         });
     },
     getProg: function (ur) {
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/programas/'+ur,
+            url: '/calendarizacion/programas/' + ur,
             dataType: "JSON"
         }).done(function (data) {
             var par = $('#pr_filter');
@@ -87,16 +86,18 @@ var dao = {
             par.append(new Option("-- Programa--", ""));
             document.getElementById("pr_filter").options[0].disabled = true;
             $.each(data, function (i, val) {
-                par.append(new Option(val.clv_programa,val.programa));
+                par.append(new Option(val.clv_programa, val.programa));
             });
-            par.selectpicker({ search: true });
+            par.select2({
+                maximumSelectionLength: 10
+            });
 
         });
     },
     crearMeta: function () {
         var form = $('#actividad')[0];
         var data = new FormData(form);
-        data.append('pMir_id',  $('[name="proyecto"]:checked').val());
+        data.append('pMir_id', $('[name="proyecto"]:checked').val());
         data.append('sumMetas', $('#sumMetas').val());
         $.ajax({
             type: "POST",
@@ -118,7 +119,7 @@ var dao = {
             });
         });
     },
-  
+
     crearMetaImp: function () {
         var form = $('#formFile')[0];
         var data = new FormData(form);
@@ -132,7 +133,6 @@ var dao = {
             cache: false,
         }).done(function (response) {
             $('#cerrar').trigger('click');
-            console.log("res",response)
             Swal.fire({
                 icon: response.icon,
                 title: response.title,
@@ -154,7 +154,6 @@ var dao = {
             cache: false,
             timeout: 600000
         }).success(function (response) {
-            console.log(response)
             Swal.fire({
                 icon: response.status,
                 title: response.title,
@@ -163,8 +162,8 @@ var dao = {
                 timer: 1500
             });
         }).fail(function (error, status, err) {
-                console.log("error-", error);
-            });
+            console.log("error-", error);
+        });
     },
     editarMeta: function (id) {
         Swal.fire({
@@ -172,38 +171,35 @@ var dao = {
             title: 'Your work has been saved',
             showConfirmButton: false,
             timer: 1500
-          })
+        })
     }, getSelect: function () {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
             dataType: "JSON"
         }).done(function (data) {
-            const { unidadM, fondos, beneficiario, actividades,activids } = data;
-            var act = $('#sel_actividad'); 
-            act.html('');
-            act.append(new Option("--Actividad--","true",true,true));
-            document.getElementById("sel_actividad").options[0].disabled = true;
-            $.each(actividades, function (i, val) {
-                act.append(new Option(val.actividad, i));
-            });
-            act.selectpicker({ search: true });
+            const { unidadM, beneficiario, activids } = data;
+            
             var med = $('#medida');
             med.html('');
             med.append(new Option("-- Medida--", ""));
             document.getElementById("medida").options[0].disabled = true;
             $.each(unidadM, function (i, val) {
                 med.append(new Option(val.unidad_medida, val.clave));
-            }); 
-            med.selectpicker({ search: true });
-            var fond = $('#sel_fondo');
-            fond.html('');
-            fond.append(new Option("-- Fondos--", ""));
-            document.getElementById("sel_fondo").options[0].disabled = true;
-            $.each(fondos, function (i, val) {
-                fond.append(new Option(fondos[i].ramo, fondos[i].clv_fondo_ramo));
             });
-            fond.selectpicker({ search: true });
+            med.select2({
+                maximumSelectionLength: 10
+            });
+            var tipo_AC = $('#tipo_Ac');
+            tipo_AC.html('');
+            tipo_AC.append(new Option("--Tipo Actividad--", ""));
+            document.getElementById("tipo_Ac").options[0].disabled = true;
+            $.each(activids, function (i, val) {
+                tipo_AC.append(new Option(val, i));
+            });
+            tipo_AC.select2({
+                maximumSelectionLength: 10
+            });
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
             tipo_be.append(new Option("--U. Beneficiarios--", ""));
@@ -211,54 +207,78 @@ var dao = {
             $.each(beneficiario, function (i, val) {
                 tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
             });
-            tipo_be.selectpicker({ search: true });
-            var tipo_AC = $('#tipo_Ac');
-            tipo_AC.html('');
-            tipo_AC.append(new Option("--Tipo Actividad--", ""));
-            document.getElementById("tipo_Ac").options[0].disabled = true;
-            $.each(activids, function (i, val) {
-                tipo_AC.append(new Option(val, i));
-            }); 
-            tipo_AC.selectpicker({ search: true });
+            tipo_be.select2({
+                maximumSelectionLength: 10
+            });
+   
 
         });
     },
+    getFyA: function (clave) {
+        console.log(clave);
+         $.ajax({
+            type: "GET",
+            url: '/calendarizacion/fondos/'+clave,
+            dataType: "JSON"
+         }).done(function (data) {  
+            const { fondos,activids } = data;
+            var fond = $('#sel_fondo');
+            fond.html('');
+            fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+            document.getElementById("sel_fondo").options[0].disabled = true;
+            $.each(fondos, function (i, val) {
+                fond.append(new Option(fondos[i].ramo, fondos[i].clv_fondo_ramo));
+            });
+            fond.select2({
+                maximumSelectionLength: 10
+            });
+            var act = $('#sel_actividad');
+            act.html('');
+            act.append(new Option("--Actividad--", "true", true, true));
+            document.getElementById("sel_actividad").options[0].disabled = true;
+            $.each(activids, function (i, val) {
+                act.append(new Option(val.actividad, val.clave));
+            });
+            act.select2({
+                maximumSelectionLength: 10
+            });
+             
+        });
+    },
     limpiar: function () {
-        console.log("limpiando.....")
         inputs.forEach(e => {
             $('#' + e + '-error').text("").removeClass('#' + e + '-error');
             if (e != 'beneficiario') {
-                $('#'+e).selectpicker('destroy');
+                $('#' + e).selectpicker('destroy');
             }
         });
         dao.getSelect();
-        $('.form-group').removeClass('has-error');  
-        for (let i = 1; i <=12; i++) {
+        $('.form-group').removeClass('has-error');
+        for (let i = 1; i <= 12; i++) {
             $('#' + i).val(0);
         }
         $('#sumMetas').val(0);
         $('#beneficiario').val("");
-        for (let i = 1; i <=12; i++) {
-            $("#" + i).prop('disabled', true); 
+        for (let i = 1; i <= 12; i++) {
+            $("#" + i).prop('disabled', true);
         }
     },
     arrEquals: function (numeros) {
         let duplicados = [];
         let bool = numeros.length;
- 
+
         const tempArray = [...numeros].sort();
-         
+
         for (let i = 0; i <= tempArray.length; i++) {
-          if (tempArray[i + 1] === tempArray[i]) {
-            duplicados.push(tempArray[i]);
-          }
+            if (tempArray[i + 1] === tempArray[i]) {
+                duplicados.push(tempArray[i]);
+            }
         }
-        if(bool != duplicados.length)
-        {return false}else{return true}
-      },
+        if (bool != duplicados.length) { return false } else { return true }
+    },
     validateAcu: function () {
         let e = 0;
-        for (let i = 1; i <= 12; i++) {           
+        for (let i = 1; i <= 12; i++) {
             let suma = parseInt($('#' + i).val() != "" ? $('#' + i).val() : 0);
             e += suma;
         }
@@ -266,7 +286,7 @@ var dao = {
     },
     validatEspe: function () {
         let e = [];
-        for (let i = 1; i <= 12; i++) {           
+        for (let i = 1; i <= 12; i++) {
             let suma = parseInt($('#' + i).val() != "" ? $('#' + i).val() : 0);
             e.push(suma)
         }
@@ -274,8 +294,8 @@ var dao = {
     },
     validatCont: function () {
         let e = [];
-        for (let i = 1; i <= 12; i++) { 
-            if($('#' + i).val() != ""){
+        for (let i = 1; i <= 12; i++) {
+            if ($('#' + i).val() != "") {
                 let suma = parseInt($('#' + i).val());
                 e.push(suma);
             }
@@ -298,7 +318,7 @@ var dao = {
         let actividad = $("#tipo_Ac option:selected").text();
         switch (actividad) {
             case 'Acumulativa':
-                  $('#sumMetas').val(dao.validateAcu());
+                $('#sumMetas').val(dao.validateAcu());
                 break;
             case 'Continua':
                 $('#sumMetas').val(dao.validatCont());
@@ -306,20 +326,20 @@ var dao = {
             case 'Especial':
                 $('#sumMetas').val(dao.validatEspe());
                 break;
-        
+
             default:
                 break;
         }
     },
     valMeses: function () {
         let e = [];
-        for (let i = 1; i <= 12; i++) { 
-            if($('#' + i).val() != ""){
+        for (let i = 1; i <= 12; i++) {
+            if ($('#' + i).val() != "") {
                 let suma = parseInt($('#' + i).val());
                 e.push(suma);
             }
         }
-        if (e>=1) {
+        if (e >= 1) {
             return true;
         } else {
             Swal.fire({
@@ -367,21 +387,33 @@ var init = {
 $(document).ready(function () {
     getData();
     if ($('#upp').val() == '') {
-        console.log("sinUPP");
         dao.getUpps();
         $('#ur_filter').prop('disabled', 'disabled');
-        $('#upp_filter').change(() => {
-            $('#ur_filter').prop('disabled', false);
-            dao.getUrs($('#upp_filter').val());
-        });
+
     } else {
         $('#ur_filter').prop('disabled', false);
-        $('#ur_filter').empty(); 
+
         dao.getUrs($('#upp').val());
-        
+
     }
-    
+    $('#upp_filter').change(() => {
+        $('#ur_filter').prop('disabled', false);
+        dao.getUrs($('#upp_filter').val());
+    });
+    $('#ur_filter').change(() => {
+        $('#sel_fondo').empty();
+    });
+
     dao.getSelect();
+    $("#ur_filter").select2({
+        maximumSelectionLength: 10
+    });
+    $("#upp_filter").select2({
+        maximumSelectionLength: 10
+    });
+    $("#sel_fondo").select2({
+        maximumSelectionLength: 10
+    });
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
@@ -410,4 +442,6 @@ $(document).ready(function () {
         }
 
     });
+
+   
 });

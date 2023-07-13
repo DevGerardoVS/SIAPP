@@ -11,6 +11,8 @@ class MetasHelper{
 	
     public static function actividades(){
         try {
+			
+
             $proyecto = DB::table('actividades_mir')
 			->leftJoin('proyectos_mir', 'proyectos_mir.id','actividades_mir.proyecto_mir_id' )
 			->select(
@@ -23,6 +25,9 @@ class MetasHelper{
 			)
 			->where('proyectos_mir.deleted_at', '=', null);
 			$query = DB::table('metas')
+			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+			->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 			->leftJoinSub($proyecto, 'pro', function ($join) {
 				$join->on('metas.actividad_id', '=', 'pro.id');
 			})
@@ -37,8 +42,8 @@ class MetasHelper{
 				'metas.tipo',
 				'metas.total',
 				'metas.cantidad_beneficiarios',
-				'metas.beneficiario_id',
-				'metas.unidad_medida_id'
+				'beneficiarios.beneficiario',
+				'unidades_medida.unidad_medida',
 			)
 			->where('metas.deleted_at', '=', null)->get();
             return $query;

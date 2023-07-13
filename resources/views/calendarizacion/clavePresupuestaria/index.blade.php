@@ -45,6 +45,7 @@
                                             <i class="fa fa-eye">Presupuesto por Fondo</i>
                                         </button>
                                         <input type="hidden" id="filAnio" name="filAnio">
+                                        <input type="hidden" id="filUpp" name="filUpp">
                                     </div>
                                     <div class="col-md-2 text-right">
                                         
@@ -146,14 +147,22 @@
 
     <script>
         let upp = "{{$uppUsuario}}";
-        if (upp && upp != '') {
+        let ejercicio = "{{$ejercicio}}";
+        if (upp && upp != '' && ejercicio && ejercicio != '') {
+            console.log('upp en filtro',upp);
             document.getElementById('filtro_upp').value = upp;
-            dao.filtroUr(upp);
+            document.getElementById('filUpp').value = upp;
+            document.getElementById('filAnio').value = ejercicio;
+            dao.filtroUr(upp,ejercicio);
         }else{
             $('#divFiltroUpp').show();
+        }if (ejercicio && ejercicio != '') {
+            document.getElementById('filUpp').value = upp;
+            document.getElementById('filAnio').value = ejercicio;
+            dao.filtroUpp(ejercicio,'');
+            dao.getData(ejercicio,'','');
         }
-        dao.filtroUpp('');
-        dao.getData('','','');
+        
         @if($errors->any())
         console.log({!! session()->get('error') !!});
         var failures= {!! $errors !!};
