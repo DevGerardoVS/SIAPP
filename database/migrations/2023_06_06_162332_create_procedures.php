@@ -1633,9 +1633,9 @@ return new class extends Migration {
         set @clave := claveT; 
         set @epp := concat(substring(@clave,1,5),substring(@clave,16,22));
         set @clasGeo := ((substring(@clave,6,10))*1);
-        set @partida := ((substring(@clave,43,6))*1);
-        set @fondo := substring(@clave,51,7);
-        set @obra := substring(@clave,58,6);
+        set @partida := ((substring(@clave,44,6))*1);
+        set @fondo := substring(@clave,52,7);
+        set @obra := substring(@clave,59,6);
             
             select *
             from (
@@ -1661,13 +1661,13 @@ return new class extends Migration {
                 select 'Programa Presupuestal' descripcion,vel.clv_programa clave,vel.programa concepto from v_epp_llaves vel where ejercicio = anio and vel.llave like @epp union all
                 select 'Subprograma Presupuestal' descripcion,vel.clv_subprograma clave,vel.subprograma concepto from v_epp_llaves vel where ejercicio = anio and vel.llave like @epp union all
                 select 'Proyecto Presupuestal' descripcion,vel.clv_proyecto clave,vel.proyecto concepto from v_epp_llaves vel where ejercicio = anio and vel.llave like @epp union all
-                select 'Mes de Afectación' descripcion,substring(@clave,37,6) clave, 'Mes de Afectación' union all
+                select 'Mes de Afectación' descripcion,substring(@clave,38,6) clave, 'Mes de Afectación' union all
                 select 'Capítulo' descripcion,vppl.clv_capitulo clave,vppl.capitulo concepto from v_posicion_presupuestaria_llaves vppl where deleted_at is null and vppl.posicion_presupuestaria_llave like @partida union all
                 select 'Concepto' descripcion,vppl.clv_concepto clave,vppl.concepto concepto from v_posicion_presupuestaria_llaves vppl where deleted_at is null and vppl.posicion_presupuestaria_llave like @partida union all
                 select 'Partida Genérica' descripcion,vppl.clv_partida_generica clave,vppl.partida_generica concepto from v_posicion_presupuestaria_llaves vppl where deleted_at is null and vppl.posicion_presupuestaria_llave like @partida union all
                 select 'Partida Específica' descripcion,vppl.clv_partida_especifica clave,vppl.partida_especifica concepto from v_posicion_presupuestaria_llaves vppl where deleted_at is null and vppl.posicion_presupuestaria_llave like @partida union all
                 select 'Tipo de Gasto' descripcion,vppl.clv_tipo_gasto clave,vppl.tipo_gasto concepto from v_posicion_presupuestaria_llaves vppl where deleted_at is null and vppl.posicion_presupuestaria_llave like @partida union all
-                select 'Año (Fondo del Ramo)' descripcion,substring(@clave,49,2) clave, 'Año' concepto union all
+                select 'Año (Fondo del Ramo)' descripcion,substring(@clave,50,2) clave, 'Año' concepto union all
                 select 'Etiquetado/No Etiquetado' descripcion,vfl.clv_etiquetado clave,vfl.etiquetado concepto from v_fondo_llaves vfl where deleted_at is null and vfl.llave like @fondo union all
                 select 'Fuente de Financiamiento' descripcion,vfl.clv_fuente_financiamiento clave,vfl.fuente_financiamiento concepto from v_fondo_llaves vfl where deleted_at is null and vfl.llave like @fondo union all
                 select 'Ramo' descripcion,vfl.clv_ramo clave,vfl.ramo concepto from v_fondo_llaves vfl where deleted_at is null and vfl.llave like @fondo union all
