@@ -161,13 +161,17 @@ class ConfiguracionesController extends Controller
                     'updated_at'=>date("d/m/Y H:i:s", strtotime($upp_autorizada->updated_at)),
                 );
 
-                Log::channel('daily')->debug('exp '.date("Y/m/d H:i:s"));
+                //Log::channel('daily')->debug('exp '.date("Y/m/d H:i:s"));
 
-                if($request->value=='true') $upp_autorizada->deleted_at = date("Y/m/d H:i:s");
-                else $upp_autorizada->deleted_at = NULL;
-
+                if($request->value=='false'){
+                    $upp_autorizada->deleted_at = date("Y-m-d H:i:s");
+                } 
+                else{
+                    $upp_autorizada->deleted_at = NULL;
+                } 
+                Log::channel('daily')->debug('upp '.$upp_autorizada->deleted_at);
                 $upp_autorizada->updated_user = Auth::user()->username;
-                $upp_autorizada->updated_at = date("Y/m/d H:i:s");
+                $upp_autorizada->updated_at = date("Y-m-d H:i:s");
                 $upp_autorizada->deleted_user = Auth::user()->username;
                 
                 $upp_autorizada->save();
