@@ -146,7 +146,6 @@ class DatabaseSeeder extends Seeder
             ['id' => 13,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Administrativos', 'ruta' => '/Reportes/administrativos', 'icono' => 'fa-flag-checkered', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Reportes'],
             ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administracion de captura', 'ruta' => '/admon-capturas', 'icono' => ' fa-crosshairs', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
             ['id' => 15,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Configuraciones', 'ruta' => '/adm-configuracion', 'icono' => ' fa-crosshairs', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de configuraciones'],
-
         );
     protected $menuUpp = array(
         ['id_menu' => 7 ], 
@@ -329,6 +328,7 @@ class DatabaseSeeder extends Seeder
             fondosSeeder::class,
             pp_identificadoresSeeder::class,
             ProgramacionPresupuestoSeeder::class,
+            TipoActividadUppSeeder::class,
             prueba2024::class
         ]);
         
