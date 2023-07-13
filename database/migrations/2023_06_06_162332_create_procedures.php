@@ -1677,8 +1677,19 @@ return new class extends Migration {
             ) tabla;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists insert_pp_aplanado(in anio int)
+        DB::unprepared("CREATE PROCEDURE if not exists insert_pp_aplanado()
         begin
+            set @cantidad := 0;
+			select 
+				@cantidad := count(id)
+			from programacion_presupuesto pp 
+			where pp.id not in (
+				select id
+				from pp_identificadores
+			);
+		
+			if @cantidad > 0 then 
+
             create temporary table if not exists temp_epp_aplanado as
             select 
 				pp.id,
@@ -1698,9 +1709,8 @@ return new class extends Migration {
 				and ve.clv_programa = pp.programa_presupuestario 
 				and ve.clv_subprograma = pp.subprograma_presupuestario 
 				and ve.clv_proyecto = pp.proyecto_presupuestario
-			where pp.ejercicio = anio 
-				and ve.ejercicio = anio 
-				and pp.id not in (
+                and ve.ejercicio = pp.ejercicio
+			where pp.id not in (
 				select id from pp_identificadores pa
 			);
 
@@ -1754,6 +1764,8 @@ return new class extends Migration {
             drop temporary table temp_epp_aplanado;
             
             drop temporary table temp_claves_montos_aplanado;
+
+            end if;
         END;");
 
         DB::unprepared("CREATE PROCEDURE if not exists SP_AF_EE(in anio int)
