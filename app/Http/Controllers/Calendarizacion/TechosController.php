@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers\Calendarizacion;
 
+use App\Exports\TechosExport;
+use App\Exports\TechosExportPDF;
+use App\Exports\TechosExportPresupuestos;
 use App\Http\Controllers\Controller;
-use App\Models\calendarizacion\TechosFinancieros;
+use App\Imports\TechosValidate;
 use Carbon\Carbon;
 use Dompdf\Exception;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+
+use Shuchkin\SimpleXLSX;
 use Throwable;
 use function Psy\debug;
 use App\Exports\PlantillaTechosExport;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\Techos;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class TechosController extends Controller
 {
@@ -26,9 +29,7 @@ class TechosController extends Controller
     }
 
     public function getTechos(Request $request){
-        log::debug($request);
         $dataSet = [];
-        $where_upp = '';
 
         $data = DB::table('techos_financieros as tf')
             ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
@@ -46,7 +47,6 @@ class TechosController extends Controller
 
         $data = $data ->get();
         
-        ;
 
         foreach ($data as $d){
             $button2 = '<a class="btn btn-secondary" onclick="" data-toggle="modal" data-target="#createGroup" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil" style="font-size: large; color: white"></i></a>';
@@ -152,68 +152,76 @@ class TechosController extends Controller
 
     public function importPlantilla(Request $request)
     {
+        $this->validate($request, [
+            'cmFile' => 'required|file|mimes:xls,xlsx'
+        ]);
+        $the_file = $request->file('cmFile');
         DB::beginTransaction();
+        ini_set('max_execution_time', 1200);
         try {
-            ini_set('max_execution_time', 1200);
-            Schema::create('temp_techos', function (Blueprint $table) {
-                $table->temporary();
-                $table->increments('id');
-                $table->string('clv_upp', 3)->nullable(false);
-                $table->string('clv_fondo', 2)->nullable(false);
-                $table->integer('ejercicio')->default(null);
-                $table->enum('tipo', ['Operativo', 'RH'])->nulleable(false);
-                $table->bigInteger('presupuesto')->nullable(false);
-            });
-            Excel::import(new Techos, $request->file('cmFile'));
-            DB::commit();
-            return response()->json("done", 200);
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            DB::rollback();
-            $failures = $e->failures();
-            $error = '';
-            $value = '';
-            foreach ($failures as $failure) {
-                $failure->row(); // row that went wrong
-                $failure->attribute(); // either heading key (if using heading row concern) or column index
-                $value = [$failure->values()]; // The values of the row that has failed.
-                $error = [$failure->errors()]; // Actual error messages from Laravel validator
-                /* Log::debug($failure->row());
-                   Log::debug($failure->attribute());
-                   Log::debug($failure->errors());
-                   Log::debug($failure->values()); */
-            }
-            if ($error != '') {
-                if (!empty($value[0]['fondo'])) {
-                    $returnData = array(
-                        'status' => 'error',
-                        'title' => 'Error',
-                        'message' => $error,
-                    );
+            if ($xlsx = SimpleXLSX::parse($the_file)) {
+                $filearray = $xlsx->rows();
+                if ($filearray[0][0] == 'EJERCICIO' && $filearray[0][1] == 'UPP' && $filearray[0][2] == 'FONDO' && $filearray[0][3] == 'OPERATIVO' && $filearray[0][4] == 'RECURSOS HUMANOS') {
+                    array_shift($filearray);
+                    $resul = TechosValidate::validate($filearray);
+                    if ($resul == 'done') {
+                        DB::commit();
+                    }
+                    return response()->json($resul);
                 } else {
-                    $returnData = array(
-                        'status' => 'error',
-                        'title' => 'Error',
-                        'message' => $error,
+                    $error = array(
+                        "icon" => 'error',
+                        "title" => 'Error',
+                        "text" => 'Ingresa la plantilla sin eliminar filas'
                     );
+                    return response()->json($error);
                 }
             }
-            if ($value != '') {
-                if (!empty($value[0]['fondo'])) {
-                    $returnData = array(
-                        'status' => 'error',
-                        'title' => 'Error',
-                        'message' => $error,
-                    );
-                } else {
-                    $returnData = array(
-                        'status' => 'error',
-                        'title' => 'Error',
-                        'message' => $value,
-                    );
-                }
-            }
+        } catch (\Exception $e) {
+			DB::rollback();
+		}
+    }
+    
+    public function exportExcel(Request $request){
+        try{
+            ob_end_clean();
+            ob_start();
+            return Excel::download(new TechosExport($request->anio_filter_export),'Techos_Financieros.xlsx');
+        }catch (Throwable $e){
+            DB::rollBack();
+            report($e);
+            return [
+                'error' => $e
+            ];
+        }
+    }
+    
+    public function exportPDF(Request $request){
+        
+        try{
+            ob_end_clean();
+            ob_start();
+            return Excel::download(new TechosExportPDF($request->anio_filter_pdf),'Techos_Financieros.pdf');
+        }catch (Throwable $e){
+            DB::rollBack();
+            report($e);
+            return [
+                'error' => $e
+            ];
+        }
+    }
 
-            return response()->json($returnData);
+    public function exportPresupuestos(Request $request){
+        try{
+            ob_end_clean();
+            ob_start();
+            return Excel::download(new TechosExportPresupuestos($request->anio_filter_presupuestos),'Presupuestos_Techos_Financieros.xlsx');
+        }catch (Throwable $e){
+            DB::rollBack();
+            report($e);
+            return [
+                'error' => $e
+            ];
         }
     }
 }

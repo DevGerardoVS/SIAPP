@@ -119,54 +119,60 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
 
          //validacion de tipo de usuario pendiente
          $arraypos = str_split($row['idpartida'], 1);
-
-         if($row['spr']=='UUU'){
-            $row['tipo']='RH';
-            $row['obra'] == '000000'? $row['obra']: $row['obra'] =NULL;
-
+        if(count($arraypos)>=4){
+            if($row['spr']=='UUU'){
+                $row['tipo']='RH';
+                $row['obra'] == '000000'? $row['obra']: $row['obra'] =NULL;
+    
+                 
+    
+                if($arraypos[0]==1 ){
+                    $valpos = PosicionPresupuestaria::select()
+                    ->where('clv_capitulo',$arraypos[0])
+                    ->where('clv_concepto',$arraypos[1])
+                    ->where('clv_partida_generica',$arraypos[2])
+                    ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
+                    ->where('clv_tipo_gasto',$row['tipogasto'])
+                    ->count();
+                    if($valpos < 1  ){
+                        $row['idpartida']=NULL;
+                    }
+                }
+    
+             }
              
-
-            if($arraypos[0]==1 ){
-                $valpos = PosicionPresupuestaria::select()
-                ->where('clv_capitulo',$arraypos[0])
-                ->where('clv_concepto',$arraypos[1])
-                ->where('clv_partida_generica',$arraypos[2])
-                ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
-                ->where('clv_tipo_gasto',$row['tipogasto'])
+            else{
+                $row['tipo']='Operativo';
+    
+                $valObra = obra::select()
+                ->where('clv_proyecto_obra',$row['obra'])
                 ->count();
-                if($valpos < 1  ){
-                    $row['idpartida']=NULL;
-                }
-            }
-
-         }
-         
+                if($valObra > 0 ){
+                    $valpos = PosicionPresupuestaria::select()
+                    ->where('clv_capitulo',$arraypos[0])
+                    ->where('clv_concepto',$arraypos[1])
+                    ->where('clv_partida_generica',$arraypos[2])
+                    ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
+                    ->where('clv_tipo_gasto',$row['tipogasto'])
+                    ->count();
+                    if($valpos < 1  ){
+                        $row['idpartida']=NULL;
+                    }
+    
+               }
+               else{
+                    //la obra no existe
+                    $row['obra']=NULL;
+               }
+            
+    
+            } 
+        }
         else{
-            $row['tipo']='Operativo';
+            $row['idpartida']=NULL;
+ 
+        }
 
-            $valObra = obra::select()
-            ->where('clv_proyecto_obra',$row['obra'])
-            ->count();
-            if($valObra > 0 ){
-                $valpos = PosicionPresupuestaria::select()
-                ->where('clv_capitulo',$arraypos[0])
-                ->where('clv_concepto',$arraypos[1])
-                ->where('clv_partida_generica',$arraypos[2])
-                ->where('clv_partida_especifica',$arraypos[3].$arraypos[4])
-                ->where('clv_tipo_gasto',$row['tipogasto'])
-                ->count();
-                if($valpos < 1  ){
-                    $row['idpartida']=NULL;
-                }
-
-           }
-           else{
-                //la obra no existe
-                $row['obra']=NULL;
-           }
-        
-
-        } 
         
 
          
@@ -358,8 +364,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             'noviembre'    =>  'required|integer',
             'diciembre'    =>  'required|integer',
            
-           // esta validacion esta comentada de momento porque la plantilla solo tiene año 23
-           // '*.anio' => 'required',                            
+                         
              
 
             

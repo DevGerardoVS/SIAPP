@@ -15,7 +15,11 @@
         Route::get('/plantillaCargaTechos', 'exportView');
         Route::get('/exportPlantilla', 'exportPlantilla')->name('exportPlantilla');
         Route::post('/import-Plantilla', 'importPlantilla')->name('importPlantilla');
+        Route::get('/calendarizacion/techos/export-excel', 'exportExcel')->name('exportExcel');
+        Route::get('/calendarizacion/techos/export-pdf', 'exportPDF')->name('exportPDF');
+        Route::get('/calendarizacion/techos/export-presupuestos', 'exportPresupuestos')->name('exportPresupuestos');
     });
+
 	Route::controller(ClavePreController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');
 		Route::get('/calendarizacion-claves-create/{ejercicio?}', 'getCreate');
@@ -23,19 +27,19 @@
 		Route::get('/cat-regiones', 'getRegiones');
 		Route::get('/cat-municipios/{id?}', 'getMunicipios');
 		Route::get('/cat-localidad/{id?}', 'getLocalidades');		
-		Route::get('/cat-upp', 'getUpp');
-		Route::get('/cat-unidad-responsable/{id?}', 'getUnidadesResponsables');
-		Route::get('/cat-programa-presupuestario/{upp?}/{id?}', 'getProgramaPresupuestarios');
-		Route::get('/cat-subprograma-presupuesto/{ur?}/{id?}/{upp?}', 'getSubProgramas');
-		Route::get('/cat-proyecyo/{programa?}/{id?}', 'getProyectos');
-		Route::get('/cat-linea-accion/{uppId?}/{id?}', 'getLineaAccion');
+		Route::get('/cat-upp/{ejercicio?}', 'getUpp');
+		Route::get('/cat-unidad-responsable/{id?}/{ejercicio?}', 'getUnidadesResponsables');
+		Route::get('/cat-programa-presupuestario/{upp?}/{id?}/{ejercicio?}', 'getProgramaPresupuestarios');
+		Route::get('/cat-subprograma-presupuesto/{ur?}/{id?}/{upp?}/{ejercicio?}', 'getSubProgramas');
+		Route::get('/cat-proyecyo/{programa?}/{id?}/{ejercicio?}', 'getProyectos');
+		Route::get('/cat-linea-accion/{uppId?}/{id?}/{ejercicio?}', 'getLineaAccion');
 		Route::get('/get-presupuesto-asignado/{ejercicio?}/{upp?}', 'getPresupuestoAsignado');
 		Route::get('/calendarizacion-claves-presupuesto-fondo/{ejercicio?}/{clvUpp?}', 'getPanelPresupuestoFondo');
 		Route::post('/calendarizacion-eliminar-clave', 'postEliminarClave');
 		Route::post('/calendarizacion-guardar-clave', 'postGuardarClave');
 		Route::get('/calendarizacion/get-calendarizacion-panel', 'getPanelCalendarizacion');
-		Route::get('/cat-subSecretaria/{upp?}/{ur?}', 'getSubSecretaria');
-		Route::get('/cat-area-funcional/{uppId?}/{id?}', 'getAreaFuncional');
+		Route::get('/cat-subSecretaria/{upp?}/{ur?}/{ejercicio?}', 'getSubSecretaria');
+		Route::get('/cat-area-funcional/{uppId?}/{id?}/{ejercicio?}', 'getAreaFuncional');
 		Route::get('/cat-partidas', 'getPartidas');
 		Route::get('/cat-fondos/{id?}/{subP?}/{ejercicio?}', 'getFondos');
 		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
@@ -47,15 +51,6 @@
 		Route::get('/calendarizacion-get-sector/{clave?}', 'getSector');
 		Route::get('/cat-obras/{val?}', 'getObras');
 		
-		
-
-		
-
-		
-		
-		
-		
-		
 	});
 
 	Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
@@ -66,7 +61,8 @@
 
     });
 	
-
+/* Ricardo
+ */
 ?>
 
 	

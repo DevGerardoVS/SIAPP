@@ -48,8 +48,9 @@
                     @endif
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-                        <h5 class="text-center" style="font-size: 24px; "><b>Sistema Integral de Análisis Programático
-                                Presupuestal </b> </h5>
+                        <h5 class="text-center" style="font-size: 24px; ">
+                            <b>Calendarización y Asignación de Presupuest</b>
+                        </h5>
                         <br>
                         {{-- <h5 class="text-center" style="font-size: 24px; padding-bottom: 3%">En Línea </h5> --}}
 
