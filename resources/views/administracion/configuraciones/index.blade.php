@@ -20,7 +20,7 @@
                                 <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Tipo de actividad por UPP</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="autorizadas-tab" data-bs-toggle="tab" data-bs-target="#auto" type="button" role="tab" aria-controls="profile" onclick="getUppsAuto()" aria-selected="false">UPP's autorizadas para delegación</button>
+                                <button class="nav-link" id="autorizadas-tab" data-bs-toggle="tab" data-bs-target="#auto" type="button" role="tab" aria-controls="profile" onclick="adjustTableColumns()" aria-selected="false">UPP's autorizadas para delegación</button>
                             </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
@@ -41,7 +41,7 @@
                                     </div>
                                 </div>
                                 <br>
-                                <table id="" class="table table-striped table-bordered text-center table-a"
+                                <table id="catalogo" class="table table-striped table-bordered text-center table-a"
                                     style="width:100%">
                                     <thead>
                                         <tr class="colorMorado">
@@ -68,7 +68,7 @@
                                     </div>
                                 </div>
                                 <br>
-                                <table id="" class="table table-striped table-bordered text-center table-b"
+                                <table id="catalogo_b" class="table table-striped table-bordered text-center table-b"
                                     style="width:100%">
                                     <thead>
                                         <tr class="colorMorado">

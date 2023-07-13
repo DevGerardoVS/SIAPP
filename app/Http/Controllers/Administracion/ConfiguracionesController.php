@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\administracion\TipoActividadUpp;
+use App\Models\administracion\UppAutorizadascpNomina;
 use App\Helpers\BitacoraHelper;
 
 class ConfiguracionesController extends Controller
@@ -123,11 +124,72 @@ class ConfiguracionesController extends Controller
                 //$d->tipo 
                 $autorizado = $d->autorizado==1? ' checked' : '';
 
-                $ds = array($d->upp_id , $d->descripcion, '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateDataAutorizado(\''.$d->upp_id.'\',\'autorizado\')" id="'.$d->upp_id.'_a" '.$autorizado.'></div>');
+                $ds = array($d->upp_id , $d->descripcion, '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateAutoUpps(\''.$d->upp_id.'\')" id="'.$d->upp_id.'"'.$autorizado.'></div>');
                 
                 $dataSet[] = $ds;
             }
 
+            return response()->json([
+                "dataSet" => $dataSet,
+                "catalogo" => "Configuraciones",
+            ]);
+
+        } catch(\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+        }
+    }
+
+    public static function updateAutoUpps(Request $request){
+        try {
+            $dataSet = array();
+            $array_data_act = [];
+            $data_old_act = [];
+
+            $upp_autorizada = UppAutorizadascpNomina::where('clv_upp',$request->id)->firstOrFail();
+
+            if(!empty($upp_autorizada)){
+
+                $data_old_act = array(
+                    'id' => $upp_autorizada->id,
+                    'clv_upp' => $upp_autorizada->clv_upp,
+                    'deleted_at'=> date("d/m/Y H:i:s", strtotime($upp_autorizada->deleted_at)),
+                    'deleted_user'=> $upp_autorizada->deleted_user,
+                    'created_at' => $upp_autorizada->usuario_creacion,
+                    'updated_user' => $upp_autorizada->usuario_modificacion,
+                    'created_at'=>date("d/m/Y H:i:s", strtotime($upp_autorizada->created_at)),
+                    'updated_at'=>date("d/m/Y H:i:s", strtotime($upp_autorizada->updated_at)),
+                );
+
+                if($request->value=='true') $request->value = 1;
+                else $request->value = 0;
+                $tipo_actividad->updated_user = Auth::user()->username;
+                $tipo_actividad->deleted_user = Auth::user()->username;
+                $tipo_actividad->deleted_at = date("d/m/Y H:i:s");
+                $tipo_actividad->save();
+
+            }
+
+            $data_new_act = array(
+                'id' => $tipo_actividad->id,
+                'clv_upp' => $tipo_actividad->descripcion,
+                'Continua' => $tipo_actividad,
+                'Acumulativa' => $tipo_actividad,
+                'Especial' => $tipo_actividad->estatus,
+                'created_at' => $tipo_actividad->created_at,
+                'updated_user' => $tipo_actividad->updated_user,
+                'created_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->created_at)),
+                'updated_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->updated_at)),
+            );
+           
+            $array_data_act = array(
+                'tabla'=>'tipo_actividad_upp',
+                'anterior'=>$data_old_act,
+                'nuevo'=>$data_new_act
+            );
+
+            BitacoraHelper::saveBitacora(BitacoraHelper::getIp(),"tipo_actividad_upp", "Edicion",json_encode($array_data_act));
+            
             return response()->json([
                 "dataSet" => $dataSet,
                 "catalogo" => "Configuraciones",
