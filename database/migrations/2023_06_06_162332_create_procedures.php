@@ -1630,7 +1630,7 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64), in anio int)
         begin
             
-        set @clave := claveT COLLATE utf8mb4_unicode_ci;; 
+        set @clave := claveT COLLATE utf8mb4_unicode_ci; 
         set @epp := concat(substring(@clave,1,5),substring(@clave,16,22));
         set @clasGeo := ((substring(@clave,6,10))*1);
         set @partida := ((substring(@clave,44,6))*1);
@@ -1685,7 +1685,7 @@ return new class extends Migration {
                 vel.id v_epp_id
             from v_programacion_presupuesto_llaves vppl 
             join v_epp_llaves vel on vppl.epp_llave = vel.llave
-            where vppl.ejercicio = anio and vppl.id not in (
+            where vppl.ejercicio = anio and vel.ejercicio = anio and vppl.id not in (
                 select id from pp_identificadores pa
             );
 
@@ -1701,7 +1701,12 @@ return new class extends Migration {
             join v_posicion_presupuestaria_llaves vpp on vppl.posicion_presupuestaria_llave = vpp.posicion_presupuestaria_llave 
             join v_fondo_llaves vfl on vppl.fondo_llave = vfl.llave 
             join proyectos_obra po on vppl.proyecto_obra = po.clv_proyecto_obra
-            where vppl.ejercicio = anio and vppl.id not in (
+            where vppl.ejercicio = anio
+            and vcg.deleted_at is null
+            and vpp.deleted_at is null
+            and vfl.deleted_at is null
+            and po.deleted_at is null
+            and vppl.id not in (
                 select id from pp_identificadores pa
             );
 
