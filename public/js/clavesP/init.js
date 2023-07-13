@@ -566,7 +566,7 @@ var dao = {
       etiquetado + fuenteFinanciamiento + ramo + fondoRamo + capital + proyectoObra;
     $.ajax({
       type: "GET",
-      url: "/ver-detalle/" + clave,
+      url: "/ver-detalle/" + clave + "/" + anioFondo,
       dataType: "json"
     }).done(function (data) {
       $("#detalleClave").empty();

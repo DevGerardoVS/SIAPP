@@ -649,8 +649,8 @@ class ClavePreController extends Controller
         ];
         return response()->json($response,200);
     }
-    public function getConceptosClave($clave){
-      $clave = DB::select("CALL conceptos_clave('$clave')");
+    public function getConceptosClave($clave, $anioFondo){
+      $clave = DB::select("CALL conceptos_clave('$clave', 20$anioFondo)");
          $dataset=[];
         $i=0;
         foreach($clave as $key){
