@@ -1,12 +1,14 @@
+
+@if (Auth::user()->clv_upp !=null)
+<script type="text/javascript">
+    window.location.href = "/calendarizacion/claves";
+ </script>
+@else
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
-    <form action="{{ route('getBitacora') }}" id="buscarForm" method="POST">
-        @csrf
-        <input style="display: none" type="text" id="fecha" name="fecha">
-    </form>
-    <br>
     <header>
         <h2>Inicio</h2>
     </header>
@@ -231,3 +233,4 @@
 
 </script>
 @endsection
+@endif

@@ -16,7 +16,9 @@ class ClavePreController extends Controller
 {
     public function getPanel(){
         $uppUsuario = Auth::user()->clv_upp;
-        return view('calendarizacion.clavePresupuestaria.index',compact('uppUsuario'));
+        $ejer = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE('cierre_ejercicio_claves.estatus','=','Abierto')->first();
+        $ejercicio = $ejer->ejercicio;
+        return view('calendarizacion.clavePresupuestaria.index',compact(['uppUsuario','ejercicio']));
     }
     public function getPanelUpdate($id){
         $clave = ProgramacionPresupuesto::where('id',$id)->first();
@@ -274,60 +276,59 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($localidades,200);
     }
-    public function getUpp(){
+    public function getUpp($ejercicio){
         $uppUsuario = Auth::user()->clv_upp;
         $array_where = [];
         if ($uppUsuario && $uppUsuario != null) {
-            array_push($array_where, ['catalogo.clave', '=', $uppUsuario]);
-            array_push($array_where, ['catalogo.deleted_at', '=', null]);
-            array_push($array_where, ['entidad_ejecutora.deleted_at', '=', null]);
-        }else {
-            array_push($array_where, ['entidad_ejecutora.deleted_at', '=', null]);
-            array_push($array_where, ['catalogo.deleted_at', '=', null]);
-        } 
-
-        $upp = DB::table('entidad_ejecutora')
-        ->select('entidad_ejecutora.upp_id','catalogo.clave','catalogo.descripcion')
-        ->leftJoin('catalogo','entidad_ejecutora.upp_id','=','catalogo.id')
+            array_push($array_where, ['v_epp.clv_upp', '=', $uppUsuario]);  
+        }
+        array_push($array_where, ['v_epp.ejercicio', '=', $ejercicio]);
+        array_push($array_where, ['v_epp.deleted_at', '=', null]);
+        $upp = DB::table('v_epp')
+        ->select('v_epp.clv_upp','v_epp.upp')
         ->where($array_where)
-        ->orderBy('catalogo.clave')
+        ->orderBy('v_epp.clv_upp')
         ->DISTINCT()
         ->get();
         return response()->json($upp,200);
     }
-    public function getUnidadesResponsables($id = ''){
-        $unidadResponsable = DB::table('v_entidad_ejecutora')
+    public function getUnidadesResponsables($id = '',$ejercicio){
+        $unidadResponsable = DB::table('v_epp')
         ->SELECT('clv_ur', 'ur')
-        ->WHERE('v_entidad_ejecutora.clv_upp', '=', $id)
-        ->WHERE('v_entidad_ejecutora.deleted_at', '=' , null)
-        ->orderBy('v_entidad_ejecutora.clv_ur')
+        ->WHERE('v_epp.clv_upp', '=', $id)
+        ->WHERE('v_epp.ejercicio', '=', $ejercicio)
+        ->WHERE('v_epp.deleted_at', '=' , null)
+        ->orderBy('v_epp.clv_ur')
         ->DISTINCT()
         ->get();
         return response()->json($unidadResponsable,200);
     }
-    public function getSubSecretaria($upp,$ur){
-        $subSecretaria = DB::table('v_entidad_ejecutora')
+    public function getSubSecretaria($upp,$ur,$ejercicio){
+        $subSecretaria = DB::table('v_epp')
         ->SELECT('clv_subsecretaria' , 'subsecretaria')
         ->WHERE('clv_upp','=',$upp)
         ->WHERE('clv_ur','=',$ur)
-        ->WHERE('v_entidad_ejecutora.deleted_at','=',null)
+        ->WHERE('ejercicio','=',$ejercicio)
+        ->WHERE('v_epp.deleted_at','=',null)
         ->first();
         return response()->json($subSecretaria,200);
     }
-    public function getProgramaPresupuestarios($uppId,$id){
+    public function getProgramaPresupuestarios($uppId,$id, $ejercicio){
         $programasPresupuestales = DB::table('v_epp')
         ->SELECT( 'clv_programa', 'programa')  
         ->WHERE('clv_upp','=',$uppId)
         ->WHERE('clv_ur','=',$id)
+        ->WHERE('ejercicio','=',$ejercicio)
         ->orderBy('clv_programa')
         ->DISTINCT()
         ->get();
         return response()->json($programasPresupuestales,200);
     }
-    public function getSubProgramas($ur,$id, $upp){
+    public function getSubProgramas($ur, $id, $upp, $ejercicio){
         $array_where = [];
         $uppAutorizados = DB::table('uppautorizadascpnomina')
         ->SELECT('clv_upp')
+        ->WHERE('deleted_at','=', null)
         ->WHERE('clv_upp','=',$upp)
         ->get();
         if ($uppAutorizados && count($uppAutorizados) > 0) {
@@ -335,6 +336,7 @@ class ClavePreController extends Controller
         }
         array_push($array_where, ['clv_ur','=',$ur]);
         array_push($array_where, ['clv_programa','=',$id]);
+        array_push($array_where, ['ejercicio','=',$ejercicio]);
         $subProgramas = DB::table('v_epp')
         ->SELECT('clv_subprograma', 'subprograma')
         ->WHERE($array_where)
@@ -343,31 +345,36 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($subProgramas,200);
     }
-    public function getProyectos($programa,$id){
+    public function getProyectos($programa,$id, $upp,$ur ,$ejercicio){
         $proyectos = DB::table('v_epp')
         ->SELECT('clv_proyecto', 'proyecto')
         ->WHERE('clv_programa','=',$programa)
         ->WHERE('clv_subprograma','=',$id)
+        ->WHERE('clv_upp','=',$upp)
+        ->WHERE('clv_ur','=',$ur)
+        ->WHERE('ejercicio','=',$ejercicio)
         ->orderBy('clv_proyecto')
         ->DISTINCT()
         ->get();
         return response()->json($proyectos,200);
     }
-    public function getLineaAccion($uppId,$id){
+    public function getLineaAccion($uppId,$id,$ejercicio){
         $linea = DB::table('v_epp')
         ->SELECT('clv_linea_accion','linea_accion')
         ->WHERE('clv_upp','=', $uppId)
         ->WHERE('clv_ur','=',$id)
+        ->WHERE('ejercicio','=',$ejercicio)
         ->orderBy('clv_linea_accion')
         ->DISTINCT()
         ->get();
         return response()->json($linea,200);
     }
-    public function getAreaFuncional($uppId,$id){
+    public function getAreaFuncional($uppId,$id,$ejercicio){
         $areaFuncional = DB::table('v_epp')
         ->SELECT('clv_finalidad', 'clv_funcion', 'clv_subfuncion', 'clv_eje', 'clv_programa_sectorial','clv_tipologia_conac')
         ->WHERE ('clv_upp', '=', $uppId)
         ->WHERE ('clv_ur', '=', $id)
+        ->WHERE ('ejercicio', '=', $ejercicio)
         ->DISTINCT()
         ->first();
         return response()->json($areaFuncional,200);
@@ -684,7 +691,9 @@ class ClavePreController extends Controller
         ->get();
          if (count($permisos)) {
             $obras = DB::table('proyectos_obra')
-            ->SELECT('clv_proyecto_obra','proyecto_obra')->get();
+            ->SELECT('clv_proyecto_obra','proyecto_obra')
+            ->where('deleted_at','=',null)
+            ->get();
             $response = [
                 'permisoObra' => 200,
                 'obras' => $obras

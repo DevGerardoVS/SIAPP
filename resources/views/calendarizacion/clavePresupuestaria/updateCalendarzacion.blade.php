@@ -200,27 +200,28 @@
             dao.getLocalidadByMunicipio(municipio,localidad);
         }
         if (upp != '') {
-            dao.getUpp(upp);
+            dao.getUpp(ejercicio,upp);
             dao.getFondosByUpp(upp,subprograma_presupuestario, ejercicio,fondo_ramo);
         }
         if (ur != '') {
-            dao.getUninadResponsableByUpp(upp,ur);
-            dao.getSubSecretaria(upp,ur);
-            dao.getAreaFuncional(upp,ur);
+
+            dao.getUninadResponsableByUpp(upp,ejercicio,ur);
+            dao.getSubSecretaria(upp,ur,ejercicio);
+            dao.getAreaFuncional(upp,ur,ejercicio);
             dao.getClasificacionAdmin(upp,ur);
         }
         if (programa_presupuestario != '') {
-            dao.getProgramaPresupuestarioByur(upp,ur,programa_presupuestario);
+            dao.getProgramaPresupuestarioByur(upp,ur,ejercicio,programa_presupuestario);
         }
         if (subprograma_presupuestario != '') {
-            dao.getSubProgramaByProgramaId(ur,programa_presupuestario, upp,subprograma_presupuestario);
+            dao.getSubProgramaByProgramaId(ur,programa_presupuestario, upp,ejercicio,subprograma_presupuestario);
             
         }
         if (proyecto_presupuestario != '') {
-            dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario);
+            dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,ejercicio,proyecto_presupuestario);
         }
         if (linea_accion != '') {
-            dao.getLineaDeAccionByUpp(upp,ur,linea_accion);
+            dao.getLineaDeAccionByUpp(upp,ur,ejercicio,linea_accion);
             dao.getPartidaByUpp(partida);
             dao.getSector(linea_accion);
         }

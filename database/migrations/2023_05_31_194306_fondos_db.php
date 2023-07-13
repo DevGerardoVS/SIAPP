@@ -271,6 +271,13 @@ return new class extends Migration
             $table->increments('id');
             $table->string('clv_upp',3)->nullable(false);
             $table->string('clv_ur',2)->nullable(false);
+            $table->string('clv_finalidad',1)->nullable(false);
+            $table->string('clv_funcion',1)->nullable(false);
+            $table->string('clv_subfuncion',1)->nullable(false);
+            $table->string('clv_eje',1)->nullable(false);
+            $table->string('clv_linea_accion',2)->nullable(false);
+            $table->string('clv_programa_sectorial',1)->nullable(false);
+            $table->string('clv_tipologia_conac',1)->nullable(false);
             $table->string('clv_programa',2)->nullable(false);
             $table->string('clv_subprograma',3)->nullable(false);
             $table->string('clv_proyecto',3)->nullable(false);
