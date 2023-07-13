@@ -38,8 +38,8 @@
                                     <td>{{{$i->tipo}}}</td>
                                     <td>{{{$i->total}}}</td>
                                     <td>{{{$i->cantidad_beneficiarios}}}</td>
-                                    <td>{{{$i->beneficiario_id}}}</td>
-                                    <td>{{{$i->unidad_medidad_id}}}</td>
+                                    <td>{{{$i->beneficiario}}}</td>
+                                    <td>{{{$i->unidad_medida}}}</td>
                                   </tr>
                                 @endforeach
                                     

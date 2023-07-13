@@ -25,16 +25,15 @@ class DatabaseSeeder extends Seeder
            ['id'=>4,'nombre'=>'Descargar oficio']
         );
         protected $grupos = array(
-
             ['id' => 1, 'nombre_grupo' => 'Administrador', 'estatus' => 0],
             ['id' => 2, 'nombre_grupo' => 'Gobdigital', 'estatus' => 0],
             ['id' => 3, 'nombre_grupo' => 'Auditor', 'estatus' => 0],
             ['id' => 4, 'nombre_grupo' => 'Upp', 'estatus' => 0],
-            ['id' => 5, 'nombre_grupo' => 'Delegacion', 'estatus' => 0],
+            ['id' => 5, 'nombre_grupo' => 'Delegacion', 'estatus' => 0]
         );
 
     protected $cat_users = array(
-        ['id' => 1, 'id_grupo' => 2, 'nombre' => 'Gob', 'p_apellido' => 'Digital', 's_apellido' => 'siapp', 'celular' => '00-00-00-00-00', 'email' => 'control@gmail.com', 'username' => 'control', 'password' => 'CasaMata', 'sudo' => 1, 'clv_upp' => NULL],
+        ['id' => 1, 'id_grupo' => 2, 'nombre' => 'Gob', 'p_apellido' => 'Digital', 's_apellido' => 'siapp', 'celular' => '00-00-00-00-00', 'email' => 'control@gmail.com', 'username' => 'control', 'password' => 'CasaMata', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 2, 'id_grupo' => 1, 'nombre' => 'sudo', 'p_apellido' => 'admin', 's_apellido' => 'sedj', 'celular' => '00-00-00-00-00', 'email' => 'prueba1@gmail.com', 'username' => 'administrador', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 3, 'id_grupo' => 1, 'nombre' => 'Francisco', 'p_apellido' => 'Méndez', 's_apellido' => 'Chávez', 'celular' => '44-32-21-90-95', 'email' => 'pacomendez2308@gmail.com', 'username' => 'depExpedientes', 'password' => 'depExpedientes.22', 'sudo' => 0, 'clv_upp' => NULL],
         ['id' => 4, 'id_grupo' => 3, 'nombre' => 'auditor', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Auditor', 'password' => 'valida2022', 'sudo' => 0, 'clv_upp' => '007'],
@@ -151,6 +150,12 @@ class DatabaseSeeder extends Seeder
         ['id_menu' => 9 ], 
         ['id_menu' => 11],
         ['id_menu' => 13]
+    );
+    protected $menugob = array(
+        ['id_menu' => 2 ], 
+        ['id_menu' => 4 ], 
+        ['id_menu' => 5 ], 
+        ['id_menu' => 6]
     );
     protected $menuAdmin = array(
         ['id_menu' => 3 ], 
@@ -320,11 +325,24 @@ class DatabaseSeeder extends Seeder
             } catch (\Throwable $th) {
                 throw $th;
             }
+
             try {
                 echo "\n    -Carga rel Menu grupo Admin";
             foreach ($this->menuAdmin as $m) {
                 MenuGrupo::create([
                     'id_grupo' => 1,
+                    'id_menu' => $m['id_menu']
+                ]);
+
+            }
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+            try {
+                echo "\n    -Carga rel Menu grupo gobdg";
+            foreach ($this->menuAdmin as $m) {
+                MenuGrupo::create([
+                    'id_grupo' => 2,
                     'id_menu' => $m['id_menu']
                 ]);
 
