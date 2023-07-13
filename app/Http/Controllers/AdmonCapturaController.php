@@ -16,7 +16,7 @@ class AdmonCapturaController extends Controller
         $dataSet = array();
         $anioActivo = DB::select('SELECT ejercicio FROM cierre_ejercicio_claves WHERE activos = 1 LIMIT 1');
         $anio = $anioActivo[0]->ejercicio;
-        $comprobarEstado = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = ($anio-1) GROUP BY upp");
+        $comprobarEstado = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = $anio GROUP BY upp");
         $upps = DB::select('SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND activos = 1 AND c.deleted_at is null ORDER BY clave ASC');
         return view("captura.admonCaptura", [
             'dataSet' => json_encode($dataSet),
@@ -115,7 +115,7 @@ class AdmonCapturaController extends Controller
             $actualizarCierres = str_contains($modulo,',') ? DB::update("UPDATE $modulo SET cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_upp_cierre") : DB::update("UPDATE $modulo SET estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_upp_cierre");
             
             if($estado == "activo"){
-                $actualizarPP = DB::update("UPDATE programacion_presupuesto SET estado = 0 WHERE ejercicio = ($anio-1) AND estado = 1 $checar_upp_PP");
+                $actualizarPP = DB::update("UPDATE programacion_presupuesto SET estado = 0 WHERE ejercicio = $anio AND estado = 1 $checar_upp_PP");
                 // $actualizarMetas = DB::update("UPDATE programacion_presupuesto SET estado = 0 $checar_upp_metas");
             }
 
