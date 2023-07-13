@@ -14,6 +14,7 @@
                     @csrf
                     @method('PUT')
                     <input type="text" hidden name="estado" id="estado">
+                    <input type="text" hidden name="anio" id="anio" value="{{$anio}}">
                     <div class="col-sm-12">
                         <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
                     </div>

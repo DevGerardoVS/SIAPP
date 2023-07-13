@@ -114,7 +114,7 @@ $titleDesc = 'Administración de Captura';
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light">Clave UPP</th>
-                                            <th class="exportable align-middle text-light">UPP</th>
+                                            <th class="exportable align-middle text-light text-center">UPP</th>
                                             <th class="exportable align-middle text-light">Fecha de último cambio</th>
                                             <th class="exportable align-middle text-light">Estatus</th>
                                             <th class="exportable align-middle text-light">Usuario que actualizó</th>
@@ -230,27 +230,45 @@ $titleDesc = 'Administración de Captura';
             return checarRadio;
         }
 
+        // Comprobar si hay algún estado encendido en la tabla programación presupuesto
+        var upps = {!! json_encode((array)$comprobarEstado) !!};
+        var checarEstado = false;
+        var obtenerUPP = "";
+       
+        $('#upp_filter').on('change', function (e) {
+            obtenerUPP = $(this).find('option').filter(':selected').val();
+            checarEstado = false;
+        });
+
+        let arregloUPP = [];
         $('#btnSave').on("click", function () {
+            upps.forEach(upp => {
+                if(upp['upp'] == obtenerUPP && upp['estado'] == 1 ) checarEstado = true;
+                if(obtenerUPP == "" && upp['estado'] == 1 ){
+                    checarEstado = true;
+                } 
+                if(upp['estado'] == 1) arregloUPP.push(upp['upp']);
+                
+                obtenerUPP = arregloUPP;
+                // console.log(arregloUPP);
+            });
             comprobarModulo();
             comprobarRadio();
-            if(comprobarModulo() && comprobarRadio()){
+            if(comprobarModulo() && comprobarRadio() && checarEstado){
                 event.preventDefault();
                 Swal.fire({
                     title: "¿Quieres revertir el estado?",
-                    text: "Sí para que puedan modifcar el presupuesto, en caso contrario dar click en no",
+                    text: "Las siguiente(s) UPP tiene el estado activo: \n"+arregloUPP,
                     icon: 'question',
-                    showCancelButton: true,
                     confirmButtonColor: '#00ff00',
-                    cancelButtonColor: '#ff0000',
                     confirmButtonText: 'Sí',
-                    cancelButtonText: 'No',
                     showCloseButton: true,
                     allowOutsideClick: false,
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $("#estado").val("activo");
                         $("#aperturaCierreForm").submit();
-                    } else if (result.dismiss == "cancel") $("#aperturaCierreForm").submit();
+                    }
                 });
             }
         });

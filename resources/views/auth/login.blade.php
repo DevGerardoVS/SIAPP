@@ -131,7 +131,7 @@
     <!--Valida si hay errores por el metodo validate-->
 
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
-    <script>
+    {{-- <script>
         var estaactivo = "{{ Auth::check() }}";
 
 
@@ -151,5 +151,5 @@
                     }
                 });
         @endif
-    </script>
+    </script> --}}
 @endsection
