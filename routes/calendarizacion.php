@@ -31,7 +31,7 @@
 		Route::get('/cat-unidad-responsable/{id?}/{ejercicio?}', 'getUnidadesResponsables');
 		Route::get('/cat-programa-presupuestario/{upp?}/{id?}/{ejercicio?}', 'getProgramaPresupuestarios');
 		Route::get('/cat-subprograma-presupuesto/{ur?}/{id?}/{upp?}/{ejercicio?}', 'getSubProgramas');
-		Route::get('/cat-proyecyo/{programa?}/{id?}/{ejercicio?}', 'getProyectos');
+		Route::get('/cat-proyecyo/{programa?}/{id?}/{upp?}/{ur?}/{ejercicio?}', 'getProyectos');
 		Route::get('/cat-linea-accion/{uppId?}/{id?}/{ejercicio?}', 'getLineaAccion');
 		Route::get('/get-presupuesto-asignado/{ejercicio?}/{upp?}', 'getPresupuestoAsignado');
 		Route::get('/calendarizacion-claves-presupuesto-fondo/{ejercicio?}/{clvUpp?}', 'getPanelPresupuestoFondo');
@@ -44,7 +44,8 @@
 		Route::get('/cat-fondos/{id?}/{subP?}/{ejercicio?}', 'getFondos');
 		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
 		Route::get('/presupuesto-upp-asignado/{upp?}/{fonfo?}/{subPrograma?}/{ejercicio?}', 'getPresupuestoPorUpp');
-		Route::get('/ver-detalle/{clave?}', 'getConceptosClave')->name('detalle');
+		Route::get('/presupuesto-upp-asignado-edit/{upp?}/{fonfo?}/{subPrograma?}/{ejercicio?}/{id?}', 'getPresupuestoPorUppEdit');
+		Route::get('/ver-detalle/{clave?}/{anioFondo?}', 'getConceptosClave')->name('detalle');
 		Route::get('/clave-update/{id?}', 'getPanelUpdate');
 		Route::post('/calendarizacion-editar-clave', 'postEditarClave');
 		Route::post('/calendarizacion-confirmar-claves', 'postConfirmarClaves');

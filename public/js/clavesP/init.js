@@ -312,7 +312,7 @@ var dao = {
             if (idSelected != '' && val.clv_ur == idSelected) {
               par.append(new Option(data[i].clv_ur+ ' - '+ data[i].ur, data[i].clv_ur,true,true));
               document.getElementById('ur').innerHTML = data[i].clv_ur;
-              document.getElementById('lbl_ur').innerText ='Ur: '+ data[i].clv_ur + '-' + data[i].ur;
+              document.getElementById('lbl_ur').innerText ='Ur: ' + data[i].ur;
              }else{
               par.append(new Option(data[i].clv_ur+ ' - '+ data[i].ur, data[i].clv_ur,false,false));
              }
@@ -366,10 +366,10 @@ var dao = {
           });
         });
   },
-	getProyectoBySubPrograma : function(programa,id, ejercicio,idSelected){
+	getProyectoBySubPrograma : function(programa,id, upp, ur,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-proyecyo/'+ programa + '/' + id+'/'+ejercicio,
+          	url: '/cat-proyecyo/'+ programa + '/' + id+'/'+ upp + '/' + ur+'/' +ejercicio,
         }).done(function(data){
           var par = $('#sel_proyecto');
           par.html('');
@@ -462,7 +462,7 @@ var dao = {
             document.getElementById('ramo').innerHTML = data[i].clv_ramo;
             document.getElementById('fondoRamo').innerHTML = data[i].clv_fondo;
             document.getElementById('capital').innerHTML = data[i].clv_capital;
-            document.getElementById('lbl_fondo').innerText ='Fondo: '+ data[i].clv_fondo + '-' + data[i].fondo_ramo;
+            document.getElementById('lbl_fondo').innerText ='Fondo: ' + data[i].fondo_ramo;
             }else{
             par.append(new Option(data[i].clv_fondo+ '-'+  data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,false,false));
             }
@@ -487,6 +487,19 @@ var dao = {
       document.getElementById('preFondo').value = presupuesto;
       let disponible = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.disponible);
       document.getElementById('preDisFondo').value = disponible;
+    });
+  },
+  getPresupuestoPorUppEdit: function (upp,fondo,subPrograma,ejercicio) {
+    $.ajax({
+      type:'get',
+      url:'/presupuesto-upp-asignado-edit/'+ upp +'/' + fondo + '/' + subPrograma + '/' + ejercicio+ '/' + id,
+    }).done(function (data) {
+      let presupuesto = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.presupuesto);
+      document.getElementById('preFondo').value = presupuesto;
+      let disponible = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.disponible);
+      document.getElementById('preDisFondo').value = disponible;
+      document.getElementById('calendarizado').value = data.calendarizado;
+
     });
   },
   getPresupuesAsignado : function(ejercicio, upp){
@@ -566,7 +579,7 @@ var dao = {
       etiquetado + fuenteFinanciamiento + ramo + fondoRamo + capital + proyectoObra;
     $.ajax({
       type: "GET",
-      url: "/ver-detalle/" + clave,
+      url: "/ver-detalle/" + clave + "/" + anioFondo,
       dataType: "json"
     }).done(function (data) {
       $("#detalleClave").empty();
@@ -709,10 +722,10 @@ var dao = {
         par.append(new Option("-- Selecciona un Proyecto - Obra --", ""));
         $.each(data.obras, function(i, val){
           if (idSelected != '' && val.clv_proyecto_obra == idSelected) {
-            par.append(new Option(data[i].clv_proyecto_obra+ '-'+ data.obras[i].proyecto_obra , data.obras[i].clv_proyecto_obra,true,true));
+            par.append(new Option(data.obras[i].clv_proyecto_obra+ '-'+ data.obras[i].proyecto_obra , data.obras[i].clv_proyecto_obra,true,true));
             document.getElementById('proyectoObra').innerHTML = data.obras[i].proyecto_obra ;
            }else{
-            par.append(new Option(data[i].clv_proyecto_obra+ '-'+ data.obras[i].proyecto_obra , data.obras[i].clv_proyecto_obra,false,false));
+            par.append(new Option(data.obras[i].clv_proyecto_obra+ '-'+ data.obras[i].proyecto_obra , data.obras[i].clv_proyecto_obra,false,false));
            }
         });
         
@@ -759,6 +772,35 @@ var init = {
   },
 }
 
+// function calucalarCalendario() {
+//   var total = 0;
+//   let disponible = document.getElementById('preDisFondo').value;
+//   disponible = disponible.replaceAll('$', "");
+//   disponible = disponible.replaceAll(',', "");
+//   disponible = parseInt(disponible);
+//   console.log("🚀 ~ file: init.js:778 ~ calucalarCalendario ~ disponible:", disponible)
+//   
+//   $(".monto").each(function() {
+//     parseInt(disponible);
+//     if (isNaN(parseInt($(this).val()))) {
+
+//       total += 0;
+
+//     } else {
+
+//       total +=   parseInt($(this).val());
+//       //  if (total >= calendarizado) {
+//       //   disponible = disponible - total;
+//       //  }
+//       //  if(total < calendarizado){
+//       //   disponible = disponible + total;
+//       //  }
+//     }
+
+//   });
+//   // document.getElementById('preDisFondo').value = disponible;
+//   document.getElementById('totalCalendarizado').value = total;
+// }
 function calucalarCalendario() {
   var total = 0;
   $(".monto").each(function() {
@@ -819,7 +861,7 @@ $(document).ready(function(){
     dao.getAreaFuncional(uppId,id,ejercicio);
     dao.getClasificacionAdmin(uppId,id);
     var urText = $('#sel_unidad_res').find(":selected").text();
-    document.getElementById('lbl_ur').innerText = 'Ur: '+ id+ '-' + urText;
+    document.getElementById('lbl_ur').innerText = 'Ur: ' + urText;
 	});
 	$('#sel_programa').change(function(e){
 		e.preventDefault();
@@ -837,7 +879,8 @@ $(document).ready(function(){
     var programa = document.getElementById("sel_programa").value;
     var upp = document.getElementById("sel_upp").value;
     var ejercicio = document.getElementById('anio').value;
-		dao.getProyectoBySubPrograma(programa,id, ejercicio,'');
+    var ur = document.getElementById("sel_unidad_res").value;
+		dao.getProyectoBySubPrograma(programa,id,upp,ur ,ejercicio,'');
     dao.getFondosByUpp(upp, id, ejercicio,'');
 	});
   $('#sel_proyecto').change(function (e) {
@@ -890,7 +933,7 @@ $(document).ready(function(){
     let ejercicio = $('#anio').val();
     dao.getPresupuestoPorUpp(upp,fondoRemo,subPrograma, ejercicio);
     var fondoText = $('#sel_fondo').find(":selected").text();
-    document.getElementById('lbl_fondo').innerText = 'Fondo: '+ fondoRemo+ '-' + fondoText;
+    document.getElementById('lbl_fondo').innerText = 'Fondo: ' + fondoText;
   });
   $('#sel_obra').change(function (e) {
     e.preventDefault();
@@ -951,11 +994,15 @@ $(document).ready(function(){
 
   $('#btnUpdateClv').click(function (params) {
     params.preventDefault();
+    let calendarizado = document.getElementById('calendarizado').value;
+   calendarizado = parseInt(calendarizado);
     let total = document.getElementById('totalCalendarizado').value;
     let disponible = document.getElementById('preDisFondo').value;
     let disp = parseInt(disponible.replaceAll(',', '').replaceAll('$', ''));
+    disp = disp + calendarizado;
     if (total > 0 && total <= parseInt(disp)) {
       dao.postUpdate();
+      console.log('iba a pasar a guardar');
     }else{
       if (total > 0) {
         Swal.fire(

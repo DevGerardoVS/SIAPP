@@ -345,11 +345,13 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($subProgramas,200);
     }
-    public function getProyectos($programa,$id, $ejercicio){
+    public function getProyectos($programa,$id, $upp,$ur ,$ejercicio){
         $proyectos = DB::table('v_epp')
         ->SELECT('clv_proyecto', 'proyecto')
         ->WHERE('clv_programa','=',$programa)
         ->WHERE('clv_subprograma','=',$id)
+        ->WHERE('clv_upp','=',$upp)
+        ->WHERE('clv_ur','=',$ur)
         ->WHERE('ejercicio','=',$ejercicio)
         ->orderBy('clv_proyecto')
         ->DISTINCT()
@@ -444,6 +446,49 @@ class ClavePreController extends Controller
         $response = [
             'presupuesto'=>$presupuestoUpp ? $presupuestoUpp->presupuesto : 0,
             'disponible'=>$disponible,
+            'tipo'=> $presupuestoUpp ?  $presupuestoUpp->tipo : '',
+        ];
+        return response()->json($response,200);
+    }
+    public function getPresupuestoPorUppEdit($upp,$fondo,$subPrograma,$ejercicio,$id){
+        $disponible = 0;
+        $presupuestoUpp = DB::table('techos_financieros')
+        ->SELECT('presupuesto','tipo')
+        ->WHERE('clv_upp', '=', $upp)
+        ->WHERE('clv_fondo', '=', $fondo)
+        ->WHERE('ejercicio', '=', $ejercicio)
+        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        ->WHERE('deleted_at', '=', null)
+        ->first();
+        $presupuestoAsignado = DB::table('programacion_presupuesto')
+        ->SELECT(DB::raw('SUM( total )AS TotalAsignado'))
+        ->WHERE ('upp', '=', $upp)
+        ->WHERE('fondo_ramo', '=', $fondo)
+        ->WHERE('ejercicio', '=', $ejercicio)
+        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        ->WHERE('deleted_at', '=', null)
+        ->first();
+        $asignado = DB::table('programacion_presupuesto')
+        ->SELECT('total')
+        ->WHERE ('upp', '=', $upp)
+        ->WHERE('fondo_ramo', '=', $fondo)
+        ->WHERE('ejercicio', '=', $ejercicio)
+        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        ->WHERE('deleted_at', '=', null)
+        ->WHERE('id',$id)
+        ->first();
+        if ($presupuestoUpp && $presupuestoUpp != '') {
+            if ($presupuestoAsignado && $presupuestoAsignado != '' ) {
+                $disponible = $presupuestoUpp->presupuesto - $presupuestoAsignado->TotalAsignado;
+            }else {
+                $disponible = $presupuestoUpp->presupuesto ? $presupuestoUpp->presupuesto : 0;
+            }
+        }
+           
+        $response = [
+            'presupuesto'=>$presupuestoUpp ? $presupuestoUpp->presupuesto : 0,
+            'disponible'=>$disponible,
+            'calendarizado'=>$asignado->total ? $asignado->total : '',
             'tipo'=> $presupuestoUpp ?  $presupuestoUpp->tipo : '',
         ];
         return response()->json($response,200);
@@ -647,8 +692,8 @@ class ClavePreController extends Controller
         ];
         return response()->json($response,200);
     }
-    public function getConceptosClave($clave){
-      $clave = DB::select("CALL conceptos_clave('$clave')");
+    public function getConceptosClave($clave, $anioFondo){
+      $clave = DB::select("CALL conceptos_clave('$clave', 20$anioFondo)");
          $dataset=[];
         $i=0;
         foreach($clave as $key){

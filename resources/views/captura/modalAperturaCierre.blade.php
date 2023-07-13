@@ -13,8 +13,10 @@
                 <form id="aperturaCierreForm" action="{{route('admon_capturas_update')}}" method="POST">
                     @csrf
                     @method('PUT')
+                    <input type="text" hidden name="estado" id="estado">
+                    <input type="text" hidden name="anio" id="anio" value="{{$anio}}">
                     <div class="col-sm-12">
-                        <label for="upp_filter" class="form-label fw-bold mt-md-1">Abrir captura a:</label>
+                        <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
                     </div>
                     <div class="col-sm-12">
                         <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter"
@@ -28,7 +30,7 @@
                     </div>
 
                     <div class="col-sm-12">
-                        <label for="modulo_filter" class="form-label fw-bold mt-md-1">Modulo que se habilitará:</label>
+                        <label for="modulo_filter" class="form-label fw-bold mt-md-1">Modulo:</label>
                     </div>
                     <div class="col-sm-12">
                         <select class="form-control filters filters_modulo" id="modulo_filter" name="modulo_filter"

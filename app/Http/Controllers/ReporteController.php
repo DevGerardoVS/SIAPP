@@ -28,7 +28,7 @@ class ReporteController extends Controller
     }
 
     public function indexAdministrativo(){
-        Controller::check_permission('getAdministrativos');
+        Controller::check_permission('getAdmon');
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
