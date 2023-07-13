@@ -44,6 +44,7 @@
 		Route::get('/cat-fondos/{id?}/{subP?}/{ejercicio?}', 'getFondos');
 		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
 		Route::get('/presupuesto-upp-asignado/{upp?}/{fonfo?}/{subPrograma?}/{ejercicio?}', 'getPresupuestoPorUpp');
+		Route::get('/presupuesto-upp-asignado-edit/{upp?}/{fonfo?}/{subPrograma?}/{ejercicio?}/{id?}', 'getPresupuestoPorUppEdit');
 		Route::get('/ver-detalle/{clave?}/{anioFondo?}', 'getConceptosClave')->name('detalle');
 		Route::get('/clave-update/{id?}', 'getPanelUpdate');
 		Route::post('/calendarizacion-editar-clave', 'postEditarClave');
