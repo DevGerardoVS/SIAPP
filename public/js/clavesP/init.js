@@ -366,10 +366,10 @@ var dao = {
           });
         });
   },
-	getProyectoBySubPrograma : function(programa,id, ejercicio,idSelected){
+	getProyectoBySubPrograma : function(programa,id, upp, ur,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-proyecyo/'+ programa + '/' + id+'/'+ejercicio,
+          	url: '/cat-proyecyo/'+ programa + '/' + id+'/'+ upp + '/' + ur+'/' +ejercicio,
         }).done(function(data){
           var par = $('#sel_proyecto');
           par.html('');
@@ -837,7 +837,8 @@ $(document).ready(function(){
     var programa = document.getElementById("sel_programa").value;
     var upp = document.getElementById("sel_upp").value;
     var ejercicio = document.getElementById('anio').value;
-		dao.getProyectoBySubPrograma(programa,id, ejercicio,'');
+    var ur = document.getElementById("sel_unidad_res").value;
+		dao.getProyectoBySubPrograma(programa,id,upp,ur ,ejercicio,'');
     dao.getFondosByUpp(upp, id, ejercicio,'');
 	});
   $('#sel_proyecto').change(function (e) {
