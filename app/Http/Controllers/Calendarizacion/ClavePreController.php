@@ -345,11 +345,13 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($subProgramas,200);
     }
-    public function getProyectos($programa,$id, $ejercicio){
+    public function getProyectos($programa,$id, $upp,$ur ,$ejercicio){
         $proyectos = DB::table('v_epp')
         ->SELECT('clv_proyecto', 'proyecto')
         ->WHERE('clv_programa','=',$programa)
         ->WHERE('clv_subprograma','=',$id)
+        ->WHERE('clv_upp','=',$upp)
+        ->WHERE('clv_ur','=',$ur)
         ->WHERE('ejercicio','=',$ejercicio)
         ->orderBy('clv_proyecto')
         ->DISTINCT()
