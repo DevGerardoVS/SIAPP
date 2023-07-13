@@ -1,8 +1,10 @@
 <?php
 
+use App\Imports\ClavePresupuestaria;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Calendarizacion\ClavePreController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +22,15 @@ Auth::routes();
 Route::get('/', function () {
     if (!Auth::guest()) {
         Session(['sistema' => 1]);
-        return view('home');
+        if(Auth::user()->clv_upp != null)
+        {
+            return redirect('/calendarizacion/claves');
+            
+        }else{
+            return view('home');
+        }
+  
+       
     } else {
         return view('auth.login');
     }
@@ -32,7 +42,13 @@ Route::get('', function () {
     }
     if (!Auth::guest()) {
         Session(['sistema' => 1]);
-        return view('home');
+        if(Auth::user()->clv_upp != null)
+        {
+            return redirect('/calendarizacion/claves');
+            
+        }else{
+            return view('home');
+        }
     } else {
         return view('auth.login');
     }
@@ -47,7 +63,13 @@ Route::get('/login', function () {
 Route::get('/home', function () {
     if (!Auth::guest()) {
         Session(['sistema' => 1]);
-        return view('home');
+        if(Auth::user()->clv_upp != null)
+        {
+            return redirect('/calendarizacion/claves');
+            
+        }else{
+            return view('home');
+        }
     } else {
         return view('auth.login');
     }
