@@ -153,7 +153,7 @@ class ConfiguracionesController extends Controller
                 $data_old_act = array(
                     'id' => $upp_autorizada->id,
                     'clv_upp' => $upp_autorizada->clv_upp,
-                    'deleted_at'=> date("d/m/Y H:i:s", strtotime($upp_autorizada->deleted_at)),
+                    'deleted_at'=> date("Y/m/d H:i:s", strtotime($upp_autorizada->deleted_at)),
                     'deleted_user'=> $upp_autorizada->deleted_user,
                     'created_at' => $upp_autorizada->usuario_creacion,
                     'updated_user' => $upp_autorizada->usuario_modificacion,
@@ -161,25 +161,28 @@ class ConfiguracionesController extends Controller
                     'updated_at'=>date("d/m/Y H:i:s", strtotime($upp_autorizada->updated_at)),
                 );
 
-                if($request->value=='true') $request->value = 1;
-                else $request->value = 0;
-                $tipo_actividad->updated_user = Auth::user()->username;
-                $tipo_actividad->deleted_user = Auth::user()->username;
-                $tipo_actividad->deleted_at = date("d/m/Y H:i:s");
-                $tipo_actividad->save();
+                Log::channel('daily')->debug('exp '.date("Y/m/d H:i:s"));
+
+                if($request->value=='true') $upp_autorizada->deleted_at = date("Y/m/d H:i:s");
+                else $upp_autorizada->deleted_at = NULL;
+
+                $upp_autorizada->updated_user = Auth::user()->username;
+                $upp_autorizada->updated_at = date("Y/m/d H:i:s");
+                $upp_autorizada->deleted_user = Auth::user()->username;
+                
+                $upp_autorizada->save();
 
             }
 
             $data_new_act = array(
-                'id' => $tipo_actividad->id,
-                'clv_upp' => $tipo_actividad->descripcion,
-                'Continua' => $tipo_actividad,
-                'Acumulativa' => $tipo_actividad,
-                'Especial' => $tipo_actividad->estatus,
-                'created_at' => $tipo_actividad->created_at,
-                'updated_user' => $tipo_actividad->updated_user,
-                'created_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->created_at)),
-                'updated_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->updated_at)),
+                'id' => $upp_autorizada->id,
+                'clv_upp' => $upp_autorizada->clv_upp,
+                'deleted_at'=> date("d/m/Y H:i:s", strtotime($upp_autorizada->deleted_at)),
+                'deleted_user'=> $upp_autorizada->deleted_user,
+                'created_at' => $upp_autorizada->usuario_creacion,
+                'updated_user' => $upp_autorizada->usuario_modificacion,
+                'created_at'=>date("d/m/Y H:i:s", strtotime($upp_autorizada->created_at)),
+                'updated_at'=>date("d/m/Y H:i:s", strtotime($upp_autorizada->updated_at)),
             );
            
             $array_data_act = array(
@@ -188,7 +191,7 @@ class ConfiguracionesController extends Controller
                 'nuevo'=>$data_new_act
             );
 
-            BitacoraHelper::saveBitacora(BitacoraHelper::getIp(),"tipo_actividad_upp", "Edicion",json_encode($array_data_act));
+            BitacoraHelper::saveBitacora(BitacoraHelper::getIp(),"uppautorizadascpnomina", "Edicion",json_encode($array_data_act));
             
             return response()->json([
                 "dataSet" => $dataSet,
