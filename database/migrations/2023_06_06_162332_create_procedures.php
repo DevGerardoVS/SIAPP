@@ -1630,7 +1630,7 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64), in anio int)
         begin
             
-        set @clave := claveT; 
+        set @clave := claveT COLLATE utf8mb4_unicode_ci;; 
         set @epp := concat(substring(@clave,1,5),substring(@clave,16,22));
         set @clasGeo := ((substring(@clave,6,10))*1);
         set @partida := ((substring(@clave,44,6))*1);
