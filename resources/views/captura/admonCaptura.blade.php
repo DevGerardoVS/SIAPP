@@ -234,24 +234,29 @@ $titleDesc = 'Administración de Captura';
         var upps = {!! json_encode((array)$comprobarEstado) !!};
         var checarEstado = false;
         var obtenerUPP = "";
+        let arregloUPP = [];
        
         $('#upp_filter').on('change', function (e) {
             obtenerUPP = $(this).find('option').filter(':selected').val();
+            // arregloUPP = [];
+            arregloUPP[0] = obtenerUPP;
             checarEstado = false;
         });
 
-        let arregloUPP = [];
         $('#btnSave').on("click", function () {
+            console.log(obtenerUPP);
             upps.forEach(upp => {
                 if(upp['upp'] == obtenerUPP && upp['estado'] == 1 ) checarEstado = true;
                 if(obtenerUPP == "" && upp['estado'] == 1 ){
+                    if(arregloUPP.length > 0) arregloUPP = [];
                     checarEstado = true;
+                    arregloUPP.push(upp['upp']);
                 } 
-                if(upp['estado'] == 1) arregloUPP.push(upp['upp']);
+                // if(upp['estado'] == 1) 
                 
-                obtenerUPP = arregloUPP;
-                // console.log(arregloUPP);
+                // obtenerUPP = arregloUPP;
             });
+            console.log(checarEstado);
             comprobarModulo();
             comprobarRadio();
             if(comprobarModulo() && comprobarRadio() && checarEstado){
@@ -266,8 +271,8 @@ $titleDesc = 'Administración de Captura';
                     allowOutsideClick: false,
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        $("#estado").val("activo");
-                        $("#aperturaCierreForm").submit();
+                        // $("#estado").val("activo");
+                        // $("#aperturaCierreForm").submit();
                     }
                 });
             }
