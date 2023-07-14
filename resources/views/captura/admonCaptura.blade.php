@@ -238,32 +238,26 @@ $titleDesc = 'Administración de Captura';
        
         $('#upp_filter').on('change', function (e) {
             obtenerUPP = $(this).find('option').filter(':selected').val();
-            // arregloUPP = [];
-            arregloUPP[0] = obtenerUPP;
             checarEstado = false;
         });
 
         $('#btnSave').on("click", function () {
-            console.log(obtenerUPP);
+            arregloUPP[0] = obtenerUPP;
             upps.forEach(upp => {
                 if(upp['upp'] == obtenerUPP && upp['estado'] == 1 ) checarEstado = true;
                 if(obtenerUPP == "" && upp['estado'] == 1 ){
-                    if(arregloUPP.length > 0) arregloUPP = [];
                     checarEstado = true;
                     arregloUPP.push(upp['upp']);
                 } 
-                // if(upp['estado'] == 1) 
-                
-                // obtenerUPP = arregloUPP;
             });
-            console.log(checarEstado);
             comprobarModulo();
             comprobarRadio();
-            if(comprobarModulo() && comprobarRadio() && checarEstado){
+            console.log($('#capturaRadioH').is(':checked'));
+            if(comprobarModulo() && comprobarRadio() && checarEstado && $('#capturaRadioH').is(':checked')){
                 event.preventDefault();
                 Swal.fire({
                     title: "¿Quieres revertir el estado?",
-                    text: "Las siguiente(s) UPP tiene el estado activo: \n"+arregloUPP,
+                    text: "Las siguientes UPP tiene el estado activo: \n"+arregloUPP,
                     icon: 'question',
                     confirmButtonColor: '#00ff00',
                     confirmButtonText: 'Sí',
@@ -273,6 +267,8 @@ $titleDesc = 'Administración de Captura';
                     if (result.isConfirmed) {
                         // $("#estado").val("activo");
                         // $("#aperturaCierreForm").submit();
+                    }else if(result.dismiss == "close"){
+                        arregloUPP = [];
                     }
                 });
             }
