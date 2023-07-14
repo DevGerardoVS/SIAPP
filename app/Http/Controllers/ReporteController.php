@@ -33,7 +33,7 @@ class ReporteController extends Controller
         $dataSet = array();
         DB::select('CALL insert_pp_aplanado()');
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
-        $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 ORDER BY clave ASC');
+        $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 GROUP BY clave ORDER BY clave ASC');
         return view("reportes.administrativos.indexAdministrativo", [
             'dataSet' => json_encode($dataSet),
             'anios' => $anios,
