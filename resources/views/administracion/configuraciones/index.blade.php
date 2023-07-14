@@ -61,6 +61,7 @@
                                         <div class="col-xs-9 col-sm-5 col-md-5 col-lg-5">
                                         </div>
                                         <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
+                                            <input id="filter_auto" name="filter_auto" value="" style="display: none">
                                             <select id="upps_auto" class="form-select">
                                                 <option value="">Todas las UPP's</option>
                                             </select>
