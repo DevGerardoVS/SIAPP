@@ -109,13 +109,16 @@ class ConfiguracionesController extends Controller
             $array_where = [];
             $filter = $request->filter;
 
-            //if($filter!=null || $filter!='') array_push($array_where, ['clave','=',$filter]);
+            //if($filter==NULL)Log::channel('daily')->debug('exp '.gettype($filter));
+
+            if($filter!=NULL && $filter!='' && $filter != 'undefined') array_push($array_where, ['upp_id','=',$filter]);
             
             $data = DB::table('epp')
                 ->select('epp.upp_id', 'catalogo.descripcion',DB::raw('if(uppautorizadascpnomina.deleted_at is null,1,0) as autorizado'))
                 ->join('catalogo','catalogo.clave','=','epp.upp_id')
                 ->leftJoin('uppautorizadascpnomina','uppautorizadascpnomina.clv_upp','=','epp.upp_id')
                 ->where('grupo_id', 6)
+                ->where($array_where)
                 ->groupBy('upp_id')
                 ->orderBy('upp_id')
                 ->get();

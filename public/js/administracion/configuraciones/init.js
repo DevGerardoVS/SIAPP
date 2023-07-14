@@ -54,9 +54,17 @@ function adjustTableColumns(){
 
 function getAutorizedUpp(){
 
+	var formData = new FormData();
+	var csrf_tpken = $("input[name='_token']").val();
+	var filter = $("#upps_auto option").filter(':selected').val();
+
+	formData.append("_token",csrf_tpken);
+	formData.append("filter",filter);
+
 	$.ajax({
 		url:"/amd-configuracion/data-auto",
 		type: "POST",
+		data: formData,
 		dataType: 'json',
 		processData: false,
 		contentType: false,
@@ -69,6 +77,8 @@ function getAutorizedUpp(){
 			else{
 				dt.attr('data-empty','false');
 			}
+			dt.DataTable().clear();
+			dt.DataTable().destroy();
 			dt.DataTable({
 			   data: response,
 			   pageLength:10,
@@ -167,7 +177,19 @@ function updateData(id,field){
 	var formData = new FormData();
 	var csrf_tpken = $("input[name='_token']").val();
 	var tipo;
-
+	switch(field){
+		case "continua":
+			tipo = 'c';
+			break;
+		case "acumulativa":
+			tipo = 'a';
+			break;
+		case "especial":
+			tipo = 'e';
+			break;
+		default:
+			break;
+	}
 	var value = $("#"+id+"_"+tipo)[0].checked;
 	//console.log(value);
 	formData.append("_token",csrf_tpken);
@@ -227,6 +249,12 @@ $(document).ready(function () {
 		getData();
 	});
 
+	$("#upps_auto").on('change',function(){
+		$("#filter_auto").val($("#upps_auto").val());
+		getAutorizedUpp();
+	});
+
+
 	$.ajax({
         url:"/amd-configuracion/upps-auto",
         type: "POST",
@@ -237,7 +265,7 @@ $(document).ready(function () {
             response = response.dataSet;
             var $dropdown = $("#upps_auto");
             $.each(response, function(key, value) {
-                $dropdown.append('<option value="' + value.clave + '">' + value.descripcion + '</option>');
+                $dropdown.append('<option value="' + value.upp_id + '">' + value.descripcion + '</option>');
             });
 
         },
