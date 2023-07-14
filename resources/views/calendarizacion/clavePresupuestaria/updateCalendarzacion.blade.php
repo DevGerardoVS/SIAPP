@@ -149,7 +149,8 @@
                                                 <td>
                                                     <h6><b>Total Calendarizado</b></h6>
                                                 </td>
-                                                <td><input id="totalCalendarizado" name="totalCalendarizado" type="text" class="form-control montosR" readonly>
+                                                <td><input id="totalCalendarizado" name="totalCalendarizado" type="text" class="form-control montosR" value={{$clave->total}} readonly>
+                                                    <input type="hidden" name="calendarizado" id="calendarizado">
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -225,8 +226,10 @@
             dao.getPartidaByUpp(partida);
             dao.getSector(linea_accion);
         }
-        dao.getPresupuestoPorUpp(upp,clv_fondo,subprograma_presupuestario, ejercicio);
-        calucalarCalendario();
+        //dao.getPresupuestoPorUpp(upp,clv_fondo,subprograma_presupuestario, ejercicio);
+        dao.getPresupuestoPorUppEdit(upp,clv_fondo,subprograma_presupuestario, ejercicio,id);
+        
+        //calucalarCalendario();
     </script>
     
 @endsection

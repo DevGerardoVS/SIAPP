@@ -59,7 +59,7 @@
                     <br>
 
                     <div class="d-flex justify-content-evenly">
-                        <button type="submit" class="btn btn-primary" id="btnSave">
+                        <button type="button" class="btn btn-primary" id="btnSave">
                             <span class="btn-label"><i class="fa fa-save text-light fs-5 align-middle p-1"></i></span>
                             <span class="d-lg-inline align-middle">Guardar</span></button>
                         <button id="cerrar" type="button" class="btn btn-secondary colorMorado" data-dismiss="modal"

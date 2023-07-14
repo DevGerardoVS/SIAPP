@@ -1475,9 +1475,18 @@ return new class extends Migration {
         begin
             select 
                 clv_upp,
-                upp,
-                clv_fondo clv_fondo_ramo,
-                fondo fondo_ramo,
+                case 
+                    when clv_fondo != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when clv_capitulo != '' then ''
+                    else clv_fondo
+                end clv_fondo_ramo,
+                case 
+                    when clv_capitulo != '' then ''
+                    else fondo
+                end fondo_ramo,
                 clv_capitulo,
                 capitulo,
                 monto_anual,
@@ -1494,30 +1503,18 @@ return new class extends Migration {
                         when clv_fondo != '' then ''
                         else clv_upp
                     end clv_upp,
-                    case 
-                        when clv_fondo != '' then ''
-                        else upp
-                    end upp,
-                    case 
-                        when clv_capitulo != '' then ''
-                        else clv_fondo
-                    end clv_fondo,
-                    case 
-                        when clv_capitulo != '' then ''
-                        else fondo
-                    end fondo,
-                    case 
-                        when capitulo = '' then ''
-                        else concat(clv_capitulo,'000')
-                    end clv_capitulo,
-                    capitulo,
+                    group_concat(upp separator '') upp,
+                    clv_fondo,
+                    group_concat(fondo separator '') fondo,
+                    group_concat(clv_capitulo separator '') clv_capitulo,
+                    group_concat(capitulo separator '') capitulo,
                     case 
                         when sum(monto_anual) = 0 then sum(calendarizado)
                         else sum(monto_anual)
                     end monto_anual,
                     sum(calendarizado) calendarizado,
                     case 
-                        when sum(estatus) > 0 then 'Confirmado'
+                        when sum(estado) > 0 then 'Confirmado'
                         else 'Registrado'
                     end estatus
                 from (
@@ -1532,14 +1529,14 @@ return new class extends Migration {
                             '' capitulo,
                             0 monto_anual,
                             sum(total) calendarizado,
-                            sum(pa.estado) estatus
-                        from pp_aplanado pa 
+                            sum(estado) estado
+                        from pp_aplanado pa
                         where pa.ejercicio = anio and if (
                             corte is null,
                             pa.deleted_at is null,
                             pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                         )
-                        group by pa.clv_upp,pa.upp
+                        group by clv_upp,upp
                         union all
                         select 
                             clv_upp,
@@ -1550,14 +1547,14 @@ return new class extends Migration {
                             '' capitulo,
                             0 monto_anual,
                             sum(total) calendarizado,
-                            0 estatus
-                        from pp_aplanado pa 
+                            sum(estado) estado
+                        from pp_aplanado pa
                         where pa.ejercicio = anio and if (
                             corte is null,
                             pa.deleted_at is null,
                             pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                         )
-                        group by pa.clv_upp,pa.upp,pa.clv_fondo_ramo,pa.fondo_ramo
+                        group by clv_upp,upp,clv_fondo_ramo,fondo_ramo
                         union all
                         select 
                             clv_upp,
@@ -1568,62 +1565,58 @@ return new class extends Migration {
                             capitulo,
                             0 monto_anual,
                             sum(total) calendarizado,
-                            0 estatus
-                        from pp_aplanado pa 
+                            sum(estado) estado
+                        from pp_aplanado pa
                         where pa.ejercicio = anio and if (
                             corte is null,
                             pa.deleted_at is null,
                             pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                         )
-                        group by pa.clv_upp,pa.upp,pa.clv_fondo_ramo,pa.fondo_ramo,pa.clv_capitulo,pa.capitulo
-                        order by clv_upp,clv_fondo
+                        group by clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo
+                        order by clv_upp,clv_fondo,clv_capitulo
                     ) c
                     union all
-                    select 
-                        *
+                    select *
                     from (
-                        select 
-                            clv_upp,
-                            c.descripcion upp,
+                        select
+                            tf.clv_upp,
+                            '' upp,
                             '' clv_fondo,
                             '' fondo,
                             '' clv_capitulo,
                             '' capitulo,
-                            sum(presupuesto) monto_anual,
+                            sum(tf.presupuesto) monto_anual,
                             0 calendarizado,
-                            0 estatus
+                            0 estado
                         from techos_financieros tf 
-                        join catalogo c on c.clave = tf.clv_upp and c.grupo_id = 6
                         where tf.ejercicio = anio and if (
                             corte is null,
                             tf.deleted_at is null,
                             tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                         )
-                        group by tf.clv_upp,c.descripcion
+                        group by clv_upp
                         union all
-                        select 
-                            clv_upp,
-                            c.descripcion upp,
-                            clv_fondo,
-                            f.fondo_ramo fondo,
+                        select
+                            tf.clv_upp,
+                            '' upp,
+                            tf.clv_fondo,
+                            '' fondo,
                             '' clv_capitulo,
                             '' capitulo,
-                            sum(presupuesto) monto_anual,
+                            sum(tf.presupuesto) monto_anual,
                             0 calendarizado,
-                            0 estatus
+                            0 estado
                         from techos_financieros tf 
-                        join catalogo c on c.clave = tf.clv_upp and c.grupo_id = 6
-                        join fondo f on tf.clv_fondo = f.clv_fondo_ramo
                         where tf.ejercicio = anio and if (
                             corte is null,
                             tf.deleted_at is null,
                             tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                         )
-                        group by tf.clv_upp,c.descripcion,tf.clv_fondo,f.fondo_ramo
+                        group by clv_upp,clv_fondo
                         order by clv_upp,clv_fondo
                     ) ma
-                ) c2
-                group by c2.clv_upp,c2.upp,c2.clv_fondo,c2.fondo,c2.clv_capitulo,c2.capitulo
+                )c2
+                group by c2.clv_upp,c2.clv_fondo,c2.clv_capitulo,c2.capitulo
             ) tabla;
         END;");
 
