@@ -72,7 +72,9 @@ class CalendarizacionCargaMasivaController extends Controller
            $CountR=0;
           if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
             $filearray =$xlsx->rows();
-            $error=0;
+             if(count($filearray)<=1){
+                return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
+            }
             array_shift($filearray);
             $ejercicio=date("Y");
             foreach($filearray as $k){
@@ -119,16 +121,17 @@ class CalendarizacionCargaMasivaController extends Controller
                }
                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio+1)->count();
                  $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
-                 if($valuepresupuesto=!$value || $VerifyEjercicio<0){
-                 $error++;
+                 if($valuepresupuesto=!$value){
+                    return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero']);
                 }
-    
-            }
-            if($error>0){
-                return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero']);
 
-    
+                if($VerifyEjercicio<0){
+                    return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido']);
+
+                } 
+
             }
+
             switch($tipoAdm){
                 case 1:
                     if($CountR>0){
@@ -201,8 +204,9 @@ class CalendarizacionCargaMasivaController extends Controller
            $DiferenteUpp=0;
           if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
             $filearray =$xlsx->rows();
-            $error=0;
-            $Añoerr=0;
+            if(count($filearray)<=1){
+                return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
+            }
             array_shift($filearray);
             $ejercicio=date("Y");
             foreach($filearray as $k){
@@ -257,24 +261,15 @@ class CalendarizacionCargaMasivaController extends Controller
                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio+1)->count();
                  $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio+1)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
                  if($valuepresupuesto=!$value ){
-                 $error++;
+                return redirect()->back()->withErrors(['error' => 'El total presupuestado en las upp no es igual al techo financiero']);
                 }
                 if($VerifyEjercicio<0){
-                    $Añoerr++;
+                    return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido']);
 
                 }
     
             }
-            if($error>0){
 
-                return redirect()->back()->withErrors(['error' => 'El total presupuestado en las upp no es igual al techo financiero']);
-    
-            }
-            if($Añoerr>0){
-
-                return redirect()->back()->withErrors(['error' => 'El año seleccionado no es valido']);
-    
-            }
             switch($tipousuario){
                 case 4:
 

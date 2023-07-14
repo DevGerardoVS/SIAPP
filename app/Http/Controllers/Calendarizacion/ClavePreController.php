@@ -450,6 +450,49 @@ class ClavePreController extends Controller
         ];
         return response()->json($response,200);
     }
+    public function getPresupuestoPorUppEdit($upp,$fondo,$subPrograma,$ejercicio,$id){
+        $disponible = 0;
+        $presupuestoUpp = DB::table('techos_financieros')
+        ->SELECT('presupuesto','tipo')
+        ->WHERE('clv_upp', '=', $upp)
+        ->WHERE('clv_fondo', '=', $fondo)
+        ->WHERE('ejercicio', '=', $ejercicio)
+        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        ->WHERE('deleted_at', '=', null)
+        ->first();
+        $presupuestoAsignado = DB::table('programacion_presupuesto')
+        ->SELECT(DB::raw('SUM( total )AS TotalAsignado'))
+        ->WHERE ('upp', '=', $upp)
+        ->WHERE('fondo_ramo', '=', $fondo)
+        ->WHERE('ejercicio', '=', $ejercicio)
+        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        ->WHERE('deleted_at', '=', null)
+        ->first();
+        $asignado = DB::table('programacion_presupuesto')
+        ->SELECT('total')
+        ->WHERE ('upp', '=', $upp)
+        ->WHERE('fondo_ramo', '=', $fondo)
+        ->WHERE('ejercicio', '=', $ejercicio)
+        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        ->WHERE('deleted_at', '=', null)
+        ->WHERE('id',$id)
+        ->first();
+        if ($presupuestoUpp && $presupuestoUpp != '') {
+            if ($presupuestoAsignado && $presupuestoAsignado != '' ) {
+                $disponible = $presupuestoUpp->presupuesto - $presupuestoAsignado->TotalAsignado;
+            }else {
+                $disponible = $presupuestoUpp->presupuesto ? $presupuestoUpp->presupuesto : 0;
+            }
+        }
+           
+        $response = [
+            'presupuesto'=>$presupuestoUpp ? $presupuestoUpp->presupuesto : 0,
+            'disponible'=>$disponible,
+            'calendarizado'=>$asignado->total ? $asignado->total : '',
+            'tipo'=> $presupuestoUpp ?  $presupuestoUpp->tipo : '',
+        ];
+        return response()->json($response,200);
+    }
     public function getSector($clave){
         $sector = DB::table('v_sector_linea_accion')
             ->SELECT('sector')
