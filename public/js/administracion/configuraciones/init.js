@@ -1,104 +1,4 @@
-var dao = {
-	eliminarRegistro: function (id) {
 
-		if (id != null) {
-			Swal.fire({
-				title: '¿Seguro que quieres eliminar este usuario?',
-				text: "Esta accion es irreversible",
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Confirmar'
-			}).then((result) => {
-				if (result.isConfirmed) {
-					$.ajax({
-						url: "/adm-configuraciones/eliminar",
-						type: "POST",
-                    data: {
-                        id: id
-                    }
-                }).done(function (data) {
-					if (data != "done") {
-                        Swal.fire(
-                            'Error!',
-                            'Hubo un problema al querer realizar la acción, contacte a soporte',
-                            'Error'
-                        );
-                    } else {
-                        Swal.fire(
-                            'Éxito!',
-                            'La acción se ha realizado correctamente',
-                            'success'
-                        );
-                        getData();
-                    }
-                });
-
-				}
-			});
-		} else {
-			Swal.fire({
-				icon: 'info',
-				title: 'No se puede eliminar, ya cuenta con usuarios relacionados',
-				showConfirmButton: false,
-				timer: 1500
-			})
-		}
-	},
-
-	crearGrupo: function () {
-		var form = $('#frmCreate')[0];
-		var data = new FormData(form);
-		$.ajax({
-			type: "POST",
-			url: '/adm-configuraciones/store',
-			data: data,
-			enctype: 'multipart/form-data',
-			processData: false,
-			contentType: false,
-			cache: false,
-			timeout: 600000
-		}).done(function (response) {
-			$('#cerrar').trigger('click');
-			Swal.fire({
-				icon: 'success',
-				title: 'Your work has been saved',
-				showConfirmButton: false,
-				timer: 1500
-			});
-			getData();
-		});
-	},
-
-	editarConfiguraciones: function (id) {
-		$.ajax({
-			type: "GET",
-			url: '/adm-configuraciones/update/' + id,
-			enctype: 'multipart/form-data',
-			processData: false,
-			contentType: false,
-			cache: false,
-			timeout: 600000
-		}).done(function (response) {
-			const { id, nombre_grupo } = response;
-			$('#id_user').val(id);
-			$('#nombre').val(nombre_grupo);
-		});
-	},
-	limpiar: function () {
-		$('#id_user').val(null);
-		$('#nombre').val("");
-		$('#nombre-error').text("").removeClass("has-error").removeClass('d-block'); 
-		$('.col-md-8').removeClass("has-error");
-	},
-	CierraPopup: function () {
-		$("#createGroup").modal('hide'); //ocultamos el modal
-		$('body').removeClass('modal-open'); //eliminamos la clase del body para poder hacer scroll
-		$('.modal-backdrop').remove(); //eliminamos el backdrop del modal
-	}
-
-};
 
 var init = {
 	validateCreate: function (form) {
@@ -114,6 +14,7 @@ var init = {
 	},
 };
 
+
 function getUpps(){
     $.ajax({
         url:"/amd-configuracion/upps",
@@ -123,11 +24,127 @@ function getUpps(){
         contentType: false,
         success:function(response){
             response = response.dataSet;
-            console.log(response);
             var $dropdown = $("#upps");
             $.each(response, function(key, value) {
                 $dropdown.append('<option value="' + value.clave + '">' + value.descripcion + '</option>');
             });
+
+        },
+        error: function(response) {
+            var mensaje="";
+            $.each(response.responseJSON.errors, function( key, value ) {
+                mensaje += value+"\n";
+            });
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensaje,
+                confirmButtonText: "Aceptar",
+            });
+            //$('#errorModal').modal('show');
+            console.log('Error: ' +  JSON.stringify(response.responseJSON));
+        }
+    });
+}
+
+function adjustTableColumns(){
+	var dt = $("#catalogo_b");
+	dt.DataTable().columns.adjust().draw();
+}
+
+function getAutorizedUpp(){
+
+	$.ajax({
+		url:"/amd-configuracion/data-auto",
+		type: "POST",
+		dataType: 'json',
+		processData: false,
+		contentType: false,
+		success:function(response){
+			response = response.dataSet;
+			var dt = $("#catalogo_b");
+			if(response.length == 0){
+				dt.attr('data-empty','true');
+			}
+			else{
+				dt.attr('data-empty','false');
+			}
+			dt.DataTable({
+			   data: response,
+			   pageLength:10,
+			   scrollX: true,
+			   autoWidth: false,
+			   processing: true,
+			   order: [],
+			   ServerSide: true,
+			   api:true,
+			   language: {
+				   processing: "Procesando...",
+				   lengthMenu: "Mostrar _MENU_ registros",
+				   zeroRecords: "No se encontraron resultados",
+				   emptyTable: "Ningún dato disponible en esta tabla",
+				   info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+				   infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+				   infoFiltered: "(filtrado de un total de _MAX_ registros)",
+				   search: "Búsqueda:",
+				   infoThousands: ",",
+				   loadingRecords: "Cargando...",
+				   buttonText: "Imprimir",
+				   paginate: {
+					   first: "Primero",
+					   last: "Último",
+					   next: "Siguiente",
+					   previous: "Anterior",
+				   },
+				   buttons: {
+					   copyTitle: 'Copiado al portapapeles',
+					   copySuccess: {
+						   _: '%d registros copiados',
+						   1: 'Se copio un registro'
+					   }
+				   },
+			   }
+
+		   });
+		   console.log("auto");
+		   //dt.DataTable().columns.adjust().draw(); 
+		   
+		},
+		error: function(response) {
+			var mensaje="";
+			$.each(response.responseJSON.errors, function( key, value ) {
+				mensaje += value+"\n";
+			});
+			Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: mensaje,
+				confirmButtonText: "Aceptar",
+			});
+			//$('#errorModal').modal('show');
+			console.log('Error: ' +  JSON.stringify(response.responseJSON));
+		}
+	});
+}
+
+function updateAutoUpps(id){
+	var formData = new FormData();
+	var csrf_tpken = $("input[name='_token']").val();
+	
+	var value = $("#"+id)[0].checked;
+	//console.log(value);
+	formData.append("_token",csrf_tpken);
+	formData.append("id",id);
+	formData.append("value",value);
+	$.ajax({
+        url:"/amd-configuracion/update-auto",
+		data: formData,
+        type: "POST",
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success:function(response){
+            response = response.dataSet;
         },
         error: function(response) {
             var mensaje="";
@@ -150,24 +167,9 @@ function updateData(id,field){
 	var formData = new FormData();
 	var csrf_tpken = $("input[name='_token']").val();
 	var tipo;
-	console.log(field);
 
-	switch(field){
-		case "continua":
-			tipo="c";
-			break;
-		case "acumulativa":
-			tipo="a";
-			break;
-		case "especial":
-			tipo="e";
-			break;
-		default:
-			break;
-	}
-	
 	var value = $("#"+id+"_"+tipo)[0].checked;
-	console.log(value);
+	//console.log(value);
 	formData.append("_token",csrf_tpken);
 	formData.append("id",id);
 	formData.append("field",field);
@@ -202,10 +204,13 @@ function updateData(id,field){
 }
 
 $(document).ready(function () {
+
 	getData();
 
     getUpps();
 
+	getAutorizedUpp();
+	
 	$('#createGroup').modal({
 		backdrop: 'static',
 		keyboard: false
@@ -222,4 +227,34 @@ $(document).ready(function () {
 		getData();
 	});
 
+	$.ajax({
+        url:"/amd-configuracion/upps-auto",
+        type: "POST",
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success:function(response){
+            response = response.dataSet;
+            var $dropdown = $("#upps_auto");
+            $.each(response, function(key, value) {
+                $dropdown.append('<option value="' + value.clave + '">' + value.descripcion + '</option>');
+            });
+
+        },
+        error: function(response) {
+            var mensaje="";
+            $.each(response.responseJSON.errors, function( key, value ) {
+                mensaje += value+"\n";
+            });
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensaje,
+                confirmButtonText: "Aceptar",
+            });
+            //$('#errorModal').modal('show');
+            console.log('Error: ' +  JSON.stringify(response.responseJSON));
+        }
+    });
+	
 });

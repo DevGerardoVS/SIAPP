@@ -114,7 +114,7 @@ $titleDesc = 'Administración de Captura';
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light">Clave UPP</th>
-                                            <th class="exportable align-middle text-light">UPP</th>
+                                            <th class="exportable align-middle text-light text-center">UPP</th>
                                             <th class="exportable align-middle text-light">Fecha de último cambio</th>
                                             <th class="exportable align-middle text-light">Estatus</th>
                                             <th class="exportable align-middle text-light">Usuario que actualizó</th>
@@ -210,15 +210,71 @@ $titleDesc = 'Administración de Captura';
             });
         }
 
-        $('#btnSave').on("click", function () {
+        function comprobarModulo() {
+            var checarModulo = false;
             if ($('#modulo_filter').val() == null || $('#modulo_filter').val() == 0) {
                 var textAux = 'El parametro modulo es necesario para continuar.';
                 mostrarAdv(textAux);
-            }
+            }else checarModulo = true;
 
+            return checarModulo;
+        }
+
+        function comprobarRadio(){
+            var checarRadio = false;
             if (!$('#capturaRadioH').is(':checked')  && !$('#capturaRadioD').is(':checked')) {
                 var textAux = 'Elija la opción habilitar o deshabilitar la captura para continuar.';
                 mostrarAdv(textAux);
+            }else checarRadio = true;
+
+            return checarRadio;
+        }
+
+        // Comprobar si hay algún estado encendido en la tabla programación presupuesto
+        var upps = {!! json_encode((array)$comprobarEstado) !!};
+        var checarEstado = false;
+        var obtenerUPP = "";
+        let arregloUPP = [];
+       
+        $('#upp_filter').on('change', function (e) {
+            obtenerUPP = $(this).find('option').filter(':selected').val();
+            // arregloUPP = [];
+            arregloUPP[0] = obtenerUPP;
+            checarEstado = false;
+        });
+
+        $('#btnSave').on("click", function () {
+            console.log(obtenerUPP);
+            upps.forEach(upp => {
+                if(upp['upp'] == obtenerUPP && upp['estado'] == 1 ) checarEstado = true;
+                if(obtenerUPP == "" && upp['estado'] == 1 ){
+                    if(arregloUPP.length > 0) arregloUPP = [];
+                    checarEstado = true;
+                    arregloUPP.push(upp['upp']);
+                } 
+                // if(upp['estado'] == 1) 
+                
+                // obtenerUPP = arregloUPP;
+            });
+            console.log(checarEstado);
+            comprobarModulo();
+            comprobarRadio();
+            if(comprobarModulo() && comprobarRadio() && checarEstado){
+                event.preventDefault();
+                Swal.fire({
+                    title: "¿Quieres revertir el estado?",
+                    text: "Las siguiente(s) UPP tiene el estado activo: \n"+arregloUPP,
+                    icon: 'question',
+                    confirmButtonColor: '#00ff00',
+                    confirmButtonText: 'Sí',
+                    showCloseButton: true,
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // $("#estado").val("activo");
+                        // $("#aperturaCierreForm").submit();
+                    }
+                });
             }
         });
 
