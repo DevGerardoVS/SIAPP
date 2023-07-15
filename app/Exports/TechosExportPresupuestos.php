@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -25,17 +26,71 @@ class TechosExportPresupuestos implements FromCollection, WithHeadings, WithStyl
     }
 
     public function collection(){
+        $array_data = [];
         $data = DB::table('techos_financieros as tf')
-            ->select('tf.clv_upp','tf.clv_fondo','tf.tipo','tf.presupuesto','tf.ejercicio')
-            ->leftJoinSub('select distinct clv_upp, upp from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
+            ->select('tf.clv_upp','tf.clv_fondo','tf.tipo','tf.presupuesto','tf.ejercicio','vee.Ej')
+            ->leftJoinSub('select distinct clv_upp, upp, ejercicio as Ej from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
             ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo');
             if($this->ejercicio != 0){
                 $data =  $data -> where('tf.ejercicio','=',$this->ejercicio);
+                $data =  $data -> where('vee.Ej','=',$this->ejercicio);
             }
-
         $data = $data ->get();
+        
+        Log::debug("data : ".$data);
+        
+        $repeticion = [];
+        foreach($data as $d){
+            array_push($repeticion,[
+                "upp" => $d->clv_upp,
+                "fondo" => $d->clv_fondo,
+                "tipo" => $d->tipo,
+                "presupuesto" => $d->presupuesto,
+                "ejercicio" => $d->ejercicio,
+                "Ej" => $d->Ej
+            ]);
+        }
+        
+        $bandera = false;
+        foreach($data as $d){
+            Log::debug("TIPO -> ".$d->tipo);
+            if($d->tipo == 'RH'){ 
+                 /* array_push($array_data,[$d->clv_upp,$d->clv_fondo,' ', $d->presupuesto, $d->presupuesto]); */
+                $repeticion = array_slice($repeticion,1);
+                if(count($repeticion) != 0){
+                    foreach($repeticion as $r){
+                        Log::debug("RH".$r['tipo']);
+                        if($d->clv_upp == $r['upp'] && $d->clv_fondo == $r['fondo'] && $r['tipo'] == 'Operativo' && $r['Ej'] == $d->ejercicio){
+                            array_push($array_data,[$d->clv_upp,$d->clv_fondo, $r['presupuesto'],$d->presupuesto, ($d->presupuesto + $r['presupuesto'])]);
+                            $bandera = true; 
+                            break;
+                        }
+                    }
+                    if($bandera == false){
+                        array_push($array_data,[$d->clv_upp,$d->clv_fondo,' ', $d->presupuesto, $d->presupuesto]);
+                    }
+                }
+            }else if($d->tipo == 'Operativo'){
+                /*  array_push($array_data,[$d->clv_upp,$d->clv_fondo,$d->presupuesto, ' ' , $d->presupuesto]); */
+                $repeticion = array_slice($repeticion,1);
+                if(count($repeticion) != 0){
+                    foreach($repeticion as $r){
+                        Log::debug("OP".$r['tipo']);
+                        if($d->clv_upp == $r['upp'] && $d->clv_fondo == $r['fondo'] && $r['tipo'] == 'RH' && $r['Ej'] == $d->ejercicio){
+                            array_push($array_data,[$d->clv_upp,$d->clv_fondo,$d->presupuesto, $r['presupuesto'], ($d->presupuesto + $r['presupuesto'])]);
+                            $bandera = true; 
+                            break;
+                        }
+                    }
+                    if($bandera == false){
+                        array_push($array_data,[$d->clv_upp,$d->clv_fondo,$d->presupuesto, ' ' , $d->presupuesto]);
+                    }
+                }
+            }
+            $bandera = false;
+        }
 
-        return collect($data);
+        return collect($array_data);
     }
 
     public function headings():array {

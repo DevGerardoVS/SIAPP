@@ -37,10 +37,11 @@ class TechosController extends Controller
 
         $data = DB::table('techos_financieros as tf')
             ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
-            ->leftJoinSub('select distinct clv_upp, upp from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
+            ->leftJoinSub('select distinct clv_upp, upp, ejercicio as Ej from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
             ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo');
             if($request->anio_filter != null){
                 $data =  $data -> where('tf.ejercicio','=',$request->anio_filter);
+                $data =  $data -> where('vee.Ej','=',$request->anio_filter);
             }
             if($request->upp_filter != null && $request->upp_filter != 0){
                 $data = $data -> where('tf.clv_upp','=',$request->upp_filter);
@@ -115,7 +116,6 @@ class TechosController extends Controller
             try {
                 DB::beginTransaction();
                 foreach ($data as $d){
-
                       DB::table('techos_financieros')->insert([
                         'clv_upp' => $upp,
                         'clv_fondo' => $d[1],

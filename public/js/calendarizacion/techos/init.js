@@ -42,8 +42,8 @@ var dao = {
         let anio = [2022, 2023, 2024, 2025];
         var par = $('#anio_filter');
         par.html('');
-        par.append(new Option("-- Año--", ""));
-        document.getElementById("anio_filter").options[0].disabled = true;
+        par.append(new Option("Todos", ""));
+        document.getElementById("anio_filter").options[0].disabled = false;
         $.each(anio, function (i, val) {
             par.append(new Option(anio[i], anio[i]));
         });
