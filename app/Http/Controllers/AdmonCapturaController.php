@@ -102,23 +102,24 @@ class AdmonCapturaController extends Controller
         $estado = $request->estado;
         $anio = $request->anio;
         $usuario = Auth::user()->username;
-        $checar_upp_cierre = '';
         $checar_upp_PP = '';
-        // $checar_upp_metas = '';
+        $checar_upp_metas = '';
         if($upp != null){
-            $checar_upp_cierre = "AND clv_upp = '$upp'";
             $checar_upp_PP = "AND upp = '$upp'";
-            // $checar_upp_metas = "AND upp = '$upp'";
+            $checar_upp_metas = "AND pm.clv_upp = '$upp'";
         }  
 
         try {
             DB::beginTransaction();
             
-            $actualizarCierres = str_contains($modulo,',') ? DB::update("UPDATE $modulo SET cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_upp_cierre") : DB::update("UPDATE $modulo SET estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_upp_cierre");
+            $actualizarCierres = str_contains($modulo,',') ? DB::update("UPDATE $modulo SET cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1 AND cec.clv_upp ='$upp' AND cem.clv_upp = '$upp'") : DB::update("UPDATE $modulo SET estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 AND clv_upp = '$upp'");
             
             if($estado == "activo"){
-                if($modulo = "cierre_ejercicio_claves cec"){
+                if($modulo == "cierre_ejercicio_claves cec" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
                     $actualizarPP = DB::update("UPDATE programacion_presupuesto SET estado = 0 WHERE ejercicio = $anio AND estado = 1 $checar_upp_PP");
+                }
+                if($modulo == "cierre_ejercicio_metas cem" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
+                    $actualizarMetas = DB::update("UPDATE metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id SET m.estatus = 0 WHERE pm.ejercicio = $anio AND m.estatus = 1 $checar_upp_metas");
                 }
                 // $actualizarMetas = DB::update("UPDATE programacion_presupuesto SET estado = 0 $checar_upp_metas");
             }

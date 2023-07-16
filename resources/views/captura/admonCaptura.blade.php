@@ -258,12 +258,12 @@ $titleDesc = 'Administración de Captura';
                 uppPP.forEach(upp => {
                     if(upp['upp'] == obtenerUPP && upp['estado'] == 1 ){
                         checarEstado = true;
-                        texto1 = "La siguiente UPP esta activo: " + obtenerUPP;
+                        texto1 = "La siguiente UPP en claves presupuestarias esta activo: " + obtenerUPP;
                     } 
                     if(obtenerUPP == "" && upp['estado'] == 1 ){
                         checarEstado = true;
                         arregloPP.push(upp['upp']);
-                        texto1 = "Las siguientes UPP tienen el estado activo: "+ arregloPP;
+                        texto1 = "Las siguientes UPP en claves presupuestarias tienen el estado activo: "+ arregloPP;
                     } 
                 });
             }
@@ -272,12 +272,12 @@ $titleDesc = 'Administración de Captura';
                 uppMetas.forEach(upp => {
                     if(upp['clv_upp'] == obtenerUPP && upp['estatus'] == 1 ){
                         checarEstado = true;
-                        texto2 = "La siguiente UPP esta activo: " + obtenerUPP;
+                        texto2 = "La siguiente UPP en metas de actividades esta activo: " + obtenerUPP;
                     } 
                     if(obtenerUPP == "" && upp['estatus'] == 1 ){
                         checarEstado = true;
                         arregloMetas.push(upp['clv_upp']);
-                        texto2 = "Las siguientes UPP tienen el estado activo: "+ arregloMetas;
+                        texto2 = "Las siguientes UPP en metas de actividades tienen el estado activo: "+ arregloMetas;
                     } 
                 });
             }
@@ -286,7 +286,7 @@ $titleDesc = 'Administración de Captura';
                 event.preventDefault();
                 Swal.fire({
                     title: "¿Quieres revertir el estado?",
-                    text: texto1 + texto2,
+                    html: texto1+"</br>" + texto2,
                     icon: 'question',
                     confirmButtonColor: '#00ff00',
                     confirmButtonText: 'Sí',
@@ -294,8 +294,8 @@ $titleDesc = 'Administración de Captura';
                     allowOutsideClick: false,
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // $("#estado").val("activo");
-                        // $("#aperturaCierreForm").submit();
+                        $("#estado").val("activo");
+                        $("#aperturaCierreForm").submit();
                     }else if(result.dismiss == "close"){
                         arregloPP = [];
                         arregloMetas = [];
