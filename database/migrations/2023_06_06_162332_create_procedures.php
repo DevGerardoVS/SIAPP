@@ -1687,7 +1687,12 @@ return new class extends Migration {
             select 
 				pp.id,
 				ve.id v_epp_id
-			from programacion_presupuesto pp
+            from (
+                select pp2.*
+                from programacion_presupuesto pp2 
+                where pp2.id not in (
+                    select id from pp_identificadores)
+            ) pp 
 			join v_epp ve 
 				on ve.clv_upp = pp.upp 
 				and ve.clv_subsecretaria = pp.subsecretaria 
@@ -1702,10 +1707,7 @@ return new class extends Migration {
 				and ve.clv_programa = pp.programa_presupuestario 
 				and ve.clv_subprograma = pp.subprograma_presupuestario 
 				and ve.clv_proyecto = pp.proyecto_presupuestario
-                and ve.ejercicio = pp.ejercicio
-			where pp.id not in (
-				select id from pp_identificadores pa
-			);
+                and ve.ejercicio = pp.ejercicio;
 
             create temporary table if not exists temp_claves_montos_aplanado as
             select 
@@ -1733,8 +1735,7 @@ return new class extends Migration {
 				and f.clv_fondo_ramo = pp.fondo_ramo 
 				and f.clv_capital = pp.capital
 			join proyectos_obra po on pp.proyecto_obra = po.clv_proyecto_obra
-			where pp.ejercicio = anio
-				and cg.deleted_at is null
+			where cg.deleted_at is null
 				and p.deleted_at is null
 				and f.deleted_at is null
 				and po.deleted_at is null
