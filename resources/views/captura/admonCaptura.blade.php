@@ -231,10 +231,16 @@ $titleDesc = 'Administración de Captura';
         }
 
         // Comprobar si hay algún estado encendido en la tabla programación presupuesto
-        var upps = {!! json_encode((array)$comprobarEstado) !!};
+        var uppPP = {!! json_encode((array)$comprobarEstadoPP) !!};
+        // Comprobar si hay algún estado encendido en la tabla metas
+        var uppMetas = {!! json_encode((array)$comprobarEstadoMetas) !!};
+
         var checarEstado = false;
         var obtenerUPP = "";
-        let arregloUPP = [];
+        var arregloPP = [];
+        var arregloMetas = [];
+        var texto1 = "";
+        var texto2 = "";
        
         $('#upp_filter').on('change', function (e) {
             obtenerUPP = $(this).find('option').filter(':selected').val();
@@ -242,22 +248,46 @@ $titleDesc = 'Administración de Captura';
         });
 
         $('#btnSave').on("click", function () {
-            arregloUPP[0] = obtenerUPP;
-            upps.forEach(upp => {
-                if(upp['upp'] == obtenerUPP && upp['estado'] == 1 ) checarEstado = true;
-                if(obtenerUPP == "" && upp['estado'] == 1 ){
-                    checarEstado = true;
-                    arregloUPP.push(upp['upp']);
-                } 
-            });
             comprobarModulo();
             comprobarRadio();
-            console.log($('#capturaRadioH').is(':checked'));
+
+            arregloPP[0] = obtenerUPP;
+            arregloMetas[0] = obtenerUPP;
+            
+            if($("#modulo_filter").val() == "cierre_ejercicio_claves cec" || $("#modulo_filter").val() == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
+                
+                uppPP.forEach(upp => {
+                    if(upp['upp'] == obtenerUPP && upp['estado'] == 1 ){
+                        checarEstado = true;
+                        texto1 = "La siguiente UPP en claves presupuestarias esta activo: " + obtenerUPP;
+                    } 
+                    if(obtenerUPP == "" && upp['estado'] == 1 ){
+                        checarEstado = true;
+                        arregloPP.push(upp['upp']);
+                        texto1 = "Las siguientes UPP en claves presupuestarias tienen el estado activo: "+ arregloPP;
+                    } 
+                });
+            }
+
+            if($("#modulo_filter").val() == "cierre_ejercicio_metas cem" || $("#modulo_filter").val() == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
+                uppMetas.forEach(upp => {
+                    if(upp['clv_upp'] == obtenerUPP && upp['estatus'] == 1 ){
+                        checarEstado = true;
+                        texto2 = "La siguiente UPP en metas de actividades esta activo: " + obtenerUPP;
+                    } 
+                    if(obtenerUPP == "" && upp['estatus'] == 1 ){
+                        checarEstado = true;
+                        arregloMetas.push(upp['clv_upp']);
+                        texto2 = "Las siguientes UPP en metas de actividades tienen el estado activo: "+ arregloMetas;
+                    } 
+                });
+            }
+           
             if(comprobarModulo() && comprobarRadio() && checarEstado && $('#capturaRadioH').is(':checked')){
                 event.preventDefault();
                 Swal.fire({
                     title: "¿Quieres revertir el estado?",
-                    text: "Las siguientes UPP tiene el estado activo: \n"+arregloUPP,
+                    html: texto1+"</br>" + texto2,
                     icon: 'question',
                     confirmButtonColor: '#00ff00',
                     confirmButtonText: 'Sí',
@@ -265,10 +295,14 @@ $titleDesc = 'Administración de Captura';
                     allowOutsideClick: false,
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // $("#estado").val("activo");
-                        // $("#aperturaCierreForm").submit();
+                        $("#estado").val("activo");
+                        $("#aperturaCierreForm").submit();
                     }else if(result.dismiss == "close"){
-                        arregloUPP = [];
+                        arregloPP = [];
+                        arregloMetas = [];
+                        texto1 ="";
+                        texto2 ="";
+                        checarEstado = false;
                     }
                 });
             }
