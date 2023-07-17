@@ -13,7 +13,7 @@ class AdmonCapturaController extends Controller
     //
     public function index(){
         Controller::check_permission('getCaptura');
-        $dataSet = array();
+        $dataSet = array(); 
         $anioActivo = DB::select('SELECT ejercicio FROM cierre_ejercicio_claves WHERE activos = 1 LIMIT 1');
         $anio = $anioActivo[0]->ejercicio;
         $comprobarEstadoPP = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = $anio GROUP BY upp");
@@ -104,7 +104,9 @@ class AdmonCapturaController extends Controller
         $usuario = Auth::user()->username;
         $checar_upp_PP = '';
         $checar_upp_metas = '';
+        $checar_clave = '';
         if($upp != null){
+            $checar_clave = "AND clv_upp = '$upp'";
             $checar_upp_PP = "AND upp = '$upp'";
             $checar_upp_metas = "AND pm.clv_upp = '$upp'";
         }  
@@ -112,22 +114,20 @@ class AdmonCapturaController extends Controller
         try {
             DB::beginTransaction();
             
-            $actualizarCierres = str_contains($modulo,',') ? DB::update("UPDATE $modulo SET cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1 AND cec.clv_upp ='$upp' AND cem.clv_upp = '$upp'") : DB::update("UPDATE $modulo SET estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 AND clv_upp = '$upp'");
+            str_contains($modulo,',') ? DB::update("UPDATE $modulo SET cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1") : DB::update("UPDATE $modulo SET estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_clave");
             
             if($estado == "activo"){
                 if($modulo == "cierre_ejercicio_claves cec" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
-                    $actualizarPP = DB::update("UPDATE programacion_presupuesto SET estado = 0 WHERE ejercicio = $anio AND estado = 1 $checar_upp_PP");
+                    DB::update("UPDATE programacion_presupuesto SET estado = 0 WHERE ejercicio = $anio AND estado = 1 $checar_upp_PP");
                 }
                 if($modulo == "cierre_ejercicio_metas cem" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
-                    $actualizarMetas = DB::update("UPDATE metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id SET m.estatus = 0 WHERE pm.ejercicio = $anio AND m.estatus = 1 $checar_upp_metas");
+                    DB::update("UPDATE metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id SET m.estatus = 0 WHERE pm.ejercicio = $anio AND m.estatus = 1 $checar_upp_metas");
                 }
-                // $actualizarMetas = DB::update("UPDATE programacion_presupuesto SET estado = 0 $checar_upp_metas");
             }
 
             DB::commit();
             return redirect()->route("index")->withSuccess('Los datos fueron modificados');
         } catch (\Exception $e) {
-            dd($e);
             DB::rollBack();
             return back()->withErrors(['msg'=>'Ocurrió un error al modificar los datos']);
         }

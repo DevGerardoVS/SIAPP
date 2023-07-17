@@ -232,6 +232,7 @@ $titleDesc = 'Administración de Captura';
 
         // Comprobar si hay algún estado encendido en la tabla programación presupuesto
         var uppPP = {!! json_encode((array)$comprobarEstadoPP) !!};
+        // Comprobar si hay algún estado encendido en la tabla metas
         var uppMetas = {!! json_encode((array)$comprobarEstadoMetas) !!};
 
         var checarEstado = false;
