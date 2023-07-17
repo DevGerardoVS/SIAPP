@@ -54,6 +54,13 @@
                             <table id="catalogo">
                                 <thead>
                                     <tr class="colorMorado">
+                                        <th>Finalidad</th>
+                                        <th>Función</th>
+                                        <th>Subfunción</th>
+                                        <th>Eje</th>
+                                        <th>Linea de Accion</th>
+                                        <th>Programa sectorial</th>
+                                        <th >Tipologia CONAC</th>
                                         <th>Programas</th>
                                         <th>SubProgramas</th>
                                         <th class="subName">Proyecto</th>

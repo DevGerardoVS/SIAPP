@@ -12,12 +12,10 @@
 		Route::post('/actividades/import', 'importPlantilla');
 		Route::get('/actividades/jasper', 'downloadActividades')->name('exportjasper');
         Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
-		Route::get('/nombres/{id?}', 'getNames');
 		Route::get('/calendarizacion/selects', 'getSelects');
 		Route::get('/calendarizacion/urs/{ur?}', 'getUrs');
 		Route::get('/calendarizacion/fondos/{clave?}', 'getFyA');
 		Route::get('/calendarizacion/upps', 'getUpps');
-		Route::get('/calendarizacion/programas/{ur?}', 'getProgramas');
 		Route::get('/calendarizacion/subprog/{ur?}', 'getSubProg');
 		Route::post('/calendarizacion/create', 'createMeta');
 		Route::post('/calendarizacion/detelet', 'deleteMeta');

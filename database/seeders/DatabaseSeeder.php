@@ -22,9 +22,8 @@ class DatabaseSeeder extends Seeder
 {
         protected $cat_permisos = array(
            ['id'=>1,'nombre'=>'Carga masiva'],
-           ['id'=>2,'nombre'=>'Consultar obra'],
-           ['id'=>3,'nombre'=>'Registrar obra'],
-           ['id'=>4,'nombre'=>'Descargar oficio']
+           ['id'=>2,'nombre'=>'Cargar Obra'],
+           ['id'=>3,'nombre'=>'Descargar oficio']
         );
         protected $grupos = array(
             ['id' => 1, 'nombre_grupo' => 'Administrador', 'estatus' => 0],

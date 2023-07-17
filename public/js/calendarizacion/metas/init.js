@@ -161,6 +161,7 @@ var dao = {
                 showConfirmButton: false,
                 timer: 1500
             });
+            $('#cerrar').trigger('click');
         }).fail(function (error, status, err) {
             console.log("error-", error);
         });
@@ -401,6 +402,7 @@ $(document).ready(function () {
         dao.getUrs($('#upp_filter').val());
     });
     $('#ur_filter').change(() => {
+        $('#sel_actividad').empty();
         $('#sel_fondo').empty();
     });
 

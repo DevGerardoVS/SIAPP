@@ -17,10 +17,18 @@ class MetasHelper{
 			->leftJoin('proyectos_mir', 'proyectos_mir.id','actividades_mir.proyecto_mir_id' )
 			->select(
 				'actividades_mir.id',
-				'proyectos_mir.clv_ur as ur',
-				'proyectos_mir.clv_programa as programa',
-				'proyectos_mir.clv_subprograma as subprograma',
-				'proyectos_mir.clv_proyecto as proyecto',
+					'proyectos_mir.clv_finalidad AS finalidad',
+					'proyectos_mir.clv_funcion AS funcion',
+					'proyectos_mir.clv_subfuncion AS subfuncion',
+					'proyectos_mir.clv_eje AS eje',
+					'proyectos_mir.clv_linea_accion AS linea',
+					'proyectos_mir.clv_programa_sectorial AS programaSec',
+					'proyectos_mir.clv_tipologia_conac AS tipologia',
+					'proyectos_mir.clv_upp AS upp',
+					'proyectos_mir.clv_ur AS ur',
+					'proyectos_mir.clv_programa as programa',
+					'proyectos_mir.clv_subprograma as subprograma',
+					'proyectos_mir.clv_proyecto AS proyecto',
 				'actividades_mir.actividad as actividad'
 			)
 			->where('proyectos_mir.deleted_at', '=', null);
@@ -33,6 +41,15 @@ class MetasHelper{
 			})
 			->select(
 				'metas.id',
+				'pro.finalidad',
+				'pro.funcion',
+				'pro.subfuncion',
+				'pro.proyecto',
+				'pro.eje',
+				'pro.linea',
+				'pro.programaSec',
+				'pro.tipologia',
+				'pro.upp',
 				'pro.ur',
 				'pro.programa',
 				'pro.subprograma',
