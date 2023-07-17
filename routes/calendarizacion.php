@@ -51,6 +51,7 @@
 		Route::post('/calendarizacion-confirmar-claves', 'postConfirmarClaves');
 		Route::get('/calendarizacion-get-sector/{clave?}', 'getSector');
 		Route::get('/cat-obras/{val?}', 'getObras');
+		Route::get('/get-ejercicios','getEjercicios');
 		
 	});
 
