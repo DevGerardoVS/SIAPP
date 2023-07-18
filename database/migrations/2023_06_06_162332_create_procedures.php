@@ -1482,11 +1482,11 @@ return new class extends Migration {
                 case 
                     when clv_capitulo != '' then ''
                     else clv_fondo
-                end clv_fondo,
+                end clv_fondo_ramo,
                 case 
                     when clv_capitulo != '' then ''
                     else fondo
-                end fondo,
+                end fondo_ramo,
                 clv_capitulo,
                 capitulo,
                 monto_anual,
