@@ -23,12 +23,12 @@ class TechosValidate
                         'val' => '1'
                     ];
                 }
-                $existC = TechosValidate::existClave($row[$i][0]);
+                $existC = TechosValidate::existClave($row[$i][1], $row[$i][2], $row[$i][0], $row[$i][3], $row[$i][4]);
                 if (count($existC)) {
                     $error = array(
                         "icon" => 'error',
                         "title" => 'Error',
-                        "text" => 'No se puede cargar la informacion existe clave presupuestal registrada para el ejercicio: ' . $row[$i][0] . '. Revisa la fila: "' . $index . '"'
+                        "text" => 'No se puede cargar la informacion existe clave presupuestal registrada para el fondo: ' . $row[$i][1] . '. Revisa la fila: "' . $index . '"'
                     );
                     return $error;
                 }
@@ -152,12 +152,28 @@ class TechosValidate
 
     }
 
-    public static function existClave($ejercicio)
+    public static function existClave($upp, $fondo, $ejercicio, $op, $rh)
     {
-            $val_clave = ProgramacionPresupuesto::select('upp')
+        if ($op != 0) {
+            $tipo = 'Operativo';
+            $val_clave = ProgramacionPresupuesto::select()
+                ->where('upp', $upp)
+                ->where('fondo_ramo', $fondo)
                 ->where('ejercicio', $ejercicio)
+                ->where('tipo', $tipo)
                 ->get();
-        return $val_clave;
+            return $val_clave;
+        }
+        if ($rh != 0) {
+            $tipo = 'RH';
+            $val_clave = ProgramacionPresupuesto::select()
+                ->where('upp', $upp)
+                ->where('fondo_ramo', $fondo)
+                ->where('ejercicio', $ejercicio)
+                ->where('tipo', $tipo)
+                ->get();
+            return $val_clave;
+        }
     }
 
     public static function insert($row)
