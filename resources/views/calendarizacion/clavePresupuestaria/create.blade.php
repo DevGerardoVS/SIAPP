@@ -21,7 +21,7 @@
                             <div class="col-md-2" style="background-color: plum"><p style="color: aliceblue">Período Presupuestal</p></div>
                             <div class="col-md-2" style="background-color: grey"><p style="color: aliceblue">Clasificación Económica</p></div>
                             <div class="col-md-2" style="background-color: orangered"><p style="color: aliceblue">Fondo</p></div>
-                            <div class="col-md-2" style="background-color: darksalmon"><p style="color: aliceblue">Inversión Pública</p></div>
+                            <div class="col-md-2" style="background-color: darksalmon"><p style="color: aliceblue">Folio de Obra</p></div>
                         </div>
                         <div class="table-responsive">
                             <table id="newClave" class="table able-bordered" style="width: 100%">
@@ -45,7 +45,7 @@
                                         <td class="area-funcional" id="programaPre">&nbsp;&nbsp;</td>
                                         <td class="area-funcional" id="subPrograma">&nbsp;&nbsp;</td>
                                         <td class="area-funcional" id="proyectoPre">&nbsp;&nbsp;</td>
-                                        <td class="periodo-presupuestal" id="mesAfectacion">&nbsp;&nbsp;</td>
+                                        <td class="periodo-presupuestal" id="mesAfectacion">01-ENE</td>
                                         <td class="clasificacion-economica" id="capitulo">&nbsp;&nbsp;</td>
                                         <td class="clasificacion-economica" id="concepto">&nbsp;&nbsp;</td>
                                         <td class="clasificacion-economica" id="partidaGen">&nbsp;&nbsp;</td>
@@ -57,7 +57,7 @@
                                         <td class="fondo" id="ramo">&nbsp;&nbsp;</td>
                                         <td class="fondo" id="fondoRamo">&nbsp;&nbsp;</td>
                                         <td class="fondo" id="capital">&nbsp;&nbsp;</td>
-                                        <td class="fondo" id="proyectoObra">000000</td>
+                                        <td class="inversion" id="proyectoObra">000000</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -141,11 +141,11 @@
                                     <div class="col-md-1"></div>
                                     <div class="col-md-3"><label class="control-label">Periodo Presupuestario*</label></div>
                                         <div class="col-md-8">
-                                            
-                                            <select class="form-control select2" name="sel_periodo" id="sel_periodo">
+                                            <p>&nbsp;&nbsp; 01-ENE</p>
+                                            {{-- <select class="form-control select2" name="sel_periodo" id="sel_periodo">
                                                 <option value="">-- Seleccione Periodo Presupuestal --</option>
                                                 <option value="01-ENE">1-ENE-DEC</option>
-                                            </select>
+                                            </select> --}}
                                         </div>
                                     <div style="clear:both"></div>
                                     <div class="col-md-1"></div>
