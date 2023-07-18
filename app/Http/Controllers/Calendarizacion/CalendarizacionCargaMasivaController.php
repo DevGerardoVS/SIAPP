@@ -124,13 +124,15 @@ class CalendarizacionCargaMasivaController extends Controller
                 $tipoFondo='Operativo';
                }
                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio[$helperejercicio])->count();
+
+
                  $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio',$ejercicio[$helperejercicio])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
-                 if($valuepresupuesto=!$value){
-                    return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero']);
+                 if($valuepresupuesto==!$value){
+                    return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
                 }
 
                 if($VerifyEjercicio<1){
-                    return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido']);
+                    return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
                 } 
                 $helperejercicio++;
 
@@ -267,13 +269,13 @@ class CalendarizacionCargaMasivaController extends Controller
                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio[$helperejercicio])->count();
                 
                  $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio[$helperejercicio])->where('clv_fondo', $arraysplit[2])->value('presupuesto');
-                 if($valuepresupuesto=!$value ){
-                return redirect()->back()->withErrors(['error' => 'El total presupuestado en las upp no es igual al techo financiero']);
+                 if($valuepresupuesto==!$value){
+                    return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
                 }
-                if($VerifyEjercicio<1){
-                    return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido']);
 
-                }
+                if($VerifyEjercicio<1){
+                    return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
+                } 
                 $helperejercicio++;
 
             }
