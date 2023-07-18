@@ -433,10 +433,10 @@ var dao = {
       document.getElementById('conac').innerHTML = data.clv_tipologia_conac;
     });
   },
-	getPartidaByUpp : function(id){
+	getPartidaByUpp : function(clasificacion,id){
         $.ajax({
           	type : "get",
-          	url: '/cat-partidas',
+          	url: '/cat-partidas/'+clasificacion,
         }).done(function(data){
           var par = $('#sel_partida');
           par.html('');
@@ -491,6 +491,7 @@ var dao = {
     }).done(function (data) {
       let clasificacion = data.clv_sector_publico + data.clv_sector_publico_f + data.clv_sector_economia + data.clv_subsector_economia + data.clv_ente_publico;
       document.getElementById('clasificacion').innerHTML = clasificacion;
+      dao.getPartidaByUpp(clasificacion,'');
     });
   },
   getPresupuestoPorUpp: function (upp,fondo,subPrograma,ejercicio) {
@@ -881,7 +882,6 @@ $(document).ready(function(){
     document.getElementById('upp').innerHTML = val;
     let ejercicio = document.getElementById('anio').value;
 		dao.getUninadResponsableByUpp(val,ejercicio,'');
-    dao.getPartidaByUpp('');
     dao.getObras(val);
 	});
 	$('#sel_unidad_res').change(function(e){

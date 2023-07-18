@@ -382,10 +382,17 @@ class ClavePreController extends Controller
         ->first();
         return response()->json($areaFuncional,200);
     }
-    public function getPartidas(){
-        $partidas = DB::table('posicion_presupuestaria')
-        ->SELECT('partida_especifica', 'clv_capitulo','clv_concepto','clv_partida_generica','clv_partida_especifica','clv_tipo_gasto')
-        ->WHERE('posicion_presupuestaria.deleted_at','=',null)
+    public function getPartidas($clasificacion){
+        $partidas = DB::table('rel_economica_administrativa')
+        ->SELECT(
+        'v_posicion_presupuestaria_llaves.clv_capitulo',
+        'v_posicion_presupuestaria_llaves.clv_concepto',
+        'v_posicion_presupuestaria_llaves.clv_partida_generica',
+        'v_posicion_presupuestaria_llaves.clv_partida_especifica',
+        'v_posicion_presupuestaria_llaves.clv_tipo_gasto',
+        'v_posicion_presupuestaria_llaves.partida_especifica')
+        ->leftJoin('v_posicion_presupuestaria_llaves','rel_economica_administrativa.clasificacion_economica','=','v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave')
+        ->WHERE('rel_economica_administrativa.clasificacion_administrativa','=',$clasificacion)
         ->DISTINCT()
         ->get();
         return response()->json($partidas,200);
