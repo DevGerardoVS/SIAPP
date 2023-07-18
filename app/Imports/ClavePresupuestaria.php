@@ -225,7 +225,6 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         ->where('clv_subprograma',$row['spr'])
         ->where('clv_proyecto',$row['py'])
         ->get();
-        \Log::debug($valcomb);
         if(count($valcomb) < 1 ){
             $row['spr']=NULL;
 
