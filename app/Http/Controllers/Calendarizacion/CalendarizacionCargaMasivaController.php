@@ -25,6 +25,7 @@ use Shuchkin\SimpleXLSX;
 use App\Models\ProgramacionPresupuesto;
 
 use DB;
+
 class CalendarizacionCargaMasivaController extends Controller
 {
      //Obtener plantilla para descargar
@@ -76,7 +77,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
             }
             array_shift($filearray);
-            $ejercicio=date("Y");
+            $ejercicio = array();
             foreach($filearray as $k){
 
                 //buscar en el array de upps 
@@ -99,6 +100,8 @@ class CalendarizacionCargaMasivaController extends Controller
                }else{
                 if($k['27']!='' && $k['5'].$k['24'] !='' ){
                     $arraypresupuesto[$k['5'].$k['16'].$k['24']] = $k['27']; 
+                    array_push($ejercicio,'20'.$k['20']);
+
                 }
                }
     
@@ -110,6 +113,7 @@ class CalendarizacionCargaMasivaController extends Controller
     
             }
              //validacion de totales
+             $helperejercicio=0;
              foreach($arraypresupuesto as $key=>$value){
               $arraysplit = str_split($key, 3);
               $tipoFondo='';
@@ -119,16 +123,18 @@ class CalendarizacionCargaMasivaController extends Controller
                else{
                 $tipoFondo='Operativo';
                }
-                 $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio+1)->count();
-                 $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
-                 if($valuepresupuesto=!$value){
-                    return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero']);
+                 $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio[$helperejercicio])->count();
+
+
+                 $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio',$ejercicio[$helperejercicio])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
+                 if($valuepresupuesto==!$value){
+                    return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
                 }
 
-                if($VerifyEjercicio<0){
-                    return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido']);
-
+                if($VerifyEjercicio<1){
+                    return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
                 } 
+                $helperejercicio++;
 
             }
 
@@ -208,7 +214,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
             }
             array_shift($filearray);
-            $ejercicio=date("Y");
+            $ejercicio = array();
             foreach($filearray as $k){
                 //buscar en el array de upps 
 
@@ -237,6 +243,7 @@ class CalendarizacionCargaMasivaController extends Controller
                }else{
                 if($k['27']!='' && $k['5'].$k['24'] !='' ){
                     $arraypresupuesto[$k['5'].$k['16'].$k['24']] = $k['27']; 
+                    array_push($ejercicio,'20'.$k['20']);
                 }
                }
     
@@ -248,6 +255,7 @@ class CalendarizacionCargaMasivaController extends Controller
     
             }
              //validacion de totales
+             $helperejercicio=0;
              foreach($arraypresupuesto as $key=>$value){
               $arraysplit = str_split($key, 3);
               $tipoFondo='';
@@ -258,16 +266,18 @@ class CalendarizacionCargaMasivaController extends Controller
                 $tipoFondo='Operativo';
                }
 
-                 $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio+1)->count();
-                 $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio+1)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
-                 if($valuepresupuesto=!$value ){
-                return redirect()->back()->withErrors(['error' => 'El total presupuestado en las upp no es igual al techo financiero']);
+                 $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio[$helperejercicio])->count();
+                
+                 $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio[$helperejercicio])->where('clv_fondo', $arraysplit[2])->value('presupuesto');
+                 if($valuepresupuesto==!$value){
+                    return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
                 }
-                if($VerifyEjercicio<0){
-                    return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido']);
 
-                }
-    
+                if($VerifyEjercicio<1){
+                    return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
+                } 
+                $helperejercicio++;
+
             }
 
             switch($tipousuario){
@@ -277,7 +287,7 @@ class CalendarizacionCargaMasivaController extends Controller
                         return redirect()->back()->withErrors(['error' => 'No tiene permiso para registrar de  otras upps']);
                     }
                     if($ObraCount>0 ){
-                        if(Controller::check_assignFront(3)){
+                        if(Controller::check_assignFront(2)){
                         
                         }
                         else{
@@ -352,6 +362,9 @@ class CalendarizacionCargaMasivaController extends Controller
                 File::delete(storage_path($filename));
                 
             }
+            //mandamos llamar procedimiento de jeff
+           // $datos = DB::select("CALL insert_pp_aplanado()");
+            Log::debug($datos);
             return redirect()->back()->withSuccess('Se cargaron correctamente los datos');
              } 
          catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
