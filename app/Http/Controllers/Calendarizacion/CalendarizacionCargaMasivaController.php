@@ -277,7 +277,7 @@ class CalendarizacionCargaMasivaController extends Controller
                         return redirect()->back()->withErrors(['error' => 'No tiene permiso para registrar de  otras upps']);
                     }
                     if($ObraCount>0 ){
-                        if(Controller::check_assignFront(3)){
+                        if(Controller::check_assignFront(2)){
                         
                         }
                         else{
