@@ -7,6 +7,7 @@ use App\Models\PosicionPresupuestaria;
 use App\Models\Fondos;
 use App\Models\v_epp;
 use App\Models\Obra;
+use App\Models\RelEconomicaAdministrativa;
 use App\Models\V_entidad_ejecutora;
 use App\Models\Catalogo;
 use App\Models\calendarizacion\clasi;
@@ -173,9 +174,16 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
 
          
 
-
-
-
+        //validacion nueva sobre idpartida/tipo gasto en combinacion con admonac
+        
+        $valrelEco= RelEconomicaAdministrativa::select()
+        ->where('clasificacion_administrativa',$row['admconac'])
+        ->where('clasificacion_economica',$row['idpartida'].$row['tipogasto'])
+        ->count();
+        if($valrelEco < 1 ){
+            $row['admconac']=0;
+        }
+        
         //validacion de fondos
         $valfondo = Fondos::select()
         ->where('clv_etiquetado', $row['no_etiquetado_y_etiquetado'])
@@ -226,6 +234,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             ->where('clv_subprograma',$row['spr'])
             ->where('clv_proyecto',$row['py'])
             ->where('ejercicio','20'.$row['ano'])
+            ->where('presupuestable',1)
             ->count();
             if($valpresup < 1 ){
                 $row['ano']=0;
@@ -282,7 +291,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         //validacion de año 
         $year = '20'.$row['ano'];
         $row['ano']=$year;
-        
+
         return $row;
     }
 
@@ -354,7 +363,9 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
              '*.upp' => ['required',
                 Rule::notIn(['0'])                                       
             ], 
-            '*.admconac' => 'required|string',
+            '*.admconac' => ['required','String',
+            Rule::notIn(['0'])                                       
+        ],
             '*.ano' => ['required',
             Rule::notIn(['0'])                                       
         ],
@@ -421,6 +432,9 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         '*.no_etiquetado_y_etiquetado' => 'La combinacion de las claves de la celda V a Z es invalida',
        '*.ano.required' => 'la fecha no es valida ',
        '*.ano.notIn' => 'El programa seleccionado no es presupuestable ',
+       '*.idpartida' => 'La combinacion de id partida con tipo de gasto es invalida',
+       '*.admconac.notIn' => 'La clasificacion economica introducida es invalida para esta clave administrativa',
+
     ];
 } 
  
