@@ -364,7 +364,6 @@ class CalendarizacionCargaMasivaController extends Controller
             }
             //mandamos llamar procedimiento de jeff
            // $datos = DB::select("CALL insert_pp_aplanado()");
-            Log::debug($datos);
             return redirect()->back()->withSuccess('Se cargaron correctamente los datos');
              } 
          catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
