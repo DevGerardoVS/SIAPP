@@ -122,7 +122,6 @@ var dao = {
                 contentType: false,
                 cache: false,
             }).done(function (response) {
-                console.log(response);
                 if (response != 'done') {
                   Swal.fire(
                       {
@@ -147,7 +146,6 @@ var dao = {
                   
                 }
         }).fail(function (response){
-            console.log(response);
             Swal.fire(
                 {
                     showCloseButton: true,
