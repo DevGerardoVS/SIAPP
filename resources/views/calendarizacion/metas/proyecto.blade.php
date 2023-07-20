@@ -3,6 +3,7 @@
 @include('panels.datatable')
 @section('content')
     <div class="container">
+        <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
         <section id="widget-grid" class="conteiner">
             <div class="row">
                 <div>
@@ -11,47 +12,69 @@
                         <h2>Proyectos con actividades</h2>
                     </header>
                 </div>
+                <div class="row">
 
-                <div class="d-flex " style="justify-content: flex-end">
-                    <div>
-                        <a type="button" class="btn btn-primary" href="{{ route('exportjasper') }}"
-                            target="xxx">Formato</a>
-                        &nbsp
-                        <a type="button" class="btn btn-primary" href="{{ route('index_metas') }}">Agregar Actividad</a>
-                        <div class="d-flex justify-content-center" style=" margin: 2px auto;">
-                            <a type="button" style="justify-content: float-right" href="{{ route('ExportExcel') }}"
-                                class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></a>
-                            &nbsp
-                            <a type="button" style="justify-content: flex-end" href="{{ route('exportPdf') }}"
-                                class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                    <div class="col-md-4">
+                        @if (Auth::user()->clv_upp == null)
+                            <label class="control-label">UPP</label>
+                            <select class="form-control filters select2" id="upp_filter" name="upp_filter"
+                                autocomplete="upp_filter" placeholder="Seleccione una UR">
+                                <option value="" disabled selected>Seleccione una UPP</option>
+                            </select>
+                        @endif
+                    </div>
+
+                    <div class="d-flex col-md-8 " style="justify-content: flex-end">
+                        <div>
+                            @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                                <button type="button" class="btn btn-primary" onclick="dao.exportJasper()">Formato</button>
+                                &nbsp
+                            @endif
+                            <a type="button" class="btn btn-primary" href="{{ route('index_metas') }}">Agregar
+                                Actividad</a>
+
+                            @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                                <div class="d-flex justify-content-center" style=" margin: 2px auto;">
+                                    <button type="button" style="justify-content: float-right" onclick="dao.exportExcel()" class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                                    &nbsp
+                                    <button type="button" style="justify-content: flex-end" onclick="dao.exportPdf()"
+                                        class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
+                                </div>
+                            @else
+                                <div>
+                                    &nbsp
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
+                &nbsp
                 <div class="widget-body no-padding ">
                     <div class="table-responsive ">
-                        <table id="catalogo" class="table table-hover table-striped" style="border-collapse: collapse;">
+                        &nbsp
+                        <table id="catalogo" class="table table-hover table-striped">
                             <thead>
-                                <tr class="colorMorado" style=" writing-mode: vertical-rl; text-orientation: upright;">
-                                    <th >Finalidad</th>
-                                    <th >Función</th>
-                                    <th >Subfunción</th>
-                                    <th >Eje</th>
-                                    <th >Linea de Accion</th>
-                                    <th >Programa sectorial</th>
-                                    <th >Tipologia CONAC</th>
-                                    <th >UP</th>
-                                    <th >UR</th>
-                                    <th >Programa</th>
-                                    <th >Subprograma</th>
-                                    <th >Proyecto</th>
-                                    <th >Fondo</th>
-                                    <th >Actividad</th>
-                                    <th >Tipo Actividad</th>
-                                    <th >Meta anual</th>
-                                    <th ># Beneficiarios</th>
-                                    <th >Beneficiarios</th>
-                                    <th >U de medida</th>
-                                    <th >Acciones</th>
+                                <tr class="colorMorado">
+                                    <th class="vertical">Finalidad</th>
+                                    <th class="vertical">Función</th>
+                                    <th class="vertical">Subfunción</th>
+                                    <th class="vertical">Eje</th>
+                                    <th class="vertical">Linea de Accion</th>
+                                    <th class="vertical">Programa sectorial</th>
+                                    <th class="vertical">Tipologia CONAC</th>
+                                    <th class="vertical">UP</th>
+                                    <th class="vertical">UR</th>
+                                    <th class="vertical">Programa</th>
+                                    <th class="vertical">Subprograma</th>
+                                    <th class="vertical subName">Proyecto</th>
+                                    <th class="vertical">Fondo</th>
+                                    <th class="vertical">Actividad</th>
+                                    <th class="vertical">Tipo Actividad</th>
+                                    <th class="vertical">Meta anual</th>
+                                    <th class="vertical"># Beneficiarios</th>
+                                    <th class="vertical">Beneficiarios</th>
+                                    <th class="vertical">U de medida</th>
+                                    <th class="vertical">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>

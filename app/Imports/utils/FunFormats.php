@@ -185,19 +185,15 @@ class FunFormats
 		return $columns[$i];
 	}
     public static function existPP($clave){
-      //$arrayclave='"'.$clave.'"';
         $arrayclave=explode( '-', $clave);
-        //Log::debug($arrayclave);
-        $activs = DB::table('programacion_presupuesto')
+        try {
+            $activs = DB::table('programacion_presupuesto')
 			->select(
 				'programacion_presupuesto.id',
-                DB::raw('CONCAT(finalidad, "-",funcion,"-",subfuncion,"-",eje,"-",linea_accion,"-",programa_sectorial,"-",tipologia_conac,"-",upp,"-",ur,"-",programa_presupuestario,"-",subprograma_presupuestario,"-",proyecto_presupuestario) AS clave')
-
+                DB::raw('CONCAT('.'"'.'finalidad, "-",funcion,"-",subfuncion,"-",eje,"-",linea_accion,"-",programa_sectorial,"-",tipologia_conac,"-",upp,"-",ur,"-",programa_presupuestario,"-",subprograma_presupuestario,"-",proyecto_presupuestario'.'"'.') AS clave')
 			)
 			->where('deleted_at', null)
-            //->whereRaw('CONCAT(finalidad, "-",funcion,"-",subfuncion,"-",eje,"-",linea_accion,"-",programa_sectorial,"-",tipologia_conac,"-",upp,"-",ur,"-",programa_presupuestario,"-",subprograma_presupuestario,"-",proyecto_presupuestario) LIKE %$arrayclave%')
-            //->where('clave','==',$arrayclave)
-			  ->where('finalidad',$arrayclave[0])
+		 ->where('finalidad',$arrayclave[0])
 			->where('funcion',$arrayclave[1])
 			->where('subfuncion',$arrayclave[2])
 			->where('eje',$arrayclave[3])
@@ -213,8 +209,13 @@ class FunFormats
             ->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 				->distinct()
             ->get();
-        Log::debug($activs);
+        
                 return $activs;
+          
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+ 
 	}
     /*     public function arrEquals($numeros)
         {

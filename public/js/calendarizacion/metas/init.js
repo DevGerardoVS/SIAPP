@@ -1,7 +1,45 @@
+
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 
 let actividades = [];
 var dao = {
+    getData: function (upp, ur) {
+        var data = new FormData();
+        console.log("upp", $('#upp').val())
+        if ($('#upp').val() != '') {
+            data.append('ur_filter', ur);
+        } else {
+            data.append('ur_filter', ur);
+            data.append('upp_filter', upp);
+        }
+        $.ajax({
+            type: "POST",
+            url: "/calendarizacion/data/",
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            dataType: "json"
+        }).done(function (_data) {
+            _table = $("#catalogo");
+            _columns = [
+                { "aTargets": [0], "mData": [0] },
+                { "aTargets": [1], "mData": [1] },
+                { "aTargets": [2], "mData": [2] },
+                { "aTargets": [3], "mData": [3] },
+                { "aTargets": [4], "mData": [4] },
+                { "aTargets": [5], "mData": [5] },
+                { "aTargets": [6], "mData": [6] },
+                { "aTargets": [7], "mData": [7] },
+                { "aTargets": [8], "mData": [8] },
+                { "aTargets": [9], "mData": [9] },
+                { "aTargets": [10], "mData": [10] }
+            ];
+            _gen.setTableScrollFotter(_table, _columns, _data.dataSet);
+        });
+    },
+
     eliminar: function (id) {
         Swal.fire({
             title: '¿Seguro que quieres eliminar este usuario?',
@@ -48,12 +86,26 @@ var dao = {
             url: '/calendarizacion/urs/' + upp,
             dataType: "JSON"
         }).done(function (data) {
+            const { urs, tAct } = data;
             var par = $('#ur_filter');
             par.html('');
             par.append(new Option("-- URS--", ""));
             document.getElementById("ur_filter").options[0].disabled = true;
-            $.each(data, function (i, val) {
-                par.append(new Option(data[i].ur, data[i].clv_ur));
+            $.each(urs, function (i, val) {
+                par.append(new Option(val.ur, val.clv_ur));
+            });
+
+            var tipo_AC = $('#tipo_Ac');
+            tipo_AC.html('');
+            tipo_AC.append(new Option("--Tipo Actividad--", ""));
+            document.getElementById("tipo_Ac").options[0].disabled = true;
+            $.each(tAct, function (i, val) {
+                if (val == 1) {
+                    tipo_AC.append(new Option(i, i));
+                }
+            });
+            tipo_AC.select2({
+                maximumSelectionLength: 10
             });
 
         });
@@ -179,8 +231,8 @@ var dao = {
             url: '/calendarizacion/selects',
             dataType: "JSON"
         }).done(function (data) {
-            const { unidadM, beneficiario, activids } = data;
-            
+            const { unidadM, beneficiario } = data;
+
             var med = $('#medida');
             med.html('');
             med.append(new Option("-- Medida--", ""));
@@ -191,16 +243,7 @@ var dao = {
             med.select2({
                 maximumSelectionLength: 10
             });
-            var tipo_AC = $('#tipo_Ac');
-            tipo_AC.html('');
-            tipo_AC.append(new Option("--Tipo Actividad--", ""));
-            document.getElementById("tipo_Ac").options[0].disabled = true;
-            $.each(activids, function (i, val) {
-                tipo_AC.append(new Option(val, i));
-            });
-            tipo_AC.select2({
-                maximumSelectionLength: 10
-            });
+
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
             tipo_be.append(new Option("--U. Beneficiarios--", ""));
@@ -211,18 +254,20 @@ var dao = {
             tipo_be.select2({
                 maximumSelectionLength: 10
             });
-   
+
 
         });
     },
     getFyA: function (clave) {
         console.log(clave);
-         $.ajax({
+        $.ajax({
             type: "GET",
-            url: '/calendarizacion/fondos/'+clave,
+            url: '/calendarizacion/fondos/' + clave,
             dataType: "JSON"
-         }).done(function (data) {  
-            const { fondos,activids } = data;
+        }).done(function (data) {
+            $('#sel_actividad').prop('disabled', false);
+            $('#sel_fondo').prop('disabled', false);
+            const { fondos, activids } = data;
             var fond = $('#sel_fondo');
             fond.html('');
             fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
@@ -243,7 +288,7 @@ var dao = {
             act.select2({
                 maximumSelectionLength: 10
             });
-             
+
         });
     },
     limpiar: function () {
@@ -386,10 +431,11 @@ var init = {
     },
 };
 $(document).ready(function () {
-    getData();
+
     if ($('#upp').val() == '') {
         dao.getUpps();
         $('#ur_filter').prop('disabled', 'disabled');
+        $('#tipo_Ac').prop('disabled', 'disabled');
 
     } else {
         $('#ur_filter').prop('disabled', false);
@@ -399,9 +445,12 @@ $(document).ready(function () {
     }
     $('#upp_filter').change(() => {
         $('#ur_filter').prop('disabled', false);
+        $('#tipo_Ac').prop('disabled', false);
+
         dao.getUrs($('#upp_filter').val());
     });
     $('#ur_filter').change(() => {
+        dao.getData($('#upp_filter').val(), $('#ur_filter').val());
         $('#sel_actividad').empty();
         $('#sel_fondo').empty();
     });
@@ -416,6 +465,15 @@ $(document).ready(function () {
     $("#sel_fondo").select2({
         maximumSelectionLength: 10
     });
+    $("#sel_actividad").select2({
+        maximumSelectionLength: 10
+    });
+    $("#tipo_Ac").select2({
+        maximumSelectionLength: 10
+    });
+
+
+
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
@@ -445,5 +503,5 @@ $(document).ready(function () {
 
     });
 
-   
+
 });

@@ -6,6 +6,7 @@ use App\Imports\utils\FunFormats;
 use App\Http\Controllers\Controller;
 use App\Models\calendarizacion\ProyectosMir;
 use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -20,6 +21,7 @@ use Log;
 use Illuminate\Database\Query\JoinClause;
 use App\Helpers\Calendarizacion\MetasHelper;
 use Illuminate\Support\Facades\Schema;
+use Mockery\Undefined;
 use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
@@ -33,21 +35,24 @@ class MetasController extends Controller
 	//Consulta Vista Usuarios
 	public function getIndex()
 	{
+		Controller::check_permission('getClaves');
 		return view('calendarizacion.metas.index');
 	}
 	public function getProyecto()
 	{
+		Controller::check_permission('getClaves');
 		return view('calendarizacion.metas.proyecto');
 	}
-	public function getActiv()
+	public function getActiv($upp)
 	{
-		$query = MetasHelper::actividades();
+		Log::debug($upp);
+		$query = MetasHelper::actividades($upp);
 		$dataSet = [];
 		foreach ($query as $key) {
 			$accion = '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
-				'<i class="fa fa-pencil" style="color:green;"></i></button>&nbsp;' .
+				'<i class="fa fa-pencil" style="color:green;"></i></button>' .
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
-				'<i class="fa fa-trash" style="color:B40000;" ></i></button>&nbsp;';
+				'<i class="fa fa-trash" style="color:B40000;" ></i></button>';
 			$i = array(
 				$key->finalidad,
 				$key->funcion,
@@ -76,7 +81,6 @@ class MetasController extends Controller
 	}
 	public function getMetasP(Request $request)
 	{
-		
 		$dataSet = [];
 		$upp = isset($request->upp_filter) ?$request->upp_filter:auth::user()->clv_upp;
 		
@@ -124,7 +128,6 @@ class MetasController extends Controller
 	}
 	public function getUrs($_upp)
 	{
-		Log::debug($_upp);
 		$upp = $_upp != null?$_upp:auth::user()->clv_upp;
 		$urs = DB::table('v_epp')
 			->select(
@@ -132,9 +135,21 @@ class MetasController extends Controller
 				'clv_ur',
 				DB::raw('CONCAT(clv_ur, " - ",ur) AS ur')
 			)->distinct()
-			->groupByRaw('ur')
-			->where('clv_upp', $upp)->get();
-		return $urs;
+			->where('deleted_at', null)
+			->groupByRaw('clv_ur')
+			->where('clv_upp', $upp)
+			->where('ejercicio', 2023)->get();
+
+			$tAct = DB::table('tipo_actividad_upp')
+			->select(
+				'Continua',
+				'Acumulativa',
+				'Especial'
+			)
+			->where('deleted_at', null)
+			->where('clv_upp', $upp)
+			->get();
+		return ["urs"=>$urs,"tAct"=>$tAct[0]];
 	}
 	public function getUpps()
 	{
@@ -145,7 +160,7 @@ class MetasController extends Controller
 				DB::raw('CONCAT(clv_upp, " - ", upp) AS upp')
 			)->distinct()
 			->groupByRaw('clv_upp')
-			->get();
+			->where('ejercicio', 2023)->get();
 		return $upps;
 	}
 	public function getFyA($clave)
@@ -170,7 +185,10 @@ class MetasController extends Controller
             ->where('programacion_presupuesto.ur', $arrayclave[8])
             ->where('programa_presupuestario', $arrayclave[9])
             ->where('subprograma_presupuestario', $arrayclave[10])
-			->where('proyecto_presupuestario', $arrayclave[11])->get();
+			->where('proyecto_presupuestario', $arrayclave[11])
+			->groupByRaw('clave')
+			->where('ejercicio',2023)
+			->get();
 
 			$activ = DB::table('actividades_mir')
 			->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
@@ -192,7 +210,7 @@ class MetasController extends Controller
             ->where('proyectos_mir.clv_programa', $arrayclave[9])
             ->where('proyectos_mir.clv_subprograma', $arrayclave[10])
 			->where('proyectos_mir.clv_proyecto', $arrayclave[11])
-			->groupByRaw('actividades_mir.actividad')->get();
+			->groupByRaw('clave')->get();
 		return ['fondos'=>$fondos,"activids"=>$activ];
 	}
 	public function getSelects()
@@ -215,11 +233,13 @@ class MetasController extends Controller
 			)
 			->where('deleted_at', null)
 			->get();
-		$tAct = ["Acumulativa"=>"Acumulativa", "Continua"=>"Continua", "Especial"=>"Especial"];
-		return ["unidadM" => $uMed, "beneficiario" => $bene, "activids" => $tAct];
+
+
+		return ["unidadM" => $uMed, "beneficiario" => $bene];
 	}
 	public function createMeta(Request $request)
 	{
+		Controller::check_permission('postMetas');
 		$meta = Metas::create([
 			'actividad_id' => $request->sel_actividad,
 			'clv_fondo' => $request->sel_fondo,
@@ -247,25 +267,24 @@ class MetasController extends Controller
 	}
 	public function deleteMeta(Request $request)
 	{
-		//Controller::check_permission('deleteUsuarios');
+		Controller::check_permission('deleteMetas');
 		Metas::where('id', $request->id)->delete();
 
 
 	}
 	public function updateMeta($id)
 	{
-		//Controller::check_permission('putUsuarios', false);
-		Log::debug($id);
+		Controller::check_permission('putMetas', false);
 		$query = Metas::where('id', $id)->get();
 		return $query;
 	}
-	public function exportExcel(Request $request)
+	public function exportExcel($upp)
 	{
 		/*Si no coloco estas lineas Falla*/
 		ob_end_clean();
 		ob_start();
 		/*Si no coloco estas lineas Falla*/
-		return Excel::download(new MetasExport(), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+		return Excel::download(new MetasExport($upp), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
 	public function proyExcel()
 	{
@@ -277,27 +296,26 @@ class MetasController extends Controller
 	}
 	public function pdfView()
 	{
-		$data = MetasHelper::actividades();
+		$data = MetasHelper::actividades(auth::user()->clv_upp);
 		return view('calendarizacion.metas.proyectoPDF', compact('data'));
 	}
 
-	public function exportPdf(Request $request)
+	public function exportPdf($upp)
 	{
-		$data = MetasHelper::actividades();
+		$data = MetasHelper::actividades($upp);
 		view()->share('data', $data);
 		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF');
 		return $pdf->download('Proyecto con actividades.pdf');
 	}
-	public function downloadActividades()
+	public function downloadActividades($upp)
 	{
 		$date = Carbon::now();
-		$upp = CatPermisos::where('id', auth::user()->id_ente)->firstOrFail();
 		$request = array(
 			"anio" => $date->year,
 			"corte" => $date->format('Y-m-d'),
 			"logoLeft" => public_path() . 'img\escudo.png',
 			"logoRight" => public_path() . 'img\escudo.png',
-			"UPP" => $upp->clv_upp,
+			"UPP" => $upp,
 		);
 		log::debug($request);
 		return $this->jasper($request);
@@ -363,8 +381,25 @@ class MetasController extends Controller
 	}
 	public function checkCombination($upp)
 	{
-		$name = 'temp' . Auth::user()->username;
-		/* Schema::create($name, function (Blueprint $table) {
+		$proyecto = DB::table('proyectos_mir')
+			->select(
+                DB::raw('CONCAT(clv_finalidad, "-",clv_funcion,"-",clv_subfuncion,"-",clv_eje,"-",clv_linea_accion,"-",clv_programa_sectorial,"-",clv_tipologia_conac,"-",clv_upp,"-",clv_ur,"-",clv_programa,"-",clv_subprograma,"-",clv_proyecto) AS clave')
+			)->where('deleted_at', null)
+			->where('clv_upp',$upp)
+			->get();
+		Log::debug($proyecto);
+		$activs = DB::table("programacion_presupuesto")
+			->select(
+				DB::raw('CONCAT(finalidad, "-",funcion,"-",subfuncion,"-",eje,"-",linea_accion,"-",programa_sectorial,"-",tipologia_conac,"-",upp,"-",ur,"-",programa_presupuestario,"-",subprograma_presupuestario,"-",proyecto_presupuestario) AS clave')
+			)
+			->where('programacion_presupuesto.upp', '=', $upp)
+			->where('programacion_presupuesto.ejercicio', '=', 2023)
+			->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+			->distinct()
+			->groupByRaw('programa_presupuestario')->get();
+			Log::debug($activs);
+		/* $name = 'temp' . Auth::user()->username; 
+		Schema::create($name, function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('clave');
 			$table->string('clv_upp', 3)->nullable(false);
@@ -381,7 +416,7 @@ class MetasController extends Controller
 			$table->string('clv_proyecto', 3)->nullable(false);
 			$table->integer('ejercicio')->default(null);
 		}); */
-		$activs = DB::table("programacion_presupuesto")
+	/* 	$activs = DB::table("programacion_presupuesto")
 			->select(
 				'programacion_presupuesto.finalidad',
 				'programacion_presupuesto.funcion',
@@ -404,7 +439,7 @@ class MetasController extends Controller
 
 	 	foreach ($activs as $key) {
 			$clave =''. strval($key->finalidad) . '-' .strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje). '-' .strval($key->linea).'-'. strval($key->programaSec) . '-' .strval($key->tipologia) .'-'. strval($upp) . '-' .strval($key->ur,) . '-' . strval($key->programa) . '-' . strval($key->subprograma). '-' .strval($key->clv_proyecto).'';
-/* 
+ 
 			ProyectosMir::create([
 				'clv_upp' => $upp,
 				'clv_ur' => $key->ur,
@@ -420,7 +455,7 @@ class MetasController extends Controller
 				'clv_proyecto' => $key->clv_proyecto,
 				'ejercicio'=>2023
 			]); */
-			 	DB::table($name)->insert([
+			/*  	DB::table($name)->insert([
 				'clave'=>$clave,
 				'clv_upp' => $upp,
 				'clv_ur' => $key->ur,
@@ -435,9 +470,9 @@ class MetasController extends Controller
 				'clv_subprograma' => $key->subprograma,
 				'clv_proyecto' => $key->clv_proyecto,
 			]); 
-		} 
+		}  */
 
-
+		//in_array ($proyecto, 'b');
 	}
 
 }

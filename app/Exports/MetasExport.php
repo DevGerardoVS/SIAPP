@@ -14,10 +14,18 @@ use App\Helpers\Calendarizacion\MetasHelper;
 class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths
 {
     protected $filas;
+    protected $upp;
+
+    function __construct($upp) {
+
+        $this->upp = $upp;
+        
+
+    }
     public function collection()
     {
 
-        $query = MetasHelper::actividades();
+        $query = MetasHelper::actividades($this->upp);
         $this->filas = count($query);
         $dataSet = [];
 		foreach ($query as $key) {

@@ -60,7 +60,7 @@ class UsuarioController extends Controller
 	{
 		Controller::check_permission('putUsuarios', false);
 		$query = DB::table('adm_users')
-			->select('adm_users.id', 'adm_users.username', 'adm_users.email', 'adm_users.estatus', 'adm_users.nombre', 'adm_users.p_apellido', 'adm_users.s_apellido',  'adm_users.celular', DB::raw('adm_users.sudo as perfil'), 'adm_users.p_apellido', 'adm_users.s_apellido', 'adm_users.nombre', DB::raw('ifnull(adm_grupos.id, "null") as id_grupo') ,'adm_grupos.nombre_grupo')
+			->select('adm_users.id', 'adm_users.username', 'adm_users.email', 'adm_users.estatus', 'adm_users.nombre', 'adm_users.p_apellido', 'adm_users.s_apellido',  'adm_users.celular', 'adm_users.p_apellido', 'adm_users.s_apellido', 'adm_users.nombre', DB::raw('ifnull(adm_grupos.id, "null") as id_grupo') ,'adm_grupos.nombre_grupo')
 			->leftJoin('adm_rel_user_grupo', 'adm_users.id', '=', 'adm_rel_user_grupo.id_usuario')
 			->leftJoin('adm_grupos', 'adm_rel_user_grupo.id_grupo', '=', 'adm_grupos.id')
 			->where('adm_users.deleted_at', '=', null)
@@ -83,7 +83,6 @@ class UsuarioController extends Controller
 				 DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'),
 				'adm_users.celular',
 				 DB::raw('adm_grupos.nombre_grupo as grupo'),
-				 DB::raw('adm_users.sudo as perfil'),
 				'adm_users.p_apellido', 'adm_users.s_apellido',
 				'adm_users.nombre',
 				 DB::raw('ifnull(adm_grupos.id, "null") as id_grupo'))
@@ -110,7 +109,6 @@ class UsuarioController extends Controller
 				$key->email,
 				$key->nombre_completo,
 				$key->celular,
-				$key->perfil != '0' ? "Administrador" : "UPP",
 				$key->grupo,
 				$key->estatus == 1 ? "Activo" : "Inactivo",
 				$accion,
