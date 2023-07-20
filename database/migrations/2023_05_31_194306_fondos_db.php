@@ -359,6 +359,8 @@ return new class extends Migration
             $table->integer('subprograma_id')->unsigned()->nullable(false);
             $table->integer('proyecto_id')->unsigned()->nullable(false);
             $table->integer('ejercicio')->unsigned()->nullable(false);
+            $table->boolean('presupuestable')->default(false);
+            $table->boolean('confirmado')->default(false);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -401,6 +403,15 @@ return new class extends Migration
             $table->softDeletes();
             $table->string('deleted_user',45)->nullable(true);
         });
+
+        Schema::create('rel_economica_administrativa', function (Blueprint $table){
+            $table->increments('id');
+            $table->string('clasificacion_administrativa',5)->nullable(false);
+            $table->string('clasificacion_economica',6)->nullable(false);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+        });
     }
 
 
@@ -435,5 +446,6 @@ return new class extends Migration
         Schema::dropIfExists('actividades_mir');
         Schema::dropIfExists('proyectos_mir');
         Schema::dropIfExists('tipo_actividad_upp');
+        Schema::dropIfExists('rel_economica_administrativa');
     }
 };
