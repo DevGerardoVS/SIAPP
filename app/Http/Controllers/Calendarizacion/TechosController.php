@@ -49,16 +49,24 @@ class TechosController extends Controller
             if($request->fondo_filter != null && $request->fondo_filter != 0){
                 $data = $data -> where('tf.clv_fondo','=',$request->fondo_filter);
             }
-
-        $data = $data ->get();
+        $data = $data ->orderByDesc('tf.ejercicio')->get();
         
-        ;
+        $max_ejercicio = DB::table('epp')
+            ->select('ejercicio')
+            ->groupBy('ejercicio')
+            ->orderByDesc('ejercicio')
+            ->limit(1)
+            ->get();
 
         foreach ($data as $d){
-            $button2 = '<a class="btn btn-secondary" onclick="" data-toggle="modal" data-target="#createGroup" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil" style="font-size: large; color: white"></i></a>';
-            $button3 = '<button onclick="" title="Eliminar grupo" class="btn btn-danger"><i class="fa fa-trash" style="font-size: large"></i></button>';
-
-            array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,'pendiente',$button2.' '.$button3]);
+            if($max_ejercicio[0]->ejercicio == $d->ejercicio){
+                $button2 = '<a class="btn btn-secondary" onclick="" data-toggle="modal" data-target="#createGroup" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil" style="font-size: large; color: white"></i></a>';
+                $button3 = '<button onclick="" title="Eliminar grupo" class="btn btn-danger"><i class="fa fa-trash" style="font-size: large"></i></button>';
+                array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,'pendiente',$button2.' '.$button3]);
+            }else{
+                array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,'pendiente',' ']);
+            }
+            
         }
 
         return [
@@ -81,7 +89,7 @@ class TechosController extends Controller
         $aRepetidos = array_chunk(array_slice($request->all(),3),3,true);
         $aKeys = array_keys(array_slice($request->all(),3));
         $validaForm = [];
-
+        
         $upp = $request->uppSelected;
         $ejercicio = $request->anio;
 
@@ -89,10 +97,10 @@ class TechosController extends Controller
         foreach ($aKeys as $a){
             $validaForm[$a] = 'required';
         }
-
+        
         $request->validate($validaForm);
 
-        //Verifica que no se dupliquen los fondos en el mismo ejercicio
+        //Verifica que no se dupliquen los fondos en el mismo techo financiero
         // y envia el array con las keys del input duplicado
         $repeticion = $data;
         $c = 0;
@@ -111,11 +119,33 @@ class TechosController extends Controller
             $c += 1;
         }
 
+        //Verifica que no se dupliquen los fondos en el mismo ejercicio
+        // y envia el array con las keys del input duplicado
+        $repeticion = $data;
+        $array_data = DB::table('techos_financieros')
+        ->select('clv_upp','clv_fondo','tipo','ejercicio')
+        ->where('ejercicio','=',$ejercicio)
+        ->get();
+        
+        $c = 0;
+        foreach($data as $d){
+            foreach($array_data as $ad){
+                if($d[0] == $ad->tipo && $d[1] == $ad->clv_fondo && $upp == $ad->clv_upp){
+                    return [
+                        'status' => 'Ejercicio_Repetido',
+                        'error' => "El registro ya existe en el ejercicio actual",
+                        'etiqueta' => array_keys($aRepetidos[$c])
+                    ];
+                }
+            }
+            $c += 1;
+        }
+
         //guarda el techo
         if(count($data) != 0){
             try {
                 DB::beginTransaction();
-                foreach ($data as $d){
+                /* foreach ($data as $d){
                       DB::table('techos_financieros')->insert([
                         'clv_upp' => $upp,
                         'clv_fondo' => $d[1],
@@ -127,7 +157,7 @@ class TechosController extends Controller
                         'updated_user' => Auth::user()->username,
                         'created_user' => Auth::user()->username
                     ]);
-                }
+                } */
                 DB::commit();
                 return [
                     'status' => 200
@@ -255,6 +285,7 @@ class TechosController extends Controller
         try{
             ob_end_clean();
             ob_start();
+            
             return Excel::download(new TechosExportPresupuestos($request->anio_filter_presupuestos),'Presupuestos_Techos_Financieros.xlsx');
         }catch (Throwable $e){
             DB::rollBack();
