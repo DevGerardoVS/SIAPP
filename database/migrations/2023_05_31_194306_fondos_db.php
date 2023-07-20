@@ -376,6 +376,11 @@ return new class extends Migration
             $table->integer('pos_pre_id')->unsigned()->nullable(false);
             $table->integer('fondo_id')->unsigned()->nullable(false);
             $table->integer('obra_id')->unsigned()->nullable(false);
+
+            $table->foreign('epp_id')->references('id')->on('epp');
+            $table->foreign('clas_geo_id')->references('id')->on('clasificacion_geografica');
+            $table->foreign('pos_pre_id')->references('id')->on('posicion_presupuestaria');
+            $table->foreign('fondo_id')->references('id')->on('fondo');
         });
 
         Schema::create('proyectos_obra',function (Blueprint $table){
