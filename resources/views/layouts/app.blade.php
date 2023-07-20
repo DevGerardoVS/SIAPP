@@ -1,10 +1,16 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
+<?php ini_set('memory_limit', '-1');?>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    @php
+    use Carbon\Carbon;
+         $lastActivity = Session::get('last_activity');
+        $inactivityLimit = 1800; // 30 minutes (in seconds)
 
+      
+    @endphp
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script typ1e="text/javascript">
@@ -22,6 +28,77 @@
             console.error('Error:', error)
 
         }
+
+
+
+
+            var tiempo = parseInt("{{ $_ENV['SESSION_INACTIVITYTIME'] }}") * 60;
+            var tiemporestante = ("{{Session::get('last_activity')}}");
+            var tiempoactual = ("{{ Carbon::now() }}") ;
+            
+        var reloj = setInterval(function() {
+            var difFechas = new Date(tiempoactual) - new Date(tiemporestante);
+            var segundos = Math.floor(difFechas / 1000);
+            var minutos = Math.floor(segundos / 60);
+
+            // console.log(minutos);
+
+          
+            if (tiempo <= 0) {
+                clearInterval(reloj);
+            }
+
+            tiempo -= 1;
+            if (minutos>60) {
+
+
+                var urlacctual = "{{ Request::path() }}";
+                if (urlacctual != 'login') {
+                    Swal.fire({
+                        title: 'Su sesión de una hora  ha expirado',
+                        text: '¿Desea iniciar sesión nuevamente?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sí, iniciar sesión',
+                        cancelButtonText: 'No, cerrar sesión',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "{{ route('login') }}";
+                        } else {
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('logout') }}",
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                data: `{
+                                    "c": 78912,
+                                    "Customer": "Jason Sweet",
+                                    csrf: "{{ csrf_token() }}"
+                                }`,
+                                success: function(result) {
+                                    window.location.href = "{{ route('login') }}";
+                                },
+                                dataType: "json"
+                            });
+                            window.location.href = "{{ route('logout') }}";
+                            // window.location.href = "{{ route('logout') }}";
+                        }
+                    });
+                }
+                return tiempo;
+            }
+            
+        }, 1000);
+
+
+
+
+
+
+
     </script>
 
     {!! htmlScriptTagJsApi([
@@ -34,7 +111,10 @@
     @else
         <title>Sistema Integral de Análisis Programático Presupuestal </title>
     @endif
-
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <!-- Fonts -->
@@ -52,7 +132,8 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}">
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.3/xlsx.full.min.js"></script>
+ 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
     <!-- Latest compiled and minified CSS -->
@@ -92,6 +173,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
         integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+        integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      ></script>
 
     {{-- buttons --}}
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap4.min.js')) }}"></script>
@@ -108,54 +195,7 @@
         }
     </script>
     <script>
-        var tiempo = parseInt("{{ $_ENV['SESSION_INACTIVITYTIME'] }}") * 60;
-        var reloj = setInterval(function() {
-            if (tiempo <= 0) {
-                clearInterval(reloj);
-            }
-
-            tiempo -= 1;
-            if (tiempo == 0) {
-
-
-                var urlacctual = "{{ Request::path() }}";
-                if (urlacctual != 'login') {
-                    Swal.fire({
-                        title: 'Su sesión ha expirado',
-                        text: '¿Desea iniciar sesión nuevamente?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Sí, iniciar sesión',
-                        cancelButtonText: 'No, cerrar sesión',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "{{ route('login') }}";
-                        } else {
-                            $.ajax({
-                                type: "POST",
-                                url: "{{ route('logout') }}",
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                data: `{
-                                    "c": 78912,
-                                    "Customer": "Jason Sweet",
-                                    csrf: "{{ csrf_token() }}"
-                                }`,
-                                success: function(result) {
-                                    window.location.href = "{{ route('login') }}";
-                                },
-                                dataType: "json"
-                            });
-                            window.location.href = "{{ route('logout') }}";
-                            // window.location.href = "{{ route('logout') }}";
-                        }
-                    });
-                }
-            }
-        }, 1000);
+     
     </Script>
     {{-- Page Scripts --}}
     @yield('page_scripts')

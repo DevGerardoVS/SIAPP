@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @include('calendarizacion.clavePresupuestaria.modalDetalle')
+@include('calendarizacion.clavePresupuestaria.modalImgClave')
 @include('panels.datatable')
 @section('content')
-
 <div class="container">
     <section id="widget-grid" class="conteiner">
         <div class="row">
@@ -19,9 +19,9 @@
                             <div class="col-md-2" style="background-color: brown"><p style="color: aliceblue">Centro Gestor</p> </div>
                             <div class="col-md-2" style="background-color: dimgrey"><p style="color: aliceblue">Área Funcional</p></div>
                             <div class="col-md-2" style="background-color: plum"><p style="color: aliceblue">Período Presupuestal</p></div>
-                            <div class="col-md-2" style="background-color: grey"><p style="color: aliceblue">Clacificación Económica</p></div>
+                            <div class="col-md-2" style="background-color: grey"><p style="color: aliceblue">Clasificación Económica</p></div>
                             <div class="col-md-2" style="background-color: orangered"><p style="color: aliceblue">Fondo</p></div>
-                            <div class="col-md-2" style="background-color: darksalmon"><p style="color: aliceblue">Inversión Pública</p></div>
+                            <div class="col-md-2" style="background-color: darksalmon"><p style="color: aliceblue">Folio de Obra</p></div>
                         </div>
                         <div class="table-responsive">
                             <table id="newClave" class="table able-bordered" style="width: 100%">
@@ -45,7 +45,7 @@
                                         <td class="area-funcional" id="programaPre">&nbsp;&nbsp;</td>
                                         <td class="area-funcional" id="subPrograma">&nbsp;&nbsp;</td>
                                         <td class="area-funcional" id="proyectoPre">&nbsp;&nbsp;</td>
-                                        <td class="periodo-presupuestal" id="mesAfectacion">&nbsp;&nbsp;</td>
+                                        <td class="periodo-presupuestal" id="mesAfectacion">01-ENE</td>
                                         <td class="clasificacion-economica" id="capitulo">&nbsp;&nbsp;</td>
                                         <td class="clasificacion-economica" id="concepto">&nbsp;&nbsp;</td>
                                         <td class="clasificacion-economica" id="partidaGen">&nbsp;&nbsp;</td>
@@ -57,12 +57,21 @@
                                         <td class="fondo" id="ramo">&nbsp;&nbsp;</td>
                                         <td class="fondo" id="fondoRamo">&nbsp;&nbsp;</td>
                                         <td class="fondo" id="capital">&nbsp;&nbsp;</td>
-                                        <td class="fondo" id="proyectoObra">000000</td>
+                                        <td class="inversion" id="proyectoObra">000000</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>   
                         <div id="primeraParte">
+                            <div class="row">
+                                <div class="col-md-8"></div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-light" data-toggle="modal"
+                                        data-target="#imgClave" data-backdrop="static" data-keyboard="false" id="imgClave">¿Cómo está construida la clave presupuestaria?
+                                </button>
+                                </div>
+                            </div>
+                            <br>
                             <form class="form-horizontal" id="frm_create_clave">
                                 @csrf
                                 <div class="row">
@@ -70,7 +79,8 @@
                                     <div class="col-md-3"><label class="control-label">Region*</label></div>
                                         <div class="col-md-8">
                                             <select class="form-control select2" name="sel_region" id="sel_region" data-live-search="true"></select>
-                                        </div>                            
+                                        </div>      
+                                                             
                                     <div style="clear:both"></div>
                                     <div class="col-md-1"></div>
                                     <div class="col-md-3"><label class="control-label">Municipio*</label></div>
@@ -122,7 +132,7 @@
                                         </div>                                
                                     <div style="clear:both"></div>
                                     <div class="col-md-1"></div>
-                                    <div class="col-md-3"><label class="control-label">Linia de Acción*</label></div>
+                                    <div class="col-md-3"><label class="control-label">Linea de Acción*</label></div>
                                         <div class="col-md-8">
                                             
                                             <select class="form-control select2" name="sel_linea" id="sel_linea"></select>
@@ -131,11 +141,11 @@
                                     <div class="col-md-1"></div>
                                     <div class="col-md-3"><label class="control-label">Periodo Presupuestario*</label></div>
                                         <div class="col-md-8">
-                                            
-                                            <select class="form-control select2" name="sel_periodo" id="sel_periodo">
+                                            <p>&nbsp;&nbsp; 01-ENE</p>
+                                            {{-- <select class="form-control select2" name="sel_periodo" id="sel_periodo">
                                                 <option value="">-- Seleccione Periodo Presupuestal --</option>
                                                 <option value="01-ENE">1-ENE-DEC</option>
-                                            </select>
+                                            </select> --}}
                                         </div>
                                     <div style="clear:both"></div>
                                     <div class="col-md-1"></div>
@@ -151,8 +161,18 @@
                                             
                                             <select class="form-control select2" name="sel_fondo" id="sel_fondo"></select>
                                         </div>        
-                                        <input type="hidden" id="tipo" name="tipo">                        
+                                        <input type="hidden" id="tipo" name="tipo">    
+                                        <input type="hidden" id="anio" name="anio" value={{$ejercicio}}>                      
                                     <div style="clear:both"></div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                                <div class="row" id="obras" style="display: none;">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3"><label class="control-label">Proyecto Obra*</label></div>
+                                        <div class="col-md-8">
+                                            <select class="form-control select2" name="sel_obra" id="sel_obra" data-live-search="true" style="width: 600px;">
+                                            </select>
+                                        </div>
                                 </div>
                             </form>
                             <div class="row">
@@ -166,7 +186,16 @@
                         <div id="segundaParte">
                             <form id="actividad">
                                 <div class="row">
-                                    <div class="col-md-9"></div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <p id="lbl_ur"></p>
+                                            <div style="clear:both"></div>
+                                            <p id="lbl_fondo"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p id="lbl_sector"></p>
+                                    </div>
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-light" data-toggle="modal"
                                             data-target="#detalle"data-backdrop="static" data-keyboard="false" id="verDetalle">Ver detalle clave presupuestaria
@@ -266,9 +295,9 @@
     <script src="/js/clavesP/cargamasiva.js"></script>
 
     <script>
-        //dao.getData();
         dao.getRegiones("");
-        dao.getUpp("");
+        let ejercicio = document.getElementById('anio').value;
+        dao.getUpp(ejercicio,'');
     </script>
     
 @endsection

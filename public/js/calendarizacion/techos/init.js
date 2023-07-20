@@ -39,27 +39,38 @@ var dao = {
         });
     },
     getAnio: function () {
-        let anio = [2022, 2023, 2024, 2025];
+        /* let anio = [2022, 2023, 2024, 2025];
         var par = $('#anio_filter');
         par.html('');
-        par.append(new Option("-- Año--", ""));
-        document.getElementById("anio_filter").options[0].disabled = true;
+        par.append(new Option("Todos"));
+        document.getElementById("anio_filter").options[0].disabled = false;
         $.each(anio, function (i, val) {
             par.append(new Option(anio[i], anio[i]));
+        }); */
+
+        /* var ex = $('#anio_filter_export');
+        ex.html('');
+        ex.append(new Option("Todos", 0));
+        document.getElementById("anio_filter_export").options[0].disabled = false;
+        $.each(anio, function (i, val) {
+            ex.append(new Option(anio[i], anio[i]));
         });
-        /*      $.ajax({
-                 type: "GET",
-                 url: 'grupos',
-                 dataType: "JSON"
-             }).done(function (data) {
-                 var par = $('#id_grupo');
-                 par.html('');
-                 par.append(new Option("-- Selecciona Perfil --", ""));
-                 document.getElementById("id_grupo").options[0].disabled = true;
-                 $.each(data, function (i, val) {
-                     par.append(new Option(data[i].nombre_grupo, data[i].id));
-                 });
-             }); */
+        
+        var pdf = $('#anio_filter_pdf');
+        pdf.html('');
+        pdf.append(new Option("Todos", 0));
+        document.getElementById("anio_filter_pdf").options[0].disabled = false;
+        $.each(anio, function (i, val) {
+            pdf.append(new Option(anio[i], anio[i]));
+        });
+
+        var pdf = $('#anio_filter_presupuestos');
+        pdf.html('');
+        pdf.append(new Option("Todos", 0));
+        document.getElementById("anio_filter_presupuestos").options[0].disabled = false;
+        $.each(anio, function (i, val) {
+            pdf.append(new Option(anio[i], anio[i]));
+        }); */
     },
     limpiarFormularioCrear: function () {
         $('#fondos').empty()
@@ -83,44 +94,67 @@ var dao = {
         totalP();
     },
     cargaMasiva: function () {
-        var form = $('#importPlantilla')[0];
-        var data = new FormData(form);
-        $.ajax({
-            type: "POST",
-            url: '/import-Plantilla',
-            data: data,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-        }).done(function (response) {
-            console.log(response);
-            if (response != 'done') {
-              Swal.fire(
-                  {
-                      showCloseButton: true,
-                      title: 'Error',
-                      text: response.message,
-                      icon: 'error',
-                  }
-                
-              );
-            }else{
-                Swal.fire({
-                    title: 'Guardado',
-                    text: "Se guardo correctamente",
-                    icon: 'success',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Ok'
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href="/calendarizacion/techos";
-                    }
-                  });
-              
-            }
+        let timerInterval
+        Swal.fire({
+          title: 'Guardando',
+          html: 'Espere un momento',
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading()
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+              b.textContent = Swal.getTimerLeft()
+            }, 100)
+          },
+          willClose: () => {
+            clearInterval(timerInterval)
+          }
+        }).then(() => {
+            var form = $('#importPlantilla')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: "POST",
+                url: '/import-Plantilla',
+                data: data,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                cache: false,
+            }).done(function (response) {
+                if (response != 'done') {
+                  Swal.fire(
+                      {
+                          showCloseButton: true,
+                          title: response.title,
+                          text: response.text,
+                          icon: response.icon,
+                      }
+                  );
+                }else{
+                    Swal.fire({
+                        title: 'Guardado',
+                        text: "Se guardo correctamente",
+                        icon: 'success',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Ok'
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href="/calendarizacion/techos";
+                        }
+                      });
+                  
+                }
         }).fail(function (response){
-            console.log(response);
+            Swal.fire(
+                {
+                    showCloseButton: true,
+                    title: response.title,
+                    text: response.text,
+                    icon: response.icon,
+                }
+            );
+        })
         })
     },
     filtroPresupuesto: function (i){
@@ -243,6 +277,33 @@ $(document).ready(function () {
             dao.cargaMasiva();
         }
     });
+
+    $('#btnExport').on('click',function(){
+        document.all["formExport"].submit();
+        $('#exportExcel').modal('hide')
+    })
+    
+    $('#btnExportPDF').on('click',function(){
+        document.all["formExportPDF"].submit();
+        $('#exportPDF').modal('hide')
+    })
+
+    $('#btnExportPresupuestos').on('click',function(){
+        document.all["formExportPresupuestos"].submit();
+        $('#exportPresupuestos').modal('hide')
+    })
+
+   /*  $('#btnExport').on('click', function(e){
+        console.log("Export Excel")
+
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/techos/export-excel',
+            dataType: "JSON"
+        }).done(function (data) {
+            console.log(data)
+        });
+    }) */
 });
 
 function totalP(){
@@ -317,6 +378,16 @@ $('#btnSave').click(function (e) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Hay fondos repetidos',
+                    showConfirmButton: true
+                });
+            }else if(response.status == 'Ejercicio_Repetido'){
+
+                $("#frm_create_techo").find("#"+response.etiqueta[0]).addClass('is-invalid');
+                $("#frm_create_techo").find("#"+response.etiqueta[1]).addClass('is-invalid');
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'El registro ya existe en el ejercicio actual',
                     showConfirmButton: true
                 });
             }

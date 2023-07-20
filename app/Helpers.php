@@ -42,5 +42,19 @@ function getExplodePartiqcipacion($data){
 
     return [$fecha,$valor];
 }
+ function check_assignFront($name) {
+    $permiso = DB::table('permisos_funciones')
+        ->select(
+            'id_user',
+            'id_permiso',
+            )
+        ->where('id_user', auth::user()->id)
+        ->where('id_permiso', $name)->get();
+    if(count($permiso)) {
+        return true;
+    }
+    else
+    return false;
+}
 
 

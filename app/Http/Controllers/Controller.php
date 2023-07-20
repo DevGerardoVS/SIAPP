@@ -20,10 +20,15 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     //Validacion de Permisos de Usuario
     public static function check_permission($module, $bt = true) {
-    	if(Auth::user()->sudo == 1 || Auth::user()->sudo == 0)
+    	if(Auth::user()->sudo == 1)
     		$permiso = true;
     	else
-        $permiso = DB::select('CALL sp_check_permission(?, ?, ?)', [Auth::user()->id, $module, Session::get('sistema')]);
+        $permiso = DB::select('SELECT p.id
+        FROM adm_rel_funciones_grupos p
+        INNER JOIN adm_funciones f ON f.id = p.id_funcion
+        WHERE f.funcion = ?
+        AND f.id_sistema = ?
+        AND p.id_grupo IN (SELECT u.id_grupo FROM adm_rel_user_grupo u WHERE u.id_usuario = ?);', [$module, Session::get('sistema'), Auth::user()->id]);
     	if($permiso) {
             if($bt) {
                 $ip = Request::getClientIp();
@@ -47,7 +52,7 @@ class Controller extends BaseController
     	else
     		abort('401');
     }
-    public static function check_upp($name,$bt = true) {
+    public static function check_assign($name,$bt = true) {
         $permiso = DB::table('permisos_funciones')
             ->leftJoin('cat_permisos','cat_permisos.id','permisos_funciones.id_permiso')
             ->select(
@@ -78,5 +83,19 @@ class Controller extends BaseController
         }
     	else
     		abort('401');
+    }
+    public static function check_assignFront($name) {
+        $permiso = DB::table('permisos_funciones')
+            ->select(
+                'id_user',
+                'id_permiso',
+                )
+        ->where('id_user', auth::user()->id)
+        ->where('id_permiso', $name)->get();
+    	if(count($permiso)) {
+    		return true;
+        }
+    	else
+        return false;
     }
 }

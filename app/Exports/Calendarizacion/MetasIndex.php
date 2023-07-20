@@ -25,7 +25,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings,WithTit
     }
     public function headings(): array
     {
-        return ["UPP", "UR", "PRG", "SPR", "PY", "FONDO", "CVE_ACT", "ACTIVIDAD", "CVE_CAL", "TIPO_CALENDARIO", "TOTAL_METAS", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE", "CVE_BENEF", "BENEFICIARIO","N.BENEFICIARIOS" ,"CVE_UM", "UNIDAD_MEDIDA"];
+        return ["UPP", "UR", "PRG", "SPR", "PY", "FONDO", "CVE_ACT", "ACTIVIDAD", "CVE_CAL", "TIPO_CALENDARIO", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE", "CVE_BENEF", "BENEFICIARIO","N.BENEFICIARIOS" ,"CVE_UM", "UNIDAD_MEDIDA"];
 
     }
     public function styles(Worksheet $sheet)

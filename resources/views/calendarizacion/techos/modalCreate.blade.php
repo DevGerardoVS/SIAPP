@@ -21,7 +21,7 @@
                             <select class="form-control filters" placeholder="Seleccione una UPP" id="uppSelected" name="uppSelected" required>
                                 <option value="0" selected>Seleccione una UPP</option>
                                 @foreach($upp as $u)
-                                <option value="{{$u->clv_upp}}" >{{$u->upp}}</option>
+                                <option value="{{$u->clv_upp}}" >{{$u->clv_upp.' - '.$u->upp}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -31,7 +31,12 @@
                              <label><b>Año</b></label>
                         </div>
                         <div class="col-sm-7">
-                            <input class="form-control" id="anio" name="anio" type="text" value="2024" onkeydown="return (event.charCode >= 48 && event.charCode <= 57 && event.charCode >= 99 && event.charCode <= 122 )">
+                            <?php $ejercicio = DB::table('epp') ->select('ejercicio')->groupBy('ejercicio')->orderByDesc('ejercicio')->limit(1)->get();?>
+                            <select class="form-control filters" id="anio" name="anio" autocomplete="anio" placeholder="Seleccione un año">
+                                @foreach($ejercicio as $e)
+                                <option value="{{$e->ejercicio}}" >{{$e->ejercicio}}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-sm-4">
                             <button class="btn btn-primary" id="agregar_fondo">Agregar fondo</button>

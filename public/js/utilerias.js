@@ -375,31 +375,47 @@ var _gen = {
                         return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
                     };
                     // Total calendarizado...
-                    total = api
-                        .column(4)
+                    totalOp = api
+                        .column(2)
                         .data()
                         .reduce(function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0);
                     //Total asignado...
-                        totalAsignado = api
+                        totalRh = api
                         .column(3)
                         .data()
                         .reduce(function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0);
                     //totalDisponible
-                    totalDisponible = api
+                    totalTechos = api
+                        .column(4)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                        totalCal = api
+                        .column(5)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                        totalDis = api
                         .column(5)
                         .data()
                         .reduce(function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0);
                     // Update footer
-
-                    $(api.column(4).footer()).html('$'+ total);
-                    $(api.column(3).footer()).html('$'+ totalAsignado);
-                    $(api.column(5).footer()).html('$'+ totalDisponible);
+                    operativo = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalOp);
+                    $(api.column(2).footer()).html(operativo);
+                    $(api.column(3).footer()).html('$'+ totalRh);
+                    $(api.column(4).footer()).html('$'+ totalTechos);
+                    $(api.column(5).footer()).html('$'+ totalCal);
+                    $(api.column(6).footer()).html('$'+ totalDis);
+                    
                 },
                 preDrawCallback: function () {
                     if (!responsiveHelper_datatable_tabletools) {
@@ -427,7 +443,6 @@ var _gen = {
         }
         otable = tabla.DataTable().columns.adjust().draw();
         otable.$('[data-toggle="popover"]').popover();
-        console.log('entro aui 5');
     },
     setTableScrollGroupBy: function (
         tabla,
@@ -1065,7 +1080,7 @@ $.ajaxSetup({
     async: false,
     success: function (data) { },
     error: function (error, status, err) {
-        console.log("error-".error);
+        console.log("error-",error);
         if (error.status == 401)
         Swal.fire({
             icon: 'warning',
@@ -1078,6 +1093,27 @@ $.ajaxSetup({
             icon: 'error',
             title: 'Error del servidor',
             text: 'Ha ocurrido un error interno. Intentelo más tarde o contacte a soporte técnico',
+            showConfirmButton: true,
+        });
+        else if (error.status == 422)
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'El documento contiene campos vacios',
+            showConfirmButton: true,
+        });
+        else if (error.status == 423)
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'El documento esta vacio',
+            showConfirmButton: true,
+        });
+        else if (error.status == 424)
+        Swal.fire({
+            icon: 'error',
+            title: 'Error del servidor',
+            text: 'El Proyecto Ingresado no existe',
             showConfirmButton: true,
         });
     },

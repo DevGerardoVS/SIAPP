@@ -65,7 +65,17 @@
                         <div id="segundaParteUpdate">
                             <form id="actividad">
                                 <div class="row">
-                                    <div class="col-md-9"></div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <p id="lbl_ur"></p>
+                                            <div style="clear:both"></div>
+                                            <p id="lbl_fondo"></p>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p id="lbl_sector"></p>
+                                    </div>
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-light" data-toggle="modal"
                                             data-target="#detalle"data-backdrop="static" data-keyboard="false" id="verDetalle">Ver detalle clave presupuestaria
@@ -139,7 +149,8 @@
                                                 <td>
                                                     <h6><b>Total Calendarizado</b></h6>
                                                 </td>
-                                                <td><input id="totalCalendarizado" name="totalCalendarizado" type="text" class="form-control montosR" readonly>
+                                                <td><input id="totalCalendarizado" name="totalCalendarizado" type="text" class="form-control montosR" value={{$clave->total}} readonly>
+                                                    <input type="hidden" name="calendarizado" id="calendarizado">
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -177,6 +188,7 @@
         let proyecto_presupuestario = "{{$clave->proyecto_presupuestario}}"
         let linea_accion = "{{$clave->linea_accion}}"
         let clv_fondo = "{{$clave->fondo_ramo}}";
+        let ejercicio = "{{$clave->ejercicio}}";
         let fondo_ramo = "{{$clave->ejercicio}}"+"{{$clave->etiquetado}}"+"{{$clave->fuente_financiamiento}}"+"{{$clave->ramo}}"+"{{$clave->fondo_ramo}}"+"{{$clave->capital}}";
         let partida = "{{$clave->posicion_presupuestaria}}"+"{{$clave->tipo_gasto}}"
         if (region != '') {
@@ -189,31 +201,35 @@
             dao.getLocalidadByMunicipio(municipio,localidad);
         }
         if (upp != '') {
-            dao.getUpp(upp);
-            dao.getFondosByUpp(upp,fondo_ramo);
+            dao.getUpp(ejercicio,upp);
+            dao.getFondosByUpp(upp,subprograma_presupuestario, ejercicio,fondo_ramo);
         }
         if (ur != '') {
-            dao.getUninadResponsableByUpp(upp,ur);
-            dao.getSubSecretaria(upp,ur);
-            dao.getAreaFuncional(upp,ur);
+
+            dao.getUninadResponsableByUpp(upp,ejercicio,ur);
+            dao.getSubSecretaria(upp,ur,ejercicio);
+            dao.getAreaFuncional(upp,ur,ejercicio);
             dao.getClasificacionAdmin(upp,ur);
         }
         if (programa_presupuestario != '') {
-            dao.getProgramaPresupuestarioByur(upp,ur,programa_presupuestario);
+            dao.getProgramaPresupuestarioByur(upp,ur,ejercicio,programa_presupuestario);
         }
         if (subprograma_presupuestario != '') {
-            dao.getSubProgramaByProgramaId(ur,programa_presupuestario,subprograma_presupuestario);
+            dao.getSubProgramaByProgramaId(ur,programa_presupuestario, upp,ejercicio,subprograma_presupuestario);
             
         }
         if (proyecto_presupuestario != '') {
-            dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario);
+            dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,ejercicio,proyecto_presupuestario);
         }
         if (linea_accion != '') {
-            dao.getLineaDeAccionByUpp(upp,ur,linea_accion);
+            dao.getLineaDeAccionByUpp(upp,ur,ejercicio,linea_accion);
             dao.getPartidaByUpp(partida);
+            dao.getSector(linea_accion);
         }
-        dao.getPresupuestoPorUpp(upp,clv_fondo,subprograma_presupuestario);
-        calucalarCalendario();
+        //dao.getPresupuestoPorUpp(upp,clv_fondo,subprograma_presupuestario, ejercicio);
+        dao.getPresupuestoPorUppEdit(upp,clv_fondo,subprograma_presupuestario, ejercicio,id);
+        
+        //calucalarCalendario();
     </script>
     
 @endsection

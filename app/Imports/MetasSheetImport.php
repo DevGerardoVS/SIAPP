@@ -6,140 +6,110 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Illuminate\Support\Facades\Validator;
 use Log;
 use Illuminate\Validation\Rule;
 use App\Models\calendarizacion\Metas;
+use App\Imports\utils\FunFormats;
+use App\Models\calendarizacion\ActividadesMir;
+use App\Models\calendarizacion\ProyectosMir;
+use Auth;
 
-class MetasSheetImport implements ToCollection, WithHeadingRow, WithValidation
+class MetasSheetImport implements ToCollection, WithHeadingRow
 {
-
-    protected $existentes = [];
-    protected $decimal = [];
-    protected $exisClave = [];
-    protected $activo = [];
-    protected $tipo = '';
-   /*  public function prepareForValidation($row, $index)
-    {
-        $existentes []= "Ya existe esta informacion para el ejercicio de techos financieros";
-        $decimal []= "El monto debe ser entero";
-        $exisClave []= "No se puede cargar la informacion existe clave presupuestal registrada";
-
-    } */
     public function collection(Collection $rows)
     {
-        if (count($rows)>0) {
-            return ["El excel esta vacio"];
-        } else {
-            $aux = [];
-            foreach ($rows as $key => $value) {
-                Log::debug($value);
-            }
-        }
-   /*      for ($i=1; $i <count($rows); $i++) {
-            $a=[];
-            Log::debug($rows[$i]);
-            foreach ($rows[$i] as $key => $value) {
-                if($key==0 || $key == 5){
-                    $text=preg_replace('([^0-9])', '', $value);
-                    $a[] = $text;
+        $validator =Validator::make($rows->toArray(),
+        [
+            '*.upp'=>'required',
+            '*.ur'=>'required',
+            '*.prg'=>'required',
+            '*.spr'=>'required',
+            '*.py'=>'required',
+            '*.fondo'=>'required',
+            '*.cve_act'=>'required',
+            '*.cve_cal'=>'required',
+            '*.enero'=>'required',
+            '*.febrero'=>'required',
+            '*.marzo'=>'required',
+            '*.abril'=>'required',
+            '*.mayo'=>'required',
+            '*.junio'=>'required',
+            '*.julio'=>'required',
+            '*.agosto'=>'required',
+            '*.septiembre'=>'required',
+            '*.octubre'=>'required',
+            '*.noviembre'=>'required',
+            '*.diciembre'=>'required',
+            '*.cve_benef'=>'required',
+            '*.nbeneficiarios'=>'required',
+            '*.cve_um'=>'required',
+        ]
+        )->validate();
+
+        Log::debug($validator);
+       /*  $validator->after(function ($validator) {
+
+            foreach ($validator as $key) {
+                Log::debug()
+                $actividad = ActividadesMir::where('deleted_at', null)->where('actividades_mir.id', $key['cve_act'])->firstOrFail();
+                if ($actividad) {
+                    $proy = ProyectosMir::where('deleted_at', null)
+                        ->where('id', $actividad['proyecto_mir_id'])
+                        ->where('clv_upp', preg_replace('([^0-9])', '', $actividad['upp']))
+                        ->where('clv_ur', $actividad['ur'])
+                        ->where('clv_programa', $actividad['prg'])
+                        ->where('clv_subprograma', $actividad['spr'])
+                        ->where('clv_proyecto', $actividad['py'])
+                        ->get();
+                    Log::debug($proy);
+                    if (count($proy)) {
+                        $validator->errors()->add('py', 'El proyecto no existe');
+                    }
                 }else{
-                    if ($key != 28 && $key != 24 && $key !=9 && $key !=7) {
-                        $a[] = $value;
-                    } 
+                    $validator->errors()->add('cve_act', 'La actividad no existe');
+    
                 }
-                
             }
-            $aux[] = $a;
-        } */
+     
+        }); */
 
-/*         for ($i = 0; $i < count($aux); $i++) {
+     /*    $aux = [];
+        foreach ($rows as $key) {
+            Log::debug($key);
+            if (FunFormats::isExists($key)) {
+                $aux[] = [
+                    'clv_fondo' => $key['fondo'],
+                    'actividad_id' => $key['cve_act'],
+                    'tipo' => $key['tipo_calendario'],
+                    'beneficiario_id' => $key['cve_benef'],
+                    'unidad_medida_id' => $key['cve_um'],
+                    'cantidad_beneficiarios' => $key['nbeneficiarios'],
+                    'enero' => $key['enero'],
+                    'febrero' => $key['febrero'],
+                    'marzo' => $key['marzo'],
+                    'abril' => $key['abril'],
+                    'mayo' => $key['mayo'],
+                    'junio' => $key['junio'],
+                    'julio' => $key['julio'],
+                    'agosto' => $key['agosto'],
+                    'septiembre' => $key['septiembre'],
+                    'octubre' => $key['octubre'],
+                    'noviembre' => $key['noviembre'],
+                    'diciembre' => $key['diciembre'],
+                    'total' => FunFormats::typeTotal($key),
+                    'estatus' => 0,
+                    'created_user' => auth::user()->username
+                ];
+            }
             
-            $meta=Metas::create([
-                'actividad_id' =>$aux[$i][6] ,
-                'clv_fondo' => $aux[$i][5],
-                'estatus' => 0,
-                'tipo' => $aux[$i][8],
-                'beneficiario_id' => $aux[$i][21],
-                'unidad_medidad_id' =>$aux[$i][23] ,
-                'cantidad_beneficiarios' => $aux[$i][22],
-                'total' =>$aux[$i][10],
-                'enero' =>$aux[$i][11],
-                'febrero' =>$aux[$i][12],
-                'marzo' =>$aux[$i][13],
-                'abril' =>$aux[$i][14],
-                'mayo' =>$aux[$i][15],
-                'junio' =>$aux[$i][16],
-                'julio' =>$aux[$i][17],
-                'agosto' =>$aux[$i][18],
-                'septiembre' =>$aux[$i][18],
-                'octubre' => $aux[$i][19],
-                'noviembre' => $aux[$i][20],
-                'diciembre' => $aux[$i][21],
-            ]);
-
-
-            Log::debug($meta);
 
         } */
-    }
-    public function rules(): array
-    {
-        return [
-            '*.upp'=>'required|string',
-            '*.ur'=>'required|string',
-            '*.prg'=>'required|string',
-            '*.spr'=>'required|string',
-            '*.py'=>'required|string',
-            '*.fondo'=>'required|string',
-            '*.cve_act'=>'required|string',
-            '*.cve_cal'=>'required|string',
-            '*.total_metas'=>'required|string',
-            '*.enero'=>'required|string',
-            '*.febrero'=>'required|string',
-            '*.marzo'=>'required|string',
-            '*.abril'=>'required|string',
-            '*.mayo'=>'required|string',
-            '*.junio'=>'required|string',
-            '*.julio'=>'required|string',
-            '*.agosto'=>'required|string',
-            '*.septiembre'=>'required|string',
-            '*.octubre'=>'required|string',
-            '*.noviembre'=>'required|string',
-            '*.diciembre'=>'required|string',
-            '*.cve_benef'=>'required|string',
-            '*.nbeneficiarios'=>'required|string',
-            '*.cve_um'=>'required|string',
-        ];
-         
-    }
+   
+          /*    foreach ($aux as $key) {
+                  $meta = Metas::create($key);
+                 Log::debug($meta);
+             } */
 
-    public function customValidationMessages()
-    {
-        return [
-            '*.upp'=>'Falta el campo upp',
-            '*.ur'=>'Falta el campo ur',
-            '*.prg'=>'Falta el campo prg',
-            '*.spr'=>'Falta el campo spr',
-            '*.py'=>'Falta el campo py',
-            '*.fondo'=>'Falta el campo fondo',
-            '*.cve_act'=>'Falta el campo clave de Actividad',
-            '*.cve_cal'=>'Falta el campo tipo de calendarop',
-            '*.total_metas'=>'Falta el campo total anual',
-            '*.enero'=>'Falta el campo enero',
-            '*.febrero'=>'Falta el campo febrero',
-            '*.marzo'=>'Falta el campo marzo',
-            '*.abril'=>'Falta el campo abril',
-            '*.mayo'=>'Falta el campo mayo',
-            '*.junio'=>'Falta el campo junio',
-            '*.julio'=>'Falta el campo julio',
-            '*.agosto'=>'Falta el campo agosto',
-            '*.septiembre'=>'Falta el campo septiembre',
-            '*.octubre'=>'Falta el campo octubre',
-            '*.noviembre'=>'Falta el campo noviembre',
-            '*.diciembre'=>'Falta el campo diciembre',
-            '*.cve_benef'=>'Falta el campo clave beneficiario',
-            '*.nbeneficiarios'=>'Falta el campo numero de beneficiarios',
-            '*.cve_um'=>'Falta el campo clave unidad de medida',
-        ];
     }
 }

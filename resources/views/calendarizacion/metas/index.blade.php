@@ -3,6 +3,7 @@
 @include('calendarizacion.metas.modalCarga')
 @section('content')
     <div class="container">
+        <input id='upp' type="text" style="display: none" value="{{Auth::user()->clv_upp}}">
         <form action="{{ route('metasP') }}" id="buscarForm" method="POST">
             @csrf
             <div class="row">
@@ -16,19 +17,29 @@
                         data-widget-colorbutton="false" data-widget-deletebutton="false">
                         <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
                             <h2>Agregar Actividad</h2>
+                            
                         </header>
                         <br>
                         <div>
                             <div class="widget-body-toolbar">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <select class="form-control filters" id="ur_filter" name="ur_filter"
-                                            autocomplete="ur_filter" placeholder="Seleccione una UR"
-                                            data-live-search="true">
+                                    @if (Auth::user()->clv_upp == NULL)
+                                    <div class="col-md-4">
+                                        <label class="control-label">UPP</label>
+                                        <select class="form-control filters select2" id="upp_filter" name="upp_filter"
+                                            autocomplete="upp_filter" placeholder="Seleccione una UR" >
+                                            <option value="" disabled selected>Seleccione una UPP</option>
+                                        </select>
+                                    </div>
+                                    @endif
+                                    <div class="col-md-4">
+                                        <label class="control-label">UR</label>
+                                        <select class="form-control filters select2" id="ur_filter" name="ur_filter"
+                                            autocomplete="ur_filter" placeholder="Seleccione una UR">
                                             <option value="" disabled selected>Seleccione una UR</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6 d-flex " style="justify-content: flex-end">
+                                    <div class="col-md-4 d-flex " style="justify-content: flex-end">
                                         <div>
                                             <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#carga" data-backdrop="static" data-keyboard="false">Carga-Masiva</button>
                                         </div>

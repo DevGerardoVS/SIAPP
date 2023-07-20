@@ -114,7 +114,7 @@ $titleDesc = 'Administración de Captura';
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light">Clave UPP</th>
-                                            <th class="exportable align-middle text-light">UPP</th>
+                                            <th class="exportable align-middle text-light text-center">UPP</th>
                                             <th class="exportable align-middle text-light">Fecha de último cambio</th>
                                             <th class="exportable align-middle text-light">Estatus</th>
                                             <th class="exportable align-middle text-light">Usuario que actualizó</th>
@@ -210,15 +210,101 @@ $titleDesc = 'Administración de Captura';
             });
         }
 
-        $('#btnSave').on("click", function () {
+        function comprobarModulo() {
+            var checarModulo = false;
             if ($('#modulo_filter').val() == null || $('#modulo_filter').val() == 0) {
                 var textAux = 'El parametro modulo es necesario para continuar.';
                 mostrarAdv(textAux);
-            }
+            }else checarModulo = true;
 
+            return checarModulo;
+        }
+
+        function comprobarRadio(){
+            var checarRadio = false;
             if (!$('#capturaRadioH').is(':checked')  && !$('#capturaRadioD').is(':checked')) {
                 var textAux = 'Elija la opción habilitar o deshabilitar la captura para continuar.';
                 mostrarAdv(textAux);
+            }else checarRadio = true;
+
+            return checarRadio;
+        }
+
+        // Comprobar si hay algún estado encendido en la tabla programación presupuesto
+        var uppPP = {!! json_encode((array)$comprobarEstadoPP) !!};
+        // Comprobar si hay algún estado encendido en la tabla metas
+        var uppMetas = {!! json_encode((array)$comprobarEstadoMetas) !!};
+
+        var checarEstado = false;
+        var obtenerUPP = "";
+        var arregloPP = [];
+        var arregloMetas = [];
+        var texto1 = "";
+        var texto2 = "";
+       
+        $('#upp_filter').on('change', function (e) {
+            obtenerUPP = $(this).find('option').filter(':selected').val();
+            checarEstado = false;
+        });
+
+        $('#btnSave').on("click", function () {
+            comprobarModulo();
+            comprobarRadio();
+
+            arregloPP[0] = obtenerUPP;
+            arregloMetas[0] = obtenerUPP;
+            
+            if($("#modulo_filter").val() == "cierre_ejercicio_claves cec" || $("#modulo_filter").val() == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
+                
+                uppPP.forEach(upp => {
+                    if(upp['upp'] == obtenerUPP && upp['estado'] == 1 ){
+                        checarEstado = true;
+                        texto1 = "La siguiente UPP en claves presupuestarias esta activo: " + obtenerUPP;
+                    } 
+                    if(obtenerUPP == "" && upp['estado'] == 1 ){
+                        checarEstado = true;
+                        arregloPP.push(upp['upp']);
+                        texto1 = "Las siguientes UPP en claves presupuestarias tienen el estado activo: "+ arregloPP;
+                    } 
+                });
+            }
+
+            if($("#modulo_filter").val() == "cierre_ejercicio_metas cem" || $("#modulo_filter").val() == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
+                uppMetas.forEach(upp => {
+                    if(upp['clv_upp'] == obtenerUPP && upp['estatus'] == 1 ){
+                        checarEstado = true;
+                        texto2 = "La siguiente UPP en metas de actividades esta activo: " + obtenerUPP;
+                    } 
+                    if(obtenerUPP == "" && upp['estatus'] == 1 ){
+                        checarEstado = true;
+                        arregloMetas.push(upp['clv_upp']);
+                        texto2 = "Las siguientes UPP en metas de actividades tienen el estado activo: "+ arregloMetas;
+                    } 
+                });
+            }
+           
+            if(comprobarModulo() && comprobarRadio() && checarEstado && $('#capturaRadioH').is(':checked')){
+                event.preventDefault();
+                Swal.fire({
+                    title: "¿Quieres revertir el estado?",
+                    html: texto1+"</br>" + texto2,
+                    icon: 'question',
+                    confirmButtonColor: '#00ff00',
+                    confirmButtonText: 'Sí',
+                    showCloseButton: true,
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $("#estado").val("activo");
+                        $("#aperturaCierreForm").submit();
+                    }else if(result.dismiss == "close"){
+                        arregloPP = [];
+                        arregloMetas = [];
+                        texto1 ="";
+                        texto2 ="";
+                        checarEstado = false;
+                    }
+                });
             }
         });
 

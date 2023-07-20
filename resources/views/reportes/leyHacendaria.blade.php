@@ -10,6 +10,16 @@
             <h1 class="fw-bold text-center">{{ $titleDesc }}</h1>
             <div class="rounded-pill" style="height: .5em; background-color: rgb(37, 150, 190)"></div>
         </header>
+
+        @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            <h4>{{$errors->first()}}</h4>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @endif
+        
         <section class="row mt-5" >
             <form action="" id="buscarForm" method="POST"> 
                 <div class="col-md-10 col-sm-12 d-md-flex">

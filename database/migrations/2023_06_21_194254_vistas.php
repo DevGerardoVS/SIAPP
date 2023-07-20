@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        DB::unprepared("CREATE VIEW IF NOT EXISTS inicio_a AS
+        DB::unprepared("CREATE VIEW inicio_a AS
             SELECT presupuesto_asignado,
                 presupuesto_calendarizado,
                 presupuesto_asignado - presupuesto_calendarizado as disponible,
@@ -25,7 +25,7 @@ return new class extends Migration
                 on t1.def = t2.def;");
 
 
-        DB::unprepared("CREATE VIEW IF NOT EXISTS inicio_b AS
+        DB::unprepared("CREATE VIEW inicio_b AS
             SELECT t2.clave, fondo, asignado, programado, programado / asignado *100 AS avance FROM
                 (SELECT 
                 programacion_presupuesto.fondo_ramo AS clave, fondo.fondo_ramo AS fondo, sum(total) AS programado
@@ -66,6 +66,8 @@ return new class extends Migration
             c16.clave clv_programa,c16.descripcion programa,
             c17.clave clv_subprograma,c17.descripcion subprograma,
             c18.clave clv_proyecto,c18.descripcion proyecto,
+            e.presupuestable,
+            e.confirmado,
             e.ejercicio,
             e.deleted_at,
             e.updated_at,

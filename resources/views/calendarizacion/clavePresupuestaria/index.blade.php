@@ -13,10 +13,18 @@
                         <header>
                             <h2>Programación Presupuestal</h2>
                         </header>
+
                         <div>
                             <div class="jarviswidget-editbox">
                             </div>
                             <div class="widget-body-toolbar">
+                                <a href="/calendarizacion/download-errors-excel/{!! $errors !!}" type="button" class="btn colorMorado" id="downloadbtn" name="downloadbtn" style="display:none"></a>
+                                   
+                                   @if(session('success'))
+                                <div class="alert alert-success" role="alert">
+                                        {{ session('success') }}
+                                 </div>                               
+                                     @endif
                                 <div class="row">
                                     <div class="col-md-2">
                                         <label for="asignadoUpp">Asignado:</label>
@@ -36,25 +44,61 @@
                                         data-target="#modalPresupuesto"data-backdrop="static" data-keyboard="false" id='presupuestoFondo'>
                                             <i class="fa fa-eye">Presupuesto por Fondo</i>
                                         </button>
+                                        <input type="hidden" id="filAnio" name="filAnio">
+                                        <input type="hidden" id="filAnioAbierto" name="filAnioAbierto">
                                     </div>
-                                    <div class="col-md-2"></div>
                                     <div class="col-md-2 text-right">
+                                          
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        @if (Auth::user()->clv_upp==NULL)
+                                        <div class="row">
+                                            <button type="button" class="btn colorMorado"
+                                            name="button_modal_carga_adm" id="button_modal_carga_adm">
+                                            <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
+                                        </div>
+                                        @else
+                                        @if (check_assignFront(1))
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
-                                    
+                                            </button>
                                         </div>
-                                        
+                                        @endif
+                                        @endif
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
-                                                <a type="button"id='btnNuevaClave' class="btn btn-success form-control"  href="/calendarizacion-claves-create" ><i class="fa fa-plus">Nueva Clave</i></a>
+                                            <button type="button" id='btnNuevaClave' class="btn btn-success form-control" ><i class="fa fa-plus"> &nbsp;Nueva Clave</i></button>
+                                            <button style="display: none" type="button" class="btn btn-primary form-control"
+                                                name="btn_confirmar" id="btn_confirmar">
+                                                <i class="fa fa-check"> &nbsp;Confirmar Claves</i> 
+                                            </button>
                                         </div>
 
-                                    </div>
+                                    </div> 
                                 </div>
                             </div>
-                            <br><br>
+                            <br>
+                            <div class="row">
+                                <form id="filtrosClaves" class="row align-items-center">
+                                <div class="col-md-4">
+                                    <select class="form-control select2" name="filtro_anio" id="filtro_anio">
+                                    </select>
+                                </div>
+                                <div class="col-md-4" id="divFiltroUpp" style="display: none">
+                                    <select class="form-control select2" name="filtro_upp" id="filtro_upp">
+                                        <option value="">-- Selecciona una Unidad Programática --</option>
+                                    </select>
+                                    <input type="hidden" id="filUpp" name="filUpp">
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-control select2" name="filtro_ur" id="filtro_ur">
+                                    </select>
+                                </div>
+                                </form>
+                            </div>
+                            <br>
                             
                                 <div class="table-responsive">
                                     <table id="claves" class="table table-hover table-striped" style="width: 100%">
@@ -94,14 +138,48 @@
         </section>
     </div>
      @include('calendarizacion.clavePresupuestaria.CargamasivaModal')
+     @include('calendarizacion.clavePresupuestaria.CargamasivaModaladm')
+
     <script src="/js/clavesP/init.js"></script>
     <script src="/js/utilerias.js"></script>
     <script src="/js/clavesP/cargamasiva.js"></script>
 
     <script>
-        dao.getData();
-        dao.getRegiones("");
-        dao.getUpp("");
-        dao.getPresupuesAsignado();
+        let upp = "{{$uppUsuario}}";
+        let ejercicio = "{{$ejercicio}}";
+        dao.getEjercicios(ejercicio);
+        if (upp && upp != '' && ejercicio && ejercicio != '') {
+            console.log('upp en filtro',upp);
+            document.getElementById('filtro_upp').value = upp;
+            document.getElementById('filUpp').value = upp;
+            document.getElementById('filAnio').value = ejercicio;
+            dao.filtroUr(upp,ejercicio);
+        }else{
+            $('#divFiltroUpp').show();
+        }if (ejercicio && ejercicio != '') {
+            document.getElementById('filUpp').value = upp;
+            document.getElementById('filAnio').value = ejercicio;
+            document.getElementById('filAnioAbierto').value = ejercicio;
+            dao.filtroUpp(ejercicio,'');
+            dao.getData(ejercicio,'','');
+        }
+        
+        @if($errors->any())
+        console.log({!! session()->get('error') !!});
+        var failures= {!! $errors !!};
+        const fails = [];
+        $.each(failures, function (key, value) {
+        var helper =  value[0].replace('There was an error on row', 'Hay un error en la fila: ');
+        fails.push(helper);
+        });
+
+        Swal.fire({
+                icon: 'error',
+                title: 'Error al importar la carga masiva',
+                text: fails,
+                confirmButtonText: "Aceptar",
+            });
+        @endif
     </script>
 @endsection
+
