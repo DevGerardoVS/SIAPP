@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header" style=" border-bottom: 5px solid #17a2b8;">
                 <h5 class="modal-title col-11 text-center font-weight-bold">Carga masiva metas</h5>
-                <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close" id="btnClose">
+                <button id="cerrar" type="button" class="close closeModal" data-dismiss="modal" aria-label="Close" id="btnClose">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -31,7 +31,7 @@
                             <i class="fa fa-save" aria-hidden="true"></i>
                             Guardar
                         </button>
-                        <button type="button" class="btn-secondary colorMorado" id="btnCancelar" data-dismiss="modal" style="width:25%;float:left;margin-left:22%;">
+                        <button id="cerrar" type="button" class="btn-secondary colorMorado" id="btnCancelar" data-dismiss="modal" style="width:25%;float:left;margin-left:22%;">
                             <i class="fa fa-times" aria-hidden="true"></i>
                             Cancelar
                         </button>

@@ -20,9 +20,6 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     //Validacion de Permisos de Usuario
     public static function check_permission($module, $bt = true) {
-    	if(Auth::user()->sudo == 1)
-    		$permiso = true;
-    	else
         $permiso = DB::select('SELECT p.id
         FROM adm_rel_funciones_grupos p
         INNER JOIN adm_funciones f ON f.id = p.id_funcion

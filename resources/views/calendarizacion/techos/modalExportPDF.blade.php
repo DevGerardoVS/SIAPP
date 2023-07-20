@@ -16,8 +16,11 @@
                              <label><b>Año</b></label>
                         </div>
                         <div class="col-sm-7">
-                            <select class="form-control filters" id="anio_filter_pdf" name="anio_filter_pdf"
-                                                autocomplete="anio_filter_pdf" placeholder="Seleccione un año">
+                            <?php $ejercicio = DB::table('epp') ->select('ejercicio')->groupBy('ejercicio')->orderByDesc('ejercicio')->get();?>
+                            <select class="form-control filters" id="anio_filter_pdf" name="anio_filter_pdf" autocomplete="anio_filter_pdf" placeholder="Seleccione un año">
+                                @foreach($ejercicio as $e)
+                                <option value="{{$e->ejercicio}}" >{{$e->ejercicio}}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
