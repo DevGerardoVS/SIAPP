@@ -25,17 +25,17 @@
                                 <div class="row">
                                     @if (Auth::user()->clv_upp == NULL)
                                     <div class="col-md-4">
-                                        <select class="form-control filters" id="upp_filter" name="upp_filter"
-                                            autocomplete="upp_filter" placeholder="Seleccione una UR"
-                                            data-live-search="true">
+                                        <label class="control-label">UPP</label>
+                                        <select class="form-control filters select2" id="upp_filter" name="upp_filter"
+                                            autocomplete="upp_filter" placeholder="Seleccione una UR" >
                                             <option value="" disabled selected>Seleccione una UPP</option>
                                         </select>
                                     </div>
                                     @endif
                                     <div class="col-md-4">
-                                        <select class="form-control filters" id="ur_filter" name="ur_filter"
-                                            autocomplete="ur_filter" placeholder="Seleccione una UR"
-                                            data-live-search="true">
+                                        <label class="control-label">UR</label>
+                                        <select class="form-control filters select2" id="ur_filter" name="ur_filter"
+                                            autocomplete="ur_filter" placeholder="Seleccione una UR">
                                             <option value="" disabled selected>Seleccione una UR</option>
                                         </select>
                                     </div>

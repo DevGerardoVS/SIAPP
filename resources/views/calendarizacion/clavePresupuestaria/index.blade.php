@@ -45,9 +45,10 @@
                                             <i class="fa fa-eye">Presupuesto por Fondo</i>
                                         </button>
                                         <input type="hidden" id="filAnio" name="filAnio">
+                                        <input type="hidden" id="filAnioAbierto" name="filAnioAbierto">
                                     </div>
                                     <div class="col-md-2 text-right">
-                                        
+                                          
                                     </div>
                                     <div class="col-md-2 text-right">
                                         @if (Auth::user()->clv_upp==NULL)
@@ -75,28 +76,27 @@
                                             </button>
                                         </div>
 
-                                    </div>
+                                    </div> 
                                 </div>
                             </div>
                             <br>
                             <div class="row">
+                                <form id="filtrosClaves" class="row align-items-center">
                                 <div class="col-md-4">
                                     <select class="form-control select2" name="filtro_anio" id="filtro_anio">
-                                        <option value="">-- Selecciona un Ejercicio --</option>
-                                        <option value=2022>2022</option>
-                                        <option value=2023>2023</option>
-                                        <option value=2024>2024</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4" id="divFiltroUpp" style="display: none">
                                     <select class="form-control select2" name="filtro_upp" id="filtro_upp">
                                         <option value="">-- Selecciona una Unidad Programática --</option>
                                     </select>
+                                    <input type="hidden" id="filUpp" name="filUpp">
                                 </div>
                                 <div class="col-md-4">
                                     <select class="form-control select2" name="filtro_ur" id="filtro_ur">
                                     </select>
                                 </div>
+                                </form>
                             </div>
                             <br>
                             
@@ -146,14 +146,24 @@
 
     <script>
         let upp = "{{$uppUsuario}}";
-        if (upp && upp != '') {
+        let ejercicio = "{{$ejercicio}}";
+        dao.getEjercicios(ejercicio);
+        if (upp && upp != '' && ejercicio && ejercicio != '') {
+            console.log('upp en filtro',upp);
             document.getElementById('filtro_upp').value = upp;
-            dao.filtroUr(upp);
+            document.getElementById('filUpp').value = upp;
+            document.getElementById('filAnio').value = ejercicio;
+            dao.filtroUr(upp,ejercicio);
         }else{
             $('#divFiltroUpp').show();
+        }if (ejercicio && ejercicio != '') {
+            document.getElementById('filUpp').value = upp;
+            document.getElementById('filAnio').value = ejercicio;
+            document.getElementById('filAnioAbierto').value = ejercicio;
+            dao.filtroUpp(ejercicio,'');
+            dao.getData(ejercicio,'','');
         }
-        dao.filtroUpp('');
-        dao.getData('','','');
+        
         @if($errors->any())
         console.log({!! session()->get('error') !!});
         var failures= {!! $errors !!};

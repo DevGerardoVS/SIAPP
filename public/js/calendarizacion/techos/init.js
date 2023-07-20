@@ -94,44 +94,67 @@ var dao = {
         totalP();
     },
     cargaMasiva: function () {
-        var form = $('#importPlantilla')[0];
-        var data = new FormData(form);
-        $.ajax({
-            type: "POST",
-            url: '/import-Plantilla',
-            data: data,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-        }).done(function (response) {
-            console.log(response);
-            if (response != 'done') {
-              Swal.fire(
-                  {
-                      showCloseButton: true,
-                      title: 'Error',
-                      text: response.message,
-                      icon: 'error',
-                  }
-                
-              );
-            }else{
-                Swal.fire({
-                    title: 'Guardado',
-                    text: "Se guardo correctamente",
-                    icon: 'success',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Ok'
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href="/calendarizacion/techos";
-                    }
-                  });
-              
-            }
+        let timerInterval
+        Swal.fire({
+          title: 'Guardando',
+          html: 'Espere un momento',
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading()
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+              b.textContent = Swal.getTimerLeft()
+            }, 100)
+          },
+          willClose: () => {
+            clearInterval(timerInterval)
+          }
+        }).then(() => {
+            var form = $('#importPlantilla')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: "POST",
+                url: '/import-Plantilla',
+                data: data,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                cache: false,
+            }).done(function (response) {
+                if (response != 'done') {
+                  Swal.fire(
+                      {
+                          showCloseButton: true,
+                          title: response.title,
+                          text: response.text,
+                          icon: response.icon,
+                      }
+                  );
+                }else{
+                    Swal.fire({
+                        title: 'Guardado',
+                        text: "Se guardo correctamente",
+                        icon: 'success',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Ok'
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href="/calendarizacion/techos";
+                        }
+                      });
+                  
+                }
         }).fail(function (response){
-            console.log(response);
+            Swal.fire(
+                {
+                    showCloseButton: true,
+                    title: response.title,
+                    text: response.text,
+                    icon: response.icon,
+                }
+            );
+        })
         })
     },
     filtroPresupuesto: function (i){

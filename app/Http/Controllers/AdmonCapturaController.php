@@ -13,14 +13,18 @@ class AdmonCapturaController extends Controller
     //
     public function index(){
         Controller::check_permission('getCaptura');
-        $dataSet = array();
-        $anio_activo = DB::select('SELECT ejercicio FROM cierre_ejercicio_claves WHERE activos = 1 LIMIT 1');
-        $anio = $anio_activo[0]->ejercicio;
-        $upps = DB::select('SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND activos = 1 ORDER BY clave ASC');
+        $dataSet = array(); 
+        $anioActivo = DB::select('SELECT ejercicio FROM cierre_ejercicio_claves WHERE activos = 1 LIMIT 1');
+        $anio = $anioActivo[0]->ejercicio;
+        $comprobarEstadoPP = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = $anio GROUP BY upp");
+        $comprobarEstadoMetas = DB::select("SELECT m.estatus, pm.clv_upp, pm.ejercicio FROM metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id WHERE ejercicio = $anio GROUP BY pm.clv_upp");
+        $upps = DB::select('SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND activos = 1 AND c.deleted_at is null ORDER BY clave ASC');
         return view("captura.admonCaptura", [
             'dataSet' => json_encode($dataSet),
             'anio' => $anio,
             'upps' => $upps,
+            'comprobarEstadoPP' => $comprobarEstadoPP,
+            'comprobarEstadoMetas' => $comprobarEstadoMetas,
         ]);
     }  
 
@@ -39,6 +43,7 @@ class AdmonCapturaController extends Controller
         })
         ->select("cec.clv_upp", "c.descripcion", "cec.estatus", "cec.updated_at", "cec.updated_user")
         ->where("c.grupo_id", "=", 6)
+        ->where("c.deleted_at", "=", null)
         ->where("cec.activos", "=", 1)
         ->where($array_where)
         ->orderBy("cec.estatus","desc")
@@ -71,6 +76,7 @@ class AdmonCapturaController extends Controller
         })
         ->select("cem.clv_upp", "c.descripcion", "cem.estatus", "cem.updated_at", "cem.updated_user")
         ->where("c.grupo_id", "=", 6)
+        ->where("c.deleted_at", "=", null)
         ->where("cem.activos", "=", 1)
         ->where($array_where)
         ->orderBy("cem.estatus","desc")
@@ -93,15 +99,32 @@ class AdmonCapturaController extends Controller
         $upp = $request->upp_filter;
         $modulo = $request->modulo_filter;
         $habilitar = $request->capturaRadio;
+        $estado = $request->estado;
+        $anio = $request->anio;
         $usuario = Auth::user()->username;
-        $checar_upp = '';
-        if($upp != null) $checar_upp = "AND clv_upp = '$upp'";
+        $checar_upp_PP = '';
+        $checar_upp_metas = '';
+        $checar_clave = '';
+        if($upp != null){
+            $checar_clave = "AND clv_upp = '$upp'";
+            $checar_upp_PP = "AND upp = '$upp'";
+            $checar_upp_metas = "AND pm.clv_upp = '$upp'";
+        }  
 
         try {
             DB::beginTransaction();
             
-            $actualizar = str_contains($request->modulo_filter,',') ? DB::update("update $modulo set cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = >'$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_upp") : DB::update("update $modulo set estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_upp");
+            str_contains($modulo,',') ? DB::update("UPDATE $modulo SET cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1") : DB::update("UPDATE $modulo SET estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_clave");
             
+            if($estado == "activo"){
+                if($modulo == "cierre_ejercicio_claves cec" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
+                    DB::update("UPDATE programacion_presupuesto SET estado = 0 WHERE ejercicio = $anio AND estado = 1 $checar_upp_PP");
+                }
+                if($modulo == "cierre_ejercicio_metas cem" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
+                    DB::update("UPDATE metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id SET m.estatus = 0 WHERE pm.ejercicio = $anio AND m.estatus = 1 $checar_upp_metas");
+                }
+            }
+
             DB::commit();
             return redirect()->route("index")->withSuccess('Los datos fueron modificados');
         } catch (\Exception $e) {
