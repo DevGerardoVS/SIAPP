@@ -7,6 +7,7 @@ use App\Models\PosicionPresupuestaria;
 use App\Models\Fondos;
 use App\Models\v_epp;
 use App\Models\Obra;
+use App\Models\RelEconomicaAdministrativa;
 use App\Models\V_entidad_ejecutora;
 use App\Models\Catalogo;
 use App\Models\calendarizacion\clasi;
@@ -35,7 +36,8 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
     
     public function prepareForValidation($row,$index)
     {
-        
+         
+
 
         ///validaciones de catalogo
         $valcat= Catalogo::select()
@@ -110,14 +112,9 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         ->count();
         $valcat >= 1 ? $row['py'] : $row['py']=NULL; 
         
- 
-        //validacion de año 
-      
-        $year = date("y");
-        $year+1 == $row['ano'] ? $row['ano'] = date("Y") : NULL;  
 
 
-         //validacion de tipo de usuario pendiente
+
          $arraypos = str_split($row['idpartida'], 1);
         if(count($arraypos)>=4){
             if($row['spr']=='UUU'){
@@ -176,11 +173,17 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         
 
          
-        //validacion de codigo para posicion presupuestaria falta usuario
 
-
-
-
+        //validacion nueva sobre idpartida/tipo gasto en combinacion con admonac
+        
+        $valrelEco= RelEconomicaAdministrativa::select()
+        ->where('clasificacion_administrativa',$row['admconac'])
+        ->where('clasificacion_economica',$row['idpartida'].$row['tipogasto'])
+        ->count();
+        if($valrelEco < 1 ){
+            $row['admconac']=0;
+        }
+        
         //validacion de fondos
         $valfondo = Fondos::select()
         ->where('clv_etiquetado', $row['no_etiquetado_y_etiquetado'])
@@ -208,6 +211,33 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             ->count();
             if($valadm < 1 ){
                 $row['admconac']=NULL;
+    
+            }
+           //validacion de presupuestable
+            $valpresup= v_epp::select()
+            ->where('clv_sector_publico',$arrayadmconac[0])
+            ->where('clv_sector_publico_f',$arrayadmconac[1])
+            ->where('clv_sector_economia',$arrayadmconac[2])
+            ->where('clv_subsector_economia',$arrayadmconac[3])
+            ->where('clv_ente_publico',$arrayadmconac[4])
+            ->where('clv_upp',$row['upp'])
+            ->where('clv_subsecretaria',$row['subsecretaria'])
+            ->where('clv_ur',$row['ur'])
+            ->where('clv_finalidad',$row['finalidad'])
+            ->where('clv_funcion',$row['funcion'])
+            ->where('clv_subfuncion',$row['subfuncion'])
+            ->where('clv_eje',$row['eg'])
+            ->where('clv_linea_accion',$row['pt'])
+            ->where('clv_programa_sectorial',$row['ps'])
+            ->where('clv_tipologia_conac',$row['sprconac'])
+            ->where('clv_programa',$row['prg'])
+            ->where('clv_subprograma',$row['spr'])
+            ->where('clv_proyecto',$row['py'])
+            ->where('ejercicio','20'.$row['ano'])
+            ->where('presupuestable',1)
+            ->count();
+            if($valpresup < 1 ){
+                $row['ano']=0;
     
             }
         }
@@ -257,7 +287,12 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
        //validacion si la upp tiene firmados claves presupuestales
          $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->value('estado');
          $valupp==1 ? $row['upp']=0 : $row['upp']; 
-         return $row;
+
+        //validacion de año 
+        $year = '20'.$row['ano'];
+        $row['ano']=$year;
+
+        return $row;
     }
 
     public function model(array $row)
@@ -328,7 +363,12 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
              '*.upp' => ['required',
                 Rule::notIn(['0'])                                       
             ], 
-            '*.admconac' => 'required|string',
+            '*.admconac' => ['required','String',
+            Rule::notIn(['0'])                                       
+        ],
+            '*.ano' => ['required',
+            Rule::notIn(['0'])                                       
+        ],
             '*.ef' => 'required|string',
             '*.subsecretaria' => 'required|string',
             '*.finalidad' => 'required|string',
@@ -390,8 +430,11 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         '*.py' =>  'La clave de py introducida no es valida',
         '*.ur' => 'El campo ur no existe o la combinacion de ur upp y secretaria es invalida',
         '*.no_etiquetado_y_etiquetado' => 'La combinacion de las claves de la celda V a Z es invalida',
+       '*.ano.required' => 'la fecha no es valida ',
+       '*.ano.notIn' => 'El programa seleccionado no es presupuestable ',
+       '*.idpartida' => 'La combinacion de id partida con tipo de gasto es invalida',
+       '*.admconac.notIn' => 'La clasificacion economica introducida es invalida para esta clave administrativa',
 
-        
     ];
 } 
  

@@ -17,19 +17,17 @@
                             <li>1.- <b>Descargue y utilice la plantilla</b> para el correcto funcionamiento de la carga masiva.</li>
                             <li>2.- Llenar la plantilla con el presupuesto <b>Operativo</b> y <b>Recursos Humanos</b>.</li>
                             <li>3.- <b>Agregar las filas necesarias</b> para los fondos diferentes a la plantilla.</li>
-                            <li>4.- Los valores no especificados, en cero o con celdas vacías <b>no se guardaran</b>.</li>
-                            <br>
-                            <label><b>Nota:</b> Si ya existe presupuesto registrado para la upp y fondo este se actualizara.</label>
+                            <li>4.- Los valores no especificados, en cero o con celdas vacías <b>no se guardarán</b>.</li>
                         </ul>
                         <a class="btn-primary text-center" style="float:left; text-decoration:none; width:20%;"
                             href="{{ route('exportPlantilla') }}">
                             <i class="fa fa-download" aria-hidden="true"></i>
                             Descargar plantilla
                         </a>
+                        <label ><b style="color:red;">Nota:</b> Si ya existe presupuestos para el ejercicio a registrar estos se <b>reemplazarán</b>.</label>
                         <input name="cmFile" type="file" id="cmFile" name="cmFile" accept=".xlsx"
                             class="border border-secondary rounded" placeholder="Archivo" required
                             style="margin-top:5%; width : 100%;">
-                        <br>
                     </div>
                     <hr style="width: 98%; border: 1px solid gray; opacity:0.1;">
                     <div class="buttonContainer">
