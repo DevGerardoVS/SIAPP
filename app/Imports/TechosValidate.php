@@ -14,7 +14,7 @@ class TechosValidate
     public static function validate($row)
     {
         if (count($row) >= 1) {
-            $pre=[];
+            $pre = [];
             $index = 1;
             for ($i = 0; $i < count($row); $i++) {
                 $index++;
@@ -23,12 +23,12 @@ class TechosValidate
                         'val' => '1'
                     ];
                 }
-                $existC = TechosValidate::existClave($row[$i][1], $row[$i][2], $row[$i][0], $row[$i][3], $row[$i][4]);
+                $existC = TechosValidate::existClave($row[$i][0]);
                 if (count($existC)) {
                     $error = array(
                         "icon" => 'error',
                         "title" => 'Error',
-                        "text" => 'No se puede cargar la informacion existe clave presupuestal registrada para el fondo: ' . $row[$i][1] . '. Revisa la fila: "' . $index . '"'
+                        "text" => 'No se puede cargar la informacion existe clave presupuestal registrada para el fondo: ' . $row[$i][0] . '. Revisa la fila: "' . $index . '"'
                     );
                     return $error;
                 }
@@ -129,8 +129,17 @@ class TechosValidate
                 }
             }
             if (count($row) != count($pre)) {
-                $techos = TechosValidate::insert($row);
-                return $techos;
+                $val_tech = TechosFinancieros::select('ejercicio')
+                    ->where('ejercicio', $row[0][0])
+                    ->count();
+                if ($val_tech > 0) {
+                    TechosFinancieros::where('ejercicio', $row[0][0])->delete();
+                    $techos = TechosValidate::insert($row);
+                    return $techos;
+                } else {
+                    $techos = TechosValidate::insert($row);
+                    return $techos;
+                }
             } else {
                 $error = array(
                     "icon" => 'error',
@@ -152,121 +161,68 @@ class TechosValidate
 
     }
 
-    public static function existClave($upp, $fondo, $ejercicio, $op, $rh)
+    public static function existClave($ejercicio)
     {
-        if ($op != 0) {
-            $tipo = 'Operativo';
-            $val_clave = ProgramacionPresupuesto::select()
-                ->where('upp', $upp)
-                ->where('fondo_ramo', $fondo)
-                ->where('ejercicio', $ejercicio)
-                ->where('tipo', $tipo)
-                ->get();
-            return $val_clave;
-        }
-        if ($rh != 0) {
-            $tipo = 'RH';
-            $val_clave = ProgramacionPresupuesto::select()
-                ->where('upp', $upp)
-                ->where('fondo_ramo', $fondo)
-                ->where('ejercicio', $ejercicio)
-                ->where('tipo', $tipo)
-                ->get();
-            return $val_clave;
-        }
+        $val_clave = ProgramacionPresupuesto::select('upp')
+            ->where('ejercicio', $ejercicio)
+            ->get();
+        return $val_clave;
     }
 
     public static function insert($row)
     {
         foreach ($row as $key) {
-            $val_op = TechosFinancieros::select('*')
-                ->where('clv_upp', $key[1])
-                ->where('clv_fondo', $key[2])
-                ->where('tipo', 'Operativo')
-                ->where('ejercicio', $key[0])
-                ->count();
-            $val_rh = TechosFinancieros::select('*')
-                ->where('clv_upp', $key[1])
-                ->where('clv_fondo', $key[2])
-                ->where('tipo', 'RH')
-                ->where('ejercicio', $key[0])
-                ->count();
-
             if (!empty($key)) {
                 $user = Auth::user()->username;
                 $monto = 0;
+                if ($key[3] != NULL && $key[3] > 0 && $key[4] != NULL && $key[4] > 0 && $key[3] != 'UPP' && $key[2] != 'FO') {
+                    $ejercicio = $key[0];
+                    $upp = $key[1];
+                    $fondo = $key[2];
+                    TechosFinancieros::create([
+                        'clv_upp' => $upp,
+                        'clv_fondo' => $fondo,
+                        'tipo' => 'Operativo',
+                        'presupuesto' => $key[3],
+                        'ejercicio' => $ejercicio,
+                        'updated_user' => $user,
+                        'created_user' => $user
+                    ]);
+                    TechosFinancieros::create([
+                        'clv_upp' => $upp,
+                        'clv_fondo' => $fondo,
+                        'tipo' => 'RH',
+                        'presupuesto' => $key[4],
+                        'ejercicio' => $ejercicio,
+                        'updated_user' => $user,
+                        'created_user' => $user
+                    ]);
 
-                if ($val_rh != 0 && $key[4] > 0) {
-                    DB::table('techos_financieros')
-                        ->where('clv_upp', $key[1])
-                        ->where('clv_fondo', $key[2])
-                        ->where('tipo', 'RH')
-                        ->where('ejercicio', $key[0])
-                        ->update([
-                            'presupuesto' => $key[4],
-                            'updated_user' => $user,
-                        ]);
-                }
-                if ($val_op != 0 && $key[3] > 0) {
-                    DB::table('techos_financieros')
-                        ->where('clv_upp', $key[1])
-                        ->where('clv_fondo', $key[2])
-                        ->where('tipo', 'Operativo')
-                        ->where('ejercicio', $key[0])
-                        ->update([
-                            'presupuesto' => $key[3],
-                            'updated_user' => $user,
-                        ]);
                 } else {
-                    if ($key[3] != NULL && $key[3] > 0 && $key[4] != NULL && $key[4] > 0 && $key[3] != 'UPP' && $key[2] != 'FO') {
+                    if ($key[3] != NULL) {
                         $ejercicio = $key[0];
                         $upp = $key[1];
                         $fondo = $key[2];
+                        $tipo = 'Operativo';
+                        $monto = $key[3];
+                    }
+                    if ($key[4] != NULL) {
+                        $ejercicio = $key[0];
+                        $upp = $key[1];
+                        $fondo = $key[2];
+                        $tipo = 'RH';
+                        $monto = $key[4];
+                    }
+                    if ($monto != 0 && $key[3] != 'UPP' && $key[2] != 'FO') {
                         TechosFinancieros::create([
                             'clv_upp' => $upp,
                             'clv_fondo' => $fondo,
-                            'tipo' => 'Operativo',
-                            'presupuesto' => $key[3],
+                            'tipo' => $tipo,
+                            'presupuesto' => $monto,
                             'ejercicio' => $ejercicio,
                             'updated_user' => $user,
                             'created_user' => $user
                         ]);
-                        TechosFinancieros::create([
-                            'clv_upp' => $upp,
-                            'clv_fondo' => $fondo,
-                            'tipo' => 'RH',
-                            'presupuesto' => $key[4],
-                            'ejercicio' => $ejercicio,
-                            'updated_user' => $user,
-                            'created_user' => $user
-                        ]);
-
-                    } else {
-                        if ($key[3] != NULL) {
-                            $ejercicio = $key[0];
-                            $upp = $key[1];
-                            $fondo = $key[2];
-                            $tipo = 'Operativo';
-                            $monto = $key[3];
-                        }
-                        if ($key[4] != NULL) {
-                            $ejercicio = $key[0];
-                            $upp = $key[1];
-                            $fondo = $key[2];
-                            $tipo = 'RH';
-                            $monto = $key[4];
-                        }
-                        if ($monto != 0 && $key[3] != 'UPP' && $key[2] != 'FO') {
-                            TechosFinancieros::create([
-                                'clv_upp' => $upp,
-                                'clv_fondo' => $fondo,
-                                'tipo' => $tipo,
-                                'presupuesto' => $monto,
-                                'ejercicio' => $ejercicio,
-                                'updated_user' => $user,
-                                'created_user' => $user
-                            ]);
-                        }
                     }
                 }
             }

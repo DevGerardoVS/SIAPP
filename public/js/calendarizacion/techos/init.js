@@ -39,16 +39,16 @@ var dao = {
         });
     },
     getAnio: function () {
-        let anio = [2022, 2023, 2024, 2025];
+        /* let anio = [2022, 2023, 2024, 2025];
         var par = $('#anio_filter');
         par.html('');
-        par.append(new Option("-- Año--", ""));
-        document.getElementById("anio_filter").options[0].disabled = true;
+        par.append(new Option("Todos"));
+        document.getElementById("anio_filter").options[0].disabled = false;
         $.each(anio, function (i, val) {
             par.append(new Option(anio[i], anio[i]));
-        });
+        }); */
 
-        var ex = $('#anio_filter_export');
+        /* var ex = $('#anio_filter_export');
         ex.html('');
         ex.append(new Option("Todos", 0));
         document.getElementById("anio_filter_export").options[0].disabled = false;
@@ -70,7 +70,7 @@ var dao = {
         document.getElementById("anio_filter_presupuestos").options[0].disabled = false;
         $.each(anio, function (i, val) {
             pdf.append(new Option(anio[i], anio[i]));
-        });
+        }); */
     },
     limpiarFormularioCrear: function () {
         $('#fondos').empty()
@@ -122,7 +122,6 @@ var dao = {
                 contentType: false,
                 cache: false,
             }).done(function (response) {
-                console.log(response);
                 if (response != 'done') {
                   Swal.fire(
                       {
@@ -147,7 +146,6 @@ var dao = {
                   
                 }
         }).fail(function (response){
-            console.log(response);
             Swal.fire(
                 {
                     showCloseButton: true,
@@ -380,6 +378,16 @@ $('#btnSave').click(function (e) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Hay fondos repetidos',
+                    showConfirmButton: true
+                });
+            }else if(response.status == 'Ejercicio_Repetido'){
+
+                $("#frm_create_techo").find("#"+response.etiqueta[0]).addClass('is-invalid');
+                $("#frm_create_techo").find("#"+response.etiqueta[1]).addClass('is-invalid');
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'El registro ya existe en el ejercicio actual',
                     showConfirmButton: true
                 });
             }
