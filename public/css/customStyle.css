@@ -45,6 +45,16 @@ footer{
     color: white !important;
 
   }
+  th.vertical{
+      writing-mode:vertical-rl;
+      text-orientation: mixed;
+      text-align: center;
+      
+      rotate: 180deg;
+    }
+  th.centro{
+    padding-left: 50% !important;
+  }
   .wrap4{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
