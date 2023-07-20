@@ -70,10 +70,14 @@
                                         </button>
                                     </div>
                                     <div class="col-md-2">
+                                        @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                                        @if (check_assignFront(1))
                                         <button type="button" class="btn btn-outline-secondary" data-toggle="" id="btnCarga"
                                                 data-target=".carga-masiva" data-backdrop="static"
                                                 data-keyboard="false"><i class="fa fa-file-text-o" aria-hidden="true"></i> Carga masiva
                                         </button>
+                                        @endif
+                                        @endif
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2 text-center">
