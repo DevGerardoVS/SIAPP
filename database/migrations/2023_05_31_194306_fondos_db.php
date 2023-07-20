@@ -255,18 +255,6 @@ return new class extends Migration
             $table->string('deleted_user',45)->nullable(true);
         });
 
-/**/     Schema::create('cat_direccion',function (Blueprint $table){
-            $table->increments('id');
-            $table->string('cve_direccion',15)->nullable(false);
-            $table->string('nombre_direccion',120)->nullable(false);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-        });
-
         Schema::create('proyectos_mir',function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_upp',3)->nullable(false);
@@ -296,7 +284,6 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
             $table->foreign('proyecto_mir_id')->references('id')->on('proyectos_mir');
         });
 
@@ -389,6 +376,11 @@ return new class extends Migration
             $table->integer('pos_pre_id')->unsigned()->nullable(false);
             $table->integer('fondo_id')->unsigned()->nullable(false);
             $table->integer('obra_id')->unsigned()->nullable(false);
+
+            $table->foreign('epp_id')->references('id')->on('epp');
+            $table->foreign('clas_geo_id')->references('id')->on('clasificacion_geografica');
+            $table->foreign('pos_pre_id')->references('id')->on('posicion_presupuestaria');
+            $table->foreign('fondo_id')->references('id')->on('fondo');
         });
 
         Schema::create('proyectos_obra',function (Blueprint $table){
@@ -443,7 +435,6 @@ return new class extends Migration
         Schema::dropIfExists('unidades_medida');
         Schema::dropIfExists('beneficiarios');
         Schema::dropIfExists('cierre_ejercicio_metas');
-        Schema::dropIfExists('cat_direccion');
         Schema::dropIfExists('cierre_ejercicio_claves');
         Schema::dropIfExists('uppAutorizadasCPNomina');
         Schema::dropIfExists('clasificacion_administrativa');

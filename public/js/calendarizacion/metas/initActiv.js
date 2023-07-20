@@ -1,12 +1,66 @@
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 
 var dao = {
-    getData : function(){
+    getUpps: function () {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/upps/',
+            dataType: "JSON"
+        }).done(function (data) {
+            var par = $('#upp_filter');
+            par.html('');
+            par.append(new Option("-- UPPS--", ""));
+            document.getElementById("upp_filter").options[0].disabled = true;
+            $.each(data, function (i, val) {
+                if (data[i].clv_upp=='001') {
+                    par.append(new Option(data[i].upp, data[i].clv_upp,true,true));
+                } else
+                {
+                    par.append(new Option(data[i].upp, data[i].clv_upp));
+                }
+                
+            });
+
+
+        });
+    },
+    exportJasper: function () {
+        let upp;
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+        } else {
+            upp = $('#upp').val();
+        }
+           _url = "/actividades/jasper/" + upp;
+        window.location = _url;
+    },
+    exportExcel: function () {
+        let upp;
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+        } else {
+            upp = $('#upp').val();
+        }
+           _url = "/actividades/exportExcel/" + upp;
+        window.location = _url;
+    },
+    exportPdf: function () {
+        let upp;
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+        } else {
+            upp = $('#upp').val();
+        }
+           _url = "/actividades/exportPdf/" + upp;
+        window.location = _url;
+    },
+    getData : function(upp){
 		$.ajax({
 			type : "GET",
-			url : "/actividades/data",
+			url : "/actividades/data/"+upp,
 			dataType : "json"
         }).done(function (_data) {
+            console.log(_data);
 			_table = $("#catalogo");
 			_columns = [
 				{"aTargets" : [0] , "mData" :[0] },
@@ -14,15 +68,25 @@ var dao = {
 				{"aTargets" : [2] , "mData" :[2] },
 				{"aTargets" : [3] , "mData" :[3] },
 				{"aTargets" : [4] , "mData" :[4] },
-                { "aTargets": [5] , "mData": [5] },
+                {"aTargets" : [5] , "mData": [5] },
                 {"aTargets" : [6] , "mData" :[6] },
 				{"aTargets" : [7] , "mData" :[7] },
 				{"aTargets" : [8] , "mData" :[8] },
 				{"aTargets" : [9] , "mData" :[9] },
 				{"aTargets" : [10], "mData" :[10]},
-				{"aTargets" : [11], "mData" :[11]}
-			];
-			_gen.setTableScroll(_table, _columns, _data);
+                { "aTargets": [11], "mData": [11] },
+                {"aTargets" : [12] , "mData" :[12] },
+				{"aTargets" : [13] , "mData" :[13] },
+				{"aTargets" : [14] , "mData" :[14] },
+				{"aTargets" : [15] , "mData" :[15] },
+				{"aTargets" : [16] , "mData" :[16] },
+                {"aTargets" : [17] , "mData": [17] },
+                {"aTargets" : [18] , "mData" :[18] },
+				{"aTargets" : [19] , "mData" :[19] }
+            ];
+            _height = '1px';
+            _pagination = 15;
+			_gen.setTableScrollFotter(_table, _columns, _data,_height,_pagination);
 		});
 	},
     eliminar: function (id) {
@@ -195,11 +259,25 @@ var init = {
 };
 
 $(document).ready(function () {
+    $("#upp_filter").select2({
+        maximumSelectionLength: 10
+    });
+    dao.getData(null);
+    if ($('#upp').val() == '') {
+        dao.getUpps();
+        
+
+    } else {
+        dao.getData($('#upp').val());
+
+    }
+
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
     $("#sumMetas").val(0);
-    dao.getData();
+    
+  
     $('#btnSave').click(function (e) {
         e.preventDefault();
         if ($('#actividad').valid()) {
@@ -214,5 +292,9 @@ $(document).ready(function () {
             $("#" + i).prop('disabled', false);
         }
 
+    });
+    $('#upp_filter').change(() => {
+        console.log("upp_filter",$('#upp_filter').val());
+        dao.getData($('#upp_filter').val());
     });
 });

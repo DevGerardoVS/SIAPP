@@ -88,7 +88,7 @@
                         },
                         columnDefs: [{
                                 targets: formatCantidades,
-                                className: 'text-right'
+                                className: 'text-center'
                             },
                             {
                                 targets: columns_hidden,
