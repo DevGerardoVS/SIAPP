@@ -31,8 +31,11 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-           _url = "/actividades/jasper/" + upp;
-        window.location = _url;
+        _url = "/actividades/jasper/" + upp;
+        window.open(_url, '_blank');
+        $('#cabecera').css("visibility","visible");
+
+       // window.location = _url;
     },
     exportExcel: function () {
         let upp;
@@ -41,8 +44,10 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-           _url = "/actividades/exportExcel/" + upp;
-        window.location = _url;
+        _url = "/actividades/exportExcel/" + upp;
+        window.open(_url, '_blank');
+        $('#cabecera').css("visibility","visible");
+      //  window.location = _url;
     },
     exportPdf: function () {
         let upp;
@@ -51,8 +56,11 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-           _url = "/actividades/exportPdf/" + upp;
-        window.location = _url;
+        _url = "/actividades/exportPdf/" + upp;
+        window.open(_url, '_blank');
+                $('#cabecera').css("visibility","visible");
+
+      //  window.location = _url;
     },
     getData : function(upp){
 		$.ajax({
@@ -61,7 +69,7 @@ var dao = {
 			dataType : "json"
         }).done(function (_data) {
             console.log(_data);
-			_table = $("#catalogo");
+			_table = $("#proyectoM");
 			_columns = [
 				{"aTargets" : [0] , "mData" :[0] },
 				{"aTargets" : [1] , "mData" :[1] },
@@ -259,14 +267,13 @@ var init = {
 };
 
 $(document).ready(function () {
+
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
     dao.getData(null);
     if ($('#upp').val() == '') {
         dao.getUpps();
-        
-
     } else {
         dao.getData($('#upp').val());
 

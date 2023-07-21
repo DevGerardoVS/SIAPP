@@ -112,6 +112,7 @@ class MetasController extends Controller
 				->where('programacion_presupuesto.upp', '=', $upp)
 				->where('programacion_presupuesto.ejercicio', '=', 2023)
 				->where('v_epp.ejercicio', '=', 2023)
+				->orderBy('programacion_presupuesto.upp')
 				->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 				->distinct()
 				->get();
@@ -137,6 +138,7 @@ class MetasController extends Controller
 			)->distinct()
 			->where('deleted_at', null)
 			->groupByRaw('clv_ur')
+			->orderBy('clv_ur')
 			->where('clv_upp', $upp)
 			->where('ejercicio', 2023)->get();
 
@@ -147,6 +149,7 @@ class MetasController extends Controller
 				'Especial'
 			)
 			->where('deleted_at', null)
+			->orderBy('clv_upp')
 			->where('clv_upp', $upp)
 			->get();
 		return ["urs"=>$urs,"tAct"=>$tAct[0]];
@@ -159,6 +162,7 @@ class MetasController extends Controller
 				'clv_upp',
 				DB::raw('CONCAT(clv_upp, " - ", upp) AS upp')
 			)->distinct()
+			->orderBy('clv_upp')
 			->groupByRaw('clv_upp')
 			->where('ejercicio', 2023)->get();
 		return $upps;
@@ -288,23 +292,28 @@ class MetasController extends Controller
 	}
 	public function proyExcel()
 	{
+		Controller::check_permission('getClaves');
 		/*Si no coloco estas lineas Falla*/
 		ob_end_clean();
 		ob_start();
 		/*Si no coloco estas lineas Falla*/
 		return Excel::download(new MetasCargaM(), 'CargaMasiva.xlsx');
 	}
-	public function pdfView()
+	public function pdfView($upp)
 	{
-		$data = MetasHelper::actividades(auth::user()->clv_upp);
+		Controller::check_permission('getClaves');
+		$data = MetasHelper::actividades($upp);
 		return view('calendarizacion.metas.proyectoPDF', compact('data'));
 	}
 
 	public function exportPdf($upp)
 	{
+		ini_set('max_execution_time', 5000);
+        ini_set('memory_limit', '1024M');
+		Controller::check_permission('getClaves');
 		$data = MetasHelper::actividades($upp);
 		view()->share('data', $data);
-		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF');
+		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF')->setPaper('a4', 'landscape');
 		return $pdf->download('Proyecto con actividades.pdf');
 	}
 	public function downloadActividades($upp)

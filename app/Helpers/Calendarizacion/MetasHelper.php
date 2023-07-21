@@ -65,7 +65,8 @@ class MetasHelper{
 				'beneficiarios.beneficiario',
 				'unidades_medida.unidad_medida',
 			)
-			->where('metas.deleted_at', '=', null);
+			->where('metas.deleted_at', '=', null)
+			->groupByRaw('pro.ur');
 			if($upp !="null"){
 				$query = $query->where('pro.upp',$upp);
 			}

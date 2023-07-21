@@ -7,28 +7,28 @@
         </div>
                 <br>
                     <div>
-                        <table id="catalogo" style="border: 1px solid #000; text-align: left; vertical-align: top;">
+                        <table id="catalogo"  style="border: 1px solid #000; text-align: left; vertical-align: top; margin-left: auto; margin-right: auto; text-align: left">
                             <thead>
                                 <tr style="background-color: #6A0F49 !important;color: white !important; border: 1px solid #000; text-align: left; vertical-align: top;">
-                                    <th >Finalidad</th>
-                                    <th >Función</th>
-                                    <th >Subfunción</th>
-                                    <th >Eje</th>
-                                    <th >Linea de Accion</th>
-                                    <th >Programa sectorial</th>
-                                    <th >Tipologia CONAC</th>
-                                    <th >UP</th>
-                                    <th >UR</th>
-                                    <th >Programa</th>
-                                    <th >Subprograma</th>
-                                    <th >Proyecto</th>
-                                    <th >Fondo</th>
-                                    <th >Actividad</th>
-                                    <th >Tipo Actividad</th>
-                                    <th >Meta anual</th>
-                                    <th ># Beneficiarios</th>
-                                    <th >Beneficiarios</th>
-                                    <th >U de medida</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Finalidad</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Función</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Subfunción</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Eje</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Linea de Accion</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Programa sectorial</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Tipologia CONAC</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">UP</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">UR</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Programa</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Subprograma</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Proyecto</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Fondo</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Actividad</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Tipo Actividad</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Meta anual</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;"># Beneficiarios</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Beneficiarios</th>
+                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">U de medida</th>
                                 </tr>
                             </thead>
                             <tbody>

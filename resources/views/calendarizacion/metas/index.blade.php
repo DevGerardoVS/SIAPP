@@ -1,5 +1,4 @@
 @extends('layouts.app')
-@include('panels.datatable')
 @include('calendarizacion.metas.modalCarga')
 @section('content')
     <div class="container">
@@ -76,6 +75,7 @@
                                                 <th class="vertical sorting">Proyecto</th>
                                                 <th class="vertical sorting">Seleccion</th>
                                             </tr>
+                                        </thead>
                                     </table>
                                 </div>
                             </div>
