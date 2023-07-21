@@ -30,7 +30,6 @@ class User extends Authenticatable
         'email',
         'username',
         'password',
-        'sudo',
         'clv_upp',
         'status'
     ];
