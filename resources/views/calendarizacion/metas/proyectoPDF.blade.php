@@ -10,17 +10,25 @@
                         <table id="catalogo" style="border: 1px solid #000; text-align: left; vertical-align: top;">
                             <thead>
                                 <tr style="background-color: #6A0F49 !important;color: white !important; border: 1px solid #000; text-align: left; vertical-align: top;">
-                                    <th>UR</th>
-                                    <th>Programa</th>
-                                    <th>Subprograma</th>
-                                    <th>Proyecto</th>
-                                    <th>Fondo</th>
-                                    <th>Actividad</th>
-                                    <th>Tipo Actividad</th>
-                                    <th>Meta anual</th>
-                                    <th># Beneficiarios</th>
-                                    <th>Beneficiarios</th>
-                                    <th>U de medida</th>
+                                    <th >Finalidad</th>
+                                    <th >Función</th>
+                                    <th >Subfunción</th>
+                                    <th >Eje</th>
+                                    <th >Linea de Accion</th>
+                                    <th >Programa sectorial</th>
+                                    <th >Tipologia CONAC</th>
+                                    <th >UP</th>
+                                    <th >UR</th>
+                                    <th >Programa</th>
+                                    <th >Subprograma</th>
+                                    <th >Proyecto</th>
+                                    <th >Fondo</th>
+                                    <th >Actividad</th>
+                                    <th >Tipo Actividad</th>
+                                    <th >Meta anual</th>
+                                    <th ># Beneficiarios</th>
+                                    <th >Beneficiarios</th>
+                                    <th >U de medida</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -29,6 +37,15 @@
                                 @isset($data)
                                 @foreach ($data as $i)
                                 <tr style="border: 1px solid #000; text-align: left; vertical-align: top;">
+
+                                    <td>{{{$i->finalidad}}}</td>
+                                    <td>{{{$i->funcion}}}</td>
+                                    <td>{{{$i->subfuncion}}}</td>
+                                    <td>{{{$i->eje}}}</td>
+                                    <td>{{{$i->linea}}}</td>
+                                    <td>{{{$i->programaSec}}}</td>
+                                    <td>{{{$i->tipologia}}}</td>
+                                    <td>{{{$i->upp}}}</td>
                                     <td>{{{$i->ur}}}</td>
                                     <td>{{{$i->programa}}}</td>
                                     <td>{{{$i->subprograma}}}</td>

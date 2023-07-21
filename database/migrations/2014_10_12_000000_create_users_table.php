@@ -39,7 +39,6 @@ return new class extends Migration
             $table->string('celular', 20);
             $table->string('username', 80)->unique();
             $table->string('password', 200);
-            $table->tinyInteger('sudo')->default(0);
             $table->string('clv_upp', 20)->nullable();
             $table->tinyInteger('estatus')->default(1);
             $table->softDeletes();
@@ -157,16 +156,6 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
         });
 
-        Schema::create('adm_configuracion', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('entorno', 15);
-            $table->string('logo', 100);
-            $table->string('escudo', 100);
-            $table->string('sello', 100);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-        });
-
     }
 
     /**
@@ -181,7 +170,6 @@ return new class extends Migration
         Schema::dropIfExists('adm_rel_menu_grupo');
         Schema::dropIfExists('adm_rel_funciones_grupos');
         Schema::dropIfExists('adm_bitacora');
-        Schema::dropIfExists('adm_configuracion');
         Schema::dropIfExists('adm_funciones');
         Schema::dropIfExists('adm_menus');
         Schema::dropIfExists('adm_grupos');
