@@ -255,19 +255,7 @@ return new class extends Migration
             $table->string('deleted_user',45)->nullable(true);
         });
 
-/**/     Schema::create('cat_direccion',function (Blueprint $table){
-            $table->increments('id');
-            $table->string('cve_direccion',15)->nullable(false);
-            $table->string('nombre_direccion',120)->nullable(false);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-        });
-
-        Schema::create('proyectos_mir', function (Blueprint $table){
+        Schema::create('proyectos_mir',function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_upp',3)->nullable(false);
             $table->string('entidad_ejecutora',6)->nullable(true);
@@ -336,7 +324,6 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
             $table->foreign('proyecto_mir_id')->references('id')->on('proyectos_mir');
         });
 
@@ -486,7 +473,6 @@ return new class extends Migration
         Schema::dropIfExists('unidades_medida');
         Schema::dropIfExists('beneficiarios');
         Schema::dropIfExists('cierre_ejercicio_metas');
-        Schema::dropIfExists('cat_direccion');
         Schema::dropIfExists('cierre_ejercicio_claves');
         Schema::dropIfExists('uppAutorizadasCPNomina');
         Schema::dropIfExists('clasificacion_administrativa');
