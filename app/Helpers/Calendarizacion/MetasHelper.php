@@ -11,7 +11,6 @@ class MetasHelper{
 	
     public static function actividades($upp){
         try {
-			Log::debug("uppHELPER:".$upp);
 			$proyecto = DB::table('actividades_mir')
 				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
 				->select(
@@ -101,5 +100,13 @@ class MetasHelper{
 		->get();
 
 		return $result;
+	}
+	public static function tCalendario(){
+
+		$tipo=[];
+		$tipo[] = ['0', 'Acumulativa'];
+		$tipo[] = ['1', 'Continua'];
+		$tipo[] = ['2', 'Especial'];
+		return  $tipo;
 	}
 }

@@ -45,7 +45,6 @@ class MetasController extends Controller
 	}
 	public function getActiv($upp)
 	{
-		Log::debug($upp);
 		$query = MetasHelper::actividades($upp);
 		$dataSet = [];
 		foreach ($query as $key) {
@@ -106,6 +105,7 @@ class MetasController extends Controller
 					'programa_presupuestario as programa',
 					'subprograma_presupuestario as subprograma',
 					'proyecto_presupuestario AS  clv_proyecto',
+					'programacion_presupuesto.subsecretaria AS subsec',
 					DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto')
 				)
 				->where('programacion_presupuesto.ur', '=', $request->ur_filter)
@@ -118,9 +118,11 @@ class MetasController extends Controller
 				->get();
 				
 			foreach ($activs as $key) {
-				$clave ='"'. strval($key->finalidad) . '-' .strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje). '-' .strval($key->linea).'-'. strval($key->programaSec) . '-' .strval($key->tipologia) .'-'. strval($upp) . '-' .strval($request->ur_filter) . '-' . strval($key->programa) . '-' . strval($key->subprograma). '-' .strval($key->clv_proyecto).'"';
+				$area= '"'.strval($key->finalidad).'-'.strval($key->funcion) .'-'.strval($key->subfuncion).'-'.strval($key->eje).'-'.strval($key->linea).'-'.strval($key->programaSec) .'-'.strval($key->tipologia).'-'.strval($key->programa) .'-'.strval($key->subprograma).'-'. strval($key->clv_proyecto).'"';
+					$entidad = '"' . strval($upp).'-'. strval($key->subsec) .'-'. strval($request->ur_filter) . '"';
+				$clave ='"'.strval($upp) .strval($key->subsec) .strval($request->ur_filter).'-'.strval($key->finalidad).strval($key->funcion) . strval($key->subfuncion) . strval($key->eje).strval($key->linea). strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma). strval($key->clv_proyecto).'"';
 				Log::debug($clave);
-				$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='".$clave."' value='".$clave."' onchange='dao.getFyA(".$clave.")' ></div>";
+				$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='".$clave."' value='".$clave."' onchange='dao.getFyA(".$area.",".$entidad.")' ></div>";
 				$dataSet[] = [$key->finalidad,$key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $accion];
 			}
 		}
@@ -167,10 +169,11 @@ class MetasController extends Controller
 			->where('ejercicio', 2023)->get();
 		return $upps;
 	}
-	public function getFyA($clave)
+	public function getFyA($area,$entidad)
 	{
-		$arrayclave=explode( '-', $clave);
-		$fondos = DB::table('programacion_presupuesto')
+		$areaAux=explode( '-', $area);
+		$entidadAux=explode( '-', $entidad);
+		 $fondos = DB::table('programacion_presupuesto')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', 'programacion_presupuesto.fondo_ramo')
 			->select(
 				'fondo.id',
@@ -178,22 +181,22 @@ class MetasController extends Controller
 				DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", fondo.ramo) AS ramo')
 			)
 			->where('fondo.deleted_at', null)
-			->where('programacion_presupuesto.finalidad',$arrayclave[0])
-			->where('programacion_presupuesto.funcion',$arrayclave[1])
-			->where('programacion_presupuesto.subfuncion',$arrayclave[2])
-			->where('programacion_presupuesto.eje',$arrayclave[3])
-			->where('programacion_presupuesto.linea_accion',$arrayclave[4])
-			->where('programacion_presupuesto.programa_sectorial',$arrayclave[5])
-			->where('programacion_presupuesto.tipologia_conac',$arrayclave[6])
-			->where('programacion_presupuesto.upp',$arrayclave[7])
-            ->where('programacion_presupuesto.ur', $arrayclave[8])
-            ->where('programa_presupuestario', $arrayclave[9])
-            ->where('subprograma_presupuestario', $arrayclave[10])
-			->where('proyecto_presupuestario', $arrayclave[11])
+			->where('programacion_presupuesto.finalidad',$areaAux[0])
+			->where('programacion_presupuesto.funcion',$areaAux[1])
+			->where('programacion_presupuesto.subfuncion',$areaAux[2])
+			->where('programacion_presupuesto.eje',$areaAux[3])
+			->where('programacion_presupuesto.linea_accion',$areaAux[4])
+			->where('programacion_presupuesto.programa_sectorial',$areaAux[5])
+			->where('programacion_presupuesto.tipologia_conac',$areaAux[6])
+			->where('programacion_presupuesto.upp',$entidadAux[0])
+            ->where('programacion_presupuesto.ur', $entidadAux[2])
+            ->where('programa_presupuestario', $areaAux[7])
+            ->where('subprograma_presupuestario', $areaAux[8])
+			->where('proyecto_presupuestario', $areaAux[9])
 			->groupByRaw('clave')
 			->where('ejercicio',2023)
 			->get();
-
+			Log::debug($fondos);
 			$activ = DB::table('actividades_mir')
 			->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
 			->select(
@@ -202,20 +205,11 @@ class MetasController extends Controller
 				DB::raw('CONCAT(clv_actividad, " - ",actividad) AS actividad')
 			)
 			->where('actividades_mir.deleted_at', null)
-			->where('proyectos_mir.clv_finalidad',$arrayclave[0])
-            ->where('proyectos_mir.clv_funcion', $arrayclave[1])
-            ->where('proyectos_mir.clv_subfuncion', $arrayclave[2])
-            ->where('proyectos_mir.clv_eje', $arrayclave[3])
-			->where('proyectos_mir.clv_linea_accion', $arrayclave[4])
-			->where('proyectos_mir.clv_programa_sectorial',$arrayclave[5])
-            ->where('proyectos_mir.clv_tipologia_conac', $arrayclave[6])
-			->where('proyectos_mir.clv_upp',$arrayclave[7])
-            ->where('proyectos_mir.clv_ur', $arrayclave[8])
-            ->where('proyectos_mir.clv_programa', $arrayclave[9])
-            ->where('proyectos_mir.clv_subprograma', $arrayclave[10])
-			->where('proyectos_mir.clv_proyecto', $arrayclave[11])
-			->groupByRaw('clave')->get();
-		return ['fondos'=>$fondos,"activids"=>$activ];
+			->where('proyectos_mir.area_funcional',str_replace ( "-", '', $area))
+            ->where('proyectos_mir.entidad_ejecutora',str_replace ( "-", '', $entidad))
+			->groupByRaw('clave')->get(); 
+			Log::debug($activ);
+		return ['fondos'=> $fondos ,"activids"=>$activ ];
 	}
 	public function getSelects()
 	{

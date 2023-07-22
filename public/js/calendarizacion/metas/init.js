@@ -5,7 +5,6 @@ let actividades = [];
 var dao = {
     getData: function (upp, ur) {
         var data = new FormData();
-        console.log("upp", $('#upp').val())
         if ($('#upp').val() != '') {
             data.append('ur_filter', ur);
         } else {
@@ -258,11 +257,10 @@ var dao = {
 
         });
     },
-    getFyA: function (clave) {
-        console.log(clave);
+    getFyA: function (area,enti) {
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/fondos/' + clave,
+            url: '/calendarizacion/fondos/' + area+'/'+enti,
             dataType: "JSON"
         }).done(function (data) {
             $('#sel_actividad').prop('disabled', false);
