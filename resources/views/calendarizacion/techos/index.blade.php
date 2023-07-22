@@ -6,6 +6,7 @@
 @include('calendarizacion.techos.modalExportExcel')
 @include('calendarizacion.techos.modalExportPDF')
 @include('calendarizacion.techos.modalExportPresupuestos')
+@include('calendarizacion.techos.modalEliminar')
 
 @section('content')
 

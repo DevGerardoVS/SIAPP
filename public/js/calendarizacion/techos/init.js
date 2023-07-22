@@ -268,6 +268,7 @@ $(document).ready(function () {
         $("#carga").modal('hide');
         $('#cmFile').val(null);
     });
+    
     $('#btnClose').click(function () {
         $("#carga").modal('hide');
         $('#cmFile').val(null);
@@ -293,17 +294,7 @@ $(document).ready(function () {
         $('#exportPresupuestos').modal('hide')
     })
 
-   /*  $('#btnExport').on('click', function(e){
-        console.log("Export Excel")
-
-        $.ajax({
-            type: "GET",
-            url: '/calendarizacion/techos/export-excel',
-            dataType: "JSON"
-        }).done(function (data) {
-            console.log(data)
-        });
-    }) */
+    
 });
 
 function totalP(){
@@ -418,3 +409,37 @@ $('#btnSave').click(function (e) {
         });
     }
 });
+
+$('#eliminar').click(function(e){
+    e.preventDefault
+    e.stopPropagation
+})
+
+function getElimina(i){
+    $('#eliminarID').val(i);
+}
+
+function eliminarRegistro(){
+    console.log($('#eliminarID').val());
+    $.ajax({
+        type: "POST",
+        url: '/calendarizacion/techos/eliminar',
+        data: {
+            'id': $('#eliminarID').val()
+        },
+        enctype: 'multipart/form-data'
+    }).done(function (response) {
+        console.log("response")
+    }).fail(function (error) {
+        let arr = Object.keys(error.responseJSON.errors)
+        arr.forEach(function (item) {
+            $("#frm_create_techo").find("#"+item).addClass('is-invalid');
+        })
+        Swal.fire({
+            icon: 'warning',
+            title: 'Hubo un error, campos vacíos',
+            showConfirmButton: true
+        });
+
+    });
+}

@@ -18,6 +18,7 @@
         Route::get('/calendarizacion/techos/export-excel', 'exportExcel')->name('exportExcel');
         Route::get('/calendarizacion/techos/export-pdf', 'exportPDF')->name('exportPDF');
         Route::get('/calendarizacion/techos/export-presupuestos', 'exportPresupuestos')->name('exportPresupuestos');
+        Route::post('/calendarizacion/techos/eliminar', 'eliminar')->name('eliminar');
     });
 
 	Route::controller(ClavePreController::class)->group(function () {

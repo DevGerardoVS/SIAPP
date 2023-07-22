@@ -32,7 +32,7 @@ class TechosController extends Controller
         $dataSet = [];
 
         $data = DB::table('techos_financieros as tf')
-            ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
+            ->select('tf.id','tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
             ->leftJoinSub('select distinct clv_upp, upp, ejercicio as Ej from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
             ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo');
             if($request->anio_filter != null){
@@ -57,7 +57,8 @@ class TechosController extends Controller
         foreach ($data as $d){
             if($max_ejercicio[0]->ejercicio == $d->ejercicio){
                 $button2 = '<a class="btn btn-secondary" onclick="" data-toggle="modal" data-target="#createGroup" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil" style="font-size: large; color: white"></i></a>';
-                $button3 = '<button onclick="" title="Eliminar grupo" class="btn btn-danger"><i class="fa fa-trash" style="font-size: large"></i></button>';
+                /* $button3 = '<button id="eliminar" title="Eliminar" class="btn btn-danger"><i class="fa fa-trash" style="font-size: large"></i></button>'; */
+                $button3 = '<a class="btn btn-danger" onclick="getElimina('.$d->id.')" data-bs-toggle="modal" data-bs-target="#eliminar" ><i class="fa fa-trash" style="font-size: large;color: white"></i></a>';
                 array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,'pendiente',$button2.' '.$button3]);
             }else{
                 array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,'pendiente',' ']);
@@ -141,7 +142,7 @@ class TechosController extends Controller
         if(count($data) != 0){
             try {
                 DB::beginTransaction();
-                /* foreach ($data as $d){
+                 foreach ($data as $d){
                       DB::table('techos_financieros')->insert([
                         'clv_upp' => $upp,
                         'clv_fondo' => $d[1],
@@ -153,7 +154,7 @@ class TechosController extends Controller
                         'updated_user' => Auth::user()->username,
                         'created_user' => Auth::user()->username
                     ]);
-                } */
+                } 
                 DB::commit();
                 return [
                     'status' => 200
@@ -169,6 +170,45 @@ class TechosController extends Controller
         }else{
             return [
                 'status' => 400
+            ];
+        }
+    }
+
+    public function eliminar(Request $request){
+        log::debug($request);
+        try{
+            $data = DB::table('techos_financieros')
+            ->select('clv_upp','clv_fondo','tipo','ejercicio')
+            ->where('id','=',$request->id)
+            ->get();
+
+            log::debug($data[0]->clv_upp);
+
+            $existe = DB::table('programacion_presupuesto')
+            ->where('upp','=',$data[0]->clv_upp)
+            ->where('fondo_ramo','=',$data[0]->clv_fondo)
+            ->where('tipo','=',$data[0]->tipo)
+            ->where('ejercicio','=',$data[0]->ejercicio)
+            ->get();
+
+            if(count($existe) == 0){
+                log::debug('Se puede eliminar');
+                DB::beginTransaction();
+                DB::table('techos_financieros')->where('id', '=', $request->id)->delete();
+                DB::commit();
+            }else{
+                log::debug('No puede eliminar');
+            }
+
+            /* DB::beginTransaction();
+            DB::table('techos_financieros')->where('id', '=', $request->id)->delete();
+            DB::commit(); */
+        }catch (Throwable $e){
+            DB::rollBack();
+            report($e);
+            return [
+                'status' => 400,
+                'error' => $e
             ];
         }
     }
