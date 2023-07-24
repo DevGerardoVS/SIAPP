@@ -115,8 +115,8 @@ class ConfiguracionesController extends Controller
             
             $data = DB::table('epp')
                 ->select('epp.upp_id', 'catalogo.descripcion',DB::raw('if(uppautorizadascpnomina.deleted_at is null,1,0) as autorizado'))
-                ->join('catalogo','catalogo.clave','=','epp.upp_id')
-                ->leftJoin('uppautorizadascpnomina','uppautorizadascpnomina.clv_upp','=','epp.upp_id')
+                ->join('catalogo','catalogo.id','=','epp.upp_id')
+                ->leftJoin('uppautorizadascpnomina','uppautorizadascpnomina.clv_upp','=','catalogo.clave')
                 ->where('grupo_id', 6)
                 ->where($array_where)
                 ->groupBy('upp_id')
