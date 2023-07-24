@@ -7,13 +7,12 @@ var dao = {
             url: '/calendarizacion/upps/',
             dataType: "JSON"
         }).done(function (data) {
+            console.log("upps",data);
             var par = $('#upp_filter');
             par.html('');
-            par.append(new Option("-- UPPS--", ""));
-            document.getElementById("upp_filter").options[0].disabled = true;
             $.each(data, function (i, val) {
                 if (data[i].clv_upp=='001') {
-                    par.append(new Option(data[i].upp, data[i].clv_upp,true,true));
+                    par.append(new Option(data[i].upp, data[i].clv_upp,true,false));
                 } else
                 {
                     par.append(new Option(data[i].upp, data[i].clv_upp));
@@ -80,7 +79,7 @@ var dao = {
                 {"aTargets" : [6] , "mData" :[6] },
 				{"aTargets" : [7] , "mData" :[7] },
 				{"aTargets" : [8] , "mData" :[8] },
-				{"aTargets" : [9] , "mData" :[9] },
+				{"aTargets" : [9] , "mData" :[9] }/* ,
 				{"aTargets" : [10], "mData" :[10]},
                 { "aTargets": [11], "mData": [11] },
                 {"aTargets" : [12] , "mData" :[12] },
@@ -90,11 +89,11 @@ var dao = {
 				{"aTargets" : [16] , "mData" :[16] },
                 {"aTargets" : [17] , "mData": [17] },
                 {"aTargets" : [18] , "mData" :[18] },
-				{"aTargets" : [19] , "mData" :[19] }
+				{"aTargets" : [19] , "mData" :[19] } */
             ];
             _height = '1px';
             _pagination = 15;
-			_gen.setTableScrollFotter(_table, _columns, _data,_height,_pagination);
+			_gen.setTableScrollFotter(_table, _columns, _data);
 		});
 	},
     eliminar: function (id) {
@@ -271,9 +270,9 @@ $(document).ready(function () {
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
-    dao.getData(null);
     if ($('#upp').val() == '') {
         dao.getUpps();
+        dao.getData($('#upp_filter').val());
     } else {
         dao.getData($('#upp').val());
 

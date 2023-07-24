@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use App\Helpers\Calendarizacion\MetasHelper;
+use App\Http\Controllers\Calendarizacion\MetasController;
 
 
 class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths
@@ -24,33 +25,13 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
     }
     public function collection()
     {
-
-        $query = MetasHelper::actividades($this->upp);
-        $this->filas = count($query);
-        $dataSet = [];
-		foreach ($query as $key) {
-			$i = array(
-				$key->finalidad,
-				$key->funcion,
-				$key->subfuncion,
-				$key->eje,
-				$key->linea,
-				$key->programaSec,
-				$key->tipologia,
-				$key->upp,
-				$key->ur,
-				$key->programa,
-				$key->subprograma,
-				$key->proyecto,
-				$key->fondo,
-				$key->actividad,
-				$key->tipo,
-				$key->total,
-				$key->cantidad_beneficiarios,
-				$key->beneficiario,
-				$key->unidad_medida
-			);
-			$dataSet[] = $i;
+/* 
+        $query = MetasHelper::actividades($this->upp); */
+        $dataSet = MetasController::getActiv($this->upp);
+        $this->filas = count($dataSet);
+        for ($i=0; $i <count($dataSet); $i++) { 
+			unset($dataSet[$i][19]);
+			$dataSet=array_values($dataSet);
 		}
 		return collect($dataSet);
     }

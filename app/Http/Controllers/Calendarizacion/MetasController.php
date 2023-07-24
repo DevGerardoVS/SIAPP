@@ -4,29 +4,21 @@ namespace App\Http\Controllers\Calendarizacion;
 
 use App\Imports\utils\FunFormats;
 use App\Http\Controllers\Controller;
-use App\Models\calendarizacion\ProyectosMir;
 use Carbon\Carbon;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MetasExport;
 use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
-use App\Models\catalogos\CatPermisos;
 use Auth;
 use DB;
 use Log;
-use Illuminate\Database\Query\JoinClause;
 use App\Helpers\Calendarizacion\MetasHelper;
-use Illuminate\Support\Facades\Schema;
-use Mockery\Undefined;
 use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
 use Shuchkin\SimpleXLSX;
-use Symfony\Component\Console\Helper\Table;
 
 
 
@@ -43,28 +35,31 @@ class MetasController extends Controller
 		Controller::check_permission('getClaves');
 		return view('calendarizacion.metas.proyecto');
 	}
-	public function getActiv($upp)
+	public static function getActiv($upp)
 	{
 		$query = MetasHelper::actividades($upp);
+		Log::debug($query);
 		$dataSet = [];
 		foreach ($query as $key) {
-			$accion = '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
+			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
 				'<i class="fa fa-pencil" style="color:green;"></i></button>' .
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
-				'<i class="fa fa-trash" style="color:B40000;" ></i></button>';
+				'<i class="fa fa-trash" style="color:B40000;" ></i></button>':'';
+			$area = str_split($key->area);
+			$entidad = str_split($key->entidad);
 			$i = array(
-				$key->finalidad,
-				$key->funcion,
-				$key->subfuncion,
-				$key->eje,
-				$key->linea,
-				$key->programaSec,
-				$key->tipologia,
-				$key->upp,
-				$key->ur,
-				$key->programa,
-				$key->subprograma,
-				$key->proyecto,
+				$area[0],
+				$area[1],
+				$area[2],
+				$area[3],
+				''.strval($area[4]).strval($area[5]).'',
+				$area[6],
+				$area[7],
+				''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
+				''.strval($entidad[4]).strval($entidad[5]).'',
+				''.strval($area[8]).strval($area[9]).'',
+				''.strval($area[10]).strval($area[11]).strval($area[12]).'',
+				''.strval($area[13]).strval($area[14]).strval($area[15]).'',
 				$key->fondo,
 				$key->actividad,
 				$key->tipo,
@@ -296,7 +291,11 @@ class MetasController extends Controller
 	public function pdfView($upp)
 	{
 		Controller::check_permission('getClaves');
-		$data = MetasHelper::actividades($upp);
+		$data = $this->getActiv($upp);
+		for ($i=0; $i <count($data); $i++) { 
+			unset($data[$i][19]);
+			$data=array_values($data);
+		}
 		return view('calendarizacion.metas.proyectoPDF', compact('data'));
 	}
 
@@ -305,7 +304,11 @@ class MetasController extends Controller
 		ini_set('max_execution_time', 5000);
         ini_set('memory_limit', '1024M');
 		Controller::check_permission('getClaves');
-		$data = MetasHelper::actividades($upp);
+		$data = $this->getActiv($upp);
+		for ($i=0; $i <count($data); $i++) { 
+			unset($data[$i][19]);
+			$data=array_values($data);
+		}
 		view()->share('data', $data);
 		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF')->setPaper('a4', 'landscape');
 		return $pdf->download('Proyecto con actividades.pdf');
@@ -320,7 +323,6 @@ class MetasController extends Controller
 			"logoRight" => public_path() . 'img\escudo.png',
 			"UPP" => $upp,
 		);
-		log::debug($request);
 		return $this->jasper($request);
 
 	}

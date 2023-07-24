@@ -75,23 +75,30 @@ class FunFormats
                     );
                     return $error;
                 } else {
-                    $actividad = ActividadesMir::where('deleted_at', null)->where('actividades_mir.id', $k[13])->first();
+                    $actividad = ActividadesMir::where('deleted_at', null)->where('actividades_mir.clv_actividad', $k[13])->first();
                     if ($actividad) {
-                        $proy = ProyectosMir::where('deleted_at', null)
-                            ->where('id', $actividad['proyecto_mir_id'])
-                            ->where('clv_finalidad',$k[0])
-                            ->where('clv_funcion', $k[1])
-                            ->where('clv_subfuncion', $k[2])
-                            ->where('clv_eje', $k[3])
-                            ->where('clv_linea_accion', $k[4])
-                            ->where('clv_programa_sectorial',$k[5])
-                            ->where('clv_tipologia_conac', $k[6])
-                            ->where('clv_upp',$k[7])
-                            ->where('clv_ur', $k[8])
-                            ->where('clv_programa', $k[9])
-                            ->where('clv_subprograma', $k[10])
-                            ->where('clv_proyecto', $k[11])
-                            ->get();
+                        
+                        $area= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]).'';
+                        Log::debug($area);
+                        $proy = DB::table('proyectos_mir')
+                        ->select('*')
+                        ->where('deleted_at', null)
+                        ->where('id', $actividad['proyecto_mir_id'])
+                        ->where('area_funcional',$area)
+                        ->where('clv_upp',$k[7])
+                      /*   ->where('clv_funcion', $k[1])
+                        ->where('clv_subfuncion', $k[2])
+                        ->where('clv_eje', $k[3])
+                        ->where('clv_linea_accion', $k[4])
+                        ->where('clv_programa_sectorial',$k[5])
+                        ->where('clv_tipologia_conac', $k[6])
+                        ->where('clv_upp',$k[7])
+                        ->where('clv_ur', $k[8])
+                        ->where('clv_programa', $k[9])
+                        ->where('clv_subprograma', $k[10])
+                        ->where('clv_proyecto', $k[11]) */
+                        ->get();
+                        Log::debug($proy);
                         if (count($proy)>=1) {
                             $clave =''. strval($k[0]) . '-' .strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]). '-' .strval($k[4]).'-'. strval($k[5]) . '-' .strval($k[6]) .'-'. strval($k[7]) . '-' .strval($k[8]) . '-' . strval($k[9]) . '-' . strval($k[10]). '-' .strval($k[11]).'';
                             $pres=FunFormats::existPP($clave);

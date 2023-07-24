@@ -37,32 +37,13 @@
                                 @isset($data)
                                 @foreach ($data as $i)
                                 <tr style="border: 1px solid #000; text-align: left; vertical-align: top;">
-
-                                    <td>{{{$i->finalidad}}}</td>
-                                    <td>{{{$i->funcion}}}</td>
-                                    <td>{{{$i->subfuncion}}}</td>
-                                    <td>{{{$i->eje}}}</td>
-                                    <td>{{{$i->linea}}}</td>
-                                    <td>{{{$i->programaSec}}}</td>
-                                    <td>{{{$i->tipologia}}}</td>
-                                    <td>{{{$i->upp}}}</td>
-                                    <td>{{{$i->ur}}}</td>
-                                    <td>{{{$i->programa}}}</td>
-                                    <td>{{{$i->subprograma}}}</td>
-                                    <td>{{{$i->proyecto}}}</td>
-                                    <td>{{{$i->fondo}}}</td>
-                                    <td>{{{$i->actividad}}}</td>
-                                    <td>{{{$i->tipo}}}</td>
-                                    <td>{{{$i->total}}}</td>
-                                    <td>{{{$i->cantidad_beneficiarios}}}</td>
-                                    <td>{{{$i->beneficiario}}}</td>
-                                    <td>{{{$i->unidad_medida}}}</td>
+                                    @foreach ($i as $item => $value)
+                                    <td>{{{$value}}}</td> 
+                                    @endforeach
                                   </tr>
                                 @endforeach
                                     
                                 @endisset
-                            </tbody>
-                            </tbody>
                         </table>
                 </div>
              

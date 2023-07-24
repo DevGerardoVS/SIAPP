@@ -15,57 +15,37 @@ class MetasHelper{
 				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
 				->select(
 					'actividades_mir.id',
-					'proyectos_mir.clv_finalidad AS finalidad',
-					'proyectos_mir.clv_funcion AS funcion',
-					'proyectos_mir.clv_subfuncion AS subfuncion',
-					'proyectos_mir.clv_eje AS eje',
-					'proyectos_mir.clv_linea_accion AS linea',
-					'proyectos_mir.clv_programa_sectorial AS programaSec',
-					'proyectos_mir.clv_tipologia_conac AS tipologia',
+					'actividades_mir.clv_actividad',
 					'proyectos_mir.clv_upp AS upp',
-					'proyectos_mir.clv_ur AS ur',
-					'proyectos_mir.clv_programa as programa',
-					'proyectos_mir.clv_subprograma as subprograma',
-					'proyectos_mir.clv_proyecto AS proyecto',
+					'proyectos_mir.entidad_ejecutora AS entidad',
+					'proyectos_mir.area_funcional AS area',
 					'actividades_mir.actividad as actividad'
 				)
 				->where('proyectos_mir.deleted_at', '=', null);
 				if($upp !="null"){
 					$proyecto = $proyecto->where('proyectos_mir.clv_upp',$upp);
 				}
-			
+
 			$query = DB::table('metas')
-			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
-			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
-			->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
-			->leftJoinSub($proyecto, 'pro', function ($join) {
-				$join->on('metas.actividad_id', '=', 'pro.id');
-			})
-			->select(
-				'metas.id',
-				'pro.finalidad',
-				'pro.funcion',
-				'pro.subfuncion',
-				'pro.proyecto',
-				'pro.eje',
-				'pro.linea',
-				'pro.programaSec',
-				'pro.tipologia',
-				'pro.upp',
-				'pro.ur',
-				'pro.programa',
-				'pro.subprograma',
-				'pro.proyecto',
-				'metas.clv_fondo as fondo',
-				'pro.actividad',
-				'metas.tipo',
-				'metas.total',
-				'metas.cantidad_beneficiarios',
-				'beneficiarios.beneficiario',
-				'unidades_medida.unidad_medida',
-			)
-			->where('metas.deleted_at', '=', null)
-			->groupByRaw('pro.ur');
+				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($proyecto, 'pro', function ($join) {
+					$join->on('metas.actividad_id', '=', 'pro.id');
+				})
+				->select(
+					'metas.id',
+					'pro.entidad',
+					'pro.area',
+					'metas.clv_fondo as fondo',
+					'pro.actividad',
+					'metas.tipo',
+					'metas.total',
+					'metas.cantidad_beneficiarios',
+					'beneficiarios.beneficiario',
+					'unidades_medida.unidad_medida',
+				)
+				->where('metas.deleted_at', '=', null);
 			if($upp !="null"){
 				$query = $query->where('pro.upp',$upp);
 			}

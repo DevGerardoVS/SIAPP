@@ -48,7 +48,6 @@ footer{
   .vertical{
       writing-mode:vertical-rl !important;
       text-orientation: mixed !important;
-      text-align: center !important;
       rotate: 180deg !important;
     }
   th.centro{
