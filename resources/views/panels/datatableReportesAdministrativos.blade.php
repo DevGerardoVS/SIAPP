@@ -128,9 +128,14 @@
            success: function(response) {
                 if(response.dataSet.length == 0){
                     dt.attr('data-empty','true');
+                    $("#btnPDF").hide();
+                    $("#btnExcel").hide();
                 }
                 else{
                     dt.attr('data-empty','false');
+                    $("#btnPDF").show();
+                    $("#btnExcel").show();
+
                 }
                 // Se habilita el rowgroup dependiendo la tabla en la que esta el usuario
                 var estatus = false;

@@ -154,7 +154,6 @@ class ReporteController extends Controller
             $logoRight = public_path()."/img/logo.png";
             $report_path = app_path() ."/Reportes/".$report.".jasper";
             $format = array($request->action);
-            // $format = array("xls");
             $output_file =  public_path()."/reportes";
             $file = public_path()."/reportes/".$report;
             $nameFile = "EF_".$anio."_".$report;
@@ -185,7 +184,7 @@ class ReporteController extends Controller
             $parameters,
             $database_connection
             )->execute();
-
+                
             ob_end_clean();
             return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
         } catch (\Exception $exp) {
