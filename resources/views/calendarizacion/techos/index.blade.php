@@ -26,25 +26,28 @@
                             <div class="widget-body-toolbar">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <select class="form-control filters" id="anio_filter" name="anio_filter"
-                                                autocomplete="anio_filter" placeholder="Seleccione un año">
+                                        <?php $ejercicio = DB::table('epp') ->select('ejercicio')->groupBy('ejercicio')->orderByDesc('ejercicio')->get();?>
+                                        <select class="form-control filters" id="anio_filter" name="anio_filter" autocomplete="anio_filter" placeholder="Seleccione un año">
+                                            @foreach($ejercicio as $e)
+                                                <option value="{{$e->ejercicio}}" >{{$e->ejercicio}}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-2">
                                         <?php $upp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->get();?>
                                         <select class="form-control filters" id="upp_filter" name="upp_filter" placeholder="Seleccione una UPP" data-live-search="true">
-                                            <option value="0" selected>Buscar por UPP</option>
+                                            <option value="0" selected>Todas las UPP</option>
                                             @foreach($upp as $u)
-                                            <option value="{{$u->clv_upp}}" >{{$u->upp}}</option>
+                                            <option value="{{$u->clv_upp}}" >{{$u->clv_upp.' - '.$u->upp}}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-2">
                                         <?php $fondo = DB::table('fondo')->select('clv_fondo_ramo','fondo_ramo')->distinct()->get();?>
                                         <select class="form-control filters" id="fondo_filter" name="fondo_filter" placeholder="Seleccione un fondo" data-live-search="true">
-                                            <option value="0" selected>Buscar por fondo</option>
+                                            <option value="0" selected>Todos los fondos</option>
                                             @foreach($fondo as $f)
-                                            <option value="{{$f->clv_fondo_ramo}}" >{{$f->fondo_ramo}}</option>
+                                            <option value="{{$f->clv_fondo_ramo}}" >{{$f->clv_fondo_ramo.' - '.$f->fondo_ramo}}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -70,10 +73,14 @@
                                         </button>
                                     </div>
                                     <div class="col-md-2">
+                                        @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                                        @if (check_assignFront(1))
                                         <button type="button" class="btn btn-outline-secondary" data-toggle="" id="btnCarga"
                                                 data-target=".carga-masiva" data-backdrop="static"
                                                 data-keyboard="false"><i class="fa fa-file-text-o" aria-hidden="true"></i> Carga masiva
                                         </button>
+                                        @endif
+                                        @endif
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2 text-center">

@@ -14,13 +14,45 @@ use App\Helpers\Calendarizacion\MetasHelper;
 class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths
 {
     protected $filas;
+    protected $upp;
+
+    function __construct($upp) {
+
+        $this->upp = $upp;
+        
+
+    }
     public function collection()
     {
 
-        $query = MetasHelper::actividades();
+        $query = MetasHelper::actividades($this->upp);
         $this->filas = count($query);
-
-        return $query;
+        $dataSet = [];
+		foreach ($query as $key) {
+			$i = array(
+				$key->finalidad,
+				$key->funcion,
+				$key->subfuncion,
+				$key->eje,
+				$key->linea,
+				$key->programaSec,
+				$key->tipologia,
+				$key->upp,
+				$key->ur,
+				$key->programa,
+				$key->subprograma,
+				$key->proyecto,
+				$key->fondo,
+				$key->actividad,
+				$key->tipo,
+				$key->total,
+				$key->cantidad_beneficiarios,
+				$key->beneficiario,
+				$key->unidad_medida
+			);
+			$dataSet[] = $i;
+		}
+		return collect($dataSet);
     }
 
     /**
@@ -29,7 +61,7 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
      */
     public function headings(): array
     {
-        return ["UR", "Programa", "Subprograma", "proyecto", "Actividad", "Tipo Actividad", "Meta anual", "# Beneficiarios", "beneficiarios","U de medida"];
+        return ["FINALIDAD","FUNCION","SUBFUNCION","EJE","L ACCION","PRG SECTORIAL","TIPO CONAC","UPP","UR", "Programa", "Subprograma", "proyecto", "Actividad", "Tipo Actividad", "Calendario","Meta anual", "# Beneficiarios", "beneficiarios","U de medida"];
     }
 
     public function columnWidths(): array
@@ -52,7 +84,7 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
             AfterSheet::class=> function(AfterSheet $event){
                 $sheet = $event -> sheet;
                 $event->sheet->getDelegate()
-                ->getStyle('A1:k12')
+                ->getStyle('A1:S'.$this->filas)
                 ->applyFromArray(['alignment'=>['wrapText'=>true]]);
 
                 $styleArray = [
@@ -64,7 +96,7 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
                     ],
                 ];
     
-                $event->sheet->getStyle('A1:K'.$this->filas)->applyFromArray($styleArray);
+                $event->sheet->getStyle('A1:S'.$this->filas)->applyFromArray($styleArray);
                },
              
         ];

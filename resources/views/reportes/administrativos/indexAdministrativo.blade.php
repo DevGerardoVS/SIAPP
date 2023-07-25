@@ -472,14 +472,14 @@
                     nombre = "reporte_resumen_por_capitulo_y_partida";
                     break;
                 case "#catalogoC":
-                    nombre = "avance_general";
+                    nombre = "proyecto_avance_general";
                     break;
                 case "#catalogoD":
                     var dt = $('#catalogoD');
                     nombre = "calendario_general";
                     break;
                 case "#catalogoE":
-                    nombre = "proyecto_calendario_actividades_upp";
+                    nombre = "proyecto_calendario_actividades";
                     break;
                 case "#catalogoF":
                     nombre = "avance_proyectos_actividades_upp";
