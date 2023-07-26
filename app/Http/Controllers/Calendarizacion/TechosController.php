@@ -244,7 +244,7 @@ class TechosController extends Controller
         try{
             ///buscamos el registro en los techos para despues filtrarlo 
             $data = DB::table('techos_financieros')
-            ->select('clv_upp','clv_fondo','tipo','ejercicio')
+            ->select('clv_upp','ejercicio')
             ->where('id','=',$request->id)
             ->get();
 
@@ -252,8 +252,6 @@ class TechosController extends Controller
             $confirmado = DB::table('programacion_presupuesto')
             ->select('estado')
             ->where('upp','=',$data[0]->clv_upp)
-            ->where('fondo_ramo','=',$data[0]->clv_fondo)
-            ->where('tipo','=',$data[0]->tipo)
             ->where('ejercicio','=',$data[0]->ejercicio)
             ->limit(1)
             ->get();
@@ -269,17 +267,23 @@ class TechosController extends Controller
                     'mensaje' => "Se editó correctamente"
                 ];
             }else{
-                if($confirmado[0]->estado == 0){
-                    DB::beginTransaction();
-                    DB::table('techos_financieros')
-                    ->where('id','=',$request->id)
-                    ->update(['presupuesto' => $request->presupuesto]);
-                    DB::commit();
-                    return [
-                        'status' => 200,
-                        'mensaje' => "Se editó correctamente"
-                    ];
+                DB::beginTransaction();
+                
+                DB::table('techos_financieros')
+                ->where('id','=',$request->id)
+                ->update(['presupuesto' => $request->presupuesto]);
+                
+                if($confirmado[0]->estado == 1){
+                    DB::table('programacion_presupuesto')
+                    ->where('upp','=',$data[0]->clv_upp)
+                    ->where('ejercicio','=',$data[0]->ejercicio)
+                    ->update(['estado' => 0]);
                 }
+                DB::commit();
+                return [
+                    'status' => 200,
+                    'mensaje' => "Se editó correctamente"
+                ];
             }
         }catch (Throwable $e){
             DB::rollBack();
