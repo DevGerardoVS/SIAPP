@@ -248,6 +248,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 40,  'id_sistema' => 1,'id_menu' => 2, 'modulo' => 'Logs', 'funcion' => 'getLogs', 'tipo' => 'consulta', 'descripcion' => 'Vista de Logs'],
             ['id' => 41,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'viewPostUpps', 'tipo' => 'Consulta', 'descripcion' => 'Obtener todos los tipos de actividad por upp a la BD'],
             ['id' => 42,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'updateUpps', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar un tipo de actividad por upp a la BD'],
+            ['id' => 43,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'updateUppsAuto', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar el estado de una upp autorizada a la BD'],
         );
 
         protected $relFunGroup=array(
@@ -345,6 +346,7 @@ class DatabaseSeeder extends Seeder
             /* ADMIN config */
             ['id'=>76,'id_grupo'=>1,'id_funcion'=>41],
             ['id'=>77,'id_grupo'=>1,'id_funcion'=>42],
+            ['id'=>78,'id_grupo'=>1,'id_funcion'=>43],
 
             
 
