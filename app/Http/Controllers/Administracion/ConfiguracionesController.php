@@ -161,6 +161,7 @@ class ConfiguracionesController extends Controller
     }
 
     public static function updateAutoUpps(Request $request){
+        Controller::check_permission('updateUppsAuto');
         try {
             $dataSet = array();
             $array_data_act = [];
