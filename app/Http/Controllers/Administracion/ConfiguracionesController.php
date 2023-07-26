@@ -27,6 +27,7 @@ class ConfiguracionesController extends Controller
             $dataSet = DB::table('catalogo')
                 ->select('clave', 'descripcion')
                 ->where('grupo_id', 6)
+                ->orderByRaw('clave')
                 ->get();
 
             return response()->json([
@@ -45,11 +46,11 @@ class ConfiguracionesController extends Controller
             $dataSet = array();
             //select epp.upp_id, catalogo.descripcion from epp inner join catalogo on catalogo.clave=epp.upp_id where catalogo.grupo_id=6 group by upp_id order by upp_id;
             $dataSet = DB::table('epp')
-                ->select('epp.upp_id', 'catalogo.descripcion')
-                ->join('catalogo', 'catalogo.clave','=','epp.upp_id')
+                ->select('catalogo.clave', 'catalogo.descripcion')
+                ->join('catalogo', 'catalogo.id','=','epp.upp_id')
                 ->where('grupo_id', 6)
                 ->groupBy('upp_id')
-                ->orderBy('upp_id')
+                ->orderBy('catalogo.clave')
                 ->get();
 
             return response()->json([
@@ -109,27 +110,43 @@ class ConfiguracionesController extends Controller
             $array_where = [];
             $filter = $request->filter;
 
-            //if($filter==NULL)Log::channel('daily')->debug('exp '.gettype($filter));
+            //if($filter!=NULL && $filter!='' && $filter != 'undefined') array_push($array_where, ['upp_id','=',$filter]);
 
-            if($filter!=NULL && $filter!='' && $filter != 'undefined') array_push($array_where, ['upp_id','=',$filter]);
-            
-            $data = DB::table('epp')
-                ->select('epp.upp_id', 'catalogo.descripcion',DB::raw('if(uppautorizadascpnomina.deleted_at is null,1,0) as autorizado'))
+            $sub = DB::table('uppautorizadascpnomina')
+                ->select('clv_upp');
+
+            $complemento = DB::table('epp')
+                ->select('catalogo.clave','catalogo.descripcion',DB::raw('0 as autorizado'))
                 ->join('catalogo','catalogo.id','=','epp.upp_id')
-                ->leftJoin('uppautorizadascpnomina','uppautorizadascpnomina.clv_upp','=','catalogo.clave')
+                ->whereNotIn("clave", $sub)
+                ->groupByRaw('upp_id');
+
+            $data = DB::table('epp')
+                ->select('catalogo.clave','catalogo.descripcion',DB::raw('if(uppautorizadascpnomina.deleted_at is null,1,0) as autorizado'))
+                ->join('catalogo','catalogo.id','=','epp.upp_id')
+                ->join('uppautorizadascpnomina','uppautorizadascpnomina.clv_upp','=','catalogo.clave')
                 ->where('grupo_id', 6)
-                ->where($array_where)
+                //->where($array_where)
                 ->groupBy('upp_id')
-                ->orderBy('upp_id')
+                ->union($complemento)
+                ->orderBy('clave')
                 ->get();
+
 
             foreach ($data as $d) {
                 //$d->tipo 
                 $autorizado = $d->autorizado==1? ' checked' : '';
 
-                $ds = array($d->upp_id , $d->descripcion, '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateAutoUpps(\''.$d->upp_id.'\')" id="'.$d->upp_id.'"'.$autorizado.'></div>');
+                if($filter==NULL || $filter=='' || $filter == 'undefined'){
+                    $ds = array($d->clave , $d->descripcion, '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateAutoUpps(\''.$d->clave.'\')" id="'.$d->clave.'"'.$autorizado.'></div>');
+                    $dataSet[] = $ds;
+                }else if($filter == $d->clave){
+                    $ds = array($d->clave , $d->descripcion, '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateAutoUpps(\''.$d->clave.'\')" id="'.$d->clave.'"'.$autorizado.'></div>');
+                    $dataSet[] = $ds;
+                }else{
+
+                }
                 
-                $dataSet[] = $ds;
             }
 
             return response()->json([
@@ -149,7 +166,7 @@ class ConfiguracionesController extends Controller
             $array_data_act = [];
             $data_old_act = [];
 
-            $upp_autorizada = UppAutorizadascpNomina::where('clv_upp',$request->id)->firstOrFail();
+            $upp_autorizada = UppAutorizadascpNomina::where('clv_upp',$request->id)->first();
 
             if(!empty($upp_autorizada)){
 
@@ -179,6 +196,13 @@ class ConfiguracionesController extends Controller
                 
                 $upp_autorizada->save();
 
+            }else{
+                $upp_autorizada = new UppAutorizadascpNomina();
+                $upp_autorizada->clv_upp=$request->id;
+                $upp_autorizada->created_user = Auth::user()->username;
+                $upp_autorizada->created_at = date("Y-m-d H:i:s");
+                $upp_autorizada->save();
+                //Log::channel('daily')->debug('log ');
             }
 
             $data_new_act = array(
