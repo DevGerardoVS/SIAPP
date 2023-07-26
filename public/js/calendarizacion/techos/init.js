@@ -164,8 +164,9 @@ var dao = {
         }
     },
     validCero: function (i) { 
-        if($('#presupuesto_'+i).val() == 0){
+        if($('#presupuesto_'+i).val() == 0 || $('#presupuesto').val() == 0){
             $("#frm_create_techo").find('#presupuesto_'+i).addClass('is-invalid');
+            $('#presupuesto').addClass('is-invalid');
         }else{
             $('input').removeClass('is-invalid');
         }
@@ -419,17 +420,69 @@ function getElimina(i){
     $('#eliminarID').val(i);
 }
 
-function eliminarRegistro(){
-    console.log($('#eliminarID').val());
+function getEdita(i){
+    $('#editarID').val(i);
+    $('#editFondo').empty()
+    table = document.getElementById('editFondo')
+    table_lenght = (table.rows.length)
+    table.insertRow(table_lenght).outerHTML= '<thead><tr class="colorMorado" style="color:white">'+
+                                    '<th style="color:white">ID UPP</th>'+
+                                    '<th style="color:white">Unidad Programatica Presupuestaria</th>'+
+                                    '<th style="color:white">Tipo</th>'+
+                                    '<th style="color:white">ID Fondo</th>'+
+                                    '<th style="color:white">Fondo</th>'+
+                                    '<th style="color:white">Presupuesto</th>'+
+                                    '<th style="color:white">Ejercicio</th>'
+                                '</tr></thead>';
+
     $.ajax({
         type: "POST",
-        url: '/calendarizacion/techos/eliminar',
+        url: '/calendarizacion/techos/get-techo-edit',
         data: {
-            'id': $('#eliminarID').val()
+            'id': i
         },
         enctype: 'multipart/form-data'
     }).done(function (response) {
-        console.log("response")
+        table = document.getElementById('editFondo')
+        table_lenght = (table.rows.length)
+
+        row = table.insertRow(table_lenght).outerHTML= '<tr>'+
+        '<td>' +
+         response.data[0].clv_upp
+         +
+        '</td>\n' +
+        '<td>' +
+         response.data[0].descPre
+         +
+        '</td>\n' +
+        '<td>' +
+         response.data[0].tipo
+         +
+        '</td>\n' +
+        '<td>' +
+         response.data[0].clv_fondo
+         +
+        '</td>\n' +
+        '<td>' +
+         response.data[0].fondo_ramo
+         +
+        '</td>\n' +
+        '<td>' +
+        '<input type="number" class="form-control totales" min="0" id="presupuesto" name="presupuesto" value="'+response.data[0].presupuesto+'" '+
+        'onkeydown="dao.filtroPresupuesto()" onkeyup="dao.validCero()" required>' 
+         +
+        '</td>\n' +
+        '<td>' +
+         response.data[0].ejercicio
+         +
+        '</td>\n' +
+        '</tr>';
+
+        /* $('#editFondo').append('<tr>\n' +
+        '<td>' + response.data[0].clv_upp+
+        '</td>\n' +
+        '</tr>'); */
+        
     }).fail(function (error) {
         let arr = Object.keys(error.responseJSON.errors)
         arr.forEach(function (item) {
@@ -442,4 +495,79 @@ function eliminarRegistro(){
         });
 
     });
+
+}
+
+function eliminarRegistro(){
+    $.ajax({
+        type: "POST",
+        url: '/calendarizacion/techos/eliminar',
+        data: {
+            'id': $('#eliminarID').val()
+        },
+        enctype: 'multipart/form-data'
+    }).done(function (response) {
+        $('#eliminar').modal('hide')
+        if(response.status == 200){
+            Swal.fire({
+                icon: 'success',
+                title: 'Registro eliminado correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }else if(response.status == 400){
+            Swal.fire({
+                icon: 'warning',
+                title: 'No se puede eliminar',
+                showConfirmButton: true
+            });
+        }
+
+        getData();
+    }).fail(function (error) {
+        let arr = Object.keys(error.responseJSON.errors)
+        arr.forEach(function (item) {
+            $("#frm_create_techo").find("#"+item).addClass('is-invalid');
+        })
+        Swal.fire({
+            icon: 'warning',
+            title: 'Hubo un error, campos vacíos',
+            showConfirmButton: true
+        });
+
+    });
+}
+
+function editarRegistro(){
+    $.ajax({
+        type: "POST",
+        url: '/calendarizacion/techos/editar',
+        data: {
+            'id': $('#editarID').val(),
+            'presupuesto' : $('#presupuesto').val()
+        },
+        enctype: 'multipart/form-data'
+    }).done(function (response) {
+        $('#editar').modal('hide')
+        if(response.status == 200){
+            Swal.fire({
+                icon: 'success',
+                title: 'Registro editado correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+        getData();
+    }).fail(function (error) {
+        let arr = Object.keys(error.responseJSON.errors)
+        arr.forEach(function (item) {
+            $("#frm_create_techo").find("#"+item).addClass('is-invalid');
+        })
+        Swal.fire({
+            icon: 'warning',
+            title: 'Hubo un error, campos vacíos',
+            showConfirmButton: true
+        });
+    });
+
 }
