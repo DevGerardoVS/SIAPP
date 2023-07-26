@@ -15,7 +15,7 @@ use function PHPUnit\Framework\isEmpty;
 class ReporteController extends Controller
 {
     public function indexPlaneacion(){
-        Controller::check_permission('getPlaneacion');
+        Controller::check_permission('getCaptura');
         $db = $_ENV['DB_DATABASE'];
         $dataSet = array();
         $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
