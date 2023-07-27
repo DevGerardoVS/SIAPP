@@ -403,18 +403,22 @@ var _gen = {
                         }, 0);
 
                         totalDis = api
-                        .column(5)
+                        .column(6)
                         .data()
                         .reduce(function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0);
                     // Update footer
                     operativo = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalOp);
+                    rh = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalRh);
+                    techos = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalTechos);
+                    calendarizado = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalCal);
+                    disponible = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalDis);
                     $(api.column(2).footer()).html(operativo);
-                    $(api.column(3).footer()).html('$'+ totalRh);
-                    $(api.column(4).footer()).html('$'+ totalTechos);
-                    $(api.column(5).footer()).html('$'+ totalCal);
-                    $(api.column(6).footer()).html('$'+ totalDis);
+                    $(api.column(3).footer()).html(rh);
+                    $(api.column(4).footer()).html(techos);
+                    $(api.column(5).footer()).html(calendarizado);
+                    $(api.column(6).footer()).html(disponible);
                     
                 },
                 preDrawCallback: function () {
