@@ -428,88 +428,133 @@ class MetasController extends Controller
 				'metas.id',
 				'metas.estatus'
 			)
-			->where('programacion_presupuesto.upp', '=', $upp)
-			->where('programacion_presupuesto.ejercicio', '=', 2023)
-			->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
-			->distinct()
-			->groupByRaw('programa_presupuestario')->get();
-			Log::debug($activs);
-		/* $name = 'temp' . Auth::user()->username; 
-		Schema::create($name, function (Blueprint $table) {
-			$table->increments('id');
-			$table->string('clave');
-			$table->string('clv_upp', 3)->nullable(false);
-			$table->string('clv_ur', 2)->nullable(false);
-			$table->string('clv_finalidad', 1)->nullable(false);
-			$table->string('clv_funcion', 1)->nullable(false);
-			$table->string('clv_subfuncion', 1)->nullable(false);
-			$table->string('clv_eje', 1)->nullable(false);
-			$table->string('clv_linea_accion', 2)->nullable(false);
-			$table->string('clv_programa_sectorial', 1)->nullable(false);
-			$table->string('clv_tipologia_conac', 1)->nullable(false);
-			$table->string('clv_programa', 2)->nullable(false);
-			$table->string('clv_subprograma', 3)->nullable(false);
-			$table->string('clv_proyecto', 3)->nullable(false);
-			$table->integer('ejercicio')->default(null);
-		}); */
-	/* 	$activs = DB::table("programacion_presupuesto")
-			->select(
-				'programacion_presupuesto.finalidad',
-				'programacion_presupuesto.funcion',
-				'programacion_presupuesto.subfuncion',
-				'programacion_presupuesto.eje',
-				'programacion_presupuesto.linea_accion AS linea',
-				'programacion_presupuesto.programa_sectorial AS programaSec',
-				'programacion_presupuesto.tipologia_conac AS tipologia',
-				'programacion_presupuesto.id',
-				'programa_presupuestario as programa',
-				'subprograma_presupuestario as subprograma',
-				'proyecto_presupuestario AS  clv_proyecto',
-				'programacion_presupuesto.ur',
-			)
-			->where('programacion_presupuesto.upp', '=', $upp)
-			->where('programacion_presupuesto.ejercicio', '=', 2023)
-			->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
-			->distinct()
-			->groupByRaw('programa_presupuestario')->get();
+			->where('metas.estatus',1)
+			->where('pro.clv_upp', '=', $upp)
+			->get();
+		if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
+			if (count($metas)==0 || Auth::user()->id_grupo == 1 ) {
+				$activs = DB::table("programacion_presupuesto")
+					->select(
+						'programa_presupuestario AS programa',
+						DB::raw('CONCAT(upp,subsecretaria,ur) AS area'),
+						DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
+					)
+					->where('programacion_presupuesto.upp', '=', $upp)
+					->where('programacion_presupuesto.ejercicio', '=', 2024)
+					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+					->distinct()
+					->where('estado', 1)
+					->groupByRaw('programa_presupuestario')->get();
+				if (count($activs)) {
+					$auxAct = count($activs);
+					$index = 0;
+					foreach ($activs as $key) {
+						$proyecto = DB::table('actividades_mir')
+							->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+							->select(
+								'actividades_mir.id',
+								'proyectos_mir.area_funcional AS area'
+							)
+							->where('actividades_mir.deleted_at', null)
+							->where('proyectos_mir.deleted_at', null)
+							->where('proyectos_mir.clv_upp', $upp)
+							->where('proyectos_mir.area_funcional', $key->clave)
+							->get();
+						if (count($proyecto)) {
+							$index++;
+						}
+					}
+					if ($index >= $auxAct) {
+						return ["status" => true, "mensaje" => '', "estado" => true];
+					} else {
+						return ["status" => false, "mensaje" => 'MIR incompleta acercate a CPLADEM', "estado" => true];
+					}
 
-	 	foreach ($activs as $key) {
-			$clave =''. strval($key->finalidad) . '-' .strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje). '-' .strval($key->linea).'-'. strval($key->programaSec) . '-' .strval($key->tipologia) .'-'. strval($upp) . '-' .strval($key->ur,) . '-' . strval($key->programa) . '-' . strval($key->subprograma). '-' .strval($key->clv_proyecto).'';
- 
-			ProyectosMir::create([
-				'clv_upp' => $upp,
-				'clv_ur' => $key->ur,
-				'clv_finalidad' => $key->finalidad,
-				'clv_funcion' => $key->funcion,
-				'clv_subfuncion' => $key->subfuncion,
-				'clv_eje' => $key->eje,
-				'clv_linea_accion' => $key->linea,
-				'clv_programa_sectorial' => $key->programaSec,
-				'clv_tipologia_conac' => $key->tipologia,
-				'clv_programa' => $key->programa,
-				'clv_subprograma' => $key->subprograma,
-				'clv_proyecto' => $key->clv_proyecto,
-				'ejercicio'=>2023
-			]); */
-			/*  	DB::table($name)->insert([
-				'clave'=>$clave,
-				'clv_upp' => $upp,
-				'clv_ur' => $key->ur,
-				'clv_finalidad' => $key->finalidad,
-				'clv_funcion' => $key->funcion,
-				'clv_subfuncion' => $key->subfuncion,
-				'clv_eje' => $key->eje,
-				'clv_linea_accion' => $key->linea,
-				'clv_programa_sectorial' => $key->programaSec,
-				'clv_tipologia_conac' => $key->tipologia,
-				'clv_programa' => $key->programa,
-				'clv_subprograma' => $key->subprograma,
-				'clv_proyecto' => $key->clv_proyecto,
-			]); 
-		}  */
-
-		//in_array ($proyecto, 'b');
+				} else {
+					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false];
+				}
+			}else{
+				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "estado" => true];
+			}
+		} else {
+			return ["status" => false, "mensaje" => 'La captura de metas esté cerrada', "estado" => true];
+		}
 	}
+
+	/* 		foreach ($activs as $key ) {
+				ProyectosMir::create([
+					'clv_upp'=>$upp,
+					'entidad_ejecutora'=>$key->area,
+					'clv_programa'=>$key->programa,
+					'area_funcional'=>$key->clave,
+					'nivel'=>1,
+					'objetivo'=>1,
+					'indicador'=>1,
+					'definicion_indicador'=>1,
+					'metodo_calculo'=>1,
+					'descripcion_metodo'=>1,
+					'tipo_indicador'=>'Estratégico',
+					'unidad_medida'=>'Porcentaje',
+					'dimension'=>'Eficada',
+					'comportamiento_indicador'=>'Ascendente',
+					'frecuencia_medicion'=>'Quincenal',
+					'medios_verificacion'=>1,
+					'lb_valor_absoluto'=>1,
+					'lb_valor_relativo'=>1,
+					'lb_anio'=>1,
+					'lb_periodo_i'=>1,
+					'lb_periodo_f'=>1,
+					'mp_valor_absoluto'=>1,
+					'mp_valor_relativo'=>1,
+					'mp_anio'=>1,
+					'mp_periodo_i'=>1,
+					'mp_periodo_f'=>1,
+					'supuestos'=>1,
+					'estrategias'=>1,
+					'ejercicio'=>2024
+				]);
+			} */
+
+			
+		
+
+		/* 	$proyecto = DB::table('proyectos_mir')
+			->select('id')
+			->where('deleted_at', null)
+			->where('ejercicio',2024)
+			->get();
+			for ($i=0; $i <count($proyecto); $i++) {
+			ActividadesMir::create([
+				'proyecto_mir_id'=>$proyecto[$i]->id,
+				'clv_actividad'=> $i>=10?$i:'0'.$i.'-2024',
+				'actividad'=>'Prueba'.$i.'2024',
+				'objetivo'=>$i,
+				'indicador'=>$i,
+				'definicion_indicador'=>$i,
+				'metodo_calculo'=>$i,
+				'descripcion_metodo'=>$i,
+				'tipo_indicador'=>'Estratégico',
+				'unidad_medida'=>'Porcentaje',
+				'dimension'=> 'Ascendente',
+				'comportamiento_indicador'=>'Quincenal',
+				'frecuencia_medicion'=>$i,
+				'medios_verificacion'=>$i,
+				'lb_valor_absoluto'=>$i,
+				'lb_valor_relativo'=>$i,
+				'lb_anio'=>$i,
+				'lb_periodo_i'=>$i,
+				'lb_periodo_f'=>$i,
+				'mp_valor_absoluto'=>$i,
+				'mp_valor_relativo'=>$i,
+				'mp_anio'=>$i,
+				'mp_periodo_i'=>$i,
+				'mp_periodo_f'=>$i,
+				'supuestos'=>$i,
+				'estrategias'=>$i,
+				'ejercicio'=>2024
+			]);
+			}*/
+	
 
 
 	public function descargaReporteFirma(Request $request){
