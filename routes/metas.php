@@ -21,7 +21,7 @@
 		Route::post('/calendarizacion/detelet', 'deleteMeta');
 		Route::get('/calendarizacion/update/{id?}','updateMeta');
 		Route::get('/calendarizacion/check/{upp?}','checkCombination');
-		
+		Route::post('/calendarizacion-metas-reporte', 'descargaReporteFirma');
 	});
 ?>
 

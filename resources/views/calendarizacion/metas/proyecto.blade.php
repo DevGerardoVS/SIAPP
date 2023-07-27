@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @include('calendarizacion.metas.addActividad')
+@include('calendarizacion.metas.modalFirmaElectronica')
 @section('content')
     <div class="container">
         
@@ -82,6 +83,8 @@
                 </div>
             </div>
         </section>
+    </div>
+    <div id="containerFile">
     </div>
     <script src="/js/calendarizacion/metas/initActiv.js"></script>
     <script src="/js/utilerias.js"></script>

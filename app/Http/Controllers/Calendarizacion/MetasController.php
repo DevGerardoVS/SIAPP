@@ -21,6 +21,9 @@ use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
 use Shuchkin\SimpleXLSX;
+use Symfony\Component\Console\Helper\Table;
+use Illuminate\Support\Facades\Http;
+use Storage;
 
 
 
@@ -324,9 +327,9 @@ class MetasController extends Controller
 		$date = Carbon::now();
 		$request = array(
 			"anio" => $date->year,
-			"corte" => $date->format('Y-m-d'),
-			"logoLeft" => public_path() . 'img\escudo.png',
-			"logoRight" => public_path() . 'img\escudo.png',
+			// "corte" => $date->format('Y-m-d'),
+			// "logoLeft" => public_path() . 'img\escudo.png',
+			// "logoRight" => public_path() . 'img\escudo.png',
 			"UPP" => $upp,
 		);
 		return $this->jasper($request);
@@ -344,7 +347,7 @@ class MetasController extends Controller
 
 		$ruta = public_path() . "/Reportes";
 		//Eliminación si ya existe reporte
-		if (File::exists($ruta . "/" . $report . ".pdf")) {
+		if (File::exists($ruta . "/" . $report . ".pdf")) { 
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
@@ -363,11 +366,18 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->output();
-		dd($jasper);
-		return Response::make(file_get_contents(public_path() . "/Reportes/" . $report . ".pdf"), 200, [
+		)->execute();
+		//dd($jasper);
+		$reportePDF = Response::make(file_get_contents(public_path() . "/Reportes/" . $report . ".pdf"), 200, [
 			'Content-Type' => 'application/pdf'
 		]);
+
+		if ($reportePDF != '') {
+			return response()->json('done',200);
+		}else {
+			return response()->json('error',200);
+		}
+
 	}
 	public function importPlantilla(Request $request)
 	{
@@ -418,131 +428,170 @@ class MetasController extends Controller
 				'metas.id',
 				'metas.estatus'
 			)
-			->where('metas.estatus',1)
-			->where('pro.clv_upp', '=', $upp)
-			->get();
-		if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
-			if (count($metas)==0 || Auth::user()->id_grupo == 1 ) {
-				$activs = DB::table("programacion_presupuesto")
-					->select(
-						'programa_presupuestario AS programa',
-						DB::raw('CONCAT(upp,subsecretaria,ur) AS area'),
-						DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
-					)
-					->where('programacion_presupuesto.upp', '=', $upp)
-					->where('programacion_presupuesto.ejercicio', '=', 2024)
-					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
-					->distinct()
-					->where('estado', 1)
-					->groupByRaw('programa_presupuestario')->get();
-				if (count($activs)) {
-					$auxAct = count($activs);
-					$index = 0;
-					foreach ($activs as $key) {
-						$proyecto = DB::table('actividades_mir')
-							->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
-							->select(
-								'actividades_mir.id',
-								'proyectos_mir.area_funcional AS area'
-							)
-							->where('actividades_mir.deleted_at', null)
-							->where('proyectos_mir.deleted_at', null)
-							->where('proyectos_mir.clv_upp', $upp)
-							->where('proyectos_mir.area_funcional', $key->clave)
-							->get();
-						if (count($proyecto)) {
-							$index++;
-						}
-					}
-					if ($index >= $auxAct) {
-						return ["status" => true, "mensaje" => '', "estado" => true];
-					} else {
-						return ["status" => false, "mensaje" => 'MIR incompleta acercate a CPLADEM', "estado" => true];
-					}
+			->where('programacion_presupuesto.upp', '=', $upp)
+			->where('programacion_presupuesto.ejercicio', '=', 2023)
+			->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+			->distinct()
+			->groupByRaw('programa_presupuestario')->get();
+			Log::debug($activs);
+		/* $name = 'temp' . Auth::user()->username; 
+		Schema::create($name, function (Blueprint $table) {
+			$table->increments('id');
+			$table->string('clave');
+			$table->string('clv_upp', 3)->nullable(false);
+			$table->string('clv_ur', 2)->nullable(false);
+			$table->string('clv_finalidad', 1)->nullable(false);
+			$table->string('clv_funcion', 1)->nullable(false);
+			$table->string('clv_subfuncion', 1)->nullable(false);
+			$table->string('clv_eje', 1)->nullable(false);
+			$table->string('clv_linea_accion', 2)->nullable(false);
+			$table->string('clv_programa_sectorial', 1)->nullable(false);
+			$table->string('clv_tipologia_conac', 1)->nullable(false);
+			$table->string('clv_programa', 2)->nullable(false);
+			$table->string('clv_subprograma', 3)->nullable(false);
+			$table->string('clv_proyecto', 3)->nullable(false);
+			$table->integer('ejercicio')->default(null);
+		}); */
+	/* 	$activs = DB::table("programacion_presupuesto")
+			->select(
+				'programacion_presupuesto.finalidad',
+				'programacion_presupuesto.funcion',
+				'programacion_presupuesto.subfuncion',
+				'programacion_presupuesto.eje',
+				'programacion_presupuesto.linea_accion AS linea',
+				'programacion_presupuesto.programa_sectorial AS programaSec',
+				'programacion_presupuesto.tipologia_conac AS tipologia',
+				'programacion_presupuesto.id',
+				'programa_presupuestario as programa',
+				'subprograma_presupuestario as subprograma',
+				'proyecto_presupuestario AS  clv_proyecto',
+				'programacion_presupuesto.ur',
+			)
+			->where('programacion_presupuesto.upp', '=', $upp)
+			->where('programacion_presupuesto.ejercicio', '=', 2023)
+			->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+			->distinct()
+			->groupByRaw('programa_presupuestario')->get();
 
-				} else {
-					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false];
-				}
-			}else{
-				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "estado" => true];
-			}
-		} else {
-			return ["status" => false, "mensaje" => 'La captura de metas esté cerrada', "estado" => true];
-		}
+	 	foreach ($activs as $key) {
+			$clave =''. strval($key->finalidad) . '-' .strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje). '-' .strval($key->linea).'-'. strval($key->programaSec) . '-' .strval($key->tipologia) .'-'. strval($upp) . '-' .strval($key->ur,) . '-' . strval($key->programa) . '-' . strval($key->subprograma). '-' .strval($key->clv_proyecto).'';
+ 
+			ProyectosMir::create([
+				'clv_upp' => $upp,
+				'clv_ur' => $key->ur,
+				'clv_finalidad' => $key->finalidad,
+				'clv_funcion' => $key->funcion,
+				'clv_subfuncion' => $key->subfuncion,
+				'clv_eje' => $key->eje,
+				'clv_linea_accion' => $key->linea,
+				'clv_programa_sectorial' => $key->programaSec,
+				'clv_tipologia_conac' => $key->tipologia,
+				'clv_programa' => $key->programa,
+				'clv_subprograma' => $key->subprograma,
+				'clv_proyecto' => $key->clv_proyecto,
+				'ejercicio'=>2023
+			]); */
+			/*  	DB::table($name)->insert([
+				'clave'=>$clave,
+				'clv_upp' => $upp,
+				'clv_ur' => $key->ur,
+				'clv_finalidad' => $key->finalidad,
+				'clv_funcion' => $key->funcion,
+				'clv_subfuncion' => $key->subfuncion,
+				'clv_eje' => $key->eje,
+				'clv_linea_accion' => $key->linea,
+				'clv_programa_sectorial' => $key->programaSec,
+				'clv_tipologia_conac' => $key->tipologia,
+				'clv_programa' => $key->programa,
+				'clv_subprograma' => $key->subprograma,
+				'clv_proyecto' => $key->clv_proyecto,
+			]); 
+		}  */
+
+		//in_array ($proyecto, 'b');
 	}
 
-	/* 		foreach ($activs as $key ) {
-				ProyectosMir::create([
-					'clv_upp'=>$upp,
-					'entidad_ejecutora'=>$key->area,
-					'clv_programa'=>$key->programa,
-					'area_funcional'=>$key->clave,
-					'nivel'=>1,
-					'objetivo'=>1,
-					'indicador'=>1,
-					'definicion_indicador'=>1,
-					'metodo_calculo'=>1,
-					'descripcion_metodo'=>1,
-					'tipo_indicador'=>'Estratégico',
-					'unidad_medida'=>'Porcentaje',
-					'dimension'=>'Eficada',
-					'comportamiento_indicador'=>'Ascendente',
-					'frecuencia_medicion'=>'Quincenal',
-					'medios_verificacion'=>1,
-					'lb_valor_absoluto'=>1,
-					'lb_valor_relativo'=>1,
-					'lb_anio'=>1,
-					'lb_periodo_i'=>1,
-					'lb_periodo_f'=>1,
-					'mp_valor_absoluto'=>1,
-					'mp_valor_relativo'=>1,
-					'mp_anio'=>1,
-					'mp_periodo_i'=>1,
-					'mp_periodo_f'=>1,
-					'supuestos'=>1,
-					'estrategias'=>1,
-					'ejercicio'=>2024
-				]);
-			} */
 
-			
-		
-
-		/* 	$proyecto = DB::table('proyectos_mir')
-			->select('id')
-			->where('deleted_at', null)
-			->where('ejercicio',2024)
-			->get();
-			for ($i=0; $i <count($proyecto); $i++) {
-			ActividadesMir::create([
-				'proyecto_mir_id'=>$proyecto[$i]->id,
-				'clv_actividad'=> $i>=10?$i:'0'.$i.'-2024',
-				'actividad'=>'Prueba'.$i.'2024',
-				'objetivo'=>$i,
-				'indicador'=>$i,
-				'definicion_indicador'=>$i,
-				'metodo_calculo'=>$i,
-				'descripcion_metodo'=>$i,
-				'tipo_indicador'=>'Estratégico',
-				'unidad_medida'=>'Porcentaje',
-				'dimension'=> 'Ascendente',
-				'comportamiento_indicador'=>'Quincenal',
-				'frecuencia_medicion'=>$i,
-				'medios_verificacion'=>$i,
-				'lb_valor_absoluto'=>$i,
-				'lb_valor_relativo'=>$i,
-				'lb_anio'=>$i,
-				'lb_periodo_i'=>$i,
-				'lb_periodo_f'=>$i,
-				'mp_valor_absoluto'=>$i,
-				'mp_valor_relativo'=>$i,
-				'mp_anio'=>$i,
-				'mp_periodo_i'=>$i,
-				'mp_periodo_f'=>$i,
-				'supuestos'=>$i,
-				'estrategias'=>$i,
-				'ejercicio'=>2024
-			]);
-			}*/
-
+	public function descargaReporteFirma(Request $request){
+		try {
+		//generamos el nombre del archivo a guardar
+		$nameCer = substr(str_replace(" ", "_", $request->cer->getClientOriginalName()), 0, -4);
+		//si el nombre es mayor a 55 caracteres se toman solo los primeros 55
+		if (strlen($nameCer) > 55) {
+			$nameCer = substr($nameCer, 0, 55);
+		}
+		$fileExtCer = $request->cer->getClientOriginalExtension();
+		$nameSaveCer = $nameCer.".".$fileExtCer;
+		//generamos el nombre del archivo a guardar
+		$nameKey = substr(str_replace(" ", "_", $request->key->getClientOriginalName()), 0, -4);
+		//si el nombre es mayor a 55 caracteres se toman solo los primeros 55
+		if (strlen($nameKey) > 55) {
+			$nameKey = substr($nameKey, 0, 55);
+		}
+		$fileExtKey = $request->key->getClientOriginalExtension();
+		$nameSaveKey = $nameKey .".".$fileExtKey;
+		//crear un path para los reportes... storage\app\public\reportes\Claveprivada_FIEL_HEHF7712015Z2_20220324_105350.key
+		$cerPath = Storage::path('public/reportes/'.$nameSaveCer);
+		$keyPath = Storage::path('public/reportes/'.$nameSaveKey);
+		//revisamos si existe  y lo eliminamos...
+		if (File::exists($cerPath)) {
+			Storage::delete($cerPath);
+		}
+		if (File::exists($keyPath)) {
+			Storage::delete($keyPath);
+		}
+		//guardamos los archivos...
+		$key = $request->key->storeAs('public/reportes/', $nameSaveKey);
+		$cer = $request->cer->storeAs('public/reportes/', $nameSaveCer);
+		$cerFile ='';
+		$keyFile = '';
+		//obtenemos el contenido de los archivos...
+		if (File::exists($cerPath)) {
+			$cerFile = file_get_contents($cerPath);
+		}
+		if (File::exists($keyPath)) {
+			$keyFile = file_get_contents($keyPath);
+		}
+		$pdf ='';
+		$ruta = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
+		if (File::exists($ruta)) { 
+			$pdf = file_get_contents($ruta);
+		}
+		//Hacemos la conexion con la api del login para obtener el token de verificacion...
+		$token = Http::post('http://10.0.250.55/firmaElectronica/firmaElectronica/public/api/login', [
+			'email' => 'pruebasinfraestructura@gmail.com',
+			'password' => 'z2&CS53y',
+		]);
+		//una vez que tenemos el token hacemos la conexion con la api de firmado...
+		if ($token && $token['token'] && $token['token'] != '') {
+			$header = array();
+			$response = Http::withToken($token['token'])
+			->withHeaders($header);
+			$response = $response->attach('pdf[]',$pdf,'Reporte_Calendario_UPP.pdf');
+			$response = $response->attach('cer',$cerFile,$nameSaveCer);
+			$response = $response->attach('key',$keyFile,$nameSaveKey);
+			$response = $response->post('http://10.0.250.55/firmaElectronica/firmaElectronica/public/api/firmarPDF',[
+			'pass' =>'12345678a',
+			'cadenaOrigen'=>'prueba',
+			'clave_tramite'=>'IAP01',
+			'encabezado'=>1]);
+			if ($response &&  $response[0]['pdfFirmado']) {
+				$file = $response[0]['pdfFirmado'];
+				$response = ['estatus'=>'done','data'=>$file];
+				return $response;
+			}else {
+				$responseError = ['estatus'=>'error','data'=>$response];
+				return $responseError;
+			}
+		}else {
+			$responseError = ['estatus'=>'error','data'=>$token];
+			return $responseError;
+		}
+		} catch (\Exception $exp) {
+			Log::debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+			return response()->json('error',200);
+        }
+		 
+	}
 }

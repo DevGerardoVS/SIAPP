@@ -26,7 +26,39 @@ function getUpps(){
             response = response.dataSet;
             var $dropdown = $("#upps");
             $.each(response, function(key, value) {
-                $dropdown.append('<option value="' + value.clave + '">' + value.descripcion + '</option>');
+                $dropdown.append('<option value="' + value.clave + '">'  + value.clave + ' - ' + value.descripcion + '</option>');
+            });
+
+        },
+        error: function(response) {
+            var mensaje="";
+            $.each(response.responseJSON.errors, function( key, value ) {
+                mensaje += value+"\n";
+            });
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensaje,
+                confirmButtonText: "Aceptar",
+            });
+            //$('#errorModal').modal('show');
+            console.log('Error: ' +  JSON.stringify(response.responseJSON));
+        }
+    });
+}
+
+function getUPPAuto(){
+	$.ajax({
+        url:"/amd-configuracion/upps-auto",
+        type: "POST",
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success:function(response){
+            response = response.dataSet;
+            var $dropdown = $("#upps_auto");
+            $.each(response, function(key, value) {
+                $dropdown.append('<option value="' + value.clave + '">' + value.clave + ' - ' + value.descripcion + '</option>');
             });
 
         },
@@ -225,6 +257,8 @@ function updateData(id,field){
     });
 }
 
+
+
 $(document).ready(function () {
 
 	getData();
@@ -255,34 +289,6 @@ $(document).ready(function () {
 	});
 
 
-	$.ajax({
-        url:"/amd-configuracion/upps-auto",
-        type: "POST",
-        dataType: 'json',
-        processData: false,
-        contentType: false,
-        success:function(response){
-            response = response.dataSet;
-            var $dropdown = $("#upps_auto");
-            $.each(response, function(key, value) {
-                $dropdown.append('<option value="' + value.upp_id + '">' + value.descripcion + '</option>');
-            });
-
-        },
-        error: function(response) {
-            var mensaje="";
-            $.each(response.responseJSON.errors, function( key, value ) {
-                mensaje += value+"\n";
-            });
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensaje,
-                confirmButtonText: "Aceptar",
-            });
-            //$('#errorModal').modal('show');
-            console.log('Error: ' +  JSON.stringify(response.responseJSON));
-        }
-    });
+	getUPPAuto();
 	
 });
