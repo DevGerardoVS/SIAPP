@@ -27,6 +27,8 @@ use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
 use Shuchkin\SimpleXLSX;
 use Symfony\Component\Console\Helper\Table;
+use Illuminate\Support\Facades\Http;
+use Storage;
 
 
 
@@ -312,9 +314,9 @@ class MetasController extends Controller
 		$date = Carbon::now();
 		$request = array(
 			"anio" => $date->year,
-			"corte" => $date->format('Y-m-d'),
-			"logoLeft" => public_path() . 'img\escudo.png',
-			"logoRight" => public_path() . 'img\escudo.png',
+			// "corte" => $date->format('Y-m-d'),
+			// "logoLeft" => public_path() . 'img\escudo.png',
+			// "logoRight" => public_path() . 'img\escudo.png',
 			"UPP" => $upp,
 		);
 		log::debug($request);
@@ -333,7 +335,7 @@ class MetasController extends Controller
 
 		$ruta = public_path() . "/Reportes";
 		//Eliminación si ya existe reporte
-		if (File::exists($ruta . "/" . $report . ".pdf")) {
+		if (File::exists($ruta . "/" . $report . ".pdf")) { 
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
@@ -352,11 +354,18 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->output();
-		dd($jasper);
-		return Response::make(file_get_contents(public_path() . "/Reportes/" . $report . ".pdf"), 200, [
+		)->execute();
+		//dd($jasper);
+		$reportePDF = Response::make(file_get_contents(public_path() . "/Reportes/" . $report . ".pdf"), 200, [
 			'Content-Type' => 'application/pdf'
 		]);
+
+		if ($reportePDF != '') {
+			return response()->json('done',200);
+		}else {
+			return response()->json('error',200);
+		}
+
 	}
 	public function importPlantilla(Request $request)
 	{
@@ -475,4 +484,87 @@ class MetasController extends Controller
 		//in_array ($proyecto, 'b');
 	}
 
+
+	public function descargaReporteFirma(Request $request){
+		try {
+		//generamos el nombre del archivo a guardar
+		$nameCer = substr(str_replace(" ", "_", $request->cer->getClientOriginalName()), 0, -4);
+		//si el nombre es mayor a 55 caracteres se toman solo los primeros 55
+		if (strlen($nameCer) > 55) {
+			$nameCer = substr($nameCer, 0, 55);
+		}
+		$fileExtCer = $request->cer->getClientOriginalExtension();
+		$nameSaveCer = $nameCer.".".$fileExtCer;
+		//generamos el nombre del archivo a guardar
+		$nameKey = substr(str_replace(" ", "_", $request->key->getClientOriginalName()), 0, -4);
+		//si el nombre es mayor a 55 caracteres se toman solo los primeros 55
+		if (strlen($nameKey) > 55) {
+			$nameKey = substr($nameKey, 0, 55);
+		}
+		$fileExtKey = $request->key->getClientOriginalExtension();
+		$nameSaveKey = $nameKey .".".$fileExtKey;
+		//crear un path para los reportes... storage\app\public\reportes\Claveprivada_FIEL_HEHF7712015Z2_20220324_105350.key
+		$cerPath = Storage::path('public/reportes/'.$nameSaveCer);
+		$keyPath = Storage::path('public/reportes/'.$nameSaveKey);
+		//revisamos si existe  y lo eliminamos...
+		if (File::exists($cerPath)) {
+			Storage::delete($cerPath);
+		}
+		if (File::exists($keyPath)) {
+			Storage::delete($keyPath);
+		}
+		//guardamos los archivos...
+		$key = $request->key->storeAs('public/reportes/', $nameSaveKey);
+		$cer = $request->cer->storeAs('public/reportes/', $nameSaveCer);
+		$cerFile ='';
+		$keyFile = '';
+		//obtenemos el contenido de los archivos...
+		if (File::exists($cerPath)) {
+			$cerFile = file_get_contents($cerPath);
+		}
+		if (File::exists($keyPath)) {
+			$keyFile = file_get_contents($keyPath);
+		}
+		$pdf ='';
+		$ruta = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
+		if (File::exists($ruta)) { 
+			$pdf = file_get_contents($ruta);
+		}
+		//Hacemos la conexion con la api del login para obtener el token de verificacion...
+		$token = Http::post('http://10.0.250.55/firmaElectronica/firmaElectronica/public/api/login', [
+			'email' => 'pruebasinfraestructura@gmail.com',
+			'password' => 'z2&CS53y',
+		]);
+		//una vez que tenemos el token hacemos la conexion con la api de firmado...
+		if ($token && $token['token'] && $token['token'] != '') {
+			$header = array();
+			$response = Http::withToken($token['token'])
+			->withHeaders($header);
+			$response = $response->attach('pdf[]',$pdf,'Reporte_Calendario_UPP.pdf');
+			$response = $response->attach('cer',$cerFile,$nameSaveCer);
+			$response = $response->attach('key',$keyFile,$nameSaveKey);
+			$response = $response->post('http://10.0.250.55/firmaElectronica/firmaElectronica/public/api/firmarPDF',[
+			'pass' =>'12345678a',
+			'cadenaOrigen'=>'prueba',
+			'clave_tramite'=>'IAP01',
+			'encabezado'=>1]);
+			if ($response &&  $response[0]['pdfFirmado']) {
+				$file = $response[0]['pdfFirmado'];
+				$response = ['estatus'=>'done','data'=>$file];
+				return $response;
+			}else {
+				$responseError = ['estatus'=>'error','data'=>$response];
+				return $responseError;
+			}
+		}else {
+			$responseError = ['estatus'=>'error','data'=>$token];
+			return $responseError;
+		}
+		} catch (\Exception $exp) {
+			Log::debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+			return response()->json('error',200);
+        }
+		 
+	}
 }

@@ -20,7 +20,10 @@
 		Route::post('/calendarizacion/create', 'createMeta');
 		Route::post('/calendarizacion/detelet', 'deleteMeta');
 		Route::get('/calendarizacion/update/{id?}','updateMeta');
+
+
 		
+		Route::post('/calendarizacion-metas-reporte', 'descargaReporteFirma');
 	});
 ?>
 

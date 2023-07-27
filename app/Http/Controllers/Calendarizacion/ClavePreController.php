@@ -561,6 +561,7 @@ class ClavePreController extends Controller
         }
             $uppAutorizados = DB::table('uppautorizadascpnomina')
             ->SELECT('clv_upp')
+            ->WHERE('deleted_at','=', null)
             ->WHERE('clv_upp','=',$uppUsuario)
             ->get();
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
@@ -667,6 +668,7 @@ class ClavePreController extends Controller
         }
         $uppAutorizados = DB::table('uppautorizadascpnomina')
             ->SELECT('clv_upp')
+            ->WHERE('deleted_at','=', null)
             ->WHERE('clv_upp','=', $clvUpp != '' ? $clvUpp : $uppUsuario)
             ->get();
         $arrayTechos = "tf.deleted_at IS NULL  && tf.ejercicio = ".$anio;
@@ -704,7 +706,7 @@ class ClavePreController extends Controller
                 0 calendarizado,
                 ejercicio
             from techos_financieros tf
-            where tf.tipo = 'RH' and tf.clv_upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina) && ".$arrayTechos."
+            where tf.tipo = 'RH' and tf.clv_upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at = null) && ".$arrayTechos."
             group by clv_fondo,ejercicio
             union all 
             select 
@@ -714,7 +716,7 @@ class ClavePreController extends Controller
                 sum(total) calendarizado,
                 ejercicio
             from programacion_presupuesto pp
-            where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina) && ".$arrayProgramacion."
+            where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at = null) && ".$arrayProgramacion."
             group by clv_fondo,ejercicio
         ) tabla
         join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
