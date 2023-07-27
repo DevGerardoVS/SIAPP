@@ -12,6 +12,7 @@
         "biscolab/laravel-recaptcha": "^6.0",
         "cossou/jasperphp": "^2.8",
         "doctrine/dbal": "^3.4",
+        "dompdf/dompdf": "^2.0",
         "econea/nusoap": "^0.9.14",
         "geekcom/phpjasper": "^3.1",
         "guzzlehttp/guzzle": "^7.2",

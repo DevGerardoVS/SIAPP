@@ -9,17 +9,17 @@
 <body>
     <div class="row">
         <table>
-            <thead style="background-color: aqua;">
+            <thead style="background-color: aqua !important;">
                 <tr class="table-primary">
-                <th><b>Clave UPP</b></th>
-                <th><b>UPP</b></th>
-                <th><b>TIPO</b></th>
-                <th><b>Clave FONDO</b></th>
-                <th><b>FONDO</b></th>
-                <th><b>PRESUPUESTO</b></th>
-                <th><b>EJERCICIO</b></th>
-            </tr>
-        </thead>
+                    <th><b>Clave UPP</b></th>
+                    <th><b>UPP</b></th>
+                    <th><b>TIPO</b></th>
+                    <th><b>Clave FONDO</b></th>
+                    <th><b>FONDO</b></th>
+                    <th><b>PRESUPUESTO</b></th>
+                    <th><b>EJERCICIO</b></th>
+                </tr>
+            </thead>
         <tbody>
             @foreach ($data as $d)
             <tr class="table-secondary">
