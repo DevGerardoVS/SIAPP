@@ -9,11 +9,9 @@ var dao = {
         }).done(function (data) {
             var par = $('#upp_filter');
             par.html('');
-            par.append(new Option("-- UPPS--", ""));
-            document.getElementById("upp_filter").options[0].disabled = true;
             $.each(data, function (i, val) {
                 if (data[i].clv_upp=='001') {
-                    par.append(new Option(data[i].upp, data[i].clv_upp,true,true));
+                    par.append(new Option(data[i].upp, data[i].clv_upp,true,false));
                 } else
                 {
                     par.append(new Option(data[i].upp, data[i].clv_upp));
@@ -31,8 +29,13 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-           _url = "/actividades/jasper/" + upp;
-        window.location = _url;
+        $.ajax({
+            type:'get',
+            url:"/actividades/jasper/" + upp,
+            dataType : "json"
+        }).done(function (params) {
+            $('#firmaModal').modal('show');
+        });
     },
     exportExcel: function () {
         let upp;
@@ -41,8 +44,10 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-           _url = "/actividades/exportExcel/" + upp;
-        window.location = _url;
+        _url = "/actividades/exportExcel/" + upp;
+        window.open(_url, '_blank');
+        $('#cabecera').css("visibility","visible");
+      //  window.location = _url;
     },
     exportPdf: function () {
         let upp;
@@ -51,8 +56,11 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-           _url = "/actividades/exportPdf/" + upp;
-        window.location = _url;
+        _url = "/actividades/exportPdf/" + upp;
+        window.open(_url, '_blank');
+                $('#cabecera').css("visibility","visible");
+
+      //  window.location = _url;
     },
     getData : function(upp){
 		$.ajax({
@@ -60,8 +68,7 @@ var dao = {
 			url : "/actividades/data/"+upp,
 			dataType : "json"
         }).done(function (_data) {
-            console.log(_data);
-			_table = $("#catalogo");
+			_table = $("#proyectoM");
 			_columns = [
 				{"aTargets" : [0] , "mData" :[0] },
 				{"aTargets" : [1] , "mData" :[1] },
@@ -86,9 +93,17 @@ var dao = {
             ];
             _height = '1px';
             _pagination = 15;
-			_gen.setTableScrollFotter(_table, _columns, _data,_height,_pagination);
+			_gen.setTableScrollFotter(_table, _columns, _data);
 		});
-	},
+    },
+    editarMeta: function (id) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Your work has been saved',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    },
     eliminar: function (id) {
         Swal.fire({
             title: '¿Seguro que quieres eliminar este usuario?',
@@ -107,20 +122,20 @@ var dao = {
                         id: id
                     }
                 }).done(function (data) {
-                    if (data != "done") {
-                        Swal.fire(
-                            'Error!',
-                            'Hubo un problema al querer realizar la acción, contacte a soporte',
-                            'Error'
-                        );
+                    const {mensaje } = data;
+                    Swal.fire({
+                        icon: mensaje.icon,
+                        title: mensaje.title,
+                        text: mensaje.text,
+                    });
+                    if ($('#upp').val() == '') {
+                        dao.getUpps();
+                        dao.getData($('#upp_filter').val());
                     } else {
-                        Swal.fire(
-                            'Éxito!',
-                            'La acción se ha realizado correctamente',
-                            'success'
-                        );
-                        dao.getData();
+                        dao.getData($('#upp').val());
+                
                     }
+                
                 });
 
             }
@@ -143,6 +158,10 @@ var dao = {
         for (let i = 1; i <=12; i++) {
             $("#" + i).prop('disabled', true); 
         }
+    },
+    limpiarFormFirma: function () {
+        $('#firmaModal').modal('hide');
+        document.getElementById("frm_eFirma").reset(); 
     },
     arrEquals: function (numeros) {
         let duplicados = [];
@@ -233,6 +252,52 @@ var dao = {
             });
         }
     },
+    firmarReporte : function () {
+        let timerInterval
+        Swal.fire({
+          title: 'Preparando',
+          html: 'Espere un momento',
+          timer: 5000,
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading()
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+              b.textContent = Swal.getTimerLeft()
+            }, 100)
+          },
+          willClose: () => {
+            clearInterval(timerInterval)
+          }
+        }).then(() => {
+            var form = $('#frm_eFirma')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: "POST",
+                url: '/calendarizacion-metas-reporte',
+                data: data,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                cache: false,
+            }).done(function (params) {
+            if (params.estatus == 'done') {
+                const containerFile = document.querySelector('#containerFile');
+                const tempLink = document.createElement('a');
+                tempLink.href = `data:application/pdf;base64,${params.data}`;
+                tempLink.setAttribute('download', 'Reporte_Calendario_UPP.pdf');
+                tempLink.click();
+                dao.limpiarFormFirma();
+            }else{
+                Swal.fire(
+                    'Error!',
+                    'Hubo un problema al querer realizar la acción, contacte a soporte',
+                    'Error'
+                );
+            }
+            });
+        });
+    },
 };
 
 var init = {
@@ -256,17 +321,32 @@ var init = {
             }
         });
     },
+    validateFirmaE: function (form) {
+
+        let rm =
+        {
+            rules: {
+                cer: { required: true },
+                key: { required: true },
+            },
+            messages: {
+                cer: { required: "Este campo es requerido" },
+                key: { required: "Este campo es requerido" },
+            }
+        }
+        _gen.validate(form, rm);
+
+    },
 };
 
 $(document).ready(function () {
+
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
-    dao.getData(null);
     if ($('#upp').val() == '') {
         dao.getUpps();
-        
-
+        dao.getData($('#upp_filter').val());
     } else {
         dao.getData($('#upp').val());
 
@@ -294,7 +374,14 @@ $(document).ready(function () {
 
     });
     $('#upp_filter').change(() => {
-        console.log("upp_filter",$('#upp_filter').val());
         dao.getData($('#upp_filter').val());
+    });
+
+    $('#btnSaveFirma').click(function (e) {
+        init.validateFirmaE($('#frm_eFirma'));
+        if ($('#frm_eFirma').valid()) {
+            dao.firmarReporte();
+        }
+
     });
 });

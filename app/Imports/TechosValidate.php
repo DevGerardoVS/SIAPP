@@ -59,6 +59,15 @@ class TechosValidate
                     );
                     return $error;
                 }
+                $ejercicioVal = DB::table('epp')->max('ejercicio');
+                if ($ejercicioVal != $row[$i][0]) {
+                    $error = array(
+                        "icon" => 'error',
+                        "title" => 'Error',
+                        "text" => 'No se puede cargar techos para ejercicio no activo. Revisa la fila: "' . $index . '"'
+                    );
+                    return $error;
+                }
                 if ($row[$i][3] != '') {
                     if (!is_numeric($row[$i][3])) {
                         $error = array(

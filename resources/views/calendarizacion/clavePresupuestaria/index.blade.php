@@ -149,7 +149,6 @@
         let ejercicio = "{{$ejercicio}}";
         dao.getEjercicios(ejercicio);
         if (upp && upp != '' && ejercicio && ejercicio != '') {
-            console.log('upp en filtro',upp);
             document.getElementById('filtro_upp').value = upp;
             document.getElementById('filUpp').value = upp;
             document.getElementById('filAnio').value = ejercicio;
