@@ -95,7 +95,15 @@ var dao = {
             _pagination = 15;
 			_gen.setTableScrollFotter(_table, _columns, _data);
 		});
-	},
+    },
+    editarMeta: function (id) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Your work has been saved',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    },
     eliminar: function (id) {
         Swal.fire({
             title: '¿Seguro que quieres eliminar este usuario?',
@@ -114,20 +122,20 @@ var dao = {
                         id: id
                     }
                 }).done(function (data) {
-                    if (data != "done") {
-                        Swal.fire(
-                            'Error!',
-                            'Hubo un problema al querer realizar la acción, contacte a soporte',
-                            'Error'
-                        );
+                    const {mensaje } = data;
+                    Swal.fire({
+                        icon: mensaje.icon,
+                        title: mensaje.title,
+                        text: mensaje.text,
+                    });
+                    if ($('#upp').val() == '') {
+                        dao.getUpps();
+                        dao.getData($('#upp_filter').val());
                     } else {
-                        Swal.fire(
-                            'Éxito!',
-                            'La acción se ha realizado correctamente',
-                            'success'
-                        );
-                        dao.getData();
+                        dao.getData($('#upp').val());
+                
                     }
+                
                 });
 
             }

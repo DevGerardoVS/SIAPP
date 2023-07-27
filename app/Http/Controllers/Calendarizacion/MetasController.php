@@ -264,15 +264,26 @@ class MetasController extends Controller
 			'noviembre' => $request[11] != NULL ? $request[11] : 0,
 			'diciembre' => $request[12] != NULL ? $request[12] : 0,
 		]);
-		return $meta;
+		if ($meta) {
+			$res=["status" => true, "mensaje" => ["icon"=>'success',"text"=>'La acción se ha realizado correctamente',"title"=>"Éxito!"]];
+			return response()->json($res,200);
+		}else {
+			$res=["status" => false, "mensaje" => ["icon"=>'Error',"text"=>'Hubo un problema al querer realizar la acción, contacte a soporte',"title"=>"Error!"]];
+			return response()->json($res,200);
+		}
 
 	}
 	public function deleteMeta(Request $request)
 	{
 		Controller::check_permission('deleteMetas');
-		Metas::where('id', $request->id)->delete();
-
-
+		$mDelete=Metas::where('id', $request->id)->delete();
+		if ($mDelete) {
+			$res=["status" => true, "mensaje" => ["icon"=>'success',"text"=>'La acción se ha realizado correctamente',"title"=>"Éxito!"]];
+			return response()->json($res,200);
+		}else {
+			$res=["status" => false, "mensaje" => ["icon"=>'Error',"text"=>'Hubo un problema al querer realizar la acción, contacte a soporte',"title"=>"Error!"]];
+			return response()->json($res,200);
+		}
 	}
 	public function updateMeta($id)
 	{

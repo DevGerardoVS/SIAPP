@@ -87,7 +87,7 @@ var dao = {
                     icon: 'info',
                     title: 'Esta unidad responsable no cuenta con presupuesto',
                     text: $('#ur_filter').find('option:selected').text(),
-                })
+                });
                 if ($('#upp').val() == '') {
                     dao.getUrs($('#upp_filter').val());
                 } else {
@@ -95,46 +95,6 @@ var dao = {
                 }
             }
         });
-    },
-
-    eliminar: function (id) {
-        Swal.fire({
-            title: '¿Seguro que quieres eliminar este usuario?',
-            text: "Esta accion es irreversible",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "/calendarizacion/detelet",
-                    data: {
-                        id: id
-                    }
-                }).done(function (data) {
-                    if (data != "done") {
-                        Swal.fire(
-                            'Error!',
-                            'Hubo un problema al querer realizar la acción, contacte a soporte',
-                            'Error'
-                        );
-                    } else {
-                        Swal.fire(
-                            'Éxito!',
-                            'La acción se ha realizado correctamente',
-                            'success'
-                        );
-                    }
-                });
-
-            }
-        })
-
-
-
     },
     getUrs: function (upp) {
         $('#ur_filter').empty();
@@ -220,14 +180,18 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            $('#cerrar').trigger('click');
             dao.limpiar();
+            const {mensaje } = response;
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 1500
+                icon: mensaje.icon,
+                title: mensaje.title,
+                text: mensaje.text,
             });
+            if ($('#upp').val() == '') {
+                dao.getUpps();
+            } else {
+                dao.checkCombination($('#upp').val())
+            }
         });
     },
 
@@ -277,14 +241,7 @@ var dao = {
             console.log("error-", error);
         });
     },
-    editarMeta: function (id) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Your work has been saved',
-            showConfirmButton: false,
-            timer: 1500
-        })
-    }, getSelect: function () {
+     getSelect: function () {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
@@ -494,16 +451,6 @@ $(document).ready(function () {
         dao.getUpps();
     } else {
         dao.checkCombination($('#upp').val())
-        /* if (dao.checkCombination($('#upp').val())!='error') {  */
-            //dao.getUrs($('#upp').val());
-      /*   } else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Informacion incompleta',
-                text: 'Las actividades estan incompletas',
-              })
-        } */
-
     }
     $('#upp_filter').change(() => {
         dao.checkCombination($('#upp_filter').val())
