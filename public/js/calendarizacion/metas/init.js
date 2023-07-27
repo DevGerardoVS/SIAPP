@@ -2,7 +2,51 @@
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 
 let actividades = [];
+let bandera=false
 var dao = {
+    checkCombination: function (upp) {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/check/' + upp,
+            dataType: "JSON"
+        }).done(function (data) {
+            if (data.status) {
+                $("#ur_filter").removeAttr('disabled');
+                $('#incomplete').hide(); 
+                $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text('');
+                if ($('#upp').val() == '') {
+                    dao.getUrs($('#upp_filter').val());
+                } else {
+                    dao.getUrs($('#upp').val());
+                }
+                $('#metasVista').show();
+                
+            } else {
+                dao.getUrs('0');
+                dao.getData('000', '000');
+                $("#ur_filter").attr('disabled', 'disabled');
+                $('#incomplete').show(); 
+                $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text(data.mensaje);
+                $('#metasVista').hide(); 
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Informacion incompleta',
+                    text: data.mensaje,
+                    confirmButtonText: 'Aceptar',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (!data.estado) {
+                            window.location.href = "/calendarizacion/claves";
+                        }
+                    }
+                });
+            }
+
+        });
+    },
     getData: function (upp, ur) {
         var data = new FormData();
         if ($('#upp').val() != '') {
@@ -36,6 +80,20 @@ var dao = {
                 { "aTargets": [10], "mData": [10] }
             ];
             _gen.setTableScrollFotter(_table, _columns, _data.dataSet);
+            console.log("length", _data)
+            let index = _data.dataSet;
+            if (index.length==0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Esta unidad responsable no cuenta con presupuesto',
+                    text: $('#ur_filter').find('option:selected').text(),
+                })
+                if ($('#upp').val() == '') {
+                    dao.getUrs($('#upp_filter').val());
+                } else {
+                    dao.getUrs($('#upp').val());
+                }
+            }
         });
     },
 
@@ -85,7 +143,9 @@ var dao = {
             url: '/calendarizacion/urs/' + upp,
             dataType: "JSON"
         }).done(function (data) {
+            console.log("urs",data);
             const { urs, tAct } = data;
+           
             var par = $('#ur_filter');
             par.html('');
             par.append(new Option("-- URS--", ""));
@@ -429,23 +489,32 @@ var init = {
     },
 };
 $(document).ready(function () {
-
+    $('#incomplete').hide();
     if ($('#upp').val() == '') {
         dao.getUpps();
-        $('#ur_filter').prop('disabled', 'disabled');
-        $('#tipo_Ac').prop('disabled', 'disabled');
-
     } else {
-        $('#ur_filter').prop('disabled', false);
-
-        dao.getUrs($('#upp').val());
+        dao.checkCombination($('#upp').val())
+        /* if (dao.checkCombination($('#upp').val())!='error') {  */
+            //dao.getUrs($('#upp').val());
+      /*   } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Informacion incompleta',
+                text: 'Las actividades estan incompletas',
+              })
+        } */
 
     }
     $('#upp_filter').change(() => {
-        $('#ur_filter').prop('disabled', false);
-        $('#tipo_Ac').prop('disabled', false);
-
-        dao.getUrs($('#upp_filter').val());
+        dao.checkCombination($('#upp_filter').val())
+            
+       /*  } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Informacion incompleta',
+                text: 'Las actividades estan incompletas',
+            })
+        } */
     });
     $('#ur_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());

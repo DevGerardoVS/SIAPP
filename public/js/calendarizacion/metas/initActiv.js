@@ -7,7 +7,6 @@ var dao = {
             url: '/calendarizacion/upps/',
             dataType: "JSON"
         }).done(function (data) {
-            console.log("upps",data);
             var par = $('#upp_filter');
             par.html('');
             $.each(data, function (i, val) {
@@ -67,7 +66,6 @@ var dao = {
 			url : "/actividades/data/"+upp,
 			dataType : "json"
         }).done(function (_data) {
-            console.log(_data);
 			_table = $("#proyectoM");
 			_columns = [
 				{"aTargets" : [0] , "mData" :[0] },
@@ -79,7 +77,7 @@ var dao = {
                 {"aTargets" : [6] , "mData" :[6] },
 				{"aTargets" : [7] , "mData" :[7] },
 				{"aTargets" : [8] , "mData" :[8] },
-				{"aTargets" : [9] , "mData" :[9] }/* ,
+				{"aTargets" : [9] , "mData" :[9] },
 				{"aTargets" : [10], "mData" :[10]},
                 { "aTargets": [11], "mData": [11] },
                 {"aTargets" : [12] , "mData" :[12] },
@@ -89,7 +87,7 @@ var dao = {
 				{"aTargets" : [16] , "mData" :[16] },
                 {"aTargets" : [17] , "mData": [17] },
                 {"aTargets" : [18] , "mData" :[18] },
-				{"aTargets" : [19] , "mData" :[19] } */
+				{"aTargets" : [19] , "mData" :[19] }
             ];
             _height = '1px';
             _pagination = 15;
@@ -300,7 +298,6 @@ $(document).ready(function () {
 
     });
     $('#upp_filter').change(() => {
-        console.log("upp_filter",$('#upp_filter').val());
         dao.getData($('#upp_filter').val());
     });
 });

@@ -27,7 +27,7 @@
                                             <label class="control-label">UR</label>
                                             <select class="form-control filters select2" id="ur_filter" name="ur_filter"
                                                 autocomplete="ur_filter" placeholder="Seleccione una UR">
-                                                <option value="" disabled selected>Seleccione una UR</option>
+                                                <option value=""  selected>Seleccione una UR</option>
                                             </select>
                                         </div>
                                     @else
@@ -40,8 +40,6 @@
                                         </div>
                                         <div class="col-md-4"></div>
                                     @endif
-
-
                                     @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
                                         @if (check_assignFront(1))
                                             <div class="col-md-4 d-flex " style="justify-content: flex-end">
@@ -57,7 +55,7 @@
                             </div>
                         </div>
                         <br>
-                        <div class="row">
+                        <div id="metasVista" class="row">
                             <div class="container">
                                 <div class=" table table-responsive-lg d-flex justify-content-center">
                                     <table id="catalogo">
@@ -79,19 +77,27 @@
                                     </table>
                                 </div>
                             </div>
+                            <br>
+                            @include('calendarizacion.metas.tableMetas')
+                            <div class="d-flex justify-content-center">
+                                <a type="button" class="btn btn-secondary" href="/calendarizacion/proyecto"
+                                    onclick="dao.limpiar()">Actividades capturadas</a>
+                                &nbsp &nbsp
+                                @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                                    <button id="btnSave" type="button" class="btn btn-primary">Guardar</button>
+                                @endif
+                            </div>
+                        </div>
+                        <div id="incomplete" class="d-flex justify-content-center" style="display: none">
+                            <div class="row">
+                                    <i id="icono" aria-hidden="true" ></i>
+                                    <div class="col-md-12">
+                                        <h1 id="texto" class="d-flex justify-content-center"></h1>
+                                    </div>
+                            </div>
                         </div>
                     </div>
-            </div>
-            <br>
-            @include('calendarizacion.metas.tableMetas')
-            <div class="d-flex justify-content-center">
-                <a type="button" class="btn btn-secondary" href="/calendarizacion/proyecto"
-                    onclick="dao.limpiar()">Actividades capturadas</a>
-                &nbsp &nbsp
-                @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
-                    <button id="btnSave" type="button" class="btn btn-primary">Guardar</button>
-                @endif
-            </div>
+            </div> 
     </div>
     </article>
     </div>
