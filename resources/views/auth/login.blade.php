@@ -49,7 +49,7 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
                         <h5 class="text-center" style="font-size: 24px; ">
-                            <b>Calendarización y Asignación de Presupuest</b>
+                            <b>Calendarización y Asignación de Presupuesto</b>
                         </h5>
                         <br>
                         {{-- <h5 class="text-center" style="font-size: 24px; padding-bottom: 3%">En Línea </h5> --}}

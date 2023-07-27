@@ -255,33 +255,37 @@ return new class extends Migration
             $table->string('deleted_user',45)->nullable(true);
         });
 
-/**/     Schema::create('cat_direccion',function (Blueprint $table){
-            $table->increments('id');
-            $table->string('cve_direccion',15)->nullable(false);
-            $table->string('nombre_direccion',120)->nullable(false);
-            $table->softDeletes();
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
-            $table->string('deleted_user',45)->nullable(true);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-        });
-
         Schema::create('proyectos_mir',function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_upp',3)->nullable(false);
-            $table->string('clv_ur',2)->nullable(false);
-            $table->string('clv_finalidad',1)->nullable(false);
-            $table->string('clv_funcion',1)->nullable(false);
-            $table->string('clv_subfuncion',1)->nullable(false);
-            $table->string('clv_eje',1)->nullable(false);
-            $table->string('clv_linea_accion',2)->nullable(false);
-            $table->string('clv_programa_sectorial',1)->nullable(false);
-            $table->string('clv_tipologia_conac',1)->nullable(false);
+            $table->string('entidad_ejecutora',6)->nullable(true);
             $table->string('clv_programa',2)->nullable(false);
-            $table->string('clv_subprograma',3)->nullable(false);
-            $table->string('clv_proyecto',3)->nullable(false);
-            $table->integer('ejercicio')->default(null);
+            $table->string('area_funcional',16)->nullable(false);
+            $table->integer('nivel')->nullable(false)->comment('0: Fin, 1: Proposito y 2: Componente');
+            $table->text('objetivo')->nullable(false);
+            $table->string('indicador',255)->nullable(false);
+            $table->string('definicion_indicador',255)->nullable(false);
+            $table->string('metodo_calculo',255)->nullable(false);
+            $table->text('descripcion_metodo')->nullable(false);
+            $table->enum('tipo_indicador',['Estratégico','Gestión'])->nullable(false);
+            $table->enum('unidad_medida',['Porcentaje','Tasa de Variación','Índice','Índice Simple','Índice Compuesto','Promedio','Razón'])->nullable(false);
+            $table->enum('dimension',['Eficacia','Eficiencia','Calidad','Economia'])->nullable(false);
+            $table->enum('comportamiento_indicador',['Ascendente','Descendente','Nominal','Regular'])->nullable(false);
+            $table->enum('frecuencia_medicion',['Quincenal','Mensual','Bimestral','Trimestral','Cuatrimestral','Semestral','Anual','Bianual','Quinquenal','Sexenal'])->nullable(false);
+            $table->text('medios_verificacion')->nullable(false);
+            $table->string('lb_valor_absoluto',255)->nullable(false);
+            $table->string('lb_valor_relativo',255)->nullable(false);
+            $table->integer('lb_anio')->nullable(false);
+            $table->integer('lb_periodo_i')->nullable(false);
+            $table->integer('lb_periodo_f')->nullable(false);
+            $table->string('mp_valor_absoluto',255)->nullable(false);
+            $table->string('mp_valor_relativo',255)->nullable(false);
+            $table->integer('mp_anio')->nullable(false);
+            $table->integer('mp_periodo_i')->nullable(false);
+            $table->integer('mp_periodo_f')->nullable(false);
+            $table->text('supuestos')->nullable(false);
+            $table->text('estrategias')->nullable(false);
+            $table->integer('ejercicio')->nullable(false);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -293,14 +297,35 @@ return new class extends Migration
             $table->string('clv_actividad',45)->nullable(false);
             $table->string('actividad',255)->nullable(false);
             $table->integer('estatus')->unsigned()->nullable(false);
+            $table->text('objetivo')->nullable(false);
+            $table->string('indicador',255)->nullable(false);
+            $table->string('definicion_indicador',255)->nullable(false);
+            $table->string('metodo_calculo',255)->nullable(false);
+            $table->text('descripcion_metodo')->nullable(false);
+            $table->enum('tipo_indicador',['Estratégico','Gestión'])->nullable(false);
+            $table->enum('unidad_medida',['Porcentaje','Tasa de Variación','Índice','Índice Simple','Índice Compuesto','Promedio','Razón'])->nullable(false);
+            $table->enum('dimension',['Eficacia','Eficiencia','Calidad','Economia'])->nullable(false);
+            $table->enum('comportamiento_indicador',['Ascendente','Descendente','Nominal','Regular'])->nullable(false);
+            $table->enum('frecuencia_medicion',['Quincenal','Mensual','Bimestral','Trimestral','Cuatrimestral','Semestral','Anual','Bianual','Quinquenal','Sexenal'])->nullable(false);
+            $table->text('medios_verificacion')->nullable(false);
+            $table->string('lb_valor_absoluto',255)->nullable(false);
+            $table->string('lb_valor_relativo',255)->nullable(false);
+            $table->integer('lb_anio')->nullable(false);
+            $table->integer('lb_periodo_i')->nullable(false);
+            $table->integer('lb_periodo_f')->nullable(false);
+            $table->string('mp_valor_absoluto',255)->nullable(false);
+            $table->string('mp_valor_relativo',255)->nullable(false);
+            $table->integer('mp_anio')->nullable(false);
+            $table->integer('mp_periodo_i')->nullable(false);
+            $table->integer('mp_periodo_f')->nullable(false);
+            $table->text('supuestos')->nullable(false);
+            $table->text('estrategias')->nullable(false);
+            $table->integer('ejercicio')->nullable(false);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
             $table->foreign('proyecto_mir_id')->references('id')->on('proyectos_mir');
         });
-
-        
 
         Schema::create('metas',function (Blueprint $table){
             $table->increments('id');
@@ -389,6 +414,11 @@ return new class extends Migration
             $table->integer('pos_pre_id')->unsigned()->nullable(false);
             $table->integer('fondo_id')->unsigned()->nullable(false);
             $table->integer('obra_id')->unsigned()->nullable(false);
+
+            $table->foreign('epp_id')->references('id')->on('epp');
+            $table->foreign('clas_geo_id')->references('id')->on('clasificacion_geografica');
+            $table->foreign('pos_pre_id')->references('id')->on('posicion_presupuestaria');
+            $table->foreign('fondo_id')->references('id')->on('fondo');
         });
 
         Schema::create('proyectos_obra',function (Blueprint $table){
@@ -443,7 +473,6 @@ return new class extends Migration
         Schema::dropIfExists('unidades_medida');
         Schema::dropIfExists('beneficiarios');
         Schema::dropIfExists('cierre_ejercicio_metas');
-        Schema::dropIfExists('cat_direccion');
         Schema::dropIfExists('cierre_ejercicio_claves');
         Schema::dropIfExists('uppAutorizadasCPNomina');
         Schema::dropIfExists('clasificacion_administrativa');
