@@ -32,17 +32,29 @@ class UsuarioController extends Controller
 		return $modul;
 	}
 	public function assignPermisson(Request $request){
-		Log::debug($request);
-		PermisosUpp::create([
+		
+		$resul=PermisosUpp::create([
 			'id_user'=>$request->id_userP,
 			'id_permiso'=>$request->id_permiso,
 			'descripcion'=>$request->descripcion
 		]);
-		return response()->json("done", 200);
+		if ($resul) {
+			$res=["status" => true, "mensaje" => ["icon"=>'success',"text"=>'La acción se ha realizado correctamente',"title"=>"Éxito!"]];
+			return response()->json($res,200);
+		}else {
+			$res=["status" => false, "mensaje" => ["icon"=>'Error',"text"=>'Hubo un problema al querer realizar la acción, contacte a soporte',"title"=>"Error!"]];
+			return response()->json($res,200);
+		}
 	}
 	public function createPermisson(Request $request){
-		CatPermisos::create($request->all());
-		return response()->json("done", 200);
+		$resul=CatPermisos::create($request->all());
+		if ($resul) {
+			$res=["status" => true, "mensaje" => ["icon"=>'success',"text"=>'La acción se ha realizado correctamente',"title"=>"Éxito!"]];
+			return response()->json($res,200);
+		}else {
+			$res=["status" => false, "mensaje" => ["icon"=>'Error',"text"=>'Hubo un problema al querer realizar la acción, contacte a soporte',"title"=>"Error!"]];
+			return response()->json($res,200);
+		}
 	}
 	public function getPermisson(){
 		$permisos=CatPermisos::where('deleted_at', null)->get();
@@ -136,10 +148,10 @@ class UsuarioController extends Controller
 			$validaUserName = User::where('username', $request->username)->get();
 			$validaEmail = User::where('email', $request->email)->get();
 			if ($validaUserName->isEmpty() == false) {
-				return response()->json(["icon"=>'info',"title"=>"Username duplicado"], 200);
+				return response()->json(["icon"=>'info',"title"=>"Error!","text"=>"Username duplicado"], 200);
 			}
 			if ($validaEmail->isEmpty() == false) {
-				return response()->json(["icon"=>'info',"title"=>"email duplicado"], 200);
+				return response()->json(["icon"=>'info',"title"=>"Error!","text"=>"email duplicado"], 200);
 			}
 			$user = User::create($request->all());
 			UsuarioGrupo::create([
@@ -147,7 +159,7 @@ class UsuarioController extends Controller
 				'id_usuario' => $user->id
 			]);
 
-			return response()->json(["success"=>'info',"title"=>"Usuario guardado"], 200);
+			return response()->json(["success"=>'info',"title"=>"Éxito!","text"=>"Usuario guardado"], 200);
 		}
 	}
 	//Reset Password

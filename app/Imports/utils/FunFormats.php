@@ -75,30 +75,25 @@ class FunFormats
                     );
                     return $error;
                 } else {
-                    $actividad = ActividadesMir::where('deleted_at', null)->where('actividades_mir.id', $k[13])->first();
+                    $actividad = ActividadesMir::where('deleted_at', null)->where('actividades_mir.clv_actividad', $k[13])->first();
                     if ($actividad) {
-                        $proy = ProyectosMir::where('deleted_at', null)
-                            ->where('id', $actividad['proyecto_mir_id'])
-                            ->where('clv_finalidad',$k[0])
-                            ->where('clv_funcion', $k[1])
-                            ->where('clv_subfuncion', $k[2])
-                            ->where('clv_eje', $k[3])
-                            ->where('clv_linea_accion', $k[4])
-                            ->where('clv_programa_sectorial',$k[5])
-                            ->where('clv_tipologia_conac', $k[6])
-                            ->where('clv_upp',$k[7])
-                            ->where('clv_ur', $k[8])
-                            ->where('clv_programa', $k[9])
-                            ->where('clv_subprograma', $k[10])
-                            ->where('clv_proyecto', $k[11])
-                            ->get();
+                        
+                        $area= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]).'';
+                        $proy = DB::table('proyectos_mir')
+                        ->select('*')
+                        ->where('deleted_at', null)
+                        ->where('id', $actividad['proyecto_mir_id'])
+                        ->where('area_funcional',$area)
+                        ->where('clv_upp',$k[7])
+                        ->get();
                         if (count($proy)>=1) {
                             $clave =''. strval($k[0]) . '-' .strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]). '-' .strval($k[4]).'-'. strval($k[5]) . '-' .strval($k[6]) .'-'. strval($k[7]) . '-' .strval($k[8]) . '-' . strval($k[9]) . '-' . strval($k[10]). '-' .strval($k[11]).'';
                             $pres=FunFormats::existPP($clave);
                             if (count($pres)) {
+                                
                                 $aux[] = [
                                     'clv_fondo' => $k[12],
-                                    'actividad_id' => $k[13],
+                                    'actividad_id' =>$k[13],
                                     'tipo' => $k[16],
                                     'beneficiario_id' => $k[29],
                                     'unidad_medida_id' => $k[32],
@@ -116,7 +111,6 @@ class FunFormats
                                     'noviembre' => $k[27],
                                     'diciembre' => $k[28],
                                     'total' => FunFormats::typeTotal($k),
-                                    'estatus' => 0,
                                     'created_user' => auth::user()->username
                                 ];
                             }else{
@@ -156,9 +150,16 @@ class FunFormats
             );
             return $error;
         }
+        Log::debug('Gurardando ');
         foreach ($aux as $key) {
-            $meta = Metas::create($key);
-           // Log::debug($meta);
+            Log::debug($key);
+            try {
+                $meta = Metas::create($key);
+            Log::debug($meta);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            
         }
         $success = array(
             "icon" => 'success',
@@ -185,15 +186,15 @@ class FunFormats
 		return $columns[$i];
 	}
     public static function existPP($clave){
+        
         $arrayclave=explode( '-', $clave);
         try {
             $activs = DB::table('programacion_presupuesto')
 			->select(
-				'programacion_presupuesto.id',
-                DB::raw('CONCAT('.'"'.'finalidad, "-",funcion,"-",subfuncion,"-",eje,"-",linea_accion,"-",programa_sectorial,"-",tipologia_conac,"-",upp,"-",ur,"-",programa_presupuestario,"-",subprograma_presupuestario,"-",proyecto_presupuestario'.'"'.') AS clave')
+				'upp',
 			)
 			->where('deleted_at', null)
-		 ->where('finalidad',$arrayclave[0])
+		    ->where('finalidad',$arrayclave[0])
 			->where('funcion',$arrayclave[1])
 			->where('subfuncion',$arrayclave[2])
 			->where('eje',$arrayclave[3])
@@ -207,10 +208,10 @@ class FunFormats
 			->where('proyecto_presupuestario', $arrayclave[11])
             ->where('programacion_presupuesto.ejercicio', '=', 2023)
             ->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
-				->distinct()
+			->distinct()
             ->get();
-        
                 return $activs;
+               
           
         } catch (\Throwable $th) {
             throw $th;
