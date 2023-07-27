@@ -14,15 +14,13 @@
         Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
 		Route::get('/calendarizacion/selects', 'getSelects');
 		Route::get('/calendarizacion/urs/{upp?}', 'getUrs');
-		Route::get('/calendarizacion/fondos/{clave?}', 'getFyA');
+		Route::get('/calendarizacion/fondos/{area?}/{enti?}', 'getFyA');
 		Route::get('/calendarizacion/upps', 'getUpps');
 		Route::get('/calendarizacion/subprog/{ur?}', 'getSubProg');
 		Route::post('/calendarizacion/create', 'createMeta');
 		Route::post('/calendarizacion/detelet', 'deleteMeta');
 		Route::get('/calendarizacion/update/{id?}','updateMeta');
-
-
-		
+		Route::get('/calendarizacion/check/{upp?}','checkCombination');
 		Route::post('/calendarizacion-metas-reporte', 'descargaReporteFirma');
 	});
 ?>
