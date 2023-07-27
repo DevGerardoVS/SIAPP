@@ -9,18 +9,31 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use App\Helpers\Calendarizacion\MetasHelper;
+use App\Http\Controllers\Calendarizacion\MetasController;
 
 
 class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths
 {
     protected $filas;
+    protected $upp;
+
+    function __construct($upp) {
+
+        $this->upp = $upp;
+        
+
+    }
     public function collection()
     {
-
-        $query = MetasHelper::actividades();
-        $this->filas = count($query);
-
-        return $query;
+/* 
+        $query = MetasHelper::actividades($this->upp); */
+        $dataSet = MetasController::getActiv($this->upp);
+        $this->filas = count($dataSet);
+        for ($i=0; $i <count($dataSet); $i++) { 
+			unset($dataSet[$i][19]);
+			$dataSet=array_values($dataSet);
+		}
+		return collect($dataSet);
     }
 
     /**
@@ -29,7 +42,7 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
      */
     public function headings(): array
     {
-        return ["UR", "Programa", "Subprograma", "proyecto", "Actividad", "Tipo Actividad", "Meta anual", "# Beneficiarios", "beneficiarios","U de medida"];
+        return ["FINALIDAD","FUNCION","SUBFUNCION","EJE","L ACCION","PRG SECTORIAL","TIPO CONAC","UPP","UR", "Programa", "Subprograma", "proyecto",'Fondo', "Actividad","Tipo Actividad","Meta anual", "# Beneficiarios", "beneficiarios","U de medida"];
     }
 
     public function columnWidths(): array
@@ -52,7 +65,7 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
             AfterSheet::class=> function(AfterSheet $event){
                 $sheet = $event -> sheet;
                 $event->sheet->getDelegate()
-                ->getStyle('A1:k12')
+                ->getStyle('A1:S'.$this->filas)
                 ->applyFromArray(['alignment'=>['wrapText'=>true]]);
 
                 $styleArray = [
@@ -64,7 +77,7 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
                     ],
                 ];
     
-                $event->sheet->getStyle('A1:K'.$this->filas)->applyFromArray($styleArray);
+                $event->sheet->getStyle('A1:S'.$this->filas)->applyFromArray($styleArray);
                },
              
         ];

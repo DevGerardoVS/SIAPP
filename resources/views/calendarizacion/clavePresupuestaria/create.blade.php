@@ -97,11 +97,20 @@
                                         </div>                                                               
                                     <div style="clear:both"></div>
                                     <div class="col-md-1"></div>
-                                    <div class="col-md-3"><label class="control-label">Unidad Programática Presupuestal*</label></div>
-                                        <div class="col-md-8">
-                                            
-                                            <select class="form-control select2" name="sel_upp" id="sel_upp"></select>
-                                        </div>                                
+                                        @if($upp != '')
+                                        <div class="col-md-3"><label class="control-label">Unidad Programática Presupuestal*</label></div>
+                                            <div class="col-md-8">
+                                                <p>{{$upp.'-'.$descripcion}}</p>
+                                                <div class="col-md-8" style="display: none">
+                                                    <select class="form-control select2" name="sel_upp" id="sel_upp" ></select>
+                                                </div> 
+                                            </div> 
+                                        @else 
+                                            <div class="col-md-3"><label class="control-label">Unidad Programática Presupuestal*</label></div>
+                                            <div class="col-md-8">
+                                                <select class="form-control select2" name="sel_upp" id="sel_upp"></select>
+                                            </div> 
+                                        @endif                      
                                     <div style="clear:both"></div>
                                     <div class="col-md-1"></div>
                                     <div class="col-md-3"><label class="control-label">Unidad Responsable*</label></div>
@@ -141,11 +150,7 @@
                                     <div class="col-md-1"></div>
                                     <div class="col-md-3"><label class="control-label">Periodo Presupuestario*</label></div>
                                         <div class="col-md-8">
-                                            <p>&nbsp;&nbsp; 01-ENE</p>
-                                            {{-- <select class="form-control select2" name="sel_periodo" id="sel_periodo">
-                                                <option value="">-- Seleccione Periodo Presupuestal --</option>
-                                                <option value="01-ENE">1-ENE-DEC</option>
-                                            </select> --}}
+                                            <p>01-ENE</p>
                                         </div>
                                     <div style="clear:both"></div>
                                     <div class="col-md-1"></div>
@@ -297,7 +302,17 @@
     <script>
         dao.getRegiones("");
         let ejercicio = document.getElementById('anio').value;
+        let upp = "{{$upp}}";
         dao.getUpp(ejercicio,'');
+        if (upp && upp != null) {
+            document.getElementById('sel_upp').value = upp;
+            document.getElementById('upp').innerHTML = upp;
+		    dao.getUninadResponsableByUpp(upp,ejercicio,'');
+            dao.getObras(upp);
+
+        }
+        
+        
     </script>
     
 @endsection

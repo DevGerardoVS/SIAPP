@@ -18,7 +18,6 @@ class ReporteController extends Controller
         Controller::check_permission('getPlaneacion');
         $db = $_ENV['DB_DATABASE'];
         $dataSet = array();
-        // DB::select('CALL insert_pp_aplanado()');
         $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         return view("reportes.leyHacendaria", [
@@ -31,7 +30,6 @@ class ReporteController extends Controller
     public function indexAdministrativo(){
         Controller::check_permission('getAdmon');
         $dataSet = array();
-        // DB::select('CALL insert_pp_aplanado()');
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 GROUP BY clave ORDER BY clave ASC');
         return view("reportes.administrativos.indexAdministrativo", [

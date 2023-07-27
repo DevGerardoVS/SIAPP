@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Calendarizacion;
 
 use App\Imports\utils\FunFormats;
 use App\Http\Controllers\Controller;
+use App\Models\calendarizacion\ProyectosMir;
+use App\Models\calendarizacion\ActividadesMir;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -11,16 +13,17 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MetasExport;
 use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
-use App\Models\catalogos\CatPermisos;
 use Auth;
 use DB;
 use Log;
-use Illuminate\Database\Query\JoinClause;
 use App\Helpers\Calendarizacion\MetasHelper;
 use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
 use Shuchkin\SimpleXLSX;
+use Symfony\Component\Console\Helper\Table;
+use Illuminate\Support\Facades\Http;
+use Storage;
 
 
 
@@ -29,26 +32,38 @@ class MetasController extends Controller
 	//Consulta Vista Usuarios
 	public function getIndex()
 	{
+		Controller::check_permission('getClaves');
 		return view('calendarizacion.metas.index');
 	}
 	public function getProyecto()
 	{
+		Controller::check_permission('getClaves');
 		return view('calendarizacion.metas.proyecto');
 	}
-	public function getActiv()
+	public static function getActiv($upp)
 	{
-		$query = MetasHelper::actividades();
+		$query = MetasHelper::actividades($upp);
 		$dataSet = [];
 		foreach ($query as $key) {
-			$accion = '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
-				'<i class="fa fa-pencil" style="color:green;"></i></button>&nbsp;' .
+			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
+				'<i class="fa fa-pencil" style="color:green;"></i></button>' .
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
-				'<i class="fa fa-trash" style="color:B40000;" ></i></button>&nbsp;';
+				'<i class="fa fa-trash" style="color:B40000;" ></i></button>':'';
+			$area = str_split($key->area);
+			$entidad = str_split($key->entidad);
 			$i = array(
-				$key->ur,
-				$key->programa,
-				$key->subprograma,
-				$key->proyecto,
+				$area[0],
+				$area[1],
+				$area[2],
+				$area[3],
+				''.strval($area[4]).strval($area[5]).'',
+				$area[6],
+				$area[7],
+				''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
+				''.strval($entidad[4]).strval($entidad[5]).'',
+				''.strval($area[8]).strval($area[9]).'',
+				''.strval($area[10]).strval($area[11]).strval($area[12]).'',
+				''.strval($area[13]).strval($area[14]).strval($area[15]).'',
 				$key->fondo,
 				$key->actividad,
 				$key->tipo,
@@ -62,159 +77,90 @@ class MetasController extends Controller
 		}
 		return $dataSet;
 	}
-	public function getNames($id)
-	{
-		$cvl = DB::table('proyectos_mir')
-			->select(
-				'id',
-				'clv_upp',
-				'clv_ur',
-				'clv_programa',
-				'clv_subprograma',
-				'clv_proyecto',
-			)
-			->where('proyectos_mir.id', '=', $id)
-			->where('proyectos_mir.deleted_at', '=', null)->get();
-		$query = DB::table('v_epp')
-			->select(
-				'ur',
-				'programa',
-				'subprograma',
-				'proyecto'
-			)
-			->where('v_epp.clv_ur', '=', $cvl[0]->clv_ur)
-			->where('v_epp.clv_upp', '=', $cvl[0]->clv_upp)
-			->where('v_epp.clv_programa', '=', $cvl[0]->clv_programa)
-			->where('v_epp.clv_subprograma', '=', $cvl[0]->clv_subprograma)
-			->where('v_epp.clv_proyecto', '=', $cvl[0]->clv_proyecto)->get();
-		$dataSet = [];
-		foreach ($query as $key) {
-			$i = array(
-				$key->ur,
-				$key->programa,
-				$key->subprograma,
-				$key->proyecto,
-				" ",
-			);
-			$dataSet[] = $i;
-		}
-		return $dataSet[0];
-	}
 	public function getMetasP(Request $request)
 	{
 		$dataSet = [];
-		$upp = isset($request->upp_filter) ?$request->upp_filter:auth::user()->clv_upp;
-		if ($request->ur_filter != null && $upp !='') {
-			$activs = DB::table("programacion_presupuesto")
-				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
-				->select(
-					'programacion_presupuesto.id',
-					'programa_presupuestario as programa',
-					'subprograma_presupuestario as subprograma',
-					'v_epp.proyecto as proyecto'
-				)
-				->where('programacion_presupuesto.ur', '=', $request->ur_filter)
-				->where('programacion_presupuesto.upp', '=', $upp)
-				->groupByRaw('programa_presupuestario')->get();
+			$upp = isset($request->upp_filter) ? $request->upp_filter : auth::user()->clv_upp;
+			
+			if ($request->ur_filter != null && $upp != '') {
 				
-			foreach ($activs as $key) {
-				$clave ='"'. strval($upp) . '-' .strval($request->ur_filter) . '-' . strval($key->programa) . '-' . strval($key->subprograma).'"';
-				$up = strval($upp);
-				Log::debug($clave);
-				$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='".$clave."' value='".$clave."' onchange='dao.getFyA(".$clave.")' ></div>";
-				$dataSet[] = [$key->programa, $key->subprograma, $key->proyecto, $accion];
-			}
+				$anio = DB::table('cierre_ejercicio_metas')
+					->select(
+						'estatus',
+						'ejercicio')
+					->where('clv_upp', '=', $upp)
+					->get();
+					Log::debug($anio);
+				if (count($anio)) {
+					$activs = DB::table("programacion_presupuesto")
+						->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
+						->select(
+							'programacion_presupuesto.finalidad',
+							'programacion_presupuesto.funcion',
+							'programacion_presupuesto.subfuncion',
+							'programacion_presupuesto.eje',
+							'programacion_presupuesto.linea_accion AS linea',
+							'programacion_presupuesto.programa_sectorial AS programaSec',
+							'programacion_presupuesto.tipologia_conac AS tipologia',
+							'programacion_presupuesto.id',
+							'programa_presupuestario as programa',
+							'subprograma_presupuestario as subprograma',
+							'proyecto_presupuestario AS  clv_proyecto',
+							'programacion_presupuesto.subsecretaria AS subsec',
+							DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto')
+						)
+						->where('programacion_presupuesto.ur', '=', $request->ur_filter)
+						->where('programacion_presupuesto.upp', '=', $upp)
+						->where('programacion_presupuesto.ejercicio', '=', $anio[0]->ejercicio)
+						->where('v_epp.ejercicio', '=', $anio[0]->ejercicio)
+						->orderBy('programacion_presupuesto.upp')
+						->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+						->distinct()
+						->get();
+	
+					foreach ($activs as $key) {
+						$area = '"' . strval($key->finalidad) . '-' . strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje) . '-' . strval($key->linea) . '-' . strval($key->programaSec) . '-' . strval($key->tipologia) . '-' . strval($key->programa) . '-' . strval($key->subprograma) . '-' . strval($key->clv_proyecto) . '"';
+						$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($request->ur_filter) . '"';
+						$clave = '"' . strval($upp) . strval($key->subsec) . strval($request->ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
+						$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . ")' ></div>";
+						$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $accion];
+					}
+				}
+			return response()->json(["dataSet" => $dataSet], 200);
 		}
-		return response()->json(["dataSet" => $dataSet], 200);
-	}
-	public function getMetas()
-	{
-		$activs = DB::table("actividades_mir")
-			->select(
-				'actividades_mir.id',
-				'proyecto_mir_id',
-				'clv_actividad',
-				'actividad',
-				'metas.total AS total'
-			)
-			->leftJoin('metas', 'metas.actividad_id', '=', 'actividades_mir.id')
-			->where('metas.total', '!=', null)
-			->where('actividades_mir.deleted_at', '=', null);
 
-		$query = DB::table('proyectos_mir')
-			->leftJoinSub($activs, 'act', function ($join) {
-				$join->on('proyectos_mir.id', '=', 'act.proyecto_mir_id');
-			})
-			->select(
-				'proyectos_mir.id',
-				'proyectos_mir.clv_upp AS upp',
-				'proyectos_mir.clv_ur AS ur',
-				'proyectos_mir.clv_programa AS programa',
-				'proyectos_mir.clv_subprograma AS subprograma',
-				'proyectos_mir.clv_proyecto AS proyecto',
-				'catalogo.descripcion',
-				'programacion_presupuesto.fondo_ramo AS fondo',
-				DB::raw(
-					"SUM(enero
-				+ febrero
-				+ marzo 
-				+ abril
-				+ mayo
-				+ junio
-				+ julio
-				+ agosto
-				+ septiembre
-				+ octubre
-				+ noviembre
-				+ diciembre) 
-				AS presupuesto"
-				),
-				'act.actividad',
-				'act.total'
-			)
-			->leftJoin('catalogo', 'catalogo.clave', '=', 'proyectos_mir.clv_proyecto')
-			->where('catalogo.grupo_id', '=', 18)
-			->leftJoin("actividades_mir", 'actividades_mir.proyecto_mir_id', '=', 'proyectos_mir.id')
-			->join('programacion_presupuesto', function (JoinClause $join) {
-				$join->on('proyectos_mir.clv_upp', '=', 'programacion_presupuesto.upp')
-					->orOn('programacion_presupuesto.programa_presupuestario', '=', 'proyectos_mir.clv_programa')
-					->orOn('programacion_presupuesto.subprograma_presupuestario', '=', 'proyectos_mir.clv_subprograma')
-					->orOn('programacion_presupuesto.proyecto_presupuestario', '=', 'proyectos_mir.clv_proyecto');
-			})->groupByRaw('proyectos_mir.clv_upp,proyectos_mir.clv_ur,proyectos_mir.clv_programa,proyectos_mir.clv_subprograma,proyectos_mir.clv_proyecto,catalogo.descripcion,programacion_presupuesto.fondo_ramo')
-			->where('proyectos_mir.deleted_at', '=', null)->get();
-		$dataSet = [];
-
-		foreach ($query as $key) {
-			$accion = $key->actividad != "" ? '<buttton type="button" class="btn btn-success"  onclick="dao.editarMeta(' . $key->id . ')" class="button"><i  class="fa fa-pencil"></i></buttton>' :
-				'<a type="button" class="btn btn-primary"  href="/calendarizacion/proyecto/' . $key->id . '" class="button"><i class="fa-plus">Agregar</i></a>';
-			$i = array(
-				$key->ur,
-				$key->programa,
-				$key->subprograma,
-				$key->descripcion,
-				$key->fondo,
-				$key->presupuesto,
-				$key->actividad,
-				$key->total,
-				$accion,
-			);
-			$dataSet[] = $i;
-		}
-		return ['dataSet' => $dataSet];
 	}
 	public function getUrs($_upp)
 	{
-		Log::debug($_upp);
-		$upp = $_upp != null?$_upp:auth::user()->clv_upp;
-		$urs = DB::table('v_epp')
+		$urs = [];
+		$tAct = [];
+		if($_upp != 0){
+			$upp = $_upp != null?$_upp:auth::user()->clv_upp;
+			$urs = DB::table('v_epp')
+				->select(
+					'id',
+					'clv_ur',
+					DB::raw('CONCAT(clv_ur, " - ",ur) AS ur')
+				)->distinct()
+				->where('deleted_at', null)
+				->groupByRaw('clv_ur')
+				->orderBy('clv_ur')
+				->where('clv_upp', $upp)
+				->where('ejercicio', 2024)->get();
+				$Act = DB::table('tipo_actividad_upp')
 			->select(
-				'id',
-				'clv_ur',
-				DB::raw('CONCAT(clv_ur, " - ",ur) AS ur')
-			)->distinct()
-			->groupByRaw('ur')
-			->where('clv_upp', $upp)->get();
-		return $urs;
+				'Continua',
+				'Acumulativa',
+				'Especial'
+			)
+			->where('deleted_at', null)
+			->orderBy('clv_upp')
+			->where('clv_upp', $upp)
+			->get();
+			$tAct = $Act[0];
+		}
+			
+		return ["urs"=>$urs,"tAct"=>$tAct];
 	}
 	public function getUpps()
 	{
@@ -224,14 +170,16 @@ class MetasController extends Controller
 				'clv_upp',
 				DB::raw('CONCAT(clv_upp, " - ", upp) AS upp')
 			)->distinct()
+			->orderBy('clv_upp')
 			->groupByRaw('clv_upp')
-			->get();
+			->where('ejercicio', 2024)->get();
 		return $upps;
 	}
-	public function getFyA($clave)
+	public function getFyA($area,$entidad)
 	{
-		$arrayclave=explode( '-', $clave);
-		$fondos = DB::table('programacion_presupuesto')
+		$areaAux=explode( '-', $area);
+		$entidadAux=explode( '-', $entidad);
+		 $fondos = DB::table('programacion_presupuesto')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', 'programacion_presupuesto.fondo_ramo')
 			->select(
 				'fondo.id',
@@ -239,12 +187,21 @@ class MetasController extends Controller
 				DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", fondo.ramo) AS ramo')
 			)
 			->where('fondo.deleted_at', null)
-			->where('programacion_presupuesto.upp',$arrayclave[0])
-            ->where('programacion_presupuesto.ur', $arrayclave[1])
-            ->where('programa_presupuestario', $arrayclave[2])
-            ->where('subprograma_presupuestario', $arrayclave[3])
-			->groupByRaw('programacion_presupuesto.ramo')->get();
-
+			->where('programacion_presupuesto.finalidad',$areaAux[0])
+			->where('programacion_presupuesto.funcion',$areaAux[1])
+			->where('programacion_presupuesto.subfuncion',$areaAux[2])
+			->where('programacion_presupuesto.eje',$areaAux[3])
+			->where('programacion_presupuesto.linea_accion',$areaAux[4])
+			->where('programacion_presupuesto.programa_sectorial',$areaAux[5])
+			->where('programacion_presupuesto.tipologia_conac',$areaAux[6])
+			->where('programacion_presupuesto.upp',$entidadAux[0])
+            ->where('programacion_presupuesto.ur', $entidadAux[2])
+            ->where('programa_presupuestario', $areaAux[7])
+            ->where('subprograma_presupuestario', $areaAux[8])
+			->where('proyecto_presupuestario', $areaAux[9])
+			->groupByRaw('clave')
+			->where('ejercicio',2024)
+			->get();
 			$activ = DB::table('actividades_mir')
 			->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
 			->select(
@@ -253,24 +210,10 @@ class MetasController extends Controller
 				DB::raw('CONCAT(clv_actividad, " - ",actividad) AS actividad')
 			)
 			->where('actividades_mir.deleted_at', null)
-			->where('proyectos_mir.clv_upp',$arrayclave[0])
-            ->where('proyectos_mir.clv_ur', $arrayclave[1])
-            ->where('proyectos_mir.clv_programa', $arrayclave[2])
-            ->where('proyectos_mir.clv_subprograma', $arrayclave[3])
-			->groupByRaw('actividades_mir.actividad')->get();
-		return ['fondos'=>$fondos,"activids"=>$activ];
-	}
-	public function getProgramas($ur)
-	{
-		$urs = DB::table('v_epp')
-			->select(
-				'id',
-				'clv_programa',
-				'programa'
-			)
-			->where('clv_ur', $ur)
-			->get();
-		return $urs;
+			->where('proyectos_mir.area_funcional',str_replace ( "-", '', $area))
+            ->where('proyectos_mir.entidad_ejecutora',str_replace ( "-", '', $entidad))
+			->groupByRaw('clave')->get(); 
+		return ['fondos'=> $fondos ,"activids"=>$activ ];
 	}
 	public function getSelects()
 	{
@@ -292,11 +235,13 @@ class MetasController extends Controller
 			)
 			->where('deleted_at', null)
 			->get();
-		$tAct = ["Acumulativa"=>"Acumulativa", "Continua"=>"Continua", "Especial"=>"Especial"];
-		return ["unidadM" => $uMed, "beneficiario" => $bene, "activids" => $tAct];
+
+
+		return ["unidadM" => $uMed, "beneficiario" => $bene];
 	}
 	public function createMeta(Request $request)
 	{
+		Controller::check_permission('postMetas');
 		$meta = Metas::create([
 			'actividad_id' => $request->sel_actividad,
 			'clv_fondo' => $request->sel_fondo,
@@ -319,118 +264,85 @@ class MetasController extends Controller
 			'noviembre' => $request[11] != NULL ? $request[11] : 0,
 			'diciembre' => $request[12] != NULL ? $request[12] : 0,
 		]);
-		return $meta;
-
-	}
-	public function getMetasXp()
-	{
-		$query = DB::table('metas')
-			->leftJoin('actividades_mir', 'actividades_mir.id', '=', 'metas.actividad_id')
-			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
-			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
-			->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
-			->select(
-				'metas.id',
-				'actividades_mir.actividad',
-				'total',
-				'fondo.ramo',
-				'tipo',
-				'cantidad_beneficiarios',
-				'beneficiarios.beneficiario',
-				'unidades_medida.unidad_medida',
-
-			)->where('metas.deleted_at', '=', null)->get();
-		Log::debug($query);
-		$dataSet = [];
-		foreach ($query as $key) {
-			$accion = '<a data-toggle="modal" data-target="#addActividad" data-backdrop="static" data-keyboard="false" title="Modificar meta"
-			class="btn btn-sm"onclick="dao.editarUsuario(' . $key->id . ')">' .
-				'<i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' .
-				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
-				'<i class="fa fa-trash" style="color:B40000;" ></i></button>&nbsp;';
-			$i = array(
-				$key->actividad,
-				$key->total,
-				$this->actividad($key->tipo),
-				$key->cantidad_beneficiarios,
-				$key->beneficiario,
-				$key->unidad_medida,
-				$key->ramo,
-				$accion,
-			);
-			$dataSet[] = $i;
-		}
-		return ['dataSet' => $dataSet];
-	}
-	public function actividad($id)
-	{
-		switch ($id) {
-			case 0:
-				return 'Acumulativa';
-			case 1:
-				return 'Continua';
-			case 2:
-				return 'Especial';
-			default:
-				break;
+		if ($meta) {
+			$res=["status" => true, "mensaje" => ["icon"=>'success',"text"=>'La acción se ha realizado correctamente',"title"=>"Éxito!"]];
+			return response()->json($res,200);
+		}else {
+			$res=["status" => false, "mensaje" => ["icon"=>'Error',"text"=>'Hubo un problema al querer realizar la acción, contacte a soporte',"title"=>"Error!"]];
+			return response()->json($res,200);
 		}
 
 	}
 	public function deleteMeta(Request $request)
 	{
-		//Controller::check_permission('deleteUsuarios');
-		Metas::where('id', $request->id)->delete();
-
-
+		Controller::check_permission('deleteMetas');
+		$mDelete=Metas::where('id', $request->id)->delete();
+		if ($mDelete) {
+			$res=["status" => true, "mensaje" => ["icon"=>'success',"text"=>'La acción se ha realizado correctamente',"title"=>"Éxito!"]];
+			return response()->json($res,200);
+		}else {
+			$res=["status" => false, "mensaje" => ["icon"=>'Error',"text"=>'Hubo un problema al querer realizar la acción, contacte a soporte',"title"=>"Error!"]];
+			return response()->json($res,200);
+		}
 	}
 	public function updateMeta($id)
 	{
-		//Controller::check_permission('putUsuarios', false);
-		Log::debug($id);
+		Controller::check_permission('putMetas', false);
 		$query = Metas::where('id', $id)->get();
 		return $query;
 	}
-	public function exportExcel(Request $request)
+	public function exportExcel($upp)
 	{
 		/*Si no coloco estas lineas Falla*/
 		ob_end_clean();
 		ob_start();
 		/*Si no coloco estas lineas Falla*/
-		return Excel::download(new MetasExport(), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+		return Excel::download(new MetasExport($upp), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
 	public function proyExcel()
 	{
+		Controller::check_permission('getClaves');
 		/*Si no coloco estas lineas Falla*/
 		ob_end_clean();
 		ob_start();
 		/*Si no coloco estas lineas Falla*/
 		return Excel::download(new MetasCargaM(), 'CargaMasiva.xlsx');
 	}
-	public function pdfView()
+	public function pdfView($upp)
 	{
-		$data = MetasHelper::actividades();
+		Controller::check_permission('getClaves');
+		$data = $this->getActiv($upp);
+		for ($i=0; $i <count($data); $i++) { 
+			unset($data[$i][19]);
+			$data=array_values($data);
+		}
 		return view('calendarizacion.metas.proyectoPDF', compact('data'));
 	}
 
-	public function exportPdf(Request $request)
+	public function exportPdf($upp)
 	{
-		$data = MetasHelper::actividades();
+		ini_set('max_execution_time', 5000);
+        ini_set('memory_limit', '1024M');
+		Controller::check_permission('getClaves');
+		$data = $this->getActiv($upp);
+		for ($i=0; $i <count($data); $i++) { 
+			unset($data[$i][19]);
+			$data=array_values($data);
+		}
 		view()->share('data', $data);
-		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF');
+		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF')->setPaper('a4', 'landscape');
 		return $pdf->download('Proyecto con actividades.pdf');
 	}
-	public function downloadActividades()
+	public function downloadActividades($upp)
 	{
 		$date = Carbon::now();
-		$upp = CatPermisos::where('id', auth::user()->id_ente)->firstOrFail();
 		$request = array(
 			"anio" => $date->year,
-			"corte" => $date->format('Y-m-d'),
-			"logoLeft" => public_path() . 'img\escudo.png',
-			"logoRight" => public_path() . 'img\escudo.png',
-			"UPP" => $upp->clv_upp,
+			// "corte" => $date->format('Y-m-d'),
+			// "logoLeft" => public_path() . 'img\escudo.png',
+			// "logoRight" => public_path() . 'img\escudo.png',
+			"UPP" => $upp,
 		);
-		log::debug($request);
 		return $this->jasper($request);
 
 	}
@@ -446,7 +358,7 @@ class MetasController extends Controller
 
 		$ruta = public_path() . "/Reportes";
 		//Eliminación si ya existe reporte
-		if (File::exists($ruta . "/" . $report . ".pdf")) {
+		if (File::exists($ruta . "/" . $report . ".pdf")) { 
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
@@ -465,11 +377,18 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->output();
-		dd($jasper);
-		return Response::make(file_get_contents(public_path() . "/Reportes/" . $report . ".pdf"), 200, [
+		)->execute();
+		//dd($jasper);
+		$reportePDF = Response::make(file_get_contents(public_path() . "/Reportes/" . $report . ".pdf"), 200, [
 			'Content-Type' => 'application/pdf'
 		]);
+
+		if ($reportePDF != '') {
+			return response()->json('done',200);
+		}else {
+			return response()->json('error',200);
+		}
+
 	}
 	public function importPlantilla(Request $request)
 	{
@@ -491,5 +410,244 @@ class MetasController extends Controller
 		}
 
 
+	}
+	public function checkCombination($upp)
+	{
+		$anio = DB::table('cierre_ejercicio_metas')
+			->select(
+				'estatus',
+				'ejercicio'
+			)
+			->where('clv_upp', '=', $upp)
+			->get();
+
+			$proyecto = DB::table('actividades_mir')
+				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+				->select(
+					'actividades_mir.id',
+					'proyectos_mir.area_funcional AS area',
+					'proyectos_mir.clv_upp'
+				)
+				->where('actividades_mir.deleted_at', null)
+				->where('proyectos_mir.deleted_at', null)
+				->where('proyectos_mir.clv_upp', $upp);
+		$metas=DB::table('metas')
+			->leftJoinSub($proyecto, 'pro', function ($join) {
+				$join->on('metas.actividad_id', '=', 'pro.id');
+			})
+			->select(
+				'metas.id',
+				'metas.estatus'
+			)
+			->where('metas.estatus',1)
+			->where('pro.clv_upp', '=', $upp)
+			->get();
+		if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
+			if (count($metas)==0 || Auth::user()->id_grupo == 1 ) {
+				$activs = DB::table("programacion_presupuesto")
+					->select(
+						'programa_presupuestario AS programa',
+						DB::raw('CONCAT(upp,subsecretaria,ur) AS area'),
+						DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
+					)
+					->where('programacion_presupuesto.upp', '=', $upp)
+					->where('programacion_presupuesto.ejercicio', '=', 2024)
+					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+					->distinct()
+					->where('estado', 1)
+					->groupByRaw('programa_presupuestario')->get();
+				if (count($activs)) {
+					$auxAct = count($activs);
+					$index = 0;
+					foreach ($activs as $key) {
+						$proyecto = DB::table('actividades_mir')
+							->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+							->select(
+								'actividades_mir.id',
+								'proyectos_mir.area_funcional AS area'
+							)
+							->where('actividades_mir.deleted_at', null)
+							->where('proyectos_mir.deleted_at', null)
+							->where('proyectos_mir.clv_upp', $upp)
+							->where('proyectos_mir.area_funcional', $key->clave)
+							->get();
+						if (count($proyecto)) {
+							$index++;
+						}
+					}
+					if ($index >= $auxAct) {
+						return ["status" => true, "mensaje" => '', "estado" => true];
+					} else {
+						return ["status" => false, "mensaje" => 'MIR incompleta acercate a CPLADEM', "estado" => true];
+					}
+
+				} else {
+					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false];
+				}
+			}else{
+				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "estado" => true];
+			}
+		} else {
+			return ["status" => false, "mensaje" => 'La captura de metas esté cerrada', "estado" => true];
+		}
+	}
+
+	/* 		foreach ($activs as $key ) {
+				ProyectosMir::create([
+					'clv_upp'=>$upp,
+					'entidad_ejecutora'=>$key->area,
+					'clv_programa'=>$key->programa,
+					'area_funcional'=>$key->clave,
+					'nivel'=>1,
+					'objetivo'=>1,
+					'indicador'=>1,
+					'definicion_indicador'=>1,
+					'metodo_calculo'=>1,
+					'descripcion_metodo'=>1,
+					'tipo_indicador'=>'Estratégico',
+					'unidad_medida'=>'Porcentaje',
+					'dimension'=>'Eficada',
+					'comportamiento_indicador'=>'Ascendente',
+					'frecuencia_medicion'=>'Quincenal',
+					'medios_verificacion'=>1,
+					'lb_valor_absoluto'=>1,
+					'lb_valor_relativo'=>1,
+					'lb_anio'=>1,
+					'lb_periodo_i'=>1,
+					'lb_periodo_f'=>1,
+					'mp_valor_absoluto'=>1,
+					'mp_valor_relativo'=>1,
+					'mp_anio'=>1,
+					'mp_periodo_i'=>1,
+					'mp_periodo_f'=>1,
+					'supuestos'=>1,
+					'estrategias'=>1,
+					'ejercicio'=>2024
+				]);
+			} */
+
+			
+		
+
+		/* 	$proyecto = DB::table('proyectos_mir')
+			->select('id')
+			->where('deleted_at', null)
+			->where('ejercicio',2024)
+			->get();
+			for ($i=0; $i <count($proyecto); $i++) {
+			ActividadesMir::create([
+				'proyecto_mir_id'=>$proyecto[$i]->id,
+				'clv_actividad'=> $i>=10?$i:'0'.$i.'-2024',
+				'actividad'=>'Prueba'.$i.'2024',
+				'objetivo'=>$i,
+				'indicador'=>$i,
+				'definicion_indicador'=>$i,
+				'metodo_calculo'=>$i,
+				'descripcion_metodo'=>$i,
+				'tipo_indicador'=>'Estratégico',
+				'unidad_medida'=>'Porcentaje',
+				'dimension'=> 'Ascendente',
+				'comportamiento_indicador'=>'Quincenal',
+				'frecuencia_medicion'=>$i,
+				'medios_verificacion'=>$i,
+				'lb_valor_absoluto'=>$i,
+				'lb_valor_relativo'=>$i,
+				'lb_anio'=>$i,
+				'lb_periodo_i'=>$i,
+				'lb_periodo_f'=>$i,
+				'mp_valor_absoluto'=>$i,
+				'mp_valor_relativo'=>$i,
+				'mp_anio'=>$i,
+				'mp_periodo_i'=>$i,
+				'mp_periodo_f'=>$i,
+				'supuestos'=>$i,
+				'estrategias'=>$i,
+				'ejercicio'=>2024
+			]);
+			}*/
+	
+
+
+	public function descargaReporteFirma(Request $request){
+		try {
+		//generamos el nombre del archivo a guardar
+		$nameCer = substr(str_replace(" ", "_", $request->cer->getClientOriginalName()), 0, -4);
+		//si el nombre es mayor a 55 caracteres se toman solo los primeros 55
+		if (strlen($nameCer) > 55) {
+			$nameCer = substr($nameCer, 0, 55);
+		}
+		$fileExtCer = $request->cer->getClientOriginalExtension();
+		$nameSaveCer = $nameCer.".".$fileExtCer;
+		//generamos el nombre del archivo a guardar
+		$nameKey = substr(str_replace(" ", "_", $request->key->getClientOriginalName()), 0, -4);
+		//si el nombre es mayor a 55 caracteres se toman solo los primeros 55
+		if (strlen($nameKey) > 55) {
+			$nameKey = substr($nameKey, 0, 55);
+		}
+		$fileExtKey = $request->key->getClientOriginalExtension();
+		$nameSaveKey = $nameKey .".".$fileExtKey;
+		//crear un path para los reportes... storage\app\public\reportes\Claveprivada_FIEL_HEHF7712015Z2_20220324_105350.key
+		$cerPath = Storage::path('public/reportes/'.$nameSaveCer);
+		$keyPath = Storage::path('public/reportes/'.$nameSaveKey);
+		//revisamos si existe  y lo eliminamos...
+		if (File::exists($cerPath)) {
+			Storage::delete($cerPath);
+		}
+		if (File::exists($keyPath)) {
+			Storage::delete($keyPath);
+		}
+		//guardamos los archivos...
+		$key = $request->key->storeAs('public/reportes/', $nameSaveKey);
+		$cer = $request->cer->storeAs('public/reportes/', $nameSaveCer);
+		$cerFile ='';
+		$keyFile = '';
+		//obtenemos el contenido de los archivos...
+		if (File::exists($cerPath)) {
+			$cerFile = file_get_contents($cerPath);
+		}
+		if (File::exists($keyPath)) {
+			$keyFile = file_get_contents($keyPath);
+		}
+		$pdf ='';
+		$ruta = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
+		if (File::exists($ruta)) { 
+			$pdf = file_get_contents($ruta);
+		}
+		//Hacemos la conexion con la api del login para obtener el token de verificacion...
+		$token = Http::post('http://10.0.250.55/firmaElectronica/firmaElectronica/public/api/login', [
+			'email' => 'pruebasinfraestructura@gmail.com',
+			'password' => 'z2&CS53y',
+		]);
+		//una vez que tenemos el token hacemos la conexion con la api de firmado...
+		if ($token && $token['token'] && $token['token'] != '') {
+			$header = array();
+			$response = Http::withToken($token['token'])
+			->withHeaders($header);
+			$response = $response->attach('pdf[]',$pdf,'Reporte_Calendario_UPP.pdf');
+			$response = $response->attach('cer',$cerFile,$nameSaveCer);
+			$response = $response->attach('key',$keyFile,$nameSaveKey);
+			$response = $response->post('http://10.0.250.55/firmaElectronica/firmaElectronica/public/api/firmarPDF',[
+			'pass' =>'12345678a',
+			'cadenaOrigen'=>'prueba',
+			'clave_tramite'=>'IAP01',
+			'encabezado'=>1]);
+			if ($response &&  $response[0]['pdfFirmado']) {
+				$file = $response[0]['pdfFirmado'];
+				$response = ['estatus'=>'done','data'=>$file];
+				return $response;
+			}else {
+				$responseError = ['estatus'=>'error','data'=>$response];
+				return $responseError;
+			}
+		}else {
+			$responseError = ['estatus'=>'error','data'=>$token];
+			return $responseError;
+		}
+		} catch (\Exception $exp) {
+			Log::debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+			return response()->json('error',200);
+        }
+		 
 	}
 }

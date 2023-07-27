@@ -1,45 +1,100 @@
+
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 
 let actividades = [];
+let bandera=false
 var dao = {
-    eliminar: function (id) {
-        Swal.fire({
-            title: '¿Seguro que quieres eliminar este usuario?',
-            text: "Esta accion es irreversible",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "POST",
-                    url: "/calendarizacion/detelet",
-                    data: {
-                        id: id
-                    }
-                }).done(function (data) {
-                    if (data != "done") {
-                        Swal.fire(
-                            'Error!',
-                            'Hubo un problema al querer realizar la acción, contacte a soporte',
-                            'Error'
-                        );
-                    } else {
-                        Swal.fire(
-                            'Éxito!',
-                            'La acción se ha realizado correctamente',
-                            'success'
-                        );
+    checkCombination: function (upp) {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/check/' + upp,
+            dataType: "JSON"
+        }).done(function (data) {
+            if (data.status) {
+                $("#ur_filter").removeAttr('disabled');
+                $('#incomplete').hide(); 
+                $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text('');
+                if ($('#upp').val() == '') {
+                    dao.getUrs($('#upp_filter').val());
+                } else {
+                    dao.getUrs($('#upp').val());
+                }
+                $('#metasVista').show();
+                
+            } else {
+                dao.getUrs('0');
+                dao.getData('000', '000');
+                $("#ur_filter").attr('disabled', 'disabled');
+                $('#incomplete').show(); 
+                $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text(data.mensaje);
+                $('#metasVista').hide(); 
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Informacion incompleta',
+                    text: data.mensaje,
+                    confirmButtonText: 'Aceptar',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (!data.estado) {
+                            window.location.href = "/calendarizacion/claves";
+                        }
                     }
                 });
-
             }
-        })
 
-
-
+        });
+    },
+    getData: function (upp, ur) {
+        var data = new FormData();
+        if ($('#upp').val() != '') {
+            data.append('ur_filter', ur);
+        } else {
+            data.append('ur_filter', ur);
+            data.append('upp_filter', upp);
+        }
+        $.ajax({
+            type: "POST",
+            url: "/calendarizacion/data/",
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            dataType: "json"
+        }).done(function (_data) {
+            _table = $("#catalogo");
+            _columns = [
+                { "aTargets": [0], "mData": [0] },
+                { "aTargets": [1], "mData": [1] },
+                { "aTargets": [2], "mData": [2] },
+                { "aTargets": [3], "mData": [3] },
+                { "aTargets": [4], "mData": [4] },
+                { "aTargets": [5], "mData": [5] },
+                { "aTargets": [6], "mData": [6] },
+                { "aTargets": [7], "mData": [7] },
+                { "aTargets": [8], "mData": [8] },
+                { "aTargets": [9], "mData": [9] },
+                { "aTargets": [10], "mData": [10] }
+            ];
+            _gen.setTableScrollFotter(_table, _columns, _data.dataSet);
+            console.log("length", _data)
+            let index = _data.dataSet;
+            if (index.length==0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Esta unidad responsable no cuenta con presupuesto',
+                    text: $('#ur_filter').find('option:selected').text(),
+                });
+                if ($('#upp').val() == '') {
+                    dao.getUrs($('#upp_filter').val());
+                } else {
+                    dao.getUrs($('#upp').val());
+                }
+            }
+        });
     },
     getUrs: function (upp) {
         $('#ur_filter').empty();
@@ -48,12 +103,28 @@ var dao = {
             url: '/calendarizacion/urs/' + upp,
             dataType: "JSON"
         }).done(function (data) {
+            console.log("urs",data);
+            const { urs, tAct } = data;
+           
             var par = $('#ur_filter');
             par.html('');
             par.append(new Option("-- URS--", ""));
             document.getElementById("ur_filter").options[0].disabled = true;
-            $.each(data, function (i, val) {
-                par.append(new Option(data[i].ur, data[i].clv_ur));
+            $.each(urs, function (i, val) {
+                par.append(new Option(val.ur, val.clv_ur));
+            });
+
+            var tipo_AC = $('#tipo_Ac');
+            tipo_AC.html('');
+            tipo_AC.append(new Option("--Tipo Actividad--", ""));
+            document.getElementById("tipo_Ac").options[0].disabled = true;
+            $.each(tAct, function (i, val) {
+                if (val == 1) {
+                    tipo_AC.append(new Option(i, i));
+                }
+            });
+            tipo_AC.select2({
+                maximumSelectionLength: 10
             });
 
         });
@@ -109,14 +180,18 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            $('#cerrar').trigger('click');
             dao.limpiar();
+            const {mensaje } = response;
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 1500
+                icon: mensaje.icon,
+                title: mensaje.title,
+                text: mensaje.text,
             });
+            if ($('#upp').val() == '') {
+                dao.getUpps();
+            } else {
+                dao.checkCombination($('#upp').val())
+            }
         });
     },
 
@@ -161,25 +236,19 @@ var dao = {
                 showConfirmButton: false,
                 timer: 1500
             });
+            $('#cerrar').trigger('click');
         }).fail(function (error, status, err) {
             console.log("error-", error);
         });
     },
-    editarMeta: function (id) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Your work has been saved',
-            showConfirmButton: false,
-            timer: 1500
-        })
-    }, getSelect: function () {
+     getSelect: function () {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
             dataType: "JSON"
         }).done(function (data) {
-            const { unidadM, beneficiario, activids } = data;
-            
+            const { unidadM, beneficiario } = data;
+
             var med = $('#medida');
             med.html('');
             med.append(new Option("-- Medida--", ""));
@@ -190,16 +259,7 @@ var dao = {
             med.select2({
                 maximumSelectionLength: 10
             });
-            var tipo_AC = $('#tipo_Ac');
-            tipo_AC.html('');
-            tipo_AC.append(new Option("--Tipo Actividad--", ""));
-            document.getElementById("tipo_Ac").options[0].disabled = true;
-            $.each(activids, function (i, val) {
-                tipo_AC.append(new Option(val, i));
-            });
-            tipo_AC.select2({
-                maximumSelectionLength: 10
-            });
+
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
             tipo_be.append(new Option("--U. Beneficiarios--", ""));
@@ -210,18 +270,19 @@ var dao = {
             tipo_be.select2({
                 maximumSelectionLength: 10
             });
-   
+
 
         });
     },
-    getFyA: function (clave) {
-        console.log(clave);
-         $.ajax({
+    getFyA: function (area,enti) {
+        $.ajax({
             type: "GET",
-            url: '/calendarizacion/fondos/'+clave,
+            url: '/calendarizacion/fondos/' + area+'/'+enti,
             dataType: "JSON"
-         }).done(function (data) {  
-            const { fondos,activids } = data;
+        }).done(function (data) {
+            $('#sel_actividad').prop('disabled', false);
+            $('#sel_fondo').prop('disabled', false);
+            const { fondos, activids } = data;
             var fond = $('#sel_fondo');
             fond.html('');
             fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
@@ -242,7 +303,7 @@ var dao = {
             act.select2({
                 maximumSelectionLength: 10
             });
-             
+
         });
     },
     limpiar: function () {
@@ -385,22 +446,26 @@ var init = {
     },
 };
 $(document).ready(function () {
-    getData();
+    $('#incomplete').hide();
     if ($('#upp').val() == '') {
         dao.getUpps();
-        $('#ur_filter').prop('disabled', 'disabled');
-
     } else {
-        $('#ur_filter').prop('disabled', false);
-
-        dao.getUrs($('#upp').val());
-
+        dao.checkCombination($('#upp').val())
     }
     $('#upp_filter').change(() => {
-        $('#ur_filter').prop('disabled', false);
-        dao.getUrs($('#upp_filter').val());
+        dao.checkCombination($('#upp_filter').val())
+            
+       /*  } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Informacion incompleta',
+                text: 'Las actividades estan incompletas',
+            })
+        } */
     });
     $('#ur_filter').change(() => {
+        dao.getData($('#upp_filter').val(), $('#ur_filter').val());
+        $('#sel_actividad').empty();
         $('#sel_fondo').empty();
     });
 
@@ -414,6 +479,15 @@ $(document).ready(function () {
     $("#sel_fondo").select2({
         maximumSelectionLength: 10
     });
+    $("#sel_actividad").select2({
+        maximumSelectionLength: 10
+    });
+    $("#tipo_Ac").select2({
+        maximumSelectionLength: 10
+    });
+
+
+
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
@@ -443,5 +517,5 @@ $(document).ready(function () {
 
     });
 
-   
+
 });

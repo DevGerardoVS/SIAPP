@@ -1670,96 +1670,429 @@ return new class extends Migration {
             ) tabla;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists insert_pp_aplanado()
+        DB::unprepared("CREATE PROCEDURE if not exists insert_pp_aplanado(in anio int)
         begin
-            set @cantidad := 0;
-			select 
-				@cantidad := count(id)
-			from programacion_presupuesto pp 
-			where pp.id not in (
-				select id
-				from pp_identificadores
-			);
-		
-			if @cantidad > 0 then 
-
-            create temporary table if not exists temp_epp_aplanado as
-            select 
-				pp.id,
-				ve.id v_epp_id
+            drop temporary table if exists temp_pp;
+            create temporary table temp_pp(
+                id_aux int not null,
+                upp varchar(3),
+                subsecretaria varchar(1),
+                ur varchar(2),
+                finalidad varchar(1),
+                funcion varchar(1),
+                subfuncion varchar(1),
+                eje varchar(1),
+                linea_accion varchar(2),
+                programa_sectorial varchar(1),
+                tipologia_conac varchar(1),
+                programa_presupuestario varchar(2),
+                subprograma_presupuestario varchar(3),
+                proyecto_presupuestario varchar(3),
+                id_epp int,
+                primary key(id_aux)
+            );
+        
+            drop temporary table if exists aux_epp;
+            create temporary table aux_epp(
+                id int not null,
+                id_aux int not null,
+                epp varchar(22),
+                primary key(id)
+            );
+        
+            drop temporary table if exists temp_clasgeo;
+            create temporary table temp_clasgeo(
+                id_aux int not null,
+                region varchar(2),
+                municipio varchar(3),
+                localidad varchar(3),
+                id_clasgeo int,
+                primary key (id_aux)
+            );
+        
+            drop temporary table if exists aux_clasgeo;
+            create temporary table aux_clasgeo(
+                id int not null,
+                id_aux int not null,
+                clasgeo varchar(8),
+                primary key(id)
+            );
+        
+            drop temporary table if exists temp_partida;
+            create temporary table temp_partida(
+                id_aux int not null,
+                capitulo varchar(1),
+                concepto varchar(1),
+                partida_generica varchar(1),
+                partida_especifica varchar(2),
+                tipo_gasto varchar(1),
+                id_partida int,
+                primary key (id_aux)
+            );
+        
+            drop temporary table if exists aux_partida;
+            create temporary table aux_partida(
+                id int not null,
+                id_aux int not null,
+                partida varchar(6),
+                primary key(id)
+            );
+        
+            drop temporary table if exists temp_fondo;
+            create temporary table temp_fondo(
+                id_aux int not null,
+                etiquetado varchar(1),
+                fuente_financiamiento varchar(1),
+                ramo varchar(2),
+                fondo_ramo varchar(2),
+                capital varchar(1),
+                id_fondo int,
+                primary key(id_aux)
+            );
+        
+            drop temporary table if exists aux_fondo;
+            create temporary table aux_fondo(
+                id int not null,
+                id_aux int not null,
+                fondo varchar(7),
+                primary key(id)
+            );
+        
+            set @id_aux := 0;
+            set @p_aux := '' COLLATE utf8mb4_unicode_ci;
+            set @aux := 0;
+            insert into aux_epp
+            select
+                id,
+                id_aux,
+                epp
             from (
-                select pp2.*
-                from programacion_presupuesto pp2 
-                where pp2.id not in (
-                    select id from pp_identificadores)
-            ) pp 
-			join v_epp ve 
-				on ve.clv_upp = pp.upp 
-				and ve.clv_subsecretaria = pp.subsecretaria 
-				and ve.clv_ur = pp.ur
-				and ve.clv_finalidad = pp.finalidad 
-				and ve.clv_funcion = pp.funcion 
-				and ve.clv_subfuncion = pp.subfuncion 
-				and ve.clv_eje = pp.eje
-				and ve.clv_linea_accion = pp.linea_accion 
-				and ve.clv_programa_sectorial = pp.programa_sectorial 
-				and ve.clv_tipologia_conac = pp.tipologia_conac 
-				and ve.clv_programa = pp.programa_presupuestario 
-				and ve.clv_subprograma = pp.subprograma_presupuestario 
-				and ve.clv_proyecto = pp.proyecto_presupuestario
-                and ve.ejercicio = pp.ejercicio;
-
-            create temporary table if not exists temp_claves_montos_aplanado as
+                select 
+                    id,
+                    case 
+                        when @p_aux != epp then @id_aux := @id_aux + 1
+                        else @id_aux
+                    end id_aux,
+                    case 
+                        when @p_aux != epp then @p_aux := epp
+                        else @p_aux
+                    end p_aux,
+                    epp
+                from (
+                    select 
+                        id,
+                        (@aux := @aux + 1) aux,
+                        concat(
+                            pp.upp,
+                            pp.subsecretaria,
+                            pp.ur,
+                            pp.finalidad,
+                            pp.funcion,
+                            pp.subfuncion,
+                            pp.eje,
+                            pp.linea_accion,
+                            pp.programa_sectorial,
+                            pp.tipologia_conac,
+                            pp.programa_presupuestario,
+                            pp.subprograma_presupuestario,
+                            pp.proyecto_presupuestario
+                        )epp
+                    from programacion_presupuesto pp
+                    where pp.ejercicio = anio and pp.id not in (
+                        select id from pp_identificadores
+                    )
+                    order by epp
+                ) t
+            ) tabla;
+        
+            insert into temp_pp
+            select distinct
+                id_aux,
+                substring(epp,1,3) upp,
+                substring(epp,4,1) subsecretaria,
+                substring(epp,5,2) ur,
+                substring(epp,7,1) finalidad,
+                substring(epp,8,1) funcion,
+                substring(epp,9,1) subfuncion,
+                substring(epp,10,1) eje,
+                substring(epp,11,2) linea_accion,
+                substring(epp,13,1) programa_sectorial,
+                substring(epp,14,1) tipologia_conac,
+                substring(epp,15,2) programa,
+                substring(epp,17,3) subprograma,
+                substring(epp,20,3) proyecto,
+                null id_epp
+            from aux_epp;
+        
+            set @id_aux := 0;
+            set @p_aux := '' COLLATE utf8mb4_unicode_ci;
+            set @aux := 0;
+            insert into aux_clasgeo
             select 
-				pp.id,
-				cg.id clas_geo_id,
-				p.id pos_pre_id,
-				f.id fondo_id,
-				po.id obra_id
-			from programacion_presupuesto pp 
-			join clasificacion_geografica cg 
-				on cg.clv_entidad_federativa = pp.entidad_federativa 
-				and cg.clv_region = pp.region 
-				and cg.clv_municipio = pp.municipio 
-				and cg.clv_localidad = pp.localidad
-			join posicion_presupuestaria p
-				on p.clv_capitulo = substring(pp.posicion_presupuestaria,1,1)
-				and p.clv_concepto = substring(pp.posicion_presupuestaria,2,1)
-				and p.clv_partida_generica = substring(pp.posicion_presupuestaria,3,1)
-				and p.clv_partida_especifica = substring(pp.posicion_presupuestaria,4,2)
-				and p.clv_tipo_gasto = pp.tipo_gasto
-			join fondo f 
-				on f.clv_etiquetado = pp.etiquetado 
-				and f.clv_fuente_financiamiento = pp.fuente_financiamiento 
-				and f.clv_ramo = pp.ramo 
-				and f.clv_fondo_ramo = pp.fondo_ramo 
-				and f.clv_capital = pp.capital
-			join proyectos_obra po on pp.proyecto_obra = po.clv_proyecto_obra
-			where cg.deleted_at is null
-				and p.deleted_at is null
-				and f.deleted_at is null
-				and po.deleted_at is null
-				and pp.id not in (
-				select id from pp_identificadores pa
-			);
-
+                id,
+                id_aux,
+                clasgeo
+            from (
+                select 
+                    id,
+                    case 
+                        when @p_aux != clasgeo then @id_aux := @id_aux + 1
+                        else @id_aux
+                    end id_aux,
+                    case 
+                        when @p_aux != clasgeo then @p_aux := clasgeo
+                        else @p_aux
+                    end p_aux,
+                    clasgeo
+                from (
+                    select 
+                        id,
+                        (@aux := @aux + 1) aux,
+                        concat(
+                            region,
+                            municipio,
+                            localidad
+                        ) clasgeo
+                    from programacion_presupuesto pp
+                    where pp.ejercicio = anio and pp.id not in (
+                        select id from pp_identificadores
+                    )
+                    order by clasgeo
+                ) t
+            ) tabla;
+        
+            insert into temp_clasgeo
+            select distinct
+                id_aux,
+                substring(clasgeo,1,2),
+                substring(clasgeo,3,3),
+                substring(clasgeo,6,3),
+                null id_clasgeo
+            from aux_clasgeo;
+        
+            set @id_aux := 0;
+            set @p_aux := '' COLLATE utf8mb4_unicode_ci;
+            set @aux := 0;
+            insert into aux_partida
+            select 
+                id,
+                id_aux,
+                partida
+            from (
+                select 
+                    id,
+                    case 
+                        when @p_aux != partida then @id_aux := @id_aux + 1
+                        else @id_aux
+                    end id_aux,
+                    case 
+                        when @p_aux != partida then @p_aux := partida
+                        else @p_aux
+                    end p_aux,
+                    partida
+                from (
+                    select 
+                        id,
+                        (@aux := @aux + 1) aux,
+                        concat(
+                            posicion_presupuestaria,
+                            tipo_gasto
+                        )partida
+                    from programacion_presupuesto pp
+                    where pp.ejercicio = anio and pp.id not in (
+                        select id from pp_identificadores
+                    )
+                    order by partida,id
+                ) t
+            ) tabla;
+        
+            insert into temp_partida
+            select distinct
+                id_aux,
+                substring(partida,1,1),
+                substring(partida,2,1),
+                substring(partida,3,1),
+                substring(partida,4,2),
+                substring(partida,6,1),
+                null id_partida
+            from aux_partida;
+        
+            set @id_aux := 0;
+            set @p_aux := '' COLLATE utf8mb4_unicode_ci;
+            set @aux := 0;
+            insert into aux_fondo
+            select 
+                id,
+                id_aux,
+                fondo
+            from (
+                select 
+                    id,
+                    case 
+                        when @p_aux != fondo then @id_aux := @id_aux + 1
+                        else @id_aux
+                    end id_aux,
+                    case 
+                        when @p_aux != fondo then @p_aux := fondo
+                        else @p_aux
+                    end p_aux,
+                    fondo
+                from (
+                    select 
+                        id,
+                        (@aux := @aux + 1) aux,
+                        concat(
+                            etiquetado,
+                            fuente_financiamiento,
+                            ramo,
+                            fondo_ramo,
+                            capital
+                        ) fondo
+                    from programacion_presupuesto pp
+                    where pp.ejercicio = anio and pp.id not in (
+                        select id from pp_identificadores
+                    )
+                    order by fondo
+                ) t
+            ) tabla;
+        
+            insert into temp_fondo
+            select distinct
+                id_aux,
+                substring(fondo,1,1),
+                substring(fondo,2,1),
+                substring(fondo,3,2),
+                substring(fondo,5,2),
+                substring(fondo,7,1),
+                null id_fondo
+            from aux_fondo;
+        
             insert into pp_identificadores
             select 
-                tea.id,
-                tea.v_epp_id,
-                tma.clas_geo_id,
-                tma.pos_pre_id,
-                tma.fondo_id,
-                tma.obra_id
-            from temp_epp_aplanado tea
-            join temp_claves_montos_aplanado tma on tea.id = tma.id
-            order by id;
-            
-            drop temporary table temp_epp_aplanado;
-            
-            drop temporary table temp_claves_montos_aplanado;
-
-            end if;
+                id,
+                sum(id_epp),
+                sum(id_clasgeo),
+                sum(id_partida),
+                sum(id_fondo),
+                sum(id_obra)
+            from (
+                select 
+                    ep.id,
+                    t.id id_epp,
+                    0 id_clasgeo,
+                    0 id_partida,
+                    0 id_fondo,
+                    0 id_obra
+                from (
+                    select 
+                        pp.id_aux,
+                        ve.id
+                    from temp_pp pp
+                    join v_epp ve
+                        on ve.clv_upp = pp.upp 
+                        and ve.clv_subsecretaria = pp.subsecretaria 
+                        and ve.clv_ur = pp.ur
+                        and ve.clv_finalidad = pp.finalidad 
+                        and ve.clv_funcion = pp.funcion 
+                        and ve.clv_subfuncion = pp.subfuncion 
+                        and ve.clv_eje = pp.eje
+                        and ve.clv_linea_accion = pp.linea_accion 
+                        and ve.clv_programa_sectorial = pp.programa_sectorial 
+                        and ve.clv_tipologia_conac = pp.tipologia_conac 
+                        and ve.clv_programa = pp.programa_presupuestario 
+                        and ve.clv_subprograma = pp.subprograma_presupuestario 
+                        and ve.clv_proyecto = pp.proyecto_presupuestario
+                    where ve.ejercicio = anio
+                ) t
+                left join aux_epp ep on t.id_aux = ep.id_aux
+                union all
+                select
+                    cg.id,
+                    0 id_epp,
+                    t.id id_clasgeo,
+                    0 id_partida,
+                    0 id_fondo,
+                    0 id_obra
+                from (
+                    select 
+                        tc.id_aux,
+                        cg.id
+                    from temp_clasgeo tc
+                    join clasificacion_geografica cg
+                        on tc.region = cg.clv_region
+                        and tc.municipio = cg.clv_municipio 
+                        and tc.localidad = cg.clv_localidad
+                    where cg.deleted_at is null
+                ) t
+                left join aux_clasgeo cg on t.id_aux = cg.id_aux
+                union all
+                select 
+                    ap.id,
+                    0 id_epp,
+                    0 id_clasgeo,
+                    t.id id_partida,
+                    0 id_fondo,
+                    0 id_obra
+                from (
+                    select 
+                        tp.id_aux,
+                        pp.id
+                    from temp_partida tp
+                    join posicion_presupuestaria pp
+                        on tp.capitulo = pp.clv_capitulo
+                        and tp.concepto = pp.clv_concepto
+                        and tp.partida_generica = pp.clv_partida_generica
+                        and tp.partida_especifica = pp.clv_partida_especifica
+                        and tp.tipo_gasto = pp.clv_tipo_gasto
+                    where pp.deleted_at is null
+                ) t
+                left join aux_partida ap on t.id_aux = ap.id_aux
+                union all
+                select 
+                    af.id,
+                    0 id_epp,
+                    0 id_clasgeo,
+                    0 id_partida,
+                    t.id id_fondo,
+                    0 id_obra
+                from (
+                    select 
+                        tf.id_aux,
+                        f.id
+                    from temp_fondo tf
+                    join fondo f 
+                        on tf.etiquetado = f.clv_etiquetado 
+                        and tf.fuente_financiamiento = f.clv_fuente_financiamiento 
+                        and tf.ramo = f.clv_ramo 
+                        and tf.fondo_ramo = f.clv_fondo_ramo 
+                        and tf.capital = f.clv_capital
+                    where deleted_at is null
+                ) t
+                left join aux_fondo af on t.id_aux = af.id_aux
+                union all 
+                select 
+                    pp.id,
+                    0 id_epp,
+                    0 id_clasgeo,
+                    0 id_partida,
+                    0 id_fondo,
+                    po.id id_obra
+                from programacion_presupuesto pp
+                join proyectos_obra po on pp.proyecto_obra = po.clv_proyecto_obra
+                where pp.ejercicio = anio and pp.id not in (
+                    select id from pp_identificadores
+                )
+            ) tabla
+            group by id;
+        
+            drop temporary table if exists temp_pp;
+            drop temporary table if exists aux_epp;
+            drop temporary table if exists temp_clasgeo;
+            drop temporary table if exists aux_clasgeo;
+            drop temporary table if exists temp_partida;
+            drop temporary table if exists aux_partida;
+            drop temporary table if exists temp_fondo;
+            drop temporary table if exists aux_fondo;
         END;");
 
         DB::unprepared("CREATE PROCEDURE if not exists SP_AF_EE(in anio int)

@@ -154,8 +154,7 @@ var dao = {
             Swal.fire({
                 icon: response.icon,
                 title: response.title,
-                showConfirmButton: false,
-                timer: 1500
+                text: response.text,
             });
 
             dao.limpiarFormularioCrear();
@@ -176,11 +175,11 @@ var dao = {
             timeout: 600000
         }).done(function (response) {
             $('#cerrar').trigger('click');
+            const {mensaje } = response;
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 1500
+                icon: mensaje.icon,
+                title: mensaje.title,
+                text: mensaje.text,
             });
         });
     },
@@ -199,11 +198,11 @@ var dao = {
         }).done(function (response) {
             $('#cerrar').trigger('click');
             dao.getPermisos();
+            const {mensaje } = response;
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 1500
+                icon: mensaje.icon,
+                title: mensaje.title,
+                text: mensaje.text,
             });
         });
     },
@@ -268,10 +267,6 @@ var dao = {
 
         });
         $("#id_grupo").find('option').remove();
-        $("#sudo").find('option').remove();
-        $("#sudo").append(new Option("-Selecciona perfil-", ""));
-        $("#sudo").append(new Option("Administrador", "1"));
-        $("#sudo").append(new Option("UPP", "0"));
         $("#clv_upp").find('option').remove();
         $('#divUpp').hide();
         dao.getPerfil();
@@ -301,8 +296,7 @@ var init = {
                     required: true,
                     phoneUS: true
                 },
-                id_grupo: { required: true },
-                sudo: { required: true }
+                id_grupo: { required: true }
 
             },
             messages: {
@@ -314,9 +308,7 @@ var init = {
                 password: { required: "Este campo es requerido" },
                 in_pass_conf: { required: "Este campo es requerido" },
                 in_celular: { required: "Este campo es requerido" },
-                id_grupo: { required: "Este campo es requerido" },
-                sudo: { required: "Este campo es requerido" }
-
+                id_grupo: { required: "Este campo es requerido" }
             }
         }
         _gen.validate(form, rm);
@@ -339,7 +331,6 @@ var init = {
                     phoneUS: true
                 },
                 id_grupo: { required: true },
-                sudo: { required: true },
                 clv_upp: { required: true }
 
             },
@@ -353,7 +344,6 @@ var init = {
                 in_pass_conf: { required: "Este campo es requerido" },
                 in_celular: { required: "Este campo es requerido" },
                 id_grupo: { required: "Este campo es requerido" },
-                sudo: { required: "Este campo es requerido" },
                 clv_upp: { required: "Este campo es requerido" }
 
             }

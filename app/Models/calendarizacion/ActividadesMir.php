@@ -16,7 +16,31 @@ class ActividadesMir extends Model
         'proyecto_mir_id',
         'clv_actividad',
         'actividad',
-        'estatus'
+        'estatus',
+        'objetivo',
+        'indicador',
+        'definicion_indicador',
+        'metodo_calculo',
+        'descripcion_metodo',
+        'tipo_indicador',
+        'unidad_medida',
+        'dimension',
+        'comportamiento_indicador',
+        'frecuencia_medicion',
+        'medios_verificacion',
+        'lb_valor_absoluto',
+        'lb_valor_relativo',
+        'lb_anio',
+        'lb_periodo_i',
+        'lb_periodo_f',
+        'mp_valor_absoluto',
+        'mp_valor_relativo',
+        'mp_anio',
+        'mp_periodo_i',
+        'mp_periodo_f',
+        'supuestos',
+        'estrategias',
+        'ejercicio'
     ];
 
     protected $dates = ['deleted_at'];

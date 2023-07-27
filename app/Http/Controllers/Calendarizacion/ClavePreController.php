@@ -15,22 +15,36 @@ use Illuminate\Validation\ValidationException;
 class ClavePreController extends Controller
 {
     public function getPanel(){
+        Controller::check_permission('getClaves');
         $uppUsuario = Auth::user()->clv_upp;
         $ejer = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE('cierre_ejercicio_claves.estatus','=','Abierto')->first();
         $ejercicio = $ejer && $ejer != null ? $ejer->ejercicio : '';
         return view('calendarizacion.clavePresupuestaria.index',compact(['uppUsuario','ejercicio']));
     }
     public function getPanelUpdate($id){
+        Controller::check_permission('putClaves');
         $clave = ProgramacionPresupuesto::where('id',$id)->first();
         return view('calendarizacion.clavePresupuestaria.updateCalendarzacion', compact('clave'));
     }
     public function getCreate($ejercicio){
-        return view('calendarizacion.clavePresupuestaria.create', compact('ejercicio'));
+        Controller::check_permission('postClaves');
+        $descripcion = '';
+        $upp =  Auth::user()->clv_upp;
+        if ($upp && $upp != null && $upp != 'null') {
+            $uppDescripcion =  DB::table('catalogo')
+            ->SELECT('descripcion')
+            ->where('grupo_id', 6)
+            ->where('clave', '=', $upp)
+            ->first();
+            $descripcion = $uppDescripcion->descripcion;
+        }
+        return view('calendarizacion.clavePresupuestaria.create', compact(['ejercicio','upp','descripcion']));
     }
     public function getPanelCalendarizacion(){
         return view('calendarizacion.clavePresupuestaria.calendarizacion');
     }
     public function getClaves(Request $request){
+        Controller::check_permission('getClaves');
         $uppUsuario =  Auth::user()->clv_upp;
         $rol = 0;
         $array_where = [];
@@ -41,7 +55,7 @@ class ClavePreController extends Controller
         }else {
             $anio = date('Y');
         }
-        if ($uppUsuario && $uppUsuario != null) {
+        if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
             array_push($array_where, ['programacion_presupuesto.upp', '=', $uppUsuario]);
             array_push($array_where, ['programacion_presupuesto.deleted_at', '=', null]);
             array_push($array_where, ['programacion_presupuesto.ejercicio', '=', $anio]);
@@ -60,6 +74,10 @@ class ClavePreController extends Controller
                 if ($request->ur && $request->ur != '') {
                     array_push($array_where, ['programacion_presupuesto.ur', '=', $request->ur]);
                 }
+            }
+            $grupo =  Auth::user()->id_grupo;
+            if ($grupo == 5) {
+                $rol =2;
             }
         }
         $estatusCierre = DB::table('cierre_ejercicio_claves')
@@ -81,12 +99,26 @@ class ClavePreController extends Controller
             $join->on('v_entidad_ejecutora.clv_subsecretaria','=','programacion_presupuesto.subsecretaria');
             $join->on('v_entidad_ejecutora.clv_ur','=','programacion_presupuesto.ur');
         })
-        ->where($array_where)
+        ->where(function ($claves) use ($rol,$array_where) {
+            $claves->where($array_where);
+            if ($rol == 2) {
+                $arrayClaves = [];
+                $uppAutorizados = DB::table('uppautorizadascpnomina')->select('clv_upp')->where('deleted_at','=',null)->get()->toArray();
+                foreach ($uppAutorizados as $key => $value) {
+                    array_push($arrayClaves, $value->clv_upp);
+                }
+                $claves->whereIn('programacion_presupuesto.upp',$arrayClaves);
+            }
+        })
         ->orderBy('claveUpp');
-        if ($request->upp && $request->upp != '' || $uppUsuario && $uppUsuario != null) {
+        if ($request->upp && $request->upp != '' || $uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
            $claves =  $claves->get();
         }else {
-            $claves =  $claves->limit(1000)->get();
+            if ($rol == 2) {
+                $claves =  $claves->get();
+            }else {
+                $claves =  $claves->limit(1000)->get();
+            }
         }
         $response = [
             'claves'=> $claves,
@@ -96,6 +128,7 @@ class ClavePreController extends Controller
         return response()->json($response, 200);
     } 
     public function postGuardarClave(Request $request){
+        Controller::check_permission('postClaves');
         try {
             $clave = ProgramacionPresupuesto::where([
                 'clasificacion_administrativa' => $request->data[0]['clasificacionAdministrativa'],
@@ -220,6 +253,7 @@ class ClavePreController extends Controller
         return response()->json('done',200);
     }
     public function postEditarClave(Request $request){
+        Controller::check_permission('putClaves');
         try {
             ProgramacionPresupuesto::where('id', $request->data[0]['idClave'])->update([
                 'enero' => $request->data[0]['enero'],
@@ -247,6 +281,7 @@ class ClavePreController extends Controller
         
     }
     public function postEliminarClave(Request $request){
+        Controller::check_permission('deleteClaves');
         ProgramacionPresupuesto::where('id',$request->id)->delete();
         return response()->json('done',200);
     }
@@ -282,7 +317,7 @@ class ClavePreController extends Controller
     public function getUpp($ejercicio){
         $uppUsuario = Auth::user()->clv_upp;
         $array_where = [];
-        if ($uppUsuario && $uppUsuario != null) {
+        if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
             array_push($array_where, ['v_epp.clv_upp', '=', $uppUsuario]);  
         }
         array_push($array_where, ['v_epp.ejercicio', '=', $ejercicio]);
@@ -526,13 +561,10 @@ class ClavePreController extends Controller
         }
             $uppAutorizados = DB::table('uppautorizadascpnomina')
             ->SELECT('clv_upp')
-            ->WHERE('clv_upp','=',$upp)
+            ->WHERE('deleted_at','=', null)
+            ->WHERE('clv_upp','=',$uppUsuario)
             ->get();
-            if ($uppAutorizados && count($uppAutorizados) > 0) {
-                array_push($array_where, ['techos_financieros.tipo', '=', 'Operativo']);
-                array_push($array_where2, ['programacion_presupuesto.tipo', '=', 'Operativo']);
-            }
-        if ($uppUsuario && $uppUsuario != null) {
+        if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
             array_push($array_where, ['techos_financieros.clv_upp', '=', $uppUsuario]);
             array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
             array_push($array_where, ['techos_financieros.ejercicio', '=', $anio]);
@@ -541,6 +573,10 @@ class ClavePreController extends Controller
             array_push($array_where2, ['programacion_presupuesto.ejercicio', '=', $anio]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
+            if ($uppAutorizados && count($uppAutorizados) > 0  ) {
+                array_push($array_where, ['techos_financieros.tipo', '=', 'Operativo']);
+                array_push($array_where2, ['programacion_presupuesto.tipo', '=', 'Operativo']);
+            }
             $rol = 1;
            
         }else {
@@ -554,6 +590,10 @@ class ClavePreController extends Controller
                 array_push($array_where2, ['programacion_presupuesto.upp', '=', $upp]);
                 array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $upp]);
             }
+            $grupo =  Auth::user()->id_grupo;
+            if ($grupo == 5) {
+                $rol =2;
+            }
         } 
         $estatusCierre = DB::table('cierre_ejercicio_claves')
         ->SELECT('ejercicio','estatus')
@@ -562,11 +602,33 @@ class ClavePreController extends Controller
 
         $presupuestoAsignado = DB::table('techos_financieros')
         ->SELECT(DB::raw('SUM(presupuesto) as totalAsignado'))
-        ->where($array_where)
+        ->where(function ($presupuestoAsignado) use ($rol,$array_where) {
+            $presupuestoAsignado->where($array_where);
+            if ($rol == 2) {
+                $arrayClaves = [];
+                $uppAutorizados = DB::table('uppautorizadascpnomina')->select('clv_upp')->where('deleted_at','=',null)->get()->toArray();
+                foreach ($uppAutorizados as $key => $value) {
+                    array_push($arrayClaves, $value->clv_upp);
+                }
+                $presupuestoAsignado->whereIn('techos_financieros.clv_upp',$arrayClaves);
+                $presupuestoAsignado->where('techos_financieros.tipo', '=', 'RH');
+            }
+        })
         ->get();
         $calendarizados = DB::table('programacion_presupuesto')
-        ->SELECT(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre as calendarizados'))
-        ->where($array_where2)
+        ->SELECT(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre as calendarizados'),'estado')
+        ->where(function ($calendarizados) use ($rol,$array_where2) {
+            $calendarizados->where($array_where2);
+            if ($rol == 2) {
+                $arrayClaves = [];
+                $uppAutorizados = DB::table('uppautorizadascpnomina')->select('clv_upp')->where('deleted_at','=',null)->get()->toArray();
+                foreach ($uppAutorizados as $key => $value) {
+                    array_push($arrayClaves, $value->clv_upp);
+                }
+                $calendarizados->whereIn('programacion_presupuesto.upp',$arrayClaves);
+                $calendarizados->where('programacion_presupuesto.tipo', '=', 'RH');
+            }
+        })
         ->get();
         foreach ($calendarizados as $key => $value) {
             $Totcalendarizado = $Totcalendarizado + $value->calendarizados;
@@ -581,7 +643,8 @@ class ClavePreController extends Controller
             'disponible'=>$disponible,
             'Totcalendarizado'=>$Totcalendarizado,
             'estatus'=>$estatusCierre,
-            'rol' => $rol
+            'rol' => $rol,
+            'estado'=>count($calendarizados) ? $calendarizados[0]->estado : 0,
         ];
         return response()->json($response,200);
     }
@@ -589,25 +652,29 @@ class ClavePreController extends Controller
         $disponible = 0;
         $totalDisponible = 0;
         $totalAsignado = 0;
+        $rol = 0;
         $totalCalendarizado = 0;
         $uppUsuario = Auth::user()->clv_upp;
         $anio = '';
         $upp = ['clave'=>'000','descripcion'=>'Detalle General'];
-        $array_where = [];
-        $array_where2 = [];
         if ($ejercicio && $ejercicio > 0) {
             $anio = $ejercicio;
         }else {
             $anio = date('Y');
         }
+        $grupo =  Auth::user()->id_grupo;
+        if ($grupo == 5) {
+            $rol =2;
+        }
         $uppAutorizados = DB::table('uppautorizadascpnomina')
             ->SELECT('clv_upp')
+            ->WHERE('deleted_at','=', null)
             ->WHERE('clv_upp','=', $clvUpp != '' ? $clvUpp : $uppUsuario)
             ->get();
         $arrayTechos = "tf.deleted_at IS NULL  && tf.ejercicio = ".$anio;
         $arrayProgramacion = "pp.deleted_at IS NULL && pp.ejercicio = ".$anio;
         
-        if ($uppUsuario && $uppUsuario != null) {
+        if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
             $arrayTechos = $arrayTechos."&& tf.clv_upp = ".$uppUsuario;
             $arrayProgramacion = $arrayProgramacion."&& pp.upp = ".$uppUsuario;
             $upp =  DB::table('catalogo')
@@ -621,18 +688,95 @@ class ClavePreController extends Controller
                 $arrayProgramacion = $arrayProgramacion."&& pp.upp = ".$clvUpp;
             }
         } 
-        if ($uppAutorizados && count($uppAutorizados) > 0) {
-            $fondos = DB::select("
+        if ($rol == 2) {
+            $fondos = DB::select("select 
+            clv_fondo,
+            f.fondo_ramo,
+            0 RH,
+            sum(Operativo) Operativo,
+            sum(Operativo) techos_presupuestal,
+            sum(calendarizado) calendarizado,
+            sum(Operativo - calendarizado) disponible,
+            ejercicio
+        from (
             select 
                 clv_fondo,
-                f.fondo_ramo,
                 0 RH,
+                sum(presupuesto) Operativo,
+                0 calendarizado,
+                ejercicio
+            from techos_financieros tf
+            where tf.tipo = 'RH' and tf.clv_upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at = null) && ".$arrayTechos."
+            group by clv_fondo,ejercicio
+            union all 
+            select 
+                fondo_ramo clv_fondo,
+                0 RH,
+                0 Operativo,
+                sum(total) calendarizado,
+                ejercicio
+            from programacion_presupuesto pp
+            where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at = null) && ".$arrayProgramacion."
+            group by clv_fondo,ejercicio
+        ) tabla
+        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
+        group by clv_fondo,f.fondo_ramo,ejercicio;");
+        }else {
+            if ($uppAutorizados && count($uppAutorizados) > 0 ) {
+                $fondos = DB::select("
+                select 
+                    clv_fondo,
+                    f.fondo_ramo,
+                    0 RH,
+                    sum(Operativo) Operativo,
+                    sum(Operativo) techos_presupuestal,
+                    sum(calendarizado) calendarizado,
+                    sum(Operativo) - calendarizado disponible,
+                    ejercicio
+                from (
+                    select 
+                        clv_fondo,
+                        0 RH,
+                        sum(presupuesto) Operativo,
+                        0 calendarizado,
+                        ejercicio
+                    from techos_financieros tf
+                    where tf.tipo = 'Operativo' && ".$arrayTechos."
+                    group by clv_fondo
+                    union all 
+                    select 
+                        fondo_ramo clv_fondo,
+                        0 RH,
+                        0 Operativo,
+                        sum(total) calendarizado,
+                        ejercicio
+                    from programacion_presupuesto pp
+                    where pp.tipo = 'Operativo' && ".$arrayProgramacion."
+                    group by clv_fondo
+                ) tabla
+                join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
+                group by clv_fondo,f.fondo_ramo;");
+            }else {
+                $fondos = DB::select("select 
+                clv_fondo,
+                f.fondo_ramo,
+                sum(RH) RH,
                 sum(Operativo) Operativo,
-                sum(Operativo) techos_presupuestal,
+                sum(RH+Operativo) techos_presupuestal,
                 sum(calendarizado) calendarizado,
-                sum(Operativo) - calendarizado disponible,
+                sum((RH+Operativo)-calendarizado) disponible,
                 ejercicio
             from (
+                select 
+                    clv_fondo,
+                    sum(presupuesto) RH,
+                    0 Operativo,
+                    0 calendarizado,
+                    ejercicio
+                from techos_financieros tf
+                where tf.tipo = 'RH' &&".$arrayTechos." 
+                group by clv_fondo
+                union all
                 select 
                     clv_fondo,
                     0 RH,
@@ -640,7 +784,7 @@ class ClavePreController extends Controller
                     0 calendarizado,
                     ejercicio
                 from techos_financieros tf
-                where tf.tipo = 'Operativo' && ".$arrayTechos."
+                where tf.tipo = 'Operativo' &&".$arrayTechos." 
                 group by clv_fondo
                 union all 
                 select 
@@ -650,55 +794,14 @@ class ClavePreController extends Controller
                     sum(total) calendarizado,
                     ejercicio
                 from programacion_presupuesto pp
-                where pp.tipo = 'Operativo' && ".$arrayProgramacion."
+                where ".$arrayProgramacion."
                 group by clv_fondo
             ) tabla
             join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
             group by clv_fondo,f.fondo_ramo;");
-        }else {
-            $fondos = DB::select("select 
-            clv_fondo,
-            f.fondo_ramo,
-            sum(RH) RH,
-            sum(Operativo) Operativo,
-            sum(RH+Operativo) techos_presupuestal,
-            sum(calendarizado) calendarizado,
-            sum((RH+Operativo)-calendarizado) disponible,
-            ejercicio
-        from (
-            select 
-                clv_fondo,
-                sum(presupuesto) RH,
-                0 Operativo,
-                0 calendarizado,
-                ejercicio
-            from techos_financieros tf
-            where tf.tipo = 'RH' &&".$arrayTechos." 
-            group by clv_fondo
-            union all
-            select 
-                clv_fondo,
-                0 RH,
-                sum(presupuesto) Operativo,
-                0 calendarizado,
-                ejercicio
-            from techos_financieros tf
-            where tf.tipo = 'Operativo' &&".$arrayTechos." 
-            group by clv_fondo
-            union all 
-            select 
-                fondo_ramo clv_fondo,
-                0 RH,
-                0 Operativo,
-                sum(total) calendarizado,
-                ejercicio
-            from programacion_presupuesto pp
-            where ".$arrayProgramacion."
-            group by clv_fondo
-        ) tabla
-        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
-        group by clv_fondo,f.fondo_ramo;");
+            }
         }
+        
         $response = [
             'fondos' => $fondos,
             'upp' => $upp
@@ -717,24 +820,42 @@ class ClavePreController extends Controller
         return $dataset;
     }
     public function postConfirmarClaves(Request $request){ 
-        log::info('filtro upp confirm', [json_encode($request->upp)]);
-        log::info('filtro ejercicio confirm', [json_encode($request->ejercicio)]);
+        $rol = 0;
         $uppUsuario = Auth::user()->clv_upp;
+        $grupo =  Auth::user()->id_grupo;
+        if ($grupo == 5) {
+            $rol =2;
+        }
         $array_where = [];
         array_push($array_where, ['programacion_presupuesto.upp', '=', $request->upp ? $request->upp : $uppUsuario]);
         array_push($array_where, ['programacion_presupuesto.deleted_at', '=', null]);
         array_push($array_where, ['programacion_presupuesto.ejercicio', '=', $request->ejercicio]);
         try {
-            ProgramacionPresupuesto::where($array_where)->update([
-                'estado' => 1,
-            ]);
+            $ejer = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE('cierre_ejercicio_claves.estatus','=','Abierto')->first();
+            $ejercicio = $ejer && $ejer != null ? $ejer->ejercicio : '';
+            $estado = DB::table('programacion_presupuesto')->SELECT('estado')->WHERE($array_where)->first();
+            if ($request->ejercicio != $ejercicio || $estado && $estado->estado != 0) {
+                $response = [
+                    'response'=>'errorAutorizacion',
+                    'rol'=>$rol
+                ];
+                return response()->json($response,200);
+            }else {
+                ProgramacionPresupuesto::where($array_where)->update([
+                    'estado' => 1,
+                ]);
+            }
         } catch (\Exception $exp) {
             DB::rollBack();
 			Log::debug('exp '.$exp->getMessage());
             throw new \Exception($exp->getMessage());
 			return response()->json('error',200);
         }
-        return response()->json('done',200);
+        $response = [
+            'response'=>'done',
+            'rol'=>$rol
+        ];
+        return response()->json($response,200);
     }
     public function getObras($val){
         $response = [];

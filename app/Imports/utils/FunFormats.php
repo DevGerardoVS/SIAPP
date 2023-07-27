@@ -18,20 +18,20 @@ class FunFormats
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     public static function typeTotal($value)
     {
-        $tipo = $value[8];
+        $tipo = $value[15];
         $auxTotal = array(
-            $value[10],
-            $value[11],
-            $value[12],
-            $value[13],
-            $value[14],
-            $value[15],
-            $value[16],
             $value[17],
             $value[18],
             $value[19],
             $value[20],
-            $value[21]
+            $value[21],
+            $value[22],
+            $value[23],
+            $value[24],
+            $value[25],
+            $value[26],
+            $value[27],
+            $value[28]
         );
         switch ($tipo) {
             case 0:
@@ -75,40 +75,42 @@ class FunFormats
                     );
                     return $error;
                 } else {
-                    $actividad = ActividadesMir::where('deleted_at', null)->where('actividades_mir.id', $k[6])->first();
+                    $actividad = ActividadesMir::where('deleted_at', null)->where('actividades_mir.clv_actividad', $k[13])->first();
                     if ($actividad) {
-                        $proy = ProyectosMir::where('deleted_at', null)
-                            ->where('id', $actividad['proyecto_mir_id'])
-                            ->where('clv_upp', preg_replace('([^0-9])', '', $k[0]))
-                            ->where('clv_ur', $k[1])
-                            ->where('clv_programa', $k[2])
-                            ->where('clv_subprograma', $k[3])
-                            ->where('clv_proyecto', $k[4])
-                            ->get();
-                        if (count($proy)) {
-                            $pres=FunFormats::existPP( $k[0], $k[1], $k[2], $k[3], $k[4]);
+                        
+                        $area= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]).'';
+                        $proy = DB::table('proyectos_mir')
+                        ->select('*')
+                        ->where('deleted_at', null)
+                        ->where('id', $actividad['proyecto_mir_id'])
+                        ->where('area_funcional',$area)
+                        ->where('clv_upp',$k[7])
+                        ->get();
+                        if (count($proy)>=1) {
+                            $clave =''. strval($k[0]) . '-' .strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]). '-' .strval($k[4]).'-'. strval($k[5]) . '-' .strval($k[6]) .'-'. strval($k[7]) . '-' .strval($k[8]) . '-' . strval($k[9]) . '-' . strval($k[10]). '-' .strval($k[11]).'';
+                            $pres=FunFormats::existPP($clave);
                             if (count($pres)) {
+                                
                                 $aux[] = [
-                                    'clv_fondo' => $k[5],
-                                    'actividad_id' => $k[6],
-                                    'tipo' => $k[8],
-                                    'beneficiario_id' => $k[22],
-                                    'unidad_medida_id' => $k[25],
-                                    'cantidad_beneficiarios' => $k[24],
-                                    'enero' => $k[10],
-                                    'febrero' => $k[11],
-                                    'marzo' => $k[12],
-                                    'abril' => $k[13],
-                                    'mayo' => $k[14],
-                                    'junio' => $k[15],
-                                    'julio' => $k[16],
-                                    'agosto' => $k[17],
-                                    'septiembre' => $k[18],
-                                    'octubre' => $k[19],
-                                    'noviembre' => $k[20],
-                                    'diciembre' => $k[21],
+                                    'clv_fondo' => $k[12],
+                                    'actividad_id' =>$k[13],
+                                    'tipo' => $k[16],
+                                    'beneficiario_id' => $k[29],
+                                    'unidad_medida_id' => $k[32],
+                                    'cantidad_beneficiarios' => $k[31],
+                                    'enero' => $k[17],
+                                    'febrero' => $k[18],
+                                    'marzo' => $k[19],
+                                    'abril' => $k[20],
+                                    'mayo' => $k[21],
+                                    'junio' => $k[22],
+                                    'julio' => $k[23],
+                                    'agosto' => $k[24],
+                                    'septiembre' => $k[25],
+                                    'octubre' => $k[26],
+                                    'noviembre' => $k[27],
+                                    'diciembre' => $k[28],
                                     'total' => FunFormats::typeTotal($k),
-                                    'estatus' => 0,
                                     'created_user' => auth::user()->username
                                 ];
                             }else{
@@ -148,9 +150,16 @@ class FunFormats
             );
             return $error;
         }
+        Log::debug('Gurardando ');
         foreach ($aux as $key) {
-            $meta = Metas::create($key);
+            Log::debug($key);
+            try {
+                $meta = Metas::create($key);
             Log::debug($meta);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            
         }
         $success = array(
             "icon" => 'success',
@@ -161,8 +170,7 @@ class FunFormats
     }
     public static function isNULLOrEmpy($datos,$index){
 		for ($i=0; $i <count($datos) ; $i++) {
-            Log::debug(count($datos));
-            if (count($datos) === 27) {
+            if (count($datos) === 34) {
                 if ($datos[$i] == '') {
                     return ["status" => true, "error" => 'El documento contiene campos vacios en la columna:' . FunFormats::abc($i) . ' fila:' . $index . ''];
                 }
@@ -171,28 +179,44 @@ class FunFormats
                 return ["status" => true, "error" => 'No se debe modificar la plantilla'];;
             }
 		}
-        Log::debug("fin del for");
 		return ["status" => false, "error" => null];
 	}
 	public static function abc($i){
 		$columns=['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA'];
 		return $columns[$i];
 	}
-    public static function existPP($upp,$ur,$prg,$sprg,$py){
-        $activs = DB::table("programacion_presupuesto")
-				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
-				->select(
-					'programacion_presupuesto.id',
-					'programa_presupuestario as programa',
-					'subprograma_presupuestario as subprograma',
-					'v_epp.proyecto as proyecto'
-				)
-                ->where('programacion_presupuesto.upp', '=', $upp)
-				->where('programacion_presupuesto.ur', '=', $ur)
-                ->where('programa_presupuestario','=', $prg)
-                ->where('subprograma_presupuestario', '=',$sprg)
-                ->where('v_epp.proyecto','=' ,$py)->get();
+    public static function existPP($clave){
+        
+        $arrayclave=explode( '-', $clave);
+        try {
+            $activs = DB::table('programacion_presupuesto')
+			->select(
+				'upp',
+			)
+			->where('deleted_at', null)
+		    ->where('finalidad',$arrayclave[0])
+			->where('funcion',$arrayclave[1])
+			->where('subfuncion',$arrayclave[2])
+			->where('eje',$arrayclave[3])
+			->where('linea_accion',$arrayclave[4])
+			->where('programa_sectorial',$arrayclave[5])
+			->where('tipologia_conac',$arrayclave[6])
+			->where('upp',$arrayclave[7])
+            ->where('ur', $arrayclave[8])
+            ->where('programa_presupuestario', $arrayclave[9])
+            ->where('subprograma_presupuestario', $arrayclave[10])
+			->where('proyecto_presupuestario', $arrayclave[11])
+            ->where('programacion_presupuesto.ejercicio', '=', 2023)
+            ->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+			->distinct()
+            ->get();
                 return $activs;
+               
+          
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+ 
 	}
     /*     public function arrEquals($numeros)
         {
