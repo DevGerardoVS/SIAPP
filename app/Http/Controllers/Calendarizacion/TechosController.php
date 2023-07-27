@@ -268,7 +268,7 @@ class TechosController extends Controller
                 ];
             }else{
                 DB::beginTransaction();
-                
+
                 DB::table('techos_financieros')
                 ->where('id','=',$request->id)
                 ->update(['presupuesto' => $request->presupuesto]);
@@ -279,6 +279,7 @@ class TechosController extends Controller
                     ->where('ejercicio','=',$data[0]->ejercicio)
                     ->update(['estado' => 0]);
                 }
+                
                 DB::commit();
                 return [
                     'status' => 200,

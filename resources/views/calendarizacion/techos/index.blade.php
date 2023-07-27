@@ -56,13 +56,29 @@
                                 </div>
                                 <br>
                                 <div class="row">
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-outline-success" 
+                                    <div class="col-md-8">
+                                        <button  type="button" class="btn btn-outline-success" 
                                         data-bs-toggle="modal" data-bs-target="#exportExcel">
                                             <i class="fa fa-file-excel-o"></i> Exportar Excel
                                         </button>
+
+                                        <button style="margin: 10px;" type="button" class="btn btn-outline-danger" 
+                                        data-bs-toggle="modal" data-bs-target="#exportPDF">
+                                            <i class="fa fa-file-excel-o"></i> Exportar PDF
+                                        </button>
+                                        
+                                        <button style="margin: 10px;" type="button" class="btn btn-outline-success" 
+                                        data-bs-toggle="modal" data-bs-target="#exportPresupuestos">
+                                           <i class="fa fa-file-excel-o"></i> Exportar Presupuestos
+                                        </button>
+
+                                        <button style="margin: 10px;" type="button" class="btn btn-outline-secondary" data-toggle="" id="btnCarga"
+                                                data-target=".carga-masiva" data-backdrop="static"
+                                                data-keyboard="false"><i class="fa fa-file-text-o" aria-hidden="true"></i> Carga masiva
+                                        </button>
+
                                     </div>
-                                    <div class="col-md-2">
+                                    <!-- <div class="col-md-2">
                                         <button type="button" class="btn btn-outline-danger" 
                                         data-bs-toggle="modal" data-bs-target="#exportPDF">
                                             <i class="fa fa-file-excel-o"></i> Exportar PDF
@@ -79,7 +95,7 @@
                                                 data-target=".carga-masiva" data-backdrop="static"
                                                 data-keyboard="false"><i class="fa fa-file-text-o" aria-hidden="true"></i> Carga masiva
                                         </button>
-                                    </div>
+                                    </div>-->
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2 text-center">
                                         <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
