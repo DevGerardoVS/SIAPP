@@ -102,7 +102,6 @@ var dao = {
             url: '/calendarizacion/selects',
             dataType: "JSON"
         }).done(function (data) {
-            console.log("fdsaf",data);
             const { unidadM, beneficiario } = data;
             document.getElementById("medida").options[0].disabled = true;
             $.each(unidadM, function (i, val) {
@@ -120,9 +119,7 @@ var dao = {
             type: "GET",
             url: '/calendarizacion/tcalendario/'+upp,
             dataType: "JSON"
-        }).done(function (data) {
-            console.log("fdsaf",data);
-        
+        }).done(function (data) {        
             $.each(data, function (i, val) {
                 if (val == 1) {
                     $('#tipo_Ac').append("<option value='" + i + "'>" +i+"</option>");
@@ -168,7 +165,6 @@ var dao = {
             url: "/calendarizacion/update/" + id,
             dataType : "json"
         }).done(function (data) {
-            console.log("ggActividad", data)
             dao.getActiv(data.clv_upp);
             $('#proyectoMD').empty();
             $('#proyectoMD').append("<thead><tr class='colorMorado'>"
@@ -444,6 +440,12 @@ var init = {
 };
 
 $(document).ready(function () {
+    $("#cerrar").click(function(){
+        $("#addActividad").modal('hide')
+    });
+    $("#cancelar").click(function(){
+        $("#addActividad").modal('hide')
+      });
     $('#btnSave').click(function (e) {
         e.preventDefault();
         if ($('#actividad').valid()) {

@@ -80,7 +80,6 @@ var dao = {
                 { "aTargets": [10], "mData": [10] }
             ];
             _gen.setTableScrollFotter(_table, _columns, _data.dataSet);
-            console.log("length", _data)
             let index = _data.dataSet;
             if (index.length==0) {
                 Swal.fire({
@@ -103,7 +102,6 @@ var dao = {
             url: '/calendarizacion/urs/' + upp,
             dataType: "JSON"
         }).done(function (data) {
-            console.log("urs",data);
             const { urs, tAct } = data;
            
             var par = $('#ur_filter');
@@ -448,6 +446,7 @@ var init = {
     },
 };
 $(document).ready(function () {
+    
     $('#incomplete').hide();
     if ($('#upp').val() == '') {
         dao.getUpps();

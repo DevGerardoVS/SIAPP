@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header colorMorado">
                 <h5 class="modal-title " id="addActividadLabel">Editar Meta</h5>
-                <button id="cerrar" type="button" class="close" data-dismiss="modal" aria-label="Close" {{--  onclick="dao.limpiar()" --}}>
+                <button id="cerrar" type="button" class="close" data-dismiss="modal" aria-label="Close"  onclick="dao.limpiar()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -101,7 +101,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button id="cerrar"  type="button" class="btn btn-secondary" data-dismiss="modal"{{-- onclick="dao.limpiar()" --}}>Cancelar</button>
+                <button id="cancelar"  type="button" class="btn btn-secondary" data-dismiss="modal"onclick="dao.limpiar()">Cancelar</button>
                 <button id="btnSave" type="button" class="btn btn-primary">Guardar</button>
             </div>
         </div>
