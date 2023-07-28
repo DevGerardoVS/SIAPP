@@ -422,7 +422,8 @@ var init = {
                 tipo_Ac: { required: true },
                 beneficiario: { required: true },
                 tipo_Be: { required: true },
-                medida: { required: true }
+                medida: { required: true },
+                sumMetas: { required: true }
             },
             messages: {
                 sel_actividad: { required: "Este campo es requerido" },
@@ -430,7 +431,8 @@ var init = {
                 tipo_Ac: { required: "Este campo es requerido" },
                 beneficiario: { required: "Este campo es requerido" },
                 tipo_Be: { required: "Este campo es requerido" },
-                medida: { required: "Este campo es requerido" }
+                medida: { required: "Este campo es requerido" },
+                sumMetas: { required: "Este campo es requerido" },
             }
         });
     },

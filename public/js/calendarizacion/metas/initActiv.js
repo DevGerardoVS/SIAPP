@@ -96,13 +96,119 @@ var dao = {
 			_gen.setTableScrollFotter(_table, _columns, _data);
 		});
     },
+    getSelect: function () {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/selects',
+            dataType: "JSON"
+        }).done(function (data) {
+            console.log("fdsaf",data);
+            const { unidadM, beneficiario } = data;
+            document.getElementById("medida").options[0].disabled = true;
+            $.each(unidadM, function (i, val) {
+                $('#medida').append("<option value='"+val.clave+"'>"+val.unidad_medida+"</option>");
+            });
+            document.getElementById("tipo_Be").options[0].disabled = true;
+            $.each(beneficiario, function (i, val) {
+                $('#tipo_Be').append("<option value='"+val.id+"'>"+val.beneficiario+"</option>");
+            });
+
+        });
+    },
+    getActiv: function (upp) {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/tcalendario/'+upp,
+            dataType: "JSON"
+        }).done(function (data) {
+            console.log("fdsaf",data);
+        
+            $.each(data, function (i, val) {
+                if (val == 1) {
+                    $('#tipo_Ac').append("<option value='" + i + "'>" +i+"</option>");
+                }
+            });
+        });
+    },
+    editarPutMeta: function () {
+        var form = $('#actividad')[0];
+        var data = new FormData(form);
+        data.append('sumMetas', $('#sumMetas').val());
+        $.ajax({
+            type: "POST",
+            url: '/calendarizacion/put',
+            data: data,
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000
+        }).done(function (response) {
+            dao.limpiar();
+            const {mensaje } = response;
+            Swal.fire({
+                icon: mensaje.icon,
+                title: mensaje.title,
+                text: mensaje.text,
+            });
+            $('#cerrar').trigger('click');
+            if ($('#upp').val() == '') {
+                dao.getUpps();
+                dao.getData($('#upp_filter').val());
+            } else {
+                dao.getData($('#upp').val());
+        
+            }
+        });
+    },
     editarMeta: function (id) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Your work has been saved',
-            showConfirmButton: false,
-            timer: 1500
-        })
+        $("#addActividad").modal("show");
+        $.ajax({
+            type: "GET",
+            url: "/calendarizacion/update/" + id,
+            dataType : "json"
+        }).done(function (data) {
+            console.log("ggActividad", data)
+            dao.getActiv(data.clv_upp);
+            $('#proyectoMD').empty();
+            $('#proyectoMD').append("<thead><tr class='colorMorado'>"
+             +"<th class= 'vertical' > UP</th >"
+             +"<th class='vertical'>UR</th>"
+             +"<th class='vertical'>Programa</th>"
+             +"<th class='vertical'>Subprograma</th>"
+             +"<th class='vertical'>Proyecto</th>"
+             +"<th class='vertical'>Fondo</th>"
+             +"<th class='vertical'>Actividad</th>"
+                + "</tr>thead")
+                
+            $('#proyectoMD').append('<tbody class="text-center"><tr>'
+                + '<th scope="row">' + data.clv_upp + '</th> <th>  '
+                + data.clv_ur+ '</th> <th>'+ data.clv_programa
+                + '</th><th>' + data.subprograma + '</th><th>'
+                + data.proyecto + '</th><th>' + data.clv_fondo
+                + '</th><th>' + data.actividad + '</th>' +
+                '</tr></tbody>')
+
+            $('#id_meta').text(data.id);
+            $('#Nactividad').text(data.actividad);
+            $('#Nfondo').text(data.clv_fondo);
+            $('#beneficiario').val(data.cantidad_beneficiarios);
+            $("#tipo_Be option[value='" + data.beneficiario_id + "']").attr("selected", true);
+            $("#medida option[value='"+ data.unidad_medida_id +"']").attr("selected",true);
+            $('#1').val(data.enero);
+            $('#2').val(data.febrero);
+            $('#3').val(data.marzo);
+            $('#4').val(data.abril);
+            $('#5').val(data.mayo);
+            $('#6').val(data.junio);
+            $('#7').val(data.julio);
+            $('#8').val(data.agosto);
+            $('#9').val(data.septiembre);
+            $('#10').val(data.octubre);
+            $('#11').val(data.noviembre);
+            $('#12').val(data.diciembre);
+            $('#sumMetas').val(data.total);
+        });
     },
     eliminar: function (id) {
         Swal.fire({
@@ -128,6 +234,8 @@ var dao = {
                         title: mensaje.title,
                         text: mensaje.text,
                     });
+                    $('#cerrar').trigger('click');
+
                     if ($('#upp').val() == '') {
                         dao.getUpps();
                         dao.getData($('#upp_filter').val());
@@ -304,16 +412,12 @@ var init = {
     validateCreate: function (form) {
         _gen.validate(form, {
             rules: {
-                sel_actividad: { required: true },
-                sel_fondo: { required: true },
                 tipo_Ac: { required: true },
                 beneficiario: { required: true },
                 tipo_Be: { required: true },
                 medida: { required: true }
             },
             messages: {
-                sel_actividad: { required: "Este campo es requerido" },
-                sel_fondo: { required: "Este campo es requerido" },
                 tipo_Ac: { required: "Este campo es requerido" },
                 beneficiario: { required: "Este campo es requerido" },
                 tipo_Be: { required: "Este campo es requerido" },
@@ -340,7 +444,13 @@ var init = {
 };
 
 $(document).ready(function () {
-
+    $('#btnSave').click(function (e) {
+        e.preventDefault();
+        if ($('#actividad').valid()) {
+            dao.editarPutMeta();
+        }
+    });
+    dao.getSelect();
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
@@ -355,17 +465,7 @@ $(document).ready(function () {
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
-    $("#sumMetas").val(0);
-    
-  
-    $('#btnSave').click(function (e) {
-        e.preventDefault();
-        if ($('#actividad').valid()) {
-            dao.crearUsuario();
-        }
-    });
-  
-    
+    $("#sumMetas").val(0);   
 
     $('#tipo_Ac').change(() => {
         for (let i = 1; i <= 12; i++) {

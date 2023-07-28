@@ -239,6 +239,20 @@ class MetasController extends Controller
 
 		return ["unidadM" => $uMed, "beneficiario" => $bene];
 	}
+	public function getTcalendar($upp){
+		$Act = DB::table('tipo_actividad_upp')
+			->select(
+				'Continua',
+				'Acumulativa',
+				'Especial'
+			)
+			->where('deleted_at', null)
+			->orderBy('clv_upp')
+			->where('clv_upp', $upp)
+			->get();
+			$tAct = $Act[0];
+		return $tAct;
+	}
 	public function createMeta(Request $request)
 	{
 		Controller::check_permission('postMetas');
@@ -273,6 +287,41 @@ class MetasController extends Controller
 		}
 
 	}
+	public function putMeta(Request $request)
+	{
+		$meta = Metas::where('id', $request->id_meta)->firstOrFail();
+        $user = Auth::user()->username;
+		if ($meta) {
+			$meta->tipo =  $request->tipo_Ac;
+			$meta->beneficiario_id = $request->tipo_Be;
+			$meta->unidad_medida_id = $request->medida;
+			$meta->cantidad_beneficiarios = $request->beneficiario;
+			$meta->total = $request->sumMetas;
+			$meta->enero=$request[1] != NULL ? $request[1] : 0;
+			$meta->febrero=$request[2] != NULL ? $request[2] : 0;
+			$meta->marzo=$request[3] != NULL ? $request[3] : 0;
+			$meta->abril=$request[4] != NULL ? $request[4] : 0;
+			$meta->mayo=$request[5] != NULL ? $request[5] : 0;
+			$meta->junio=$request[6] != NULL ? $request[6] : 0;
+			$meta->julio=$request[7] != NULL ? $request[7] : 0;
+			$meta->agosto=$request[8] != NULL ? $request[8] : 0;
+			$meta->septiembre=$request[9] != NULL ? $request[9] : 0;
+			$meta->octubre=$request[10] != NULL ? $request[10] : 0;
+			$meta->noviembre=$request[11] != NULL ? $request[11] : 0;
+			$meta->diciembre=$request[12] != NULL ? $request[12] : 0;
+			$meta->updated_user = $user;
+			$meta->save();
+		}
+
+		if ($meta->wasChanged()) {
+			$res=["status" => true, "mensaje" => ["icon"=>'success',"text"=>'La acción se ha realizado correctamente',"title"=>"Éxito!"]];
+			return response()->json($res,200);
+		}else {
+			$res=["status" => false, "mensaje" => ["icon"=>'Error',"text"=>'Hubo un problema al querer realizar la acción, contacte a soporte',"title"=>"Error!"]];
+			return response()->json($res,200);
+		} 
+
+	}
 	public function deleteMeta(Request $request)
 	{
 		Controller::check_permission('deleteMetas');
@@ -287,9 +336,107 @@ class MetasController extends Controller
 	}
 	public function updateMeta($id)
 	{
-		Controller::check_permission('putMetas', false);
-		$query = Metas::where('id', $id)->get();
-		return $query;
+		
+			$metas = DB::table('metas')
+				->leftJoin('actividades_mir', 'actividades_mir.id', 'metas.actividad_id')
+				->select(
+					DB::raw('CONCAT(actividades_mir.clv_actividad, " - ", actividades_mir.actividad) AS actividad'),
+					'actividades_mir.proyecto_mir_id',
+					'metas.id',
+					'metas.clv_fondo',
+        			'metas.actividad_id',
+        			'metas.tipo',
+        			'metas.beneficiario_id',
+        			'metas.unidad_medida_id',
+        			'metas.cantidad_beneficiarios',
+        			'metas.enero',
+        			'metas.febrero',
+        			'metas.marzo',
+        			'metas.abril',
+        			'metas.mayo',
+        			'metas.junio',
+        			'metas.julio',
+        			'metas.agosto',
+        			'metas.septiembre',
+        			'metas.octubre',
+        			'metas.noviembre',
+        			'metas.diciembre',
+        			'metas.total',
+
+				)
+				->where('actividades_mir.deleted_at', null)
+				->where('metas.deleted_at', null)
+				->where('metas.id', $id);
+		$pro=DB::table('proyectos_mir')
+			->leftJoinSub($metas, 'metas', function ($join) {
+				$join->on('proyectos_mir.id', '=', 'metas.proyecto_mir_id');
+			})
+			->select(
+				'proyectos_mir.clv_upp',
+        		'proyectos_mir.entidad_ejecutora',
+        		'proyectos_mir.clv_programa',
+        		'proyectos_mir.area_funcional',
+				'metas.id',
+				'metas.actividad',
+				'metas.clv_fondo',
+				'metas.tipo',
+				'metas.beneficiario_id',
+				'metas.unidad_medida_id',
+				'metas.cantidad_beneficiarios',
+				'metas.enero',
+				'metas.febrero',
+				'metas.marzo',
+				'metas.abril',
+				'metas.mayo',
+				'metas.junio',
+				'metas.julio',
+				'metas.agosto',
+				'metas.septiembre',
+				'metas.octubre',
+				'metas.noviembre',
+				'metas.diciembre',
+				'metas.total',
+				
+			)
+			->where('proyectos_mir.deleted_at',null)
+			->where('metas.id', $id)
+			->get();
+			$data=[];
+		foreach ($pro as $key) {
+			$area = str_split($key->area_funcional);
+			$entidad = str_split($key->entidad_ejecutora);
+			$i = array(
+				"area"=>$key->area_funcional,
+				"entidad"=>$key->entidad_ejecutora,
+				"clv_upp" => $key->clv_upp,
+				"clv_ur" => '' . strval($entidad[4]) . strval($entidad[5]) . '',
+				"clv_programa" => $key->clv_programa,
+				"subprograma" => '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
+				"proyecto" => '' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
+				"id" => $key->id,
+				"actividad" => $key->actividad,
+				"clv_fondo" => $key->clv_fondo,
+				"tipo" => $key->tipo,
+				"beneficiario_id" => $key->beneficiario_id,
+				"unidad_medida_id" => $key->unidad_medida_id,
+				"cantidad_beneficiarios" => $key->cantidad_beneficiarios,
+				"enero" => $key->enero,
+				"febrero" => $key->febrero,
+				"marzo" => $key->marzo,
+				"abril" => $key->abril,
+				"mayo" => $key->mayo,
+				"junio" => $key->junio,
+				"julio" => $key->julio,
+				"agosto" => $key->agosto,
+				"septiembre" => $key->septiembre,
+				"octubre" => $key->octubre,
+				"noviembre" => $key->noviembre,
+				"diciembre" => $key->diciembre,
+				"total" => $key->total,
+			);
+			$data[] = $i;
+		}
+		return $data[0];
 	}
 	public function exportExcel($upp)
 	{
@@ -356,14 +503,14 @@ class MetasController extends Controller
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
 		$report = "Reporte_Calendario_UPP";
 
-		$ruta = public_path() . "/Reportes";
+		$ruta = public_path() . "/reportes";
 		//Eliminación si ya existe reporte
 		if (File::exists($ruta . "/" . $report . ".pdf")) { 
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
-		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
+		$report_path = app_path() . "/reportes/" . $report . ".jasper";
 		$format = array('pdf');
-		$output_file = public_path() . "/Reportes";
+		$output_file = public_path() . "/reportes";
 
 		$parameters = $request;
 
@@ -379,7 +526,7 @@ class MetasController extends Controller
 			$database_connection
 		)->execute();
 		//dd($jasper);
-		$reportePDF = Response::make(file_get_contents(public_path() . "/Reportes/" . $report . ".pdf"), 200, [
+		$reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
 			'Content-Type' => 'application/pdf'
 		]);
 
