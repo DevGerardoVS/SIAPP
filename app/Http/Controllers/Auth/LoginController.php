@@ -49,7 +49,7 @@ class LoginController extends Controller
                 Auth::logout();
                 return back()->withErrors('Este usuario ha sido deshabilitado');
             }}
-        return Redirect::back()->withInput()->withErrors('Error');
+        return Redirect::back()->withInput()->withErrors('El nombre de usuario o contraseña es incorrecto');
 
     }
 

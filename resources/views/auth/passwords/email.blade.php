@@ -7,7 +7,6 @@
                 <div style="padding-top: 6%">
                     
                     <h1 style="padding-top: 5%"> {{ __('messages.nombre_sistema') }}</h1>
-                    {{-- <h1 style="padding-bottom:5%;"> {{ __('Transporte Público') }}</h1> --}}
                 </div>
 
                 <div style="text-align: left;">

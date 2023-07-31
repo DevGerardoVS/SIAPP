@@ -1315,10 +1315,10 @@ return new class extends Migration {
             from v_epp ve
             left join proyectos_mir pm on 
                 pm.clv_upp = ve.clv_upp and 
-                pm.clv_ur = ve.clv_ur and 
-                pm.clv_programa = ve.clv_programa and 
-                pm.clv_subprograma = ve.clv_subprograma and 
-                pm.clv_proyecto = ve.clv_proyecto
+                substring(pm.entidad_ejecutora,5,2) = ve.clv_ur and 
+                substring(pm.entidad_ejecutora,9,2) = ve.clv_programa and 
+                substring(pm.entidad_ejecutora,11,3) = ve.clv_subprograma and 
+                substring(pm.entidad_ejecutora,14,3) = ve.clv_proyecto
             left join actividades_mir am on pm.id = am.proyecto_mir_id
             where pm.ejercicio = anio and if (
                 corte is null,
@@ -1333,10 +1333,10 @@ return new class extends Migration {
         begin
             select 
                 pm.clv_upp,
-                pm.clv_ur,
+                substring(pm.entidad_ejecutora,5,2) clv_ur,
                 pm.clv_programa,
-                pm.clv_subprograma,
-                pm.clv_proyecto,
+                substring(pm.entidad_ejecutora,11,3) clv_subprograma,
+                substring(pm.entidad_ejecutora,14,3) clv_proyecto,
                 m.clv_fondo,
                 am.actividad,
                 m.cantidad_beneficiarios,

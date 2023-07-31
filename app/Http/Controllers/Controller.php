@@ -32,14 +32,12 @@ class Controller extends BaseController
                 $estructura = DB::select('SELECT modulo, tipo FROM adm_funciones WHERE funcion=? AND id_sistema = ?', [$module, Session::get('sistema')]);
                 if(count($estructura) > 0){
                     $estructura = $estructura[0];
-                    $fecha_movimiento = \Carbon\Carbon::now()->toDateTimeString();
-                    $bitacora = new Bitacora();
-                    $bitacora->username = Auth::user()->username;
-                    $bitacora->accion = $estructura->tipo;
-                    $bitacora->modulo = $estructura->modulo;
-                    $bitacora->ip_origen = $ip;
-                    $bitacora->fecha_movimiento = $fecha_movimiento;
-                    $bitacora->save();
+                    $b = array(
+                        "username"=>Auth::user()->username,
+                        "accion"=>$estructura->tipo,
+                        "modulo"=>'Permisos'
+                     );
+                     Controller::bitacora($b);
                 }else{
                     abort('401');
                 }
@@ -60,18 +58,16 @@ class Controller extends BaseController
             ->orWhere('cat_permisos.nombre', $name)->get();
     	if($permiso) {
             if($bt) {
-                $ip = Request::getClientIp();
-                $estructura = $permiso;
+                $estructura = $permiso[0];
                 if(count($estructura) > 0){
-                    $estructura = $estructura[0];
-                    $fecha_movimiento = \Carbon\Carbon::now()->toDateTimeString();
-                    $bitacora = new Bitacora();
-                    $bitacora->username = Auth::user()->username;
-                    $bitacora->accion = $estructura->permiso;
-                    $bitacora->modulo = 'calendario';
-                    $bitacora->ip_origen = $ip;
-                    $bitacora->fecha_movimiento = $fecha_movimiento;
-                    $bitacora->save();
+                    $b = array(
+                       "username"=>Auth::user()->username,
+                       "accion"=>$estructura->permiso,
+                       "modulo"=>'Permisos'
+                    );
+                    Controller::bitacora($b);
+                    
+                    
                 }else{
                     abort('401');
                 }
@@ -95,4 +91,15 @@ class Controller extends BaseController
     	else
         return false;
     }
+    public static function bitacora($bitArray) {
+                    $fecha_movimiento = \Carbon\Carbon::now()->toDateTimeString();
+                    $bitacora = new Bitacora();
+                    $bitacora->username = $bitArray['username'];
+                    $bitacora->accion =$bitArray['accion']; /* editar,crear,eliminar,consultar, descargar */;
+                    $bitacora->modulo = $bitArray['modulo'];
+                    $bitacora->ip_origen = Request::getClientIp();
+                    $bitacora->fecha_movimiento = $fecha_movimiento;
+                    $bitacora->save();
+    }
+
 }
