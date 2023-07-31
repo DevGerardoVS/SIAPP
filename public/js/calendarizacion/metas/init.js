@@ -32,7 +32,7 @@ var dao = {
                 $('#metasVista').hide(); 
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Informacion incompleta',
+                    title: 'Información incompleta',
                     text: data.mensaje,
                     confirmButtonText: 'Aceptar',
                     allowOutsideClick: false
@@ -42,6 +42,7 @@ var dao = {
                             window.location.href = "/calendarizacion/claves";
                         }
                     }
+                    
                 });
             }
 
@@ -80,7 +81,6 @@ var dao = {
                 { "aTargets": [10], "mData": [10] }
             ];
             _gen.setTableScrollFotter(_table, _columns, _data.dataSet);
-            console.log("length", _data)
             let index = _data.dataSet;
             if (index.length==0) {
                 Swal.fire({
@@ -103,7 +103,6 @@ var dao = {
             url: '/calendarizacion/urs/' + upp,
             dataType: "JSON"
         }).done(function (data) {
-            console.log("urs",data);
             const { urs, tAct } = data;
            
             var par = $('#ur_filter');
@@ -318,7 +317,6 @@ var dao = {
         for (let i = 1; i <= 12; i++) {
             $('#' + i).val(0);
         }
-        $('#sumMetas').val(0);
         $('#beneficiario').val("");
         for (let i = 1; i <= 12; i++) {
             $("#" + i).prop('disabled', true);
@@ -379,13 +377,13 @@ var dao = {
         let actividad = $("#tipo_Ac option:selected").text();
         switch (actividad) {
             case 'Acumulativa':
-                $('#sumMetas').val(dao.validateAcu());
+                $('#sumMetas').val(dao.validateAcu()!=0?dao.validateAcu():'');
                 break;
             case 'Continua':
-                $('#sumMetas').val(dao.validatCont());
+                $('#sumMetas').val(dao.validatCont()!=0?dao.validatCont():'');
                 break;
             case 'Especial':
-                $('#sumMetas').val(dao.validatEspe());
+                $('#sumMetas').val(dao.validatEspe()!=0?dao.validatEspe():'');
                 break;
 
             default:
@@ -422,7 +420,10 @@ var init = {
                 tipo_Ac: { required: true },
                 beneficiario: { required: true },
                 tipo_Be: { required: true },
-                medida: { required: true }
+                medida: { required: true },
+                sumMetas: {
+                    required: true,
+                }
             },
             messages: {
                 sel_actividad: { required: "Este campo es requerido" },
@@ -430,7 +431,8 @@ var init = {
                 tipo_Ac: { required: "Este campo es requerido" },
                 beneficiario: { required: "Este campo es requerido" },
                 tipo_Be: { required: "Este campo es requerido" },
-                medida: { required: "Este campo es requerido" }
+                medida: { required: "Este campo es requerido" },
+                sumMetas: { required: "Este campo es requerido  y mayor a CERO" }
             }
         });
     },
@@ -446,6 +448,7 @@ var init = {
     },
 };
 $(document).ready(function () {
+    
     $('#incomplete').hide();
     if ($('#upp').val() == '') {
         dao.getUpps();
@@ -454,14 +457,6 @@ $(document).ready(function () {
     }
     $('#upp_filter').change(() => {
         dao.checkCombination($('#upp_filter').val())
-            
-       /*  } else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Informacion incompleta',
-                text: 'Las actividades estan incompletas',
-            })
-        } */
     });
     $('#ur_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());
@@ -491,7 +486,6 @@ $(document).ready(function () {
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
-    $("#sumMetas").val(0);
     $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
