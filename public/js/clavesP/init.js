@@ -52,7 +52,7 @@ var dao = {
           }else{
             return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
           }
-        }else{
+        }if (o.rol == 0) {
           if (o.filtroEjercicio == o.ejercicioCheck) {
             return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
             +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
@@ -60,14 +60,15 @@ var dao = {
             return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
           }
         }
+        if (o.rol != 0 && o.rol != 1) {
+          return '<p><i class="fa fa-ban">&nbsp;Sin acciones</i></p>';
+        }
       }},
     ];
     _gen.setTableScrollGroupBy(_table, _columns, data);
    
     dao.getPresupuesAsignado(ejercicioActual,upp);
     $("#filtro_anio option[value="+ ejercicioActual +"]").attr("selected",true);
-    
-    
   });
   },
   postCreate: function () {
@@ -234,7 +235,6 @@ var dao = {
             let upp = document.getElementById('filtro_upp').value;
             let ur = document.getElementById('filtro_ur').value;
             dao.getData(ejercicio,upp,ur);
-            //dao.getPresupuesAsignado('');
           }
         })
        
@@ -535,7 +535,9 @@ var dao = {
         if (response.estatus != null && response.estatus.estatus && response.estatus.estatus == 'Abierto') {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
-            $('#btn_confirmar').show(true);
+            if (response.estado && response.estado != 1) {
+              $('#btn_confirmar').show(true);
+            }
           }else{
             if (response['presupuestoAsignado'][0].totalAsignado && response['presupuestoAsignado'][0].totalAsignado > 0) {
               $('#btnNuevaClave').show(true);
@@ -548,11 +550,13 @@ var dao = {
             $('#btnNuevaClave').hide(true);
             $('#btn_confirmar').hide(true);
         }
-      }else{
+      }if(response.rol == 0){
         if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
-            $('#btn_confirmar').show(true);
+            if (response.estado && response.estado != 1) {
+              $('#btn_confirmar').show(true);
+            }
           }else{
             if (response['presupuestoAsignado'][0].totalAsignado && response['presupuestoAsignado'][0].totalAsignado > 0) {
               $('#btnNuevaClave').show(true);
@@ -567,8 +571,33 @@ var dao = {
         }
         
       }
-      
-      
+      if (response.rol == 2) {
+        if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
+          if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
+            $('#btnNuevaClave').hide(true);
+            if (response.estado && response.estado != 1) {
+              $('#btn_confirmar').show(true);
+            }
+          }else{
+            if (response['presupuestoAsignado'][0].totalAsignado && response['presupuestoAsignado'][0].totalAsignado > 0) {
+              $('#btn_confirmar').hide(true);
+              $('#btnNuevaClave').hide(true);
+            }else{
+              $('#btnNuevaClave').hide(true);
+            }
+          }
+        }else{
+          $('#btnNuevaClave').hide(true);
+          $('#btn_confirmar').hide(true);
+        }
+        
+      }
+      if (response.rol != 1 && response.rol != 0 && response.rol != 2) {
+        $('#btnNuevaClave').hide(true);
+        $('#btn_confirmar').hide(true);
+        $('#button_modal_carga_adm').hide(true);
+        $('#button_modal_carga').hide(true);
+      }
     });
 
   },
@@ -695,19 +724,35 @@ var dao = {
           url: '/calendarizacion-confirmar-claves',
           data: {'upp':upp, 'ejercicio':ejercicio}
         }).done(function (response) {
-          if (response != 'done') {
-            Swal.fire(
-              'Error',
-              'A ocurrido un error intentelo nuevamente o contacte al administrador',
-              'error'
-            );
+          if (response.response != 'done') {
+            if (response.response == 'errorAutorizacion') {
+              Swal.fire(
+                'Advertencia',
+                'No tiene autorizacion para esta accion.',
+                'warning'
+              );
+            }else{
+              Swal.fire(
+                'Error',
+                'A ocurrido un error intentelo nuevamente o contacte al administrador.',
+                'error'
+              );
+            }
+            
           }else{
             Swal.fire(
               'Confirmado',
               'Confirmado de claves realizado correctamente.',
               'success'
             );
-            window.location.href = '/calendarizacion/metas';
+            if (response.rol == 2) {
+              let ejercicio = document.getElementById('filtro_anio').value;
+              let upp = document.getElementById('filtro_upp').value;
+              let ur = document.getElementById('filtro_ur').value;
+            dao.getData(ejercicio,upp,ur);
+            }else{
+              window.location.href = '/calendarizacion/metas';
+            }
           }
         })
       }

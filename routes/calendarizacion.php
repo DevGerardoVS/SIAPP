@@ -10,6 +10,7 @@
 	Route::controller(TechosController::class)->group(function () {
         Route::get('/calendarizacion/techos', 'getIndex')->name('index_techos');
         Route::post('/calendarizacion/techos/get-techos', 'getTechos')->name('getTechos');
+        Route::post('/calendarizacion/techos/get-techo-edit', 'getTechoEdit')->name('getTechoEdit');
         Route::get('/calendarizacion/techos/get-fondos', 'getFondos')->name('getFondos');
         Route::post('/calendarizacion/techos/add-techo', 'addTecho')->name('addTecho');
         Route::get('/plantillaCargaTechos', 'exportView');
@@ -18,6 +19,8 @@
         Route::get('/calendarizacion/techos/export-excel', 'exportExcel')->name('exportExcel');
         Route::get('/calendarizacion/techos/export-pdf', 'exportPDF')->name('exportPDF');
         Route::get('/calendarizacion/techos/export-presupuestos', 'exportPresupuestos')->name('exportPresupuestos');
+        Route::post('/calendarizacion/techos/eliminar', 'eliminar')->name('eliminar');
+        Route::post('/calendarizacion/techos/editar', 'editar')->name('editar');
     });
 
 	Route::controller(ClavePreController::class)->group(function () {

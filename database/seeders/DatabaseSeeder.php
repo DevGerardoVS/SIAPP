@@ -126,7 +126,7 @@ class DatabaseSeeder extends Seeder
     );
 
         protected $sistemas = array(
-            ['id' => 1, 'nombre_sistema' => 'Sistema de Calendarizacion','ruta' => 'sistemas', 'logo' => 'logo_expedientes.png', 'logo_min' => 'logo_expedientes_min.png', 'descripcion' => 'Sistema para la adminsitración de expedientes Jurídicos', 'estatus' => 1],
+            ['id' => 1, 'nombre_sistema' => 'Sistema de Calendarización','ruta' => 'sistemas', 'logo' => 'logo_expedientes.png', 'logo_min' => 'logo_expedientes_min.png', 'descripcion' => 'Sistema para la adminsitración de expedientes Jurídicos', 'estatus' => 1],
         );
 
 
@@ -136,10 +136,10 @@ class DatabaseSeeder extends Seeder
             ['id' => 4,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administración', 'ruta' => '#', 'icono' => 'fa-gears', 'nivel' => 0, 'posicion' => 7, 'descripcion' => 'Conjunto de módulos de adminsitración del sistema'],
             ['id' => 5,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Grupos', 'ruta' => '/adm-grupos', 'icono' => 'fa-users', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Módulo para administrar los grupos del sistema'],
             ['id' => 6,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Bitácora', 'ruta' => '/adm-bitacora', 'icono' => 'fa-bookmark', 'nivel' => 1, 'posicion' => 2, 'descripcion' => 'Bitácora de movimientos del sistema'],
-            ['id' => 7,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Calendarizacion', 'ruta' => '/calendarizacion', 'icono' => ' fa-calendar', 'nivel' => 0, 'posicion' => 4, 'descripcion' => 'Calendarizacion de presupuestos'],
-            ['id' => 8,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Claves presupuestarias', 'ruta' => '/calendarizacion/claves', 'icono' => ' fa-calendar', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Registro de claves presupuestaria'],
-            ['id' => 9,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Metas', 'ruta' => '/calendarizacion/metas', 'icono' => 'fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Techos financieros'],
-            ['id' => 10,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Techos financieros', 'ruta' => '/calendarizacion/techos', 'icono' => 'fa-flag-checkered', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Techos financieros'],
+            ['id' => 7,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Calendarización', 'ruta' => '/calendarización', 'icono' => ' fa-calendar', 'nivel' => 0, 'posicion' => 4, 'descripcion' => 'Calendarización de presupuestos'],
+            ['id' => 8,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Claves presupuestarias', 'ruta' => '/calendarización/claves', 'icono' => ' fa-calendar', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Registro de claves presupuestaria'],
+            ['id' => 9,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Metas', 'ruta' => '/calendarización/metas', 'icono' => 'fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Techos financieros'],
+            ['id' => 10,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Techos financieros', 'ruta' => '/calendarización/techos', 'icono' => 'fa-flag-checkered', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Techos financieros'],
             ['id' => 11,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Reportes', 'ruta' => '/Reportes', 'icono' => 'fa-flag-checkered', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Reportes'],
             ['id' => 12,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'ley Planeacion Hacienda', 'ruta' => '/Reportes/ley-planeacion', 'icono' => 'fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Reportes'],
             ['id' => 13,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Administrativos', 'ruta' => '/Reportes/administrativos', 'icono' => 'fa-flag-checkered', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Reportes'],
@@ -248,6 +248,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 40,  'id_sistema' => 1,'id_menu' => 2, 'modulo' => 'Logs', 'funcion' => 'getLogs', 'tipo' => 'consulta', 'descripcion' => 'Vista de Logs'],
             ['id' => 41,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'viewPostUpps', 'tipo' => 'Consulta', 'descripcion' => 'Obtener todos los tipos de actividad por upp a la BD'],
             ['id' => 42,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'updateUpps', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar un tipo de actividad por upp a la BD'],
+            ['id' => 43,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'updateUppsAuto', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar el estado de una upp autorizada a la BD'],
         );
 
         protected $relFunGroup=array(
@@ -345,6 +346,7 @@ class DatabaseSeeder extends Seeder
             /* ADMIN config */
             ['id'=>76,'id_grupo'=>1,'id_funcion'=>41],
             ['id'=>77,'id_grupo'=>1,'id_funcion'=>42],
+            ['id'=>78,'id_grupo'=>1,'id_funcion'=>43],
 
             
 
