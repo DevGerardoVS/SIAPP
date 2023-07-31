@@ -356,14 +356,14 @@ class MetasController extends Controller
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
 		$report = "Reporte_Calendario_UPP";
 
-		$ruta = public_path() . "/Reportes";
+		$ruta = public_path() . "/reportes";
 		//Eliminación si ya existe reporte
 		if (File::exists($ruta . "/" . $report . ".pdf")) { 
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
-		$output_file = public_path() . "/Reportes";
+		$output_file = public_path() . "/reportes";
 
 		$parameters = $request;
 
@@ -379,7 +379,7 @@ class MetasController extends Controller
 			$database_connection
 		)->execute();
 		//dd($jasper);
-		$reportePDF = Response::make(file_get_contents(public_path() . "/Reportes/" . $report . ".pdf"), 200, [
+		$reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
 			'Content-Type' => 'application/pdf'
 		]);
 
