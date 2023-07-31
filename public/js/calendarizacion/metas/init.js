@@ -32,7 +32,7 @@ var dao = {
                 $('#metasVista').hide(); 
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Informacion incompleta',
+                    title: 'Información incompleta',
                     text: data.mensaje,
                     confirmButtonText: 'Aceptar',
                     allowOutsideClick: false
@@ -42,6 +42,7 @@ var dao = {
                             window.location.href = "/calendarizacion/claves";
                         }
                     }
+                    
                 });
             }
 
@@ -316,7 +317,6 @@ var dao = {
         for (let i = 1; i <= 12; i++) {
             $('#' + i).val(0);
         }
-        $('#sumMetas').val(0);
         $('#beneficiario').val("");
         for (let i = 1; i <= 12; i++) {
             $("#" + i).prop('disabled', true);
@@ -377,13 +377,13 @@ var dao = {
         let actividad = $("#tipo_Ac option:selected").text();
         switch (actividad) {
             case 'Acumulativa':
-                $('#sumMetas').val(dao.validateAcu());
+                $('#sumMetas').val(dao.validateAcu()!=0?dao.validateAcu():'');
                 break;
             case 'Continua':
-                $('#sumMetas').val(dao.validatCont());
+                $('#sumMetas').val(dao.validatCont()!=0?dao.validatCont():'');
                 break;
             case 'Especial':
-                $('#sumMetas').val(dao.validatEspe());
+                $('#sumMetas').val(dao.validatEspe()!=0?dao.validatEspe():'');
                 break;
 
             default:
@@ -421,7 +421,9 @@ var init = {
                 beneficiario: { required: true },
                 tipo_Be: { required: true },
                 medida: { required: true },
-                sumMetas: { required: true }
+                sumMetas: {
+                    required: true,
+                }
             },
             messages: {
                 sel_actividad: { required: "Este campo es requerido" },
@@ -430,7 +432,7 @@ var init = {
                 beneficiario: { required: "Este campo es requerido" },
                 tipo_Be: { required: "Este campo es requerido" },
                 medida: { required: "Este campo es requerido" },
-                sumMetas: { required: "Este campo es requerido" },
+                sumMetas: { required: "Este campo es requerido  y mayor a CERO" }
             }
         });
     },
@@ -455,14 +457,6 @@ $(document).ready(function () {
     }
     $('#upp_filter').change(() => {
         dao.checkCombination($('#upp_filter').val())
-            
-       /*  } else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Informacion incompleta',
-                text: 'Las actividades estan incompletas',
-            })
-        } */
     });
     $('#ur_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());
@@ -492,7 +486,6 @@ $(document).ready(function () {
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
-    $("#sumMetas").val(0);
     $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Calendarizacion;
 
 use App\Imports\utils\FunFormats;
 use App\Http\Controllers\Controller;
+use App\Models\administracion\Bitacora;
 use App\Models\calendarizacion\ProyectosMir;
 use App\Models\calendarizacion\ActividadesMir;
 use Carbon\Carbon;
@@ -75,6 +76,12 @@ class MetasController extends Controller
 			);
 			$dataSet[] = $i;
 		}
+		$b = array(
+			"username"=>Auth::user()->username,
+			"accion"=>'Consultar',
+			"modulo"=>'permisos'
+		 );
+		 Controller::bitacora($b);
 		return $dataSet;
 	}
 	public function getMetasP(Request $request)
@@ -255,6 +262,34 @@ class MetasController extends Controller
 	}
 	public function createMeta(Request $request)
 	{
+		$customMessages = [
+            "regex" => "El campo no debe ser mayor a 8 digitos enteros",
+            'required' => "El campo no puede ir vacío",
+        ];
+		$request->validate([
+			'clv_fondo'=>'required',
+			'actividad_id'=>'required',
+			'tipo'=>'required',
+			'beneficiario_id'=>'required',
+			'unidad_medida_id'=>'required',
+			'cantidad_beneficiarios'=>'required',
+			'enero'=>'required',
+			'febrero'=>'required',
+			'marzo'=>'required',
+			'abril'=>'required',
+			'mayo'=>'required',
+			'junio'=>'required',
+			'julio'=>'required',
+			'agosto'=>'required',
+			'septiembre'=>'required',
+			'octubre'=>'required',
+			'noviembre'=>'required',
+			'diciembre'=>'required',
+			'total'=>'required',
+			'estatus'=>'required',
+			'created_user'=>'required',
+			'updated_user'=>'required'
+		],$customMessages);
 		Controller::check_permission('postMetas');
 		$meta = Metas::create([
 			'actividad_id' => $request->sel_actividad,

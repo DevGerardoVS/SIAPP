@@ -257,7 +257,6 @@ var dao = {
         for (let i = 1; i <=12; i++) {
             $('#' + i).val(0);
         }
-        $('#sumMetas').val(0);
         $('#beneficiario').val("");
         for (let i = 1; i <=12; i++) {
             $("#" + i).prop('disabled', true); 
@@ -323,13 +322,13 @@ var dao = {
         let actividad = $("#tipo_Ac option:selected").text();
         switch (actividad) {
             case 'Acumulativa':
-                  $('#sumMetas').val(dao.validateAcu());
+                $('#sumMetas').val(dao.validateAcu()!=0?dao.validateAcu():'');
                 break;
             case 'Continua':
-                $('#sumMetas').val(dao.validatCont());
+                $('#sumMetas').val(dao.validatCont()!=0?dao.validatCont():'');
                 break;
             case 'Especial':
-                $('#sumMetas').val(dao.validatEspe());
+                $('#sumMetas').val(dao.validatEspe()!=0?dao.validatEspe():'');
                 break;
         
             default:
@@ -411,13 +410,15 @@ var init = {
                 tipo_Ac: { required: true },
                 beneficiario: { required: true },
                 tipo_Be: { required: true },
-                medida: { required: true }
+                medida: { required: true },
+                sumMetas: { required: true }
             },
             messages: {
                 tipo_Ac: { required: "Este campo es requerido" },
                 beneficiario: { required: "Este campo es requerido" },
                 tipo_Be: { required: "Este campo es requerido" },
-                medida: { required: "Este campo es requerido" }
+                medida: { required: "Este campo es requerido" },
+                sumMetas: { required: "Este campo es requerido  y mayor a CERO" }
             }
         });
     },
@@ -467,8 +468,8 @@ $(document).ready(function () {
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
     }
-    $("#sumMetas").val(0);   
-
+/*     $("#sumMetas").val(0);   
+ */
     $('#tipo_Ac').change(() => {
         for (let i = 1; i <= 12; i++) {
             $("#" + i).prop('disabled', false);

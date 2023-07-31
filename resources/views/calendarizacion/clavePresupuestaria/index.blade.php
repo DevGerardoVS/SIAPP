@@ -104,11 +104,11 @@
                                     <table id="claves" class="table table-hover table-striped" style="width: 100%">
                                         <thead>
                                             <tr>
-                                                <th class="centro-gestor">Clasificacion</th>
+                                                <th class="centro-gestor">clasificación</th>
                                                 <th class="centro-gestor">Centro Gestor</th>
-                                                <th class="area-funcional">Area Funcional</th>
+                                                <th class="area-funcional">Área Funcional</th>
                                                 <th class="periodo-presupuestal">Periodo</th>
-                                                <th class="clasificacion-economica">Posicion</th>
+                                                <th class="clasificacion-economica">Posición</th>
                                                 <th class="fondo">Fondo</th>
                                                 <th class="inversion">Proyecto</th>
                                                 <th class="colorMorado">Total</th>
