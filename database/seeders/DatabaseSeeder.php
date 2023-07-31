@@ -126,7 +126,7 @@ class DatabaseSeeder extends Seeder
     );
 
         protected $sistemas = array(
-            ['id' => 1, 'nombre_sistema' => 'Sistema de Calendarizacion','ruta' => 'sistemas', 'logo' => 'logo_expedientes.png', 'logo_min' => 'logo_expedientes_min.png', 'descripcion' => 'Sistema para la adminsitración de expedientes Jurídicos', 'estatus' => 1],
+            ['id' => 1, 'nombre_sistema' => 'Sistema de Calendarización','ruta' => 'sistemas', 'logo' => 'logo_expedientes.png', 'logo_min' => 'logo_expedientes_min.png', 'descripcion' => 'Sistema para la adminsitración de expedientes Jurídicos', 'estatus' => 1],
         );
 
 
@@ -136,7 +136,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 4,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administración', 'ruta' => '#', 'icono' => 'fa-gears', 'nivel' => 0, 'posicion' => 7, 'descripcion' => 'Conjunto de módulos de adminsitración del sistema'],
             ['id' => 5,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Grupos', 'ruta' => '/adm-grupos', 'icono' => 'fa-users', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Módulo para administrar los grupos del sistema'],
             ['id' => 6,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Bitácora', 'ruta' => '/adm-bitacora', 'icono' => 'fa-bookmark', 'nivel' => 1, 'posicion' => 2, 'descripcion' => 'Bitácora de movimientos del sistema'],
-            ['id' => 7,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Calendarizacion', 'ruta' => '/calendarizacion', 'icono' => ' fa-calendar', 'nivel' => 0, 'posicion' => 4, 'descripcion' => 'Calendarizacion de presupuestos'],
+            ['id' => 7,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Calendarización', 'ruta' => '/calendarizacion', 'icono' => ' fa-calendar', 'nivel' => 0, 'posicion' => 4, 'descripcion' => 'Calendarización de presupuestos'],
             ['id' => 8,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Claves presupuestarias', 'ruta' => '/calendarizacion/claves', 'icono' => ' fa-calendar', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Registro de claves presupuestaria'],
             ['id' => 9,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Metas', 'ruta' => '/calendarizacion/metas', 'icono' => 'fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Techos financieros'],
             ['id' => 10,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Techos financieros', 'ruta' => '/calendarizacion/techos', 'icono' => 'fa-flag-checkered', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Techos financieros'],

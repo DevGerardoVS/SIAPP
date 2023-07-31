@@ -154,8 +154,7 @@ var dao = {
             Swal.fire({
                 icon: response.icon,
                 title: response.title,
-                showConfirmButton: false,
-                timer: 1500
+                text: response.text,
             });
 
             dao.limpiarFormularioCrear();
@@ -176,11 +175,11 @@ var dao = {
             timeout: 600000
         }).done(function (response) {
             $('#cerrar').trigger('click');
+            const {mensaje } = response;
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 1500
+                icon: mensaje.icon,
+                title: mensaje.title,
+                text: mensaje.text,
             });
         });
     },
@@ -199,11 +198,11 @@ var dao = {
         }).done(function (response) {
             $('#cerrar').trigger('click');
             dao.getPermisos();
+            const {mensaje } = response;
             Swal.fire({
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 1500
+                icon: mensaje.icon,
+                title: mensaje.title,
+                text: mensaje.text,
             });
         });
     },

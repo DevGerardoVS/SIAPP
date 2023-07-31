@@ -331,6 +331,13 @@ class TechosController extends Controller
                     array_shift($filearray);
                     $resul = TechosValidate::validate($filearray);
                     if ($resul == 'done') {
+                        $b = array(
+                            "username"=>Auth::user()->username,
+                            "accion"=>'Carga masiva',
+                            "modulo"=>'Techos financieros'
+                         );
+                         Controller::bitacora($b);
+
                         DB::commit();
                     }
                     return response()->json($resul);

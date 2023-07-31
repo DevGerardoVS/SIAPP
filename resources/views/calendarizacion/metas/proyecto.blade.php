@@ -1,8 +1,9 @@
 @extends('layouts.app')
 @include('calendarizacion.metas.addActividad')
-@include('panels.datatable')
+@include('calendarizacion.metas.modalFirmaElectronica')
 @section('content')
     <div class="container">
+        
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
         <section id="widget-grid" class="conteiner">
             <div class="row">
@@ -52,8 +53,8 @@
                 <div class="widget-body no-padding ">
                     <div class="table-responsive ">
                         &nbsp
-                        <table id="catalogo" class="table table-hover table-striped">
-                            <thead>
+                        <table id="proyectoM" class="table table-hover table-striped">
+                            <thead style="visibility: visible !important" >
                                 <tr class="colorMorado">
                                     <th class="vertical">Finalidad</th>
                                     <th class="vertical">Función</th>
@@ -66,7 +67,7 @@
                                     <th class="vertical">UR</th>
                                     <th class="vertical">Programa</th>
                                     <th class="vertical">Subprograma</th>
-                                    <th class="vertical subName">Proyecto</th>
+                                    <th class="vertical">Proyecto</th>
                                     <th class="vertical">Fondo</th>
                                     <th class="vertical">Actividad</th>
                                     <th class="vertical">Tipo Actividad</th>
@@ -77,13 +78,14 @@
                                     <th class="vertical">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
+                            
                         </table>
                     </div>
                 </div>
             </div>
         </section>
+    </div>
+    <div id="containerFile">
     </div>
     <script src="/js/calendarizacion/metas/initActiv.js"></script>
     <script src="/js/utilerias.js"></script>
