@@ -33,7 +33,8 @@ class Metas extends Model
         'diciembre',
         'total',
         'estatus',
-        'created_user'
+        'created_user',
+        'updated_user'
     ];
 
     protected $dates = ['deleted_at'];

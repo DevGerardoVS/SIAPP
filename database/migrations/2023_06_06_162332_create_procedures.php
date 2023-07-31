@@ -1333,10 +1333,10 @@ return new class extends Migration {
         begin
             select 
                 pm.clv_upp,
-                pm.clv_ur,
+                substring(pm.entidad_ejecutora,5,2) clv_ur,
                 pm.clv_programa,
-                pm.clv_subprograma,
-                pm.clv_proyecto,
+                substring(pm.entidad_ejecutora,11,3) clv_subprograma,
+                substring(pm.entidad_ejecutora,14,3) clv_proyecto,
                 m.clv_fondo,
                 am.actividad,
                 m.cantidad_beneficiarios,
