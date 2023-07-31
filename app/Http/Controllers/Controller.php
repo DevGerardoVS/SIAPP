@@ -34,7 +34,7 @@ class Controller extends BaseController
                     $estructura = $estructura[0];
                     $b = array(
                         "username"=>Auth::user()->username,
-                        "accion"=>$estructura->permiso,
+                        "accion"=>$estructura->tipo,
                         "modulo"=>'Permisos'
                      );
                      Controller::bitacora($b);
