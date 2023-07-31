@@ -225,8 +225,8 @@
                             return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
                         };
             
-                            if(ruta == "#buscarFormD"){
-                                totalMonto = api
+                            if(ruta == "#buscarFormD"){ //Calendario general
+                                totalMontoD = api
                                 .column(2)
                                 .data()
                                 .reduce(function (a, b) {
@@ -305,7 +305,7 @@
                                     return intVal(a) + intVal(b);
                                 }, 0);
 
-                                $(api.column(2).footer()).html( (totalMonto/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(2).footer()).html( (totalMontoD/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(3).footer()).html( (totalEnero/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(4).footer()).html( (totalFebrero/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(5).footer()).html( (totalMarzo/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
@@ -318,8 +318,8 @@
                                 $(api.column(12).footer()).html( (totalOctubre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(13).footer()).html( (totalNoviembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(14).footer()).html( (totalDiciembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
-                            }else if(ruta == "#buscarFormC"){
-                                totalMonto = api
+                            }else if(ruta == "#buscarFormC"){ //Avance general
+                                totalMontoC = api
                                 .column(3)
                                 .data()
                                 .reduce(function (a, b) {
@@ -338,10 +338,21 @@
                                     return intVal(a) + intVal(b);
                                 }, 0);
 
-                                $(api.column(3).footer()).html( (totalMonto/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
-                                $(api.column(4).footer()).html( (totalCalendarizado/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
-                                $(api.column(5).footer()).html( (totalDisponible/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(3).footer()).html( (totalMontoC/3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(4).footer()).html( (totalCalendarizado/3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(5).footer()).html( (totalDisponible/3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 
+                            }else if(ruta == "#buscarFormB"){ //Capitulo y partida
+                                // Suma total de todas las páginas
+                                total = api
+                                    .column(".sum")
+                                    .data()
+                                    .reduce(function (a, b) {
+                                        return intVal(a) + intVal(b);
+                                }, 0);
+                                    
+                                // Actualizar footer
+                                $(api.column(".sum").footer()).html( (total/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                             }else{
                                 // Suma total de todas las páginas
                                 total = api
