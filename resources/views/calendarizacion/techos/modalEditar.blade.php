@@ -29,8 +29,8 @@
             </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success" onclick="editarRegistro()" id="editar">ACEPTAR</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-success" onclick="editarRegistro()" id="editar">Aceptar</button>
         </div>
       </div>
     </div>

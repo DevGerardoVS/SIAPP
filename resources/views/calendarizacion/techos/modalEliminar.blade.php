@@ -8,8 +8,8 @@
         </div>
             <input type="number" id="editarID" hidden >
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-danger" onclick="eliminarRegistro()" id="eliminar">ELIMINAR</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" onclick="eliminarRegistro()" id="eliminar">Eliminar</button>
         </div>
       </div>
     </div>

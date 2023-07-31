@@ -26,18 +26,19 @@ class TechosExportPresupuestos implements FromCollection, WithHeadings, WithStyl
     }
 
     public function collection(){
-        ob_end_clean();
+        /* ob_end_clean();
         ob_start();
         ini_set('max_execution_time', 10000);
-        ini_set('memory_limit', '-1');
+        ini_set('memory_limit', '-1'); */
         $array_data = [];
         $data = DB::table('techos_financieros as tf')
             ->select('tf.clv_upp','tf.clv_fondo','tf.tipo','tf.presupuesto','tf.ejercicio','vee.Ej')
             ->leftJoinSub('select distinct clv_upp, upp, ejercicio as Ej from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
             ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo')
-            -> where('tf.ejercicio','=',$this->ejercicio)
-            -> where('vee.Ej','=',$this->ejercicio)
+            ->where('tf.ejercicio','=',$this->ejercicio)
+            ->where('vee.Ej','=',$this->ejercicio)
             ->get();
+        
         
         
         $repeticion = [];
