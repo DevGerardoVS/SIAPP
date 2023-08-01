@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Redirect;
-
+date_default_timezone_set("America/Mexico_City");
 class LoginController extends Controller
 {
     /*
@@ -44,7 +44,7 @@ class LoginController extends Controller
     {
 
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
-            if (Auth::user()->estatus == 1) {Session::put('last_activity', Carbon::now());
+            if (Auth::user()->estatus == 1) {Session::put('last_activity',Carbon::now());
                 return redirect('/');} else {
                 Auth::logout();
                 return back()->withErrors('Este usuario ha sido deshabilitado');
