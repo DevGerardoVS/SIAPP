@@ -216,14 +216,16 @@
                                     <li class="nav-item dropdown">
                                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
                                             role="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false" v-pre title="Mi Usuario">
+                                            aria-expanded="false" v-pre>
                                             {{ $menu->nombre_menu }}
                                         </a>
 
                                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
                                             style="text-align: center;">
                                             @foreach ($hijos as $hijo)
-                                                <a class="dropdown-item" href="{{ $hijo->ruta }}">
+                                                <a class="dropdown-item text-sm-left" href="{{ $hijo->ruta }}">
+                                                    <i class="{{ $hijo->icono }}" aria-hidden="true"></i>
+                                                    &nbsp
                                                     {{ $hijo->nombre_menu }}
                                                 </a>
                                             @endforeach
@@ -240,21 +242,26 @@
                             <!--CERRAR SESION Y CAMBIO DE CONTRASEÑA-->
                             <li class="nav-item dropdown">
 
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre
-                                    title="Mi Usuario">
-                                    <i class="fas fa-user-circle" aria-hidden="true"></i>
-                                </a>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle text-sm-left" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre
+                                title={{{Auth::user()->nombre}}}>
+                                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                            </a>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
-                                    style="text-align: center;">
-                                    <a class="dropdown-item" href="{{ route('cambiar_contrasenia') }}">
+                            <div class="dropdown-menu dropdown-menu-end " aria-labelledby="navbarDropdown"
+                                style="text-align: center;">
+                                <h5 style=" border-bottom: 5px solid #FFC3D0;"><i class=" fa fa-user" aria-hidden="true"></i>
+                                    &nbsp <b>{{{Auth::user()->username}}}</b></h5>
+                                <a class="dropdown-item text-sm-left" href="{{ route('cambiar_contrasenia') }}">
+                                    <i class="fa fa-key" aria-hidden="true"></i>
                                         {{ __('Cambiar contraseña') }}
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        {{ __('Cerrar Sesión') }}
-                                    </a>
+                                </a>
+                                
+                                <a class="dropdown-item text-sm-left" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                    {{ __('Cerrar Sesión') }}
+                                </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                         class="d-none">
                                         @csrf
