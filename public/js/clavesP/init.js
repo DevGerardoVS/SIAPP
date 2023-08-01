@@ -323,9 +323,9 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona una Unidad Programática --", ""));
           $.each(data, function(i, val){
-            if (id != '' && val.clave == id) {
+            if (id != '' && val.clv_upp == id) {
              par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,true,true));
-             document.getElementById('upp').innerHTML = data[i].clave;
+             document.getElementById('upp').innerHTML = data[i].clv_upp;
             }else{
              par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,false,false));
             }
