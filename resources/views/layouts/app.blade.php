@@ -107,9 +107,8 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}">
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.3/xlsx.full.min.js"></script>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-rel="stylesheet">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.3/xlsx.full.min.js"></script>
+ 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
     <!-- Latest compiled and minified CSS -->
@@ -210,7 +209,7 @@ rel="stylesheet">
                         <ul class="navbar-nav me-auto">
                         </ul>
                         <ul class="navbar-nav ms-auto">
-                            <?php $menus = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id, Session::get('sistema'), null]);  echo(Session::)?>
+                            <?php $menus = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id, Session::get('sistema'), null]); ?>
                             @foreach ($menus as $menu)
                                 <?php $hijos = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id, Session::get('sistema'), $menu->id]); ?>
                                 @if ($hijos)
@@ -243,26 +242,26 @@ rel="stylesheet">
                             <!--CERRAR SESION Y CAMBIO DE CONTRASEÑA-->
                             <li class="nav-item dropdown">
 
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre
-                                    title={{{Auth::user()->nombre}}}>
-                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                                </a>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle text-sm-left" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre
+                                title={{{Auth::user()->nombre}}}>
+                                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                            </a>
 
-                                <div class="dropdown-menu dropdown-menu-end " aria-labelledby="navbarDropdown"
-                                    style="text-align: center;">
-                                    <h5 style=" border-bottom: 5px solid #FFC3D0;"><i class=" fa fa-user" aria-hidden="true"></i>
-                                        &nbsp <b>{{{Auth::user()->username}}}</b></h5>
-                                    <a class="dropdown-item text-sm-left" href="{{ route('cambiar_contrasenia') }}">
-                                        <i class="fa fa-key" aria-hidden="true"></i>
-                                            {{ __('Cambiar contraseña') }}
-                                    </a>
-                                    
-                                    <a class="dropdown-item text-sm-left" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        <i class="fa fa-sign-out" aria-hidden="true"></i>
-                                        {{ __('Cerrar Sesión') }}
-                                    </a>
+                            <div class="dropdown-menu dropdown-menu-end " aria-labelledby="navbarDropdown"
+                                style="text-align: center;">
+                                <h5 style=" border-bottom: 5px solid #FFC3D0;"><i class=" fa fa-user" aria-hidden="true"></i>
+                                    &nbsp <b>{{{Auth::user()->username}}}</b></h5>
+                                <a class="dropdown-item text-sm-left" href="{{ route('cambiar_contrasenia') }}">
+                                    <i class="fa fa-key" aria-hidden="true"></i>
+                                        {{ __('Cambiar contraseña') }}
+                                </a>
+                                
+                                <a class="dropdown-item text-sm-left" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                    {{ __('Cerrar Sesión') }}
+                                </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                         class="d-none">
                                         @csrf
