@@ -576,8 +576,8 @@ class MetasController extends Controller
 		$request = array(
 			"anio" => $date->year,
 			// "corte" => $date->format('Y-m-d'),
-			// "logoLeft" => public_path() . 'img\escudo.png',
-			// "logoRight" => public_path() . 'img\escudo.png',
+			"logoLeft" => public_path() . '\img\logo.png',
+			"logoRight" => public_path() . '\img\escudoBN.png',
 			"UPP" => $upp,
 		);
 		$b = array(
@@ -853,7 +853,12 @@ class MetasController extends Controller
 			$keyFile = file_get_contents($keyPath);
 		}
 		$pdf ='';
-		$ruta = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
+		if ($request->tipoReporte == 2) {
+			$ruta = public_path() . "/reportes/calendario_fondo_mensual.pdf";
+		}else {
+			$ruta = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
+		}
+		
 		if (File::exists($ruta)) { 
 			$pdf = file_get_contents($ruta);
 		}
@@ -907,6 +912,56 @@ class MetasController extends Controller
 		}else{
 			return ["status" => false, "anio" => $anio[0]->ejercicio];
 
+		}
+	}
+
+	public function jasperMetas($upp){
+		date_default_timezone_set('America/Mexico_City');
+
+		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
+		$fecha = date('d-m-Y');
+		$date = date('Y');
+		Log::debug($date);
+		$marca = strtotime($fecha);
+		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
+		$report = "calendario_fondo_mensual";
+
+		$ruta = public_path() . "/reportes";
+		//Eliminación si ya existe reporte
+		if (File::exists($ruta . "/" . $report . ".pdf")) { 
+			File::delete($ruta . "/" . $report . ".pdf");
+		}
+		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
+		$format = array('pdf');
+		$output_file = public_path() . "/reportes";
+
+		$parameters = array(
+			"anio" => $date,
+			"logoLeft" => public_path() . '\img\logo.png',
+			"logoRight" => public_path() . '\img\escudoBN.png',
+			//"UPP" => $upp,
+		);
+
+		$database_connection = \Config::get('database.connections.mysql');
+
+
+		$jasper = new PHPJasper;
+		$jasper->process(
+			$report_path,
+			$output_file,
+			$format,
+			$parameters,
+			$database_connection
+		)->execute();
+		//dd($jasper);
+		$reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
+			'Content-Type' => 'application/pdf'
+		]);
+		Log::debug('hoy es dia 01');
+		if ($reportePDF != '') {
+			return response()->json('done',200);
+		}else {
+			return response()->json('error',200);
 		}
 	}
 }

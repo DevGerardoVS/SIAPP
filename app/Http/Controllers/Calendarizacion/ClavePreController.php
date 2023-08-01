@@ -238,6 +238,13 @@ class ClavePreController extends Controller
                     'tipo' => $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH',    
                     'created_user' => Auth::user()->username, 
                 ]);
+                $aplanado = DB::select("CALL insert_pp_aplanado('$request->ejercicio')");
+                $b = array(
+                    "username"=>Auth::user()->username,
+                    "accion"=>'Guardar',
+                    "modulo"=>'Claves'
+                 );
+                 Controller::bitacora($b);
             }else {
                 return response()->json('cantidadNoDisponible',200);
                 throw ValidationException::withMessages(['error de cantidades'=>'Las cantidades no coinciden...']);
@@ -270,6 +277,12 @@ class ClavePreController extends Controller
                 'diciembre' => $request->data[0]['diciembre'],  
                 'total' => $request->data[0]['total'],
             ]);
+            $b = array(
+                "username"=>Auth::user()->username,
+                "accion"=>'Editar',
+                "modulo"=>'Claves'
+             );
+             Controller::bitacora($b);
         } catch (\Exception $exp) {
             DB::rollBack();
 			Log::debug('exp '.$exp->getMessage());
@@ -283,6 +296,12 @@ class ClavePreController extends Controller
     public function postEliminarClave(Request $request){
         Controller::check_permission('deleteClaves');
         ProgramacionPresupuesto::where('id',$request->id)->delete();
+        $b = array(
+            "username"=>Auth::user()->username,
+            "accion"=>'Eliminar',
+            "modulo"=>'Claves'
+         );
+         Controller::bitacora($b);
         return response()->json('done',200);
     }
     public function getRegiones(){
@@ -844,6 +863,12 @@ class ClavePreController extends Controller
                 ProgramacionPresupuesto::where($array_where)->update([
                     'estado' => 1,
                 ]);
+                $b = array(
+                    "username"=>Auth::user()->username,
+                    "accion"=>'Confirmar',
+                    "modulo"=>'Claves'
+                 );
+                 Controller::bitacora($b);
             }
         } catch (\Exception $exp) {
             DB::rollBack();
