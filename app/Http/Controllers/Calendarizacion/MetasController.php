@@ -33,16 +33,17 @@ class MetasController extends Controller
 	//Consulta Vista Usuarios
 	public function getIndex()
 	{
-		Controller::check_permission('getClaves');
+		Controller::check_permission('getMetas');
 		return view('calendarizacion.metas.index');
 	}
 	public function getProyecto()
 	{
-		Controller::check_permission('getClaves');
+		Controller::check_permission('getMetas');
 		return view('calendarizacion.metas.proyecto');
 	}
 	public static function getActiv($upp)
 	{
+		Controller::check_permission('getMetas');
 		$query = MetasHelper::actividades($upp);
 		$dataSet = [];
 		foreach ($query as $key) {
@@ -76,29 +77,18 @@ class MetasController extends Controller
 			);
 			$dataSet[] = $i;
 		}
-		$b = array(
-			"username"=>Auth::user()->username,
-			"accion"=>'Consultar',
-			"modulo"=>'permisos'
-		 );
-		 Controller::bitacora($b);
 		return $dataSet;
 	}
 	public function getMetasP(Request $request)
 	{
+		Controller::check_permission('getMetas');
 		$dataSet = [];
 			$upp = isset($request->upp_filter) ? $request->upp_filter : auth::user()->clv_upp;
 			
 			if ($request->ur_filter != null && $upp != '') {
-				
-				$anio = DB::table('cierre_ejercicio_metas')
-					->select(
-						'estatus',
-						'ejercicio')
-					->where('clv_upp', '=', $upp)
-					->get();
-					Log::debug($anio);
-				if (count($anio)) {
+
+				$check=$this->checkClosing($upp);
+				if ($check['status']) {
 					$activs = DB::table("programacion_presupuesto")
 						->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
 						->select(
@@ -118,8 +108,8 @@ class MetasController extends Controller
 						)
 						->where('programacion_presupuesto.ur', '=', $request->ur_filter)
 						->where('programacion_presupuesto.upp', '=', $upp)
-						->where('programacion_presupuesto.ejercicio', '=', $anio[0]->ejercicio)
-						->where('v_epp.ejercicio', '=', $anio[0]->ejercicio)
+						->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
+						->where('v_epp.ejercicio', '=', $check['anio'])
 						->orderBy('programacion_presupuesto.upp')
 						->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 						->distinct()
@@ -141,36 +131,40 @@ class MetasController extends Controller
 	{
 		$urs = [];
 		$tAct = [];
-		if($_upp != 0){
-			$upp = $_upp != null?$_upp:auth::user()->clv_upp;
-			$urs = DB::table('v_epp')
-				->select(
-					'id',
-					'clv_ur',
-					DB::raw('CONCAT(clv_ur, " - ",ur) AS ur')
-				)->distinct()
-				->where('deleted_at', null)
-				->groupByRaw('clv_ur')
-				->orderBy('clv_ur')
-				->where('clv_upp', $upp)
-				->where('ejercicio', 2024)->get();
+		if ($_upp != 0) {
+			$upp = $_upp != null ? $_upp : auth::user()->clv_upp;
+			$check=$this->checkClosing($upp);
+			if ($check['status']) {
+				$urs = DB::table('v_epp')
+					->select(
+						'id',
+						'clv_ur',
+						DB::raw('CONCAT(clv_ur, " - ",ur) AS ur')
+					)->distinct()
+					->where('deleted_at', null)
+					->groupByRaw('clv_ur')
+					->orderBy('clv_ur')
+					->where('clv_upp', $upp)
+					->where('ejercicio', $check['anio'])->get();
 				$Act = DB::table('tipo_actividad_upp')
-			->select(
-				'Continua',
-				'Acumulativa',
-				'Especial'
-			)
-			->where('deleted_at', null)
-			->orderBy('clv_upp')
-			->where('clv_upp', $upp)
-			->get();
-			$tAct = $Act[0];
+					->select(
+						'Continua',
+						'Acumulativa',
+						'Especial'
+					)
+					->where('deleted_at', null)
+					->orderBy('clv_upp')
+					->where('clv_upp', $upp)
+					->get();
+				$tAct = $Act[0];
+			}
 		}
 			
 		return ["urs"=>$urs,"tAct"=>$tAct];
 	}
 	public function getUpps()
 	{
+		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$upps = DB::table('v_epp')
 			->select(
 				'id',
@@ -179,47 +173,50 @@ class MetasController extends Controller
 			)->distinct()
 			->orderBy('clv_upp')
 			->groupByRaw('clv_upp')
-			->where('ejercicio', 2024)->get();
+			->where('ejercicio', $anio)->get();
 		return $upps;
 	}
 	public function getFyA($area,$entidad)
 	{
 		$areaAux=explode( '-', $area);
 		$entidadAux=explode( '-', $entidad);
-		 $fondos = DB::table('programacion_presupuesto')
-			->leftJoin('fondo', 'fondo.clv_fondo_ramo', 'programacion_presupuesto.fondo_ramo')
-			->select(
-				'fondo.id',
-				'programacion_presupuesto.fondo_ramo as clave',
-				DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", fondo.ramo) AS ramo')
-			)
-			->where('fondo.deleted_at', null)
-			->where('programacion_presupuesto.finalidad',$areaAux[0])
-			->where('programacion_presupuesto.funcion',$areaAux[1])
-			->where('programacion_presupuesto.subfuncion',$areaAux[2])
-			->where('programacion_presupuesto.eje',$areaAux[3])
-			->where('programacion_presupuesto.linea_accion',$areaAux[4])
-			->where('programacion_presupuesto.programa_sectorial',$areaAux[5])
-			->where('programacion_presupuesto.tipologia_conac',$areaAux[6])
-			->where('programacion_presupuesto.upp',$entidadAux[0])
-            ->where('programacion_presupuesto.ur', $entidadAux[2])
-            ->where('programa_presupuestario', $areaAux[7])
-            ->where('subprograma_presupuestario', $areaAux[8])
-			->where('proyecto_presupuestario', $areaAux[9])
-			->groupByRaw('clave')
-			->where('ejercicio',2024)
-			->get();
+				$check=$this->checkClosing($entidadAux[0]);
+				if ($check['status']) {
+			$fondos = DB::table('programacion_presupuesto')
+				->leftJoin('fondo', 'fondo.clv_fondo_ramo', 'programacion_presupuesto.fondo_ramo')
+				->select(
+					'fondo.id',
+					'programacion_presupuesto.fondo_ramo as clave',
+					DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", fondo.ramo) AS ramo')
+				)
+				->where('fondo.deleted_at', null)
+				->where('programacion_presupuesto.finalidad', $areaAux[0])
+				->where('programacion_presupuesto.funcion', $areaAux[1])
+				->where('programacion_presupuesto.subfuncion', $areaAux[2])
+				->where('programacion_presupuesto.eje', $areaAux[3])
+				->where('programacion_presupuesto.linea_accion', $areaAux[4])
+				->where('programacion_presupuesto.programa_sectorial', $areaAux[5])
+				->where('programacion_presupuesto.tipologia_conac', $areaAux[6])
+				->where('programacion_presupuesto.upp', $entidadAux[0])
+				->where('programacion_presupuesto.ur', $entidadAux[2])
+				->where('programa_presupuestario', $areaAux[7])
+				->where('subprograma_presupuestario', $areaAux[8])
+				->where('proyecto_presupuestario', $areaAux[9])
+				->groupByRaw('clave')
+				->where('ejercicio', $check['anio'])
+				->get();
 			$activ = DB::table('actividades_mir')
-			->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
-			->select(
-				'actividades_mir.id',
-				'actividades_mir.clv_actividad as clave',
-				DB::raw('CONCAT(clv_actividad, " - ",actividad) AS actividad')
-			)
-			->where('actividades_mir.deleted_at', null)
-			->where('proyectos_mir.area_funcional',str_replace ( "-", '', $area))
-            ->where('proyectos_mir.entidad_ejecutora',str_replace ( "-", '', $entidad))
-			->groupByRaw('clave')->get(); 
+				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+				->select(
+					'actividades_mir.id',
+					'actividades_mir.clv_actividad as clave',
+					DB::raw('CONCAT(clv_actividad, " - ",actividad) AS actividad')
+				)
+				->where('actividades_mir.deleted_at', null)
+				->where('proyectos_mir.area_funcional', str_replace("-", '', $area))
+				->where('proyectos_mir.entidad_ejecutora', str_replace("-", '', $entidad))
+				->groupByRaw('clave')->get();
+		}
 		return ['fondos'=> $fondos ,"activids"=>$activ ];
 	}
 	public function getSelects()
@@ -262,35 +259,32 @@ class MetasController extends Controller
 	}
 	public function createMeta(Request $request)
 	{
+		Controller::check_permission('postMetas');
 		$customMessages = [
             "regex" => "El campo no debe ser mayor a 8 digitos enteros",
             'required' => "El campo no puede ir vacío",
         ];
 		$request->validate([
-			'clv_fondo'=>'required',
-			'actividad_id'=>'required',
-			'tipo'=>'required',
-			'beneficiario_id'=>'required',
-			'unidad_medida_id'=>'required',
-			'cantidad_beneficiarios'=>'required',
-			'enero'=>'required',
-			'febrero'=>'required',
-			'marzo'=>'required',
-			'abril'=>'required',
-			'mayo'=>'required',
-			'junio'=>'required',
-			'julio'=>'required',
-			'agosto'=>'required',
-			'septiembre'=>'required',
-			'octubre'=>'required',
-			'noviembre'=>'required',
-			'diciembre'=>'required',
-			'total'=>'required',
-			'estatus'=>'required',
-			'created_user'=>'required',
-			'updated_user'=>'required'
+			'sel_fondo'=>'required',
+			'sel_actividad'=>'required',
+			'tipo_Ac'=>'required',
+			'tipo_Be'=>'required',
+			'medida'=>'required',
+			'beneficiario'=>'required',
+			'1'=>'required',
+			'2'=>'required',
+			'3'=>'required',
+			'4'=>'required',
+			'5'=>'required',
+			'6'=>'required',
+			'7'=>'required',
+			'8'=>'required',
+			'9'=>'required',
+			'10'=>'required',
+			'11'=>'required',
+			'12'=>'required',
+			'sumMetas'=>'required',
 		],$customMessages);
-		Controller::check_permission('postMetas');
 		$meta = Metas::create([
 			'actividad_id' => $request->sel_actividad,
 			'clv_fondo' => $request->sel_fondo,
@@ -314,6 +308,12 @@ class MetasController extends Controller
 			'diciembre' => $request[12] != NULL ? $request[12] : 0,
 		]);
 		if ($meta) {
+			$b = array(
+				"username"=>Auth::user()->username,
+				"accion"=>'Crear Meta',
+				"modulo"=>'Metas'
+			 );
+			Controller::bitacora($b);
 			$res=["status" => true, "mensaje" => ["icon"=>'success',"text"=>'La acción se ha realizado correctamente',"title"=>"Éxito!"]];
 			return response()->json($res,200);
 		}else {
@@ -324,6 +324,30 @@ class MetasController extends Controller
 	}
 	public function putMeta(Request $request)
 	{
+		Controller::check_permission('putMetas');
+		$customMessages = [
+            "regex" => "El campo no debe ser mayor a 8 digitos enteros",
+            'required' => "El campo no puede ir vacío",
+        ];
+		$request->validate([
+			'tipo_Ac'=>'required',
+			'tipo_Be'=>'required',
+			'medida'=>'required',
+			'beneficiario'=>'required',
+			'1'=>'required',
+			'2'=>'required',
+			'3'=>'required',
+			'4'=>'required',
+			'5'=>'required',
+			'6'=>'required',
+			'7'=>'required',
+			'8'=>'required',
+			'9'=>'required',
+			'10'=>'required',
+			'11'=>'required',
+			'12'=>'required',
+			'sumMetas'=>'required',
+		],$customMessages);
 		$meta = Metas::where('id', $request->id_meta)->firstOrFail();
         $user = Auth::user()->username;
 		if ($meta) {
@@ -349,6 +373,12 @@ class MetasController extends Controller
 		}
 
 		if ($meta->wasChanged()) {
+			$b = array(
+				"username"=>Auth::user()->username,
+				"accion"=>'Editar meta',
+				"modulo"=>'Metas'
+			 );
+			Controller::bitacora($b);
 			$res=["status" => true, "mensaje" => ["icon"=>'success',"text"=>'La acción se ha realizado correctamente',"title"=>"Éxito!"]];
 			return response()->json($res,200);
 		}else {
@@ -363,6 +393,12 @@ class MetasController extends Controller
 		$mDelete=Metas::where('id', $request->id)->delete();
 		if ($mDelete) {
 			$res=["status" => true, "mensaje" => ["icon"=>'success',"text"=>'La acción se ha realizado correctamente',"title"=>"Éxito!"]];
+			$b = array(
+				"username"=>Auth::user()->username,
+				"accion"=>'Eliminar meta',
+				"modulo"=>'Metas'
+			 );
+			Controller::bitacora($b);
 			return response()->json($res,200);
 		}else {
 			$res=["status" => false, "mensaje" => ["icon"=>'Error',"text"=>'Hubo un problema al querer realizar la acción, contacte a soporte',"title"=>"Error!"]];
@@ -371,6 +407,7 @@ class MetasController extends Controller
 	}
 	public function updateMeta($id)
 	{
+	
 		
 			$metas = DB::table('metas')
 				->leftJoin('actividades_mir', 'actividades_mir.id', 'metas.actividad_id')
@@ -479,20 +516,32 @@ class MetasController extends Controller
 		ob_end_clean();
 		ob_start();
 		/*Si no coloco estas lineas Falla*/
+		$b = array(
+			"username"=>Auth::user()->username,
+			"accion"=>'Descargar Metas Excel',
+			"modulo"=>'Metas'
+		 );
+		Controller::bitacora($b);
 		return Excel::download(new MetasExport($upp), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
 	public function proyExcel()
 	{
-		Controller::check_permission('getClaves');
+		Controller::check_permission('getMetas');
 		/*Si no coloco estas lineas Falla*/
 		ob_end_clean();
 		ob_start();
 		/*Si no coloco estas lineas Falla*/
+		$b = array(
+			"username"=>Auth::user()->username,
+			"accion"=>'Descargar plantilla de metas carga masiva',
+			"modulo"=>'Metas'
+		 );
+		Controller::bitacora($b);
 		return Excel::download(new MetasCargaM(), 'CargaMasiva.xlsx');
 	}
 	public function pdfView($upp)
 	{
-		Controller::check_permission('getClaves');
+		Controller::check_permission('getMetas');
 		$data = $this->getActiv($upp);
 		for ($i=0; $i <count($data); $i++) { 
 			unset($data[$i][19]);
@@ -505,7 +554,7 @@ class MetasController extends Controller
 	{
 		ini_set('max_execution_time', 5000);
         ini_set('memory_limit', '1024M');
-		Controller::check_permission('getClaves');
+		Controller::check_permission('getMetas');
 		$data = $this->getActiv($upp);
 		for ($i=0; $i <count($data); $i++) { 
 			unset($data[$i][19]);
@@ -513,6 +562,12 @@ class MetasController extends Controller
 		}
 		view()->share('data', $data);
 		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF')->setPaper('a4', 'landscape');
+		$b = array(
+			"username"=>Auth::user()->username,
+			"accion"=>'Descargar metas PDF',
+			"modulo"=>'Metas'
+		 );
+		Controller::bitacora($b);
 		return $pdf->download('Proyecto con actividades.pdf');
 	}
 	public function downloadActividades($upp)
@@ -525,6 +580,12 @@ class MetasController extends Controller
 			"logoRight" => public_path() . '\img\escudoBN.png',
 			"UPP" => $upp,
 		);
+		$b = array(
+			"username"=>Auth::user()->username,
+			"accion"=>'Descargar metas Formato',
+			"modulo"=>'Metas'
+		 );
+		Controller::bitacora($b);
 		return $this->jasper($request);
 
 	}
@@ -583,7 +644,14 @@ class MetasController extends Controller
 				$resul = FunFormats::saveImport($filearray);
 				if($resul['icon']=='success'){
 					DB::commit();
+					$b = array(
+						"username"=>Auth::user()->username,
+						"accion"=>'Carga masiva metas',
+						"modulo"=>'Metas'
+					 );
+					Controller::bitacora($b);
 				}
+
 				return response()->json($resul);
 			}
 			
@@ -595,13 +663,7 @@ class MetasController extends Controller
 	}
 	public function checkCombination($upp)
 	{
-		$anio = DB::table('cierre_ejercicio_metas')
-			->select(
-				'estatus',
-				'ejercicio'
-			)
-			->where('clv_upp', '=', $upp)
-			->get();
+		$check=$this->checkClosing($upp);
 
 			$proyecto = DB::table('actividades_mir')
 				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
@@ -624,7 +686,7 @@ class MetasController extends Controller
 			->where('metas.estatus',1)
 			->where('pro.clv_upp', '=', $upp)
 			->get();
-		if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
+			if ($check['status']) {
 			if (count($metas)==0 || Auth::user()->id_grupo == 1 ) {
 				$activs = DB::table("programacion_presupuesto")
 					->select(
@@ -633,7 +695,7 @@ class MetasController extends Controller
 						DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
 					)
 					->where('programacion_presupuesto.upp', '=', $upp)
-					->where('programacion_presupuesto.ejercicio', '=', 2024)
+					->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
 					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 					->distinct()
 					->where('estado', 1)
@@ -836,6 +898,21 @@ class MetasController extends Controller
 			return response()->json('error',200);
         }
 		 
+	}
+	public static function checkClosing($upp){
+		$anio = DB::table('cierre_ejercicio_metas')
+			->select(
+				'estatus',
+				'ejercicio'
+			)
+			->where('clv_upp', '=', $upp)
+			->get();
+		if (Auth::user()->id_grupo == 1 && $anio[0]->estatus == 'Abierto') {
+			return ["status" => true, "anio" => $anio[0]->ejercicio];
+		}else{
+			return ["status" => false, "anio" => $anio[0]->ejercicio];
+
+		}
 	}
 
 	public function jasperMetas($upp){

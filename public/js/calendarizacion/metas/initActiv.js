@@ -132,6 +132,7 @@ var dao = {
         });
     },
     getActiv: function (upp) {
+        $("#tipo_Ac").empty();
         $.ajax({
             type: "GET",
             url: '/calendarizacion/tcalendario/'+upp,
@@ -184,8 +185,8 @@ var dao = {
         }).done(function (data) {
             dao.getActiv(data.clv_upp);
             $('#proyectoMD').empty();
-            $('#proyectoMD').append("<thead><tr class='colorMorado'>"
-             +"<th class= 'vertical' > UP</th >"
+            $('#proyectoMD').append("<thead><tr class='colorRosa'>"
+             +"<th class= 'vertical' > UPP</th >"
              +"<th class='vertical'>UR</th>"
              +"<th class='vertical'>Programa</th>"
              +"<th class='vertical'>Subprograma</th>"
