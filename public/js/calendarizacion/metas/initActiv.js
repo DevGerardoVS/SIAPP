@@ -34,6 +34,23 @@ var dao = {
             url:"/actividades/jasper/" + upp,
             dataType : "json"
         }).done(function (params) {
+            document.getElementById('tipoReporte').value = 1;
+            $('#firmaModal').modal('show');
+        });
+    },
+    exportJasperMetas: function () {
+        let upp;
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+        } else {
+            upp = $('#upp').val();
+        }
+        $.ajax({
+            type:'get',
+            url:"/actividades/jasper-metas/" + upp,
+            dataType : "json"
+        }).done(function (params) {
+            document.getElementById('tipoReporte').value = 2;
             $('#firmaModal').modal('show');
         });
     },
