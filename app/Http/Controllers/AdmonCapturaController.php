@@ -17,7 +17,7 @@ class AdmonCapturaController extends Controller
         $anioActivo = DB::select('SELECT ejercicio FROM cierre_ejercicio_claves WHERE activos = 1 LIMIT 1');
         $anio = $anioActivo[0]->ejercicio;
         $comprobarEstadoPP = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = $anio GROUP BY upp");
-        $comprobarEstadoMetas = DB::select("SELECT m.estatus, pm.clv_upp, pm.ejercicio FROM metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id WHERE pm.ejercicio = $anio AND  am.ejercicio = $anio GROUP BY pm.clv_upp");
+        $comprobarEstadoMetas = DB::select("SELECT m.estatus, pm.clv_upp, pm.ejercicio FROM metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id WHERE pm.ejercicio = $anio GROUP BY pm.clv_upp");
         $upps = DB::select('SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND activos = 1 AND c.deleted_at is null ORDER BY clave ASC');
         return view("captura.admonCaptura", [
             'dataSet' => json_encode($dataSet),

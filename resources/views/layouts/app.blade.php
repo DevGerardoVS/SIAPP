@@ -13,45 +13,35 @@
     @endphp
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script typ1e="text/javascript">
+    <script type="text/javascript">
         function callbackThen(response) {
             // read HTTP status
             // read Promise object
             response.json().then(function(data) {
                 console.log(data.action);
             });
-
         }
-
+    
         function callbackCatch(error) {
-
             console.error('Error:', error)
-
         }
-
-
-
-
-            var tiempo = parseInt("{{ $_ENV['SESSION_INACTIVITYTIME'] }}") * 60;
-            var tiemporestante = ("{{Session::get('last_activity')}}");
-            var tiempoactual = ("{{ Carbon::now() }}") ;
-            
+    
+        var tiempo = parseInt("{{ $_ENV['SESSION_INACTIVITYTIME'] }}") * 60;
+        var tiemporestante = new Date("{{Session::get('last_activity')}}").getTime();
         var reloj = setInterval(function() {
-            var difFechas = new Date(tiempoactual) - new Date(tiemporestante);
+            var tiempoactual = new Date().getTime();
+            var difFechas = tiempoactual - tiemporestante;
             var segundos = Math.floor(difFechas / 1000);
             var minutos = Math.floor(segundos / 60);
-            if (tiempo <= 0) {
+    
+            // console.log(minutos);
+    
+            if (minutos >= 1) {
                 clearInterval(reloj);
-            }
-
-            tiempo -= 1;
-            if (minutos>60) {
-
-
-                var urlacctual = "{{ Request::path() }}";
-                if (urlacctual != 'login') {
+                var urlactual = "{{ Request::path() }}";
+                if (urlactual !== 'login') {
                     Swal.fire({
-                        title: 'Su sesión de una hora  ha expirado',
+                        title: 'Su sesión de una hora ha expirado',
                         text: '¿Desea iniciar sesión nuevamente?',
                         icon: 'warning',
                         showCancelButton: true,
@@ -79,22 +69,11 @@
                                 },
                                 dataType: "json"
                             });
-                            window.location.href = "{{ route('logout') }}";
-                            // window.location.href = "{{ route('logout') }}";
                         }
                     });
                 }
-                return tiempo;
             }
-            
         }, 1000);
-
-
-
-
-
-
-
     </script>
 
     {!! htmlScriptTagJsApi([
