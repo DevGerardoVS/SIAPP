@@ -28,8 +28,7 @@ class TechosExportPresupuestos implements FromCollection, WithHeadings, WithStyl
     public function collection(){
         ob_end_clean();
         ob_start();
-        ini_set('max_execution_time', 10000);
-        ini_set('memory_limit', '-1');
+
         $array_data = array();
         $final_data= array();
         $data = DB::table('techos_financieros as tf')
