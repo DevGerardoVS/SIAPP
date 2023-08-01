@@ -238,6 +238,7 @@ class ClavePreController extends Controller
                     'tipo' => $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH',    
                     'created_user' => Auth::user()->username, 
                 ]);
+                $aplanado = DB::select("CALL insert_pp_aplanado('$request->ejercicio')");
             }else {
                 return response()->json('cantidadNoDisponible',200);
                 throw ValidationException::withMessages(['error de cantidades'=>'Las cantidades no coinciden...']);

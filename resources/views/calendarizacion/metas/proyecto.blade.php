@@ -28,6 +28,8 @@
                     <div class="d-flex col-md-8 " style="justify-content: flex-end">
                         <div>
                             @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                            <button type="button" class="btn btn-primary" onclick="dao.exportJasperMetas()">Formato Metas</button>
+                                &nbsp
                                 <button type="button" class="btn btn-primary" onclick="dao.exportJasper()">Formato</button>
                                 &nbsp
                             @endif
