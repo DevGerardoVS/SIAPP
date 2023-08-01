@@ -80,6 +80,7 @@
                                     <th class="vertical">Acciones</th>
                                 </tr>
                             </thead>
+                            
                         </table>
                     </div>
                 </div>
