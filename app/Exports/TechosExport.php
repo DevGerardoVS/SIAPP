@@ -4,6 +4,8 @@ namespace App\Exports;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -34,6 +36,13 @@ class TechosExport implements FromCollection, WithHeadings, WithStyles,WithEvent
             -> where('vee.Ej','=',$this->ejercicio)
             ->get();
 
+        $b = array(
+            "username"=>Auth::user()->username,
+            "accion"=> 'Exportar Excel',
+            "modulo"=>'Techos Financieros'
+        );
+        
+        Controller::bitacora($b);
         return collect($data);
     }
 

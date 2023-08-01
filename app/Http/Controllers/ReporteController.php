@@ -15,7 +15,7 @@ use function PHPUnit\Framework\isEmpty;
 class ReporteController extends Controller
 {
     public function indexPlaneacion(){
-        Controller::check_permission('getPlaneacion');
+        Controller::check_permission('getCaptura');
         $db = $_ENV['DB_DATABASE'];
         $dataSet = array();
         $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
@@ -154,7 +154,6 @@ class ReporteController extends Controller
             $logoRight = public_path()."/img/logo.png";
             $report_path = app_path() ."/Reportes/".$report.".jasper";
             $format = array($request->action);
-            // $format = array("xls");
             $output_file =  public_path()."/reportes";
             $file = public_path()."/reportes/".$report;
             $nameFile = "EF_".$anio."_".$report;
@@ -185,7 +184,7 @@ class ReporteController extends Controller
             $parameters,
             $database_connection
             )->execute();
-
+                
             ob_end_clean();
             return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
         } catch (\Exception $exp) {
