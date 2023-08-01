@@ -40,10 +40,6 @@
             var difFechas = new Date(tiempoactual) - new Date(tiemporestante);
             var segundos = Math.floor(difFechas / 1000);
             var minutos = Math.floor(segundos / 60);
-
-            // console.log(minutos);
-
-          
             if (tiempo <= 0) {
                 clearInterval(reloj);
             }
@@ -132,8 +128,9 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap/bootstrap.css')) }}">
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.3/xlsx.full.min.js"></script>
- 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.3/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
     <script src="{{ asset('vendors/js/tables/datatable/datatable-responsive/datatables.responsive.min.js') }}"></script>
     <!-- Latest compiled and minified CSS -->
@@ -234,21 +231,23 @@
                         <ul class="navbar-nav me-auto">
                         </ul>
                         <ul class="navbar-nav ms-auto">
-                            <?php $menus = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id, Session::get('sistema'), null]); ?>
+                            <?php $menus = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id, Session::get('sistema'), null]);  echo(Session::)?>
                             @foreach ($menus as $menu)
                                 <?php $hijos = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id, Session::get('sistema'), $menu->id]); ?>
                                 @if ($hijos)
                                     <li class="nav-item dropdown">
                                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
                                             role="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false" v-pre title="Mi Usuario">
+                                            aria-expanded="false" v-pre>
                                             {{ $menu->nombre_menu }}
                                         </a>
 
                                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
                                             style="text-align: center;">
                                             @foreach ($hijos as $hijo)
-                                                <a class="dropdown-item" href="{{ $hijo->ruta }}">
+                                                <a class="dropdown-item text-sm-left" href="{{ $hijo->ruta }}">
+                                                    <i class="{{ $hijo->icono }}" aria-hidden="true"></i>
+                                                    &nbsp
                                                     {{ $hijo->nombre_menu }}
                                                 </a>
                                             @endforeach
@@ -267,17 +266,22 @@
 
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre
-                                    title="Mi Usuario">
-                                    <i class="fas fa-user-circle" aria-hidden="true"></i>
+                                    title={{{Auth::user()->nombre}}}>
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"
+                                <div class="dropdown-menu dropdown-menu-end " aria-labelledby="navbarDropdown"
                                     style="text-align: center;">
-                                    <a class="dropdown-item" href="{{ route('cambiar_contrasenia') }}">
-                                        {{ __('Cambiar contraseña') }}
+                                    <h5 style=" border-bottom: 5px solid #FFC3D0;"><i class=" fa fa-user" aria-hidden="true"></i>
+                                        &nbsp <b>{{{Auth::user()->username}}}</b></h5>
+                                    <a class="dropdown-item text-sm-left" href="{{ route('cambiar_contrasenia') }}">
+                                        <i class="fa fa-key" aria-hidden="true"></i>
+                                            {{ __('Cambiar contraseña') }}
                                     </a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    
+                                    <a class="dropdown-item text-sm-left" href="{{ route('logout') }}"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <i class="fa fa-sign-out" aria-hidden="true"></i>
                                         {{ __('Cerrar Sesión') }}
                                     </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST"
