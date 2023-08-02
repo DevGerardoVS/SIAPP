@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Calendarizacion;
 
+use App\Models\administracion\Bitacora;
+
 use App\Exports\TechosExport;
 use App\Exports\TechosExportPDF;
 use App\Exports\TechosExportPresupuestos;
@@ -19,6 +21,7 @@ use Shuchkin\SimpleXLSX;
 use Throwable;
 use function Psy\debug;
 use App\Exports\PlantillaTechosExport;
+use App\Http\Controllers\BitacoraController as ControllersBitacoraController;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TechosController extends Controller
@@ -32,7 +35,7 @@ class TechosController extends Controller
         $dataSet = [];
 
         $data = DB::table('techos_financieros as tf')
-            ->select('tf.id','tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
+            ->select('tf.id','tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio','tf.updated_user')
             ->leftJoinSub('select distinct clv_upp, upp, ejercicio as Ej from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
             ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo');
             if($request->anio_filter != null){
@@ -45,7 +48,7 @@ class TechosController extends Controller
             if($request->fondo_filter != null && $request->fondo_filter != 0){
                 $data = $data -> where('tf.clv_fondo','=',$request->fondo_filter);
             }
-        $data = $data ->orderByDesc('tf.ejercicio')->get();
+        $data = $data ->orderBy('vee.clv_upp','asc')->get();
         
         $max_ejercicio = DB::table('epp')
             ->select('ejercicio')
@@ -60,9 +63,9 @@ class TechosController extends Controller
                 $button2 = '<a class="btn btn-secondary" onclick="getEdita('.$d->id.')" data-bs-toggle="modal" data-bs-target="#editar" ><i class="fa fa-pencil" style="font-size: large; color: white"></i></a>';
                 /* $button3 = '<button id="eliminar" title="Eliminar" class="btn btn-danger"><i class="fa fa-trash" style="font-size: large"></i></button>'; */
                 $button3 = '<a class="btn btn-danger" onclick="getElimina('.$d->id.')" data-bs-toggle="modal" data-bs-target="#eliminar" ><i class="fa fa-trash" style="font-size: large;color: white"></i></a>';
-                array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,'pendiente',$button2.' '.$button3]);
+                array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,$d->updated_user,$button2.' '.$button3]);
             }else{
-                array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,'pendiente',' ']);
+                array_push($dataSet,[$d->clv_upp, $d->descPre, $d->tipo,$d->clv_fondo,$d->fondo_ramo,'$'.number_format($d->presupuesto),$d->ejercicio,$d->updated_user,' ']);
             }
             
         }
@@ -180,6 +183,15 @@ class TechosController extends Controller
                     ]);
                 } 
                 DB::commit();
+
+                $b = array(
+                    "username"=>Auth::user()->username,
+                    "accion"=> 'Crear',
+                    "modulo"=>'Techos Financieros'
+                );
+                
+                Controller::bitacora($b);
+
                 return [
                     'status' => 200
                 ];
@@ -205,31 +217,46 @@ class TechosController extends Controller
             ->select('clv_upp','clv_fondo','tipo','ejercicio')
             ->where('id','=',$request->id)
             ->get();
-
-            //se busca el registro en claves
-            $existe = DB::table('programacion_presupuesto')
-            ->where('upp','=',$data[0]->clv_upp)
-            ->where('fondo_ramo','=',$data[0]->clv_fondo)
-            ->where('tipo','=',$data[0]->tipo)
-            ->where('ejercicio','=',$data[0]->ejercicio)
-            ->get();
-
-            //si existe en la tabla quiere decir que ya esta asignado y no se puede eliminar
-            if(count($existe) == 0){
-                DB::beginTransaction();
-                DB::table('techos_financieros')->where('id', '=', $request->id)->delete();
-                DB::commit();
-
-                return [
-                    'status' => 200,
-                    'mensaje' => "Se eliminó correctamente"
-                ];
+            
+            if(count($data)!= 0){
+                $existe = DB::table('programacion_presupuesto')
+                ->where('upp','=',$data[0]->clv_upp)
+                ->where('fondo_ramo','=',$data[0]->clv_fondo)
+                ->where('tipo','=',$data[0]->tipo)
+                ->where('ejercicio','=',$data[0]->ejercicio)
+                ->get();
+    
+                //si existe en la tabla quiere decir que ya esta asignado y no se puede eliminar
+                if(count($existe) == 0){
+                    DB::beginTransaction();
+                    DB::table('techos_financieros')->where('id', '=', $request->id)->delete();
+                    DB::commit();
+    
+                    $b = array(
+                        "username"=>Auth::user()->username,
+                        "accion"=> 'Eliminar',
+                        "modulo"=>'Techos Financieros'
+                    );
+                    
+                    Controller::bitacora($b);
+    
+                    return [
+                        'status' => 200,
+                        'mensaje' => "Se eliminó correctamente"
+                    ];
+                }else{
+                    return [
+                        'status' => 400,
+                        'error' => "No se puede eliminar, porque ya fue asignado a una clave presupuestaria"
+                    ];
+                }
             }else{
                 return [
                     'status' => 400,
                     'error' => "No se puede eliminar"
                 ];
             }
+            //se busca el registro en claves
         }catch (Throwable $e){
             DB::rollBack();
             report($e);
@@ -260,8 +287,17 @@ class TechosController extends Controller
                 DB::beginTransaction();
                 DB::table('techos_financieros')
                 ->where('id','=',$request->id)
-                ->update(['presupuesto' => $request->presupuesto]);
+                ->update(['presupuesto' => $request->presupuesto,'updated_user' =>Auth::user()->username ]);
                 DB::commit();
+
+                $b = array(
+                    "username"=>Auth::user()->username,
+                    "accion"=> 'Editar',
+                    "modulo"=>'Techos Financieros'
+                );
+                
+                Controller::bitacora($b);
+
                 return [
                     'status' => 200,
                     'mensaje' => "Se editó correctamente"
@@ -304,8 +340,7 @@ class TechosController extends Controller
         return Excel::download(new PlantillaTechosExport(), 'Plantilla Techos Financieros.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 
-    public function importPlantilla(Request $request)
-    {
+    public function importPlantilla(Request $request){
         $this->validate($request, [
             'cmFile' => 'required|file|mimes:xls,xlsx'
         ]);
@@ -319,6 +354,13 @@ class TechosController extends Controller
                     array_shift($filearray);
                     $resul = TechosValidate::validate($filearray);
                     if ($resul == 'done') {
+                        $b = array(
+                            "username"=>Auth::user()->username,
+                            "accion"=>'Carga masiva',
+                            "modulo"=>'Techos financieros'
+                         );
+                         Controller::bitacora($b);
+
                         DB::commit();
                     }
                     return response()->json($resul);
@@ -355,6 +397,13 @@ class TechosController extends Controller
         try{
             ob_end_clean();
             ob_start();
+            $b = array(
+                "username"=>Auth::user()->username,
+                "accion"=> 'Exportar PDF',
+                "modulo"=>'Techos Financieros'
+            );
+            
+            Controller::bitacora($b);
             return Excel::download(new TechosExportPDF($request->anio_filter_pdf),'Techos_Financieros.pdf');
         }catch (Throwable $e){
             DB::rollBack();
@@ -369,7 +418,13 @@ class TechosController extends Controller
         try{
             ob_end_clean();
             ob_start();
+            $b = array(
+                "username"=>Auth::user()->username,
+                "accion"=> 'Export presupuestos',
+                "modulo"=>'Techos Financieros'
+            );
             
+            Controller::bitacora($b);
             return Excel::download(new TechosExportPresupuestos($request->anio_filter_presupuestos),'Presupuestos_Techos_Financieros.xlsx');
         }catch (Throwable $e){
             DB::rollBack();

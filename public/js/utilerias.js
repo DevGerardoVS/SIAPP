@@ -12,6 +12,40 @@ var _g = {
 };
 //Configuracion de Notificaciones
 var _gen = {
+    block: function () {
+        const local = '127.0.0.1';
+        if (window.location.hostname != local) {
+            window.onload = function() {
+            document.addEventListener("contextmenu", function(e) {
+                e.preventDefault();
+            }, false);
+        }
+        }
+    },
+    logOut: function () {
+        Swal.fire({
+            title: '¿Estás seguro de que quieres cerrar la sesión?',
+            showDenyButton: true,
+            confirmButtonText: 'Aceptar',
+            denyButtonText: `Cancelar`,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/logout',
+                    type: 'POST',
+                    data: {
+                      action: 'logout'
+                    }, // Line A
+                    success: function() {
+                        console.log("Cerrando Session");
+                        window.location.href = "/login";
+                    }
+                  });
+            }
+          })
+        
+    },
     notificacion: function (titulo, content, style) {
         if (style == 1) {
             var _c = '#739E73',
@@ -1351,6 +1385,28 @@ function valideKey(evt){
     if(code==8) { // backspace.
       return true;
     } else if(code>=48 && code<=57) { // is a number.
+      return true;
+    } else{ // other keys.
+      return false;
+    }
+}
+function valideKeyB(evt){
+    // code is the decimal ASCII representation of the pressed key.
+    var code = (evt.which) ? evt.which : evt.keyCode;
+    if(code==8) { // backspace.
+      return true;
+    } else if(code>=49 && code<=57) { // is a number.
+      return true;
+    } else{ // other keys.
+      return false;
+    }
+}
+function valideKeySum(evt){
+    // code is the decimal ASCII representation of the pressed key.
+    var code = (evt.which) ? evt.which : evt.keyCode;
+    if(code==8) { // backspace.
+      return true;
+    } else if(code >= 49 && code <= 57 && code >= 99 && code <= 122 ) { // is a number.
       return true;
     } else{ // other keys.
       return false;

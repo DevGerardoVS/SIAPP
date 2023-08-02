@@ -45,12 +45,15 @@ footer{
     color: white !important;
 
   }
-  th.vertical{
-      writing-mode:vertical-rl;
-      text-orientation: mixed;
-      text-align: center;
-      
-      rotate: 180deg;
+  .colorRosa{
+    background-color: #6D807F !important;
+    color: white !important;
+
+  }
+  .vertical{
+      writing-mode:vertical-rl !important;
+      text-orientation: mixed !important;
+      rotate: 180deg !important;
     }
   th.centro{
     padding-left: 50% !important;

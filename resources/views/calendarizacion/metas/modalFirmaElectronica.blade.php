@@ -15,6 +15,7 @@
                     <div class="row">
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
+                            <input type="hidden" id="tipoReporte" name="tipoReporte" value=0>
                             <label class="control-label ">Certificado de Sello Digital (.cer)</label>
                             <input type="file" id="cer" name='cer'class="form-control">
                         </div>

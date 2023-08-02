@@ -31,7 +31,7 @@
             <div class="bar">
                 <div class="escudo" style="background-image: url('../img/gobierno_mich.png');">
                 </div>
-                <h1 class="name">Sistema Integral de Análisis Presupuestal</h1>
+                <h1 class="name">Sistema Integral de Análisis Programático Presupuestal</h1>
             </div>
             <nav class="menu">
                 <a href="#" id="mir" class="menu-item"> <!--EPP--><i class="fa fa-pie-chart"></i> </a>
@@ -51,7 +51,7 @@
             </div>
 
             <div id="tres" class="cal">
-                <h1 id="_sapp" class="title">SAPP - Seguimiento del Análisis Programático Presupuestal</h1>
+                <h1 id="_sapp" class="title">SIAPP - Sistema Integral de Análisis Programático Presupuestal</h1>
 
             </div>
 
@@ -61,7 +61,7 @@
             </div>
 
             <div class="cal">
-                <h1 id="siap">SIAP</h1>
+                <h1 id="siap">SIAPP</h1>
             </div>
 
             <div class="text-center page-content">
@@ -77,8 +77,10 @@
             </div>
         </div>
     </body>
+    <script src="/js/utilerias.js"></script>
     <script>
         $(document).ready(function() {
+            _gen.block();
             /*$(".menu-item").hover(function(){
                 $(".cal").addClass("div-content");
             });*/

@@ -30,6 +30,12 @@ class CalendarizacionCargaMasivaController extends Controller
 {
      //Obtener plantilla para descargar
 	public function getExcel(Request $request)	{
+        $b = array(
+            "username"=>Auth::user()->username,
+            "accion"=>'Descarga',
+            "modulo"=>'claves presupuestales'
+         );
+         Controller::bitacora($b);
         /*Si no coloco estas lineas Falla*/
         ob_end_clean();
         ob_start();
@@ -364,6 +370,12 @@ class CalendarizacionCargaMasivaController extends Controller
             }
             //mandamos llamar procedimiento de jeff
            // $datos = DB::select("CALL insert_pp_aplanado()");
+           $b = array(
+            "username"=>Auth::user()->username,
+            "accion"=>'Carga masiva',
+            "modulo"=>'Claves presupuestales'
+         );
+         Controller::bitacora($b);
             return redirect()->back()->withSuccess('Se cargaron correctamente los datos');
              } 
          catch (\Maatwebsite\Excel\Validators\ValidationException $e) {

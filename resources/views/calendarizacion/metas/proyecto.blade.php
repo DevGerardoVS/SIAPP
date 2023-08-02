@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @include('calendarizacion.metas.addActividad')
 @include('calendarizacion.metas.modalFirmaElectronica')
-@include('panels.datatable')
 @section('content')
     <div class="container">
+        
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
         <section id="widget-grid" class="conteiner">
             <div class="row">
@@ -28,6 +28,8 @@
                     <div class="d-flex col-md-8 " style="justify-content: flex-end">
                         <div>
                             @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                            <button type="button" class="btn btn-primary" onclick="dao.exportJasperMetas()">Formato Metas</button>
+                                &nbsp
                                 <button type="button" class="btn btn-primary" onclick="dao.exportJasper()">Formato</button>
                                 &nbsp
                             @endif
@@ -53,8 +55,8 @@
                 <div class="widget-body no-padding ">
                     <div class="table-responsive ">
                         &nbsp
-                        <table id="catalogo" class="table table-hover table-striped">
-                            <thead>
+                        <table id="proyectoM" class="table table-hover table-striped">
+                            <thead style="visibility: visible !important" >
                                 <tr class="colorMorado">
                                     <th class="vertical">Finalidad</th>
                                     <th class="vertical">Función</th>
@@ -67,7 +69,7 @@
                                     <th class="vertical">UR</th>
                                     <th class="vertical">Programa</th>
                                     <th class="vertical">Subprograma</th>
-                                    <th class="vertical subName">Proyecto</th>
+                                    <th class="vertical">Proyecto</th>
                                     <th class="vertical">Fondo</th>
                                     <th class="vertical">Actividad</th>
                                     <th class="vertical">Tipo Actividad</th>
@@ -78,8 +80,7 @@
                                     <th class="vertical">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
+                            
                         </table>
                     </div>
                 </div>
