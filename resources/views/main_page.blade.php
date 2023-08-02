@@ -77,8 +77,10 @@
             </div>
         </div>
     </body>
+    <script src="/js/utilerias.js"></script>
     <script>
         $(document).ready(function() {
+            _gen.block();
             /*$(".menu-item").hover(function(){
                 $(".cal").addClass("div-content");
             });*/

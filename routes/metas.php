@@ -24,6 +24,7 @@
 		Route::get('/calendarizacion/update/{id?}','updateMeta');
 		Route::get('/calendarizacion/check/{upp?}','checkCombination');
 		Route::post('/calendarizacion-metas-reporte', 'descargaReporteFirma');
+		Route::get('/actividades/jasper-metas/{upp?}', 'jasperMetas');
 	});
 ?>
 

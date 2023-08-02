@@ -1,74 +1,91 @@
 var dao = {
   getData : function(ejercicio, upp, ur){
-  $.ajax({
-    type : "POST",
-    url : "/calendarizacion-claves-get",
-    dataType : "json",
-    data:{'ejercicio':ejercicio,'upp':upp, 'ur':ur}
-  }).done(function(_data){
-    let data = [];
-    let estatus = _data['estatus'] != null ? _data['estatus'].estatus : '';
-    let rol = _data['rol'] != null ? _data['rol'] : 1;
-    let filtroEjercicio = document.getElementById('filAnioAbierto').value;
-    for (let index = 0; index < _data['claves'].length; index++) {
-      let estatusVista = '';
-      const clasificacionAdmin = _data['claves'][index].clasificacion_administrativa;
-      const centroGestor = _data['claves'][index].entidad_federativa + _data['claves'][index].region + _data['claves'][index].municipio + _data['claves'][index].localidad + _data['claves'][index].upp + _data['claves'][index].subsecretaria + _data['claves'][index].ur;
-      const areaFuncional = _data['claves'][index].finalidad + _data['claves'][index].funcion + _data['claves'][index].subfuncion + _data['claves'][index].eje + _data['claves'][index].linea_accion + _data['claves'][index].programa_sectorial + _data['claves'][index].tipologia_conac + _data['claves'][index].programa_presupuestario + _data['claves'][index].subprograma_presupuestario + _data['claves'][index].proyecto_presupuestario;
-      const periodoPre = _data['claves'][index].periodo_presupuestal;
-      const posicionPre = _data['claves'][index].posicion_presupuestaria;
-      let upp = _data['claves'][index].claveUpp;
-      let status = _data['claves'][index].estado;
-      status == 1 ? estatusVista = 'Confirmadas' : estatusVista = 'Registradas';
-      const fondo = _data['claves'][index].anio + _data['claves'][index].etiquetado + _data['claves'][index].fuente_financiamiento + _data['claves'][index].ramo + _data['claves'][index].fondo_ramo + _data['claves'][index].capital;
-      const proyectoObra = _data['claves'][index].proyecto_obra;
-      let row = upp+' - ' + _data['claves'][index].claveUr +" "+'-'+" "+ _data['claves'][index].descripcionUr +" "+'-'+" "+ estatusVista;
-      let totalByClave = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(_data['claves'][index].totalByClave); 
-      let id = _data['claves'][index].id;
-      let estado = _data['claves'][index].estado;
-      let ejercicioCheck = _data['claves'][index].ejercicio
-      data.push({'id':id,'rol':rol, 'filtroEjercicio':filtroEjercicio , 'ejercicioCheck':ejercicioCheck,'clasificacionAdmin':clasificacionAdmin, 'centroGestor':centroGestor,'areaFuncional':areaFuncional,'periodoPre': periodoPre, 'posicionPre':posicionPre,'fondo':fondo,'proyectoObra': proyectoObra,'row': row,'totalByClave': totalByClave, 'estado':estado, 'estatus':estatus});  
-    }
-    const ejercicioActual = _data['claves'].length > 0 ? _data['claves'][0].ejercicio : document.getElementById('filAnio').value;
-    _table = $("#claves");
-    _columns = [
-      {"aTargets" : [0], "mData" : 'clasificacionAdmin'},
-      {"aTargets" : [1], "mData" : "centroGestor"},
-      {"aTargets" : [2], "mData" : "areaFuncional"},
-      {"aTargets" : [3], "mData" : "periodoPre"},
-      {"aTargets" : [4], "mData" : "posicionPre"},
-      {"aTargets" : [5], "mData" : "fondo"},
-      {"aTargets" : [6], "mData" : "proyectoObra"},
-      {"aTargets" : [7], "mData" : "totalByClave"},
-      {"aTargets" : [8], "mData" : function(o){
-        if (o.rol == 1) {
-          if (o.estatus != 'Cerrado' && o.estatus != '') {
-            if (o.estado == 0) {
-              return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-            +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
+    let timerInterval
+    Swal.fire({
+      title: 'Cargando',
+      html: 'Espere un momento',
+      timer: 500,
+      didOpen: () => {
+        Swal.showLoading()
+        const b = Swal.getHtmlContainer().querySelector('b')
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft()
+        }, 100)
+      },
+      willClose: () => {
+        clearInterval(timerInterval)
+      }
+    }).then(() => {
+    $.ajax({
+      type : "POST",
+      url : "/calendarizacion-claves-get",
+      dataType : "json",
+      data:{'ejercicio':ejercicio,'upp':upp, 'ur':ur}
+    }).done(function(_data){
+      let data = [];
+      let estatus = _data['estatus'] != null ? _data['estatus'].estatus : '';
+      let rol = _data['rol'] != null ? _data['rol'] : 1;
+      let filtroEjercicio = document.getElementById('filAnioAbierto').value;
+      for (let index = 0; index < _data['claves'].length; index++) {
+        let estatusVista = '';
+        const clasificacionAdmin = _data['claves'][index].clasificacion_administrativa;
+        const centroGestor = _data['claves'][index].entidad_federativa + _data['claves'][index].region + _data['claves'][index].municipio + _data['claves'][index].localidad + _data['claves'][index].upp + _data['claves'][index].subsecretaria + _data['claves'][index].ur;
+        const areaFuncional = _data['claves'][index].finalidad + _data['claves'][index].funcion + _data['claves'][index].subfuncion + _data['claves'][index].eje + _data['claves'][index].linea_accion + _data['claves'][index].programa_sectorial + _data['claves'][index].tipologia_conac + _data['claves'][index].programa_presupuestario + _data['claves'][index].subprograma_presupuestario + _data['claves'][index].proyecto_presupuestario;
+        const periodoPre = _data['claves'][index].periodo_presupuestal;
+        const posicionPre = _data['claves'][index].posicion_presupuestaria;
+        let upp = _data['claves'][index].claveUpp;
+        let status = _data['claves'][index].estado;
+        status == 1 ? estatusVista = 'Confirmadas' : estatusVista = 'Registradas';
+        const fondo = _data['claves'][index].anio + _data['claves'][index].etiquetado + _data['claves'][index].fuente_financiamiento + _data['claves'][index].ramo + _data['claves'][index].fondo_ramo + _data['claves'][index].capital;
+        const proyectoObra = _data['claves'][index].proyecto_obra;
+        let row = upp+' - ' + _data['claves'][index].claveUr +" "+'-'+" "+ _data['claves'][index].descripcionUr +" "+'-'+" "+ estatusVista;
+        let totalByClave = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(_data['claves'][index].totalByClave); 
+        let id = _data['claves'][index].id;
+        let estado = _data['claves'][index].estado;
+        let ejercicioCheck = _data['claves'][index].ejercicio
+        data.push({'id':id,'rol':rol, 'filtroEjercicio':filtroEjercicio , 'ejercicioCheck':ejercicioCheck,'clasificacionAdmin':clasificacionAdmin, 'centroGestor':centroGestor,'areaFuncional':areaFuncional,'periodoPre': periodoPre, 'posicionPre':posicionPre,'fondo':fondo,'proyectoObra': proyectoObra,'row': row,'totalByClave': totalByClave, 'estado':estado, 'estatus':estatus});  
+      }
+      const ejercicioActual = _data['claves'].length > 0 ? _data['claves'][0].ejercicio : document.getElementById('filAnio').value;
+      _table = $("#claves");
+      _columns = [
+        {"aTargets" : [0], "mData" : 'clasificacionAdmin'},
+        {"aTargets" : [1], "mData" : "centroGestor"},
+        {"aTargets" : [2], "mData" : "areaFuncional"},
+        {"aTargets" : [3], "mData" : "periodoPre"},
+        {"aTargets" : [4], "mData" : "posicionPre"},
+        {"aTargets" : [5], "mData" : "fondo"},
+        {"aTargets" : [6], "mData" : "proyectoObra"},
+        {"aTargets" : [7], "mData" : "totalByClave"},
+        {"aTargets" : [8], "mData" : function(o){
+          if (o.rol == 1) {
+            if (o.estatus != 'Cerrado' && o.estatus != '') {
+              if (o.estado == 0) {
+                return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
+              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
+              }else{
+                return '<p><i class="fa fa-check">&nbsp;Confirmado</i></p>';
+              }
             }else{
-              return '<p><i class="fa fa-check">&nbsp;Confirmado</i></p>';
+              return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
             }
-          }else{
-            return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
+          }if (o.rol == 0) {
+            if (o.filtroEjercicio == o.ejercicioCheck) {
+              return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
+              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
+            }else{
+              return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
+            }
           }
-        }if (o.rol == 0) {
-          if (o.filtroEjercicio == o.ejercicioCheck) {
-            return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-            +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
-          }else{
-            return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
+          if (o.rol != 0 && o.rol != 1) {
+            return '<p><i class="fa fa-ban">&nbsp;Sin acciones</i></p>';
           }
-        }
-        if (o.rol != 0 && o.rol != 1) {
-          return '<p><i class="fa fa-ban">&nbsp;Sin acciones</i></p>';
-        }
-      }},
-    ];
-    _gen.setTableScrollGroupBy(_table, _columns, data);
-   
-    dao.getPresupuesAsignado(ejercicioActual,upp);
-    $("#filtro_anio option[value="+ ejercicioActual +"]").attr("selected",true);
+        }},
+      ];
+      _gen.setTableScrollGroupBy(_table, _columns, data);
+    
+      dao.getPresupuesAsignado(ejercicioActual,upp);
+      $("#filtro_anio option[value="+ ejercicioActual +"]").attr("selected",true);
+    });
   });
   },
   postCreate: function () {
@@ -306,9 +323,9 @@ var dao = {
           par.html('');
           par.append(new Option("-- Selecciona una Unidad Programática --", ""));
           $.each(data, function(i, val){
-            if (id != '' && val.clave == id) {
+            if (id != '' && val.clv_upp == id) {
              par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,true,true));
-             document.getElementById('upp').innerHTML = data[i].clave;
+             document.getElementById('upp').innerHTML = data[i].clv_upp;
             }else{
              par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,false,false));
             }
