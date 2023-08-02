@@ -220,7 +220,7 @@
             
         }
         if (proyecto_presupuestario != '') {
-            dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,ejercicio,proyecto_presupuestario);
+            dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,upp,ur,ejercicio,proyecto_presupuestario);
         }
         if (linea_accion != '') {
             dao.getLineaDeAccionByUpp(upp,ur,ejercicio,linea_accion);

@@ -399,23 +399,22 @@ var dao = {
         });
   },
 	getProyectoBySubPrograma : function(programa,id, upp, ur,ejercicio,idSelected){
-        $.ajax({
-          	type : "get",
-          	url: '/cat-proyecyo/'+ programa + '/' + id+'/'+ upp + '/' + ur+'/' +ejercicio,
-        }).done(function(data){
-          var par = $('#sel_proyecto');
-          par.html('');
-          par.append(new Option("-- Selecciona un Proyecto --", ""));
-          $.each(data, function(i, val){
-            if (idSelected != '' && val.clv_proyecto == idSelected) {
-              par.append(new Option(data[i].clv_proyecto+ ' - '+ data[i].proyecto , data[i].clv_proyecto,true,true));
-              document.getElementById('proyectoPre').innerHTML = data[i].clv_proyecto;
-             }else{
-              par.append(new Option(data[i].clv_proyecto+ ' - '+  data[i].proyecto , data[i].clv_proyecto,false,false));
-             }
-            
-          });
-        });
+    $.ajax({
+        type : "get",
+        url: '/cat-proyecyo/'+ programa + '/' + id+'/'+ upp + '/' + ur+'/' +ejercicio,
+    }).done(function(data){
+      var par = $('#sel_proyecto');
+      par.html('');
+      par.append(new Option("-- Selecciona un Proyecto --", ""));
+      $.each(data, function(i, val){
+        if (idSelected != '' && val.clv_proyecto == idSelected) {
+          par.append(new Option(data[i].clv_proyecto+ ' - '+ data[i].proyecto , data[i].clv_proyecto,true,true));
+          document.getElementById('proyectoPre').innerHTML = data[i].clv_proyecto;
+          }else{
+          par.append(new Option(data[i].clv_proyecto+ ' - '+  data[i].proyecto , data[i].clv_proyecto,false,false));
+          }
+      });
+    });
   },
 	getLineaDeAccionByUpp : function(uppId,id,ejercicio,idSelected){
         $.ajax({
