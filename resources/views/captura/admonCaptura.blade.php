@@ -6,9 +6,8 @@ $titleDesc = 'Administración de Captura';
 @extends('layouts.app')
 @section('content')
     <div class="container w-100 p-4">
-        <header>
-            <h1 class="fw-bold text-center">{{ $titleDesc }} Ejercicio {{ $anio }}</h1>
-            <div class="rounded-pill" style="height: .5em; background-color: rgb(37, 150, 190)"></div>
+        <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
+            <h2 class="fw-bold text-center">{{ $titleDesc }} Ejercicio {{ $anio }}</h2>
             <form action="{{ route('claves_presupuestarias') }}" id="buscarFormA" name="buscarFormA" method="post"></form>
             <form action="{{ route('metas_actividades') }}" id="buscarFormB" name="buscarFormB" method="post"></form>
         </header>

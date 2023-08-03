@@ -7,12 +7,12 @@
 @extends('layouts.app')
 
 @section('content')
-
+<br>
 <div class="container">
-    <header>
+    <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
         <h2>Inicio</h2>
     </header>
-
+<br>
 
     <div class="row justify-content-center">
         <div class="col-md-8">

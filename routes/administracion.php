@@ -16,6 +16,8 @@
 	Route::controller(UsuarioController::class)->group(function () {
 		Route::get('adm-usuarios', 'getIndex')->name('index_usuario');
 		Route::get('adm-usuarios/data', 'getData')->name('getdata');
+		Route::get('adm-usuarios/indexPermiso', 'getIndexUP')->name('index_up');
+		Route::get('adm-usuarios/permisos', 'getDataUP')->name('getdataUserPerm');
 		Route::post('adm-usuarios/status', 'postStatus');
 		Route::get('adm-usuarios/create', 'getCreate');
 		Route::post('adm-usuarios/store', 'postStore');
@@ -31,6 +33,8 @@
 		Route::post('/users/permissos/create', 'createPermisson');
 		Route::post('/users/permissos/assign', 'assignPermisson');
 		Route::get('/users/permissos/get', 'getPermisson');
+		Route::get('/adm-usuarios-exportExcel', 'exportExecel')->name('exportExecel');
+		Route::get('/adm-usuarios-exportPdf', 'exportPdf')->name('exportPdf');
 	});
 
 	Route::controller(InicioController::class)->group(function (){

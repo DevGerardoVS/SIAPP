@@ -36,12 +36,12 @@
     
             // console.log(minutos);
     
-            if (minutos >= 1) {
+            if (minutos >= 480) {
                 clearInterval(reloj);
                 var urlactual = "{{ Request::path() }}";
                 if (urlactual !== 'login') {
                     Swal.fire({
-                        title: 'Su sesión de una hora ha expirado',
+                        title: 'Su sesión ha expirado',
                         text: '¿Desea iniciar sesión nuevamente?',
                         icon: 'warning',
                         showCancelButton: true,
@@ -51,24 +51,9 @@
                         cancelButtonText: 'No, cerrar sesión',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = "{{ route('login') }}";
+                            _gen.logOut()
                         } else {
-                            $.ajax({
-                                type: "POST",
-                                url: "{{ route('logout') }}",
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                data: `{
-                                    "c": 78912,
-                                    "Customer": "Jason Sweet",
-                                    csrf: "{{ csrf_token() }}"
-                                }`,
-                                success: function(result) {
-                                    window.location.href = "{{ route('login') }}";
-                                },
-                                dataType: "json"
-                            });
+                            _gen.logOut()
                         }
                     });
                 }
@@ -159,18 +144,11 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap4.min.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap4.min.css')) }}">
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
+    <script src="/js/utilerias.js"></script>
     <script>
-        const local = '127.0.0.1';
-        if (window.location.hostname != local) {
-            window.onload = function() {
-            document.addEventListener("contextmenu", function(e) {
-                e.preventDefault();
-            }, false);
-        }
-        }
-    </script>
-    <script>
-     
+     $( document ).ready(function() {
+       _gen.block(); 
+    });
     </Script>
     {{-- Page Scripts --}}
     @yield('page_scripts')
@@ -257,15 +235,10 @@
                                         {{ __('Cambiar contraseña') }}
                                 </a>
                                 
-                                <a class="dropdown-item text-sm-left" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <a class="dropdown-item text-sm-left"  onclick="_gen.logOut()">
                                     <i class="fa fa-sign-out" aria-hidden="true"></i>
                                     {{ __('Cerrar Sesión') }}
                                 </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                        class="d-none">
-                                        @csrf
-                                    </form>
                                 </div>
                             </li>
                         </ul>
