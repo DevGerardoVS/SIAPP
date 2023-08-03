@@ -61,7 +61,7 @@
     <script src="/js/appInit.js"></script>
     <script>
         $(document).ready(function() {
-            _gen.block(); >
+            _gen.block();
             _gen.essential();
         });
     </Script>
