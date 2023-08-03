@@ -436,10 +436,10 @@ var dao = {
           });
         });
   },
-  getAreaFuncional: function (uppId,id,ejercicio) {
+  getAreaFuncional: function (uppId,id,ejercicio,subPrograma) {
     $.ajax({
       type:'get',
-      url: '/cat-area-funcional/'+uppId +'/'+id+'/'+ejercicio,
+      url: '/cat-area-funcional/'+uppId +'/'+id+'/'+ejercicio+'/'+subPrograma,
     }).done(function (data) {
       document.getElementById('finalidad').innerHTML = data.clv_finalidad;
       document.getElementById('funcion').innerHTML = data.clv_funcion;
@@ -551,7 +551,7 @@ var dao = {
         if (response.estatus != null && response.estatus.estatus && response.estatus.estatus == 'Abierto') {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
-            if (response.estado && response.estado != 1) {
+            if (response.estado == 0) {
               $('#btn_confirmar').show(true);
             }
           }else{
@@ -570,7 +570,7 @@ var dao = {
         if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
-            if (response.estado && response.estado != 1) {
+            if (response.estado == 0) {
               $('#btn_confirmar').show(true);
             }
           }else{
@@ -591,7 +591,7 @@ var dao = {
         if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
-            if (response.estado && response.estado != 1) {
+            if (response.estado == 0) {
               $('#btn_confirmar').show(true);
             }
           }else{
@@ -954,7 +954,7 @@ $(document).ready(function(){
     dao.getSubSecretaria(uppId,id,ejercicio);
 		dao.getProgramaPresupuestarioByur(uppId,id,ejercicio,'');
 		dao.getLineaDeAccionByUpp(uppId,id,ejercicio,'');
-    dao.getAreaFuncional(uppId,id,ejercicio);
+    //dao.getAreaFuncional(uppId,id,ejercicio);
     dao.getClasificacionAdmin(uppId,id);
     var urText = $('#sel_unidad_res').find(":selected").text();
     document.getElementById('lbl_ur').innerText = 'Ur: ' + urText;
@@ -978,6 +978,7 @@ $(document).ready(function(){
     var ur = document.getElementById("sel_unidad_res").value;
 		dao.getProyectoBySubPrograma(programa,id,upp,ur ,ejercicio,'');
     dao.getFondosByUpp(upp, id, ejercicio,'');
+    dao.getAreaFuncional(upp,ur,ejercicio,id);
 	});
   $('#sel_proyecto').change(function (e) {
     e.preventDefault();

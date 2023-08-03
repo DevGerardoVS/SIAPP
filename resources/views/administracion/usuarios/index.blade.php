@@ -38,14 +38,23 @@
                                             {{-- es para añadir permisos al catalogo 
                                                 <button type="button" class="btn btn-dark" data-toggle="modal" id="btnNew"
                                             data-target=".createpermiso" data-backdrop="static"
-                                            data-keyboard="false">Permisos adicionales</button> --}}
+                                            data-keyboard="false">Permisos adicionales</button>--}}
                                     </div>
                                     @endif
-
-        
+                                </div><br>
+                                <div class="row">
+                                    <div class="col-xs-10 col-sm-7 col-md-7 col-lg-7">
+                                    </div>
+                                    <div class="col-xs-2 col-sm-5 col-md-5 col-lg-5 text-right">
+                                        <div class="d-flex justify-content-center" style=" margin: 2px auto;">
+                                        <button type="button" style="justify-content: float-right" onclick="dao.exportExcel()" class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                                        &nbsp
+                                    <button type="button" style="justify-content: flex-end" onclick="dao.exportPdf()"
+                                        class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
+                                    </div>
+                                    </div>
                                 </div>
                             </div>
-                            <br><br>
                             <div class="widget-body no-padding ">
                                 <div class="table-responsive ">
                                     <table id="catalogo" class="table table-hover table-striped ">

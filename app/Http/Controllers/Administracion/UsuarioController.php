@@ -10,9 +10,12 @@ use App\Models\User;
 use Auth;
 use DB;
 use Log;
+use PDF;
 use App\Models\administracion\UsuarioGrupo;
 use App\Models\administracion\PermisosUpp;
 use App\Models\catalogos\CatPermisos;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UsuarioController extends Controller
 {
@@ -262,6 +265,37 @@ class UsuarioController extends Controller
 		$user->password = $request->password;
 		$user->save();
 		return response(200);
+	}
+	public function exportExecel(){
+				/*Si no coloco estas lineas Falla*/
+				ob_end_clean();
+				ob_start();
+				/*Si no coloco estas lineas Falla*/
+				$b = array(
+					"username"=>Auth::user()->username,
+					"accion"=>'Descargar Usuarios Excel',
+					"modulo"=>'Usuarios'
+				 );
+				Controller::bitacora($b);
+				return Excel::download(new UsersExport(), 'Listado de Usuarios.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+	}
+	public function exportPdf()
+	{
+		ini_set('max_execution_time', 5000);
+        ini_set('memory_limit', '1024M');
+		$data = DB::table('adm_users')
+		->select('id','nombre','p_apellido', 's_apellido', 'username','email','celular')
+		->orderBy('nombre', 'asc')
+		->get();
+		view()->share('data', $data);
+		$pdf = PDF::loadView('administracion.usuarios.usuariosPdf')->setPaper('a4', 'landscape');
+		$b = array(
+			"username"=>Auth::user()->username,
+			"accion"=>'Descargar Usuarios PDF',
+			"modulo"=>'Usuarios'
+		 );
+		Controller::bitacora($b);
+		return $pdf->download('Lista de Usuarios.pdf');
 	}
 
 }

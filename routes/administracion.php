@@ -31,6 +31,8 @@
 		Route::post('/users/permissos/create', 'createPermisson');
 		Route::post('/users/permissos/assign', 'assignPermisson');
 		Route::get('/users/permissos/get', 'getPermisson');
+		Route::get('/adm-usuarios-exportExcel', 'exportExecel')->name('exportExecel');
+		Route::get('/adm-usuarios-exportPdf', 'exportPdf')->name('exportPdf');
 	});
 
 	Route::controller(InicioController::class)->group(function (){
