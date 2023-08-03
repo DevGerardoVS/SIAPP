@@ -1,4 +1,4 @@
-<div class="modal fade bd-permisos-modal-lg" id="permisosModal" tabindex="-1" role="dialog"
+<div class="modal fade bd-permisos-modal-lg permisosModal" id="permisosModal" tabindex="-1" role="dialog"
     aria-labelledby="permisosModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -11,6 +11,7 @@
             <meta name="csrf-token" content="{{ csrf_token() }}">
             <div class="modal-body">
                 <form id="frm_permisos">
+                    <textarea name="id" id="id" style="display: none" value="0"></textarea>
                     @csrf
                     <div class="row">
                         <div class="col-md-2"></div>
