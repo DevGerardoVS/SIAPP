@@ -38,7 +38,24 @@ var dao = {
         });
     },
     editarUp: function (id, user, permiso) {
-        console.log("permisos",permiso)
+        let per = permiso.split('/');
+        for (let i = 0; i < per.length; i++) {
+            switch (per[i]) {
+                case '1':
+                    $("#masiva").prop("checked",true);
+                    break;
+                case '2':
+                    $("#obra").prop("checked",true);
+                    break;
+                case '3':
+                    $("#oficio").prop("checked",true);
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+
         $('#permisosModalLabel').text('Editar permiso adicional');
         $('#id').val(id)
         $("#id_userPE option[value='" + user + "']").attr("selected", true);
@@ -123,6 +140,9 @@ var dao = {
         $('#createPermisoLabel').text('Agregar permiso adicional');
         $('#descripcion').val('');
         $('#id_userP').prop('disabled', false);
+        $(".form-check-input").prop("checked",false);
+
+        
 
 
     },
