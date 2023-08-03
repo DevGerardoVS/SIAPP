@@ -4,24 +4,26 @@ namespace App\Http\Controllers\Calendarizacion;
 
 use App\Models\administracion\Bitacora;
 
+use App\Exports\PlantillaTechosExport;
 use App\Exports\TechosExport;
-use App\Exports\TechosExportPDF;
 use App\Exports\TechosExportPresupuestos;
+use App\Exports\TechosExportPDF;
 use App\Http\Controllers\Controller;
 use App\Imports\TechosValidate;
-use Carbon\Carbon;
-use Dompdf\Exception;
+use App\Http\Controllers\BitacoraController as ControllersBitacoraController;
+use App\Helpers\Calendarizacion\MetasHelper;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+use Carbon\Carbon;
+use Dompdf\Exception;
 use Shuchkin\SimpleXLSX;
 use Throwable;
 use function Psy\debug;
-use App\Exports\PlantillaTechosExport;
-use App\Http\Controllers\BitacoraController as ControllersBitacoraController;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TechosController extends Controller
@@ -106,6 +108,17 @@ class TechosController extends Controller
             ->get();
 
         return json_encode($fondos);
+    }
+
+    public function getEjercicio(){
+        $ejercicio = DB::table('epp') 
+        ->select('ejercicio')
+        ->groupBy('ejercicio')
+        ->orderByDesc('ejercicio')
+        ->limit(1)
+        ->get();
+
+        return $ejercicio;
     }
 
     public function addTecho(Request $request){
@@ -271,19 +284,23 @@ class TechosController extends Controller
         try{
             ///buscamos el registro en los techos para despues filtrarlo 
             $data = DB::table('techos_financieros')
-            ->select('clv_upp','ejercicio')
+            ->select('clv_upp','clv_fondo','ejercicio')
             ->where('id','=',$request->id)
             ->get();
 
             //se busca el registro en claves para saber  el estado CONFIRMADO
-            $confirmado = DB::table('programacion_presupuesto')
+            $confirmadoClave = DB::table('programacion_presupuesto')
             ->select('estado')
             ->where('upp','=',$data[0]->clv_upp)
             ->where('ejercicio','=',$data[0]->ejercicio)
             ->limit(1)
             ->get();
             
-            if(count($confirmado) == 0){
+            $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp);
+            log::debug($confirmacionMeta);
+            
+            
+            if(count($confirmadoClave) == 0){ //si no esta asignado a una clave presupuestaria se EDITA normalmente
                 DB::beginTransaction();
                 DB::table('techos_financieros')
                 ->where('id','=',$request->id)
@@ -307,9 +324,9 @@ class TechosController extends Controller
 
                 DB::table('techos_financieros')
                 ->where('id','=',$request->id)
-                ->update(['presupuesto' => $request->presupuesto]);
+                ->update(['presupuesto' => $request->presupuesto,'updated_user' =>Auth::user()->username ]);
                 
-                if($confirmado[0]->estado == 1){
+                if($confirmadoClave[0]->estado == 1){
                     DB::table('programacion_presupuesto')
                     ->where('upp','=',$data[0]->clv_upp)
                     ->where('ejercicio','=',$data[0]->ejercicio)

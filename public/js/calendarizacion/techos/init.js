@@ -234,6 +234,15 @@ $(document).ready(function () {
                 selectFondo += '</select>';
             });
 
+            $.ajax({
+                type: "GET",
+                url: '/calendarizacion/techos/get-ejercicio',
+                dataType: "JSON"
+            }).done(function (data) {
+                inputEjercicio = '<input type="number" value="'+data[0].ejercicio+'" class="form-control" id="ejercicio_'+ultimo+'" name="ejercicio_'+ultimo+'" disabled placeholder="'+data[0].ejercicio+'"></td>\n';
+                
+            });
+
             row = table.insertRow(table_lenght).outerHTML='<tr id="'+ultimo+'">\n' +
                 '<td>' +
                 '       <select class="form-control filters" id="tipo_'+ultimo+'" name="tipo_'+ultimo+'" placeholder="Seleccione una tipo" required>\n' +
@@ -249,7 +258,7 @@ $(document).ready(function () {
                 '<input type="number" class="form-control totales" min="0" id="presupuesto_'+ultimo+'" name="presupuesto_'+ultimo+'" placeholder="$0" onkeydown="dao.filtroPresupuesto()" onkeyup="dao.validCero('+ultimo+')" onchange="totalP()" required>' +
                 '</td>\n' +
                 '  <td>'+
-                '<input type="number" value="{{$ejercicio[0]->ejercicio}}" class="form-control" id="ejercicio_'+ultimo+'" name="ejercicio_'+ultimo+'" disabled placeholder="2024"></td>\n' +
+                inputEjercicio +
                 '<td>' +
                 '   <input type="button" value="Eliminar" onclick="dao.eliminaFondo('+ultimo+')" title="Eliminar fondo" class="btn btn-danger delete" >' +
                 '</td>\n' +
