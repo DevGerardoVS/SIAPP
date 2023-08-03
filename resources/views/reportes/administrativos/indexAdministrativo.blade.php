@@ -14,7 +14,6 @@
             <h6 class="text-center">@if(Auth::user()->clv_upp == $upp->clave) {{$upp->clave}} {{$upp->descripcion}} @endif</h6>
             @endforeach
         @endif
-        <div class="rounded-pill" style="height: .5em; background-color: rgb(37, 150, 190)"></div>
         <form action="{{route('calendario_fondo_mensual')}}" id="buscarFormA" name="analisis" method="post"> </form>
         <form action="{{route('resumen_capitulo_partida')}}" id="buscarFormB" name="analisis" method="post"><input type="text" id="catalogoB_val"  style="display: none"></form> 
         <form action="{{route('proyecto_avance_general')}}" id="buscarFormC" name="analisis" method="post"><input type="text" id="catalogoC_val"  style="display: none"></form> 

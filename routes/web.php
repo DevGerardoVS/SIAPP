@@ -22,7 +22,7 @@ Auth::routes();
 Route::get('/', function () {
     if (!Auth::guest()) {
         Session(['sistema' => 1]);
-        if(Auth::user()->clv_upp != null)
+        if(Auth::user()->id_grupo !=1)
         {
             return redirect('/calendarizacion/claves');
             
@@ -42,7 +42,7 @@ Route::get('', function () {
     }
     if (!Auth::guest()) {
         Session(['sistema' => 1]);
-        if(Auth::user()->clv_upp != null)
+        if(Auth::user()->id_grupo !=1)
         {
             return redirect('/calendarizacion/claves');
             
@@ -63,7 +63,7 @@ Route::get('/login', function () {
 Route::get('/home', function () {
     if (!Auth::guest()) {
         Session(['sistema' => 1]);
-        if(Auth::user()->clv_upp != null)
+        if(Auth::user()->id_grupo !=1)
         {
             return redirect('/calendarizacion/claves');
             

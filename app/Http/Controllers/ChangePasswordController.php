@@ -39,27 +39,23 @@ class ChangePasswordController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'contraseña_actual' => ['required', new MatchOldPassword],
-            'nueva_contraseña' => ['required'],
-            'confirmar_nueva_contraseña' => ['same:nueva_contraseña'],
-        ]);
-        $ModelsUser = ModelsUser::where('id', auth()->user()->id)->firstOrFail();
-        $ModelsUser->password = $request->nueva_contraseña;//Hash::make($request->nueva_contraseña);
-        $ModelsUser->save();
+   
         // bitacora
         try {
-           /*  $modulo = "Cambio de contraseña";
-            $accion = "Modificacion";
-            $data_old= array('nombre'=>auth()->user()->nombre, 'email'=>auth()->user()->email, 'password'=>auth()->user()->password);
-            $data_new= array('nombre'=>auth()->user()->nombre, 'email'=>auth()->user()->email, 'password'=>Hash::make($request->nueva_contraseña));
-            $array_data = array(
-                'tabla'=>'users',
-                'usuario'=> Auth::user()->username,
-                'anterior'=>$data_old,
-                'nuevo'=>$data_new
-            );
-                   BitacoraHelper::saveBitacora(BitacoraHelper::getIp(), $modulo , $accion, json_encode($array_data)); */
+            $request->validate([
+                'contraseña_actual' => ['required', new MatchOldPassword],
+                'nueva_contraseña' => ['required'],
+                'confirmar_nueva_contraseña' => ['same:nueva_contraseña'],
+            ]);
+            $ModelsUser = ModelsUser::where('id', auth()->user()->id)->firstOrFail();
+            $ModelsUser->password = $request->nueva_contraseña;//Hash::make($request->nueva_contraseña);
+            $ModelsUser->save();
+      			$b = array(
+				"username"=>Auth::user()->username,
+				"accion"=>'Cambio de Contraseña',
+				"modulo"=>'Contraseña'
+			 );
+			Controller::bitacora($b);
         } catch (\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
         }

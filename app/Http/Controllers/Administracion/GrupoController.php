@@ -18,8 +18,8 @@ class GrupoController extends Controller
     //Consulta Tablero Grupos
     public function getData() {
         $data = [];
-        Controller::check_permission('getGrupos', false);
-        $query = Grupo::where('deleted_at', null)->get();
+        Controller::check_permission('getGrupos');
+        $query = Grupo::where('deleted_at', null)->where('id','!=',2)->get();
 
         foreach ($query as $q) {
             $rel = DB::table('adm_rel_user_grupo')
@@ -41,7 +41,7 @@ class GrupoController extends Controller
     }
     //Inserta Grupo
     public function getCreate(){
-        Controller::check_permission('postGrupos', false);
+        Controller::check_permission('postGrupos');
     	return view('administracion.grupos.create');
     }
     //Inserta Grupo
@@ -58,12 +58,12 @@ class GrupoController extends Controller
     }
     //Actualiza Grupo
     public function getUpdate($id){
-        Controller::check_permission('putGrupos', false);
+        Controller::check_permission('putGrupos');
     	$grupo = Grupo::find($id);
     	return view('administracion.grupos.update', compact('grupo'));
     }
     public function getGrupo($id){
-        Controller::check_permission('putGrupos', false);
+        Controller::check_permission('putGrupos');
     	$grupo = Grupo::find($id);
     	return $grupo;
     }

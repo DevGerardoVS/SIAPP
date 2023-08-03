@@ -34,6 +34,23 @@ var dao = {
             url:"/actividades/jasper/" + upp,
             dataType : "json"
         }).done(function (params) {
+            document.getElementById('tipoReporte').value = 1;
+            $('#firmaModal').modal('show');
+        });
+    },
+    exportJasperMetas: function () {
+        let upp;
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+        } else {
+            upp = $('#upp').val();
+        }
+        $.ajax({
+            type:'get',
+            url:"/actividades/jasper-metas/" + upp,
+            dataType : "json"
+        }).done(function (params) {
+            document.getElementById('tipoReporte').value = 2;
             $('#firmaModal').modal('show');
         });
     },
@@ -115,6 +132,7 @@ var dao = {
         });
     },
     getActiv: function (upp) {
+        $("#tipo_Ac").empty();
         $.ajax({
             type: "GET",
             url: '/calendarizacion/tcalendario/'+upp,
@@ -167,8 +185,8 @@ var dao = {
         }).done(function (data) {
             dao.getActiv(data.clv_upp);
             $('#proyectoMD').empty();
-            $('#proyectoMD').append("<thead><tr class='colorMorado'>"
-             +"<th class= 'vertical' > UP</th >"
+            $('#proyectoMD').append("<thead><tr class='colorRosa'>"
+             +"<th class= 'vertical' > UPP</th >"
              +"<th class='vertical'>UR</th>"
              +"<th class='vertical'>Programa</th>"
              +"<th class='vertical'>Subprograma</th>"

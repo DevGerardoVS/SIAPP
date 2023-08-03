@@ -238,6 +238,13 @@ class ClavePreController extends Controller
                     'tipo' => $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH',    
                     'created_user' => Auth::user()->username, 
                 ]);
+                $aplanado = DB::select("CALL insert_pp_aplanado('$request->ejercicio')");
+                $b = array(
+                    "username"=>Auth::user()->username,
+                    "accion"=>'Guardar',
+                    "modulo"=>'Claves'
+                 );
+                 Controller::bitacora($b);
             }else {
                 return response()->json('cantidadNoDisponible',200);
                 throw ValidationException::withMessages(['error de cantidades'=>'Las cantidades no coinciden...']);
@@ -270,6 +277,12 @@ class ClavePreController extends Controller
                 'diciembre' => $request->data[0]['diciembre'],  
                 'total' => $request->data[0]['total'],
             ]);
+            $b = array(
+                "username"=>Auth::user()->username,
+                "accion"=>'Editar',
+                "modulo"=>'Claves'
+             );
+             Controller::bitacora($b);
         } catch (\Exception $exp) {
             DB::rollBack();
 			Log::debug('exp '.$exp->getMessage());
@@ -283,6 +296,12 @@ class ClavePreController extends Controller
     public function postEliminarClave(Request $request){
         Controller::check_permission('deleteClaves');
         ProgramacionPresupuesto::where('id',$request->id)->delete();
+        $b = array(
+            "username"=>Auth::user()->username,
+            "accion"=>'Eliminar',
+            "modulo"=>'Claves'
+         );
+         Controller::bitacora($b);
         return response()->json('done',200);
     }
     public function getRegiones(){
@@ -407,12 +426,13 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($linea,200);
     }
-    public function getAreaFuncional($uppId,$id,$ejercicio){
+    public function getAreaFuncional($uppId,$id,$ejercicio, $subPrograma){
         $areaFuncional = DB::table('v_epp')
         ->SELECT('clv_finalidad', 'clv_funcion', 'clv_subfuncion', 'clv_eje', 'clv_programa_sectorial','clv_tipologia_conac')
         ->WHERE ('clv_upp', '=', $uppId)
         ->WHERE ('clv_ur', '=', $id)
         ->WHERE ('ejercicio', '=', $ejercicio)
+        ->WHERE ('clv_subprograma', '=',  $subPrograma)
         ->DISTINCT()
         ->first();
         return response()->json($areaFuncional,200);
@@ -548,8 +568,23 @@ class ClavePreController extends Controller
     public function getPresupuestoAsignado($ejercicio = 0, $upp = ''){
         $Totcalendarizado = 0;
         $disponible = 0;
-        $rol = 0;
+        $rol = '';
         $uppUsuario = Auth::user()->clv_upp;
+        $perfil = Auth::user()->id_grupo;
+        switch ($perfil) {
+            case 1:
+                $rol = 0;
+                break;
+            case 4:
+                $rol = 1;
+                break;
+            case 5:
+                $rol = 2;
+                break;
+            default:
+                $rol = 3;
+                break;
+        }
         $array_where = [];
         $array_where2 = [];
         $array_whereCierre = [];
@@ -577,7 +612,6 @@ class ClavePreController extends Controller
                 array_push($array_where, ['techos_financieros.tipo', '=', 'Operativo']);
                 array_push($array_where2, ['programacion_presupuesto.tipo', '=', 'Operativo']);
             }
-            $rol = 1;
            
         }else {
             array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
@@ -589,10 +623,6 @@ class ClavePreController extends Controller
                 array_push($array_where, ['techos_financieros.clv_upp', '=', $upp]);
                 array_push($array_where2, ['programacion_presupuesto.upp', '=', $upp]);
                 array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $upp]);
-            }
-            $grupo =  Auth::user()->id_grupo;
-            if ($grupo == 5) {
-                $rol =2;
             }
         } 
         $estatusCierre = DB::table('cierre_ejercicio_claves')
@@ -844,6 +874,12 @@ class ClavePreController extends Controller
                 ProgramacionPresupuesto::where($array_where)->update([
                     'estado' => 1,
                 ]);
+                $b = array(
+                    "username"=>Auth::user()->username,
+                    "accion"=>'Confirmar',
+                    "modulo"=>'Claves'
+                 );
+                 Controller::bitacora($b);
             }
         } catch (\Exception $exp) {
             DB::rollBack();

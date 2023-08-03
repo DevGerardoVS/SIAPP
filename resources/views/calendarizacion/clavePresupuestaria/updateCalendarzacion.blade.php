@@ -191,6 +191,7 @@
         let ejercicio = "{{$clave->ejercicio}}";
         let fondo_ramo = "{{$clave->ejercicio}}"+"{{$clave->etiquetado}}"+"{{$clave->fuente_financiamiento}}"+"{{$clave->ramo}}"+"{{$clave->fondo_ramo}}"+"{{$clave->capital}}";
         let partida = "{{$clave->posicion_presupuestaria}}"+"{{$clave->tipo_gasto}}"
+        let clasificacion = "{{$clave->clasificacion_administrativa}}";
         if (region != '') {
             dao.getRegiones(region);
         }
@@ -208,7 +209,6 @@
 
             dao.getUninadResponsableByUpp(upp,ejercicio,ur);
             dao.getSubSecretaria(upp,ur,ejercicio);
-            dao.getAreaFuncional(upp,ur,ejercicio);
             dao.getClasificacionAdmin(upp,ur);
         }
         if (programa_presupuestario != '') {
@@ -216,14 +216,14 @@
         }
         if (subprograma_presupuestario != '') {
             dao.getSubProgramaByProgramaId(ur,programa_presupuestario, upp,ejercicio,subprograma_presupuestario);
-            
+            dao.getAreaFuncional(upp,ur,ejercicio,subprograma_presupuestario);
         }
         if (proyecto_presupuestario != '') {
-            dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,ejercicio,proyecto_presupuestario);
+            dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,upp,ur,ejercicio,proyecto_presupuestario);
         }
         if (linea_accion != '') {
             dao.getLineaDeAccionByUpp(upp,ur,ejercicio,linea_accion);
-            dao.getPartidaByUpp(partida);
+            dao.getPartidaByUpp(clasificacion,partida);
             dao.getSector(linea_accion);
         }
         //dao.getPresupuestoPorUpp(upp,clv_fondo,subprograma_presupuestario, ejercicio);

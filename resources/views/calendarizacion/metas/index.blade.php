@@ -15,7 +15,7 @@
                         <div>
                             <div class="widget-body-toolbar">
                                 <div class="row">
-                                    @if (Auth::user()->clv_upp == null)
+                                    @if (Auth::user()->id_grupo == 1)
                                         <div class="col-md-4">
                                             <label class="control-label">UPP</label>
                                             <select class="form-control filters select2" id="upp_filter" name="upp_filter"
@@ -26,7 +26,7 @@
                                         <div class="col-md-4">
                                             <label class="control-label">UR</label>
                                             <select class="form-control filters select2" id="ur_filter" name="ur_filter"
-                                                autocomplete="ur_filter" placeholder="Seleccione una UR">
+                                                autocomplete="ur_filter" placeholder="Seleccione una UR" disabled>
                                                 <option value=""  selected>Seleccione una UR</option>
                                             </select>
                                         </div>

@@ -26,100 +26,50 @@ class TechosExportPresupuestos implements FromCollection, WithHeadings, WithStyl
     }
 
     public function collection(){
-        ob_end_clean();
+         ob_end_clean();
         ob_start();
-        ini_set('max_execution_time', 10000);
-        ini_set('memory_limit', '-1');
-        $array_data = [];
+
+        $array_data = array();
+        $final_data= array();
         $data = DB::table('techos_financieros as tf')
             ->select('tf.clv_upp','tf.clv_fondo','tf.tipo','tf.presupuesto','tf.ejercicio','vee.Ej')
             ->leftJoinSub('select distinct clv_upp, upp, ejercicio as Ej from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
             ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo')
-            -> where('tf.ejercicio','=',$this->ejercicio)
-            -> where('vee.Ej','=',$this->ejercicio)
+            ->where('tf.ejercicio','=',$this->ejercicio)
+            ->where('vee.Ej','=',$this->ejercicio)
             ->get();
+
+            $arr = json_decode(json_encode ( $data ) , true);
+            foreach($arr as $d){
+                 $keyname=$d['clv_upp'].$d['clv_fondo'];
+                //buscar en el array de totales 
+                if(array_key_exists($keyname, $array_data)){
+    
+                    if($d['tipo']=='RH'){
+                        $array_data[$keyname] =  $array_data[$keyname].','.$d['presupuesto']; 
+                       }
+                       else{
+                        $array_data[$keyname] =  $d['presupuesto'].','.$array_data[$keyname]; 
+
+                       }
         
-        
-        $repeticion = [];
-        foreach($data as $d){
-            array_push($repeticion,[
-                "upp" => $d->clv_upp,
-                "fondo" => $d->clv_fondo,
-                "tipo" => $d->tipo,
-                "presupuesto" => $d->presupuesto,
-                "ejercicio" => $d->ejercicio,
-                "Ej" => $d->Ej
-            ]);
-        }
-        array_push($repeticion,[
-            "upp" => '',
-            "fondo" => '',
-            "tipo" => '',
-            "presupuesto" => '',
-            "ejercicio" => '',
-            "Ej" => ''
-        ]);
-        
-        $bandera = false;
-        foreach($data as $d){
-            Log::debug("message");
-            if($d->tipo == 'RH'){
-                Log::debug("mRH");
-                $repeticion = array_slice($repeticion,1);
-                if(count($repeticion) != 0){
-                    //valido la existencia en el array repeticion
-                    foreach($repeticion as $r){
-                        if($d->clv_upp == $r['upp'] && $d->clv_fondo == $r['fondo'] && $r['tipo'] == 'Operativo' && $r['Ej'] == $d->ejercicio){
-                            array_push($array_data,[$d->clv_upp,$d->clv_fondo, $r['presupuesto'],$d->presupuesto, ($d->presupuesto + $r['presupuesto'])]);
-                            $r['tipo'] = '';
-                            $bandera = true; 
-                            break;
-                        }
-                    }
-                    if($bandera == false){
-                        $aux = false;
-                        //veo que el registro actual no se haya metido ya al array del exce
-                        foreach($array_data as $a){
-                            if($a[0] == $d->clv_upp && $a[1] == $d->clv_fondo){
-                                $aux = true;
-                                break;
-                            }
-                            if($aux == false){
-                                array_push($array_data,[$d->clv_upp,$d->clv_fondo,' ', $d->presupuesto, $d->presupuesto]);
-                            }
-                        }
-                    }
-                }
-            }else if($d->tipo == 'Operativo'){
-                Log::debug("OPE");
-                $repeticion = array_slice($repeticion,1);
-                if(count($repeticion) != 0){
-                    foreach($repeticion as $r){
-                        if($d->clv_upp == $r['upp'] && $d->clv_fondo == $r['fondo'] && $r['tipo'] == 'RH' && $r['Ej'] == $d->ejercicio){
-                            array_push($array_data,[$d->clv_upp,$d->clv_fondo,$d->presupuesto, $r['presupuesto'], ($d->presupuesto + $r['presupuesto'])]);
-                            $r['tipo'] = '';
-                            $bandera = true; 
-                            break;
-                        }
-                    }
-                    if($bandera == false){
-                        $aux = false;
-                        foreach($array_data as $a){
-                            if($a[0] == $d->clv_upp && $a[1] == $d->clv_fondo){
-                                $aux = true;
-                                break;
-                            }
-                            if($aux == false){
-                                array_push($array_data,[$d->clv_upp,$d->clv_fondo,' ', $d->presupuesto, $d->presupuesto]); 
-                            }
-                        }
-                    }
-                }
+                   }else{
+
+                            $array_data[$keyname] = $d['presupuesto'];                           
+                   }
             }
-            $bandera = false;
-        }
-        Log::debug("finish");
-        return collect($array_data);
+            foreach ($array_data as $key => $value) {
+                $llavesplit = str_split($key, 3);
+               $presupuestos = explode(",", $value);
+               if(array_key_exists(1,$presupuestos)){
+                array_push($final_data,[$llavesplit[0],$llavesplit[1],$presupuestos[0],$presupuestos[1],$presupuestos[0]+$presupuestos[1]]);
+               }
+               else{
+                array_push($final_data,[$llavesplit[0],$llavesplit[1],$presupuestos[0],'',$presupuestos[0]]);
+               }
+            }
+
+        return collect($final_data);
     }
 
     public function headings():array {
