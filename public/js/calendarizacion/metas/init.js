@@ -104,7 +104,7 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             const { urs, tAct } = data;
-           
+            console.log("activids",tAct);
             var par = $('#ur_filter');
             par.html('');
             par.append(new Option("-- URS--", ""));
@@ -167,7 +167,6 @@ var dao = {
     crearMeta: function () {
         var form = $('#actividad')[0];
         var data = new FormData(form);
-        data.append('pMir_id', $('[name="proyecto"]:checked').val());
         data.append('sumMetas', $('#sumMetas').val());
         $.ajax({
             type: "POST",
@@ -282,6 +281,8 @@ var dao = {
             $('#sel_actividad').prop('disabled', false);
             $('#sel_fondo').prop('disabled', false);
             const { fondos, activids } = data;
+            console.log("tipo Calendario",activids);
+
             var fond = $('#sel_fondo');
             fond.html('');
             fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
@@ -297,7 +298,7 @@ var dao = {
             act.append(new Option("--Actividad--", "true", true, true));
             document.getElementById("sel_actividad").options[0].disabled = true;
             $.each(activids, function (i, val) {
-                act.append(new Option(val.actividad, val.clave));
+                act.append(new Option(val.actividad, val.id));
             });
             act.select2({
                 maximumSelectionLength: 10

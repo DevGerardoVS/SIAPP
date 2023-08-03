@@ -12,7 +12,7 @@
                 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                     <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-colorbutton="false"
                         data-widget-deletebutton="false">
-                        <header>
+                        <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
                             <h2>Configuraciones</h2>
                         </header>
                         <ul class="nav nav-tabs" id="myTab" role="tablist">

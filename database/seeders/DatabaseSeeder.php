@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         ['id' => 1, 'id_grupo' => 2, 'nombre' => 'Gob', 'p_apellido' => 'Digital', 's_apellido' => 'siapp', 'celular' => '00-00-00-00-00', 'email' => 'control@gmail.com', 'username' => 'control', 'password' => 'CasaMata',  'clv_upp' => NULL],
         ['id' => 2, 'id_grupo' => 1, 'nombre' => 'sudo', 'p_apellido' => 'admin', 's_apellido' => 'sedj', 'celular' => '00-00-00-00-00', 'email' => 'prueba1@gmail.com', 'username' => 'administrador', 'password' => 'valida2022',  'clv_upp' => NULL],
         ['id' => 3, 'id_grupo' => 1, 'nombre' => 'Francisco', 'p_apellido' => 'Méndez', 's_apellido' => 'Chávez', 'celular' => '44-32-21-90-95', 'email' => 'pacomendez2308@gmail.com', 'username' => 'depExpedientes', 'password' => 'depExpedientes.22',  'clv_upp' => NULL],
-        ['id' => 4, 'id_grupo' => 3, 'nombre' => 'auditor', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Auditor', 'password' => 'valida2022',  'clv_upp' => '007'],
+        ['id' => 4, 'id_grupo' => 3, 'nombre' => 'auditor', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Auditor', 'password' => 'valida2022',  'clv_upp' => NULL],
         ['id' => 5, 'id_grupo' => 1, 'nombre' => 'UnidadR', 'p_apellido' => 'u', 's_apellido' => 'pp', 'celular' => '44-32-21-90-95', 'email' => 'upp_user@gmail.com', 'username' => 'upp', 'password' => 'valida23',  'clv_upp' => '002'],
         ['id' => 6, 'id_grupo' => 1, 'nombre' => 'Luis', 'p_apellido' => 'Pardo', 's_apellido' => 'Escutia', 'celular' => '4400000081', 'email' => 'rosario.escutia+81@correo.michoacan.gob.mx', 'username' => 'LPARDO', 'password' => 'valida2022',  'clv_upp' => NULL],
         ['id' => 7, 'id_grupo' => 5, 'nombre' => 'Mario', 'p_apellido' => 'Delgado', 's_apellido' => 'Murillo', 'celular' => '4400000082', 'email' => 'rosario.escutia+82@correo.michoacan.gob.mx', 'username' => 'DELEGACION', 'password' => 'valida2022',  'clv_upp' => NULL],
@@ -131,20 +131,20 @@ class DatabaseSeeder extends Seeder
 
 
         protected $menus = array(
-            ['id' => 2,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Logs', 'ruta' => '/logs', 'icono' => 'fa-calendar', 'nivel' => 0, 'posicion' => 3, 'descripcion' => 'Módulo de calendario'],
-            ['id' => 3,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Usuarios', 'ruta' => '/adm-usuarios', 'icono' => 'fa-user', 'nivel' => 0, 'posicion' => 3, 'descripcion' => 'Módulo para administrar los usuarios del sistema'],
-            ['id' => 4,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administración', 'ruta' => '#', 'icono' => 'fa-gears', 'nivel' => 0, 'posicion' => 7, 'descripcion' => 'Conjunto de módulos de adminsitración del sistema'],
-            ['id' => 5,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Grupos', 'ruta' => '/adm-grupos', 'icono' => 'fa-users', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Módulo para administrar los grupos del sistema'],
-            ['id' => 6,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Bitácora', 'ruta' => '/adm-bitacora', 'icono' => 'fa-bookmark', 'nivel' => 1, 'posicion' => 2, 'descripcion' => 'Bitácora de movimientos del sistema'],
-            ['id' => 7,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Calendarización', 'ruta' => '/calendarizacion', 'icono' => ' fa-calendar', 'nivel' => 0, 'posicion' => 4, 'descripcion' => 'Calendarización de presupuestos'],
-            ['id' => 8,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Claves presupuestarias', 'ruta' => '/calendarizacion/claves', 'icono' => ' fa-calendar', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Registro de claves presupuestaria'],
-            ['id' => 9,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Metas', 'ruta' => '/calendarizacion/metas', 'icono' => 'fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Techos financieros'],
-            ['id' => 10,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Techos financieros', 'ruta' => '/calendarizacion/techos', 'icono' => 'fa-flag-checkered', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Techos financieros'],
-            ['id' => 11,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Reportes', 'ruta' => '/Reportes', 'icono' => 'fa-flag-checkered', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Reportes'],
-            ['id' => 12,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'ley Planeacion Hacienda', 'ruta' => '/Reportes/ley-planeacion', 'icono' => 'fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Reportes'],
-            ['id' => 13,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Administrativos', 'ruta' => '/Reportes/administrativos', 'icono' => 'fa-flag-checkered', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Reportes'],
-            ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administracion de captura', 'ruta' => '/admon-capturas', 'icono' => ' fa-crosshairs', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
-            ['id' => 15,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Configuraciones', 'ruta' => '/adm-configuracion', 'icono' => ' fa-crosshairs', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de configuraciones'],
+            ['id' => 2,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Logs', 'ruta' => '/logs', 'icono' => 'fa fa-bar-chart', 'nivel' => 0, 'posicion' => 3, 'descripcion' => 'Módulo de calendario'],
+            ['id' => 3,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Usuarios', 'ruta' => '/adm-usuarios', 'icono' => '', 'nivel' => 0, 'posicion' => 3, 'descripcion' => 'Módulo para administrar los usuarios del sistema'],
+            ['id' => 4,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administración', 'ruta' => '#', 'icono' => '', 'nivel' => 0, 'posicion' => 7, 'descripcion' => 'Conjunto de módulos de adminsitración del sistema'],
+            ['id' => 5,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Grupos', 'ruta' => '/adm-grupos', 'icono' => 'fa fa-object-group', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Módulo para administrar los grupos del sistema'],
+            ['id' => 6,  'id_sistema' => 1,'padre' => 4, 'nombre_menu' => 'Bitácora', 'ruta' => '/adm-bitacora', 'icono' => 'fa fa-bookmark-o', 'nivel' => 1, 'posicion' => 2, 'descripcion' => 'Bitácora de movimientos del sistema'],
+            ['id' => 7,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Calendarización', 'ruta' => '/calendarizacion', 'icono' => '', 'nivel' => 0, 'posicion' => 4, 'descripcion' => 'Calendarización de presupuestos'],
+            ['id' => 8,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Claves presupuestarias', 'ruta' => '/calendarizacion/claves', 'icono' => 'fa fa-key', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Registro de claves presupuestaria'],
+            ['id' => 9,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Metas', 'ruta' => '/calendarizacion/metas', 'icono' => 'fa fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Techos financieros'],
+            ['id' => 10,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Techos financieros', 'ruta' => '/calendarizacion/techos', 'icono' => 'fa fa-money', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Techos financieros'],
+            ['id' => 11,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Reportes', 'ruta' => '/Reportes', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Reportes'],
+            ['id' => 12,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Ley Planeacion Hacienda', 'ruta' => '/Reportes/ley-planeacion', 'icono' => 'fa fa-line-chart', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Reportes'],
+            ['id' => 13,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Administrativos', 'ruta' => '/Reportes/administrativos', 'icono' => 'fa fa-area-chart', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Reportes'],
+            ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administracion de captura', 'ruta' => '/admon-capturas', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
+            ['id' => 15,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Configuraciones', 'ruta' => '/adm-configuracion', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de configuraciones'],
         );
     protected $menuUpp = array(
         ['id_menu' => 7 ], 
@@ -359,7 +359,7 @@ class DatabaseSeeder extends Seeder
             ProgramacionPresupuestoSeeder::class,
             TipoActividadUppSeeder::class,
             prueba2024::class,
-            prueba2025::class
+           // prueba2025::class
         ]);
         
         echo "\nInicializacion de Catalogos del Sistema";

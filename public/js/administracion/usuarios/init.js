@@ -133,6 +133,10 @@ var dao = {
             });
         });
     },
+    editarUp: function (id) {
+        $("#createPermiso").modal("show");
+        console.log("id",id)
+     },
     crearUsuario: function () {
         var form = $('#frm_create')[0];
         var data = new FormData(form);
@@ -158,6 +162,7 @@ var dao = {
             });
 
             dao.limpiarFormularioCrear();
+           
             getData();
         });
     },
@@ -216,7 +221,7 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            console.log("response", response)
+            $('#exampleModalLabel').text('Editar usuario')
             const {
                 id,
                 username,
@@ -276,6 +281,19 @@ var dao = {
         $("#id_grupo").show();
         $("#labelGrupo").show();
         $("#label_idGrupo").text("").hide();
+        $('#exampleModalLabel').text('Agregar usuario');
+
+    },
+    exportExcel: function () {
+        _url = "/adm-usuarios-exportExcel";
+        window.open(_url, '_blank');
+        $('#cabecera').css("visibility","visible");  
+    },
+    exportPdf: function () {
+        console.log('entro en la funcion');
+        _url = "/adm-usuarios-exportPdf";
+        window.open(_url, '_blank');
+                // $('#cabecera').css("visibility","visible");
 
     },
 };
@@ -372,6 +390,7 @@ var init = {
 };
 
 $(document).ready(function () {
+
     getData();
     init.validatePermiso($('#frm_permisos'));
     dao.getPerfil();

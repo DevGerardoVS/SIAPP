@@ -16,7 +16,7 @@
                 <div class="row">
 
                     <div class="col-md-4">
-                        @if (Auth::user()->clv_upp == null)
+                        @if (Auth::user()->id_grupo != 4)
                             <label class="control-label">UPP</label>
                             <select class="form-control filters select2" id="upp_filter" name="upp_filter"
                                 autocomplete="upp_filter" placeholder="Seleccione una UR">
@@ -27,18 +27,20 @@
 
                     <div class="d-flex col-md-8 " style="justify-content: flex-end">
                         <div>
-                            @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
-                                <button type="button" class="btn btn-primary" onclick="dao.exportJasper()">Formato</button>
+                            @if (Auth::user()->id_grupo == 1 && Auth::user()->id_grupo == 4)
+                            <button style="display:none" type="button" class="btn btn-primary" onclick="dao.exportJasperMetas()">Formato Metas</button>
+                                &nbsp
+                                <button style="display:none" type="button" class="btn btn-primary" onclick="dao.exportJasper()">Formato</button>
                                 &nbsp
                             @endif
                             <a type="button" class="btn btn-primary" href="{{ route('index_metas') }}">Agregar
                                 Actividad</a>
 
-                            @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
-                                <div class="d-flex justify-content-center" style=" margin: 2px auto;">
-                                    <button type="button" style="justify-content: float-right" onclick="dao.exportExcel()" class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                                @if (Auth::user()->id_grupo == 1 && Auth::user()->id_grupo == 4)
+                                <div  class="d-flex justify-content-center" style=" margin: 2px auto;">
+                                    <button type="button" style="justify-content: float-right; display:none;" onclick="dao.exportExcel()" class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
                                     &nbsp
-                                    <button type="button" style="justify-content: flex-end" onclick="dao.exportPdf()"
+                                    <button type="button" style="justify-content: flex-end; display:none;" onclick="dao.exportPdf()"
                                         class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
                                 </div>
                             @else
