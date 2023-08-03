@@ -14,12 +14,10 @@ class UsersExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
     public function collection()
     {
 
-        $users = DB::table('users')
-            ->select('users.nombre','apellidoP','apellidoM', 'username', 'email','telefono','perfiles.nombre as perfil','users.delegacion',DB::raw('IF(users.estatus=1,"Vigente","No vigente") as estatus'))
-            ->join('perfiles','users.perfil_id',"=","perfiles.id")
-            ->orderBy('users.nombre', 'asc')
+        $users = DB::table('adm_users')
+            ->select('id','nombre','p_apellido', 's_apellido', 'username','email','celular')
+            ->orderBy('nombre', 'asc')
             ->get();
-
         return $users;
     }
 
@@ -29,22 +27,19 @@ class UsersExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
      */
     public function headings(): array
     {
-        return ["Nombre", "Apellido Paterno", "Apellido Materno", "Usuario", "Correo", "Telefono", "Perfil", "Delegación", "Estatus"];
+        return ["ID","Nombre", "Apellido Paterno", "Apellido Materno", "Usuario", "Correo", "Telefono"];
     }
 
     public function columnWidths(): array
     {
         return [
             'A' => 15,
-            'B' => 20,
-            'C' => 20,
-            'D' => 15,
+            'B' => 30,
+            'C' => 30,
+            'D' => 30,
             'E' => 30,
-            'F' => 15,
-            'G' => 30,
-            'H' => 15,
-            'I' => 15,
-            'J' => 15
+            'F' => 30,
+            'G' => 20,
         ];
     }
 }

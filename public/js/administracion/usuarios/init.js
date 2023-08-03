@@ -284,6 +284,18 @@ var dao = {
         $('#exampleModalLabel').text('Agregar usuario');
 
     },
+    exportExcel: function () {
+        _url = "/adm-usuarios-exportExcel";
+        window.open(_url, '_blank');
+        $('#cabecera').css("visibility","visible");  
+    },
+    exportPdf: function () {
+        console.log('entro en la funcion');
+        _url = "/adm-usuarios-exportPdf";
+        window.open(_url, '_blank');
+                // $('#cabecera').css("visibility","visible");
+
+    },
 };
 var init = {
     validateCreate: function (form) {

@@ -11,6 +11,9 @@ use Auth;
 use DB;
 use Illuminate\Http\Request;
 use Log;
+use PDF;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UsuarioController extends Controller
 {
@@ -51,7 +54,7 @@ class UsuarioController extends Controller
                 'id_permiso' => $request->id_permiso,
                 'descripcion' => $request->descripcion,
             ]);
-		} else {
+        } else {
             /* 
             checar los permisos que tiene 
             verificar si tiene el permiso y si viene en el request 
@@ -59,47 +62,47 @@ class UsuarioController extends Controller
             si no esta en el registro y y viene en el request agregar
 
              */
-			$resul = PermisosUpp::where('id', $request->id)->get();
-			$user = PermisosUpp::where('deleted_at',null)->where('id_user', $request->id_userP)->get();
-			foreach ($user as $key) {
-				switch ($key->id_permiso) {
-					case 1:
-						if (isset($request->masiva)) {
-							$resul->id_permiso = $request->masiva;
-							$resul->descripcion = $request->descripcion;
-							$resul->save();
-						}else{
-							PermisosUpp::where('id', $request->id)->delete();
-						}
-						break;
-					case 2:
-							# code...
-						break;
-					case 3:
-								# code...
-						break;
-					
-					default:
-						# code...
-						break;
-				}
-				if (isset($request->oficio)) {
-					$resul->id_permiso = 3;
-					$resul->descripcion = $request->descripcion;
-					$resul->save();
-				}
-				if (isset($request->obra)) {
-					$resul->id_permiso = 2;
-					$resul->descripcion = $request->descripcion;
-					$resul->save();
-				}
-				if (isset($request->masiva)) {
-					$resul->id_permiso = 1;
-					$resul->descripcion = $request->descripcion;
-					$resul->save();
-				}
-			}
-		}
+            $resul = PermisosUpp::where('id', $request->id)->get();
+            $user = PermisosUpp::where('deleted_at', null)->where('id_user', $request->id_userP)->get();
+            foreach ($user as $key) {
+                switch ($key->id_permiso) {
+                    case 1:
+                        if (isset($request->masiva)) {
+                            $resul->id_permiso = $request->masiva;
+                            $resul->descripcion = $request->descripcion;
+                            $resul->save();
+                        } else {
+                            PermisosUpp::where('id', $request->id)->delete();
+                        }
+                        break;
+                    case 2:
+                        # code...
+                        break;
+                    case 3:
+                        # code...
+                        break;
+
+                    default:
+                        # code...
+                        break;
+                }
+                if (isset($request->oficio)) {
+                    $resul->id_permiso = 3;
+                    $resul->descripcion = $request->descripcion;
+                    $resul->save();
+                }
+                if (isset($request->obra)) {
+                    $resul->id_permiso = 2;
+                    $resul->descripcion = $request->descripcion;
+                    $resul->save();
+                }
+                if (isset($request->masiva)) {
+                    $resul->id_permiso = 1;
+                    $resul->descripcion = $request->descripcion;
+                    $resul->save();
+                }
+            }
+        }
         if ($resul || $resul->wasChanged()) {
             $res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
             return response()->json($res, 200);
@@ -158,9 +161,11 @@ class UsuarioController extends Controller
                 DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'),
                 'adm_users.celular',
                 DB::raw('adm_grupos.nombre_grupo as grupo'),
-                'adm_users.p_apellido', 'adm_users.s_apellido',
+                'adm_users.p_apellido',
+                'adm_users.s_apellido',
                 'adm_users.nombre',
-                DB::raw('ifnull(adm_grupos.id, "null") as id_grupo'))
+                DB::raw('ifnull(adm_grupos.id, "null") as id_grupo')
+            )
             ->leftJoin('adm_grupos', 'adm_grupos.id', '=', 'adm_users.id_grupo')
             ->where('adm_users.deleted_at', '=', null)
             ->orderby('adm_users.estatus');
@@ -176,9 +181,9 @@ class UsuarioController extends Controller
             Auth::user()->id_grupo;
             $accion = Auth::user()->id_grupo != 3 ? '<a data-toggle="modal" data-target="#exampleModal" data-backdrop="static" data-keyboard="false" title="Modificar Usuario"
 			class="btn btn-sm"onclick="dao.editarUsuario(' . $key->id . ')">' .
-            '<i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' .
-            '<a data-toggle="tooltip" title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' . $key->id . ', ' . $key->estatus . ')">' .
-            '<i class="fa fa-lock"></i></a>&nbsp;' : '';
+                '<i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' .
+                '<a data-toggle="tooltip" title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' . $key->id . ', ' . $key->estatus . ')">' .
+                '<i class="fa fa-lock"></i></a>&nbsp;' : '';
             $i = array(
                 $key->username,
                 $key->email,
@@ -317,6 +322,7 @@ class UsuarioController extends Controller
         endif;
         return response()->json("nada", 200);
 
+
     }
     public function grupos()
     {
@@ -357,6 +363,38 @@ class UsuarioController extends Controller
         $user->password = $request->password;
         $user->save();
         return response(200);
+    }
+    public function exportExecel()
+    {
+        /*Si no coloco estas lineas Falla*/
+        ob_end_clean();
+        ob_start();
+        /*Si no coloco estas lineas Falla*/
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Descargar Usuarios Excel',
+            "modulo" => 'Usuarios'
+        );
+        Controller::bitacora($b);
+        return Excel::download(new UsersExport(), 'Listado de Usuarios.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
+    public function exportPdf()
+    {
+        ini_set('max_execution_time', 5000);
+        ini_set('memory_limit', '1024M');
+        $data = DB::table('adm_users')
+            ->select('id', 'nombre', 'p_apellido', 's_apellido', 'username', 'email', 'celular')
+            ->orderBy('nombre', 'asc')
+            ->get();
+        view()->share('data', $data);
+        $pdf = PDF::loadView('administracion.usuarios.usuariosPdf')->setPaper('a4', 'landscape');
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Descargar Usuarios PDF',
+            "modulo" => 'Usuarios'
+        );
+        Controller::bitacora($b);
+        return $pdf->download('Lista de Usuarios.pdf');
     }
 
 }
