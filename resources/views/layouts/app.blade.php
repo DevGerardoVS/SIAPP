@@ -144,7 +144,7 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap4.min.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap4.min.css')) }}">
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
-    <script src="/js/utilerias.js"></script>
+    <script src="/js/appInit.js"></script>
     <script>
      $( document ).ready(function() {
        _gen.block(); 
