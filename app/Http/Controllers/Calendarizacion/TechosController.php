@@ -297,14 +297,23 @@ class TechosController extends Controller
             ->get();
             
             $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp);
-            log::debug($confirmacionMeta);
-            
-            
+                
             if(count($confirmadoClave) == 0){ //si no esta asignado a una clave presupuestaria se EDITA normalmente
                 DB::beginTransaction();
+
                 DB::table('techos_financieros')
                 ->where('id','=',$request->id)
                 ->update(['presupuesto' => $request->presupuesto,'updated_user' =>Auth::user()->username ]);
+
+                if(count($confirmacionMeta) != 0){
+                    foreach($confirmacionMeta as $cm){
+                        if($data[0]->ejercicio == $cm->ejercicio){
+                            DB::table('metas')
+                            ->where('id','=',$cm->id)
+                            ->update(['estatus' => 0]);
+                        }
+                    }
+                }
                 DB::commit();
 
                 $b = array(
@@ -326,11 +335,19 @@ class TechosController extends Controller
                 ->where('id','=',$request->id)
                 ->update(['presupuesto' => $request->presupuesto,'updated_user' =>Auth::user()->username ]);
                 
-                if($confirmadoClave[0]->estado == 1){
-                    DB::table('programacion_presupuesto')
-                    ->where('upp','=',$data[0]->clv_upp)
-                    ->where('ejercicio','=',$data[0]->ejercicio)
-                    ->update(['estado' => 0]);
+                DB::table('programacion_presupuesto')
+                ->where('upp','=',$data[0]->clv_upp)
+                ->where('ejercicio','=',$data[0]->ejercicio)
+                ->update(['estado' => 0]);
+
+                if(count($confirmacionMeta) != 0){
+                    foreach($confirmacionMeta as $cm){
+                        if($data[0]->ejercicio == $cm->ejercicio){
+                            DB::table('metas')
+                            ->where('id','=',$cm->id)
+                            ->update(['estatus' => 0]);
+                        }
+                    }
                 }
                 
                 DB::commit();
