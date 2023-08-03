@@ -663,19 +663,19 @@ class MetasController extends Controller
 	}
 	public function checkCombination($upp)
 	{
-		$check=$this->checkClosing($upp);
+		$check = $this->checkClosing($upp);
 
-			$proyecto = DB::table('actividades_mir')
-				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
-				->select(
-					'actividades_mir.id',
-					'proyectos_mir.area_funcional AS area',
-					'proyectos_mir.clv_upp'
-				)
-				->where('actividades_mir.deleted_at', null)
-				->where('proyectos_mir.deleted_at', null)
-				->where('proyectos_mir.clv_upp', $upp);
-		$metas=DB::table('metas')
+		$proyecto = DB::table('actividades_mir')
+			->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+			->select(
+				'actividades_mir.id',
+				'proyectos_mir.area_funcional AS area',
+				'proyectos_mir.clv_upp'
+			)
+			->where('actividades_mir.deleted_at', null)
+			->where('proyectos_mir.deleted_at', null)
+			->where('proyectos_mir.clv_upp', $upp);
+		$metas = DB::table('metas')
 			->leftJoinSub($proyecto, 'pro', function ($join) {
 				$join->on('metas.actividad_id', '=', 'pro.id');
 			})
@@ -683,11 +683,12 @@ class MetasController extends Controller
 				'metas.id',
 				'metas.estatus'
 			)
-			->where('metas.estatus',1)
+			->where('metas.estatus', 1)
 			->where('pro.clv_upp', '=', $upp)
 			->get();
-			if ($check['status']) {
-			if (count($metas)==0 || Auth::user()->id_grupo == 1 ) {
+		Log::debug($check);
+		if ($check['status']) {
+			if (count($metas) == 0 || Auth::user()->id_grupo == 1) {
 				$activs = DB::table("programacion_presupuesto")
 					->select(
 						'programa_presupuestario AS programa',
@@ -728,7 +729,7 @@ class MetasController extends Controller
 				} else {
 					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false];
 				}
-			}else{
+			} else {
 				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "estado" => true];
 			}
 		} else {
@@ -907,7 +908,7 @@ class MetasController extends Controller
 			)
 			->where('clv_upp', '=', $upp)
 			->get();
-		if (Auth::user()->id_grupo == 1 && $anio[0]->estatus == 'Abierto') {
+		if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
 			return ["status" => true, "anio" => $anio[0]->ejercicio];
 		}else{
 			return ["status" => false, "anio" => $anio[0]->ejercicio];
@@ -957,7 +958,6 @@ class MetasController extends Controller
 		$reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
 			'Content-Type' => 'application/pdf'
 		]);
-		Log::debug('hoy es dia 01');
 		if ($reportePDF != '') {
 			return response()->json('done',200);
 		}else {

@@ -16,6 +16,8 @@
 	Route::controller(UsuarioController::class)->group(function () {
 		Route::get('adm-usuarios', 'getIndex')->name('index_usuario');
 		Route::get('adm-usuarios/data', 'getData')->name('getdata');
+		Route::get('adm-usuarios/indexPermiso', 'getIndexUP')->name('index_up');
+		Route::get('adm-usuarios/permisos', 'getDataUP')->name('getdataUserPerm');
 		Route::post('adm-usuarios/status', 'postStatus');
 		Route::get('adm-usuarios/create', 'getCreate');
 		Route::post('adm-usuarios/store', 'postStore');

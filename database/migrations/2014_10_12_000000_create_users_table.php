@@ -129,6 +129,7 @@ return new class extends Migration
             $table->integer('id_user')->unsigned();
             $table->integer('id_permiso')->unsigned();
             $table->longText('descripcion')->nullable();
+            $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->foreign('id_user')->references('id')->on('adm_users');

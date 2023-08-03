@@ -1,5 +1,5 @@
 
-@if (Auth::user()->clv_upp !=null)
+@if (Auth::user()->id_grupo !=1)
 <script type="text/javascript">
     window.location.href = "/calendarizacion/claves";
  </script>
@@ -7,12 +7,12 @@
 @extends('layouts.app')
 
 @section('content')
-
+<br>
 <div class="container">
-    <header>
+    <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
         <h2>Inicio</h2>
     </header>
-
+<br>
 
     <div class="row justify-content-center">
         <div class="col-md-8">
