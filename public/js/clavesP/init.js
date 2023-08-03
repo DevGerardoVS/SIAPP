@@ -608,7 +608,7 @@ var dao = {
         }
         
       }
-      if (response.rol != 1 && response.rol != 0 && response.rol != 2) {
+      if (response.rol >= 3 ) {
         $('#btnNuevaClave').hide(true);
         $('#btn_confirmar').hide(true);
         $('#button_modal_carga_adm').hide(true);

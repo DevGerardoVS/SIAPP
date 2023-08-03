@@ -1,5 +1,5 @@
 
-@if (Auth::user()->clv_upp !=null)
+@if (Auth::user()->id_grupo !=1)
 <script type="text/javascript">
     window.location.href = "/calendarizacion/claves";
  </script>

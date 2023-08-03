@@ -958,7 +958,6 @@ class MetasController extends Controller
 		$reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
 			'Content-Type' => 'application/pdf'
 		]);
-		Log::debug('hoy es dia 01');
 		if ($reportePDF != '') {
 			return response()->json('done',200);
 		}else {
