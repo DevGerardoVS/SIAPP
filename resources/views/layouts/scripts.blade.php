@@ -59,9 +59,12 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap4.min.js')) }}"></script>
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script src="/js/appInit.js"></script>
+    <script >
+        _gen.essential();
+    </script>
     <script>
         $(document).ready(function() {
             _gen.block();
-            _gen.essential();
+            
         });
     </Script>
