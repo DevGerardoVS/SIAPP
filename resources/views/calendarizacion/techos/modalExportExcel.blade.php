@@ -9,7 +9,7 @@
             </div>
             <meta name="csrf-token" content="{{ csrf_token() }}">
             <div class="modal-body">
-                <form action="{{route('exportExcel')}}" method="get" id="formExport">
+                <form action="{{route('TechosExportExcel')}}" method="get" id="formExport">
                     @csrf
                     <div class="row">
                         <div class="col-sm-1">

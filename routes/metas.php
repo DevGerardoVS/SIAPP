@@ -7,8 +7,8 @@
 		Route::post('/calendarizacion/data/', 'getMetasP')->name('metasP');
 		Route::get('/actividades/data/{upp?}', 'getActiv')->name('actividades');
 		Route::get('/actividades/proyecto_calendario', 'proyExcel')->name('ProyExcel');
-		Route::get('/actividades/exportExcel/{upp?}', 'exportExcel')->name('ExportExcel');
-		Route::get('/actividades/exportPdf/{upp?}',  'exportPdf')->name('exportPdf');
+		Route::get('/actividades/exportExcel/{upp?}', 'exportExcel');
+		Route::get('/actividades/exportPdf/{upp?}',  'exportPdf');
 		Route::post('/actividades/import', 'importPlantilla');
 		Route::get('/actividades/jasper/{upp?}', 'downloadActividades')->name('exportjasper');
         Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');

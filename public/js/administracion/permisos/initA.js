@@ -37,7 +37,8 @@ var dao = {
             });
         });
     },
-    editarUp: function (id,user, permiso) {
+    editarUp: function (id, user, permiso) {
+        console.log("permisos",permiso)
         $('#permisosModalLabel').text('Editar permiso adicional');
         $('#id').val(id)
         $("#id_userPE option[value='" + user + "']").attr("selected", true);

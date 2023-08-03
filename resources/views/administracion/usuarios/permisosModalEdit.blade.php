@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header" style="background-color:#6A0F49 !important; color:whitesmoke">
-                <h5 class="modal-title" id="permisosModalELabel">Agregar permiso adicional</h5>
+                <h5 class="modal-title" id="permisosModalELabel">Editar permiso adicional</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <a aria-hidden="true" style="color: whitesmoke" onclick="dao.limpiarFormularioCrear()">&times;</a>
                 </button>
