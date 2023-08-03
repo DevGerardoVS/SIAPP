@@ -11,7 +11,7 @@
         <h1 class="fw-bold text-center">{{ $titleDesc }}</h1>
         @if(Auth::user()->id_grupo != 1)
             @foreach ($upps as $upp)
-            <h6 class="text-center">@if(Auth::user()->id_grupo == $upp->clave) {{$upp->clave}} {{$upp->descripcion}} @endif</h6>
+            <h6 class="text-center">@if(Auth::user()->clv_upp == $upp->clave) {{$upp->clave}} {{$upp->descripcion}} @endif</h6>
             @endforeach
         @endif
         <div class="rounded-pill" style="height: .5em; background-color: rgb(37, 150, 190)"></div>
