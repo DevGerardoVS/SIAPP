@@ -211,6 +211,7 @@ $(document).ready(function () {
         anio = new Date().getFullYear() + 1;
         $('#anioOpt').val(anio)
     })
+
     $('#agregar_fondo').on('click', function (e){
         e.preventDefault()
 
@@ -247,7 +248,8 @@ $(document).ready(function () {
                 '<td>' +
                 '<input type="number" class="form-control totales" min="0" id="presupuesto_'+ultimo+'" name="presupuesto_'+ultimo+'" placeholder="$0" onkeydown="dao.filtroPresupuesto()" onkeyup="dao.validCero('+ultimo+')" onchange="totalP()" required>' +
                 '</td>\n' +
-                '  <td><input type="number" value="2024" class="form-control" id="ejercicio_'+ultimo+'" name="ejercicio_'+ultimo+'" disabled placeholder="2024"></td>\n' +
+                '  <td>'+
+                '<input type="number" value="{{$ejercicio[0]->ejercicio}}" class="form-control" id="ejercicio_'+ultimo+'" name="ejercicio_'+ultimo+'" disabled placeholder="2024"></td>\n' +
                 '<td>' +
                 '   <input type="button" value="Eliminar" onclick="dao.eliminaFondo('+ultimo+')" title="Eliminar fondo" class="btn btn-danger delete" >' +
                 '</td>\n' +
@@ -258,13 +260,16 @@ $(document).ready(function () {
             $('#uppSelected').addClass('is-invalid')
         }
     });
+
     $('#btnCarga').on('click', function () {
         $('#carga').modal('show');
     });
+
     $('#carga').modal({
         backdrop: 'static',
         keyboard: false
     });
+
     $('#btnCancelar').click(function () {
         $("#carga").modal('hide');
         $('#cmFile').val(null);
@@ -274,6 +279,7 @@ $(document).ready(function () {
         $("#carga").modal('hide');
         $('#cmFile').val(null);
     });
+    
     $('#btnSaveM').click(function () {
         if ($('#importPlantilla').valid()) {
             dao.cargaMasiva();
@@ -418,6 +424,7 @@ $('#eliminar').click(function(e){
 
 function getElimina(i){
     $('#eliminarID').val(i);
+    console.log($('#eliminarID').val())
 }
 
 function getEdita(i){
@@ -426,15 +433,15 @@ function getEdita(i){
     table = document.getElementById('editFondo')
     table_lenght = (table.rows.length)
     table.insertRow(table_lenght).outerHTML= '<thead><tr class="colorMorado" style="color:white">'+
-                                    '<th style="color:white">ID UPP</th>'+
-                                    '<th style="color:white">Unidad Programatica Presupuestaria</th>'+
-                                    '<th style="color:white">Tipo</th>'+
-                                    '<th style="color:white">ID Fondo</th>'+
-                                    '<th style="color:white">Fondo</th>'+
-                                    '<th style="color:white">Presupuesto</th>'+
-                                    '<th style="color:white">Ejercicio</th>'
-                                '</tr></thead>';
-
+    '<th style="color:white">ID UPP</th>'+
+    '<th style="color:white">Unidad Programatica Presupuestaria</th>'+
+    '<th style="color:white">Tipo</th>'+
+    '<th style="color:white">ID Fondo</th>'+
+    '<th style="color:white">Fondo</th>'+
+    '<th style="color:white">Presupuesto</th>'+
+    '<th style="color:white">Ejercicio</th>'
+    '</tr></thead>';
+    
     $.ajax({
         type: "POST",
         url: '/calendarizacion/techos/get-techo-edit',
@@ -445,47 +452,47 @@ function getEdita(i){
     }).done(function (response) {
         table = document.getElementById('editFondo')
         table_lenght = (table.rows.length)
-
+        
         row = table.insertRow(table_lenght).outerHTML= '<tr>'+
         '<td>' +
-         response.data[0].clv_upp
-         +
+        response.data[0].clv_upp
+        +
         '</td>\n' +
         '<td>' +
-         response.data[0].descPre
-         +
+        response.data[0].descPre
+        +
         '</td>\n' +
         '<td>' +
-         response.data[0].tipo
-         +
+        response.data[0].tipo
+        +
         '</td>\n' +
         '<td>' +
-         response.data[0].clv_fondo
-         +
+        response.data[0].clv_fondo
+        +
         '</td>\n' +
         '<td>' +
-         response.data[0].fondo_ramo
-         +
+        response.data[0].fondo_ramo
+        +
         '</td>\n' +
         '<td>' +
         '<input type="number" class="form-control totales" min="0" id="presupuesto" name="presupuesto" value="'+response.data[0].presupuesto+'" '+
         'onkeydown="dao.filtroPresupuesto()" onkeyup="dao.validCero()" required>' 
          +
-        '</td>\n' +
-        '<td>' +
+         '</td>\n' +
+         '<td>' +
          response.data[0].ejercicio
          +
-        '</td>\n' +
-        '</tr>';
+         '</td>\n' +
+         '</tr>';
 
-        /* $('#editFondo').append('<tr>\n' +
-        '<td>' + response.data[0].clv_upp+
-        '</td>\n' +
-        '</tr>'); */
-        
-    }).fail(function (error) {
-        let arr = Object.keys(error.responseJSON.errors)
-        arr.forEach(function (item) {
+         /* $('#editFondo').append('<tr>\n' +
+         '<td>' + response.data[0].clv_upp+
+         '</td>\n' +
+         '</tr>'); */
+         
+        }).fail(function (error) {
+            let arr = Object.keys(error.responseJSON.errors)
+            arr.forEach(function (item) {
             $("#frm_create_techo").find("#"+item).addClass('is-invalid');
         })
         Swal.fire({
@@ -493,9 +500,9 @@ function getEdita(i){
             title: 'Hubo un error, campos vacíos',
             showConfirmButton: true
         });
-
+        
     });
-
+    
 }
 
 function eliminarRegistro(){
@@ -518,7 +525,7 @@ function eliminarRegistro(){
         }else if(response.status == 400){
             Swal.fire({
                 icon: 'warning',
-                title: 'No se puede eliminar',
+                title: response.error,
                 showConfirmButton: true
             });
         }

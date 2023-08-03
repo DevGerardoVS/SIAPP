@@ -19,30 +19,21 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     //Validacion de Permisos de Usuario
-    public static function check_permission($module, $bt = true) {
+    public static function check_permission($funcion,$bt = true) {
         $permiso = DB::select('SELECT p.id
         FROM adm_rel_funciones_grupos p
         INNER JOIN adm_funciones f ON f.id = p.id_funcion
         WHERE f.funcion = ?
         AND f.id_sistema = ?
-        AND p.id_grupo IN (SELECT u.id_grupo FROM adm_rel_user_grupo u WHERE u.id_usuario = ?);', [$module, Session::get('sistema'), Auth::user()->id]);
+        AND p.id_grupo IN (SELECT u.id_grupo FROM adm_rel_user_grupo u WHERE u.id_usuario = ?);', [$funcion, Session::get('sistema'), Auth::user()->id]);
     	if($permiso) {
-            if($bt) {
-                $ip = Request::getClientIp();
-                $estructura = DB::select('SELECT modulo, tipo FROM adm_funciones WHERE funcion=? AND id_sistema = ?', [$module, Session::get('sistema')]);
+                $estructura = DB::select('SELECT modulo, tipo FROM adm_funciones WHERE funcion=? AND id_sistema = ?', [$funcion, Session::get('sistema')]);
                 if(count($estructura) > 0){
-                    $estructura = $estructura[0];
-                    $b = array(
-                        "username"=>Auth::user()->username,
-                        "accion"=>$estructura->tipo,
-                        "modulo"=>'Permisos'
-                     );
-                     Controller::bitacora($b);
+                     return true;
                 }else{
                     abort('401');
                 }
-            }
-    		return true;
+    		
         }
     	else
     		abort('401');
@@ -57,22 +48,14 @@ class Controller extends BaseController
             ->where('id_user', Auth::user()->id)
             ->orWhere('cat_permisos.nombre', $name)->get();
     	if($permiso) {
-            if($bt) {
+          
                 $estructura = $permiso[0];
                 if(count($estructura) > 0){
-                    $b = array(
-                       "username"=>Auth::user()->username,
-                       "accion"=>$estructura->permiso,
-                       "modulo"=>'Permisos'
-                    );
-                    Controller::bitacora($b);
-                    
-                    
+                    return true;
+
                 }else{
                     abort('401');
                 }
-            }
-    		return true;
         }
     	else
     		abort('401');

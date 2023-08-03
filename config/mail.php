@@ -44,10 +44,10 @@ return [
             'timeout' => null,
             'ssl' => [
                 'allow_self_signed' => true,
-                'verify_peer'       => false,   // <-------------- this is the important part 
-                'verify_peer_name'  => false,
+                'verify_peer'       => env('MAIL_VERIFY_PEER'),   // <-------------- this is the important part 
+                'verify_peer_name'  => env('MAIL_VERIFY_PEER'),
             ],
-            'verify_peer' => false,
+            'verify_peer' => env('MAIL_VERIFY_PEER'),
 
         ],
 

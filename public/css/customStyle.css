@@ -45,6 +45,11 @@ footer{
     color: white !important;
 
   }
+  .colorRosa{
+    background-color: #6D807F !important;
+    color: white !important;
+
+  }
   .vertical{
       writing-mode:vertical-rl !important;
       text-orientation: mixed !important;

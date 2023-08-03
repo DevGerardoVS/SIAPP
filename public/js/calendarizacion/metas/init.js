@@ -11,7 +11,6 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             if (data.status) {
-                $("#ur_filter").removeAttr('disabled');
                 $('#incomplete').hide(); 
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text('');
@@ -25,7 +24,7 @@ var dao = {
             } else {
                 dao.getUrs('0');
                 dao.getData('000', '000');
-                $("#ur_filter").attr('disabled', 'disabled');
+                $("#ur_filter").attr('disabled','disabled');
                 $('#incomplete').show(); 
                 $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text(data.mensaje);
@@ -104,7 +103,7 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             const { urs, tAct } = data;
-           
+            console.log("activids",tAct);
             var par = $('#ur_filter');
             par.html('');
             par.append(new Option("-- URS--", ""));
@@ -167,7 +166,6 @@ var dao = {
     crearMeta: function () {
         var form = $('#actividad')[0];
         var data = new FormData(form);
-        data.append('pMir_id', $('[name="proyecto"]:checked').val());
         data.append('sumMetas', $('#sumMetas').val());
         $.ajax({
             type: "POST",
@@ -282,6 +280,8 @@ var dao = {
             $('#sel_actividad').prop('disabled', false);
             $('#sel_fondo').prop('disabled', false);
             const { fondos, activids } = data;
+            console.log("tipo Calendario",activids);
+
             var fond = $('#sel_fondo');
             fond.html('');
             fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
@@ -297,7 +297,7 @@ var dao = {
             act.append(new Option("--Actividad--", "true", true, true));
             document.getElementById("sel_actividad").options[0].disabled = true;
             $.each(activids, function (i, val) {
-                act.append(new Option(val.actividad, val.clave));
+                act.append(new Option(val.actividad, val.id));
             });
             act.select2({
                 maximumSelectionLength: 10
@@ -457,6 +457,7 @@ $(document).ready(function () {
     }
     $('#upp_filter').change(() => {
         dao.checkCombination($('#upp_filter').val())
+        $('#ur_filter').prop('disabled', 'disabled');
     });
     $('#ur_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());
