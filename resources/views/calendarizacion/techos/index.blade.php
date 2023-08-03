@@ -74,12 +74,12 @@
                                         @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
                                             <div class="col-md-8">
                                                 <button type="button" class="btn btn-outline-success"
-                                                    data-bs-toggle="modal" data-bs-target="#exportExcel">
+                                                    data-bs-toggle="modal" data-bs-target="#TechosExportExcel">
                                                     <i class="fa fa-file-excel-o"></i> Exportar Excel
                                                 </button>
 
                                                 <button style="margin: 10px;" type="button" class="btn btn-outline-danger"
-                                                    data-bs-toggle="modal" data-bs-target="#exportPDF">
+                                                    data-bs-toggle="modal" data-bs-target="#TechosExportPDF">
                                                     <i class="fa fa-file-excel-o"></i> Exportar PDF
                                                 </button>
 
