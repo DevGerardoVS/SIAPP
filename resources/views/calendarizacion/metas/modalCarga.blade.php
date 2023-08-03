@@ -14,9 +14,10 @@
                     <label><b>Lea las instrucciones para asegurar el funcionamiento correcto del proceso:</b></label>
                     <ul style="width:75%; float:left;">
                         <li ><b>Asegúrese de utilizar la plantilla</b> para el correcto funcionamiento de la carga masiva.</li>
-                        <li >Agregar el monto correspondiente en los campos <b>Operativo</b> y <b>Recursos Humanos</b>.</li>
-                        <li >Los valores no especificados, en cero o con celdas vacías <b>no se guardaran</b>.</li>
-                        <li >Para los fondos que no se muestran en la plantilla <b>agregar las filas necesarias</b>.</li>
+                        <li >Debe llenar <b>todos</b> las columnas, para esto puede apoyarse con los catalogos que se encuentran en las otras pestañas.</li>
+                        <li >El numero de beneficiarios debe ser <b>mayor a cero</b>.</li>
+                        <li ><b>Agregar las filas necesarias</b>.</li>
+                        <li >Solo se pueden llenar los meses que estan registrados en <b>calendarización de claves</b>.</li>
                     </ul>
                     <a  class="btn-primary text-center" style="float:left; text-decoration:none; width:20%;"  href="{{route('ProyExcel')}}">
                         <i class="fa fa-download" aria-hidden="true"></i>
