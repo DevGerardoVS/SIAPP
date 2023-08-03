@@ -11,7 +11,6 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             if (data.status) {
-                $("#ur_filter").removeAttr('disabled');
                 $('#incomplete').hide(); 
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text('');
@@ -25,7 +24,7 @@ var dao = {
             } else {
                 dao.getUrs('0');
                 dao.getData('000', '000');
-                $("#ur_filter").attr('disabled', 'disabled');
+                $("#ur_filter").attr('disabled','disabled');
                 $('#incomplete').show(); 
                 $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text(data.mensaje);
@@ -458,6 +457,7 @@ $(document).ready(function () {
     }
     $('#upp_filter').change(() => {
         dao.checkCombination($('#upp_filter').val())
+        $('#ur_filter').prop('disabled', 'disabled');
     });
     $('#ur_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());
