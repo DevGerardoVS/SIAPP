@@ -32,5 +32,53 @@ var _gen = {
             }
           })
         
+    },
+    essential: function () {
+        function callbackThen(response) {
+            // read HTTP status
+            // read Promise object
+            response.json().then(function(data) {
+                console.log(data.action);
+            });
+        }
+    
+        function callbackCatch(error) {
+            console.error('Error:', error)
+        }
+    
+        var tiempo = parseInt("{{ $_ENV['SESSION_INACTIVITYTIME'] }}") * 60;
+        var tiemporestante = new Date("{{Session::get('last_activity')}}").getTime();
+        var reloj = setInterval(function() {
+            var tiempoactual = new Date().getTime();
+            var difFechas = tiempoactual - tiemporestante;
+            var segundos = Math.floor(difFechas / 1000);
+            var minutos = Math.floor(segundos / 60);
+    
+            // console.log(minutos);
+    
+            if (minutos >= 480) {
+                clearInterval(reloj);
+                var urlactual = "{{ Request::path() }}";
+                if (urlactual !== 'login') {
+                    Swal.fire({
+                        title: 'Su sesión ha expirado',
+                        text: '¿Desea iniciar sesión nuevamente?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sí, iniciar sesión',
+                        cancelButtonText: 'No, cerrar sesión',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            _gen.logOut()
+                        } else {
+                            _gen.logOut()
+                        }
+                    });
+                }
+            }
+        }, 1000);
     }
+
 };
