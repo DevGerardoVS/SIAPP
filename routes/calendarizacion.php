@@ -42,7 +42,7 @@
 		Route::post('/calendarizacion-guardar-clave', 'postGuardarClave');
 		Route::get('/calendarizacion/get-calendarizacion-panel', 'getPanelCalendarizacion');
 		Route::get('/cat-subSecretaria/{upp?}/{ur?}/{ejercicio?}', 'getSubSecretaria');
-		Route::get('/cat-area-funcional/{uppId?}/{id?}/{ejercicio?}', 'getAreaFuncional');
+		Route::get('/cat-area-funcional/{uppId?}/{id?}/{ejercicio?}/{subPrograma?}', 'getAreaFuncional');
 		Route::get('/cat-partidas/{clasificacion?}', 'getPartidas');
 		Route::get('/cat-fondos/{id?}/{subP?}/{ejercicio?}', 'getFondos');
 		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
