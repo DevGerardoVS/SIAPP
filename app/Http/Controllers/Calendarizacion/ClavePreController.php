@@ -568,8 +568,23 @@ class ClavePreController extends Controller
     public function getPresupuestoAsignado($ejercicio = 0, $upp = ''){
         $Totcalendarizado = 0;
         $disponible = 0;
-        $rol = 0;
+        $rol = '';
         $uppUsuario = Auth::user()->clv_upp;
+        $perfil = Auth::user()->id_grupo;
+        switch ($perfil) {
+            case 1:
+                $rol = 0;
+                break;
+            case 4:
+                $rol = 1;
+                break;
+            case 5:
+                $rol = 2;
+                break;
+            default:
+                $rol = 3;
+                break;
+        }
         $array_where = [];
         $array_where2 = [];
         $array_whereCierre = [];
@@ -597,7 +612,6 @@ class ClavePreController extends Controller
                 array_push($array_where, ['techos_financieros.tipo', '=', 'Operativo']);
                 array_push($array_where2, ['programacion_presupuesto.tipo', '=', 'Operativo']);
             }
-            $rol = 1;
            
         }else {
             array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
@@ -609,10 +623,6 @@ class ClavePreController extends Controller
                 array_push($array_where, ['techos_financieros.clv_upp', '=', $upp]);
                 array_push($array_where2, ['programacion_presupuesto.upp', '=', $upp]);
                 array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $upp]);
-            }
-            $grupo =  Auth::user()->id_grupo;
-            if ($grupo == 5) {
-                $rol =2;
             }
         } 
         $estatusCierre = DB::table('cierre_ejercicio_claves')
