@@ -17,8 +17,8 @@
         Route::get('/plantillaCargaTechos', 'exportView');
         Route::get('/exportPlantilla', 'exportPlantilla')->name('exportPlantilla');
         Route::post('/import-Plantilla', 'importPlantilla')->name('importPlantilla');
-        Route::get('/calendarizacion/techos/export-excel', 'exportExcel')->name('exportExcel');
-        Route::get('/calendarizacion/techos/export-pdf', 'exportPDF')->name('exportPDF');
+        Route::get('/calendarizacion/techos/export-excel', 'exportExcel')->name('TechosExportExcel');
+        Route::get('/calendarizacion/techos/export-pdf', 'exportPDF')->name('TechosExportPDF');
         Route::get('/calendarizacion/techos/export-presupuestos', 'exportPresupuestos')->name('exportPresupuestos');
         Route::post('/calendarizacion/techos/eliminar', 'eliminar')->name('eliminar');
         Route::post('/calendarizacion/techos/editar', 'editar')->name('editar');
