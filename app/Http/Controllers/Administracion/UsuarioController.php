@@ -168,6 +168,7 @@ class UsuarioController extends Controller
             )
             ->leftJoin('adm_grupos', 'adm_grupos.id', '=', 'adm_users.id_grupo')
             ->where('adm_users.deleted_at', '=', null)
+            ->where('adm_users.id_grupo', '!=', 2)
             ->orderby('adm_users.estatus');
 
         if ($id != 0) {

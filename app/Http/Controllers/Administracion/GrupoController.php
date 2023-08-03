@@ -19,7 +19,7 @@ class GrupoController extends Controller
     public function getData() {
         $data = [];
         Controller::check_permission('getGrupos');
-        $query = Grupo::where('deleted_at', null)->get();
+        $query = Grupo::where('deleted_at', null)->where('id','!=',2)->get();
 
         foreach ($query as $q) {
             $rel = DB::table('adm_rel_user_grupo')
