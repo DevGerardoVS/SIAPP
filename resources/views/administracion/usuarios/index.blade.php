@@ -27,36 +27,30 @@
                                 <div class="row">
                                     <div class="col-xs-9 col-sm-5 col-md-5 col-lg-5">
                                     </div>
-                                    @if (Auth::user()->id_grupo!=2 && Auth::user()->id_grupo!=3)
-                                    <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
-                                        <button type="button" class="btn btn-success" data-toggle="modal" id="btnNew"
-                                            data-target=".bd-example-modal-lg" data-backdrop="static"
-                                            data-keyboard="false">Agregar Usuario</button>
-                                           {{--  <button type="button" class="btn btn-dark" data-toggle="modal" id="btnNew"
-                                            data-target=".bd-permisos-modal-lg" data-backdrop="static"
-                                            data-keyboard="false">Permisos  adicionales</button> --}}
-
+                                    @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                                        <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
+                                            <button type="button" class="btn btn-success" data-toggle="modal"
+                                                id="btnNew" data-target=".bd-example-modal-lg" data-backdrop="static"
+                                                data-keyboard="false">Agregar Usuario</button>
                                             <a type="button" class="btn btn-dark" href="{{ route('index_up') }}">Agregar
                                                 permisos adicionales</a>
-                                            {{-- es para añadir permisos al catalogo 
-                                                <button type="button" class="btn btn-dark" data-toggle="modal" id="btnNew"
-                                            data-target=".createpermiso" data-backdrop="static"
-                                            data-keyboard="false">Permisos adicionales</button>--}}
-                                    </div>
+                                        </div>
+                                        <div class="col-xs-10 col-sm-7 col-md-7 col-lg-7">
+                                        </div>
+                                        <div class="col-xs-2 col-sm-5 col-md-5 col-lg-5 text-right">
+                                            <div class="d-flex justify-content-center" style=" margin: 2px auto;">
+                                                <button type="button" style="justify-content: float-right"
+                                                    onclick="dao.exportExcel()" class="btn btn-success"><i
+                                                        class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                                                &nbsp
+                                                <button type="button" style="justify-content: flex-end"
+                                                    onclick="dao.exportPdf()" class="btn btn-danger"><i
+                                                        class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
+                                            </div>
+                                        </div>
                                     @endif
                                 </div><br>
-                                <div class="row">
-                                    <div class="col-xs-10 col-sm-7 col-md-7 col-lg-7">
-                                    </div>
-                                    <div class="col-xs-2 col-sm-5 col-md-5 col-lg-5 text-right">
-                                        <div class="d-flex justify-content-center" style=" margin: 2px auto;">
-                                        <button type="button" style="justify-content: float-right" onclick="dao.exportExcel()" class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
-                                        &nbsp
-                                    <button type="button" style="justify-content: flex-end" onclick="dao.exportPdf()"
-                                        class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
-                                    </div>
-                                    </div>
-                                </div>
+
                             </div>
                             <div class="widget-body no-padding ">
                                 <div class="table-responsive ">
@@ -69,10 +63,10 @@
                                                 <th data-hide="phone">Celular</th>
                                                 <th data-hide="phone">Perfil</th>
                                                 <th data-hide="phone">Estatus</th>
-                                                @if (Auth::user()->id_grupo!=2 && Auth::user()->id_grupo!=3)
-                                                <th class="th-administration">Acciones</th>
+                                                @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                                                    <th class="th-administration">Acciones</th>
                                                 @endif
-                                                
+
                                             </tr>
                                         </thead>
                                     </table>
@@ -87,5 +81,3 @@
     <script src="/js/administracion/usuarios/init.js"></script>
     <script src="/js/utilerias.js"></script>
 @endsection
-
-
