@@ -289,8 +289,11 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
          $valupp==1 ? $row['upp']=0 : $row['upp']; 
 
         //validacion de año 
-        $year = '20'.$row['ano'];
-        $row['ano']=$year;
+        if($row['ano']>0){
+            $year = '20'.$row['ano'];
+            $row['ano']=$year;
+        }
+
 
         return $row;
     }
