@@ -26,7 +26,7 @@ use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Query\Builder;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
-
+use Illuminate\Support\Facades\Log;
 class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,SkipsEmptyRows, WithBatchInserts,WithChunkReading
 {
 
@@ -36,8 +36,6 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
     
     public function prepareForValidation($row,$index)
     {
-         
-
 
         ///validaciones de catalogo
         $valcat= Catalogo::select()
@@ -181,7 +179,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         ->where('clasificacion_economica',$row['idpartida'].$row['tipogasto'])
         ->count();
         if($valrelEco < 1 ){
-            $row['admconac']=0;
+            $row['admconac']='0';
         }
         
         //validacion de fondos
@@ -197,9 +195,8 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         }
 
 
-
         //validacion de codigo admconac
-        if (isset($row['admconac'])) {
+        if (isset($row['admconac']) && $row['admconac']!=='0') {
             $arrayadmconac = str_split($row['admconac'], 1);
 
             $valadm= v_epp::select()
@@ -237,8 +234,8 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             ->where('presupuestable',1)
             ->count();
             if($valpresup < 1 ){
-                $row['ano']=0;
-    
+                 $row['ano']='2';
+     
             }
         }
 
@@ -286,12 +283,13 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
 
        //validacion si la upp tiene firmados claves presupuestales
          $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->value('estado');
-         $valupp==1 ? $row['upp']=0 : $row['upp']; 
+         $valupp==1 ? $row['upp']='0' : $row['upp']; 
 
         //validacion de año 
-        $year = '20'.$row['ano'];
-        $row['ano']=$year;
-
+        if($row['ano']!=='2'){
+            $year = '20'.$row['ano'];
+            $row['ano']=$year;
+        }
         return $row;
     }
 
@@ -300,7 +298,9 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
 
 
         $currentRowNumber = $this->getRowNumber();
+
         return new ProgramacionPresupuesto([
+            
           'clasificacion_administrativa'  =>  $row['admconac'],
           'entidad_federativa'  => $row['ef'],
           'region'  => $row['reg'],
@@ -349,7 +349,6 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
           'updated_at' => null,
           'created_user' => Auth::user()->username
 
-
         ]);
 
 
@@ -360,48 +359,46 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         return [
             '*.tipo' => Rule::in(['RH', 'Operativo']),
              //cambiar validacion de autorizadas unicamente a operativo
-             '*.upp' => ['required',
+             '*.upp' => ['required','string',
                 Rule::notIn(['0'])                                       
             ], 
-            '*.admconac' => ['required','String',
+            '*.admconac' => ['required','string',
             Rule::notIn(['0'])                                       
         ],
-            '*.ano' => ['required',
-            Rule::notIn(['0'])                                       
-        ],
-            '*.ef' => 'required|string',
-            '*.subsecretaria' => 'required|string',
-            '*.finalidad' => 'required|string',
-            '*.funcion' => 'required|string',
-            '*.subfuncion' => 'required|string',
-            '*.pt' => 'required|string',
-            '*.ps' => 'required|string',
-            '*.sprconac' =>  'required|string',
-            '*.prg' =>  'required|string',
-            '*.no_etiquetado_y_etiquetado' =>  'required|string',
+            '*.ano' =>  Rule::notIn(['2']),
+            '*.ef' =>  ['required','string'],
+            '*.subsecretaria' =>  ['required','string'],
+            '*.finalidad' =>  ['required','string'],
+            '*.funcion' =>  ['required','string'],
+            '*.subfuncion' =>  ['required','string'],
+            '*.pt' =>  ['required','string'],
+            '*.ps' =>  ['required','string'],
+            '*.sprconac' =>   ['required','string'],
+            '*.prg' =>   ['required','string'],
+            '*.no_etiquetado_y_etiquetado' =>   ['required','string'],
             '*.spr' => ['required','string'],
-            '*.py' =>  'required|string',
+            '*.py' =>   ['required','string'],
             '*.obra' =>  ['required',
             Rule::exists('proyectos_obra','clv_proyecto_obra')                                        
         ],
-            '*.idpartida' =>  'required|string',
+            '*.idpartida' =>   ['required','string'],
             '*.tipogasto' =>  ['required',
             Rule::exists('posicion_presupuestaria','clv_tipo_gasto')                                        
         ],
-            '*.ur' =>  'required',
-            '*.total' => 'required|integer',
-            'enero'    =>  'required|integer',
-            'febrero'    =>  'required|integer',
-            'marzo'    =>  'required|integer',
-            'abril'    =>  'required|integer',
-            'mayo'    =>  'required|integer',
-            'junio'    =>  'required|integer',
-            'julio'    =>  'required|integer',
-            'agosto'    =>  'required|integer',
-            'septiembre'  =>  'required|integer',
-            'octubre'    =>  'required|integer',
-            'noviembre'    =>  'required|integer',
-            'diciembre'    =>  'required|integer',
+            '*.ur' =>  ['required'],
+            '*.total' => ['required','integer'],
+            '*.enero'    =>   ['required','integer'],
+            '*.febrero'    =>   ['required','integer'],
+            '*.marzo'    =>   ['required','integer'],
+            '*.abril'    =>   ['required','integer'],
+            '*.mayo'    =>   ['required','integer'],
+            '*.junio'    =>   ['required','integer'],
+            '*.julio'    =>   ['required','integer'],
+            '*.agosto'    =>   ['required','integer'],
+            '*.septiembre'  =>   ['required','integer'],
+            '*.octubre'    =>   ['required','integer'],
+            '*.noviembre'    =>   ['required','integer'],
+            '*.diciembre'    =>   ['required','integer'],
            
                          
              
@@ -413,10 +410,10 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
      public function customValidationMessages()
 {
     return [
-        '*.admconac' => 'La clave de admonac es invalida',
+        '*.admconac.required' => 'La clave de admonac es invalida',
         '*.ef' => 'La combinacion de las claves de la celda B a E es invalida',
         '*.upp.required' => 'El valor de upp asignado no es valido',
-        '*.upp.notIn' => 'No se pueden registrar las claves porque ya tiene claves firmadas ',
+        '*.upp.not_in' => 'No se pueden registrar las claves porque ya tiene claves firmadas ',
         '*.total' => 'El total no coincide con los meses',
         '*.subsecretaria' =>  'La clave de subsecretaria introducida no es valida',
         '*.finalidad' =>  'La clave de finalidad introducida no es valida',
@@ -430,10 +427,10 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         '*.py' =>  'La clave de py introducida no es valida',
         '*.ur' => 'El campo ur no existe o la combinacion de ur upp y secretaria es invalida',
         '*.no_etiquetado_y_etiquetado' => 'La combinacion de las claves de la celda V a Z es invalida',
-       '*.ano.required' => 'la fecha no es valida ',
-       '*.ano.notIn' => 'El programa seleccionado no es presupuestable ',
-       '*.idpartida' => 'La combinacion de id partida con tipo de gasto es invalida',
-       '*.admconac.notIn' => 'La clasificacion economica introducida es invalida para esta clave administrativa',
+          //Para palabras compuestas en rules usar '_' para que reconozca el tipo
+        '*.ano.not_in' => 'El programa seleccionado no es presupuestable, verifica las columnas A, F a R y el año.',
+        '*.idpartida' => 'La combinacion de id partida con tipo de gasto es invalida',
+        '*.admconac.not_in' => 'La clasificacion economica introducida es invalida para esta clave administrativa',
 
     ];
 } 

@@ -41,6 +41,7 @@ class MetasHelper{
 					'metas.id',
 					'pro.entidad',
 					'pro.area',
+					'pro.ejercicio',
 					'metas.clv_fondo as fondo',
 					'pro.actividad',
 					'metas.tipo',
@@ -61,6 +62,7 @@ class MetasHelper{
             throw new \Exception($exp->getMessage());
         }
     }
+
 	public static function beneficiarios(){
 		$result = DB::table('beneficiarios')
 		->select(
@@ -86,6 +88,7 @@ class MetasHelper{
 
 		return $result;
 	}
+
 	public static function tCalendario(){
 
 		$tipo=[];
