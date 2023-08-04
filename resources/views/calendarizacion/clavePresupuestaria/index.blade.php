@@ -164,7 +164,6 @@
         }
         
         @if($errors->any())
-        console.log({!! session()->get('error') !!});
         var failures= {!! $errors !!};
         const fails = [];
         $.each(failures, function (key, value) {
@@ -177,6 +176,11 @@
                 title: 'Error al importar la carga masiva',
                 text: fails,
                 confirmButtonText: "Aceptar",
+                timerProgressBar: false,
+                didOpen: () => {
+                    Swal.hideLoading()
+
+            },
             });
         @endif
     </script>

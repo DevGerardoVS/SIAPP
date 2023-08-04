@@ -369,7 +369,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             '*.admconac' => ['required','String',
             Rule::notIn(['0'])                                       
         ],
-            '*.ano' => ['required',
+            '*.ano' => ['required','String',
             Rule::notIn(['0'])                                       
         ],
             '*.ef' => 'required|string',
