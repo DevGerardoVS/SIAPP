@@ -3,14 +3,14 @@
 
 	Route::controller(MetasController::class)->group(function () {
 		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
-		Route::get('/calendarizacion/pdf/{upp?}', 'pdfView');
+		Route::get('/calendarizacion/pdf/{upp?}/{anio?}', 'pdfView');
 		Route::post('/calendarizacion/data/', 'getMetasP')->name('metasP');
-		Route::get('/actividades/data/{upp?}', 'getActiv')->name('actividades');
+		Route::get('/actividades/data/{upp?}/{anio?}', 'getActiv')->name('actividades');
 		Route::get('/actividades/proyecto_calendario', 'proyExcel')->name('ProyExcel');
-		Route::get('/actividades/exportExcel/{upp?}', 'exportExcel');
-		Route::get('/actividades/exportPdf/{upp?}',  'exportPdf');
+		Route::get('/actividades/exportExcel/{upp?}/{anio?}', 'exportExcel');
+		Route::get('/actividades/exportPdf/{upp?}/{anio?}',  'exportPdf');
 		Route::post('/actividades/import', 'importPlantilla');
-		Route::get('/actividades/jasper/{upp?}', 'downloadActividades')->name('exportjasper');
+		Route::get('/actividades/jasper/{upp?}/{anio?}', 'downloadActividades')->name('exportjasper');
         Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
 		Route::get('/calendarizacion/selects', 'getSelects');
 		Route::get('/calendarizacion/tcalendario/{upp?}', 'getTcalendar');
@@ -24,7 +24,7 @@
 		Route::get('/calendarizacion/update/{id?}','updateMeta');
 		Route::get('/calendarizacion/check/{upp?}','checkCombination');
 		Route::post('/calendarizacion-metas-reporte', 'descargaReporteFirma');
-		Route::get('/actividades/jasper-metas/{upp?}', 'jasperMetas');
+		Route::get('/actividades/jasper-metas/{upp?}/{anio?}', 'jasperMetas');
 	});
 ?>
 
