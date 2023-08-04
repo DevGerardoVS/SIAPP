@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class MetasHelper{
 	
     public static function actividades($upp,$anio){
-		log::debug($anio);
-		log::debug($upp);
         try {
 			$proyecto = DB::table('actividades_mir')
 				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
