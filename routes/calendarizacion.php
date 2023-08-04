@@ -12,6 +12,7 @@
         Route::post('/calendarizacion/techos/get-techos', 'getTechos')->name('getTechos');
         Route::post('/calendarizacion/techos/get-techo-edit', 'getTechoEdit')->name('getTechoEdit');
         Route::get('/calendarizacion/techos/get-fondos', 'getFondos')->name('getFondos');
+        Route::get('/calendarizacion/techos/get-ejercicio', 'getEjercicio')->name('getEjercicio');
         Route::post('/calendarizacion/techos/add-techo', 'addTecho')->name('addTecho');
         Route::get('/plantillaCargaTechos', 'exportView');
         Route::get('/exportPlantilla', 'exportPlantilla')->name('exportPlantilla');

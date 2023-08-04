@@ -29,9 +29,11 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
+        let anio= $('#anio_filter').val();
+
         $.ajax({
             type:'get',
-            url:"/actividades/jasper/" + upp,
+            url:"/actividades/jasper/" + upp+"/"+anio,
             dataType : "json"
         }).done(function (params) {
             document.getElementById('tipoReporte').value = 1;
@@ -45,9 +47,11 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
+        let anio= $('#anio_filter').val();
+
         $.ajax({
             type:'get',
-            url:"/actividades/jasper-metas/" + upp,
+            url:"/actividades/jasper-metas/" + upp+"/"+anio,
             dataType : "json"
         }).done(function (params) {
             document.getElementById('tipoReporte').value = 2;
@@ -61,7 +65,8 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-        _url = "/actividades/exportExcel/" + upp;
+        let anio= $('#anio_filter').val();
+        _url = "/actividades/exportExcel/" + upp+"/"+anio;
         window.open(_url, '_blank');
         $('#cabecera').css("visibility","visible");
       //  window.location = _url;
@@ -73,16 +78,17 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-        _url = "/actividades/exportPdf/" + upp;
+        let anio= $('#anio_filter').val();
+        _url = "/actividades/exportPdf/" + upp+"/"+anio;
         window.open(_url, '_blank');
                 $('#cabecera').css("visibility","visible");
 
       //  window.location = _url;
     },
-    getData : function(upp){
+    getData : function(upp,anio){
 		$.ajax({
 			type : "GET",
-			url : "/actividades/data/"+upp,
+			url : "/actividades/data/"+upp+"/"+anio,
 			dataType : "json"
         }).done(function (_data) {
 			_table = $("#proyectoM");
@@ -169,10 +175,9 @@ var dao = {
             $('#cerrar').trigger('click');
             if ($('#upp').val() == '') {
                 dao.getUpps();
-                dao.getData($('#upp_filter').val());
+                dao.getData($('#upp_filter').val(),$('#anio_filter').val());
             } else {
-                dao.getData($('#upp').val());
-        
+                dao.getData($('#upp_filter').val(),$('#anio_filter').val());
             }
         });
     },
@@ -252,10 +257,9 @@ var dao = {
 
                     if ($('#upp').val() == '') {
                         dao.getUpps();
-                        dao.getData($('#upp_filter').val());
+                        dao.getData($('#upp_filter').val(),$('#anio_filter').val());
                     } else {
-                        dao.getData($('#upp').val());
-                
+                        dao.getData($('#upp_filter').val(),$('#anio_filter').val());
                     }
                 
                 });
@@ -459,6 +463,8 @@ var init = {
 };
 
 $(document).ready(function () {
+    const moonLanding = new Date();
+    $("#anio_filter option[value='" + moonLanding.getFullYear() + "']").attr("selected", true);
     $("#cerrar").click(function(){
         $("#addActividad").modal('hide')
     });
@@ -475,12 +481,14 @@ $(document).ready(function () {
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
+    $("#anio_filter").select2({
+        maximumSelectionLength: 10
+    });
     if ($('#upp').val() == '') {
         dao.getUpps();
-        dao.getData($('#upp_filter').val());
+        dao.getData($('#upp_filter').val(),$('#anio_filter').val());
     } else {
-        dao.getData($('#upp').val());
-
+    dao.getData($('#upp').val(),$('#anio_filter').val());
     }
 
     for (let i = 1; i <= 12; i++) {
@@ -495,7 +503,15 @@ $(document).ready(function () {
 
     });
     $('#upp_filter').change(() => {
-        dao.getData($('#upp_filter').val());
+        dao.getData($('#upp_filter').val(),$('#anio_filter').val());
+    });
+    $('#anio_filter').change(() => {
+        if ($('#upp').val() == '') {
+            dao.getUpps();
+            dao.getData($('#upp_filter').val(),$('#anio_filter').val());
+        } else {
+        dao.getData($('#upp').val(),$('#anio_filter').val());
+        }
     });
 
     $('#btnSaveFirma').click(function (e) {
