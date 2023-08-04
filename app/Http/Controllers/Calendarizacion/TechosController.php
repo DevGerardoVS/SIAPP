@@ -30,10 +30,12 @@ class TechosController extends Controller
 {
     //Consulta Vista Techos
     public function getIndex(){
+        Controller::check_permission('getTechos');
         return view('calendarizacion.techos.index');
     }
-
+    
     public function getTechos(Request $request){
+        Controller::check_permission('getTechos');
         $dataSet = [];
 
         $data = DB::table('techos_financieros as tf')
@@ -79,7 +81,7 @@ class TechosController extends Controller
     }
 
     public function getTechoEdit(Request $request){
-
+        Controller::check_permission('getTechos');
         $max_ejercicio = DB::table('epp')
             ->select('ejercicio')
             ->groupBy('ejercicio')
@@ -102,6 +104,7 @@ class TechosController extends Controller
     }
 
     public function getFondos(){
+        Controller::check_permission('getTechos');
         $fondos = DB::table('fondo')
             ->select('clv_fondo_ramo','fondo_ramo')
             ->distinct()
@@ -111,6 +114,7 @@ class TechosController extends Controller
     }
 
     public function getEjercicio(){
+        Controller::check_permission('getTechos');
         $ejercicio = DB::table('epp') 
         ->select('ejercicio')
         ->groupBy('ejercicio')
@@ -122,6 +126,7 @@ class TechosController extends Controller
     }
 
     public function addTecho(Request $request){
+        Controller::check_permission('putTechos');
         $data = array_chunk(array_slice($request->all(),3),3);
         $aRepetidos = array_chunk(array_slice($request->all(),3),3,true);
         $aKeys = array_keys(array_slice($request->all(),3));
@@ -224,6 +229,7 @@ class TechosController extends Controller
     }
 
     public function eliminar(Request $request){
+        Controller::check_permission('deleteTechos');
         try{
             //se obtienen los datos del registro para buscarlo en las claves presupuestarias
             $data = DB::table('techos_financieros')
@@ -281,6 +287,7 @@ class TechosController extends Controller
     }
 
     public function editar(Request $request){
+        Controller::check_permission('putTechos');
         try{
             ///buscamos el registro en los techos para despues filtrarlo 
             $data = DB::table('techos_financieros')
@@ -413,6 +420,7 @@ class TechosController extends Controller
     }
     
     public function exportExcel(Request $request){
+        Controller::check_permission('postTechos');
         try{
             ob_end_clean();
             ob_start();
@@ -427,7 +435,7 @@ class TechosController extends Controller
     }
     
     public function exportPDF(Request $request){
-        
+        Controller::check_permission('postTechos');
         try{
             ob_end_clean();
             ob_start();
@@ -449,6 +457,7 @@ class TechosController extends Controller
     }
 
     public function exportPresupuestos(Request $request){
+        Controller::check_permission('postTechos');
         try{
             ob_end_clean();
             ob_start();
