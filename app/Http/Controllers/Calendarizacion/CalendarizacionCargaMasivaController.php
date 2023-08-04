@@ -389,7 +389,7 @@ class CalendarizacionCargaMasivaController extends Controller
                         unset($failures[$key]);
                 } 
             } 
-       
+
              return redirect()->back()->withErrors($failures);
     
     
