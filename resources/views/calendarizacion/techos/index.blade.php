@@ -121,7 +121,9 @@
                                                 <th>Presupuesto</th>
                                                 <th>Ejercicio</th>
                                                 <th>Usuario que actualizó</th>
+                                                @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
                                                 <th>Acciones</th>
+                                                @endif
                                             </tr>
                                         </thead>
                                     </table>
