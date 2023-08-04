@@ -8,14 +8,13 @@
 
     <div class="mx-auto p-4" style="width:90%;">
 
-        <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
-            <h2 class="fw-bold text-center">{{ $titleDesc }}</h2>
-        </header>
-        @if(Auth::user()->clv_upp!=null)
+        <h1 class="fw-bold text-center">{{ $titleDesc }}</h1>
+        @if(Auth::user()->id_grupo == 4)
             @foreach ($upps as $upp)
-            <h6 class="text-center">@if(Auth::user()->clv_upp == $upp->clave) {{$upp->clave}} {{$upp->descripcion}} @endif</h6>
+                <h6 class="text-center">@if(Auth::user()->clv_upp == $upp->clave) {{$upp->clave}} {{$upp->descripcion}} @endif</h6>
             @endforeach
         @endif
+        <div class="rounded-pill" style="height: .5em; background-color: rgb(37, 150, 190)"></div>
         <form action="{{route('calendario_fondo_mensual')}}" id="buscarFormA" name="analisis" method="post"> </form>
         <form action="{{route('resumen_capitulo_partida')}}" id="buscarFormB" name="analisis" method="post"><input type="text" id="catalogoB_val"  style="display: none"></form> 
         <form action="{{route('proyecto_avance_general')}}" id="buscarFormC" name="analisis" method="post"><input type="text" id="catalogoC_val"  style="display: none"></form> 
@@ -55,7 +54,7 @@
                     </select>
                 </div>
             </div>
-            @if(Auth::user()->clv_upp==null)
+            @if(Auth::user()->id_grupo == 1)
                 <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
                     <div class="col-sm-3 col-md-3 col-lg-2 text-md-end d-none div_upp">
                         <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
@@ -87,9 +86,9 @@
         <br>
 
         <ul class="nav nav-tabs " id="tabs" role="tablist">
-            @if(Auth::user()->clv_upp==null)
+            @if(Auth::user()->id_grupo == 1)
             <li class="nav-item" >
-                <button class="nav-link textoMorado @if(Auth::user()->clv_upp==null) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->clv_upp==null)aria-selected="true"@endif>Calendario fondo mensual</button>
+                <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 1) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->id_grupo == 1)aria-selected="true"@endif>Calendario fondo mensual</button>
             </li>
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="capituloPartida_tab" data-bs-toggle="tab" data-bs-target="#capituloPartida" aria-controls="capituloPartida" aria-selected="false">Resumen capítulo y partida</button>
@@ -99,28 +98,28 @@
             </li>
             @endif
             <li class="nav-item" >
-                <button class="nav-link textoMorado @if(Auth::user()->clv_upp!=null) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->clv_upp!=null)aria-selected="true"@endif>Proyecto calendario general</button>
+                <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 4) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->id_grupo == 4)aria-selected="true"@endif>Proyecto calendario general</button>
             </li>
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Proyecto calendario general de actividades</button>
             </li>
-            @if(Auth::user()->clv_upp==null)
+            @if(Auth::user()->id_grupo == 1)
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Avance de proyectos con actividades por UPP</button>
             </li>
             @endif
         </ul>
 
-        <div class="tab-content" style="font-size: 12px;">
+        <div class="tab-content" style="font-size: 14px;">
             {{-- fondo mensual A--}}
-            @if(Auth::user()->clv_upp==null)
-            <div class="tab-pane @if(Auth::user()->clv_upp==null) active @endif" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
+            @if(Auth::user()->id_grupo == 1)
+            <div class="tab-pane @if(Auth::user()->id_grupo == 1) active @endif" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
                 <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoA" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="0,1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%">
+                                    id="catalogoA" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="0,1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%; font-size: 14px;">
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Ramo</th>
@@ -159,7 +158,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoB" data-right="2" data-left="0,1" data-center="0,1,2" style="width:100%">
+                                    id="catalogoB" data-right="2" data-left="0,1" data-center="0,1,2" style="width:100%; font-size: 14px;">
                                     <thead  class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Capítulo</th>
@@ -186,7 +185,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoC" data-right="3,4,5,6" data-left="0,1,2,7" data-center="0,1,2,3,4,5,6,7" style="width:100%">
+                                    id="catalogoC" data-right="3,4,5,6" data-left="0,1,2,7" data-center="0,1,2,3,4,5,6,7" style="width:100%; font-size: 14px;">
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Unidad programática presupuestaría</th>
@@ -217,13 +216,13 @@
             </div>
             @endif
             {{-- Proyecto calendario general D--}}
-            <div class="tab-pane @if(Auth::user()->clv_upp!=null) active @endif" id="calendarioGeneral" role="tabpanel" aria-labelledby="calendarioGeneral_tab" >    
+            <div class="tab-pane @if(Auth::user()->id_grupo == 4) active @endif" id="calendarioGeneral" role="tabpanel" aria-labelledby="calendarioGeneral_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoD" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%">
+                                    id="catalogoD" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%; font-size: 14px;">
                                     <thead  class="colorMorado " style="text-align: center !important">
                                         <tr>
                                             <th class="exportable align-middle text-light d-none">Columna para agrupar las UPP</th>
@@ -275,7 +274,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoE" data-right="7,11,12,13,14,15,16,17,18,19,20,21,22,23" data-left="0,1,2,3,4,5,6,8,9,10" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23" style="width:100%">
+                                    id="catalogoE" data-right="7,11,12,13,14,15,16,17,18,19,20,21,22,23" data-left="0,1,2,3,4,5,6,8,9,10" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23" style="width:100%; font-size: 14px;">
                                     <thead  class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">UPP</th>
@@ -311,14 +310,14 @@
                 </div>
             </div>
             {{-- Avance de proyectos con actividades por upp F--}}
-            @if(Auth::user()->clv_upp==null)
+            @if(Auth::user()->id_grupo == 1)
             <div class="tab-pane" id="avanceProyectoActividadUPP" role="tabpanel" aria-labelledby="avanceProyectoActividadUPP_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoF" data-right="1,2,3" data-left="0,4" data-center="0,1,2,3,4" style="width:100%">
+                                    id="catalogoF" data-right="1,2,3" data-left="0,4" data-center="0,1,2,3,4" style="width:100%; font-size: 14px;">
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Unidad programática presupuestaría</th>
