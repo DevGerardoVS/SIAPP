@@ -207,7 +207,8 @@ class UsuarioController extends Controller
             'permisos_funciones.id_permiso',
             'adm_users.username',
             DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'),
-            DB::raw('GROUP_CONCAT(cat_permisos.nombre SEPARATOR " / ") AS permiso'),
+            DB::raw('GROUP_CONCAT(cat_permisos.nombre SEPARATOR "  ") AS permiso'),
+            DB::raw('GROUP_CONCAT(permisos_funciones.id_permiso SEPARATOR "/") AS permisos'),
             'adm_grupos.nombre_grupo AS grupo'
         )
             ->leftJoin('adm_users', 'adm_users.id', '=', 'permisos_funciones.id_user')
@@ -218,9 +219,9 @@ class UsuarioController extends Controller
         $dataSet = [];
 
         foreach ($query as $key) {
-            Auth::user()->id_grupo;
+            $p = "'" . strval($key->permisos) . "'";
             $accion = Auth::user()->id_grupo != 3 ? '<a  data-toggle="modal" data-target=".permisosModalE" data-backdrop="static"
-			data-keyboard="false" onclick="dao.editarUp(' . $key->id . ',' . $key->id_user . ',' . $key->id_permiso . ')"><i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' : '';
+			data-keyboard="false" onclick="dao.editarUp(' . $key->id . ',' . $key->id_user . ',' .$p  . ')"><i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' : '';
             $i = array(
                 $key->username,
                 $key->nombre_completo,

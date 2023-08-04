@@ -181,7 +181,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         ->where('clasificacion_economica',$row['idpartida'].$row['tipogasto'])
         ->count();
         if($valrelEco < 1 ){
-            $row['admconac']=0;
+            $row['admconac']='0';
         }
         
         //validacion de fondos
@@ -237,7 +237,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             ->where('presupuestable',1)
             ->count();
             if($valpresup < 1 ){
-                $row['ano']=0;
+                $row['ano']='0';
     
             }
         }
@@ -286,11 +286,14 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
 
        //validacion si la upp tiene firmados claves presupuestales
          $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->value('estado');
-         $valupp==1 ? $row['upp']=0 : $row['upp']; 
+         $valupp==1 ? $row['upp']='0' : $row['upp']; 
 
         //validacion de año 
-        $year = '20'.$row['ano'];
-        $row['ano']=$year;
+        if($row['ano']>0){
+            $year = '20'.$row['ano'];
+            $row['ano']=$year;
+        }
+
 
         return $row;
     }
@@ -366,7 +369,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             '*.admconac' => ['required','String',
             Rule::notIn(['0'])                                       
         ],
-            '*.ano' => ['required',
+            '*.ano' => ['required','String',
             Rule::notIn(['0'])                                       
         ],
             '*.ef' => 'required|string',
@@ -431,7 +434,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         '*.ur' => 'El campo ur no existe o la combinacion de ur upp y secretaria es invalida',
         '*.no_etiquetado_y_etiquetado' => 'La combinacion de las claves de la celda V a Z es invalida',
        '*.ano.required' => 'la fecha no es valida ',
-       '*.ano.notIn' => 'El programa seleccionado no es presupuestable ',
+       '*.ano.notIn' => 'El programa seleccionado no es presupuestable, verifica las columnas A, F a R y el año.',
        '*.idpartida' => 'La combinacion de id partida con tipo de gasto es invalida',
        '*.admconac.notIn' => 'La clasificacion economica introducida es invalida para esta clave administrativa',
 
