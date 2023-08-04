@@ -369,7 +369,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             '*.admconac' => ['required','String',
             Rule::notIn(['0'])                                       
         ],
-            '*.ano' => ['required',
+            '*.ano' => ['required','String',
             Rule::notIn(['0'])                                       
         ],
             '*.ef' => 'required|string',
@@ -434,7 +434,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         '*.ur' => 'El campo ur no existe o la combinacion de ur upp y secretaria es invalida',
         '*.no_etiquetado_y_etiquetado' => 'La combinacion de las claves de la celda V a Z es invalida',
        '*.ano.required' => 'la fecha no es valida ',
-       '*.ano.notIn' => 'El programa seleccionado no es presupuestable ',
+       '*.ano.notIn' => 'El programa seleccionado no es presupuestable, verifica las columnas A, F a R y el año.',
        '*.idpartida' => 'La combinacion de id partida con tipo de gasto es invalida',
        '*.admconac.notIn' => 'La clasificacion economica introducida es invalida para esta clave administrativa',
 
