@@ -19,6 +19,7 @@ class MetasHelper{
 					'proyectos_mir.clv_upp AS upp',
 					'proyectos_mir.entidad_ejecutora AS entidad',
 					'proyectos_mir.area_funcional AS area',
+					'proyectos_mir.ejercicio',
 					'actividades_mir.actividad as actividad'
 				)
 				->where('proyectos_mir.deleted_at', '=', null);
@@ -37,6 +38,7 @@ class MetasHelper{
 					'metas.id',
 					'pro.entidad',
 					'pro.area',
+					'pro.ejercicio',
 					'metas.clv_fondo as fondo',
 					'pro.actividad',
 					'metas.tipo',
@@ -56,6 +58,7 @@ class MetasHelper{
             throw new \Exception($exp->getMessage());
         }
     }
+
 	public static function beneficiarios(){
 		$result = DB::table('beneficiarios')
 		->select(
@@ -81,6 +84,7 @@ class MetasHelper{
 
 		return $result;
 	}
+
 	public static function tCalendario(){
 
 		$tipo=[];

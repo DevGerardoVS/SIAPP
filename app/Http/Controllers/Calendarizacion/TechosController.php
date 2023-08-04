@@ -30,10 +30,12 @@ class TechosController extends Controller
 {
     //Consulta Vista Techos
     public function getIndex(){
+        Controller::check_permission('getTechos');
         return view('calendarizacion.techos.index');
     }
-
+    
     public function getTechos(Request $request){
+        Controller::check_permission('getTechos');
         $dataSet = [];
 
         $data = DB::table('techos_financieros as tf')
@@ -79,7 +81,7 @@ class TechosController extends Controller
     }
 
     public function getTechoEdit(Request $request){
-
+        Controller::check_permission('getTechos');
         $max_ejercicio = DB::table('epp')
             ->select('ejercicio')
             ->groupBy('ejercicio')
@@ -102,6 +104,7 @@ class TechosController extends Controller
     }
 
     public function getFondos(){
+        Controller::check_permission('getTechos');
         $fondos = DB::table('fondo')
             ->select('clv_fondo_ramo','fondo_ramo')
             ->distinct()
@@ -111,6 +114,7 @@ class TechosController extends Controller
     }
 
     public function getEjercicio(){
+        Controller::check_permission('getTechos');
         $ejercicio = DB::table('epp') 
         ->select('ejercicio')
         ->groupBy('ejercicio')
@@ -122,6 +126,7 @@ class TechosController extends Controller
     }
 
     public function addTecho(Request $request){
+        Controller::check_permission('putTechos');
         $data = array_chunk(array_slice($request->all(),3),3);
         $aRepetidos = array_chunk(array_slice($request->all(),3),3,true);
         $aKeys = array_keys(array_slice($request->all(),3));
@@ -224,6 +229,7 @@ class TechosController extends Controller
     }
 
     public function eliminar(Request $request){
+        Controller::check_permission('deleteTechos');
         try{
             //se obtienen los datos del registro para buscarlo en las claves presupuestarias
             $data = DB::table('techos_financieros')
@@ -281,6 +287,7 @@ class TechosController extends Controller
     }
 
     public function editar(Request $request){
+        Controller::check_permission('putTechos');
         try{
             ///buscamos el registro en los techos para despues filtrarlo 
             $data = DB::table('techos_financieros')
@@ -297,14 +304,23 @@ class TechosController extends Controller
             ->get();
             
             $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp);
-            log::debug($confirmacionMeta);
-            
-            
+                
             if(count($confirmadoClave) == 0){ //si no esta asignado a una clave presupuestaria se EDITA normalmente
                 DB::beginTransaction();
+
                 DB::table('techos_financieros')
                 ->where('id','=',$request->id)
                 ->update(['presupuesto' => $request->presupuesto,'updated_user' =>Auth::user()->username ]);
+
+                if(count($confirmacionMeta) != 0){
+                    foreach($confirmacionMeta as $cm){
+                        if($data[0]->ejercicio == $cm->ejercicio){
+                            DB::table('metas')
+                            ->where('id','=',$cm->id)
+                            ->update(['estatus' => 0]);
+                        }
+                    }
+                }
                 DB::commit();
 
                 $b = array(
@@ -326,11 +342,19 @@ class TechosController extends Controller
                 ->where('id','=',$request->id)
                 ->update(['presupuesto' => $request->presupuesto,'updated_user' =>Auth::user()->username ]);
                 
-                if($confirmadoClave[0]->estado == 1){
-                    DB::table('programacion_presupuesto')
-                    ->where('upp','=',$data[0]->clv_upp)
-                    ->where('ejercicio','=',$data[0]->ejercicio)
-                    ->update(['estado' => 0]);
+                DB::table('programacion_presupuesto')
+                ->where('upp','=',$data[0]->clv_upp)
+                ->where('ejercicio','=',$data[0]->ejercicio)
+                ->update(['estado' => 0]);
+
+                if(count($confirmacionMeta) != 0){
+                    foreach($confirmacionMeta as $cm){
+                        if($data[0]->ejercicio == $cm->ejercicio){
+                            DB::table('metas')
+                            ->where('id','=',$cm->id)
+                            ->update(['estatus' => 0]);
+                        }
+                    }
                 }
                 
                 DB::commit();
@@ -396,6 +420,7 @@ class TechosController extends Controller
     }
     
     public function exportExcel(Request $request){
+        Controller::check_permission('postTechos');
         try{
             ob_end_clean();
             ob_start();
@@ -410,7 +435,7 @@ class TechosController extends Controller
     }
     
     public function exportPDF(Request $request){
-        
+        Controller::check_permission('postTechos');
         try{
             ob_end_clean();
             ob_start();
@@ -432,6 +457,7 @@ class TechosController extends Controller
     }
 
     public function exportPresupuestos(Request $request){
+        Controller::check_permission('postTechos');
         try{
             ob_end_clean();
             ob_start();
