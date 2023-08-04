@@ -181,7 +181,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         ->where('clasificacion_economica',$row['idpartida'].$row['tipogasto'])
         ->count();
         if($valrelEco < 1 ){
-            $row['admconac']=0;
+            $row['admconac']='0';
         }
         
         //validacion de fondos
@@ -237,7 +237,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             ->where('presupuestable',1)
             ->count();
             if($valpresup < 1 ){
-                $row['ano']=0;
+                $row['ano']='0';
     
             }
         }
@@ -286,7 +286,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
 
        //validacion si la upp tiene firmados claves presupuestales
          $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->value('estado');
-         $valupp==1 ? $row['upp']=0 : $row['upp']; 
+         $valupp==1 ? $row['upp']='0' : $row['upp']; 
 
         //validacion de año 
         if($row['ano']>0){

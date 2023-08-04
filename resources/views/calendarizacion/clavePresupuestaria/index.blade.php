@@ -181,7 +181,9 @@
                     Swal.hideLoading()
 
             },
-            });
+            }).then(function(){
+    location.reload();
+});
         @endif
     </script>
 @endsection
