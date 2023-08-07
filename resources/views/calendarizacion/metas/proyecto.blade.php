@@ -49,9 +49,9 @@
 
                     <div class="col-md-4 text-right">
                         <br>
-                        <button type="button" class="btn btn-success col-md-5 ml-auto" href="{{ route('index_metas') }}" style="justify-content: float-right;">
+                        <a type="button" class="btn btn-success col-md-5 ml-auto" href="{{ route('index_metas') }}" style="justify-content: float-right;">
                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Agregar Actividad
-                        </button>
+                        </a>
                     </div>
                 </div>
                 <div class="row">
