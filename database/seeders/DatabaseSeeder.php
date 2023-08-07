@@ -350,6 +350,11 @@ class DatabaseSeeder extends Seeder
             ['id'=>77,'id_grupo'=>1,'id_funcion'=>42],
             ['id'=>78,'id_grupo'=>1,'id_funcion'=>43],
 
+            ['id'=>79,'id_grupo'=>1,'id_funcion'=>44],
+            ['id'=>80,'id_grupo'=>4,'id_funcion'=>44],
+
+
+
             
 
         );

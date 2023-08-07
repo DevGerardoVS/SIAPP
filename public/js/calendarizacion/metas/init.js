@@ -67,8 +67,9 @@ var dao = {
             dataType: "json"
         }).done(function (_data) {
             _table = $("#catalogo");
-            _columns = [
-                { "aTargets": [0], "mData": [0] },
+            _columns = [{
+                width: "0rem",
+                targets: [{ "aTargets": [0], "mData": [0] },
                 { "aTargets": [1], "mData": [1] },
                 { "aTargets": [2], "mData": [2] },
                 { "aTargets": [3], "mData": [3] },
@@ -78,8 +79,10 @@ var dao = {
                 { "aTargets": [7], "mData": [7] },
                 { "aTargets": [8], "mData": [8] },
                 { "aTargets": [9], "mData": [9] },
-                { "aTargets": [10], "mData": [10] }
+                { "aTargets": [10], "mData": [10] }]
+            }
             ];
+       /*  let columns={ "width": "0%", "targets":  _columns } */
             _gen.setTableScrollFotter(_table, _columns, _data.dataSet);
             let index = _data.dataSet;
             if (index.length==0) {
