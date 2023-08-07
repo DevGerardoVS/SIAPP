@@ -15,36 +15,39 @@ var _gen = {
             showDenyButton: true,
             confirmButtonText: 'Aceptar',
             denyButtonText: `Cancelar`,
-          }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
+        }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
                     url: '/logout',
                     type: 'POST',
                     data: {
-                      action: 'logout'
+                        action: 'logout',
+                        _token:$('meta[name="csrf-token"]').attr('content')
                     }, // Line A
                     success: function() {
                         console.log("Cerrando Session");
-                        window.location.href = "/login";
+                        window.location.href = "/";
                     }
                   });
             }
           })
         
     },
+/*     regenerate: function () {
+                $.ajax({
+                    url: '/logout',
+                    type: 'POST',
+                    data: {
+                        action: 'regenerate',
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    }, // Line A
+                    success: function() {
+                        console.log("regenerate Session");
+                    }
+                  });
+        
+    }, */
     essential: function () {
-        function callbackThen(response) {
-            // read HTTP status
-            // read Promise object
-            response.json().then(function(data) {
-                console.log(data.action);
-            });
-        }
-    
-        function callbackCatch(error) {
-            console.error('Error:', error)
-        }
     
         var tiempo = parseInt("{{ $_ENV['SESSION_INACTIVITYTIME'] }}") * 60;
         var tiemporestante = new Date("{{Session::get('last_activity')}}").getTime();
@@ -56,7 +59,7 @@ var _gen = {
     
             // console.log(minutos);
     
-            if (minutos >= 480) {
+            if (minutos >= .5) {
                 clearInterval(reloj);
                 var urlactual = "{{ Request::path() }}";
                 if (urlactual !== 'login') {
@@ -71,9 +74,9 @@ var _gen = {
                         cancelButtonText: 'No, cerrar sesión',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            _gen.logOut()
+                            _gen.regenerate();
                         } else {
-                            _gen.logOut()
+                            _gen.logOut();
                         }
                     });
                 }

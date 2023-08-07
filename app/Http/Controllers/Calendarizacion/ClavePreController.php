@@ -27,7 +27,10 @@ class ClavePreController extends Controller
         return view('calendarizacion.clavePresupuestaria.updateCalendarzacion', compact('clave'));
     }
     public function getCreate($ejercicio){
+        
         Controller::check_permission('postClaves');
+        Controller::check_permission('postClavesManual');
+
         $descripcion = '';
         $upp =  Auth::user()->clv_upp;
         if ($upp && $upp != null && $upp != 'null') {
@@ -139,6 +142,8 @@ class ClavePreController extends Controller
     } 
     public function postGuardarClave(Request $request){
         Controller::check_permission('postClaves');
+        Controller::check_permission('postClavesManual');
+
         try {
             $clave = ProgramacionPresupuesto::where([
                 'clasificacion_administrativa' => $request->data[0]['clasificacionAdministrativa'],

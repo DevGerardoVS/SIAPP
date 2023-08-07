@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MetasHelper{
 	
-    public static function actividades($upp){
+    public static function actividades($upp,$anio){
         try {
 			$proyecto = DB::table('actividades_mir')
 				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
@@ -22,7 +22,8 @@ class MetasHelper{
 					'proyectos_mir.ejercicio',
 					'actividades_mir.actividad as actividad'
 				)
-				->where('proyectos_mir.deleted_at', '=', null);
+				->where('proyectos_mir.deleted_at', '=', null)
+				->where('proyectos_mir.ejercicio', $anio);
 				if($upp !="null"){
 					$proyecto = $proyecto->where('proyectos_mir.clv_upp',$upp);
 				}
@@ -47,7 +48,8 @@ class MetasHelper{
 					'beneficiarios.beneficiario',
 					'unidades_medida.unidad_medida',
 				)
-				->where('metas.deleted_at', '=', null);
+				->where('metas.deleted_at', '=', null)
+				->where('pro.ejercicio',$anio);
 			if($upp !="null"){
 				$query = $query->where('pro.upp',$upp);
 			}

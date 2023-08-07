@@ -303,7 +303,7 @@ class TechosController extends Controller
             ->limit(1)
             ->get();
             
-            $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp);
+            $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp, $data[0]->ejercicio);
                 
             if(count($confirmadoClave) == 0){ //si no esta asignado a una clave presupuestaria se EDITA normalmente
                 DB::beginTransaction();
@@ -314,11 +314,9 @@ class TechosController extends Controller
 
                 if(count($confirmacionMeta) != 0){
                     foreach($confirmacionMeta as $cm){
-                        if($data[0]->ejercicio == $cm->ejercicio){
                             DB::table('metas')
                             ->where('id','=',$cm->id)
                             ->update(['estatus' => 0]);
-                        }
                     }
                 }
                 DB::commit();
