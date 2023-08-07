@@ -2239,6 +2239,190 @@ return new class extends Migration {
                 end if;
             END;
         ");
+
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_II(in anio int)
+        begin
+            select 
+                case 
+                    when indicador = '' then clv_upp
+                    else ''
+                end clv_upp,
+                case 
+                    when indicador = '' then upp
+                    else ''
+                end upp,
+                case 
+                    when indicador = '' then clv_fuente_financiamiento
+                    else ''
+                end clv_fuente_financiamiento,
+                case 
+                    when indicador = '' then fuente_financiamiento
+                    else ''
+                end fuente_financiamiento,
+                case 
+                    when indicador = '' then clv_programa
+                    else ''
+                end clv_programa,
+                case 
+                    when indicador = '' then programa
+                    else ''
+                end programa,
+                case 
+                    when indicador = '' then clv_subprograma
+                    else ''
+                end clv_subprograma,
+                case 
+                    when indicador = '' then subprograma
+                    else ''
+                end subprograma,
+                indicador,
+                actividad,
+                metas,
+                importe
+            from (
+                select 
+                    pa.clv_upp,
+                    pa.upp,
+                    pa.clv_fuente_financiamiento,
+                    pa.fuente_financiamiento,
+                    pa.clv_programa,
+                    pa.programa,
+                    pa.clv_subprograma,
+                    pa.subprograma,
+                    '' indicador,
+                    '' objetivo,
+                    '' actividad,
+                    '' metas,
+                    '' importe
+                from proyectos_mir pm 
+                join pp_aplanado pa on pa.clv_upp = pm.clv_upp
+                    and pa.clv_ur = substring(pm.entidad_ejecutora,5,2)
+                    and pa.clv_finalidad = substring(pm.area_funcional,1,1)
+                    and pa.clv_funcion = substring(pm.area_funcional,2,1)
+                    and pa.clv_subfuncion = substring(pm.area_funcional,3,1)
+                    and pa.clv_eje = substring(pm.area_funcional,4,1)
+                    and pa.clv_linea_accion = substring(pm.area_funcional,5,2)
+                    and pa.clv_programa_sectorial = substring(pm.area_funcional,7,1)
+                    and pa.clv_tipologia_conac = substring(pm.area_funcional,8,1)
+                    and pa.clv_programa = substring(pm.area_funcional,9,2)
+                    and pa.clv_subprograma = substring(pm.area_funcional,11,3)
+                    and pa.clv_proyecto = substring(pm.area_funcional,14,3)
+                where pm.ejercicio = anio
+                group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
+                    pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma
+                union all
+                select 
+                    pa.clv_upp,
+                    pa.upp,
+                    pa.clv_fuente_financiamiento,
+                    pa.fuente_financiamiento,
+                    pa.clv_programa,
+                    pa.programa,
+                    pa.clv_subprograma,
+                    pa.subprograma,
+                    pm.indicador,
+                    pm.objetivo,
+                    am.actividad,
+                    count(m.id) metas,
+                    sum(m.total) importe
+                from proyectos_mir pm 
+                join actividades_mir am on am.proyecto_mir_id = pm.id 
+                join metas m on m.actividad_id = am.id
+                join pp_aplanado pa on pa.clv_upp = pm.clv_upp
+                    and pa.clv_ur = substring(pm.entidad_ejecutora,5,2)
+                    and pa.clv_finalidad = substring(pm.area_funcional,1,1)
+                    and pa.clv_funcion = substring(pm.area_funcional,2,1)
+                    and pa.clv_subfuncion = substring(pm.area_funcional,3,1)
+                    and pa.clv_eje = substring(pm.area_funcional,4,1)
+                    and pa.clv_linea_accion = substring(pm.area_funcional,5,2)
+                    and pa.clv_programa_sectorial = substring(pm.area_funcional,7,1)
+                    and pa.clv_tipologia_conac = substring(pm.area_funcional,8,1)
+                    and pa.clv_programa = substring(pm.area_funcional,9,2)
+                    and pa.clv_subprograma = substring(pm.area_funcional,11,3)
+                    and pa.clv_proyecto = substring(pm.area_funcional,14,3)
+                where pm.ejercicio = anio
+                group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
+                    pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma,
+                    pm.indicador, pm.objetivo, am.actividad
+                order by clv_upp,upp,clv_fuente_financiamiento,fuente_financiamiento,
+                    clv_programa,programa,clv_subprograma,subprograma,
+                    indicador,objetivo,actividad
+            ) tabla;
+        END;");
+
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_IX(in anio int)
+        begin
+            select
+                case 
+                    when indicador = '' then clv_programa
+                    else ''
+                end clv_programa,
+                case 
+                    when indicador = '' then programa
+                    else ''
+                end programa,
+                indicador,
+                objetivo,
+                actividad,
+                metas,
+                importe
+            from (
+                select 
+                    pa.clv_programa,
+                    pa.programa,
+                    '' indicador,
+                    '' objetivo,
+                    '' actividad,
+                    '' metas,
+                    '' importe
+                from proyectos_mir pm 
+                join actividades_mir am on am.proyecto_mir_id = pm.id 
+                join metas m on m.actividad_id = am.id
+                join pp_aplanado pa on pa.clv_upp = pm.clv_upp
+                    and pa.clv_ur = substring(pm.entidad_ejecutora,5,2)
+                    and pa.clv_finalidad = substring(pm.area_funcional,1,1)
+                    and pa.clv_funcion = substring(pm.area_funcional,2,1)
+                    and pa.clv_subfuncion = substring(pm.area_funcional,3,1)
+                    and pa.clv_eje = substring(pm.area_funcional,4,1)
+                    and pa.clv_linea_accion = substring(pm.area_funcional,5,2)
+                    and pa.clv_programa_sectorial = substring(pm.area_funcional,7,1)
+                    and pa.clv_tipologia_conac = substring(pm.area_funcional,8,1)
+                    and pa.clv_programa = substring(pm.area_funcional,9,2)
+                    and pa.clv_subprograma = substring(pm.area_funcional,11,3)
+                    and pa.clv_proyecto = substring(pm.area_funcional,14,3)
+                where pm.ejercicio = anio
+                group by pa.clv_programa,pa.programa
+                union all
+                select 
+                    pa.clv_programa,
+                    pa.programa,
+                    pm.indicador,
+                    pm.objetivo,
+                    am.actividad,
+                    count(m.id) metas,
+                    sum(m.total) importe
+                from proyectos_mir pm 
+                join actividades_mir am on am.proyecto_mir_id = pm.id 
+                join metas m on m.actividad_id = am.id
+                join pp_aplanado pa on pa.clv_upp = pm.clv_upp
+                    and pa.clv_ur = substring(pm.entidad_ejecutora,5,2)
+                    and pa.clv_finalidad = substring(pm.area_funcional,1,1)
+                    and pa.clv_funcion = substring(pm.area_funcional,2,1)
+                    and pa.clv_subfuncion = substring(pm.area_funcional,3,1)
+                    and pa.clv_eje = substring(pm.area_funcional,4,1)
+                    and pa.clv_linea_accion = substring(pm.area_funcional,5,2)
+                    and pa.clv_programa_sectorial = substring(pm.area_funcional,7,1)
+                    and pa.clv_tipologia_conac = substring(pm.area_funcional,8,1)
+                    and pa.clv_programa = substring(pm.area_funcional,9,2)
+                    and pa.clv_subprograma = substring(pm.area_funcional,11,3)
+                    and pa.clv_proyecto = substring(pm.area_funcional,14,3)
+                where pm.ejercicio = anio
+                group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
+                    pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma,
+                    pm.indicador, pm.objetivo, am.actividad
+                order by clv_programa,programa,indicador,objetivo,actividad
+            ) tabla;
+        END");
     }
 
     /**
@@ -2281,5 +2465,7 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_resumen_por_capitulo_y_partida;");
         DB::unprepared("DROP PROCEDURE IF EXISTS SP_AF_EE;");
         DB::unprepared("DROP PROCEDURE IF EXISTS lista_upp;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_II;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_IX;");
     }
 };

@@ -56,5 +56,13 @@ function getExplodePartiqcipacion($data){
     else
     return false;
 }
+function getAnios() {
+    $anio = DB::table('metas')
+        ->leftJoin('actividades_mir', 'actividades_mir.id', 'metas.actividad_id')
+        ->select('actividades_mir.ejercicio')
+        ->groupBy('actividades_mir.ejercicio')
+        ->get();
+    return $anio;
 
+}
 
