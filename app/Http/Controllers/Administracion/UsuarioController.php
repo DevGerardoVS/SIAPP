@@ -332,7 +332,9 @@ class UsuarioController extends Controller
             'id',
             'nombre_grupo',
             'estatus'
-        )->where('deleted_at', '=', null)
+        )
+        ->where('deleted_at', '=', null)
+        ->where('id', '!=', 2)
             ->get();
         return response()->json($perfil, 200);
     }

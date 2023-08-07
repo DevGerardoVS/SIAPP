@@ -966,4 +966,50 @@ $year = $date->format('Y');
 			return response()->json('error',200);
 		}
 	}
+	public function apiMetas($anio,$upp=null)
+	{
+		 if ($upp) {
+			$query = MetasHelper::apiMetas($anio,$upp);
+			Log::debug("dos datos");
+		}else{
+			$query = MetasHelper::apiMetasFull($anio);
+			Log::debug("Full");
+
+		}
+		$dataSet = [];
+		$upp = [];
+		foreach ($query as $key) {
+			$area = str_split($key->area);
+			$entidad = str_split($key->entidad);
+			$a=array(
+				"upp"=>''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
+				"ur"=>''.strval($entidad[4]).strval($entidad[5]).'',
+				"actividad" => array(
+				"finalidad"=>$area[0],
+				"funcion"=>$area[1],
+				"subfuncion"=>$area[2],
+				"eje"=>$area[3],
+				"linea"=>''.strval($area[4]).strval($area[5]).'',
+				"programacionSectorial"=>$area[6],
+				"tipologia"=>$area[7],
+				"upp"=>''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
+				"ur"=>''.strval($entidad[4]).strval($entidad[5]).'',
+				"programa"=>''.strval($area[8]).strval($area[9]).'',
+				"subprograma"=>''.strval($area[10]).strval($area[11]).strval($area[12]).'',
+				"proyecto"=>''.strval($area[13]).strval($area[14]).strval($area[15]).'',
+				"fondo"=>$key->fondo,
+				"clvActividad"=>$key->clv_actividad,
+				"actividad"=>$key->actividad,
+				"tipoCalendario"=>$key->tipo,
+				"metaAnual"=>$key->total,
+				"nBeneficiarios"=>$key->cantidad_beneficiarios,
+				"beneficiarios"=>$key->beneficiario,
+				"unidadMedida"=>$key->unidad_medida
+			));
+			$upp[''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).''] = $a;
+		}
+		$dataSet["upp"] = $upp;
+		return response()->json(["status"=>200,"data"=>$dataSet]);
+	}
+
 }
