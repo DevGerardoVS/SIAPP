@@ -1,5 +1,6 @@
 @include('layouts.links')
 @include('layouts.scripts')
+
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <?php ini_set('memory_limit', '-1');?>
@@ -11,11 +12,17 @@
     use Carbon\Carbon;
          $lastActivity = Session::get('last_activity');
         $inactivityLimit = 1800; // 30 minutes (in seconds)
-
+        if (!Auth::guest()) {
+            $fullname= Auth::user()->nombre;
+        }
+        else{
+            $fullname= "";
+        }
+        
       
     @endphp
     <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta id="meta" name="csrf-token" content="{{ csrf_token() }}">
 
 
     {!! htmlScriptTagJsApi([
@@ -100,7 +107,7 @@
 
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle text-sm-left" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre
-                                title={{{Auth::user()->nombre}}}>
+                                title={{{$fullname}}}>
                                 <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                             </a>
 
