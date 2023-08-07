@@ -47,10 +47,10 @@
                     <div class="col-md-6 "></div>
                     @endif    
 
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
                         <br>
-                        <button type="button" class="btn btn-success d-flex col-md-5 ml-auto" href="{{ route('index_metas') }}">
-                            <i class="fa fa-pencil-square-o" aria-hidden="true" style="top:50%;"></i>Agregar Actividad
+                        <button type="button" class="btn btn-success col-md-5 ml-auto" href="{{ route('index_metas') }}" style="justify-content: float-right;">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Agregar Actividad
                         </button>
                     </div>
                 </div>
