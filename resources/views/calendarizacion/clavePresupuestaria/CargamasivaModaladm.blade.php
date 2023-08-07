@@ -70,7 +70,7 @@
                             <div class="form-group">
                                 <label for="instruccion 4">
                                     <span style="vertical-align: inherit;"><span style="vertical-align: inherit;">El
-                                            archivo cargado debe ser un documento <b>.csv</b></span></span>
+                                            archivo cargado debe ser un documento <b>.xlsx</b></span></span>
                                 </label>
                             </div>
                         </div>

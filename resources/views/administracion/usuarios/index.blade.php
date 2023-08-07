@@ -25,19 +25,19 @@
                             </div>
                             <div class="widget-body-toolbar">
                                 <div class="row">
-                                    <div class="col-xs-9 col-sm-5 col-md-5 col-lg-5">
+                                    <div class="col-md-5">
                                     </div>
                                     @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
-                                        <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
+                                        <div class="col-md-7 text-right">
                                             <button type="button" class="btn btn-success" data-toggle="modal"
                                                 id="btnNew" data-target=".bd-example-modal-lg" data-backdrop="static"
                                                 data-keyboard="false">Agregar Usuario</button>
-                                            <a type="button" class="btn btn-dark" href="{{ route('index_up') }}">Agregar
-                                                permisos adicionales</a>
+                                            <a type="button" class="btn btn-dark" href="{{ route('index_up') }}">
+                                                Permisos adicionales</a>
                                         </div>
-                                        <div class="col-xs-10 col-sm-7 col-md-7 col-lg-7">
+                                        <div class="col-md-11">
                                         </div>
-                                        <div class="col-xs-2 col-sm-5 col-md-5 col-lg-5 text-right">
+                                        <div class="col-md-1 text-right">
                                             <div class="d-flex justify-content-center" style=" margin: 2px auto;">
                                                 <button type="button" style="justify-content: float-right"
                                                     onclick="dao.exportExcel()" class="btn btn-success"><i
