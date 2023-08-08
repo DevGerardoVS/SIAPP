@@ -1,5 +1,11 @@
 <div class="container d-flex justify-content-center">
     <div class="row">
+      {{--   <style>
+            @page {
+                margin-left: 0.5cm;
+                margin-right: 0.5cm;
+            }
+        </style> --}}
         <div class="d-flex justify-content-center"> 
             <header  style=" border-bottom: 5px solid #17a2b8;">
                 <h2 class="text-justify" style="text-align:center;">Proyectos con actividades</h2>
@@ -7,28 +13,28 @@
         </div>
                 <br>
                     <div>
-                        <table id="catalogo"  style="border: 1px solid #000; text-align: left; vertical-align: top; margin-left: auto; margin-right: auto; text-align: left">
+                        <table id="catalogo"  style="border: 1px solid #000; ">
                             <thead>
-                                <tr style="background-color: #6A0F49 !important;color: white !important; border: 1px solid #000; text-align: left; vertical-align: top;">
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Finalidad</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Función</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Subfunción</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Eje</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Linea de Accion</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Programa sectorial</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Tipologia CONAC</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">UP</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">UR</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Programa</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Subprograma</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Proyecto</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Fondo</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Actividad</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Tipo Actividad</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Meta anual</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;"># Beneficiarios</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">Beneficiarios</th>
-                                    <th style="writing-mode:vertical-rl; text-align: center; rotate: 180deg;">U de medida</th>
+                                <tr style="background-color: #6A0F49 !important;color: white !important; border: 1px solid #000;">
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">Finalidad</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">Función</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">Subfunción</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">Eje</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 60px;">Linea de Accion</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 40px;">Programa sectorial</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 40px;">Tipologia CONAC</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">UPP</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">UR</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">Programa</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 50px;">Sub programa</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 40px;">Proyecto</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 30px;">Fondo</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 40px;">Actividad</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 80px;">Tipo Actividad</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 40px;">Meta anual</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 70px;">Numero de beneficiarios</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 150px;">Beneficiarios</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 130px;">Unidad de medida</h3></th>
                                 </tr>
                             </thead>
                             <tbody>
