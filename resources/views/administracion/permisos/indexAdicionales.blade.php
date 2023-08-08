@@ -31,7 +31,7 @@
                                     <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
                                             <button type="button" class="btn btn-dark" data-toggle="modal" id="btnNew"
                                             data-target=".bd-permisos-modal-lg" data-backdrop="static"
-                                            data-keyboard="false">Permisos  adicionales</button>
+                                            data-keyboard="false">Agregar permisos adicionales</button>
 
                                             {{-- es para añadir permisos al catalogo 
                                                 <button type="button" class="btn btn-dark" data-toggle="modal" id="btnNew"

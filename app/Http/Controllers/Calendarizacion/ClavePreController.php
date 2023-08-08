@@ -27,7 +27,10 @@ class ClavePreController extends Controller
         return view('calendarizacion.clavePresupuestaria.updateCalendarzacion', compact('clave'));
     }
     public function getCreate($ejercicio){
+        
         Controller::check_permission('postClaves');
+        Controller::check_permission('postClavesManual');
+
         $descripcion = '';
         $upp =  Auth::user()->clv_upp;
         if ($upp && $upp != null && $upp != 'null') {
@@ -46,7 +49,22 @@ class ClavePreController extends Controller
     public function getClaves(Request $request){
         Controller::check_permission('getClaves');
         $uppUsuario =  Auth::user()->clv_upp;
-        $rol = 0;
+        $rol = '';
+        $perfil = Auth::user()->id_grupo;
+        switch ($perfil) {
+            case 1:
+                $rol = 0;
+                break;
+            case 4:
+                $rol = 1;
+                break;
+            case 5:
+                $rol = 2;
+                break;
+            default:
+                $rol = 3;
+                break;
+        }
         $array_where = [];
         $array_whereCierre = [];
         $anio = '';
@@ -64,7 +82,6 @@ class ClavePreController extends Controller
             if ($request->ur && $request->ur != '') {
                 array_push($array_where, ['programacion_presupuesto.ur', '=', $request->ur]);
             }
-            $rol = 1;
         }else {
             array_push($array_where, ['programacion_presupuesto.deleted_at', '=', null]);
             array_push($array_where, ['programacion_presupuesto.ejercicio', '=', $anio]);
@@ -74,10 +91,6 @@ class ClavePreController extends Controller
                 if ($request->ur && $request->ur != '') {
                     array_push($array_where, ['programacion_presupuesto.ur', '=', $request->ur]);
                 }
-            }
-            $grupo =  Auth::user()->id_grupo;
-            if ($grupo == 5) {
-                $rol =2;
             }
         }
         $estatusCierre = DB::table('cierre_ejercicio_claves')
@@ -129,6 +142,8 @@ class ClavePreController extends Controller
     } 
     public function postGuardarClave(Request $request){
         Controller::check_permission('postClaves');
+        Controller::check_permission('postClavesManual');
+
         try {
             $clave = ProgramacionPresupuesto::where([
                 'clasificacion_administrativa' => $request->data[0]['clasificacionAdministrativa'],
@@ -568,8 +583,23 @@ class ClavePreController extends Controller
     public function getPresupuestoAsignado($ejercicio = 0, $upp = ''){
         $Totcalendarizado = 0;
         $disponible = 0;
-        $rol = 0;
+        $rol = '';
         $uppUsuario = Auth::user()->clv_upp;
+        $perfil = Auth::user()->id_grupo;
+        switch ($perfil) {
+            case 1:
+                $rol = 0;
+                break;
+            case 4:
+                $rol = 1;
+                break;
+            case 5:
+                $rol = 2;
+                break;
+            default:
+                $rol = 3;
+                break;
+        }
         $array_where = [];
         $array_where2 = [];
         $array_whereCierre = [];
@@ -597,7 +627,6 @@ class ClavePreController extends Controller
                 array_push($array_where, ['techos_financieros.tipo', '=', 'Operativo']);
                 array_push($array_where2, ['programacion_presupuesto.tipo', '=', 'Operativo']);
             }
-            $rol = 1;
            
         }else {
             array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
@@ -609,10 +638,6 @@ class ClavePreController extends Controller
                 array_push($array_where, ['techos_financieros.clv_upp', '=', $upp]);
                 array_push($array_where2, ['programacion_presupuesto.upp', '=', $upp]);
                 array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $upp]);
-            }
-            $grupo =  Auth::user()->id_grupo;
-            if ($grupo == 5) {
-                $rol =2;
             }
         } 
         $estatusCierre = DB::table('cierre_ejercicio_claves')
@@ -672,7 +697,22 @@ class ClavePreController extends Controller
         $disponible = 0;
         $totalDisponible = 0;
         $totalAsignado = 0;
-        $rol = 0;
+        $rol = '';
+        $perfil = Auth::user()->id_grupo;
+        switch ($perfil) {
+            case 1:
+                $rol = 0;
+                break;
+            case 4:
+                $rol = 1;
+                break;
+            case 5:
+                $rol = 2;
+                break;
+            default:
+                $rol = 3;
+                break;
+        }
         $totalCalendarizado = 0;
         $uppUsuario = Auth::user()->clv_upp;
         $anio = '';
@@ -681,10 +721,6 @@ class ClavePreController extends Controller
             $anio = $ejercicio;
         }else {
             $anio = date('Y');
-        }
-        $grupo =  Auth::user()->id_grupo;
-        if ($grupo == 5) {
-            $rol =2;
         }
         $uppAutorizados = DB::table('uppautorizadascpnomina')
             ->SELECT('clv_upp')

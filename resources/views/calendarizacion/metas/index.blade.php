@@ -15,7 +15,7 @@
                         <div>
                             <div class="widget-body-toolbar">
                                 <div class="row">
-                                    @if (Auth::user()->clv_upp == null)
+                                    @if (Auth::user()->id_grupo!= 4)
                                         <div class="col-md-4">
                                             <label class="control-label">UPP</label>
                                             <select class="form-control filters select2" id="upp_filter" name="upp_filter"
@@ -40,7 +40,7 @@
                                         </div>
                                         <div class="col-md-4"></div>
                                     @endif
-                                    @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                                    @if (Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
                                         @if (check_assignFront(1))
                                             <div class="col-md-4 d-flex " style="justify-content: flex-end">
                                                 <div>
@@ -83,7 +83,7 @@
                                 <a type="button" class="btn btn-secondary" href="/calendarizacion/proyecto"
                                     onclick="dao.limpiar()">Actividades capturadas</a>
                                 &nbsp &nbsp
-                                @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
+                                @if (Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
                                     <button id="btnSave" type="button" class="btn btn-primary">Guardar</button>
                                 @endif
                             </div>

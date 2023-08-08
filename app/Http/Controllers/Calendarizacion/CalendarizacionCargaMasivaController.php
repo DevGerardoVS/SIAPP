@@ -76,7 +76,7 @@ class CalendarizacionCargaMasivaController extends Controller
            $arraypresupuesto= array();
            $errores=0;
            $countO=0;
-           $CountR=0;
+           $countR=0;
           if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
             $filearray =$xlsx->rows();
              if(count($filearray)<=1){
@@ -90,7 +90,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 $var= array_search($k['5'], $arrayupps);
                 
                if($k['16']=='UUU'){
-                $CountR++;
+                $countR++;
     
                }
                else{
@@ -146,7 +146,7 @@ class CalendarizacionCargaMasivaController extends Controller
 
             switch($tipoAdm){
                 case 1:
-                    if($CountR>0){
+                    if($countR>0){
                      return redirect()->back()->withErrors(['error' => 'Hay claves de RH en el archivo de cargas masivas']);
 
                     }
@@ -161,7 +161,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     break;
     
                 case 2:
-                    if($CountO>0){
+                    if($countO>0){
                         return redirect()->back()->withErrors(['error' => 'Hay claves Operativas en el archivo de cargas masivas']);
 
                        }
@@ -210,8 +210,8 @@ class CalendarizacionCargaMasivaController extends Controller
            $arrayupps= array();
            $arraypresupuesto= array();
            $errores=0;
-           $OperativoCount=0;
-           $CountR=0;
+           $countO=0;
+           $countR=0;
            $ObraCount=0;
            $DiferenteUpp=0;
           if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
@@ -227,11 +227,11 @@ class CalendarizacionCargaMasivaController extends Controller
                 $var= array_search($k['5'], $arrayupps);
                 
                if($k['16']=='UUU'){
-                $CountR++;
+                $countR++;
     
                }
                else{
-                $OperativoCount++;
+                $countO++;
     
                }
                 if($k['5']!=$uppUsuario){
@@ -315,7 +315,7 @@ class CalendarizacionCargaMasivaController extends Controller
                      break;
 
                      case 1:
-                        if($CountR>0){
+                        if($countR>0){
                             return redirect()->back()->withErrors(['error' => 'Hay claves de RH en el archivo de cargas masivas']);
                            }
                            if($DiferenteUpp>0){
@@ -336,7 +336,7 @@ class CalendarizacionCargaMasivaController extends Controller
                    break;
     
                 case 5:
-                    if($CountO>0){
+                    if($countO>0){
                         return redirect()->back()->withErrors(['error' => 'Hay claves Operativas en el archivo de cargas masivas']);
 
                        }
@@ -369,7 +369,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 
             }
             //mandamos llamar procedimiento de jeff
-           // $datos = DB::select("CALL insert_pp_aplanado()");
+            $datos = DB::select("CALL insert_pp_aplanado(".$ejercicio[0].")");
            $b = array(
             "username"=>Auth::user()->username,
             "accion"=>'Carga masiva',
@@ -389,7 +389,7 @@ class CalendarizacionCargaMasivaController extends Controller
                         unset($failures[$key]);
                 } 
             } 
-       
+
              return redirect()->back()->withErrors($failures);
     
     

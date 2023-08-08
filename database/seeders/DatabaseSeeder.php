@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         ['id' => 1, 'id_grupo' => 2, 'nombre' => 'Gob', 'p_apellido' => 'Digital', 's_apellido' => 'siapp', 'celular' => '00-00-00-00-00', 'email' => 'control@gmail.com', 'username' => 'control', 'password' => 'CasaMata',  'clv_upp' => NULL],
         ['id' => 2, 'id_grupo' => 1, 'nombre' => 'sudo', 'p_apellido' => 'admin', 's_apellido' => 'sedj', 'celular' => '00-00-00-00-00', 'email' => 'prueba1@gmail.com', 'username' => 'administrador', 'password' => 'valida2022',  'clv_upp' => NULL],
         ['id' => 3, 'id_grupo' => 1, 'nombre' => 'Francisco', 'p_apellido' => 'Méndez', 's_apellido' => 'Chávez', 'celular' => '44-32-21-90-95', 'email' => 'pacomendez2308@gmail.com', 'username' => 'depExpedientes', 'password' => 'depExpedientes.22',  'clv_upp' => NULL],
-        ['id' => 4, 'id_grupo' => 3, 'nombre' => 'auditor', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Auditor', 'password' => 'valida2022',  'clv_upp' => '007'],
+        ['id' => 4, 'id_grupo' => 3, 'nombre' => 'auditor', 'p_apellido' => 'Prota', 's_apellido' => 'Ponce', 'celular' => '44-32-21-90-95', 'email' => 'pruebas@gmail.com', 'username' => 'Auditor', 'password' => 'valida2022',  'clv_upp' => NULL],
         ['id' => 5, 'id_grupo' => 1, 'nombre' => 'UnidadR', 'p_apellido' => 'u', 's_apellido' => 'pp', 'celular' => '44-32-21-90-95', 'email' => 'upp_user@gmail.com', 'username' => 'upp', 'password' => 'valida23',  'clv_upp' => '002'],
         ['id' => 6, 'id_grupo' => 1, 'nombre' => 'Luis', 'p_apellido' => 'Pardo', 's_apellido' => 'Escutia', 'celular' => '4400000081', 'email' => 'rosario.escutia+81@correo.michoacan.gob.mx', 'username' => 'LPARDO', 'password' => 'valida2022',  'clv_upp' => NULL],
         ['id' => 7, 'id_grupo' => 5, 'nombre' => 'Mario', 'p_apellido' => 'Delgado', 's_apellido' => 'Murillo', 'celular' => '4400000082', 'email' => 'rosario.escutia+82@correo.michoacan.gob.mx', 'username' => 'DELEGACION', 'password' => 'valida2022',  'clv_upp' => NULL],
@@ -249,6 +249,8 @@ class DatabaseSeeder extends Seeder
             ['id' => 41,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'viewPostUpps', 'tipo' => 'Consulta', 'descripcion' => 'Obtener todos los tipos de actividad por upp a la BD'],
             ['id' => 42,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'updateUpps', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar un tipo de actividad por upp a la BD'],
             ['id' => 43,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'updateUppsAuto', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar el estado de una upp autorizada a la BD'],
+            ['id' => 44,  'id_sistema' => 1,'id_menu' => 8, 'modulo' => 'Claves presupuestarias', 'funcion' => 'postClavesManual', 'tipo' => 'Insercion Manual', 'descripcion' => 'Insercion claves presupuestarias Manual'],
+
         );
 
         protected $relFunGroup=array(
@@ -347,6 +349,11 @@ class DatabaseSeeder extends Seeder
             ['id'=>76,'id_grupo'=>1,'id_funcion'=>41],
             ['id'=>77,'id_grupo'=>1,'id_funcion'=>42],
             ['id'=>78,'id_grupo'=>1,'id_funcion'=>43],
+
+            ['id'=>79,'id_grupo'=>1,'id_funcion'=>44],
+            ['id'=>80,'id_grupo'=>4,'id_funcion'=>44],
+
+
 
             
 
