@@ -2292,8 +2292,8 @@ return new class extends Migration {
                     '' indicador,
                     '' objetivo,
                     '' actividad,
-                    '' metas,
-                    '' importe
+                    0 metas,
+                    0 importe
                 from proyectos_mir pm 
                 join pp_aplanado pa on pa.clv_upp = pm.clv_upp
                     and pa.clv_ur = substring(pm.entidad_ejecutora,5,2)
@@ -2373,8 +2373,8 @@ return new class extends Migration {
                     '' indicador,
                     '' objetivo,
                     '' actividad,
-                    '' metas,
-                    '' importe
+                    0 metas,
+                    0 importe
                 from proyectos_mir pm 
                 join actividades_mir am on am.proyecto_mir_id = pm.id 
                 join metas m on m.actividad_id = am.id
