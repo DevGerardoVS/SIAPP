@@ -543,7 +543,7 @@ class MetasController extends Controller
 	{
 		$date = Carbon::now();
 
-$year = $date->format('Y');
+		$year = $date->format('Y');
 		Controller::check_permission('getMetas');
 		$data = $this->getActiv($upp,$year);
 		for ($i=0; $i <count($data); $i++) { 
@@ -857,7 +857,7 @@ $year = $date->format('Y');
 		}
 		$pdf ='';
 		if ($request->tipoReporte == 2) {
-			$ruta = public_path() . "/reportes/calendario_fondo_mensual.pdf";
+			$ruta = public_path() . "/reportes/proyecto_calendario_actividades.pdf";
 		}else {
 			$ruta = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
 		}
@@ -927,7 +927,7 @@ $year = $date->format('Y');
 		Log::debug($date);
 		$marca = strtotime($fecha);
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
-		$report = "calendario_fondo_mensual";
+		$report = "proyecto_calendario_actividades";
 
 		$ruta = public_path() . "/reportes";
 		//Eliminación si ya existe reporte
@@ -942,7 +942,7 @@ $year = $date->format('Y');
 			"anio" => $date,
 			"logoLeft" => public_path() . '\img\logo.png',
 			"logoRight" => public_path() . '\img\escudoBN.png',
-			//"UPP" => $upp,
+			"upp" => $upp,
 		);
 
 		$database_connection = \Config::get('database.connections.mysql');
