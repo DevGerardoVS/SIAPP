@@ -8,6 +8,7 @@ use App\Models\administracion\UsuarioGrupo;
 use App\Models\catalogos\CatPermisos;
 use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Log;
@@ -47,11 +48,18 @@ class UsuarioController extends Controller
     public function assignPermisson(Request $request)
     {
         if ($request->id == null) {
-            $resul = PermisosUpp::create([
-                'id_user' => $request->id_userP,
-                'id_permiso' => $request->id_permiso,
-                'descripcion' => $request->descripcion,
-            ]);
+            $user = PermisosUpp::where('deleted_at', null)->where('id_user', $request->id_userP)->where('id_permiso', $request->id_permiso)->first();
+            if($user){
+                $res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'este usuario ya cuenta con el permiso', "title" => "Precaución"]];
+                return response()->json($res, 200);
+            }else{
+                $resul = PermisosUpp::create([
+                    'id_user' => $request->id_userP,
+                    'id_permiso' => $request->id_permiso,
+                    'descripcion' => $request->descripcion,
+                ]);
+            }
+
         } else {
             $permisosRequest = [
                 1 => isset($request->masiva) ? $request->masiva : 'a',
@@ -201,7 +209,7 @@ class UsuarioController extends Controller
             'permisos_funciones.id_permiso',
             'adm_users.username',
             DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'),
-            DB::raw('GROUP_CONCAT(cat_permisos.nombre SEPARATOR "  ") AS permiso'),
+            DB::raw('GROUP_CONCAT(cat_permisos.nombre SEPARATOR " / ") AS permiso'),
             DB::raw('GROUP_CONCAT(permisos_funciones.id_permiso SEPARATOR "/") AS permisos'),
             'adm_grupos.nombre_grupo AS grupo'
         )
@@ -239,7 +247,7 @@ class UsuarioController extends Controller
     public function postStore(Request $request)
     {
         if ($request->id_user != null) {
-            $this->postUpdate($request);
+            return  $this->postUpdate($request);
         } else {
             Controller::check_permission('postUsuarios');
             $validaUserName = User::where('username', $request->username)->get();
@@ -270,9 +278,25 @@ class UsuarioController extends Controller
     //Actualiza Usuario
     public function postUpdate(Request $request)
     {
+        $date = Carbon::now();
         Controller::check_permission('putUsuarios');
-        User::find($request->id_user)->update($request->all());
-        return response()->json("done", 200);
+        $userEdit = User::where('id', $request->id_user)->firstOrFail();
+        $userEdit->username = $request->username;
+        $userEdit->nombre = $request->nombre;
+        $userEdit->p_apellido = $request->p_apellido;
+        $userEdit->s_apellido = $request->s_apellido;
+        $userEdit->email = $request->email;
+        $userEdit->celular = $request->celular;
+        $userEdit->clv_upp = NULL;
+        $userEdit->updated_at = $date;
+        $userEdit->save();
+        if($userEdit->wasChanged()){
+            return response()->json(["success" => 'info', "title" => "Éxito!", "text" => "Usuario modificado"], 200);
+        }else{
+            return response()->json(["success" => 'error', "title" => "Error!", "text" => "No se modificado"], 200);
+        }
+
+        
     }
     //Elimina Usuario
     public function postDelete(Request $request)

@@ -143,7 +143,6 @@ var dao = {
         if ($("#id_grupo").val() != '4') {
             data.append('clv_upp', null);
         }
-
         $.ajax({
             type: "POST",
             url: 'adm-usuarios/store',
@@ -154,9 +153,10 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
+            console.log(response);
             $('#cerrar').trigger('click');
             Swal.fire({
-                icon: response.icon,
+                icon: response.info,
                 title: response.title,
                 text: response.text,
             });
@@ -221,18 +221,16 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            $('#exampleModalLabel').text('Editar usuario')
+            $('#exampleModalLabel').text('Editar usuario');
+            console.log(response);
             const {
                 id,
                 username,
                 celular,
                 email,
-                estatus,
-                id_grupo,
                 nombre,
                 p_apellido,
                 s_apellido,
-                perfil,
                 nombre_grupo
             } = response;
             $('#id_user').val(id);
@@ -242,10 +240,11 @@ var dao = {
             $('#s_apellido').val(s_apellido);
             $('#email').val(email);
             $('#in_celular').val(celular);
-            $('#label_idGrupo').text(perfil).show();
-
+            $('#label_idGrupo').text(nombre_grupo).show();
             $("#id_grupo").hide();
             $("#labelGrupo").hide();
+            $("#passchange").hide();
+            $("#passchange1").hide();
 
         });
     },
@@ -282,6 +281,8 @@ var dao = {
         $("#labelGrupo").show();
         $("#label_idGrupo").text("").hide();
         $('#exampleModalLabel').text('Agregar usuario');
+        $("#passchange").show();
+        $("#passchange1").show();
 
     },
     exportExcel: function () {
