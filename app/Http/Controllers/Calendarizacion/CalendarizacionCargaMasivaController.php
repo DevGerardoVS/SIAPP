@@ -369,7 +369,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 
             }
             //mandamos llamar procedimiento de jeff
-           // $datos = DB::select("CALL insert_pp_aplanado()");
+            $datos = DB::select("CALL insert_pp_aplanado(".$ejercicio[0].")");
            $b = array(
             "username"=>Auth::user()->username,
             "accion"=>'Carga masiva',
@@ -389,7 +389,7 @@ class CalendarizacionCargaMasivaController extends Controller
                         unset($failures[$key]);
                 } 
             } 
-       
+
              return redirect()->back()->withErrors($failures);
     
     

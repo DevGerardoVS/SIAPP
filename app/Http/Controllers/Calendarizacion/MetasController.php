@@ -41,10 +41,10 @@ class MetasController extends Controller
 		Controller::check_permission('getMetas');
 		return view('calendarizacion.metas.proyecto');
 	}
-	public static function getActiv($upp)
+	public static function getActiv($upp,$anio)
 	{
 		Controller::check_permission('getMetas');
-		$query = MetasHelper::actividades($upp);
+		$query = MetasHelper::actividades($upp,$anio);
 		$dataSet = [];
 		foreach ($query as $key) {
 			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
@@ -510,7 +510,7 @@ class MetasController extends Controller
 		}
 		return $data[0];
 	}
-	public function exportExcel($upp)
+	public function exportExcel($upp,$anio)
 	{
 		/*Si no coloco estas lineas Falla*/
 		ob_end_clean();
@@ -522,7 +522,7 @@ class MetasController extends Controller
 			"modulo"=>'Metas'
 		 );
 		Controller::bitacora($b);
-		return Excel::download(new MetasExport($upp), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+		return Excel::download(new MetasExport($upp,$anio), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
 	public function proyExcel()
 	{
@@ -541,8 +541,11 @@ class MetasController extends Controller
 	}
 	public function pdfView($upp)
 	{
+		$date = Carbon::now();
+
+$year = $date->format('Y');
 		Controller::check_permission('getMetas');
-		$data = $this->getActiv($upp);
+		$data = $this->getActiv($upp,$year);
 		for ($i=0; $i <count($data); $i++) { 
 			unset($data[$i][19]);
 			$data=array_values($data);
@@ -550,12 +553,12 @@ class MetasController extends Controller
 		return view('calendarizacion.metas.proyectoPDF', compact('data'));
 	}
 
-	public function exportPdf($upp)
+	public function exportPdf($upp,$year)
 	{
 		ini_set('max_execution_time', 5000);
         ini_set('memory_limit', '1024M');
 		Controller::check_permission('getMetas');
-		$data = $this->getActiv($upp);
+		$data = $this->getActiv($upp,$year);
 		for ($i=0; $i <count($data); $i++) { 
 			unset($data[$i][19]);
 			$data=array_values($data);
@@ -570,11 +573,10 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return $pdf->download('Proyecto con actividades.pdf');
 	}
-	public function downloadActividades($upp)
+	public function downloadActividades($upp,$year)
 	{
-		$date = Carbon::now();
 		$request = array(
-			"anio" => $date->year,
+			"anio" => $year,
 			// "corte" => $date->format('Y-m-d'),
 			"logoLeft" => public_path() . '\img\logo.png',
 			"logoRight" => public_path() . '\img\escudoBN.png',
@@ -916,12 +918,12 @@ class MetasController extends Controller
 		}
 	}
 
-	public function jasperMetas($upp){
+	public function jasperMetas($upp,$anio){
 		date_default_timezone_set('America/Mexico_City');
 
 		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
 		$fecha = date('d-m-Y');
-		$date = date('Y');
+		$date = $anio;
 		Log::debug($date);
 		$marca = strtotime($fecha);
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
@@ -964,4 +966,50 @@ class MetasController extends Controller
 			return response()->json('error',200);
 		}
 	}
+	public function apiMetas($anio,$upp=null)
+	{
+		 if ($upp) {
+			$query = MetasHelper::apiMetas($anio,$upp);
+			Log::debug("dos datos");
+		}else{
+			$query = MetasHelper::apiMetasFull($anio);
+			Log::debug("Full");
+
+		}
+		$dataSet = [];
+		$upp = [];
+		foreach ($query as $key) {
+			$area = str_split($key->area);
+			$entidad = str_split($key->entidad);
+			$a=array(
+				"upp"=>''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
+				"ur"=>''.strval($entidad[4]).strval($entidad[5]).'',
+				"actividad" => array(
+				"finalidad"=>$area[0],
+				"funcion"=>$area[1],
+				"subfuncion"=>$area[2],
+				"eje"=>$area[3],
+				"linea"=>''.strval($area[4]).strval($area[5]).'',
+				"programacionSectorial"=>$area[6],
+				"tipologia"=>$area[7],
+				"upp"=>''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
+				"ur"=>''.strval($entidad[4]).strval($entidad[5]).'',
+				"programa"=>''.strval($area[8]).strval($area[9]).'',
+				"subprograma"=>''.strval($area[10]).strval($area[11]).strval($area[12]).'',
+				"proyecto"=>''.strval($area[13]).strval($area[14]).strval($area[15]).'',
+				"fondo"=>$key->fondo,
+				"clvActividad"=>$key->clv_actividad,
+				"actividad"=>$key->actividad,
+				"tipoCalendario"=>$key->tipo,
+				"metaAnual"=>$key->total,
+				"nBeneficiarios"=>$key->cantidad_beneficiarios,
+				"beneficiarios"=>$key->beneficiario,
+				"unidadMedida"=>$key->unidad_medida
+			));
+			$upp[''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).''] = $a;
+		}
+		$dataSet["upp"] = $upp;
+		return response()->json(["status"=>200,"data"=>$dataSet]);
+	}
+
 }

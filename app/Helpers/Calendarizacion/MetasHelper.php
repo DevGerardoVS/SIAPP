@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MetasHelper{
 	
-    public static function actividades($upp){
+    public static function actividades($upp,$anio){
         try {
 			$proyecto = DB::table('actividades_mir')
 				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
@@ -22,11 +22,9 @@ class MetasHelper{
 					'proyectos_mir.ejercicio',
 					'actividades_mir.actividad as actividad'
 				)
-				->where('proyectos_mir.deleted_at', '=', null);
-				if($upp !="null"){
-					$proyecto = $proyecto->where('proyectos_mir.clv_upp',$upp);
-				}
-
+				->where('proyectos_mir.deleted_at', '=', null)
+				->where('proyectos_mir.ejercicio', $anio)
+				->where('proyectos_mir.clv_upp', $upp);
 			$query = DB::table('metas')
 				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -47,11 +45,8 @@ class MetasHelper{
 					'beneficiarios.beneficiario',
 					'unidades_medida.unidad_medida',
 				)
-				->where('metas.deleted_at', '=', null);
-			if($upp !="null"){
-				$query = $query->where('pro.upp',$upp);
-			}
-				$query=$query->get();
+				->where('metas.deleted_at', '=', null)
+				->where('pro.ejercicio',$anio)->where('pro.upp',$upp)->get();
             return $query;
         } catch(\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
@@ -93,4 +88,102 @@ class MetasHelper{
 		$tipo[] = ['2', 'Especial'];
 		return  $tipo;
 	}
+	public static function apiMetas($anio,$upp)
+	{
+		try {
+			$proyecto = DB::table('actividades_mir')
+				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+				->select(
+					'actividades_mir.id',
+					'actividades_mir.clv_actividad',
+					'proyectos_mir.clv_upp AS upp',
+					'proyectos_mir.entidad_ejecutora AS entidad',
+					'proyectos_mir.area_funcional AS area',
+					'proyectos_mir.ejercicio',
+					'actividades_mir.actividad as actividad'
+				)
+				->where('proyectos_mir.deleted_at', '=', null)
+				->where('proyectos_mir.ejercicio', $anio)
+				->where('proyectos_mir.clv_upp', $upp);
+
+			$query = DB::table('metas')
+				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($proyecto, 'pro', function ($join) {
+					$join->on('metas.actividad_id', '=', 'pro.id');
+				})
+				->select(
+					'metas.id',
+					'pro.entidad',
+					'pro.area',
+					'pro.ejercicio',
+					'metas.clv_fondo as fondo',
+					'pro.clv_actividad',
+					'pro.actividad',
+					'metas.tipo',
+					'metas.total',
+					'metas.cantidad_beneficiarios',
+					'beneficiarios.beneficiario',
+					'unidades_medida.unidad_medida',
+				)
+				->where('metas.deleted_at', '=', null)
+				->where('pro.ejercicio', $anio)
+				->where('pro.upp', $upp);
+			$query = $query->get();
+			return $query;
+        } catch(\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+        }
+		
+    }
+	public static function apiMetasFull($anio)
+	{
+		Log::debug($anio);
+		try {
+			$proyecto = DB::table('actividades_mir')
+				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+				->select(
+					'actividades_mir.id',
+					'actividades_mir.clv_actividad',
+					'proyectos_mir.clv_upp AS upp',
+					'proyectos_mir.entidad_ejecutora AS entidad',
+					'proyectos_mir.area_funcional AS area',
+					'proyectos_mir.ejercicio',
+					'actividades_mir.actividad as actividad'
+				)
+				->where('proyectos_mir.deleted_at', '=', null)
+				->where('proyectos_mir.ejercicio', $anio);
+
+			$query = DB::table('metas')
+				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($proyecto, 'pro', function ($join) {
+					$join->on('metas.actividad_id', '=', 'pro.id');
+				})
+				->select(
+					'metas.id',
+					'pro.entidad',
+					'pro.area',
+					'pro.ejercicio',
+					'metas.clv_fondo as fondo',
+					'pro.clv_actividad',
+					'pro.actividad',
+					'metas.tipo',
+					'metas.total',
+					'metas.cantidad_beneficiarios',
+					'beneficiarios.beneficiario',
+					'unidades_medida.unidad_medida',
+				)
+				->where('metas.deleted_at', '=', null)
+				->where('pro.ejercicio', $anio);
+			$query = $query->get();
+			return $query;
+        } catch(\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+        }
+    }
 }

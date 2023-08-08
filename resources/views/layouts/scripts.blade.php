@@ -60,6 +60,17 @@
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script src="/js/appInit.js"></script>
     <script >
+          function callbackThen(response) {
+            // read HTTP status
+            // read Promise object
+            response.json().then(function(data) {
+                console.log(data.action);
+            });
+        }
+    
+        function callbackCatch(error) {
+            console.error('Error:', error)
+        }
         _gen.essential();
     </script>
     <script>
