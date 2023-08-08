@@ -50,14 +50,15 @@ $titleDesc = 'Administración de Captura';
         </form>
 
         {{-- botón modal --}}
-        <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
-            <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
-            data-keyboard="false" data-toggle="modal">
-                <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
-                <span class="d-lg-inline align-middle">Apertura y cierre de captura</span> 
-            </button>
-        </div>
-
+        @if (Auth::user()->id_grupo == 1)
+            <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
+                <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
+                data-keyboard="false" data-toggle="modal">
+                    <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
+                    <span class="d-lg-inline align-middle">Apertura y cierre de captura</span> 
+                </button>
+            </div>
+        @endif
         {{-- Llamada al modal --}}
         @include('captura.modalAperturaCierre')
         
