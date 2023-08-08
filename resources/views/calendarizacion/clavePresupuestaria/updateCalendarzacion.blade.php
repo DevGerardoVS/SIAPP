@@ -209,7 +209,6 @@
 
             dao.getUninadResponsableByUpp(upp,ejercicio,ur);
             dao.getSubSecretaria(upp,ur,ejercicio);
-            dao.getAreaFuncional(upp,ur,ejercicio);
             dao.getClasificacionAdmin(upp,ur);
         }
         if (programa_presupuestario != '') {
@@ -217,7 +216,7 @@
         }
         if (subprograma_presupuestario != '') {
             dao.getSubProgramaByProgramaId(ur,programa_presupuestario, upp,ejercicio,subprograma_presupuestario);
-            
+            dao.getAreaFuncional(upp,ur,ejercicio,subprograma_presupuestario);
         }
         if (proyecto_presupuestario != '') {
             dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,upp,ur,ejercicio,proyecto_presupuestario);

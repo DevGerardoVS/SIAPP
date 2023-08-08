@@ -41,10 +41,10 @@ class MetasController extends Controller
 		Controller::check_permission('getMetas');
 		return view('calendarizacion.metas.proyecto');
 	}
-	public static function getActiv($upp)
+	public static function getActiv($upp,$anio)
 	{
 		Controller::check_permission('getMetas');
-		$query = MetasHelper::actividades($upp);
+		$query = MetasHelper::actividades($upp,$anio);
 		$dataSet = [];
 		foreach ($query as $key) {
 			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
@@ -510,7 +510,7 @@ class MetasController extends Controller
 		}
 		return $data[0];
 	}
-	public function exportExcel($upp)
+	public function exportExcel($upp,$anio)
 	{
 		/*Si no coloco estas lineas Falla*/
 		ob_end_clean();
@@ -522,7 +522,7 @@ class MetasController extends Controller
 			"modulo"=>'Metas'
 		 );
 		Controller::bitacora($b);
-		return Excel::download(new MetasExport($upp), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+		return Excel::download(new MetasExport($upp,$anio), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
 	public function proyExcel()
 	{
@@ -541,8 +541,11 @@ class MetasController extends Controller
 	}
 	public function pdfView($upp)
 	{
+		$date = Carbon::now();
+
+$year = $date->format('Y');
 		Controller::check_permission('getMetas');
-		$data = $this->getActiv($upp);
+		$data = $this->getActiv($upp,$year);
 		for ($i=0; $i <count($data); $i++) { 
 			unset($data[$i][19]);
 			$data=array_values($data);
@@ -550,12 +553,12 @@ class MetasController extends Controller
 		return view('calendarizacion.metas.proyectoPDF', compact('data'));
 	}
 
-	public function exportPdf($upp)
+	public function exportPdf($upp,$year)
 	{
 		ini_set('max_execution_time', 5000);
         ini_set('memory_limit', '1024M');
 		Controller::check_permission('getMetas');
-		$data = $this->getActiv($upp);
+		$data = $this->getActiv($upp,$year);
 		for ($i=0; $i <count($data); $i++) { 
 			unset($data[$i][19]);
 			$data=array_values($data);
@@ -570,11 +573,10 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return $pdf->download('Proyecto con actividades.pdf');
 	}
-	public function downloadActividades($upp)
+	public function downloadActividades($upp,$year)
 	{
-		$date = Carbon::now();
 		$request = array(
-			"anio" => $date->year,
+			"anio" => $year,
 			// "corte" => $date->format('Y-m-d'),
 			"logoLeft" => public_path() . '\img\logo.png',
 			"logoRight" => public_path() . '\img\escudoBN.png',
@@ -663,19 +665,19 @@ class MetasController extends Controller
 	}
 	public function checkCombination($upp)
 	{
-		$check=$this->checkClosing($upp);
+		$check = $this->checkClosing($upp);
 
-			$proyecto = DB::table('actividades_mir')
-				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
-				->select(
-					'actividades_mir.id',
-					'proyectos_mir.area_funcional AS area',
-					'proyectos_mir.clv_upp'
-				)
-				->where('actividades_mir.deleted_at', null)
-				->where('proyectos_mir.deleted_at', null)
-				->where('proyectos_mir.clv_upp', $upp);
-		$metas=DB::table('metas')
+		$proyecto = DB::table('actividades_mir')
+			->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+			->select(
+				'actividades_mir.id',
+				'proyectos_mir.area_funcional AS area',
+				'proyectos_mir.clv_upp'
+			)
+			->where('actividades_mir.deleted_at', null)
+			->where('proyectos_mir.deleted_at', null)
+			->where('proyectos_mir.clv_upp', $upp);
+		$metas = DB::table('metas')
 			->leftJoinSub($proyecto, 'pro', function ($join) {
 				$join->on('metas.actividad_id', '=', 'pro.id');
 			})
@@ -683,11 +685,12 @@ class MetasController extends Controller
 				'metas.id',
 				'metas.estatus'
 			)
-			->where('metas.estatus',1)
+			->where('metas.estatus', 1)
 			->where('pro.clv_upp', '=', $upp)
 			->get();
-			if ($check['status']) {
-			if (count($metas)==0 || Auth::user()->id_grupo == 1 ) {
+		Log::debug($check);
+		if ($check['status']) {
+			if (count($metas) == 0 || Auth::user()->id_grupo == 1) {
 				$activs = DB::table("programacion_presupuesto")
 					->select(
 						'programa_presupuestario AS programa',
@@ -728,7 +731,7 @@ class MetasController extends Controller
 				} else {
 					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false];
 				}
-			}else{
+			} else {
 				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "estado" => true];
 			}
 		} else {
@@ -907,7 +910,7 @@ class MetasController extends Controller
 			)
 			->where('clv_upp', '=', $upp)
 			->get();
-		if (Auth::user()->id_grupo == 1 && $anio[0]->estatus == 'Abierto') {
+		if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
 			return ["status" => true, "anio" => $anio[0]->ejercicio];
 		}else{
 			return ["status" => false, "anio" => $anio[0]->ejercicio];
@@ -915,12 +918,12 @@ class MetasController extends Controller
 		}
 	}
 
-	public function jasperMetas($upp){
+	public function jasperMetas($upp,$anio){
 		date_default_timezone_set('America/Mexico_City');
 
 		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
 		$fecha = date('d-m-Y');
-		$date = date('Y');
+		$date = $anio;
 		Log::debug($date);
 		$marca = strtotime($fecha);
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
@@ -957,7 +960,6 @@ class MetasController extends Controller
 		$reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
 			'Content-Type' => 'application/pdf'
 		]);
-		Log::debug('hoy es dia 01');
 		if ($reportePDF != '') {
 			return response()->json('done',200);
 		}else {

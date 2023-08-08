@@ -13,25 +13,29 @@
 		Route::get('/sistemas/panel', 'getPanel');
 	});
 
-	Route::controller(UsuarioController::class)->group(function () {
-		Route::get('adm-usuarios', 'getIndex')->name('index_usuario');
-		Route::get('adm-usuarios/data', 'getData')->name('getdata');
-		Route::post('adm-usuarios/status', 'postStatus');
-		Route::get('adm-usuarios/create', 'getCreate');
-		Route::post('adm-usuarios/store', 'postStore');
-		Route::get('adm-usuarios/update/{id?}', 'getUpdate');
-		Route::post('adm-usuarios/put-usuario', 'postUpdate');
-		Route::get('adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
-		Route::post('adm-usuarios/eliminar', 'postDelete');
-		Route::post('adm-usuarios/grupos', 'postGrupos');
-		Route::get('grupos', 'grupos');
-		Route::get('/upp/get', 'getUpp');
-		Route::get('/users/permissos', 'getUsers');
-		Route::get('/users/menu', 'getModulos');
-		Route::post('/users/permissos/create', 'createPermisson');
-		Route::post('/users/permissos/assign', 'assignPermisson');
-		Route::get('/users/permissos/get', 'getPermisson');
-	});
+Route::controller(UsuarioController::class)->group(function () {
+	Route::get('adm-usuarios', 'getIndex')->name('index_usuario');
+	Route::get('adm-usuarios/data', 'getData')->name('getdata');
+	Route::get('adm-usuarios/indexPermiso', 'getIndexUP')->name('index_up');
+	Route::get('adm-usuarios/permisos', 'getDataUP')->name('getdataUserPerm');
+	Route::post('adm-usuarios/status', 'postStatus');
+	Route::get('adm-usuarios/create', 'getCreate');
+	Route::post('adm-usuarios/store', 'postStore');
+	Route::get('adm-usuarios/update/{id?}', 'getUpdate');
+	Route::post('adm-usuarios/put-usuario', 'postUpdate');
+	Route::get('adm-usuarios/grupos/{idUsuario?}', 'getGrupos');
+	Route::post('adm-usuarios/eliminar', 'postDelete');
+	Route::post('adm-usuarios/grupos', 'postGrupos');
+	Route::get('grupos', 'grupos');
+	Route::get('/upp/get', 'getUpp');
+	Route::get('/users/permissos', 'getUsers');
+	Route::get('/users/menu', 'getModulos');
+	Route::post('/users/permissos/create', 'createPermisson');
+	Route::post('/users/permissos/assign', 'assignPermisson');
+	Route::get('/users/permissos/get', 'getPermisson');
+	Route::get('/adm-usuarios-exportExcel', 'exportExecel');
+	Route::get('/adm-usuarios-exportPdf', 'exportPdf');
+});
 
 	Route::controller(InicioController::class)->group(function (){
 		Route::post('adm-inicio/a', 'GetInicioA')->name('inicio_a');

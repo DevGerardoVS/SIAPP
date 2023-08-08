@@ -14,43 +14,59 @@
                     </header>
                 </div>
                 <div class="row">
-
+                    @if (Auth::user()->id_grupo != 4)
                     <div class="col-md-4">
-                        @if (Auth::user()->clv_upp == null)
-                            <label class="control-label">UPP</label>
-                            <select class="form-control filters select2" id="upp_filter" name="upp_filter"
-                                autocomplete="upp_filter" placeholder="Seleccione una UR">
-                                <option value="" disabled selected>Seleccione una UPP</option>
-                            </select>
-                        @endif
+                        <label class="control-label">UPP</label>
+                        <select class="form-control filters select2" id="upp_filter" name="upp_filter"
+                            autocomplete="upp_filter" placeholder="Seleccione una UR">
+                            <option value="" disabled selected>Seleccione una UPP</option>
+                        </select>
                     </div>
+                    <div class="col-md-2 ">
+                        <label class="control-label">AÑO</label>
+                        <select class="form-control filters select2" id="anio_filter" name="anio_filter"
+                            autocomplete="anio_filter" placeholder="Seleccione un año">
+                            <option value="" disabled selected>Seleccione un año</option>
+                            @foreach (getAnios() as $item)
+                            <option value="{{{$item->ejercicio}}}" >{{{$item->ejercicio}}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2"></div>
+                    @else
+                    <div class="col-md-2">
+                        <label class="control-label">AÑO</label>
+                        <select class="form-control filters select2" id="anio_filter" name="anio_filter"
+                            autocomplete="anio_filter" placeholder="Seleccione un año">
+                            <option value="" disabled selected>Seleccione un año</option>
+                            @foreach (getAnios() as $item)
+                            <option value="{{{$item->ejercicio}}}" >{{{$item->ejercicio}}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6 "></div>
+                    @endif    
 
-                    <div class="d-flex col-md-8 " style="justify-content: flex-end">
-                        <div>
-                            @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
-                            <button type="button" class="btn btn-primary" onclick="dao.exportJasperMetas()">Formato Metas</button>
-                                &nbsp
-                                <button type="button" class="btn btn-primary" onclick="dao.exportJasper()">Formato</button>
-                                &nbsp
-                            @endif
-                            <a type="button" class="btn btn-primary" href="{{ route('index_metas') }}">Agregar
-                                Actividad</a>
-
-                            @if (Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3)
-                                <div class="d-flex justify-content-center" style=" margin: 2px auto;">
-                                    <button type="button" style="justify-content: float-right" onclick="dao.exportExcel()" class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
-                                    &nbsp
-                                    <button type="button" style="justify-content: flex-end" onclick="dao.exportPdf()"
-                                        class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
-                                </div>
-                            @else
-                                <div>
-                                    &nbsp
-                                </div>
-                            @endif
-                        </div>
+                    <div class="col-md-4 text-right">
+                        <br>
+                        <button type="button" class="btn btn-success col-md-5 ml-auto" href="{{ route('index_metas') }}" style="justify-content: float-right;">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Agregar Actividad
+                        </button>
                     </div>
                 </div>
+                <div class="row">
+                @if (Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
+                <div class="col-md-12">
+                    <br>
+                        <button  type="button" class="btn btn-outline-primary col-md-2" onclick="dao.exportJasperMetas()">Formato Metas</button>&nbsp
+                        <button  type="button" class="btn btn-outline-primary col-md-2" onclick="dao.exportJasper()">Formato</button>&nbsp
+                        <button type="button" style="justify-content: flex-end; " onclick="dao.exportPdf()"class="btn btn-outline-danger col-md-2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar PDF</button>&nbsp
+                        <button type="button" style="justify-content: float-right;" onclick="dao.exportExcel()" class="btn btn-outline-success col-md-2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar Excel</button> &nbsp
+                </div>
+                        
+                    
+                @endif
+            </div>
                 &nbsp
                 <div class="widget-body no-padding ">
                     <div class="table-responsive ">

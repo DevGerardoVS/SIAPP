@@ -6,9 +6,8 @@ $titleDesc = 'Administración de Captura';
 @extends('layouts.app')
 @section('content')
     <div class="container w-100 p-4">
-        <header>
+        <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
             <h1 class="fw-bold text-center">{{ $titleDesc }} Ejercicio {{ $anio }}</h1>
-            <div class="rounded-pill" style="height: .5em; background-color: rgb(37, 150, 190)"></div>
             <form action="{{ route('claves_presupuestarias') }}" id="buscarFormA" name="buscarFormA" method="post"></form>
             <form action="{{ route('metas_actividades') }}" id="buscarFormB" name="buscarFormB" method="post"></form>
         </header>
@@ -86,7 +85,7 @@ $titleDesc = 'Administración de Captura';
                             <div class="card-body">
                                 <table
                                     class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoA" style="width:100%">
+                                    id="catalogoA" style="width:100%; font-size: 14px;">
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light">Clave UPP</th>
@@ -110,7 +109,7 @@ $titleDesc = 'Administración de Captura';
                             <div class="card-body">
                                 <table
                                     class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoB" style="width:100%">
+                                    id="catalogoB" style="width:100%; font-size: 14px;">
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light">Clave UPP</th>
