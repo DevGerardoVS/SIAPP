@@ -156,7 +156,7 @@ var dao = {
             console.log(response);
             $('#cerrar').trigger('click');
             Swal.fire({
-                icon: response.info,
+                icon: response.success,
                 title: response.title,
                 text: response.text,
             });

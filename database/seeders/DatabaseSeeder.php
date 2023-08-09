@@ -189,7 +189,8 @@ class DatabaseSeeder extends Seeder
         ['id_menu' => 10],
         ['id_menu' => 11],
         ['id_menu' => 12],
-        ['id_menu' => 13]
+        ['id_menu' => 13],
+        ['id_menu' => 14]
     );
     protected $menuDel =array(
         ['id_menu' => 7 ], 

@@ -36,7 +36,10 @@ class UsuarioController extends Controller
             'username',
             DB::raw('CONCAT(username," ","-"," ",adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as fullname'),
 
-        )->where('deleted_at', null)->get();
+        )
+        ->where('adm_users.id_grupo', '!=', 2)
+        ->where('adm_users.id_grupo', '!=', 3)
+        ->where('deleted_at', null)->get();
 
         return $user;
     }
@@ -50,7 +53,7 @@ class UsuarioController extends Controller
         if ($request->id == null) {
             $user = PermisosUpp::where('deleted_at', null)->where('id_user', $request->id_userP)->where('id_permiso', $request->id_permiso)->first();
             if($user){
-                $res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'este usuario ya cuenta con el permiso', "title" => "Precaución"]];
+                $res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Este usuario ya cuenta con el permiso', "title" => "Aviso"]];
                 return response()->json($res, 200);
             }else{
                 $resul = PermisosUpp::create([
@@ -185,7 +188,7 @@ class UsuarioController extends Controller
             $accion = Auth::user()->id_grupo != 3 ? '<a data-toggle="modal" data-target="#exampleModal" data-backdrop="static" data-keyboard="false" title="Modificar Usuario"
 			class="btn btn-sm"onclick="dao.editarUsuario(' . $key->id . ')">' .
                 '<i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' .
-                '<a data-toggle="tooltip" title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' . $key->id . ', ' . $key->estatus . ')">' .
+                '<a title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' . $key->id . ', ' . $key->estatus . ')">' .
                 '<i class="fa fa-lock"></i></a>&nbsp;' : '';
             $i = array(
                 $key->username,
@@ -213,6 +216,7 @@ class UsuarioController extends Controller
             DB::raw('GROUP_CONCAT(permisos_funciones.id_permiso SEPARATOR "/") AS permisos'),
             'adm_grupos.nombre_grupo AS grupo'
         )
+        ->where('adm_users.id_grupo', '!=', 2)
             ->leftJoin('adm_users', 'adm_users.id', '=', 'permisos_funciones.id_user')
             ->leftJoin('cat_permisos', 'cat_permisos.id', '=', 'permisos_funciones.id_permiso')
             ->leftJoin('adm_grupos', 'adm_grupos.id', '=', 'adm_users.id_grupo')
@@ -287,11 +291,13 @@ class UsuarioController extends Controller
         $userEdit->s_apellido = $request->s_apellido;
         $userEdit->email = $request->email;
         $userEdit->celular = $request->celular;
-        $userEdit->clv_upp = NULL;
+        if($userEdit->id_grupo !=4){
+            $userEdit->clv_upp = NULL;
+        }
         $userEdit->updated_at = $date;
         $userEdit->save();
         if($userEdit->wasChanged()){
-            return response()->json(["success" => 'info', "title" => "Éxito!", "text" => "Usuario modificado"], 200);
+            return response()->json(["success" => 'success', "title" => "Éxito!", "text" => "Usuario modificado"], 200);
         }else{
             return response()->json(["success" => 'error', "title" => "Error!", "text" => "No se modificado"], 200);
         }
