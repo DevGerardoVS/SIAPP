@@ -87,7 +87,7 @@ var _gen = {
 
 
                     Swal.fire({
-                        title: 'Su sesión de '+horas ' horas ha expirado',
+                        title: 'Su sesión de '+horas+ ' horas ha expirado',
                         text: '¿Desea iniciar sesión nuevamente?',
                         icon: 'warning',
                         showCancelButton: true,
