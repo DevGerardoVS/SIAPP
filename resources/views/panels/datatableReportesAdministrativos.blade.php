@@ -319,7 +319,7 @@
                                 $(api.column(13).footer()).html( (totalNoviembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(14).footer()).html( (totalDiciembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                             }else if(ruta == "#buscarFormC"){ //Avance general
-                                totalMontoC = api
+                                totalMontoA = api
                                 .column(3)
                                 .data()
                                 .reduce(function (a, b) {
@@ -338,7 +338,7 @@
                                     return intVal(a) + intVal(b);
                                 }, 0);
 
-                                $(api.column(3).footer()).html( (totalMontoC/3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(3).footer()).html( (totalMontoA).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(4).footer()).html( (totalCalendarizado/3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(5).footer()).html( (totalDisponible/3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 

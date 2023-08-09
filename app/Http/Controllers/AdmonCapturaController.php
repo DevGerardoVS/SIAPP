@@ -105,7 +105,10 @@ class AdmonCapturaController extends Controller
         $checar_upp_PP = '';
         $checar_upp_metas = '';
         $checar_clave = '';
+        $checar_ambos = '';
+
         if($upp != null){
+            $checar_ambos = "AND cec.clv_upp = '$upp' AND cem.clv_upp = '$upp'";
             $checar_clave = "AND clv_upp = '$upp'";
             $checar_upp_PP = "AND upp = '$upp'";
             $checar_upp_metas = "AND pm.clv_upp = '$upp'";
@@ -114,7 +117,7 @@ class AdmonCapturaController extends Controller
         try {
             DB::beginTransaction();
             
-            str_contains($modulo,',') ? DB::update("UPDATE $modulo SET cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1") : DB::update("UPDATE $modulo SET estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_clave");
+            str_contains($modulo,',') ? DB::update("UPDATE $modulo SET cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.activos = 1 AND cem.activos = 1 $checar_ambos") : DB::update("UPDATE $modulo SET estatus = '$habilitar', updated_user = '$usuario' WHERE activos = 1 $checar_clave");
             
             if($estado == "activo"){
                 if($modulo == "cierre_ejercicio_claves cec" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
@@ -125,11 +128,18 @@ class AdmonCapturaController extends Controller
                 }
             }
 
+            if($upp == "") $upp = "Todas";
+            $b = array(
+                "username"=>Auth::user()->username,
+                "accion"=> "Editar: UPP ".$upp.", ".$habilitar,
+                "modulo"=> $modulo,
+            );
+            Controller::bitacora($b);
             DB::commit();
             return redirect()->route("index")->withSuccess('Los datos fueron modificados');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['msg'=>'Ocurrió un error al modificar los datos']);
+            return back()->withErrors(['msg'=>'¡Ocurrió un error al modificar los datos!']);
         }
     }
 }
