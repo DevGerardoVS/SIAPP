@@ -565,6 +565,7 @@ var dao = {
         }else{
             $('#btnNuevaClave').hide(true);
             $('#btn_confirmar').hide(true);
+            $('#button_modal_carga').hide(true);
         }
       }if(response.rol == 0){
         if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
