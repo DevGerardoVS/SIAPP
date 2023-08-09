@@ -45,6 +45,7 @@ return new class extends Migration
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->foreign('id_grupo' )->references('id')->on('adm_grupos');
+            $table->string('remember_token', 150);
         });
 
         //Tablas para la administracion de roles en el proyecto
