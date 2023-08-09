@@ -1473,18 +1473,37 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE if not exists proyecto_avance_general(in anio int, in corte date)
         begin
-            select 
-                clv_upp,
-                case 
-                    when clv_fondo != '' then ''
-                    else upp
+            SELECT
+                case
+                    when clv_fondo_ramo != '' then ''
+                    else clv_upp 
+                end clv_upp, 
+                case
+                    when clv_fondo_ramo != '' then ''
+                    else upp 
                 end upp,
-                case 
+                case
                     when clv_capitulo != '' then ''
-                    else clv_fondo
+                    else clv_fondo_ramo 
                 end clv_fondo_ramo,
-                case 
+                case
                     when clv_capitulo != '' then ''
+                    else fondo_ramo 
+                end fondo_ramo,
+                clv_capitulo,
+                capitulo,
+                monto_anual,
+                calendarizado,
+                disponible,
+                avance,
+                estatus
+            FROM (
+                select 
+                t.clv_upp,
+                ve.upp,
+                clv_fondo clv_fondo_ramo,
+                case 
+                    when fondo = '' AND clv_fondo_ramo != '' then p.fondo_ramo
                     else fondo
                 end fondo_ramo,
                 clv_capitulo,
@@ -1494,16 +1513,13 @@ return new class extends Migration {
                 (monto_anual-calendarizado) disponible,
                 (calendarizado/monto_anual)*100 avance,
                 case 
-                    when clv_upp != '' then estatus
+                    when t.clv_upp != '' then estatus
                     else ''
                 end estatus
-            from (
+                from (
                 select 
-                    case 
-                        when clv_fondo != '' then ''
-                        else clv_upp
-                    end clv_upp,
-                    group_concat(upp separator '') upp,
+                    clv_upp,
+                    GROUP_CONCAT(upp separator '') upp,
                     clv_fondo,
                     group_concat(fondo separator '') fondo,
                     group_concat(clv_capitulo separator '') clv_capitulo,
@@ -1514,110 +1530,116 @@ return new class extends Migration {
                     end monto_anual,
                     sum(calendarizado) calendarizado,
                     case 
-                        when sum(estado) > 0 then 'Confirmado'
+                    when sum(estado) > 0 then 'Confirmado'
                         else 'Registrado'
                     end estatus
-                from (
-                    select *
                     from (
-                        select 
-                            clv_upp,
-                            upp,
-                            '' clv_fondo,
-                            '' fondo,
-                            '' clv_capitulo,
-                            '' capitulo,
-                            0 monto_anual,
-                            sum(total) calendarizado,
-                            sum(estado) estado
-                        from pp_aplanado pa
-                        where pa.ejercicio = anio and if (
-                            corte is null,
-                            pa.deleted_at is null,
-                            pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by clv_upp,upp
+                        select *
+                        from (
+                            select 
+                                clv_upp,
+                                upp,
+                                '' clv_fondo,
+                                '' fondo,
+                                '' clv_capitulo,
+                                '' capitulo,
+                                0 monto_anual,
+                                sum(total) calendarizado,
+                                sum(estado) estado
+                            from pp_aplanado pa
+                            where pa.ejercicio = anio and if (
+                                corte is null,
+                                pa.deleted_at is null,
+                                pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                            )
+                            group by clv_upp,upp
+                            union all
+                            select 
+                                clv_upp,
+                                upp,
+                                clv_fondo_ramo clv_fondo,
+                                fondo_ramo fondo,
+                                '' clv_capitulo,
+                                '' capitulo,
+                                0 monto_anual,
+                                sum(total) calendarizado,
+                                sum(estado) estado
+                            from pp_aplanado pa
+                            where pa.ejercicio = anio and if (
+                                corte is null,
+                                pa.deleted_at is null,
+                                pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                            )
+                            group by clv_upp,upp,clv_fondo_ramo,fondo_ramo
+                            union all
+                            select 
+                                clv_upp,
+                                upp,
+                                clv_fondo_ramo clv_fondo,
+                                fondo_ramo fondo,
+                                clv_capitulo,
+                                capitulo,
+                                0 monto_anual,
+                                sum(total) calendarizado,
+                                sum(estado) estado
+                            from pp_aplanado pa
+                            where pa.ejercicio = anio and if (
+                                corte is null,
+                                pa.deleted_at is null,
+                                pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                            )
+                            group by clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo
+                            order by clv_upp,clv_fondo,clv_capitulo
+                        ) c
                         union all
-                        select 
-                            clv_upp,
-                            upp,
-                            clv_fondo_ramo clv_fondo,
-                            fondo_ramo fondo,
-                            '' clv_capitulo,
-                            '' capitulo,
-                            0 monto_anual,
-                            sum(total) calendarizado,
-                            sum(estado) estado
-                        from pp_aplanado pa
-                        where pa.ejercicio = anio and if (
-                            corte is null,
-                            pa.deleted_at is null,
-                            pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by clv_upp,upp,clv_fondo_ramo,fondo_ramo
-                        union all
-                        select 
-                            clv_upp,
-                            upp,
-                            clv_fondo_ramo clv_fondo,
-                            fondo_ramo fondo,
-                            clv_capitulo,
-                            capitulo,
-                            0 monto_anual,
-                            sum(total) calendarizado,
-                            sum(estado) estado
-                        from pp_aplanado pa
-                        where pa.ejercicio = anio and if (
-                            corte is null,
-                            pa.deleted_at is null,
-                            pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo
-                        order by clv_upp,clv_fondo,clv_capitulo
-                    ) c
-                    union all
-                    select *
-                    from (
-                        select
-                            tf.clv_upp,
-                            '' upp,
-                            '' clv_fondo,
-                            '' fondo,
-                            '' clv_capitulo,
-                            '' capitulo,
-                            sum(tf.presupuesto) monto_anual,
-                            0 calendarizado,
-                            0 estado
-                        from techos_financieros tf 
-                        where tf.ejercicio = anio and if (
-                            corte is null,
-                            tf.deleted_at is null,
-                            tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by clv_upp
-                        union all
-                        select
-                            tf.clv_upp,
-                            '' upp,
-                            tf.clv_fondo,
-                            '' fondo,
-                            '' clv_capitulo,
-                            '' capitulo,
-                            sum(tf.presupuesto) monto_anual,
-                            0 calendarizado,
-                            0 estado
-                        from techos_financieros tf 
-                        where tf.ejercicio = anio and if (
-                            corte is null,
-                            tf.deleted_at is null,
-                            tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by clv_upp,clv_fondo
-                        order by clv_upp,clv_fondo
-                    ) ma
-                )c2
-                group by c2.clv_upp,c2.clv_fondo,c2.clv_capitulo,c2.capitulo
-            ) tabla;
+                        select *
+                        from (
+                            select
+                                tf.clv_upp,
+                                '' upp,
+                                '' clv_fondo,
+                                '' fondo,
+                                '' clv_capitulo,
+                                '' capitulo,
+                                sum(tf.presupuesto) monto_anual,
+                                0 calendarizado,
+                                0 estado
+                            from techos_financieros tf 
+                            where tf.ejercicio = anio and if (
+                                corte is null,
+                                tf.deleted_at is null,
+                                tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                            )
+                            group by clv_upp
+                            union all
+                            select
+                                tf.clv_upp,
+                                '' upp,
+                                tf.clv_fondo,
+                                '' fondo,
+                                '' clv_capitulo,
+                                '' capitulo,
+                                sum(tf.presupuesto) monto_anual,
+                                0 calendarizado,
+                                0 estado
+                            from techos_financieros tf 
+                            where tf.ejercicio = anio and if (
+                                corte is null,
+                                tf.deleted_at is null,
+                                tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                            )
+                            group by clv_upp,clv_fondo
+                            order by clv_upp,clv_fondo
+                        ) ma
+                    )c2
+                    group by c2.clv_upp,c2.clv_fondo,c2.clv_capitulo,c2.capitulo
+                ) t
+                LEFT JOIN (SELECT DISTINCT clv_upp,upp FROM v_epp WHERE ejercicio = anio) ve 
+                    ON t.clv_upp = ve.clv_upp
+                LEFT JOIN (SELECT DISTINCT clv_fondo_ramo,fondo_ramo FROM fondo WHERE deleted_at IS NULL) AS p
+                    ON p.clv_fondo_ramo = t.clv_fondo
+                GROUP BY clv_upp,clv_fondo,clv_capitulo
+            )t2;
         END;");
 
         DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64), in anio int)
