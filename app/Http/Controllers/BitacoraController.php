@@ -20,6 +20,7 @@ class BitacoraController extends Controller{
     }
 
     public function getBitacora(Request $request){
+        Controller::check_permission('getBitacora');
         $usua = $request->input('usuario_filter');
         $accion = $request->input('accion_filter');
         $fecha_inicio = $request-> input('anio_filter');
@@ -72,6 +73,7 @@ class BitacoraController extends Controller{
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public function getBitacora2(Request $request){
+        Controller::check_permission('getBitacora');
         $fecha_inicio = $request->input('anio_filter');
         $fecha_fin = $request->input('anio_filter_fin');
         $data = Bitacora::select('bitacora.id','bitacora.usuario',

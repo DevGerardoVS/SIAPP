@@ -140,7 +140,6 @@ class MetasHelper{
     }
 	public static function apiMetasFull($anio)
 	{
-		Log::debug($anio);
 		try {
 			$proyecto = DB::table('actividades_mir')
 				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')

@@ -83,6 +83,7 @@ var dao = {
                 title: mensaje.title,
                 text: mensaje.text,
             });
+            getData();
         });
     },
     EditPermisos: function () {
