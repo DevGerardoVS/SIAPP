@@ -7,7 +7,7 @@ $titleDesc = 'Administración de Captura';
 @section('content')
     <div class="container w-100 p-4">
         <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
-            <h1 class="fw-bold text-center">{{ $titleDesc }} Ejercicio {{ $anio }}</h1>
+            <h2>{{ $titleDesc }} Ejercicio {{ $anio }}</h2>
             <form action="{{ route('claves_presupuestarias') }}" id="buscarFormA" name="buscarFormA" method="post"></form>
             <form action="{{ route('metas_actividades') }}" id="buscarFormB" name="buscarFormB" method="post"></form>
         </header>
@@ -139,7 +139,7 @@ $titleDesc = 'Administración de Captura';
         var letter;
         $(document).ready(function() {
 
-            $(".alert").delay(4000).slideUp(200, function() {
+            $(".alert").delay(10000).slideUp(200, function() {
                 $(this).alert('close');
             });
 

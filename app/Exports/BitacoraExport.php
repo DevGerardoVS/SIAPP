@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use App\Http\Controllers\Administracion\BitacoraController;
 
 class BitacoraExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths
 {
@@ -17,51 +18,20 @@ class BitacoraExport implements FromCollection, ShouldAutoSize, WithHeadings, Wi
 * @return \Illuminate\Support\Collection
     
 */
-    protected $request;
+    protected $anio;
+    protected $mes;
+
     
-    function __construct($request){
-        $this->request = $request;
+    function __construct($anio,$mes){
+        $this->anio = $anio;
+        $this->mes = $mes;
+
     }
 
     public function collection()
     {
-        $fecha_inicio = $this->request-> input('anio_filter');
-        $fecha_fin = $this->request-> input('anio_filter_fin');
-        $usua = $this->request->input('usuario_filter');
-        $accion = $this->request->input('accion_filter');
-        $array_where=[];
-
-        if( $accion != null ){
-            array_push($array_where,['bitacora.accion','=',$accion]);
-        }
-        if($usua!=null){
-            array_push($array_where,['bitacora.usuario','=',$usua]);
-        }
-        if ($fecha_inicio != null) {
-            array_push($array_where, ['bitacora.created_at', '>=', $fecha_inicio]);
-        }
-        if ($fecha_fin != null) {
-            array_push($array_where, ['bitacora.created_at', '<=', $fecha_fin]);
-        }
-
-        $catalogo = Bitacora::select('bitacora.usuario',
-            'bitacora.host','bitacora.modulo','bitacora.accion',
-            'bitacora.datos',
-            'bitacora.created_at')
-            ->where($array_where)
-            ->orderBy('bitacora.created_at','desc')
-            ->get();
-
-        foreach($catalogo as $k=>$d){
-            $format_date= date("d/m/Y H:i:s", strtotime($d->created_at));
-            $new_array = array('created_at'=>$format_date);
-            $d = collect(array_replace($d->toArray(),$new_array));
-            $old_collect = $catalogo->toArray();
-            $new_array_collect = array($k=>$d);
-            $catalogo = collect(array_replace($old_collect,$new_array_collect));
-        }
-        
-        return $catalogo;
+        $bitacora = BitacoraController::getBitacora($this->anio,$this->mes);
+        return collect($bitacora);
     }
 
     /**
@@ -70,7 +40,7 @@ class BitacoraExport implements FromCollection, ShouldAutoSize, WithHeadings, Wi
      */
     public function headings(): array
     {
-        return ["Usuario","Host","Modulo", "Accion", "Datos","Fecha de creacion"];
+        return ["Nombre Usuario","Movimiento o Acción","Módulo", "Ip Origen", "Fecha Movimiento","Fecha/Hora Creación"];
     }
 
     public function columnWidths(): array

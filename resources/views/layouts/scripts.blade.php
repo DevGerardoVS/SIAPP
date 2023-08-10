@@ -71,7 +71,10 @@
         function callbackCatch(error) {
             console.error('Error:', error)
         }
-        _gen.essential();
+     
+        var tiemporestante2 = new Date("{{Session::get('last_activity')}}");
+        // console.log("🚀 ~ file: appInit.js:54 ~ tiemporestante:", tiemporestante2);
+        _gen.essential(tiemporestante2);
     </script>
     <script>
         $(document).ready(function() {

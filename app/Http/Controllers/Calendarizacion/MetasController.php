@@ -1013,5 +1013,12 @@ class MetasController extends Controller
 		$dataSet["upp"] = $upp;
 		return response()->json(["status"=>200,"data"=>$dataSet]);
 	}
+	public static function proyectorMir(){
+		$proyectoMir = DB::connection('mml')
+			->table('envios as e')
+			->join('autos as a', 'e.numero_serie', '=', 'a.numero_serie')
+			->where('e.guia', "=", '2')
+			->update(['a.validado' => 9]);
+	}
 
 }
