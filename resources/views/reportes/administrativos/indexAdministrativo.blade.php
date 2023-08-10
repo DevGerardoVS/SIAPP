@@ -55,7 +55,7 @@
                     </select>
                 </div>
             </div>
-            @if(Auth::user()->id_grupo == 1)
+            @if(Auth::user()->id_grupo != 4)
                 <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
                     <div class="col-sm-3 col-md-3 col-lg-2 text-md-end d-none div_upp">
                         <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
@@ -87,9 +87,9 @@
         <br>
 
         <ul class="nav nav-tabs " id="tabs" role="tablist">
-            @if(Auth::user()->id_grupo == 1)
+            @if(Auth::user()->id_grupo != 4)
             <li class="nav-item" >
-                <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 1) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->id_grupo == 1)aria-selected="true"@endif>Calendario fondo mensual</button>
+                <button class="nav-link textoMorado @if(Auth::user()->id_grupo != 4) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->id_grupo != 4)aria-selected="true"@endif>Calendario fondo mensual</button>
             </li>
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="capituloPartida_tab" data-bs-toggle="tab" data-bs-target="#capituloPartida" aria-controls="capituloPartida" aria-selected="false">Resumen capítulo y partida</button>
@@ -104,7 +104,7 @@
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Proyecto calendario general de actividades</button>
             </li>
-            @if(Auth::user()->id_grupo == 1)
+            @if(Auth::user()->id_grupo != 4)
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Avance de proyectos con actividades por UPP</button>
             </li>
@@ -113,8 +113,8 @@
 
         <div class="tab-content" style="font-size: 14px;">
             {{-- fondo mensual A--}}
-            @if(Auth::user()->id_grupo == 1)
-            <div class="tab-pane @if(Auth::user()->id_grupo == 1) active @endif" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
+            @if(Auth::user()->id_grupo != 4)
+            <div class="tab-pane @if(Auth::user()->id_grupo != 4) active @endif" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
                 <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
@@ -164,13 +164,13 @@
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Capítulo</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Partida</th>
-                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Importe</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Importe</th>
                                         </tr>
                                     </thead>
                                     <tfoot class="colorMorado">
                                         <tr>
                                             <td class="align-middle text-start" colspan="2">TOTAL</td>
-                                            <td class="align-middle text-end total" style="width: 20em;" id="total"></td>
+                                            <td class="align-middle text-end total" style="width: 20em;"></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -311,7 +311,7 @@
                 </div>
             </div>
             {{-- Avance de proyectos con actividades por upp F--}}
-            @if(Auth::user()->id_grupo == 1)
+            @if(Auth::user()->id_grupo != 4)
             <div class="tab-pane" id="avanceProyectoActividadUPP" role="tabpanel" aria-labelledby="avanceProyectoActividadUPP_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
@@ -349,7 +349,7 @@
         var tabla;
         var letter;
         $(document).ready(function() {
-            $(".alert").delay(4000).slideUp(200, function() {
+            $(".alert").delay(10000).slideUp(200, function() {
                 $(this).alert('close');
             });
 

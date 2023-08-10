@@ -139,7 +139,7 @@ $titleDesc = 'Administración de Captura';
         var letter;
         $(document).ready(function() {
 
-            $(".alert").delay(4000).slideUp(200, function() {
+            $(".alert").delay(10000).slideUp(200, function() {
                 $(this).alert('close');
             });
 

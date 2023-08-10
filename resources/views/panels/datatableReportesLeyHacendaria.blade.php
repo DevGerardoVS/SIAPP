@@ -1,6 +1,6 @@
 @section('page_scripts')
     <script type="text/javascript">
-        $(".alert").delay(4000).slideUp(200, function() {
+        $(".alert").delay(10000).slideUp(200, function() {
             $(this).alert('close');
         });
 
