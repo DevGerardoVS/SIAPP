@@ -219,7 +219,7 @@
                     // obtener la suma total
                     footerCallback: function (row, data, start, end, display) {
                         var api = this.api();
-            
+                        
                         // Cambiar el formato string a entero
                         var intVal = function (i) {
                             return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
@@ -232,6 +232,7 @@
                                 .reduce(function (a, b) {
                                     return intVal(a) + intVal(b);
                                 }, 0);
+                                
                                 totalEnero = api
                                 .column(3)
                                 .data()
@@ -319,40 +320,33 @@
                                 $(api.column(13).footer()).html( (totalNoviembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 $(api.column(14).footer()).html( (totalDiciembre/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                             }else if(ruta == "#buscarFormC"){ //Avance general
-                                totalMontoA = api
-                                .column(3)
-                                .data()
-                                .reduce(function (a, b) {
-                                    return intVal(a) + intVal(b);
-                                }, 0);
-                                totalCalendarizado = api
-                                .column(4)
-                                .data()
-                                .reduce(function (a, b) {
-                                    return intVal(a) + intVal(b);
-                                }, 0);
-                                totalDisponible = api
-                                .column(5)
-                                .data()
-                                .reduce(function (a, b) {
-                                    return intVal(a) + intVal(b);
-                                }, 0);
+                                var totalMontoA = 0;
+                                var totalCalendarizado = 0;
+                                var totalDisponible = 0;
 
-                                $(api.column(3).footer()).html( (totalMontoA).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
-                                $(api.column(4).footer()).html( (totalCalendarizado/3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
-                                $(api.column(5).footer()).html( (totalDisponible/3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                for (let i = 0; i < display.length; i++) {
+                                    if(data[i][0] != " " && data[i][0] != ""){
+                                        totalMontoA += intVal(data[i][3]);
+                                        totalCalendarizado += intVal(data[i][4]);
+                                        totalDisponible += intVal(data[i][5]);
+                                    }
+                                }
+
+                                $(api.column(3).footer()).html( totalMontoA.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(4).footer()).html( totalCalendarizado.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(5).footer()).html( totalDisponible.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                                 
                             }else if(ruta == "#buscarFormB"){ //Capitulo y partida
-                                // Suma total de todas las páginas
-                                total = api
-                                    .column(".sum")
-                                    .data()
-                                    .reduce(function (a, b) {
-                                        return intVal(a) + intVal(b);
-                                }, 0);
+                                var total = 0; 
+
+                                for (let i = 0; i < display.length; i++) {
+                                    if(data[i][0] != " " && data[i][0] != ""){
+                                        total += intVal(data[i][2]);
+                                    }
+                                }
                                     
                                 // Actualizar footer
-                                $(api.column(".sum").footer()).html( (total/2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+                                $(api.column(2).footer()).html( total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                             }else{
                                 // Suma total de todas las páginas
                                 total = api
