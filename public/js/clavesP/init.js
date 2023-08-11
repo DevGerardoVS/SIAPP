@@ -436,10 +436,10 @@ var dao = {
           });
         });
   },
-  getAreaFuncional: function (uppId,id,ejercicio,subPrograma) {
+  getAreaFuncional: function (uppId,id,ejercicio,subPrograma,linea,programa,proyecto) {
     $.ajax({
       type:'get',
-      url: '/cat-area-funcional/'+uppId +'/'+id+'/'+ejercicio+'/'+subPrograma,
+      url: '/cat-area-funcional/'+uppId +'/'+id+'/'+ejercicio+'/'+subPrograma+'/'+linea+'/'+programa+'/'+proyecto,
     }).done(function (data) {
       document.getElementById('finalidad').innerHTML = data.clv_finalidad;
       document.getElementById('funcion').innerHTML = data.clv_funcion;
@@ -979,7 +979,7 @@ $(document).ready(function(){
     var ur = document.getElementById("sel_unidad_res").value;
 		dao.getProyectoBySubPrograma(programa,id,upp,ur ,ejercicio,'');
     dao.getFondosByUpp(upp, id, ejercicio,'');
-    dao.getAreaFuncional(upp,ur,ejercicio,id);
+    
 	});
   $('#sel_proyecto').change(function (e) {
     e.preventDefault();
@@ -989,8 +989,22 @@ $(document).ready(function(){
   $('#sel_linea').change(function (e) {
     e.preventDefault();
     let clave = this.value;
+    console.log("🚀 ~ file: init.js:992 ~ clave:", clave)
     document.getElementById('lineaAccion').innerHTML = clave;
     dao.getSector(clave);
+    var programa = document.getElementById("sel_programa").value;
+    console.log("🚀 ~ file: init.js:995 ~ programa:", programa)
+    var upp = document.getElementById("sel_upp").value;
+    console.log("🚀 ~ file: init.js:997 ~ upp:", upp)
+    var ejercicio = document.getElementById('anio').value;
+    console.log("🚀 ~ file: init.js:999 ~ ejercicio:", ejercicio)
+    var ur = document.getElementById("sel_unidad_res").value;
+    console.log("🚀 ~ file: init.js:1001 ~ ur:", ur)
+    var proyecto = document.getElementById("sel_proyecto").value;
+    console.log("🚀 ~ file: init.js:1003 ~ proyecto:", proyecto)
+    var subPrograma = document.getElementById("sel_sub_programa").value;
+    console.log("🚀 ~ file: init.js:1006 ~ subPrograma:", subPrograma)
+    dao.getAreaFuncional(upp,ur,ejercicio,subPrograma,clave,programa,proyecto);
   });
   $('#sel_partida').change(function (e) {
     e.preventDefault();
