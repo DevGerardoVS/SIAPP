@@ -11,7 +11,7 @@
                 <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
                     <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-colorbutton="false"
                         data-widget-deletebutton="false">
-                        <header>
+                        <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8; margin-bottom: 5px;">
                             <h2>Gestor de Grupos</h2>
                         </header>
                         <div>

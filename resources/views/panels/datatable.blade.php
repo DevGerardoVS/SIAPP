@@ -160,6 +160,14 @@
                 e.preventDefault();
                 getData();
             });
+            $("#buscarForm").on("change", ".anio_filter", function(e) {
+                e.preventDefault();
+                getData();
+            });
+            $("#buscarForm").on("change", ".mes_filter", function(e) {
+                e.preventDefault();
+                getData();
+            });
 
             $(window).resize(function() {
                 redrawTable("#catalogo");

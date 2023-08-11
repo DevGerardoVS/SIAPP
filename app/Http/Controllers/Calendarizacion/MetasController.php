@@ -978,12 +978,13 @@ class MetasController extends Controller
 		}
 		$dataSet = [];
 		$upp = [];
+		$ur = [];
 		foreach ($query as $key) {
 			$area = str_split($key->area);
 			$entidad = str_split($key->entidad);
 			$a=array(
-				"upp"=>''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
-				"ur"=>''.strval($entidad[4]).strval($entidad[5]).'',
+	/* 			"upp"=>''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
+				"ur"=>''.strval($entidad[4]).strval($entidad[5]).'', */
 				"actividad" => array(
 				"finalidad"=>$area[0],
 				"funcion"=>$area[1],
@@ -1006,10 +1007,18 @@ class MetasController extends Controller
 				"beneficiarios"=>$key->beneficiario,
 				"unidadMedida"=>$key->unidad_medida
 			));
-			$upp[''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).''] = $a;
+			$ur['' . strval($entidad[4]) . strval($entidad[5]) . ''] = $a;
+			$upp[''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'']["ur"] = $ur;
 		}
 		$dataSet["upp"] = $upp;
 		return response()->json(["status"=>200,"data"=>$dataSet]);
+	}
+	public static function proyectorMir(){
+		$proyectoMir = DB::connection('mml')
+			->table('envios as e')
+			->join('autos as a', 'e.numero_serie', '=', 'a.numero_serie')
+			->where('e.guia', "=", '2')
+			->update(['a.validado' => 9]);
 	}
 
 }

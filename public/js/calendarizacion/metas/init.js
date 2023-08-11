@@ -317,6 +317,7 @@ var dao = {
             }
         });
         dao.getSelect();
+        dao.getUrs(0);
         $('.form-group').removeClass('has-error');
         for (let i = 1; i <= 12; i++) {
             $('#' + i).val(0);

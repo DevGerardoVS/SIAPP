@@ -63,7 +63,7 @@ var dao = {
 			$('#cerrar').trigger('click');
 			Swal.fire({
 				icon: 'success',
-				title: 'Your work has been saved',
+				title: 'La acción se ha realizado correctamente',
 				showConfirmButton: false,
 				timer: 1500
 			});

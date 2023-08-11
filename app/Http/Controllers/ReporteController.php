@@ -146,10 +146,11 @@ class ReporteController extends Controller
         $fechaCorte = !$request->input('fechaCorte') ? $request->fechaCorte_filter : $request->input('fechaCorte');
         $upp = Auth::user()->clv_upp != null ? Auth::user()->clv_upp : $request->upp_filter;
 
-        $ruta = public_path()."/reportes";
-
-        try {
+        // Comprobar si el reporte es administrativo o de ley hacendaria
+        if(str_contains($report, "reporte_art_20")) $tipoReporte = "Reportes de ley hacendaria"; 
+        else  $tipoReporte = "Reportes administrativos";
         
+        try {
             $logoLeft = public_path()."/img/escudoBN.png";
             $logoRight = public_path()."/img/logo.png";
             $report_path = app_path() ."/Reportes/".$report.".jasper";
@@ -173,6 +174,7 @@ class ReporteController extends Controller
                     $nameFile = $nameFile."_UPP_".$upp;
                 }
             }
+             
 
             $database_connection = \Config::get('database.connections.mysql');
 
@@ -186,10 +188,18 @@ class ReporteController extends Controller
             )->execute();
                 
             ob_end_clean();
+            // Bitácora
+            $b = array(
+                "username"=>Auth::user()->username,
+                "accion"=> $nameFile.".".$request->action,
+                "modulo"=> $tipoReporte,
+            );
+            Controller::bitacora($b);
+
             return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
         } catch (\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
-            return back()->withErrors(['msg'=>'Hubo un error al descargar el archivo']);
+            return back()->withErrors(['msg'=>'¡Ocurrió un error al descargar el archivo!']);
         }
     }
 }
