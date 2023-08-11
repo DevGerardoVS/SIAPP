@@ -441,13 +441,16 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($linea,200);
     }
-    public function getAreaFuncional($uppId,$id,$ejercicio, $subPrograma){
+    public function getAreaFuncional($uppId,$id,$ejercicio, $subPrograma,$linea,$programa,$proyecto){
         $areaFuncional = DB::table('v_epp')
         ->SELECT('clv_finalidad', 'clv_funcion', 'clv_subfuncion', 'clv_eje', 'clv_programa_sectorial','clv_tipologia_conac')
         ->WHERE ('clv_upp', '=', $uppId)
         ->WHERE ('clv_ur', '=', $id)
         ->WHERE ('ejercicio', '=', $ejercicio)
         ->WHERE ('clv_subprograma', '=',  $subPrograma)
+        ->where ('clv_linea_accion', '=', $linea)
+        ->where ('clv_programa', '=', $programa)
+        ->where ('clv_proyecto', '=', $proyecto)
         ->DISTINCT()
         ->first();
         return response()->json($areaFuncional,200);
