@@ -45,10 +45,13 @@ class ChangePasswordController extends Controller
             $request->validate([
                 'contraseña_actual' => ['required', new MatchOldPassword],
                 'nueva_contraseña' => ['required'],
-                'confirmar_nueva_contraseña' => ['same:nueva_contraseña'],
+                'confirmar_nueva_contraseña' => ['same:nueva_contraseña'],           
             ]);
             $ModelsUser = ModelsUser::where('id', auth()->user()->id)->firstOrFail();
             $ModelsUser->password = $request->nueva_contraseña;//Hash::make($request->nueva_contraseña);
+            if($ModelsUser->id_grupo !=4){
+                $ModelsUser->clv_upp = NULL;
+            }
             $ModelsUser->save();
       			$b = array(
 				"username"=>Auth::user()->username,

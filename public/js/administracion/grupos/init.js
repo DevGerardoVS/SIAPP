@@ -63,7 +63,7 @@ var dao = {
 			$('#cerrar').trigger('click');
 			Swal.fire({
 				icon: 'success',
-				title: 'Your work has been saved',
+				title: 'La acción se ha realizado correctamente',
 				showConfirmButton: false,
 				timer: 1500
 			});
@@ -72,6 +72,7 @@ var dao = {
 	},
 
 	editarGrupo: function (id) {
+		$('#createGroupLabel').text('Editar Grupo');
 		$.ajax({
 			type: "GET",
 			url: '/adm-grupos/update/' + id,
@@ -91,6 +92,8 @@ var dao = {
 		$('#nombre').val("");
 		$('#nombre-error').text("").removeClass("has-error").removeClass('d-block'); 
 		$('.col-md-8').removeClass("has-error");
+		$('#createGroupLabel').text('Agregar Grupo');
+
 	},
 	CierraPopup: function () {
 		$("#createGroup").modal('hide'); //ocultamos el modal

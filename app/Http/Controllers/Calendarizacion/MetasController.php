@@ -543,7 +543,7 @@ class MetasController extends Controller
 	{
 		$date = Carbon::now();
 
-$year = $date->format('Y');
+		$year = $date->format('Y');
 		Controller::check_permission('getMetas');
 		$data = $this->getActiv($upp,$year);
 		for ($i=0; $i <count($data); $i++) { 
@@ -857,7 +857,7 @@ $year = $date->format('Y');
 		}
 		$pdf ='';
 		if ($request->tipoReporte == 2) {
-			$ruta = public_path() . "/reportes/calendario_fondo_mensual.pdf";
+			$ruta = public_path() . "/reportes/proyecto_calendario_actividades.pdf";
 		}else {
 			$ruta = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
 		}
@@ -927,7 +927,7 @@ $year = $date->format('Y');
 		Log::debug($date);
 		$marca = strtotime($fecha);
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
-		$report = "calendario_fondo_mensual";
+		$report = "proyecto_calendario_actividades";
 
 		$ruta = public_path() . "/reportes";
 		//Eliminación si ya existe reporte
@@ -942,7 +942,7 @@ $year = $date->format('Y');
 			"anio" => $date,
 			"logoLeft" => public_path() . '\img\logo.png',
 			"logoRight" => public_path() . '\img\escudoBN.png',
-			//"UPP" => $upp,
+			"upp" => $upp,
 		);
 
 		$database_connection = \Config::get('database.connections.mysql');
@@ -966,4 +966,59 @@ $year = $date->format('Y');
 			return response()->json('error',200);
 		}
 	}
+	public function apiMetas($anio,$upp=null)
+	{
+		 if ($upp) {
+			$query = MetasHelper::apiMetas($anio,$upp);
+			Log::debug("dos datos");
+		}else{
+			$query = MetasHelper::apiMetasFull($anio);
+			Log::debug("Full");
+
+		}
+		$dataSet = [];
+		$upp = [];
+		$ur = [];
+		foreach ($query as $key) {
+			$area = str_split($key->area);
+			$entidad = str_split($key->entidad);
+			$a=array(
+	/* 			"upp"=>''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
+				"ur"=>''.strval($entidad[4]).strval($entidad[5]).'', */
+				"actividad" => array(
+				"finalidad"=>$area[0],
+				"funcion"=>$area[1],
+				"subfuncion"=>$area[2],
+				"eje"=>$area[3],
+				"linea"=>''.strval($area[4]).strval($area[5]).'',
+				"programacionSectorial"=>$area[6],
+				"tipologia"=>$area[7],
+				"upp"=>''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
+				"ur"=>''.strval($entidad[4]).strval($entidad[5]).'',
+				"programa"=>''.strval($area[8]).strval($area[9]).'',
+				"subprograma"=>''.strval($area[10]).strval($area[11]).strval($area[12]).'',
+				"proyecto"=>''.strval($area[13]).strval($area[14]).strval($area[15]).'',
+				"fondo"=>$key->fondo,
+				"clvActividad"=>$key->clv_actividad,
+				"actividad"=>$key->actividad,
+				"tipoCalendario"=>$key->tipo,
+				"metaAnual"=>$key->total,
+				"nBeneficiarios"=>$key->cantidad_beneficiarios,
+				"beneficiarios"=>$key->beneficiario,
+				"unidadMedida"=>$key->unidad_medida
+			));
+			$ur['' . strval($entidad[4]) . strval($entidad[5]) . ''] = $a;
+			$upp[''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'']["ur"] = $ur;
+		}
+		$dataSet["upp"] = $upp;
+		return response()->json(["status"=>200,"data"=>$dataSet]);
+	}
+	public static function proyectorMir(){
+		$proyectoMir = DB::connection('mml')
+			->table('envios as e')
+			->join('autos as a', 'e.numero_serie', '=', 'a.numero_serie')
+			->where('e.guia', "=", '2')
+			->update(['a.validado' => 9]);
+	}
+
 }

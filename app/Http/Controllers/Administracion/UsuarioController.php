@@ -8,6 +8,7 @@ use App\Models\administracion\UsuarioGrupo;
 use App\Models\catalogos\CatPermisos;
 use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Log;
@@ -35,7 +36,10 @@ class UsuarioController extends Controller
             'username',
             DB::raw('CONCAT(username," ","-"," ",adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as fullname'),
 
-        )->where('deleted_at', null)->get();
+        )
+        ->where('adm_users.id_grupo', '!=', 2)
+        ->where('adm_users.id_grupo', '!=', 3)
+        ->where('deleted_at', null)->get();
 
         return $user;
     }
@@ -46,62 +50,63 @@ class UsuarioController extends Controller
     }
     public function assignPermisson(Request $request)
     {
-
-        Log::debug($request);
         if ($request->id == null) {
-            $resul = PermisosUpp::create([
-                'id_user' => $request->id_userP,
-                'id_permiso' => $request->id_permiso,
-                'descripcion' => $request->descripcion,
-            ]);
-        } else {
-            /* 
-            checar los permisos que tiene 
-            verificar si tiene el permiso y si viene en el request 
-            si tiene registro del permiso y no esta en el request borrar 
-            si no esta en el registro y y viene en el request agregar
+            $user = PermisosUpp::where('deleted_at', null)->where('id_user', $request->id_userP)->where('id_permiso', $request->id_permiso)->first();
+            if($user){
+                $res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Este usuario ya cuenta con el permiso', "title" => "Aviso"]];
+                return response()->json($res, 200);
+            }else{
+                $resul = PermisosUpp::create([
+                    'id_user' => $request->id_userP,
+                    'id_permiso' => $request->id_permiso,
+                    'descripcion' => $request->descripcion,
+                ]);
+            }
 
-             */
+        } else {
+            $permisosRequest = [
+                1 => isset($request->masiva) ? $request->masiva : 'a',
+                2 => isset($request->obra) ? $request->obra : 'b',
+                3 => isset($request->oficio) ? $request->oficio : 'c',
+            ];
+            $permisosDB = array();
             $resul = PermisosUpp::where('id', $request->id)->get();
             $user = PermisosUpp::where('deleted_at', null)->where('id_user', $request->id_userP)->get();
-            foreach ($user as $key) {
-                switch ($key->id_permiso) {
-                    case 1:
-                        if (isset($request->masiva)) {
-                            $resul->id_permiso = $request->masiva;
-                            $resul->descripcion = $request->descripcion;
-                            $resul->save();
-                        } else {
-                            PermisosUpp::where('id', $request->id)->delete();
+            for ($i=1; $i <= 3; $i++) { 
+                if ($permisosRequest[$i] != 'a' && $permisosRequest[$i] != 'b' && $permisosRequest[$i] != 'c') {
+                    foreach ($user as $key) {
+                        array_push($permisosDB, $key->id_permiso);
+                    }
+                    if (in_array($permisosRequest[$i], $permisosDB)) {}else{
+                        $nuevoPermiso = PermisosUpp::create([
+                            'id_user' => $request->id_userP,
+                            'id_permiso' => $permisosRequest[$i],
+                            'descripcion' => $request->descripcion,
+                        ]);
+                    }
+                }else {
+                    foreach ($user as $key) {
+                        array_push($permisosDB, $key->id_permiso);
+                    }
+                    while ($keyPermiso = current($permisosRequest)) {
+                        if ($keyPermiso == $permisosRequest[$i]) {
+                            $keyToDelete = key($permisosRequest);
+                            if (in_array($keyToDelete, $permisosDB) ) {
+                                PermisosUpp::where('id_user', $request->id_userP)
+                                ->where('id_permiso', $keyToDelete)->delete();
+                                PermisosUpp::where('id', $request->id)->update([
+                                    'descripcion' => $request->descripcion,
+                                ]);
+                            }
                         }
-                        break;
-                    case 2:
-                        # code...
-                        break;
-                    case 3:
-                        # code...
-                        break;
-
-                    default:
-                        # code...
-                        break;
+                        next($permisosRequest);
+                    }
+                    reset($permisosRequest);
+                    
                 }
-                if (isset($request->oficio)) {
-                    $resul->id_permiso = 3;
-                    $resul->descripcion = $request->descripcion;
-                    $resul->save();
-                }
-                if (isset($request->obra)) {
-                    $resul->id_permiso = 2;
-                    $resul->descripcion = $request->descripcion;
-                    $resul->save();
-                }
-                if (isset($request->masiva)) {
-                    $resul->id_permiso = 1;
-                    $resul->descripcion = $request->descripcion;
-                    $resul->save();
-                }
+                
             }
+            
         }
         if ($resul || $resul->wasChanged()) {
             $res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
@@ -183,7 +188,7 @@ class UsuarioController extends Controller
             $accion = Auth::user()->id_grupo != 3 ? '<a data-toggle="modal" data-target="#exampleModal" data-backdrop="static" data-keyboard="false" title="Modificar Usuario"
 			class="btn btn-sm"onclick="dao.editarUsuario(' . $key->id . ')">' .
                 '<i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' .
-                '<a data-toggle="tooltip" title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' . $key->id . ', ' . $key->estatus . ')">' .
+                '<a title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' . $key->id . ', ' . $key->estatus . ')">' .
                 '<i class="fa fa-lock"></i></a>&nbsp;' : '';
             $i = array(
                 $key->username,
@@ -207,10 +212,11 @@ class UsuarioController extends Controller
             'permisos_funciones.id_permiso',
             'adm_users.username',
             DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'),
-            DB::raw('GROUP_CONCAT(cat_permisos.nombre SEPARATOR "  ") AS permiso'),
+            DB::raw('GROUP_CONCAT(cat_permisos.nombre SEPARATOR " / ") AS permiso'),
             DB::raw('GROUP_CONCAT(permisos_funciones.id_permiso SEPARATOR "/") AS permisos'),
             'adm_grupos.nombre_grupo AS grupo'
         )
+        ->where('adm_users.id_grupo', '!=', 2)
             ->leftJoin('adm_users', 'adm_users.id', '=', 'permisos_funciones.id_user')
             ->leftJoin('cat_permisos', 'cat_permisos.id', '=', 'permisos_funciones.id_permiso')
             ->leftJoin('adm_grupos', 'adm_grupos.id', '=', 'adm_users.id_grupo')
@@ -245,7 +251,7 @@ class UsuarioController extends Controller
     public function postStore(Request $request)
     {
         if ($request->id_user != null) {
-            $this->postUpdate($request);
+            return  $this->postUpdate($request);
         } else {
             Controller::check_permission('postUsuarios');
             $validaUserName = User::where('username', $request->username)->get();
@@ -276,9 +282,27 @@ class UsuarioController extends Controller
     //Actualiza Usuario
     public function postUpdate(Request $request)
     {
+        $date = Carbon::now();
         Controller::check_permission('putUsuarios');
-        User::find($request->id_user)->update($request->all());
-        return response()->json("done", 200);
+        $userEdit = User::where('id', $request->id_user)->firstOrFail();
+        $userEdit->username = $request->username;
+        $userEdit->nombre = $request->nombre;
+        $userEdit->p_apellido = $request->p_apellido;
+        $userEdit->s_apellido = $request->s_apellido;
+        $userEdit->email = $request->email;
+        $userEdit->celular = $request->celular;
+        if($userEdit->id_grupo !=4){
+            $userEdit->clv_upp = NULL;
+        }
+        $userEdit->updated_at = $date;
+        $userEdit->save();
+        if($userEdit->wasChanged()){
+            return response()->json(["success" => 'success', "title" => "Éxito!", "text" => "Usuario modificado"], 200);
+        }else{
+            return response()->json(["success" => 'error', "title" => "Error!", "text" => "No se modificado"], 200);
+        }
+
+        
     }
     //Elimina Usuario
     public function postDelete(Request $request)
@@ -332,7 +356,9 @@ class UsuarioController extends Controller
             'id',
             'nombre_grupo',
             'estatus'
-        )->where('deleted_at', '=', null)
+        )
+        ->where('deleted_at', '=', null)
+        ->where('id', '!=', 2)
             ->get();
         return response()->json($perfil, 200);
     }

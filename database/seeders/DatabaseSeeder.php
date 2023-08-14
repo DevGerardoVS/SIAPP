@@ -189,7 +189,8 @@ class DatabaseSeeder extends Seeder
         ['id_menu' => 10],
         ['id_menu' => 11],
         ['id_menu' => 12],
-        ['id_menu' => 13]
+        ['id_menu' => 13],
+        ['id_menu' => 14]
     );
     protected $menuDel =array(
         ['id_menu' => 7 ], 
@@ -349,6 +350,11 @@ class DatabaseSeeder extends Seeder
             ['id'=>76,'id_grupo'=>1,'id_funcion'=>41],
             ['id'=>77,'id_grupo'=>1,'id_funcion'=>42],
             ['id'=>78,'id_grupo'=>1,'id_funcion'=>43],
+
+            ['id'=>79,'id_grupo'=>1,'id_funcion'=>44],
+            ['id'=>80,'id_grupo'=>4,'id_funcion'=>44],
+
+
 
             
 

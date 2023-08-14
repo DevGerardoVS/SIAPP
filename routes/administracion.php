@@ -75,7 +75,9 @@ Route::controller(UsuarioController::class)->group(function () {
 
 	Route::controller(BitacoraController::class)->group(function () {
 		Route::get('/adm-bitacora', 'getIndex');
-		Route::post('/adm-bitacora/data/{fecha?}', 'getBitacora')->name('getBitacora');
+		Route::get('/adm-bitacora/data/{anio?}/{mes?}', 'getBitacora');
+		Route::get('/adm-bitacora/dataAnios', 'getBitAnios');
+		Route::get('/adm-bitacora/exportExcelBitacora/{anio?}/{mes?}', 'exportBitacora');
 	});
 
 	Route::controller(ReporteController::class)->group(function(){
