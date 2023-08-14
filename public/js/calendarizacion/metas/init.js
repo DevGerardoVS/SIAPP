@@ -12,6 +12,10 @@ var dao = {
         }).done(function (data) {
             if (data.status) {
                 $("#ur_filter").removeAttr('disabled');
+                $("#tipo_Ac").removeAttr('disabled');
+                $("#sel_fondo").removeAttr('disabled');
+                $("#sel_actividad").removeAttr('disabled');
+                dao.getSelect();
                 $('#incomplete').hide(); 
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text('');
@@ -21,11 +25,17 @@ var dao = {
                     dao.getUrs($('#upp').val());
                 }
                 $('#metasVista').show();
-                
+                $(".CargaMasiva").show();
             } else {
+                $(".CargaMasiva").hide();
                 dao.getUrs('0');
                 dao.getData('000', '000');
+                $('#carga').hide();
                 $("#ur_filter").attr('disabled', 'disabled');
+                $("#tipo_Ac").attr('disabled', 'disabled');
+                $("#sel_fondo").attr('disabled', 'disabled');
+                $("#sel_actividad").attr('disabled', 'disabled');
+
                 $('#incomplete').show(); 
                 $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text(data.mensaje);
@@ -249,7 +259,6 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             const { unidadM, beneficiario } = data;
-
             var med = $('#medida');
             med.html('');
             med.append(new Option("-- Medida--", ""));
@@ -260,7 +269,6 @@ var dao = {
             med.select2({
                 maximumSelectionLength: 10
             });
-
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
             tipo_be.append(new Option("--U. Beneficiarios--", ""));
@@ -271,8 +279,6 @@ var dao = {
             tipo_be.select2({
                 maximumSelectionLength: 10
             });
-
-
         });
     },
     getFyA: function (area,enti) {
@@ -281,11 +287,10 @@ var dao = {
             url: '/calendarizacion/fondos/' + area+'/'+enti,
             dataType: "JSON"
         }).done(function (data) {
+            console.log("actividades",data);
             $('#sel_actividad').prop('disabled', false);
             $('#sel_fondo').prop('disabled', false);
-            const { fondos, activids } = data;
-            console.log("tipo Calendario",activids);
-
+            const { fondos, activids, mese} = data;
             var fond = $('#sel_fondo');
             fond.html('');
             fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
@@ -306,6 +311,104 @@ var dao = {
             act.select2({
                 maximumSelectionLength: 10
             });
+            for (const key in mese) {
+                if (Object.hasOwnProperty.call(mese, key)) {
+                    const e = mese[key];
+                    switch (key) {
+                        case 'enero':
+                            if (e != 0.0 || e != 0) {
+                                $("#1").prop('disabled', false);
+
+                            } else {
+                                $("#1").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'febrero':
+                            if (e != 0.0) {
+                                $("#2").prop('disabled', false);
+                            } else {
+                                $("#2").prop('disabled', 'disabled');
+                            }
+                                break;
+                        case 'marzo':
+                            if (e != 0.0) {
+                                $("#3").prop('disabled', false);
+                            } else {
+                                $("#3").prop('disabled', 'disabled');
+
+                            }
+                                break;
+                        case 'abril':
+                            if (e != 0.0) {
+                                $("#4").prop('disabled', false);
+                            } else {
+                                $("#4").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'mayo':
+                            if (e != 0.0) {
+                                $("#5").prop('disabled', false);
+                            } else {
+                                $("#5").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'junio':
+                            if (e != 0.0) {
+                                $("#6").prop('disabled', false);
+                            } else {
+                                $("#6").prop('disabled', 'disabled');
+                            }
+                               break;
+                        case 'julio':
+                            if (e != 0.0) {
+                                $("#7").prop('disabled', false);
+                            } else {
+                                $("#7").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'agosto':
+                            if (e != 0.0) {
+                                $("#8").prop('disabled', false);
+                            } else {
+                                $("#8").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'septiembre':
+                            if (e != 0.0) {
+                                $("#9").prop('disabled', false);
+                            } else {
+                                $("#9").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'octubre':
+                            if (e != 0.0) {
+                                $("#10").prop('disabled', false);
+                            } else {
+                                $("#10").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'noviembre':
+                            if (e != 0.0) {
+                                $("#11").prop('disabled', false);
+                            } else {
+                                $("#11").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'diciembre':
+                            if (e != 0.0) {
+                                $("#12").prop('disabled', false);
+                            } else {
+                                $("#12").prop('disabled', 'disabled');
+                            }
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                    
+                }
+            }
+
 
         });
     },
@@ -316,7 +419,6 @@ var dao = {
                 $('#' + e).selectpicker('destroy');
             }
         });
-        dao.getSelect();
         dao.getUrs(0);
         $('.form-group').removeClass('has-error');
         for (let i = 1; i <= 12; i++) {
@@ -453,15 +555,17 @@ var init = {
     },
 };
 $(document).ready(function () {
-    
-    $('#incomplete').hide();
+    $(".CargaMasiva").hide();
+
     if ($('#upp').val() == '') {
         dao.getUpps();
     } else {
         dao.checkCombination($('#upp').val())
     }
     $('#upp_filter').change(() => {
-        dao.checkCombination($('#upp_filter').val())
+        dao.checkCombination($('#upp_filter').val());
+    /*     $("#tipo_Ac").attr('disabled', 'disabled');
+        $("#upp_filter").attr('disabled', 'disabled'); */
     });
     $('#ur_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());
@@ -485,12 +589,12 @@ $(document).ready(function () {
     $("#tipo_Ac").select2({
         maximumSelectionLength: 10
     });
-
-
-
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
-    }
+        $("#" + i).on('paste', function(e){
+            e.preventDefault();
+          })
+        }
     $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
@@ -509,12 +613,6 @@ $(document).ready(function () {
         }
     });
 
-    $('#tipo_Ac').change(() => {
-        for (let i = 1; i <= 12; i++) {
-            $("#" + i).prop('disabled', false);
-        }
-
-    });
 
 
 });

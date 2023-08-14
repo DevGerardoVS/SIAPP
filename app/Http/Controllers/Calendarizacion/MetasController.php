@@ -43,6 +43,7 @@ class MetasController extends Controller
 	}
 	public static function getActiv($upp,$anio)
 	{
+		MetasController::proyectorMir();
 		Controller::check_permission('getMetas');
 		$query = MetasHelper::actividades($upp,$anio);
 		$dataSet = [];
@@ -216,8 +217,45 @@ class MetasController extends Controller
 				->where('proyectos_mir.area_funcional', str_replace("-", '', $area))
 				->where('proyectos_mir.entidad_ejecutora', str_replace("-", '', $entidad))
 				->groupByRaw('clave')->get();
+
+			$meses=MetasController::meses($area,$entidad,$check['anio']);
 		}
-		return ['fondos'=> $fondos ,"activids"=>$activ ];
+		return ['fondos'=> $fondos ,"activids"=>$activ ,"mese"=>$meses];
+	}
+	public static function meses($area,$entidad,$anio){
+		$areaAux=explode( '-', $area);
+		$entidadAux=explode( '-', $entidad);
+		$meses = DB::table('programacion_presupuesto')
+				->select(
+					'enero',
+					'febrero',
+					'marzo',
+					'abril',
+					'mayo',
+					'junio',
+					'julio',
+					'agosto',
+					'septiembre',
+					'octubre',
+					'noviembre',
+					'diciembre')
+				->where('programacion_presupuesto.finalidad', $areaAux[0])
+				->where('programacion_presupuesto.funcion', $areaAux[1])
+				->where('programacion_presupuesto.subfuncion', $areaAux[2])
+				->where('programacion_presupuesto.eje', $areaAux[3])
+				->where('programacion_presupuesto.linea_accion', $areaAux[4])
+				->where('programacion_presupuesto.programa_sectorial', $areaAux[5])
+				->where('programacion_presupuesto.tipologia_conac', $areaAux[6])
+				->where('programacion_presupuesto.upp', $entidadAux[0])
+				->where('programacion_presupuesto.ur', $entidadAux[2])
+				->where('programa_presupuestario', $areaAux[7])
+				->where('subprograma_presupuestario', $areaAux[8])
+				->where('proyecto_presupuestario', $areaAux[9])
+				->where('ejercicio',$anio)
+				->get();
+				
+		$dataSet = $meses[0];
+		return $dataSet;
 	}
 	public function getSelects()
 	{
@@ -1015,10 +1053,39 @@ class MetasController extends Controller
 	}
 	public static function proyectorMir(){
 		$proyectoMir = DB::connection('mml')
-			->table('envios as e')
-			->join('autos as a', 'e.numero_serie', '=', 'a.numero_serie')
-			->where('e.guia', "=", '2')
-			->update(['a.validado' => 9]);
+			->table('matriz_indicadores_resultados')
+			->select('*')
+			->where('deleted_at', null)
+			//->where('estatus', 1)
+			->get();
+		Log::debug($proyectoMir);
+/* 		$actividadesMir = DB::connection('mml')
+			->table('actividades_mir')
+			->select('*')
+			->where('deleted_at', null)
+			//->where('estatus', 1)
+			->get();
+		Log::debug($actividadesMir); */
+	}
+	public static function keyMonth($n){
+		$meses=['enero',
+		'febrero',
+		'marzo',
+		'abril',
+		'mayo',
+		'junio',
+		'julio',
+		'agosto',
+		'septiembre',
+		'octubre',
+		'noviembre',
+		'diciembre'];
+
+		return $meses[$n];
+	}
+	public static function validateMonth(){
+		//$meses=MetasController::meses($area,$entidad,$check['anio']);
+
 	}
 
 }
