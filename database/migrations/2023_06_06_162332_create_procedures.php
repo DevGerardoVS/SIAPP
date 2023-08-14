@@ -2333,6 +2333,7 @@ return new class extends Migration {
                     corte is null,
                     pa.deleted_at is null,
                     pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
                 group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
                     pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma
                 union all
@@ -2369,6 +2370,7 @@ return new class extends Migration {
                     corte is null,
                     pa.deleted_at is null,
                     pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
                 group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
                     pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma,
                     pm.indicador, pm.objetivo, am.actividad
@@ -2422,6 +2424,7 @@ return new class extends Migration {
                     corte is null,
                     pa.deleted_at is null,
                     pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
                 group by pa.clv_programa,pa.programa
                 union all
                 select 
@@ -2451,6 +2454,7 @@ return new class extends Migration {
                     corte is null,
                     pa.deleted_at is null,
                     pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
                 group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
                     pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma,
                     pm.indicador, pm.objetivo, am.actividad
