@@ -253,7 +253,7 @@ class ClavePreController extends Controller
                     'tipo' => $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH',    
                     'created_user' => Auth::user()->username, 
                 ]);
-                $aplanado = DB::select("CALL insert_pp_aplanado('$request->ejercicio')");
+                $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
                 $b = array(
                     "username"=>Auth::user()->username,
                     "accion"=>'Guardar',
