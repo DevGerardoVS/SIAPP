@@ -222,7 +222,7 @@
             dao.getProyectoBySubPrograma(programa_presupuestario,subprograma_presupuestario,upp,ur,ejercicio,proyecto_presupuestario);
         }
         if (linea_accion != '') {
-            dao.getLineaDeAccionByUpp(upp,ur,ejercicio,linea_accion);
+            dao.getLineaDeAccionByUpp(upp,ur,ejercicio,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,linea_accion);
             dao.getPartidaByUpp(clasificacion,partida);
             dao.getSector(linea_accion);
             dao.getAreaFuncional(upp,ur,ejercicio,subprograma_presupuestario,linea_accion,programa_presupuestario,proyecto_presupuestario);

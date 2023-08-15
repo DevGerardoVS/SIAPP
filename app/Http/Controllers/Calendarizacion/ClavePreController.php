@@ -430,12 +430,15 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($proyectos,200);
     }
-    public function getLineaAccion($uppId,$id,$ejercicio){
+    public function getLineaAccion($uppId,$id,$ejercicio,$programa,$subPrograma,$proyecto){
         $linea = DB::table('v_epp')
         ->SELECT('clv_linea_accion','linea_accion')
         ->WHERE('clv_upp','=', $uppId)
         ->WHERE('clv_ur','=',$id)
         ->WHERE('ejercicio','=',$ejercicio)
+        ->WHERE('clv_programa','=', $programa)
+        ->WHERE('clv_subprograma','=',$subPrograma)
+        ->WHERE('clv_proyecto','=',$proyecto)
         ->orderBy('clv_linea_accion')
         ->DISTINCT()
         ->get();
