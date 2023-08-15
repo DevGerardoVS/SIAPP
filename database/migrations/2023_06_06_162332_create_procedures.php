@@ -2262,7 +2262,7 @@ return new class extends Migration {
             END;
         ");
 
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_II(in anio int)
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_II(in anio int, in corte date)
         begin
             select 
                 case 
@@ -2329,7 +2329,10 @@ return new class extends Migration {
                     and pa.clv_programa = substring(pm.area_funcional,9,2)
                     and pa.clv_subprograma = substring(pm.area_funcional,11,3)
                     and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio
+                where pm.ejercicio = anio and if (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
                     pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma
                 union all
@@ -2362,7 +2365,10 @@ return new class extends Migration {
                     and pa.clv_programa = substring(pm.area_funcional,9,2)
                     and pa.clv_subprograma = substring(pm.area_funcional,11,3)
                     and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio
+                where pm.ejercicio = anio and if (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
                     pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma,
                     pm.indicador, pm.objetivo, am.actividad
@@ -2372,7 +2378,7 @@ return new class extends Migration {
             ) tabla;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_IX(in anio int)
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_IX(in anio int, in corte date)
         begin
             select
                 case 
@@ -2412,7 +2418,10 @@ return new class extends Migration {
                     and pa.clv_programa = substring(pm.area_funcional,9,2)
                     and pa.clv_subprograma = substring(pm.area_funcional,11,3)
                     and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio
+                where pm.ejercicio = anio and if (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 group by pa.clv_programa,pa.programa
                 union all
                 select 
@@ -2438,7 +2447,10 @@ return new class extends Migration {
                     and pa.clv_programa = substring(pm.area_funcional,9,2)
                     and pa.clv_subprograma = substring(pm.area_funcional,11,3)
                     and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio
+                where pm.ejercicio = anio and if (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
                 group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
                     pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma,
                     pm.indicador, pm.objetivo, am.actividad
