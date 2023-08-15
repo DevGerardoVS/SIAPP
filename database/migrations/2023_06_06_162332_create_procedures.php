@@ -1134,6 +1134,7 @@ return new class extends Migration {
             set @upp := uppC;
             
             select
+                orden,
                 upp,
                 clave,
                 monto_anual,
