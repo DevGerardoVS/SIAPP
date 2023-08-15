@@ -416,10 +416,10 @@ var dao = {
       });
     });
   },
-	getLineaDeAccionByUpp : function(uppId,id,ejercicio,idSelected){
+	getLineaDeAccionByUpp : function(uppId,id,ejercicio,programa,subPrograma,proyecto,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-linea-accion/'+ uppId + '/' + id+'/'+ejercicio,
+          	url: '/cat-linea-accion/'+ uppId + '/' + id+'/'+ejercicio+ '/' + programa+'/'+subPrograma+ '/' + proyecto,
         }).done(function(data){
           var par = $('#sel_linea');
           par.html('');
@@ -954,7 +954,7 @@ $(document).ready(function(){
     let ejercicio = document.getElementById('anio').value;
     dao.getSubSecretaria(uppId,id,ejercicio);
 		dao.getProgramaPresupuestarioByur(uppId,id,ejercicio,'');
-		dao.getLineaDeAccionByUpp(uppId,id,ejercicio,'');
+		
     //dao.getAreaFuncional(uppId,id,ejercicio);
     dao.getClasificacionAdmin(uppId,id);
     var urText = $('#sel_unidad_res').find(":selected").text();
@@ -985,25 +985,26 @@ $(document).ready(function(){
     e.preventDefault();
     let val = this.value;
     document.getElementById('proyectoPre').innerHTML = val;
+    var proyecto = val;
+    var programa = document.getElementById("sel_programa").value;
+    var subPrograma = document.getElementById("sel_sub_programa").value;
+    var upp = document.getElementById("sel_upp").value;
+    var ejercicio = document.getElementById('anio').value;
+    var ur = document.getElementById("sel_unidad_res").value;
+
+    dao.getLineaDeAccionByUpp(upp,ur,ejercicio,programa,subPrograma,proyecto,'');
   });
   $('#sel_linea').change(function (e) {
     e.preventDefault();
     let clave = this.value;
-    console.log("🚀 ~ file: init.js:992 ~ clave:", clave)
     document.getElementById('lineaAccion').innerHTML = clave;
     dao.getSector(clave);
     var programa = document.getElementById("sel_programa").value;
-    console.log("🚀 ~ file: init.js:995 ~ programa:", programa)
     var upp = document.getElementById("sel_upp").value;
-    console.log("🚀 ~ file: init.js:997 ~ upp:", upp)
     var ejercicio = document.getElementById('anio').value;
-    console.log("🚀 ~ file: init.js:999 ~ ejercicio:", ejercicio)
     var ur = document.getElementById("sel_unidad_res").value;
-    console.log("🚀 ~ file: init.js:1001 ~ ur:", ur)
     var proyecto = document.getElementById("sel_proyecto").value;
-    console.log("🚀 ~ file: init.js:1003 ~ proyecto:", proyecto)
     var subPrograma = document.getElementById("sel_sub_programa").value;
-    console.log("🚀 ~ file: init.js:1006 ~ subPrograma:", subPrograma)
     dao.getAreaFuncional(upp,ur,ejercicio,subPrograma,clave,programa,proyecto);
   });
   $('#sel_partida').change(function (e) {
