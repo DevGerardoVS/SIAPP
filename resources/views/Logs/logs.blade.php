@@ -8,8 +8,9 @@
 @section('content')
     <div class="container customContainerPosition">
         <div>
-            <h3 style="margin-left: 2%;">{{$titleDesc}}</h3>
-            <hr style="width: 98%; border: 1px solid gray;">
+            <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8; margin-bottom: 5px;">
+                <h2 style="margin-left: 2%;">{{$titleDesc}}</h2>
+            </header>
 
             <br>
             

@@ -7,7 +7,7 @@ $titleDesc = 'Administración de Captura';
 @section('content')
     <div class="container w-100 p-4">
         <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
-            <h1 class="fw-bold text-center">{{ $titleDesc }} Ejercicio {{ $anio }}</h1>
+            <h2>{{ $titleDesc }} Ejercicio {{ $anio }}</h2>
             <form action="{{ route('claves_presupuestarias') }}" id="buscarFormA" name="buscarFormA" method="post"></form>
             <form action="{{ route('metas_actividades') }}" id="buscarFormB" name="buscarFormB" method="post"></form>
         </header>
@@ -50,14 +50,15 @@ $titleDesc = 'Administración de Captura';
         </form>
 
         {{-- botón modal --}}
-        <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
-            <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
-            data-keyboard="false" data-toggle="modal">
-                <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
-                <span class="d-lg-inline align-middle">Apertura y cierre de captura</span> 
-            </button>
-        </div>
-
+        @if (Auth::user()->id_grupo == 1)
+            <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
+                <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
+                data-keyboard="false" data-toggle="modal">
+                    <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
+                    <span class="d-lg-inline align-middle">Apertura y cierre de captura</span> 
+                </button>
+            </div>
+        @endif
         {{-- Llamada al modal --}}
         @include('captura.modalAperturaCierre')
         
@@ -138,7 +139,7 @@ $titleDesc = 'Administración de Captura';
         var letter;
         $(document).ready(function() {
 
-            $(".alert").delay(4000).slideUp(200, function() {
+            $(".alert").delay(10000).slideUp(200, function() {
                 $(this).alert('close');
             });
 
