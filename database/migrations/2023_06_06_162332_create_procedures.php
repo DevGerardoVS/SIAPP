@@ -2462,6 +2462,88 @@ return new class extends Migration {
                 order by clv_programa,programa,indicador,objetivo,actividad
             ) tabla;
         END");
+
+        DB::unprepared("CREATE PROCEDURE if not exists sp_epp(in uppC varchar(3),in urC varchar(2), in anio int)
+            BEGIN
+                set @upp := uppC;
+                set @ur := urC;
+            
+                select 
+                    concat(
+                    	e.clv_sector_publico,
+                    	e.clv_sector_publico_f,
+                    	e.clv_sector_economia,
+                    	e.clv_subsector_economia,
+                    	e.clv_ente_publico
+                    ) clasificacion_administrativa,
+                    concat(
+                        e.clv_upp,' ',
+                        e.upp
+                    ) upp,
+                    concat(
+                        e.clv_subsecretaria,' ',
+                        e.subsecretaria
+                    ) subsecretaria,
+                    concat(
+                        e.clv_ur,' ',
+                        e.ur
+                    ) unidad_responsable,
+                    concat(
+                        e.clv_finalidad,' ',
+                        e.finalidad
+                    ) finalidad,
+                    concat(
+                        e.clv_funcion,' ',
+                        e.funcion
+                    ) funcion,
+                    concat(
+                        e.clv_subfuncion,' ',
+                        e.subfuncion
+                    ) subfuncion,
+                    concat(
+                        e.clv_eje,' ',
+                        e.eje
+                    ) eje,
+                    concat(
+                        e.clv_linea_accion,' ',
+                        e.linea_accion
+                    ) linea_accion,
+                    concat(
+                        e.clv_programa_sectorial,' ',
+                        e.programa_sectorial
+                    ) programa_sectorial,
+                    concat(
+                        e.clv_tipologia_conac,' ',
+                        e.tipologia_conac
+                    ) tipologia_conac,
+                    concat(
+                        e.clv_programa,' ',
+                        e.programa
+                    ) programa,
+                    concat(
+                        e.clv_subprograma,' ',
+                        e.subprograma
+                    ) subprograma,
+                    concat(
+                        e.clv_proyecto,' ',
+                        e.proyecto
+                    ) proyecto,
+                    e.ejercicio
+                from v_epp e
+                where if(
+                    @upp is null,
+                    clv_upp != '',
+                    clv_upp = @upp
+                ) and if (anio is null,
+                    ejercicio != 1,
+                    ejercicio = anio
+                ) and if (
+                    @ur is null,
+                    clv_ur != '',
+                    clv_ur = @ur
+                );
+            END
+        ");
     }
 
     /**
