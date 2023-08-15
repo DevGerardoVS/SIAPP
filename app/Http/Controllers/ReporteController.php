@@ -168,7 +168,7 @@ class ReporteController extends Controller
                 $parameters["fecha"] = $fechaCorte;
                 $nameFile = $nameFile."_".$fechaCorte;
             }
-            if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades"){
+            if($nombre == "calendario_clave_presupuestaria" || $nombre == "proyecto_calendario_actividades"){
                 if(Auth::user()->clv_upp != null || $upp != null){
                     $parameters["upp"] = $upp;
                     $nameFile = $nameFile."_UPP_".$upp;
