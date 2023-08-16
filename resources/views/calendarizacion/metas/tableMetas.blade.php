@@ -6,40 +6,43 @@
                 <div class="form-group col-md-6">
                     <label class="control-label">Nombre de la actividad</label>
                     <select class="form-control" aria-placeholder="Selecciona una actividad" id="sel_actividad" data-live-search="true"
-                    name="sel_actividad" >
+                    name="sel_actividad" disabled>
                     <option value="">---Actividad---</option>
                 </select>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="control-label ">Fondo &nbsp&nbsp&nbsp&nbsp</label>
                     <select class="form-control" placeholder="Selecciona una actividad" id="sel_fondo" data-live-search="true"
-                        name="sel_fondo" autocomplete="anio_filter" placeholder="Seleccione un año" >
-                        <option value="">---Fondo---</option>
+                        name="sel_fondo" autocomplete="anio_filter" placeholder="Seleccione un año"  disabled>
+                        <option value="" >---Fondo---</option>
                     </select>
                 </div>
             </div>
             <div class="form-group col-md-3">
                 <label class="control-label">Tipo de calendario</label>
                 <select class="form-control" aria-placeholder="Selecciona una actividad" id="tipo_Ac" data-live-search="true"
-                    name="tipo_Ac" >
+                    name="tipo_Ac" disabled >
                     <option value="">---Tipo de Calendario---</option>
                 </select>
             </div>
-            <div class="form-group col-md-3">
+            <div class="col-md-3">
                 <label class="control-label">No. Beneficiarios</label>
                 <input type="text" class="form-control" id="beneficiario" name="beneficiario" onkeypress="return valideKey(event)" >
             </div>
-            <div class="form-group col-md-3">
-                <label class="control-label">Beneficiarios</label>
-                <select class="form-control" aria-placeholder="Selecciona una Beneficiarios" id="tipo_Be" data-live-search="true"
+            <div class="col-md-3">
+                <label class="control-label">Beneficiarios &nbsp; &nbsp; &nbsp; &nbsp;</label>
+                <select class="form-control"  id="tipo_Be" data-live-search="true"
                     name="tipo_Be">
                 </select>
+                <span id="tipo_Be-error" class="has-error" aria-describedby="tipo_Be-erro"></span>
             </div>
             <div class="form-group col-md-3">
                 <label class="control-label">Unidad de medida</label>
                 <select class="form-control" aria-placeholder="Selecciona una Medida" data-live-search="true" id="medida"
                     name="medida">
                 </select>
+                <span id="medida-error" class="has-error"></span>
+
             </div>
         </div>
         <div class="table-responsive">

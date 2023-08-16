@@ -35,18 +35,12 @@
                                             <a type="button" class="btn btn-dark" href="{{ route('index_up') }}">
                                                 Permisos adicionales</a>
                                         </div>
-                                        <div class="col-md-11">
-                                        </div>
-                                        <div class="col-md-1 text-right">
-                                            <div class="d-flex justify-content-center" style=" margin: 2px auto;">
-                                                <button type="button" style="justify-content: float-right"
-                                                    onclick="dao.exportExcel()" class="btn btn-success"><i
-                                                        class="fa fa-file-excel-o" aria-hidden="true"></i></button>
-                                                &nbsp
-                                                <button type="button" style="justify-content: flex-end"
-                                                    onclick="dao.exportPdf()" class="btn btn-danger"><i
-                                                        class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
-                                            </div>
+                                        <div class="col-md-4"></div>
+                                        
+                                        <div class="col-md-8 text-right">
+                                            <br>
+                                                <button type="button" style="justify-content:float-right; " onclick="dao.exportPdf()"class="btn btn-outline-danger col-md-2"><i class="fa fa-file-pdf-o text-center" aria-hidden="true"></i> Exportar PDF</button>&nbsp;
+                                                <button type="button" style="justify-content: flex-end;" onclick="dao.exportExcel()" class="btn btn-outline-success col-md-2"><i class="fa fa-file-excel-o text-center" aria-hidden="true"></i> Exportar Excel</button> &nbsp;
                                         </div>
                                     @endif
                                 </div><br>

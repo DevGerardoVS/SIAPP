@@ -42,9 +42,9 @@
                                     @endif
                                     @if (Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
                                         @if (check_assignFront(1))
-                                            <div class="col-md-4 d-flex " style="justify-content: flex-end">
-                                                <div>
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            <div  id="CargaMasiva" class="col-md-4 d-flex CargaMasiva " style="justify-content: flex-end">
+                                                <div >
+                                                    <button  type="button" class="btn btn-primary CargaMasiva" data-toggle="modal"
                                                         data-target="#carga" data-backdrop="static"
                                                         data-keyboard="false">Carga-Masiva</button>
                                                 </div>

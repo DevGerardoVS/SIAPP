@@ -22,7 +22,6 @@ use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
 use Shuchkin\SimpleXLSX;
-use Symfony\Component\Console\Helper\Table;
 use Illuminate\Support\Facades\Http;
 use Storage;
 
@@ -43,6 +42,7 @@ class MetasController extends Controller
 	}
 	public static function getActiv($upp,$anio)
 	{
+	
 		Controller::check_permission('getMetas');
 		$query = MetasHelper::actividades($upp,$anio);
 		$dataSet = [];
@@ -50,7 +50,7 @@ class MetasController extends Controller
 			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
 				'<i class="fa fa-pencil" style="color:green;"></i></button>' .
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
-				'<i class="fa fa-trash" style="color:B40000;" ></i></button>':'';
+				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
 			$area = str_split($key->area);
 			$entidad = str_split($key->entidad);
 			$i = array(
@@ -58,14 +58,14 @@ class MetasController extends Controller
 				$area[1],
 				$area[2],
 				$area[3],
-				''.strval($area[4]).strval($area[5]).'',
+				'' . strval($area[4]) . strval($area[5]) . '',
 				$area[6],
 				$area[7],
-				''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
-				''.strval($entidad[4]).strval($entidad[5]).'',
-				''.strval($area[8]).strval($area[9]).'',
-				''.strval($area[10]).strval($area[11]).strval($area[12]).'',
-				''.strval($area[13]).strval($area[14]).strval($area[15]).'',
+				'' . strval($entidad[0]) . strval($entidad[1]) . strval($entidad[2]) . '',
+				'' . strval($entidad[4]) . strval($entidad[5]) . '',
+				'' . strval($area[8]) . strval($area[9]) . '',
+				'' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
+				'' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
 				$key->fondo,
 				$key->actividad,
 				$key->tipo,
@@ -164,6 +164,7 @@ class MetasController extends Controller
 	}
 	public function getUpps()
 	{
+		$mir=MetasController::proyectorMir();
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$upps = DB::table('v_epp')
 			->select(
@@ -174,7 +175,7 @@ class MetasController extends Controller
 			->orderBy('clv_upp')
 			->groupByRaw('clv_upp')
 			->where('ejercicio', $anio)->get();
-		return $upps;
+		return ["upp"=>$upps,"mir"=>$mir];
 	}
 	public function getFyA($area,$entidad)
 	{
@@ -216,8 +217,46 @@ class MetasController extends Controller
 				->where('proyectos_mir.area_funcional', str_replace("-", '', $area))
 				->where('proyectos_mir.entidad_ejecutora', str_replace("-", '', $entidad))
 				->groupByRaw('clave')->get();
+
+			$meses=MetasController::meses($area,$entidad,$check['anio']);
+			
 		}
-		return ['fondos'=> $fondos ,"activids"=>$activ ];
+		return ['fondos'=> $fondos ,"activids"=>$activ ,"mese"=>$meses /* ,"mir"=>$mir */];
+	}
+	public static function meses($area,$entidad,$anio){
+		$areaAux=explode( '-', $area);
+		$entidadAux=explode( '-', $entidad);
+		$meses = DB::table('programacion_presupuesto')
+				->select(
+					'enero',
+					'febrero',
+					'marzo',
+					'abril',
+					'mayo',
+					'junio',
+					'julio',
+					'agosto',
+					'septiembre',
+					'octubre',
+					'noviembre',
+					'diciembre')
+				->where('programacion_presupuesto.finalidad', $areaAux[0])
+				->where('programacion_presupuesto.funcion', $areaAux[1])
+				->where('programacion_presupuesto.subfuncion', $areaAux[2])
+				->where('programacion_presupuesto.eje', $areaAux[3])
+				->where('programacion_presupuesto.linea_accion', $areaAux[4])
+				->where('programacion_presupuesto.programa_sectorial', $areaAux[5])
+				->where('programacion_presupuesto.tipologia_conac', $areaAux[6])
+				->where('programacion_presupuesto.upp', $entidadAux[0])
+				->where('programacion_presupuesto.ur', $entidadAux[2])
+				->where('programa_presupuestario', $areaAux[7])
+				->where('subprograma_presupuestario', $areaAux[8])
+				->where('proyecto_presupuestario', $areaAux[9])
+				->where('ejercicio',$anio)
+				->get();
+				
+		$dataSet = $meses[0];
+		return $dataSet;
 	}
 	public function getSelects()
 	{
@@ -407,8 +446,6 @@ class MetasController extends Controller
 	}
 	public function updateMeta($id)
 	{
-	
-		
 			$metas = DB::table('metas')
 				->leftJoin('actividades_mir', 'actividades_mir.id', 'metas.actividad_id')
 				->select(
@@ -542,7 +579,6 @@ class MetasController extends Controller
 	public function pdfView($upp)
 	{
 		$date = Carbon::now();
-
 		$year = $date->format('Y');
 		Controller::check_permission('getMetas');
 		$data = $this->getActiv($upp,$year);
@@ -910,12 +946,17 @@ class MetasController extends Controller
 			)
 			->where('clv_upp', '=', $upp)
 			->get();
-		if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
-			return ["status" => true, "anio" => $anio[0]->ejercicio];
-		}else{
-			return ["status" => false, "anio" => $anio[0]->ejercicio];
-
-		}
+			if(count($anio)){ 
+				if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
+					return ["status" => true, "anio" => $anio[0]->ejercicio];
+				}else{
+					return ["status" => false, "anio" => $anio[0]->ejercicio];
+		
+				}
+			}else{
+				return ["status" => false, "anio" => 0000];
+			}
+		
 	}
 
 	public function jasperMetas($upp,$anio){
@@ -1014,11 +1055,64 @@ class MetasController extends Controller
 		return response()->json(["status"=>200,"data"=>$dataSet]);
 	}
 	public static function proyectorMir(){
-		$proyectoMir = DB::connection('mml')
-			->table('envios as e')
-			->join('autos as a', 'e.numero_serie', '=', 'a.numero_serie')
-			->where('e.guia', "=", '2')
-			->update(['a.validado' => 9]);
+
+		$proyectomir = MetasHelper::mir();
+
+/* 		foreach ($proyectomir as $key => $value) {
+		$sd=	ProyectosMir::create([
+				'clv_upp'=>$key->clv_upp,
+				'entidad_ejecutora'=>"".$key->clv_upp.$key->clv_ur."",
+				'clv_programa'=>$key->programa_id,
+				'area_funcional'=>$key->,
+				'nivel'=>$key->nivel,
+				'objetivo'=>$key->objetivo,
+				'indicador'=>$key->indicador,
+				'definicion_indicador'=>$key->,
+				'metodo_calculo'=>$key->,
+				'descripcion_metodo'=>$key->,
+				'tipo_indicador'=>$key->,
+				'unidad_medida'=>$key->unidad_medida,
+				'dimension'=>$key->,
+				'comportamiento_indicador'=>$key->,
+				'frecuencia_medicion'=>$key->,
+				'medios_verificacion'=>$key->,
+				'lb_valor_absoluto'=>$key->,
+				'lb_valor_relativo'=>$key->,
+				'lb_anio'=>$key->,
+				'lb_periodo_i'=>$key->mp_periodo_i,
+				'lb_periodo_f'=>$key->mp_periodo_f,
+				'mp_valor_absoluto'=>$key->,
+				'mp_valor_relativo'=>$key->,
+				'mp_anio'=>$key->,
+				'mp_periodo_i'=>$key->,
+				'mp_periodo_f'=>$key->,
+				'supuestos'=>$key->,
+				'estrategias'=>$key->,
+				'ejercicio'=>$key->ejercicio
+			]);
+		} */
+		
+		return $proyectomir;
+	}
+	public static function keyMonth($n){
+		$meses=['enero',
+		'febrero',
+		'marzo',
+		'abril',
+		'mayo',
+		'junio',
+		'julio',
+		'agosto',
+		'septiembre',
+		'octubre',
+		'noviembre',
+		'diciembre'];
+
+		return $meses[$n];
+	}
+	public static function validateMonth(){
+		//$meses=MetasController::meses($area,$entidad,$check['anio']);
+
 	}
 
 }
