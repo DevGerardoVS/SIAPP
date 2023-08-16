@@ -21,14 +21,15 @@
     function getData(tabla, rt){
        
 
-       var dt = $(tabla);
-       var orderDt = "";
-       var column = "";
-       var ruta;
-       var formatRight = [];
+        var dt = $(tabla);
+        var orderDt = "";
+        var column = "";
+        var ruta;
+        var formatRight = [];
         var formatLeft = [];
         var formatCenter = [];
         var bold = [];
+        var estatus = false;
          
        switch(rt){
            case "A":
@@ -88,7 +89,7 @@
                 }
             }
         }
-       
+    
        var formData = new FormData();
        var csrf_tpken = $("input[name='_token']").val();
        var anio = $("#anio_filter").val();
@@ -138,9 +139,9 @@
 
                 }
                 // Se habilita el rowgroup dependiendo la tabla en la que esta el usuario
-                var estatus = false;
-                if(ruta == "#buscarFormD") estatus = true;
-
+                if(!$("#upp_filter").val()){
+                    if(ruta == "#buscarFormD") estatus = true;
+                }
                dt.DataTable({
                     data: response.dataSet,
                     searching: true,
@@ -359,6 +360,13 @@
                                 // Actualizar footer
                                 $(api.column(".sum").footer()).html( total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
                             }
+                    },
+                    rowCallback: function( row, data, index ) {
+                        if($("#upp_filter").val() != ""){
+                            if(ruta == "#buscarFormD"){
+                                if(index == 0) $(row).hide();
+                            }
+                        }
                     },
                });
                redrawTable(tabla);   
