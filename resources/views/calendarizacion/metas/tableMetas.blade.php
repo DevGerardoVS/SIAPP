@@ -28,7 +28,6 @@
             <div class="col-md-3">
                 <label class="control-label">No. Beneficiarios</label>
                 <input type="text" class="form-control" id="beneficiario" name="beneficiario" onkeypress="return valideKey(event)" >
-                <span id="beneficiario-error" class="has-error"></span>
             </div>
             <div class="col-md-3">
                 <label class="control-label">Beneficiarios &nbsp; &nbsp; &nbsp; &nbsp;</label>

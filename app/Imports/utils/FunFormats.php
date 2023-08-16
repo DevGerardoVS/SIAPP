@@ -37,7 +37,6 @@ class FunFormats
             case 0:
                 return FunFormats::totalAcum($auxTotal);
             case 1:
-
                 return $auxTotal[0];
             //  return $this->totalAcum($auxTotal);
             case 2:
@@ -46,7 +45,6 @@ class FunFormats
                 # code...
                 break;
         }
-
     }
     public static function totalEspecial($arreglo)
     {
@@ -63,7 +61,6 @@ class FunFormats
     public static function saveImport($filearray)
     {
         if (count($filearray) >= 1) {
-            
             $index = 2;
             foreach ($filearray as $k) {
                 $status =FunFormats::isNULLOrEmpy($k,$index);
@@ -90,10 +87,9 @@ class FunFormats
                             $clave =''. strval($k[0]) . '-' .strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]). '-' .strval($k[4]).'-'. strval($k[5]) . '-' .strval($k[6]) .'-'. strval($k[7]) . '-' .strval($k[8]) . '-' . strval($k[9]) . '-' . strval($k[10]). '-' .strval($k[11]).'';
                             $pres=FunFormats::existPP($clave);
                             if (count($pres)) {
-                                
                                 $aux[] = [
                                     'clv_fondo' => $k[12],
-                                    'actividad_id' =>$k[13],
+                                    'actividad_id' => $k[13],
                                     'tipo' => $k[16],
                                     'beneficiario_id' => $k[29],
                                     'unidad_medida_id' => $k[32],
@@ -159,7 +155,6 @@ class FunFormats
             } catch (\Throwable $th) {
                 //throw $th;
             }
-            
         }
         $success = array(
             "icon" => 'success',
@@ -218,6 +213,7 @@ class FunFormats
         }
  
 	}
+
     /*     public function arrEquals($numeros)
         {
             $duplicados = [];

@@ -147,12 +147,14 @@ var dao = {
             url: '/calendarizacion/upps/',
             dataType: "JSON"
         }).done(function (data) {
+            const { upp, mir } = data;
+            console.log("MIR", mir);
             var par = $('#upp_filter');
             par.html('');
             par.append(new Option("-- UPPS--", ""));
             document.getElementById("upp_filter").options[0].disabled = true;
-            $.each(data, function (i, val) {
-                par.append(new Option(data[i].upp, data[i].clv_upp));
+            $.each(upp, function (i, val) {
+                par.append(new Option(val.upp, val.clv_upp));
             });
 
 
@@ -266,9 +268,9 @@ var dao = {
             $.each(unidadM, function (i, val) {
                 med.append(new Option(val.unidad_medida, val.clave));
             });
-            med.select2({
+         /*    med.select2({
                 maximumSelectionLength: 10
-            });
+            }); */
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
             tipo_be.append(new Option("--U. Beneficiarios--", ""));
@@ -276,9 +278,9 @@ var dao = {
             $.each(beneficiario, function (i, val) {
                 tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
             });
-            tipo_be.select2({
+    /*         tipo_be.select2({
                 maximumSelectionLength: 10
-            });
+            }); */
         });
     },
     getFyA: function (area,enti) {
@@ -586,9 +588,9 @@ $(document).ready(function () {
     $("#sel_actividad").select2({
         maximumSelectionLength: 10
     });
-    $("#tipo_Ac").select2({
+/*     $("#tipo_Ac").select2({
         maximumSelectionLength: 10
-    });
+    }); */
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
         $("#" + i).on('paste', function(e){

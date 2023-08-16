@@ -39,8 +39,8 @@
                                         
                                         <div class="col-md-8 text-right">
                                             <br>
-                                                <button type="button" style="justify-content:float-right; " onclick="dao.exportPdf()"class="btn btn-outline-danger col-md-2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar PDF</button>&nbsp;
-                                                <button type="button" style="justify-content: flex-end;" onclick="dao.exportExcel()" class="btn btn-outline-success col-md-2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar Excel</button> &nbsp;
+                                                <button type="button" style="justify-content:float-right; " onclick="dao.exportPdf()"class="btn btn-outline-danger col-md-2"><i class="fa fa-file-pdf-o text-center" aria-hidden="true"></i> Exportar PDF</button>&nbsp;
+                                                <button type="button" style="justify-content: flex-end;" onclick="dao.exportExcel()" class="btn btn-outline-success col-md-2"><i class="fa fa-file-excel-o text-center" aria-hidden="true"></i> Exportar Excel</button> &nbsp;
                                         </div>
                                     @endif
                                 </div><br>

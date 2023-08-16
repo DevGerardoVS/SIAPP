@@ -185,4 +185,70 @@ class MetasHelper{
             throw new \Exception($exp->getMessage());
         }
     }
+	public static function mir(){
+        $proyectoMir = DB::connection('mml')
+			->table('matriz_indicadores_resultados')
+			->leftJoin('fondos_db.epp', 'fondos_db.epp.id', 'matriz_indicadores_resultados.id_epp')
+			->select(
+				'epp.id AS id_epp',
+				'epp.sector_publico_id',
+				'epp.sector_publico_f_id',
+				'epp.sector_economia_id',
+				'epp.subsector_economia_id',
+				'epp.ente_publico_id',
+				'epp.upp_id',
+				'epp.subsecretaria_id',
+				'epp.ur_id',
+				'epp.finalidad_id',
+				'epp.funcion_id',
+				'epp.subfuncion_id',
+				'epp.eje_id',
+				'epp.linea_accion_id',
+				'epp.programa_sectorial_id',
+				'epp.tipologia_conac_id',
+				'epp.programa_id',
+				'epp.subprograma_id',
+				'epp.proyecto_id',
+				'epp.ejercicio',
+				'epp.presupuestable',
+				'epp.confirmado',
+				'matriz_indicadores_resultados.id AS id_matriz',
+			 	'matriz_indicadores_resultados.clv_upp',
+				'matriz_indicadores_resultados.clv_ur',
+				'matriz_indicadores_resultados.clv_pp',
+				'matriz_indicadores_resultados.nivel',
+				'matriz_indicadores_resultados.id_epp',
+				'matriz_indicadores_resultados.componente_padre',
+				'matriz_indicadores_resultados.objetivo',
+				'matriz_indicadores_resultados.indicador',
+				'matriz_indicadores_resultados.definicion_indicador',
+				'matriz_indicadores_resultados.metodo_calculo',
+				'matriz_indicadores_resultados.descripcion_metodo',
+				'matriz_indicadores_resultados.tipo_indicador',
+				'matriz_indicadores_resultados.unidad_medida',
+				'matriz_indicadores_resultados.dimension',
+				'matriz_indicadores_resultados.comportamiento_indicador',
+				'matriz_indicadores_resultados.frecuencia_medicion',
+				'matriz_indicadores_resultados.medios_verificacion',
+				'matriz_indicadores_resultados.lb_valor_absoluto',
+				'matriz_indicadores_resultados.lb_valor_relativo',
+				'matriz_indicadores_resultados.lb_anio',
+				'matriz_indicadores_resultados.lb_periodo_i',
+				'matriz_indicadores_resultados.lb_periodo_f',
+				'matriz_indicadores_resultados.mp_valor_absoluto',
+				'matriz_indicadores_resultados.mp_valor_relativo',
+				'matriz_indicadores_resultados.mp_anio',
+				'matriz_indicadores_resultados.mp_anio_meta',
+				'matriz_indicadores_resultados.mp_periodo_i',
+				'matriz_indicadores_resultados.mp_periodo_f',
+				'matriz_indicadores_resultados.supuestos',
+				'matriz_indicadores_resultados.estrategias',
+				'matriz_indicadores_resultados.ejercicio',
+			)
+			->where('matriz_indicadores_resultados.deleted_at', null)
+			->where('matriz_indicadores_resultados.id_epp', null)
+			->where('epp.deleted_at', null)
+			->get();
+        return $proyectoMir;
+    }
 }
