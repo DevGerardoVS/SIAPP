@@ -1,28 +1,28 @@
-<?php 	
+<?php
 
-    use App\Http\Controllers\Calendarizacion\ClavePreController;
-	use App\Http\Controllers\Calendarizacion\MetasController;
-	use App\Http\Controllers\Calendarizacion\TechosController;
-	use App\Http\Controllers\Calendarizacion\CalendarizacionCargaMasivaController;
+use App\Http\Controllers\Calendarizacion\ClavePreController;
+use App\Http\Controllers\Calendarizacion\MetasController;
+use App\Http\Controllers\Calendarizacion\TechosController;
+use App\Http\Controllers\Calendarizacion\CalendarizacionCargaMasivaController;
 
-	include('metas.php');
+include('metas.php');
 
-	Route::controller(TechosController::class)->group(function () {
-        Route::get('/calendarizacion/techos', 'getIndex')->name('index_techos');
-        Route::post('/calendarizacion/techos/get-techos', 'getTechos')->name('getTechos');
-        Route::post('/calendarizacion/techos/get-techo-edit', 'getTechoEdit')->name('getTechoEdit');
-        Route::get('/calendarizacion/techos/get-fondos', 'getFondos')->name('getFondos');
-        Route::get('/calendarizacion/techos/get-ejercicio', 'getEjercicio')->name('getEjercicio');
-        Route::post('/calendarizacion/techos/add-techo', 'addTecho')->name('addTecho');
-        Route::get('/plantillaCargaTechos', 'exportView');
-        Route::get('/exportPlantilla', 'exportPlantilla')->name('exportPlantilla');
-        Route::post('/import-Plantilla', 'importPlantilla')->name('importPlantilla');
-        Route::get('/calendarizacion/techos/export-excel', 'exportExcel')->name('TechosExportExcel');
-        Route::get('/calendarizacion/techos/export-pdf', 'exportPDF')->name('TechosExportPDF');
-        Route::get('/calendarizacion/techos/export-presupuestos', 'exportPresupuestos')->name('exportPresupuestos');
-        Route::post('/calendarizacion/techos/eliminar', 'eliminar')->name('eliminar');
-        Route::post('/calendarizacion/techos/editar', 'editar')->name('editar');
-    });
+Route::controller(TechosController::class)->group(function () {
+	Route::get('/calendarizacion/techos', 'getIndex')->name('index_techos');
+	Route::post('/calendarizacion/techos/get-techos', 'getTechos')->name('getTechos');
+	Route::post('/calendarizacion/techos/get-techo-edit', 'getTechoEdit')->name('getTechoEdit');
+	Route::get('/calendarizacion/techos/get-fondos', 'getFondos')->name('getFondos');
+	Route::get('/calendarizacion/techos/get-ejercicio', 'getEjercicio')->name('getEjercicio');
+	Route::post('/calendarizacion/techos/add-techo', 'addTecho')->name('addTecho');
+	Route::get('/plantillaCargaTechos', 'exportView');
+	Route::get('/exportPlantilla', 'exportPlantilla')->name('exportPlantilla');
+	Route::post('/import-Plantilla', 'importPlantilla')->name('importPlantilla');
+	Route::get('/calendarizacion/techos/export-excel', 'exportExcel')->name('TechosExportExcel');
+	Route::get('/calendarizacion/techos/export-pdf', 'exportPDF')->name('TechosExportPDF');
+	Route::get('/calendarizacion/techos/export-presupuestos', 'exportPresupuestos')->name('exportPresupuestos');
+	Route::post('/calendarizacion/techos/eliminar', 'eliminar')->name('eliminar');
+	Route::post('/calendarizacion/techos/editar', 'editar')->name('editar');
+});
 
 	Route::controller(ClavePreController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');
@@ -56,20 +56,11 @@
 		Route::get('/calendarizacion-get-sector/{clave?}', 'getSector');
 		Route::get('/cat-obras/{val?}', 'getObras');
 		Route::get('/get-ejercicios','getEjercicios');
-		
-	});
+});
 
-	Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
-		Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('getplantilla');
-		Route::post('/calendarizacion/download-errors-excel', 'DownloadErrors')->name('SaveErrors');
-		Route::post('/calendarizacion/load-Data-Plantilla', 'loadDataPlantilla')->name('load_data_plantilla');
-
-
-    });
-	
-/* Ricardo
- */
+Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
+	Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('getplantilla');
+	Route::post('/calendarizacion/download-errors-excel', 'DownloadErrors')->name('SaveErrors');
+	Route::post('/calendarizacion/load-Data-Plantilla', 'loadDataPlantilla')->name('load_data_plantilla');
+});
 ?>
-
-	
-	
