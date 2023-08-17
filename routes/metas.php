@@ -25,6 +25,7 @@
 		Route::get('/calendarizacion/check/{upp?}','checkCombination');
 		Route::post('/calendarizacion-metas-reporte', 'descargaReporteFirma');
 		Route::get('/actividades/jasper-metas/{upp?}/{anio?}', 'jasperMetas');
+		Route::get('/actividades/cierre-metas/{upp?}', 'checkGoals');
 	});
 ?>
 

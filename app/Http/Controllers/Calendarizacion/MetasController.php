@@ -51,6 +51,13 @@ class MetasController extends Controller
 				'<i class="fa fa-pencil" style="color:green;"></i></button>' .
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
 				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
+
+			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
+				$button = $accion;
+
+			} else {
+				$button = '';
+			}
 			$area = str_split($key->area);
 			$entidad = str_split($key->entidad);
 			$i = array(
@@ -73,7 +80,7 @@ class MetasController extends Controller
 				$key->cantidad_beneficiarios,
 				$key->beneficiario,
 				$key->unidad_medida,
-				$accion
+				$button
 			);
 			$dataSet[] = $i;
 		}
@@ -765,13 +772,13 @@ class MetasController extends Controller
 					}
 
 				} else {
-					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false];
+					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false ,"url"=>'/calendarizacion/claves'];
 				}
 			} else {
-				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "estado" => true];
+				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas',"title"=>'Metas confirmadas', "estado" => true];
 			}
 		} else {
-			return ["status" => false, "mensaje" => 'La captura de metas esté cerrada', "estado" => true];
+			return ["status" => false, "mensaje" => 'La captura de metas esta cerrada',"title"=>'Metas cerradas', "estado" => false ,"url"=>'/calendarizacion/proyecto'];
 		}
 	}
 
@@ -957,6 +964,26 @@ class MetasController extends Controller
 				return ["status" => false, "anio" => 0000];
 			}
 		
+	}
+	function checkGoals($upp)
+	{
+		$anio = DB::table('cierre_ejercicio_metas')
+			->select(
+				'estatus',
+				'ejercicio'
+			)
+			->where('clv_upp', '=', $upp)
+			->get();
+		if (count($anio)) {
+			if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
+				return ["status" => true];
+			} else {
+				return ["status" => false];
+
+			}
+		} else {
+			return ["status" => false];
+		}
 	}
 
 	public function jasperMetas($upp,$anio){

@@ -34,6 +34,7 @@ class MetasHelper{
 				})
 				->select(
 					'metas.id',
+					'metas.estatus',
 					'pro.entidad',
 					'pro.area',
 					'pro.ejercicio',
