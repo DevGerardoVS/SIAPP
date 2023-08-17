@@ -79,7 +79,7 @@
                                     <th class="vertical">Linea de Accion</th>
                                     <th class="vertical">Programa sectorial</th>
                                     <th class="vertical">Tipologia CONAC</th>
-                                    <th class="vertical">UP</th>
+                                    <th class="vertical">UPP</th>
                                     <th class="vertical">UR</th>
                                     <th class="vertical">Programa</th>
                                     <th class="vertical">Subprograma</th>
