@@ -367,6 +367,7 @@ class DatabaseSeeder extends Seeder
             ProgramacionPresupuestoSeeder::class,
             TipoActividadUppSeeder::class,
             prueba2024::class,
+            mml_seeder::class
            // prueba2025::class
         ]);
         
