@@ -144,6 +144,19 @@ var dao = {
             });
         });
     },
+    cierreMetas: function (upp) {
+        $.ajax({
+            type: "GET",
+            url: '/actividades/cierre-metas/'+upp,
+            dataType: "JSON"
+        }).done(function (data) {
+            if (!data.status) {
+                $(".cierreMetas").hide();
+            }
+            
+
+        });
+    },
     editarPutMeta: function () {
         var form = $('#actividad')[0];
         var data = new FormData(form);
@@ -476,9 +489,10 @@ $(document).ready(function () {
     });
     if ($('#upp').val() == '') {
         dao.getUpps();
-        dao.getData($('#upp_filter').val(),$('#anio_filter').val());
+        dao.getData($('#upp_filter').val(), $('#anio_filter').val());
     } else {
-    dao.getData($('#upp').val(),$('#anio_filter').val());
+        dao.getData($('#upp').val(), $('#anio_filter').val());
+        dao.cierreMetas($('#upp').val());
     }
 
     for (let i = 1; i <= 12; i++) {
