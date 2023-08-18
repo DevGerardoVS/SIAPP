@@ -458,6 +458,7 @@ return new class extends Migration
 
         Schema::create('programacion_presupuesto_hist', function(Blueprint $table){
             $table->increments('id');
+            $table->integer('id_original')->nullable(false);
             $table->integer('version')->nullable(false);
             $table->string('clasificacion_administrativa',5)->nullable(false);
             $table->string('entidad_federativa',2)->nullable(false);
