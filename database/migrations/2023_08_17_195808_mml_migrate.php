@@ -112,16 +112,14 @@ return new class extends Migration
 
         Schema::create('mml_objetivo_sectorial_estrategia', function (Blueprint $table){
             $table->increments('id');
-            $table->string('upp_id',4)->nullable(true);
             $table->string('clv_objetivo_sectorial',6)->nullable(false);
             $table->text('objetivo_sectorial')->nullable(false);
             $table->string('clv_estrategia',9)->nullable(false);
             $table->text('estrategia')->nullable(false);
+            $table->string('clv_cpladem_linea_accion',12)->nullable(false);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
-
-            /* $table->foreign('upp_id')->references('id')->on('catalogo'); */
         });
 
         Schema::create('mml_mir',function (Blueprint $table){
