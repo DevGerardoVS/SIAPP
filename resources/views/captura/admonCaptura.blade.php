@@ -49,15 +49,30 @@ $titleDesc = 'Administración de Captura';
             </div>
         </form>
 
-        {{-- botón modal --}}
+        {{-- Botón modal --}}
         @if (Auth::user()->id_grupo == 1)
-            <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
-                <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
-                data-keyboard="false" data-toggle="modal">
-                    <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
-                    <span class="d-lg-inline align-middle">Apertura y cierre de captura</span> 
-                </button>
+        <div class="d-flex justify-content-sm-end justify-content-center flex-wrap">
+            <div>
+                <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
+                    <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
+                    data-keyboard="false" data-toggle="modal">
+                        <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
+                        <span class="d-lg-inline align-middle">Apertura y cierre de captura</span> 
+                    </button>
+                </div>
             </div>
+            {{-- Botón corte --}}
+            <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
+                <form id="formPPH" name="formPPH" action="{{route('pph_update')}}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <button id="corte" name="corte" type="button" class="btn btn-danger btn-sm btn-labeled me-3" title="Corte">
+                        <span class="btn-label"><i class="fa fa-scissors text-light fs-5 align-middle p-1"></i></span>
+                        <span class="d-lg-inline align-middle">Realizar corte</span> 
+                    </button>
+                </form>
+            </div>
+        </div>
         @endif
         {{-- Llamada al modal --}}
         @include('captura.modalAperturaCierre')
@@ -308,5 +323,22 @@ $titleDesc = 'Administración de Captura';
             }
         });
 
+        // Realizar corte
+        $('#corte').on("click", function () {
+            Swal.fire({
+                title: '¿Estas seguro que deseas realizar el corte a los reportes?',
+                text: "Al hacer el recorte ",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#6A0F49',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#formPPH').submit();
+                }
+            })
+        });
     </script>
 @endsection

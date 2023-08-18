@@ -13,7 +13,7 @@
                     success: function(data) {
                         var par = $('#fechaCorte_filter');
                         par.html('');
-                        par.append(new Option("Todo", ""));
+                        par.append(new Option("Actuales", ""));
                         $.each(data, function(i, val) {
                             par.append(new Option(data[i].deleted_at, data[i].deleted_at));
                         });
