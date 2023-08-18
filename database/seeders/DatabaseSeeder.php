@@ -141,9 +141,9 @@ class DatabaseSeeder extends Seeder
             ['id' => 9,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Metas', 'ruta' => '/calendarizacion/metas', 'icono' => 'fa fa-flag-checkered', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Techos financieros'],
             ['id' => 10,  'id_sistema' => 1,'padre' => 7, 'nombre_menu' => 'Techos financieros', 'ruta' => '/calendarizacion/techos', 'icono' => 'fa fa-money', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Techos financieros'],
             ['id' => 11,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Reportes', 'ruta' => '/Reportes', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Reportes'],
-            ['id' => 12,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Ley Planeacion Hacienda', 'ruta' => '/Reportes/ley-planeacion', 'icono' => 'fa fa-line-chart', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Reportes'],
+            ['id' => 12,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Ley planeación hacienda', 'ruta' => '/Reportes/ley-planeacion', 'icono' => 'fa fa-line-chart', 'nivel' => 1, 'posicion' => 1, 'descripcion' => 'Reportes'],
             ['id' => 13,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Administrativos', 'ruta' => '/Reportes/administrativos', 'icono' => 'fa fa-area-chart', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Reportes'],
-            ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administracion de captura', 'ruta' => '/admon-capturas', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
+            ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administración de captura', 'ruta' => '/admon-capturas', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
             ['id' => 15,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Configuraciones', 'ruta' => '/adm-configuracion', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de configuraciones'],
         );
     protected $menuUpp = array(
@@ -367,6 +367,7 @@ class DatabaseSeeder extends Seeder
             ProgramacionPresupuestoSeeder::class,
             TipoActividadUppSeeder::class,
             prueba2024::class,
+            mml_seeder::class
            // prueba2025::class
         ]);
         

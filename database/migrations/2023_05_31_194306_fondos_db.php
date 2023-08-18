@@ -455,6 +455,61 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
         });
+
+        Schema::create('programacion_presupuesto_hist', function(Blueprint $table){
+            $table->increments('id');
+            $table->integer('version')->nullable(false);
+            $table->string('clasificacion_administrativa',5)->nullable(false);
+            $table->string('entidad_federativa',2)->nullable(false);
+            $table->string('region',2)->nullable(false);
+            $table->string('municipio',3)->nullable(false);
+            $table->string('localidad',3)->nullable(false);
+            $table->string('upp',3)->nullable(false);
+            $table->string('subsecretaria',1)->nullable(false);
+            $table->string('ur',2)->nullable(false);
+            $table->string('finalidad',1)->nullable(false);
+            $table->string('funcion',1)->nullable(false);
+            $table->string('subfuncion',1)->nullable(false);
+            $table->string('eje',1)->nullable(false);
+            $table->string('linea_accion',2)->nullable(false);
+            $table->string('programa_sectorial',1)->nullable(false);
+            $table->string('tipologia_conac',1)->nullable(false);
+            $table->string('programa_presupuestario',2)->nullable(false);
+            $table->string('subprograma_presupuestario',3)->nullable(false);
+            $table->string('proyecto_presupuestario',3)->nullable(false);
+            $table->string('periodo_presupuestal',6)->nullable(false);
+            $table->string('posicion_presupuestaria',5)->nullable(false);
+            $table->string('tipo_gasto',1)->nullable(false);
+            $table->string('anio',2)->nullable(false);
+            $table->string('etiquetado',1)->nullable(false);
+            $table->string('fuente_financiamiento',1)->nullable(false);
+            $table->string('ramo',2)->nullable(false);
+            $table->string('fondo_ramo',2)->nullable(false);
+            $table->string('capital',1)->nullable(false);
+            $table->string('proyecto_obra',6)->nullable(false);
+            $table->integer('ejercicio')->nullable(true);
+            $table->decimal('enero',22,2)->default(null);
+            $table->decimal('febrero',22,2)->default(null);
+            $table->decimal('marzo',22,2)->default(null);
+            $table->decimal('abril',22,2)->default(null);
+            $table->decimal('mayo',22,2)->default(null);
+            $table->decimal('junio',22,2)->default(null);
+            $table->decimal('julio',22,2)->default(null);
+            $table->decimal('agosto',22,2)->default(null);
+            $table->decimal('septiembre',22,2)->default(null);
+            $table->decimal('octubre',22,2)->default(null);
+            $table->decimal('noviembre',22,2)->default(null);
+            $table->decimal('diciembre',22,2)->default(null);
+            $table->decimal('total',22,2)->default(null);
+            $table->integer('estado')->nullable(false);
+            $table->enum('tipo', ['Operativo', 'RH']);
+            $table->string('created_user',45)->nullable(false);
+            $table->string('updated_user',45)->nullable(true);
+            $table->string('deleted_user',45)->nullable(true);
+            $table->timestamp('created_at')->nullable(false);
+            $table->timestamp('updated_at')->nullable(true);
+            $table->softDeletes();
+        });
     }
 
 
@@ -490,5 +545,6 @@ return new class extends Migration
         Schema::dropIfExists('proyectos_mir');
         Schema::dropIfExists('tipo_actividad_upp');
         Schema::dropIfExists('rel_economica_administrativa');
+        Schema::dropIfExists('programacion_presupuesto_hist');
     }
 };
