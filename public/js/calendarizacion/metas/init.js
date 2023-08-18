@@ -300,7 +300,8 @@ var dao = {
             fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
             document.getElementById("sel_fondo").options[0].disabled = true;
             $.each(fondos, function (i, val) {
-                fond.append(new Option(fondos[i].ramo, fondos[i].clv_fondo_ramo));
+                console.log("dfondo",val)
+                fond.append(new Option(val.ramo, val.clave));
             });
             fond.select2({
                 maximumSelectionLength: 10

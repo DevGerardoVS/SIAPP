@@ -44,7 +44,11 @@ class MetasController extends Controller
 	{
 	
 		Controller::check_permission('getMetas');
+		Log::debug($upp);
+		Log::debug($anio);
 		$query = MetasHelper::actividades($upp,$anio);
+		Log::debug($query);
+
 		$dataSet = [];
 		foreach ($query as $key) {
 			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
@@ -52,12 +56,12 @@ class MetasController extends Controller
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
 				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
 
-			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
+		/* 	if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
 				$button = $accion;
 
 			} else {
 				$button = '';
-			}
+			} */
 			$area = str_split($key->area);
 			$entidad = str_split($key->entidad);
 			$i = array(
@@ -80,7 +84,7 @@ class MetasController extends Controller
 				$key->cantidad_beneficiarios,
 				$key->beneficiario,
 				$key->unidad_medida,
-				$button
+				$accion
 			);
 			$dataSet[] = $i;
 		}
@@ -213,16 +217,16 @@ class MetasController extends Controller
 				->groupByRaw('clave')
 				->where('ejercicio', $check['anio'])
 				->get();
-			$activ = DB::table('actividades_mir')
-				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+			$activ = DB::table('mml_mir')
 				->select(
-					'actividades_mir.id',
-					'actividades_mir.clv_actividad as clave',
-					DB::raw('CONCAT(clv_actividad, " - ",actividad) AS actividad')
+					'mml_mir.id',
+					'mml_mir.id as clave',
+					DB::raw('CONCAT(mml_mir.id, " - ",indicador) AS actividad')
 				)
-				->where('actividades_mir.deleted_at', null)
-				->where('proyectos_mir.area_funcional', str_replace("-", '', $area))
-				->where('proyectos_mir.entidad_ejecutora', str_replace("-", '', $entidad))
+				->where('mml_mir.deleted_at', null)
+				->where('mml_mir.nivel', 11)
+				->where('mml_mir.area_funcional', str_replace("-", '', $area))
+				->where('mml_mir.entidad_ejecutora', str_replace("-", '', $entidad))
 				->groupByRaw('clave')->get();
 
 			$meses=MetasController::meses($area,$entidad,$check['anio']);
@@ -306,33 +310,9 @@ class MetasController extends Controller
 	public function createMeta(Request $request)
 	{
 		Controller::check_permission('postMetas');
-		$customMessages = [
-            "regex" => "El campo no debe ser mayor a 8 digitos enteros",
-            'required' => "El campo no puede ir vacío",
-        ];
-		$request->validate([
-			'sel_fondo'=>'required',
-			'sel_actividad'=>'required',
-			'tipo_Ac'=>'required',
-			'tipo_Be'=>'required',
-			'medida'=>'required',
-			'beneficiario'=>'required',
-			'1'=>'required',
-			'2'=>'required',
-			'3'=>'required',
-			'4'=>'required',
-			'5'=>'required',
-			'6'=>'required',
-			'7'=>'required',
-			'8'=>'required',
-			'9'=>'required',
-			'10'=>'required',
-			'11'=>'required',
-			'12'=>'required',
-			'sumMetas'=>'required',
-		],$customMessages);
+		Log::debug( $request);
 		$meta = Metas::create([
-			'actividad_id' => $request->sel_actividad,
+			'mmlMir_id' => intval($request->sel_actividad),
 			'clv_fondo' => $request->sel_fondo,
 			'estatus' => 0,
 			'tipo' => $request->tipo_Ac,
@@ -710,17 +690,20 @@ class MetasController extends Controller
 	{
 		$check = $this->checkClosing($upp);
 
-		$proyecto = DB::table('actividades_mir')
-			->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
-			->select(
-				'actividades_mir.id',
-				'proyectos_mir.area_funcional AS area',
-				'proyectos_mir.clv_upp'
-			)
-			->where('actividades_mir.deleted_at', null)
-			->where('proyectos_mir.deleted_at', null)
-			->where('proyectos_mir.clv_upp', $upp);
 		$metas = DB::table('metas')
+			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mmlMir_id')
+			->select(
+				'mml_mir.id AS mir_id',
+				'mml_mir.area_funcional AS area',
+				'mml_mir.clv_upp',
+				'metas.id as metas_id',
+				'metas.estatus'
+			)
+			->where('mml_mir.deleted_at', null)
+			->where('mml_mir.deleted_at', null)
+			->where('metas.estatus', 1)
+			->where('mml_mir.clv_upp', $upp)->get();
+		/* $metas = DB::table('metas')
 			->leftJoinSub($proyecto, 'pro', function ($join) {
 				$join->on('metas.actividad_id', '=', 'pro.id');
 			})
@@ -730,8 +713,7 @@ class MetasController extends Controller
 			)
 			->where('metas.estatus', 1)
 			->where('pro.clv_upp', '=', $upp)
-			->get();
-		Log::debug($check);
+			->get(); */
 		if ($check['status']) {
 			if (count($metas) == 0 || Auth::user()->id_grupo == 1) {
 				$activs = DB::table("programacion_presupuesto")
@@ -750,16 +732,15 @@ class MetasController extends Controller
 					$auxAct = count($activs);
 					$index = 0;
 					foreach ($activs as $key) {
-						$proyecto = DB::table('actividades_mir')
-							->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+						$proyecto = DB::table('mml_mir')
 							->select(
-								'actividades_mir.id',
-								'proyectos_mir.area_funcional AS area'
+								'mml_mir.id',
+								/* 'mml_mir.area_funcional AS area' */
 							)
-							->where('actividades_mir.deleted_at', null)
-							->where('proyectos_mir.deleted_at', null)
-							->where('proyectos_mir.clv_upp', $upp)
-							->where('proyectos_mir.area_funcional', $key->clave)
+							->where('mml_mir.deleted_at', null)
+							->where('mml_mir.nivel', 11)
+							->where('mml_mir.clv_upp', $upp)
+						/* 	->where('mml_mir.area_funcional', $key->clave)  */
 							->get();
 						if (count($proyecto)) {
 							$index++;
