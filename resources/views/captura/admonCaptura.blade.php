@@ -62,16 +62,18 @@ $titleDesc = 'Administración de Captura';
                 </div>
             </div>
             {{-- Botón corte --}}
-            <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
-                <form id="formPPH" name="formPPH" action="{{route('pph_update')}}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <button id="corte" name="corte" type="button" class="btn btn-danger btn-sm btn-labeled me-3" title="Corte">
-                        <span class="btn-label"><i class="fa fa-scissors text-light fs-5 align-middle p-1"></i></span>
-                        <span class="d-lg-inline align-middle">Realizar corte</span> 
-                    </button>
-                </form>
-            </div>
+            @if($version != 3)
+                <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
+                    <form id="formPPH" name="formPPH" action="{{route('pph_update')}}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <button id="corte" name="corte" type="button" class="btn btn-danger btn-sm btn-labeled me-3" title="Corte">
+                            <span class="btn-label"><i class="fa fa-scissors text-light fs-5 align-middle p-1"></i></span>
+                            <span class="d-lg-inline align-middle">Realizar corte</span> 
+                        </button>
+                    </form>
+                </div>
+            @endif
         </div>
         @endif
         {{-- Llamada al modal --}}
@@ -152,6 +154,21 @@ $titleDesc = 'Administración de Captura';
         //inicializamos el data table
         var tabla;
         var letter;
+
+        // Comprobar si hay algún estado encendido en la tabla programación presupuesto
+        var uppPP = {!! json_encode((array)$comprobarEstadoPP) !!};
+        // Comprobar si hay algún estado encendido en la tabla metas
+        var uppMetas = {!! json_encode((array)$comprobarEstadoMetas) !!};
+        // Comprobar la versión de los datos
+        var version = {!! json_encode($version) !!};
+
+        var checarEstado = false;
+        var obtenerUPP = "";
+        var arregloPP = [];
+        var arregloMetas = [];
+        var texto1 = "";
+        var texto2 = "";
+
         $(document).ready(function() {
 
             $(".alert").delay(10000).slideUp(200, function() {
@@ -245,17 +262,6 @@ $titleDesc = 'Administración de Captura';
             return checarRadio;
         }
 
-        // Comprobar si hay algún estado encendido en la tabla programación presupuesto
-        var uppPP = {!! json_encode((array)$comprobarEstadoPP) !!};
-        // Comprobar si hay algún estado encendido en la tabla metas
-        var uppMetas = {!! json_encode((array)$comprobarEstadoMetas) !!};
-
-        var checarEstado = false;
-        var obtenerUPP = "";
-        var arregloPP = [];
-        var arregloMetas = [];
-        var texto1 = "";
-        var texto2 = "";
        
         $('#upp_filter').on('change', function (e) {
             obtenerUPP = $(this).find('option').filter(':selected').val();
@@ -322,12 +328,12 @@ $titleDesc = 'Administración de Captura';
                 });
             }
         });
-
+        
         // Realizar corte
         $('#corte').on("click", function () {
             Swal.fire({
                 title: '¿Estas seguro que deseas realizar el corte a los reportes?',
-                text: "Al hacer el recorte ",
+                text: "Puedes Realizar el corte "+ (3-version) +" veces",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

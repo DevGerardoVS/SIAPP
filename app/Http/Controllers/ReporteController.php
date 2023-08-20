@@ -152,7 +152,6 @@ class ReporteController extends Controller
 
     public function getFechaCorte($anio){
         $fechaCorte = DB::select('select distinct version, DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto_hist pp where ejercicio = ? and deleted_at is not null',[$anio]);
-        Log::info($fechaCorte);
         return $fechaCorte;
     }
 
