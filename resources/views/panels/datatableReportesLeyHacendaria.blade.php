@@ -42,6 +42,7 @@
 
             $("#buscarForm").on("change", ".filters_anio", function(e) {
                 e.preventDefault();
+                $("#fechaCorte_filter").val("");
                 $(".anio").val($('#anio_filter').val());
                 getDataFechaCorte($('#anio_filter').val());
             });
