@@ -447,6 +447,7 @@
         });
         
         $("#form").on("change",".filters_anio",function(e){
+            $("#fechaCorte_filter").val("");
             dt.DataTable().clear().destroy();
             getData(tabla,letter);
             getDataFechaCorte($('#anio_filter').val());

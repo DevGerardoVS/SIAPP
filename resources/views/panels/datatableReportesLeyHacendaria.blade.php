@@ -13,7 +13,7 @@
                     success: function(data) {
                         var par = $('#fechaCorte_filter');
                         par.html('');
-                        par.append(new Option("Todo", ""));
+                        par.append(new Option("Actuales", ""));
                         $.each(data, function(i, val) {
                             par.append(new Option(data[i].deleted_at, data[i].deleted_at));
                         });
@@ -42,6 +42,7 @@
 
             $("#buscarForm").on("change", ".filters_anio", function(e) {
                 e.preventDefault();
+                $("#fechaCorte_filter").val("");
                 $(".anio").val($('#anio_filter').val());
                 getDataFechaCorte($('#anio_filter').val());
             });
