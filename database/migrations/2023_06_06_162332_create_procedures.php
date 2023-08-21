@@ -2395,7 +2395,6 @@ return new class extends Migration {
                     clv_programa,programa,clv_subprograma,subprograma,
                     indicador,objetivo,actividad
             ) tabla;
-            order by clv_upp
         END;");
 
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_IX(in anio int, in corte date)
