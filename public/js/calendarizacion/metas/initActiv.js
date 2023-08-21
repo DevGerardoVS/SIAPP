@@ -230,7 +230,116 @@ var dao = {
             $('#10').val(data.octubre);
             $('#11').val(data.noviembre);
             $('#12').val(data.diciembre);
-            $('#sumMetas').val(data.total);
+            $('#sumMetas').val(data.total); 
+            const mese = data.meses;
+            for (const key in mese) {
+                if (Object.hasOwnProperty.call(mese, key)) {
+                    const e = mese[key];
+                    switch (key) {
+                        case 'enero':
+                            if (e != 0.0 || e != 0) {
+                                $("#1").prop('disabled', false);
+                                $("#1").prop('required',true);
+                            } else {
+                                $("#1").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'febrero':
+                            if (e != 0.0) {
+                                $("#2").prop('disabled', false);
+                                $("#2").prop('required',true);
+                            } else {
+                                $("#2").prop('disabled', 'disabled');
+                            }
+                                break;
+                        case 'marzo':
+                            if (e != 0.0) {
+                                $("#3").prop('disabled', false);
+                                $("#3").prop('required',true);
+                            } else {
+                                $("#3").prop('disabled', 'disabled');
+
+                            }
+                                break;
+                        case 'abril':
+                            if (e != 0.0) {
+                                $("#4").prop('disabled', false);
+                                $("#4").prop('required',true);
+                            } else {
+                                $("#4").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'mayo':
+                            if (e != 0.0) {
+                                $("#5").prop('disabled', false);
+                                $("#5").prop('required',true);
+                            } else {
+                                $("#5").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'junio':
+                            if (e != 0.0) {
+                                $("#6").prop('disabled', false);
+                                $("#6").prop('required',true);
+                            } else {
+                                $("#6").prop('disabled', 'disabled');
+                            }
+                               break;
+                        case 'julio':
+                            if (e != 0.0) {
+                                $("#7").prop('disabled', false);
+                                $("#7").prop('required',true);
+                            } else {
+                                $("#7").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'agosto':
+                            if (e != 0.0) {
+                                $("#8").prop('disabled', false);
+                                $("#8").prop('required',true);
+                            } else {
+                                $("#8").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'septiembre':
+                            if (e != 0.0) {
+                                $("#9").prop('disabled', false);
+                                $("#9").prop('required',true);
+                            } else {
+                                $("#9").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'octubre':
+                            if (e != 0.0) {
+                                $("#10").prop('disabled', false);
+                                $("#10").prop('required',true);
+                            } else {
+                                $("#10").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'noviembre':
+                            if (e != 0.0) {
+                                $("#11").prop('disabled', false);
+                                $("#11").prop('required',true);
+                            } else {
+                                $("#11").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'diciembre':
+                            if (e != 0.0) {
+                                $("#12").prop('disabled', false);
+                                $("#12").prop('required',true);
+                            } else {
+                                $("#12").prop('disabled', 'disabled');
+                            }
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                    
+                }
+            }
         });
     },
     eliminar: function (id) {
