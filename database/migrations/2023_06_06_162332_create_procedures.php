@@ -48,15 +48,22 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1(in anio int, in corte date)
         begin
             select 
-                vppa.upp,
-                sum(total) importe
-            from pp_aplanado vppa
-            where ejercicio = anio and if  (
-                corte is null,
-                deleted_at is null,
-                deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-            )
-            group by upp;
+                upp,
+                importe
+            from (
+                select 
+                    vppa.clv_upp,
+                    vppa.upp,
+                    sum(total) importe
+                from pp_aplanado vppa
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_upp,upp
+                order by clv_upp
+            ) t;
         END;");
         
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1_2(in anio int, in corte date)
@@ -392,38 +399,47 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_1(in anio int, in corte date)
         begin
             select 
-                case 
-                    when upp != '' then ''
-                    else etiquetado
-                end etiquetado,
+                etiquetado,
                 upp,
                 importe
             from (
                 select 
-                    vppa.etiquetado,
-                    '' upp,
-                    sum(total) importe
-                from pp_aplanado vppa
-                where ejercicio = anio and if  (
-                    corte is null,
-                    deleted_at is null,
-                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                group by etiquetado 
-                union all
-                select 
-                    vppa.etiquetado,
-                    vppa.upp,
-                    sum(total) importe
-                from pp_aplanado vppa
-                where ejercicio = anio and if  (
-                    corte is null,
-                    deleted_at is null,
-                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                group by vppa.etiquetado,vppa.upp
-                order by etiquetado
-            ) tabla;
+                    case 
+                        when upp != '' then ''
+                        else etiquetado
+                    end etiquetado,
+                    clv_upp,
+                    upp,
+                    importe
+                from (
+                    select 
+                        vppa.etiquetado,
+                        '' clv_upp,
+                        '' upp,
+                        sum(total) importe
+                    from pp_aplanado vppa
+                    where ejercicio = anio and if  (
+                        corte is null,
+                        deleted_at is null,
+                        deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    )
+                    group by etiquetado 
+                    union all
+                    select 
+                        vppa.etiquetado,
+                        vppa.clv_upp,
+                        vppa.upp,
+                        sum(total) importe
+                    from pp_aplanado vppa
+                    where ejercicio = anio and if  (
+                        corte is null,
+                        deleted_at is null,
+                        deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    )
+                    group by vppa.etiquetado,vppa.clv_upp,vppa.upp
+                    order by etiquetado
+                ) tabla
+	        ) t;
         END;");
         
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_2(in anio int, in corte date)
@@ -1125,7 +1141,7 @@ return new class extends Migration {
                 )
                 group by clv_upp,vppa.upp,clv_programa,vppa.programa,
                 vppa.clv_proyecto_obra,vppa.proyecto_obra
-                order by upp,programa,proyecto_obra
+                order by clv_upp,upp,programa,proyecto_obra
             ) tabla;
         END;");
         
@@ -2379,6 +2395,7 @@ return new class extends Migration {
                     clv_programa,programa,clv_subprograma,subprograma,
                     indicador,objetivo,actividad
             ) tabla;
+            order by clv_upp
         END;");
 
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_IX(in anio int, in corte date)
