@@ -26,8 +26,10 @@ var dao = {
                 }
                 $('#metasVista').show();
                 $(".CargaMasiva").show();
+                $(".btnSave").show();
             } else {
                 $(".CargaMasiva").hide();
+                $(".btnSave").hide();
                 dao.getUrs('0');
                 dao.getData('000', '000');
                 $('#carga').hide();
@@ -42,14 +44,14 @@ var dao = {
                 $('#metasVista').hide(); 
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Información incompleta',
+                    title: data?.title ? data.title:'Información incompleta',
                     text: data.mensaje,
                     confirmButtonText: 'Aceptar',
                     allowOutsideClick: false
                 }).then((result) => {
                     if (result.isConfirmed) {
                         if (!data.estado) {
-                            window.location.href = "/calendarizacion/claves";
+                            window.location.href = data.url
                         }
                     }
                     
@@ -298,7 +300,8 @@ var dao = {
             fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
             document.getElementById("sel_fondo").options[0].disabled = true;
             $.each(fondos, function (i, val) {
-                fond.append(new Option(fondos[i].ramo, fondos[i].clv_fondo_ramo));
+                console.log("dfondo",val)
+                fond.append(new Option(val.ramo, val.clave));
             });
             fond.select2({
                 maximumSelectionLength: 10
@@ -320,7 +323,7 @@ var dao = {
                         case 'enero':
                             if (e != 0.0 || e != 0) {
                                 $("#1").prop('disabled', false);
-
+                                $("#1").prop('required',true);
                             } else {
                                 $("#1").prop('disabled', 'disabled');
                             }
@@ -328,6 +331,7 @@ var dao = {
                         case 'febrero':
                             if (e != 0.0) {
                                 $("#2").prop('disabled', false);
+                                $("#2").prop('required',true);
                             } else {
                                 $("#2").prop('disabled', 'disabled');
                             }
@@ -335,6 +339,7 @@ var dao = {
                         case 'marzo':
                             if (e != 0.0) {
                                 $("#3").prop('disabled', false);
+                                $("#3").prop('required',true);
                             } else {
                                 $("#3").prop('disabled', 'disabled');
 
@@ -343,6 +348,7 @@ var dao = {
                         case 'abril':
                             if (e != 0.0) {
                                 $("#4").prop('disabled', false);
+                                $("#4").prop('required',true);
                             } else {
                                 $("#4").prop('disabled', 'disabled');
                             }
@@ -350,6 +356,7 @@ var dao = {
                         case 'mayo':
                             if (e != 0.0) {
                                 $("#5").prop('disabled', false);
+                                $("#5").prop('required',true);
                             } else {
                                 $("#5").prop('disabled', 'disabled');
                             }
@@ -357,6 +364,7 @@ var dao = {
                         case 'junio':
                             if (e != 0.0) {
                                 $("#6").prop('disabled', false);
+                                $("#6").prop('required',true);
                             } else {
                                 $("#6").prop('disabled', 'disabled');
                             }
@@ -364,6 +372,7 @@ var dao = {
                         case 'julio':
                             if (e != 0.0) {
                                 $("#7").prop('disabled', false);
+                                $("#7").prop('required',true);
                             } else {
                                 $("#7").prop('disabled', 'disabled');
                             }
@@ -371,6 +380,7 @@ var dao = {
                         case 'agosto':
                             if (e != 0.0) {
                                 $("#8").prop('disabled', false);
+                                $("#8").prop('required',true);
                             } else {
                                 $("#8").prop('disabled', 'disabled');
                             }
@@ -378,6 +388,7 @@ var dao = {
                         case 'septiembre':
                             if (e != 0.0) {
                                 $("#9").prop('disabled', false);
+                                $("#9").prop('required',true);
                             } else {
                                 $("#9").prop('disabled', 'disabled');
                             }
@@ -385,6 +396,7 @@ var dao = {
                         case 'octubre':
                             if (e != 0.0) {
                                 $("#10").prop('disabled', false);
+                                $("#10").prop('required',true);
                             } else {
                                 $("#10").prop('disabled', 'disabled');
                             }
@@ -392,6 +404,7 @@ var dao = {
                         case 'noviembre':
                             if (e != 0.0) {
                                 $("#11").prop('disabled', false);
+                                $("#11").prop('required',true);
                             } else {
                                 $("#11").prop('disabled', 'disabled');
                             }
@@ -399,6 +412,7 @@ var dao = {
                         case 'diciembre':
                             if (e != 0.0) {
                                 $("#12").prop('disabled', false);
+                                $("#12").prop('required',true);
                             } else {
                                 $("#12").prop('disabled', 'disabled');
                             }
@@ -558,7 +572,13 @@ var init = {
 };
 $(document).ready(function () {
     $(".CargaMasiva").hide();
-
+    $(".btnSave").hide();
+    $("#beneficiario").on('paste', function (e) {
+        e.preventDefault();
+    });
+    $("#sumMetas").on('paste', function (e) {
+        e.preventDefault();
+    });
     if ($('#upp').val() == '') {
         dao.getUpps();
     } else {
@@ -566,8 +586,6 @@ $(document).ready(function () {
     }
     $('#upp_filter').change(() => {
         dao.checkCombination($('#upp_filter').val());
-    /*     $("#tipo_Ac").attr('disabled', 'disabled');
-        $("#upp_filter").attr('disabled', 'disabled'); */
     });
     $('#ur_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());
@@ -593,9 +611,9 @@ $(document).ready(function () {
     }); */
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
-        $("#" + i).on('paste', function(e){
+        $("#" + i).on('paste', function (e) {
             e.preventDefault();
-          })
+        });
         }
     $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({

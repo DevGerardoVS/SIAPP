@@ -84,7 +84,7 @@
                                     onclick="dao.limpiar()">Actividades capturadas</a>
                                 &nbsp &nbsp
                                 @if (Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
-                                    <button id="btnSave" type="button" class="btn btn-primary">Guardar</button>
+                                    <button id="btnSave" type="button" class="btn btn-primary btnSave">Guardar</button>
                                 @endif
                             </div>
                         </div>
