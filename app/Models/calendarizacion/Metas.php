@@ -14,7 +14,7 @@ class Metas extends Model
 
     protected $fillable = [
         'clv_fondo',
-        'mmlMir_id',
+        'mir_id',
         'tipo',
         'beneficiario_id',
         'unidad_medida_id',

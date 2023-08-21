@@ -108,18 +108,16 @@ return new class extends Migration
 /*             $table->foreign('clv_upp')->references('clv_upp')->on('catalogo');
  */        });
 
-        Schema::create('mml_objetivo_sectorial_estrategia', function (Blueprint $table){
+        Schema::create('mml_objetivo_sectorial_estrategia', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('clv_upp',4)->nullable(true);
-            $table->string('clv_objetivo_sectorial',6)->nullable(false);
+            $table->string('clv_objetivo_sectorial', 6)->nullable(false);
             $table->text('objetivo_sectorial')->nullable(false);
-            $table->string('clv_estrategia',9)->nullable(false);
+            $table->string('clv_estrategia', 9)->nullable(false);
             $table->text('estrategia')->nullable(false);
+            $table->string('clv_cpladem_linea_accion', 12)->nullable(false);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
-
-            /* $table->foreign('upp_id')->references('id')->on('catalogo'); */
         });
 
         Schema::create('mml_mir',function (Blueprint $table){
@@ -146,14 +144,14 @@ return new class extends Migration
             $table->string('lb_valor_absoluto',255)->nullable(false);
             $table->string('lb_valor_relativo',255)->nullable(false);
             $table->integer('lb_anio')->nullable(false);
-            $table->enum('lb_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(false);
-            $table->enum('lb_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(false);
+            $table->enum('lb_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
+            $table->enum('lb_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
             $table->string('mp_valor_absoluto',255)->nullable(false);
             $table->string('mp_valor_relativo',255)->nullable(false);
             $table->integer('mp_anio')->nullable(false);
             $table->integer('mp_anio_meta')->nullable(false);
-            $table->integer('mp_periodo_i')->nullable(false);
-            $table->integer('mp_periodo_f')->nullable(false);
+            $table->enum('mp_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
+            $table->enum('mp_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
             $table->text('supuestos')->nullable(false);
             $table->text('estrategias')->nullable(false);
             $table->integer('ejercicio')->nullable(false);
