@@ -6,6 +6,7 @@ use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Http\Controllers\Controller;
 
 function verifyRole($role){
     $validation = Auth::user()->hasRole($role);
@@ -58,12 +59,22 @@ function getExplodePartiqcipacion($data){
 }
 function getAnios()
 {
-    $anio = DB::table('actividades_mir')
+    $anio = DB::table('mml_mir')
         ->select(
-            DB::raw("IFNULL(actividades_mir.ejercicio," . date('Y') . ") AS ejercicio")
+            DB::raw("IFNULL(mml_mir.ejercicio," . date('Y') . ") AS ejercicio")
         )
-        ->groupBy('actividades_mir.ejercicio')
+        ->groupBy('mml_mir.ejercicio')
         ->get();
     return $anio;
+}
+function bitacoraRcont($email)
+{
+    $user = User::where('email', $email)->select('username')->first();
+    $b = array(
+        "username"=>$user->username,
+        "accion"=>'Restablecer contraseña',
+        "modulo"=>'Cambio de contraseña'
+     );
+     Controller::bitacora($b);
 }
 

@@ -7,19 +7,16 @@ var dao = {
             url: '/calendarizacion/upps/',
             dataType: "JSON"
         }).done(function (data) {
+            const { upp, mir } = data;
             var par = $('#upp_filter');
             par.html('');
-            $.each(data, function (i, val) {
-                if (data[i].clv_upp=='001') {
-                    par.append(new Option(data[i].upp, data[i].clv_upp,true,false));
-                } else
-                {
-                    par.append(new Option(data[i].upp, data[i].clv_upp));
+            $.each(upp, function (i, val) {
+                if (val.clv_upp == '001') {
+                    par.append(new Option(val.upp, val.clv_upp, true, false));
+                } else {
+                    par.append(new Option(val.upp, val.clv_upp));
                 }
-                
             });
-
-
         });
     },
     exportJasper: function () {
@@ -29,12 +26,11 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-        let anio= $('#anio_filter').val();
-
+        let anio = $('#anio_filter').val();
         $.ajax({
-            type:'get',
-            url:"/actividades/jasper/" + upp+"/"+anio,
-            dataType : "json"
+            type: 'get',
+            url: "/actividades/jasper/" + upp + "/" + anio,
+            dataType: "json"
         }).done(function (params) {
             document.getElementById('tipoReporte').value = 1;
             $('#firmaModal').modal('show');
@@ -47,12 +43,11 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-        let anio= $('#anio_filter').val();
-
+        let anio = $('#anio_filter').val();
         $.ajax({
-            type:'get',
-            url:"/actividades/jasper-metas/" + upp+"/"+anio,
-            dataType : "json"
+            type: 'get',
+            url: "/actividades/jasper-metas/" + upp + "/" + anio,
+            dataType: "json"
         }).done(function (params) {
             document.getElementById('tipoReporte').value = 2;
             $('#firmaModal').modal('show');
@@ -65,11 +60,11 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-        let anio= $('#anio_filter').val();
-        _url = "/actividades/exportExcel/" + upp+"/"+anio;
+        let anio = $('#anio_filter').val();
+        _url = "/actividades/exportExcel/" + upp + "/" + anio;
         window.open(_url, '_blank');
-        $('#cabecera').css("visibility","visible");
-      //  window.location = _url;
+        $('#cabecera').css("visibility", "visible");
+        //  window.location = _url;
     },
     exportPdf: function () {
         let upp;
@@ -78,12 +73,11 @@ var dao = {
         } else {
             upp = $('#upp').val();
         }
-        let anio= $('#anio_filter').val();
-        _url = "/actividades/exportPdf/" + upp+"/"+anio;
+        let anio = $('#anio_filter').val();
+        _url = "/actividades/exportPdf/" + upp + "/" + anio;
         window.open(_url, '_blank');
-                $('#cabecera').css("visibility","visible");
-
-      //  window.location = _url;
+        $('#cabecera').css("visibility", "visible");
+        //  window.location = _url;
     },
     getData : function(upp,anio){
 		$.ajax({
@@ -128,13 +122,12 @@ var dao = {
             const { unidadM, beneficiario } = data;
             document.getElementById("medida").options[0].disabled = true;
             $.each(unidadM, function (i, val) {
-                $('#medida').append("<option value='"+val.clave+"'>"+val.unidad_medida+"</option>");
+                $('#medida').append("<option value='" + val.clave + "'>" + val.unidad_medida + "</option>");
             });
             document.getElementById("tipo_Be").options[0].disabled = true;
             $.each(beneficiario, function (i, val) {
-                $('#tipo_Be').append("<option value='"+val.id+"'>"+val.beneficiario+"</option>");
+                $('#tipo_Be').append("<option value='" + val.id + "'>" + val.beneficiario + "</option>");
             });
-
         });
     },
     getActiv: function (upp) {
@@ -149,6 +142,19 @@ var dao = {
                     $('#tipo_Ac').append("<option value='" + i + "'>" +i+"</option>");
                 }
             });
+        });
+    },
+    cierreMetas: function (upp) {
+        $.ajax({
+            type: "GET",
+            url: '/actividades/cierre-metas/'+upp,
+            dataType: "JSON"
+        }).done(function (data) {
+            if (!data.status) {
+                $(".cierreMetas").hide();
+            }
+            
+
         });
     },
     editarPutMeta: function () {
@@ -191,23 +197,21 @@ var dao = {
             dao.getActiv(data.clv_upp);
             $('#proyectoMD').empty();
             $('#proyectoMD').append("<thead><tr class='colorRosa'>"
-             +"<th class= 'vertical' > UPP</th >"
-             +"<th class='vertical'>UR</th>"
-             +"<th class='vertical'>Programa</th>"
-             +"<th class='vertical'>Subprograma</th>"
-             +"<th class='vertical'>Proyecto</th>"
-             +"<th class='vertical'>Fondo</th>"
-             +"<th class='vertical'>Actividad</th>"
-                + "</tr>thead")
-                
+                + "<th class= 'vertical' > UPP</th >"
+                + "<th class='vertical'>UR</th>"
+                + "<th class='vertical'>Programa</th>"
+                + "<th class='vertical'>Subprograma</th>"
+                + "<th class='vertical'>Proyecto</th>"
+                + "<th class='vertical'>Fondo</th>"
+                + "<th class='vertical'>Actividad</th>"
+                + "</tr>thead");
             $('#proyectoMD').append('<tbody class="text-center"><tr>'
                 + '<th scope="row">' + data.clv_upp + '</th> <th>  '
-                + data.clv_ur+ '</th> <th>'+ data.clv_programa
+                + data.clv_ur + '</th> <th>' + data.clv_programa
                 + '</th><th>' + data.subprograma + '</th><th>'
                 + data.proyecto + '</th><th>' + data.clv_fondo
                 + '</th><th>' + data.actividad + '</th>' +
-                '</tr></tbody>')
-
+                '</tr></tbody>');
             $('#id_meta').text(data.id);
             $('#Nactividad').text(data.actividad);
             $('#Nfondo').text(data.clv_fondo);
@@ -226,7 +230,116 @@ var dao = {
             $('#10').val(data.octubre);
             $('#11').val(data.noviembre);
             $('#12').val(data.diciembre);
-            $('#sumMetas').val(data.total);
+            $('#sumMetas').val(data.total); 
+            const mese = data.meses;
+            for (const key in mese) {
+                if (Object.hasOwnProperty.call(mese, key)) {
+                    const e = mese[key];
+                    switch (key) {
+                        case 'enero':
+                            if (e != 0.0 || e != 0) {
+                                $("#1").prop('disabled', false);
+                                $("#1").prop('required',true);
+                            } else {
+                                $("#1").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'febrero':
+                            if (e != 0.0) {
+                                $("#2").prop('disabled', false);
+                                $("#2").prop('required',true);
+                            } else {
+                                $("#2").prop('disabled', 'disabled');
+                            }
+                                break;
+                        case 'marzo':
+                            if (e != 0.0) {
+                                $("#3").prop('disabled', false);
+                                $("#3").prop('required',true);
+                            } else {
+                                $("#3").prop('disabled', 'disabled');
+
+                            }
+                                break;
+                        case 'abril':
+                            if (e != 0.0) {
+                                $("#4").prop('disabled', false);
+                                $("#4").prop('required',true);
+                            } else {
+                                $("#4").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'mayo':
+                            if (e != 0.0) {
+                                $("#5").prop('disabled', false);
+                                $("#5").prop('required',true);
+                            } else {
+                                $("#5").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'junio':
+                            if (e != 0.0) {
+                                $("#6").prop('disabled', false);
+                                $("#6").prop('required',true);
+                            } else {
+                                $("#6").prop('disabled', 'disabled');
+                            }
+                               break;
+                        case 'julio':
+                            if (e != 0.0) {
+                                $("#7").prop('disabled', false);
+                                $("#7").prop('required',true);
+                            } else {
+                                $("#7").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'agosto':
+                            if (e != 0.0) {
+                                $("#8").prop('disabled', false);
+                                $("#8").prop('required',true);
+                            } else {
+                                $("#8").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'septiembre':
+                            if (e != 0.0) {
+                                $("#9").prop('disabled', false);
+                                $("#9").prop('required',true);
+                            } else {
+                                $("#9").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'octubre':
+                            if (e != 0.0) {
+                                $("#10").prop('disabled', false);
+                                $("#10").prop('required',true);
+                            } else {
+                                $("#10").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'noviembre':
+                            if (e != 0.0) {
+                                $("#11").prop('disabled', false);
+                                $("#11").prop('required',true);
+                            } else {
+                                $("#11").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'diciembre':
+                            if (e != 0.0) {
+                                $("#12").prop('disabled', false);
+                                $("#12").prop('required',true);
+                            } else {
+                                $("#12").prop('disabled', 'disabled');
+                            }
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                    
+                }
+            }
         });
     },
     eliminar: function (id) {
@@ -247,7 +360,7 @@ var dao = {
                         id: id
                     }
                 }).done(function (data) {
-                    const {mensaje } = data;
+                    const { mensaje } = data;
                     Swal.fire({
                         icon: mensaje.icon,
                         title: mensaje.title,
@@ -257,15 +370,14 @@ var dao = {
 
                     if ($('#upp').val() == '') {
                         dao.getUpps();
-                        dao.getData($('#upp_filter').val(),$('#anio_filter').val());
+                        dao.getData($('#upp_filter').val(), $('#anio_filter').val());
                     } else {
-                        dao.getData($('#upp_filter').val(),$('#anio_filter').val());
+                        dao.getData($('#upp_filter').val(), $('#anio_filter').val());
                     }
                 
                 });
-
             }
-        })
+        });
     },
     limpiar: function () {
         inputs.forEach(e => {
@@ -486,9 +598,10 @@ $(document).ready(function () {
     });
     if ($('#upp').val() == '') {
         dao.getUpps();
-        dao.getData($('#upp_filter').val(),$('#anio_filter').val());
+        dao.getData($('#upp_filter').val(), $('#anio_filter').val());
     } else {
-    dao.getData($('#upp').val(),$('#anio_filter').val());
+        dao.getData($('#upp').val(), $('#anio_filter').val());
+        dao.cierreMetas($('#upp').val());
     }
 
     for (let i = 1; i <= 12; i++) {

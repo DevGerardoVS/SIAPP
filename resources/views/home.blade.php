@@ -90,6 +90,8 @@
                    processing: true,
                    order: [],
                    ServerSide: true,
+                   searching: false,
+                   paging: false,
                    api:true,
                    language: {
                        processing: "Procesando...",
@@ -170,6 +172,7 @@
                    processing: true,
                    order: [],
                    ServerSide: true,
+                   paging: false,
                    api:true,
                    language: {
                        processing: "Procesando...",

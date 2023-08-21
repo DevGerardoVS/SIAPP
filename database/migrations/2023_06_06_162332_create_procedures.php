@@ -48,15 +48,22 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1(in anio int, in corte date)
         begin
             select 
-                vppa.upp,
-                sum(total) importe
-            from pp_aplanado vppa
-            where ejercicio = anio and if  (
-                corte is null,
-                deleted_at is null,
-                deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-            )
-            group by upp;
+                upp,
+                importe
+            from (
+                select 
+                    vppa.clv_upp,
+                    vppa.upp,
+                    sum(total) importe
+                from pp_aplanado vppa
+                where ejercicio = anio and if  (
+                    corte is null,
+                    deleted_at is null,
+                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
+                group by clv_upp,upp
+                order by clv_upp
+            ) t;
         END;");
         
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1_2(in anio int, in corte date)
@@ -392,38 +399,47 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_1(in anio int, in corte date)
         begin
             select 
-                case 
-                    when upp != '' then ''
-                    else etiquetado
-                end etiquetado,
+                etiquetado,
                 upp,
                 importe
             from (
                 select 
-                    vppa.etiquetado,
-                    '' upp,
-                    sum(total) importe
-                from pp_aplanado vppa
-                where ejercicio = anio and if  (
-                    corte is null,
-                    deleted_at is null,
-                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                group by etiquetado 
-                union all
-                select 
-                    vppa.etiquetado,
-                    vppa.upp,
-                    sum(total) importe
-                from pp_aplanado vppa
-                where ejercicio = anio and if  (
-                    corte is null,
-                    deleted_at is null,
-                    deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                group by vppa.etiquetado,vppa.upp
-                order by etiquetado
-            ) tabla;
+                    case 
+                        when upp != '' then ''
+                        else etiquetado
+                    end etiquetado,
+                    clv_upp,
+                    upp,
+                    importe
+                from (
+                    select 
+                        vppa.etiquetado,
+                        '' clv_upp,
+                        '' upp,
+                        sum(total) importe
+                    from pp_aplanado vppa
+                    where ejercicio = anio and if  (
+                        corte is null,
+                        deleted_at is null,
+                        deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    )
+                    group by etiquetado 
+                    union all
+                    select 
+                        vppa.etiquetado,
+                        vppa.clv_upp,
+                        vppa.upp,
+                        sum(total) importe
+                    from pp_aplanado vppa
+                    where ejercicio = anio and if  (
+                        corte is null,
+                        deleted_at is null,
+                        deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                    )
+                    group by vppa.etiquetado,vppa.clv_upp,vppa.upp
+                    order by etiquetado
+                ) tabla
+	        ) t;
         END;");
         
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_2(in anio int, in corte date)
@@ -1125,7 +1141,7 @@ return new class extends Migration {
                 )
                 group by clv_upp,vppa.upp,clv_programa,vppa.programa,
                 vppa.clv_proyecto_obra,vppa.proyecto_obra
-                order by upp,programa,proyecto_obra
+                order by clv_upp,upp,programa,proyecto_obra
             ) tabla;
         END;");
         
@@ -1134,6 +1150,7 @@ return new class extends Migration {
             set @upp := uppC;
             
             select
+                orden,
                 upp,
                 clave,
                 monto_anual,
@@ -1473,18 +1490,37 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE if not exists proyecto_avance_general(in anio int, in corte date)
         begin
-            select 
-                clv_upp,
-                case 
-                    when clv_fondo != '' then ''
-                    else upp
+            SELECT
+                case
+                    when clv_fondo_ramo != '' then ''
+                    else clv_upp 
+                end clv_upp, 
+                case
+                    when clv_fondo_ramo != '' then ''
+                    else upp 
                 end upp,
-                case 
+                case
                     when clv_capitulo != '' then ''
-                    else clv_fondo
+                    else clv_fondo_ramo 
                 end clv_fondo_ramo,
-                case 
+                case
                     when clv_capitulo != '' then ''
+                    else fondo_ramo 
+                end fondo_ramo,
+                clv_capitulo,
+                capitulo,
+                monto_anual,
+                calendarizado,
+                disponible,
+                avance,
+                estatus
+            FROM (
+                select 
+                t.clv_upp,
+                ve.upp,
+                clv_fondo clv_fondo_ramo,
+                case 
+                    when fondo = '' AND clv_fondo_ramo != '' then p.fondo_ramo
                     else fondo
                 end fondo_ramo,
                 clv_capitulo,
@@ -1494,16 +1530,13 @@ return new class extends Migration {
                 (monto_anual-calendarizado) disponible,
                 (calendarizado/monto_anual)*100 avance,
                 case 
-                    when clv_upp != '' then estatus
+                    when t.clv_upp != '' then estatus
                     else ''
                 end estatus
-            from (
+                from (
                 select 
-                    case 
-                        when clv_fondo != '' then ''
-                        else clv_upp
-                    end clv_upp,
-                    group_concat(upp separator '') upp,
+                    clv_upp,
+                    GROUP_CONCAT(upp separator '') upp,
                     clv_fondo,
                     group_concat(fondo separator '') fondo,
                     group_concat(clv_capitulo separator '') clv_capitulo,
@@ -1514,110 +1547,116 @@ return new class extends Migration {
                     end monto_anual,
                     sum(calendarizado) calendarizado,
                     case 
-                        when sum(estado) > 0 then 'Confirmado'
+                    when sum(estado) > 0 then 'Confirmado'
                         else 'Registrado'
                     end estatus
-                from (
-                    select *
                     from (
-                        select 
-                            clv_upp,
-                            upp,
-                            '' clv_fondo,
-                            '' fondo,
-                            '' clv_capitulo,
-                            '' capitulo,
-                            0 monto_anual,
-                            sum(total) calendarizado,
-                            sum(estado) estado
-                        from pp_aplanado pa
-                        where pa.ejercicio = anio and if (
-                            corte is null,
-                            pa.deleted_at is null,
-                            pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by clv_upp,upp
+                        select *
+                        from (
+                            select 
+                                clv_upp,
+                                upp,
+                                '' clv_fondo,
+                                '' fondo,
+                                '' clv_capitulo,
+                                '' capitulo,
+                                0 monto_anual,
+                                sum(total) calendarizado,
+                                sum(estado) estado
+                            from pp_aplanado pa
+                            where pa.ejercicio = anio and if (
+                                corte is null,
+                                pa.deleted_at is null,
+                                pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                            )
+                            group by clv_upp,upp
+                            union all
+                            select 
+                                clv_upp,
+                                upp,
+                                clv_fondo_ramo clv_fondo,
+                                fondo_ramo fondo,
+                                '' clv_capitulo,
+                                '' capitulo,
+                                0 monto_anual,
+                                sum(total) calendarizado,
+                                sum(estado) estado
+                            from pp_aplanado pa
+                            where pa.ejercicio = anio and if (
+                                corte is null,
+                                pa.deleted_at is null,
+                                pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                            )
+                            group by clv_upp,upp,clv_fondo_ramo,fondo_ramo
+                            union all
+                            select 
+                                clv_upp,
+                                upp,
+                                clv_fondo_ramo clv_fondo,
+                                fondo_ramo fondo,
+                                clv_capitulo,
+                                capitulo,
+                                0 monto_anual,
+                                sum(total) calendarizado,
+                                sum(estado) estado
+                            from pp_aplanado pa
+                            where pa.ejercicio = anio and if (
+                                corte is null,
+                                pa.deleted_at is null,
+                                pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                            )
+                            group by clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo
+                            order by clv_upp,clv_fondo,clv_capitulo
+                        ) c
                         union all
-                        select 
-                            clv_upp,
-                            upp,
-                            clv_fondo_ramo clv_fondo,
-                            fondo_ramo fondo,
-                            '' clv_capitulo,
-                            '' capitulo,
-                            0 monto_anual,
-                            sum(total) calendarizado,
-                            sum(estado) estado
-                        from pp_aplanado pa
-                        where pa.ejercicio = anio and if (
-                            corte is null,
-                            pa.deleted_at is null,
-                            pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by clv_upp,upp,clv_fondo_ramo,fondo_ramo
-                        union all
-                        select 
-                            clv_upp,
-                            upp,
-                            clv_fondo_ramo clv_fondo,
-                            fondo_ramo fondo,
-                            clv_capitulo,
-                            capitulo,
-                            0 monto_anual,
-                            sum(total) calendarizado,
-                            sum(estado) estado
-                        from pp_aplanado pa
-                        where pa.ejercicio = anio and if (
-                            corte is null,
-                            pa.deleted_at is null,
-                            pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo
-                        order by clv_upp,clv_fondo,clv_capitulo
-                    ) c
-                    union all
-                    select *
-                    from (
-                        select
-                            tf.clv_upp,
-                            '' upp,
-                            '' clv_fondo,
-                            '' fondo,
-                            '' clv_capitulo,
-                            '' capitulo,
-                            sum(tf.presupuesto) monto_anual,
-                            0 calendarizado,
-                            0 estado
-                        from techos_financieros tf 
-                        where tf.ejercicio = anio and if (
-                            corte is null,
-                            tf.deleted_at is null,
-                            tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by clv_upp
-                        union all
-                        select
-                            tf.clv_upp,
-                            '' upp,
-                            tf.clv_fondo,
-                            '' fondo,
-                            '' clv_capitulo,
-                            '' capitulo,
-                            sum(tf.presupuesto) monto_anual,
-                            0 calendarizado,
-                            0 estado
-                        from techos_financieros tf 
-                        where tf.ejercicio = anio and if (
-                            corte is null,
-                            tf.deleted_at is null,
-                            tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                        )
-                        group by clv_upp,clv_fondo
-                        order by clv_upp,clv_fondo
-                    ) ma
-                )c2
-                group by c2.clv_upp,c2.clv_fondo,c2.clv_capitulo,c2.capitulo
-            ) tabla;
+                        select *
+                        from (
+                            select
+                                tf.clv_upp,
+                                '' upp,
+                                '' clv_fondo,
+                                '' fondo,
+                                '' clv_capitulo,
+                                '' capitulo,
+                                sum(tf.presupuesto) monto_anual,
+                                0 calendarizado,
+                                0 estado
+                            from techos_financieros tf 
+                            where tf.ejercicio = anio and if (
+                                corte is null,
+                                tf.deleted_at is null,
+                                tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                            )
+                            group by clv_upp
+                            union all
+                            select
+                                tf.clv_upp,
+                                '' upp,
+                                tf.clv_fondo,
+                                '' fondo,
+                                '' clv_capitulo,
+                                '' capitulo,
+                                sum(tf.presupuesto) monto_anual,
+                                0 calendarizado,
+                                0 estado
+                            from techos_financieros tf 
+                            where tf.ejercicio = anio and if (
+                                corte is null,
+                                tf.deleted_at is null,
+                                tf.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                            )
+                            group by clv_upp,clv_fondo
+                            order by clv_upp,clv_fondo
+                        ) ma
+                    )c2
+                    group by c2.clv_upp,c2.clv_fondo,c2.clv_capitulo,c2.capitulo
+                ) t
+                LEFT JOIN (SELECT DISTINCT clv_upp,upp FROM v_epp WHERE ejercicio = anio) ve 
+                    ON t.clv_upp = ve.clv_upp
+                LEFT JOIN (SELECT DISTINCT clv_fondo_ramo,fondo_ramo FROM fondo WHERE deleted_at IS NULL) AS p
+                    ON p.clv_fondo_ramo = t.clv_fondo
+                GROUP BY clv_upp,clv_fondo,clv_capitulo
+            )t2;
         END;");
 
         DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64), in anio int)
@@ -2240,7 +2279,7 @@ return new class extends Migration {
             END;
         ");
 
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_II(in anio int)
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_II(in anio int, in corte date)
         begin
             select 
                 case 
@@ -2307,7 +2346,11 @@ return new class extends Migration {
                     and pa.clv_programa = substring(pm.area_funcional,9,2)
                     and pa.clv_subprograma = substring(pm.area_funcional,11,3)
                     and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio
+                where pm.ejercicio = anio and if (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
                 group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
                     pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma
                 union all
@@ -2340,7 +2383,11 @@ return new class extends Migration {
                     and pa.clv_programa = substring(pm.area_funcional,9,2)
                     and pa.clv_subprograma = substring(pm.area_funcional,11,3)
                     and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio
+                where pm.ejercicio = anio and if (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
                 group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
                     pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma,
                     pm.indicador, pm.objetivo, am.actividad
@@ -2350,7 +2397,7 @@ return new class extends Migration {
             ) tabla;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_IX(in anio int)
+        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_IX(in anio int, in corte date)
         begin
             select
                 case 
@@ -2390,7 +2437,11 @@ return new class extends Migration {
                     and pa.clv_programa = substring(pm.area_funcional,9,2)
                     and pa.clv_subprograma = substring(pm.area_funcional,11,3)
                     and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio
+                where pm.ejercicio = anio and if (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
                 group by pa.clv_programa,pa.programa
                 union all
                 select 
@@ -2416,13 +2467,99 @@ return new class extends Migration {
                     and pa.clv_programa = substring(pm.area_funcional,9,2)
                     and pa.clv_subprograma = substring(pm.area_funcional,11,3)
                     and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio
+                where pm.ejercicio = anio and if (
+                    corte is null,
+                    pa.deleted_at is null,
+                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
+                )
                 group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
                     pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma,
                     pm.indicador, pm.objetivo, am.actividad
                 order by clv_programa,programa,indicador,objetivo,actividad
             ) tabla;
         END");
+
+        DB::unprepared("CREATE PROCEDURE if not exists sp_epp(in uppC varchar(3),in urC varchar(2), in anio int)
+            BEGIN
+                set @upp := uppC;
+                set @ur := urC;
+            
+                select 
+                    concat(
+                    	e.clv_sector_publico,
+                    	e.clv_sector_publico_f,
+                    	e.clv_sector_economia,
+                    	e.clv_subsector_economia,
+                    	e.clv_ente_publico
+                    ) clasificacion_administrativa,
+                    concat(
+                        e.clv_upp,' ',
+                        e.upp
+                    ) upp,
+                    concat(
+                        e.clv_subsecretaria,' ',
+                        e.subsecretaria
+                    ) subsecretaria,
+                    concat(
+                        e.clv_ur,' ',
+                        e.ur
+                    ) unidad_responsable,
+                    concat(
+                        e.clv_finalidad,' ',
+                        e.finalidad
+                    ) finalidad,
+                    concat(
+                        e.clv_funcion,' ',
+                        e.funcion
+                    ) funcion,
+                    concat(
+                        e.clv_subfuncion,' ',
+                        e.subfuncion
+                    ) subfuncion,
+                    concat(
+                        e.clv_eje,' ',
+                        e.eje
+                    ) eje,
+                    concat(
+                        e.clv_linea_accion,' ',
+                        e.linea_accion
+                    ) linea_accion,
+                    concat(
+                        e.clv_programa_sectorial,' ',
+                        e.programa_sectorial
+                    ) programa_sectorial,
+                    concat(
+                        e.clv_tipologia_conac,' ',
+                        e.tipologia_conac
+                    ) tipologia_conac,
+                    concat(
+                        e.clv_programa,' ',
+                        e.programa
+                    ) programa,
+                    concat(
+                        e.clv_subprograma,' ',
+                        e.subprograma
+                    ) subprograma,
+                    concat(
+                        e.clv_proyecto,' ',
+                        e.proyecto
+                    ) proyecto,
+                    e.ejercicio
+                from v_epp e
+                where if(
+                    @upp is null,
+                    clv_upp != '',
+                    clv_upp = @upp
+                ) and if (anio is null,
+                    ejercicio != 1,
+                    ejercicio = anio
+                ) and if (
+                    @ur is null,
+                    clv_ur != '',
+                    clv_ur = @ur
+                );
+            END
+        ");
     }
 
     /**

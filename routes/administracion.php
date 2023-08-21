@@ -75,7 +75,9 @@ Route::controller(UsuarioController::class)->group(function () {
 
 	Route::controller(BitacoraController::class)->group(function () {
 		Route::get('/adm-bitacora', 'getIndex');
-		Route::post('/adm-bitacora/data/{fecha?}', 'getBitacora')->name('getBitacora');
+		Route::get('/adm-bitacora/data/{anio?}/{mes?}', 'getBitacora');
+		Route::get('/adm-bitacora/dataAnios', 'getBitAnios');
+		Route::get('/adm-bitacora/exportExcelBitacora/{anio?}/{mes?}', 'exportBitacora');
 	});
 
 	Route::controller(ReporteController::class)->group(function(){
@@ -99,6 +101,7 @@ Route::controller(UsuarioController::class)->group(function () {
 		Route::post('/admon-capturas/clavesPresupuestarias', 'clavesPresupuestarias')->name('claves_presupuestarias');
 		Route::post('/admon-capturas/metasActividades', 'metasActividades')->name('metas_actividades');
 		Route::put('/admon-capturas/update', 'update')->name('admon_capturas_update');
+		Route::put('/admon-capturas/update-PPH', 'updateProgramacionPH')->name('pph_update');
 
 	});
 ?>

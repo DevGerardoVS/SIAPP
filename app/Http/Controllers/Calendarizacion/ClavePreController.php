@@ -253,7 +253,7 @@ class ClavePreController extends Controller
                     'tipo' => $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH',    
                     'created_user' => Auth::user()->username, 
                 ]);
-                $aplanado = DB::select("CALL insert_pp_aplanado('$request->ejercicio')");
+                $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
                 $b = array(
                     "username"=>Auth::user()->username,
                     "accion"=>'Guardar',
@@ -430,24 +430,30 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($proyectos,200);
     }
-    public function getLineaAccion($uppId,$id,$ejercicio){
+    public function getLineaAccion($uppId,$id,$ejercicio,$programa,$subPrograma,$proyecto){
         $linea = DB::table('v_epp')
         ->SELECT('clv_linea_accion','linea_accion')
         ->WHERE('clv_upp','=', $uppId)
         ->WHERE('clv_ur','=',$id)
         ->WHERE('ejercicio','=',$ejercicio)
+        ->WHERE('clv_programa','=', $programa)
+        ->WHERE('clv_subprograma','=',$subPrograma)
+        ->WHERE('clv_proyecto','=',$proyecto)
         ->orderBy('clv_linea_accion')
         ->DISTINCT()
         ->get();
         return response()->json($linea,200);
     }
-    public function getAreaFuncional($uppId,$id,$ejercicio, $subPrograma){
+    public function getAreaFuncional($uppId,$id,$ejercicio, $subPrograma,$linea,$programa,$proyecto){
         $areaFuncional = DB::table('v_epp')
         ->SELECT('clv_finalidad', 'clv_funcion', 'clv_subfuncion', 'clv_eje', 'clv_programa_sectorial','clv_tipologia_conac')
         ->WHERE ('clv_upp', '=', $uppId)
         ->WHERE ('clv_ur', '=', $id)
         ->WHERE ('ejercicio', '=', $ejercicio)
         ->WHERE ('clv_subprograma', '=',  $subPrograma)
+        ->where ('clv_linea_accion', '=', $linea)
+        ->where ('clv_programa', '=', $programa)
+        ->where ('clv_proyecto', '=', $proyecto)
         ->DISTINCT()
         ->first();
         return response()->json($areaFuncional,200);

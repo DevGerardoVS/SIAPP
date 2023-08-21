@@ -22,7 +22,6 @@ use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
 use Shuchkin\SimpleXLSX;
-use Symfony\Component\Console\Helper\Table;
 use Illuminate\Support\Facades\Http;
 use Storage;
 
@@ -43,6 +42,7 @@ class MetasController extends Controller
 	}
 	public static function getActiv($upp,$anio)
 	{
+	
 		Controller::check_permission('getMetas');
 		$query = MetasHelper::actividades($upp,$anio);
 		$dataSet = [];
@@ -50,7 +50,14 @@ class MetasController extends Controller
 			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
 				'<i class="fa fa-pencil" style="color:green;"></i></button>' .
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
-				'<i class="fa fa-trash" style="color:B40000;" ></i></button>':'';
+				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
+
+		/* 	if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
+				$button = $accion;
+
+			} else {
+				$button = '';
+			} */
 			$area = str_split($key->area);
 			$entidad = str_split($key->entidad);
 			$i = array(
@@ -58,14 +65,14 @@ class MetasController extends Controller
 				$area[1],
 				$area[2],
 				$area[3],
-				''.strval($area[4]).strval($area[5]).'',
+				'' . strval($area[4]) . strval($area[5]) . '',
 				$area[6],
 				$area[7],
-				''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
-				''.strval($entidad[4]).strval($entidad[5]).'',
-				''.strval($area[8]).strval($area[9]).'',
-				''.strval($area[10]).strval($area[11]).strval($area[12]).'',
-				''.strval($area[13]).strval($area[14]).strval($area[15]).'',
+				'' . strval($entidad[0]) . strval($entidad[1]) . strval($entidad[2]) . '',
+				'' . strval($entidad[4]) . strval($entidad[5]) . '',
+				'' . strval($area[8]) . strval($area[9]) . '',
+				'' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
+				'' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
 				$key->fondo,
 				$key->actividad,
 				$key->tipo,
@@ -164,6 +171,7 @@ class MetasController extends Controller
 	}
 	public function getUpps()
 	{
+		$mir=MetasController::proyectorMir();
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$upps = DB::table('v_epp')
 			->select(
@@ -174,7 +182,7 @@ class MetasController extends Controller
 			->orderBy('clv_upp')
 			->groupByRaw('clv_upp')
 			->where('ejercicio', $anio)->get();
-		return $upps;
+		return ["upp"=>$upps,"mir"=>$mir];
 	}
 	public function getFyA($area,$entidad)
 	{
@@ -205,19 +213,61 @@ class MetasController extends Controller
 				->groupByRaw('clave')
 				->where('ejercicio', $check['anio'])
 				->get();
-			$activ = DB::table('actividades_mir')
-				->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+			$activ = DB::table('mml_mir')
 				->select(
-					'actividades_mir.id',
-					'actividades_mir.clv_actividad as clave',
-					DB::raw('CONCAT(clv_actividad, " - ",actividad) AS actividad')
+					'mml_mir.id',
+					'mml_mir.id as clave',
+					DB::raw('CONCAT(mml_mir.id, " - ",indicador) AS actividad')
 				)
-				->where('actividades_mir.deleted_at', null)
-				->where('proyectos_mir.area_funcional', str_replace("-", '', $area))
-				->where('proyectos_mir.entidad_ejecutora', str_replace("-", '', $entidad))
+				->where('mml_mir.deleted_at', null)
+				->where('mml_mir.nivel', 11)
+				->where('mml_mir.area_funcional', str_replace("-", '', $area))
+				->where('mml_mir.entidad_ejecutora', str_replace("-", '', $entidad))
 				->groupByRaw('clave')->get();
+
+			$meses=MetasController::meses($area,$entidad,$check['anio']);
+			
 		}
-		return ['fondos'=> $fondos ,"activids"=>$activ ];
+		return ['fondos'=> $fondos ,"activids"=>$activ ,"mese"=>$meses /* ,"mir"=>$mir */];
+	}
+	public static function meses($area,$entidad,$anio){
+		Log::debug($area);
+		Log::debug($entidad);
+	
+			$areaAux=explode( '-', $area);
+			$entidadAux=explode( '-', $entidad);
+
+		$meses = DB::table('programacion_presupuesto')
+				->select(
+					'enero',
+					'febrero',
+					'marzo',
+					'abril',
+					'mayo',
+					'junio',
+					'julio',
+					'agosto',
+					'septiembre',
+					'octubre',
+					'noviembre',
+					'diciembre')
+				->where('programacion_presupuesto.finalidad', $areaAux[0])
+				->where('programacion_presupuesto.funcion', $areaAux[1])
+				->where('programacion_presupuesto.subfuncion', $areaAux[2])
+				->where('programacion_presupuesto.eje', $areaAux[3])
+				->where('programacion_presupuesto.linea_accion', $areaAux[4])
+				->where('programacion_presupuesto.programa_sectorial', $areaAux[5])
+				->where('programacion_presupuesto.tipologia_conac', $areaAux[6])
+				->where('programacion_presupuesto.upp', $entidadAux[0])
+				->where('programacion_presupuesto.ur', $entidadAux[2])
+				->where('programa_presupuestario', $areaAux[7])
+				->where('subprograma_presupuestario', $areaAux[8])
+				->where('proyecto_presupuestario', $areaAux[9])
+				->where('ejercicio',$anio)
+				->get();
+
+		$dataSet = count($meses)>=1?$meses[0]:[];
+		return $dataSet;
 	}
 	public function getSelects()
 	{
@@ -228,8 +278,6 @@ class MetasController extends Controller
 			)
 			->where('deleted_at', null)
 			->get();
-		/* $activ = Http::acceptJson()->get('https://pokeapi.co/api/v2/pokemon/');
-					$res = json_decode($activ->body()); */
 		
 		$bene = DB::table('beneficiarios')
 			->select(
@@ -259,34 +307,11 @@ class MetasController extends Controller
 	}
 	public function createMeta(Request $request)
 	{
+		$username = Auth::user()->username;
 		Controller::check_permission('postMetas');
-		$customMessages = [
-            "regex" => "El campo no debe ser mayor a 8 digitos enteros",
-            'required' => "El campo no puede ir vacío",
-        ];
-		$request->validate([
-			'sel_fondo'=>'required',
-			'sel_actividad'=>'required',
-			'tipo_Ac'=>'required',
-			'tipo_Be'=>'required',
-			'medida'=>'required',
-			'beneficiario'=>'required',
-			'1'=>'required',
-			'2'=>'required',
-			'3'=>'required',
-			'4'=>'required',
-			'5'=>'required',
-			'6'=>'required',
-			'7'=>'required',
-			'8'=>'required',
-			'9'=>'required',
-			'10'=>'required',
-			'11'=>'required',
-			'12'=>'required',
-			'sumMetas'=>'required',
-		],$customMessages);
+		Log::debug( $request);
 		$meta = Metas::create([
-			'actividad_id' => $request->sel_actividad,
+			'mir_id' => intval($request->sel_actividad),
 			'clv_fondo' => $request->sel_fondo,
 			'estatus' => 0,
 			'tipo' => $request->tipo_Ac,
@@ -306,10 +331,11 @@ class MetasController extends Controller
 			'octubre' => $request[10] != NULL ? $request[10] : 0,
 			'noviembre' => $request[11] != NULL ? $request[11] : 0,
 			'diciembre' => $request[12] != NULL ? $request[12] : 0,
+			'created_user'=>$username
 		]);
 		if ($meta) {
 			$b = array(
-				"username"=>Auth::user()->username,
+				"username"=>$username,
 				"accion"=>'Crear Meta',
 				"modulo"=>'Metas'
 			 );
@@ -324,30 +350,8 @@ class MetasController extends Controller
 	}
 	public function putMeta(Request $request)
 	{
+		Log::debug($request);
 		Controller::check_permission('putMetas');
-		$customMessages = [
-            "regex" => "El campo no debe ser mayor a 8 digitos enteros",
-            'required' => "El campo no puede ir vacío",
-        ];
-		$request->validate([
-			'tipo_Ac'=>'required',
-			'tipo_Be'=>'required',
-			'medida'=>'required',
-			'beneficiario'=>'required',
-			'1'=>'required',
-			'2'=>'required',
-			'3'=>'required',
-			'4'=>'required',
-			'5'=>'required',
-			'6'=>'required',
-			'7'=>'required',
-			'8'=>'required',
-			'9'=>'required',
-			'10'=>'required',
-			'11'=>'required',
-			'12'=>'required',
-			'sumMetas'=>'required',
-		],$customMessages);
 		$meta = Metas::where('id', $request->id_meta)->firstOrFail();
         $user = Auth::user()->username;
 		if ($meta) {
@@ -374,7 +378,7 @@ class MetasController extends Controller
 
 		if ($meta->wasChanged()) {
 			$b = array(
-				"username"=>Auth::user()->username,
+				"username"=>$user,
 				"accion"=>'Editar meta',
 				"modulo"=>'Metas'
 			 );
@@ -407,16 +411,17 @@ class MetasController extends Controller
 	}
 	public function updateMeta($id)
 	{
-	
-		
 			$metas = DB::table('metas')
-				->leftJoin('actividades_mir', 'actividades_mir.id', 'metas.actividad_id')
+				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
 				->select(
-					DB::raw('CONCAT(actividades_mir.clv_actividad, " - ", actividades_mir.actividad) AS actividad'),
-					'actividades_mir.proyecto_mir_id',
+					DB::raw('CONCAT(mml_mir.id, " - ", mml_mir.indicador) AS actividad'),
+					'mml_mir.area_funcional',
+					'mml_mir.entidad_ejecutora',
+					'mml_mir.clv_upp',
+					'mml_mir.clv_ur',
+					'mml_mir.id as mir_id',
 					'metas.id',
 					'metas.clv_fondo',
-        			'metas.actividad_id',
         			'metas.tipo',
         			'metas.beneficiario_id',
         			'metas.unidad_medida_id',
@@ -434,47 +439,18 @@ class MetasController extends Controller
         			'metas.noviembre',
         			'metas.diciembre',
         			'metas.total',
+					'mml_mir.ejercicio'
 
 				)
-				->where('actividades_mir.deleted_at', null)
+				->where('mml_mir.deleted_at', null)
 				->where('metas.deleted_at', null)
-				->where('metas.id', $id);
-		$pro=DB::table('proyectos_mir')
-			->leftJoinSub($metas, 'metas', function ($join) {
-				$join->on('proyectos_mir.id', '=', 'metas.proyecto_mir_id');
-			})
-			->select(
-				'proyectos_mir.clv_upp',
-        		'proyectos_mir.entidad_ejecutora',
-        		'proyectos_mir.clv_programa',
-        		'proyectos_mir.area_funcional',
-				'metas.id',
-				'metas.actividad',
-				'metas.clv_fondo',
-				'metas.tipo',
-				'metas.beneficiario_id',
-				'metas.unidad_medida_id',
-				'metas.cantidad_beneficiarios',
-				'metas.enero',
-				'metas.febrero',
-				'metas.marzo',
-				'metas.abril',
-				'metas.mayo',
-				'metas.junio',
-				'metas.julio',
-				'metas.agosto',
-				'metas.septiembre',
-				'metas.octubre',
-				'metas.noviembre',
-				'metas.diciembre',
-				'metas.total',
-				
-			)
-			->where('proyectos_mir.deleted_at',null)
-			->where('metas.id', $id)
-			->get();
+				->where('metas.id', $id)->get();
 			$data=[];
-		foreach ($pro as $key) {
+			$areaAux = str_split($metas[0]->area_funcional);
+			$area = '' . strval($areaAux[0]) . '-' . strval($areaAux[1]) . '-' . strval($areaAux[2]) . '-' . strval($areaAux[3]) . '-' . strval($areaAux[4]) . strval($areaAux[5]).'-'. strval($areaAux[6]) . '-' . strval($areaAux[7]) . '-' . strval($areaAux[8]) . strval($areaAux[9]) . "-". strval($areaAux[10]) . strval($areaAux[11]) . strval($areaAux[12]) ."-" . strval($areaAux[13]) . strval($areaAux[14]) . strval($areaAux[15]) . '';
+			$meses=MetasController::meses($area,"".$metas[0]->clv_upp."-".'0'."-".$metas[0]->clv_ur."",$metas[0]->ejercicio);
+
+		foreach ($metas as $key) {
 			$area = str_split($key->area_funcional);
 			$entidad = str_split($key->entidad_ejecutora);
 			$i = array(
@@ -482,7 +458,7 @@ class MetasController extends Controller
 				"entidad"=>$key->entidad_ejecutora,
 				"clv_upp" => $key->clv_upp,
 				"clv_ur" => '' . strval($entidad[4]) . strval($entidad[5]) . '',
-				"clv_programa" => $key->clv_programa,
+				"clv_programa" => '' . strval($area[8]) . strval($area[9]). '',
 				"subprograma" => '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
 				"proyecto" => '' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
 				"id" => $key->id,
@@ -505,9 +481,11 @@ class MetasController extends Controller
 				"noviembre" => $key->noviembre,
 				"diciembre" => $key->diciembre,
 				"total" => $key->total,
+				"meses" =>$meses
 			);
 			$data[] = $i;
 		}
+	
 		return $data[0];
 	}
 	public function exportExcel($upp,$anio)
@@ -542,7 +520,6 @@ class MetasController extends Controller
 	public function pdfView($upp)
 	{
 		$date = Carbon::now();
-
 		$year = $date->format('Y');
 		Controller::check_permission('getMetas');
 		$data = $this->getActiv($upp,$year);
@@ -589,7 +566,6 @@ class MetasController extends Controller
 		 );
 		Controller::bitacora($b);
 		return $this->jasper($request);
-
 	}
 	public function jasper($request)
 	{
@@ -633,7 +609,6 @@ class MetasController extends Controller
 		}else {
 			return response()->json('error',200);
 		}
-
 	}
 	public function importPlantilla(Request $request)
 	{
@@ -653,31 +628,30 @@ class MetasController extends Controller
 					 );
 					Controller::bitacora($b);
 				}
-
 				return response()->json($resul);
 			}
-			
 		} catch (\Exception $e) {
 			DB::rollback();
 		}
-
-
 	}
 	public function checkCombination($upp)
 	{
 		$check = $this->checkClosing($upp);
 
-		$proyecto = DB::table('actividades_mir')
-			->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
-			->select(
-				'actividades_mir.id',
-				'proyectos_mir.area_funcional AS area',
-				'proyectos_mir.clv_upp'
-			)
-			->where('actividades_mir.deleted_at', null)
-			->where('proyectos_mir.deleted_at', null)
-			->where('proyectos_mir.clv_upp', $upp);
 		$metas = DB::table('metas')
+			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
+			->select(
+				'mml_mir.id AS mir_id',
+				'mml_mir.area_funcional AS area',
+				'mml_mir.clv_upp',
+				'metas.id as metas_id',
+				'metas.estatus'
+			)
+			->where('mml_mir.deleted_at', null)
+			->where('mml_mir.deleted_at', null)
+			->where('metas.estatus', 1)
+			->where('mml_mir.clv_upp', $upp)->get();
+		/* $metas = DB::table('metas')
 			->leftJoinSub($proyecto, 'pro', function ($join) {
 				$join->on('metas.actividad_id', '=', 'pro.id');
 			})
@@ -687,8 +661,7 @@ class MetasController extends Controller
 			)
 			->where('metas.estatus', 1)
 			->where('pro.clv_upp', '=', $upp)
-			->get();
-		Log::debug($check);
+			->get(); */
 		if ($check['status']) {
 			if (count($metas) == 0 || Auth::user()->id_grupo == 1) {
 				$activs = DB::table("programacion_presupuesto")
@@ -707,16 +680,15 @@ class MetasController extends Controller
 					$auxAct = count($activs);
 					$index = 0;
 					foreach ($activs as $key) {
-						$proyecto = DB::table('actividades_mir')
-							->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
+						$proyecto = DB::table('mml_mir')
 							->select(
-								'actividades_mir.id',
-								'proyectos_mir.area_funcional AS area'
+								'mml_mir.id',
+								/* 'mml_mir.area_funcional AS area' */
 							)
-							->where('actividades_mir.deleted_at', null)
-							->where('proyectos_mir.deleted_at', null)
-							->where('proyectos_mir.clv_upp', $upp)
-							->where('proyectos_mir.area_funcional', $key->clave)
+							->where('mml_mir.deleted_at', null)
+							->where('mml_mir.nivel', 11)
+							->where('mml_mir.clv_upp', $upp)
+						/* 	->where('mml_mir.area_funcional', $key->clave)  */
 							->get();
 						if (count($proyecto)) {
 							$index++;
@@ -729,13 +701,13 @@ class MetasController extends Controller
 					}
 
 				} else {
-					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false];
+					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false ,"url"=>'/calendarizacion/claves'];
 				}
 			} else {
-				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "estado" => true];
+				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas',"title"=>'Metas confirmadas', "estado" => true];
 			}
 		} else {
-			return ["status" => false, "mensaje" => 'La captura de metas esté cerrada', "estado" => true];
+			return ["status" => false, "mensaje" => 'La captura de metas esta cerrada',"title"=>'Metas cerradas', "estado" => false ,"url"=>'/calendarizacion/proyecto'];
 		}
 	}
 
@@ -910,11 +882,36 @@ class MetasController extends Controller
 			)
 			->where('clv_upp', '=', $upp)
 			->get();
-		if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
-			return ["status" => true, "anio" => $anio[0]->ejercicio];
-		}else{
-			return ["status" => false, "anio" => $anio[0]->ejercicio];
+			if(count($anio)){ 
+				if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
+					return ["status" => true, "anio" => $anio[0]->ejercicio];
+				}else{
+					return ["status" => false, "anio" => $anio[0]->ejercicio];
+		
+				}
+			}else{
+				return ["status" => false, "anio" => 0000];
+			}
+		
+	}
+	function checkGoals($upp)
+	{
+		$anio = DB::table('cierre_ejercicio_metas')
+			->select(
+				'estatus',
+				'ejercicio'
+			)
+			->where('clv_upp', '=', $upp)
+			->get();
+		if (count($anio)) {
+			if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
+				return ["status" => true];
+			} else {
+				return ["status" => false];
 
+			}
+		} else {
+			return ["status" => false];
 		}
 	}
 
@@ -978,12 +975,13 @@ class MetasController extends Controller
 		}
 		$dataSet = [];
 		$upp = [];
+		$ur = [];
 		foreach ($query as $key) {
 			$area = str_split($key->area);
 			$entidad = str_split($key->entidad);
 			$a=array(
-				"upp"=>''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
-				"ur"=>''.strval($entidad[4]).strval($entidad[5]).'',
+	/* 			"upp"=>''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'',
+				"ur"=>''.strval($entidad[4]).strval($entidad[5]).'', */
 				"actividad" => array(
 				"finalidad"=>$area[0],
 				"funcion"=>$area[1],
@@ -1006,10 +1004,71 @@ class MetasController extends Controller
 				"beneficiarios"=>$key->beneficiario,
 				"unidadMedida"=>$key->unidad_medida
 			));
-			$upp[''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).''] = $a;
+			$ur['' . strval($entidad[4]) . strval($entidad[5]) . ''] = $a;
+			$upp[''.strval($entidad[0]).strval($entidad[1]).strval($entidad[2]).'']["ur"] = $ur;
 		}
 		$dataSet["upp"] = $upp;
 		return response()->json(["status"=>200,"data"=>$dataSet]);
+	}
+	public static function proyectorMir(){
+
+		$proyectomir = MetasHelper::mir();
+
+/* 		foreach ($proyectomir as $key => $value) {
+		$sd=	ProyectosMir::create([
+				'clv_upp'=>$key->clv_upp,
+				'entidad_ejecutora'=>"".$key->clv_upp.$key->clv_ur."",
+				'clv_programa'=>$key->programa_id,
+				'area_funcional'=>$key->,
+				'nivel'=>$key->nivel,
+				'objetivo'=>$key->objetivo,
+				'indicador'=>$key->indicador,
+				'definicion_indicador'=>$key->,
+				'metodo_calculo'=>$key->,
+				'descripcion_metodo'=>$key->,
+				'tipo_indicador'=>$key->,
+				'unidad_medida'=>$key->unidad_medida,
+				'dimension'=>$key->,
+				'comportamiento_indicador'=>$key->,
+				'frecuencia_medicion'=>$key->,
+				'medios_verificacion'=>$key->,
+				'lb_valor_absoluto'=>$key->,
+				'lb_valor_relativo'=>$key->,
+				'lb_anio'=>$key->,
+				'lb_periodo_i'=>$key->mp_periodo_i,
+				'lb_periodo_f'=>$key->mp_periodo_f,
+				'mp_valor_absoluto'=>$key->,
+				'mp_valor_relativo'=>$key->,
+				'mp_anio'=>$key->,
+				'mp_periodo_i'=>$key->,
+				'mp_periodo_f'=>$key->,
+				'supuestos'=>$key->,
+				'estrategias'=>$key->,
+				'ejercicio'=>$key->ejercicio
+			]);
+		} */
+		
+		return $proyectomir;
+	}
+	public static function keyMonth($n){
+		$meses=['enero',
+		'febrero',
+		'marzo',
+		'abril',
+		'mayo',
+		'junio',
+		'julio',
+		'agosto',
+		'septiembre',
+		'octubre',
+		'noviembre',
+		'diciembre'];
+
+		return $meses[$n];
+	}
+	public static function validateMonth(){
+		//$meses=MetasController::meses($area,$entidad,$check['anio']);
+
 	}
 
 }
