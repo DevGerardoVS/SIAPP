@@ -30,7 +30,7 @@ class MetasHelper{
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 				->leftJoinSub($proyecto, 'pro', function ($join) {
-					$join->on('metas.mmlMir_id', '=', 'pro.id');
+					$join->on('metas.mir_id', '=', 'pro.id');
 				})
 				->select(
 					'metas.id',
