@@ -4,9 +4,6 @@ namespace App\Http\Controllers\Calendarizacion;
 
 use App\Imports\utils\FunFormats;
 use App\Http\Controllers\Controller;
-use App\Models\administracion\Bitacora;
-use App\Models\calendarizacion\ProyectosMir;
-use App\Models\calendarizacion\ActividadesMir;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -709,83 +706,7 @@ class MetasController extends Controller
 		} else {
 			return ["status" => false, "mensaje" => 'La captura de metas esta cerrada',"title"=>'Metas cerradas', "estado" => false ,"url"=>'/calendarizacion/proyecto'];
 		}
-	}
-
-	/* 		foreach ($activs as $key ) {
-				ProyectosMir::create([
-					'clv_upp'=>$upp,
-					'entidad_ejecutora'=>$key->area,
-					'clv_programa'=>$key->programa,
-					'area_funcional'=>$key->clave,
-					'nivel'=>1,
-					'objetivo'=>1,
-					'indicador'=>1,
-					'definicion_indicador'=>1,
-					'metodo_calculo'=>1,
-					'descripcion_metodo'=>1,
-					'tipo_indicador'=>'Estratégico',
-					'unidad_medida'=>'Porcentaje',
-					'dimension'=>'Eficada',
-					'comportamiento_indicador'=>'Ascendente',
-					'frecuencia_medicion'=>'Quincenal',
-					'medios_verificacion'=>1,
-					'lb_valor_absoluto'=>1,
-					'lb_valor_relativo'=>1,
-					'lb_anio'=>1,
-					'lb_periodo_i'=>1,
-					'lb_periodo_f'=>1,
-					'mp_valor_absoluto'=>1,
-					'mp_valor_relativo'=>1,
-					'mp_anio'=>1,
-					'mp_periodo_i'=>1,
-					'mp_periodo_f'=>1,
-					'supuestos'=>1,
-					'estrategias'=>1,
-					'ejercicio'=>2024
-				]);
-			} */
-
-			
-		
-
-		/* 	$proyecto = DB::table('proyectos_mir')
-			->select('id')
-			->where('deleted_at', null)
-			->where('ejercicio',2024)
-			->get();
-			for ($i=0; $i <count($proyecto); $i++) {
-			ActividadesMir::create([
-				'proyecto_mir_id'=>$proyecto[$i]->id,
-				'clv_actividad'=> $i>=10?$i:'0'.$i.'-2024',
-				'actividad'=>'Prueba'.$i.'2024',
-				'objetivo'=>$i,
-				'indicador'=>$i,
-				'definicion_indicador'=>$i,
-				'metodo_calculo'=>$i,
-				'descripcion_metodo'=>$i,
-				'tipo_indicador'=>'Estratégico',
-				'unidad_medida'=>'Porcentaje',
-				'dimension'=> 'Ascendente',
-				'comportamiento_indicador'=>'Quincenal',
-				'frecuencia_medicion'=>$i,
-				'medios_verificacion'=>$i,
-				'lb_valor_absoluto'=>$i,
-				'lb_valor_relativo'=>$i,
-				'lb_anio'=>$i,
-				'lb_periodo_i'=>$i,
-				'lb_periodo_f'=>$i,
-				'mp_valor_absoluto'=>$i,
-				'mp_valor_relativo'=>$i,
-				'mp_anio'=>$i,
-				'mp_periodo_i'=>$i,
-				'mp_periodo_f'=>$i,
-				'supuestos'=>$i,
-				'estrategias'=>$i,
-				'ejercicio'=>2024
-			]);
-			}*/
-	
-
+	}	
 
 	public function descargaReporteFirma(Request $request){
 		try {

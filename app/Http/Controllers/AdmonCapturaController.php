@@ -27,8 +27,8 @@ class AdmonCapturaController extends Controller
         }
 
         $comprobarEstadoPP = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = $anio GROUP BY upp");
-        $comprobarEstadoMetas = DB::select("SELECT m.estatus, pm.clv_upp, pm.ejercicio FROM metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id WHERE pm.ejercicio = $anio GROUP BY pm.clv_upp");
-        $upps = DB::select("SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND ejercicio = $anio AND c.deleted_at is null ORDER BY clave ASC");
+        $comprobarEstadoMetas = DB::select("SELECT m.estatus, am.clv_upp, am.ejercicio FROM metas m JOIN mml_mir am ON m.mir_id = am.id WHERE am.ejercicio = $anio GROUP BY am.clv_upp");        
+        $upps = DB::select('SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND activos = 1 AND c.deleted_at is null ORDER BY clave ASC');
         return view("captura.admonCaptura", [
             'dataSet' => json_encode($dataSet),
             'anio' => $anio,
@@ -137,7 +137,7 @@ class AdmonCapturaController extends Controller
                     DB::update("UPDATE programacion_presupuesto SET estado = 0 WHERE ejercicio = $anio  $checar_upp_PP");
                 }
                 if($modulo == "cierre_ejercicio_metas cem" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
-                    DB::update("UPDATE metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id SET m.estatus = 0 WHERE pm.ejercicio = $anio $checar_upp_metas");
+                    DB::update("UPDATE metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id SET m.estatus = 0 WHERE pm.ejercicio = $anio AND m.estatus = 1 $checar_upp_metas");
                 }
             }
 
