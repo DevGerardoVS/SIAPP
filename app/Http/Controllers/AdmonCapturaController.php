@@ -17,8 +17,8 @@ class AdmonCapturaController extends Controller
         $anioActivo = DB::select('SELECT ejercicio FROM cierre_ejercicio_claves order by ejercicio desc LIMIT 1');
         $anio = $anioActivo[0]->ejercicio;
         session(["anio"=>$anio]); //variable de sesión para usar en las demás funciones
-        $comprobarAnioPP = DB::select("SELECT ejercicio FROM programacion_presupuesto WHERE ejercicio = $anio"); // Comprobar si existen datos en PP con el año dado
-       
+        $comprobarAnioPP = DB::select("SELECT ejercicio FROM programacion_presupuesto WHERE ejercicio = $anio AND deleted_at IS NULL"); // Comprobar si existen datos en PP con el año dado y el campo deleted_at nulo
+
         $countData = count(DB::select("SELECT id FROM programacion_presupuesto_hist WHERE ejercicio = $anio")); //Comprobar si hay datos en PPH
         $version = 0;
         if($countData > 0){ // Comprobar si hay datos en la tabla
@@ -170,7 +170,7 @@ class AdmonCapturaController extends Controller
         try {
             DB::beginTransaction();
 
-            DB::select("INSERT INTO programacion_presupuesto_hist (id_original, version, clasificacion_administrativa,entidad_federativa,region,municipio,localidad,upp,subsecretaria,ur,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,periodo_presupuestal,posicion_presupuestaria,tipo_gasto,anio,etiquetado,fuente_financiamiento,ramo,fondo_ramo,capital,proyecto_obra,ejercicio,enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre,total,estado,tipo,deleted_at,updated_at,created_at,deleted_user,updated_user,created_user) SELECT id, $version,clasificacion_administrativa,entidad_federativa,region,municipio,localidad,upp,subsecretaria,ur,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,periodo_presupuestal,posicion_presupuestaria,tipo_gasto,anio,etiquetado,fuente_financiamiento,ramo,fondo_ramo,capital,proyecto_obra,ejercicio,enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre,total,estado,tipo,now(),updated_at,created_at,deleted_user,updated_user,created_user FROM programacion_presupuesto WHERE ejercicio = $getAnio");
+            DB::select("INSERT INTO programacion_presupuesto_hist (id_original, version, clasificacion_administrativa,entidad_federativa,region,municipio,localidad,upp,subsecretaria,ur,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,periodo_presupuestal,posicion_presupuestaria,tipo_gasto,anio,etiquetado,fuente_financiamiento,ramo,fondo_ramo,capital,proyecto_obra,ejercicio,enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre,total,estado,tipo,deleted_at,updated_at,created_at,deleted_user,updated_user,created_user) SELECT id, $version,clasificacion_administrativa,entidad_federativa,region,municipio,localidad,upp,subsecretaria,ur,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,periodo_presupuestal,posicion_presupuestaria,tipo_gasto,anio,etiquetado,fuente_financiamiento,ramo,fondo_ramo,capital,proyecto_obra,ejercicio,enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre,total,estado,tipo,now(),updated_at,created_at,deleted_user,updated_user,created_user FROM programacion_presupuesto WHERE ejercicio = $getAnio AND deleted_at IS NULL");
 
             $b = array(
                 "username"=>Auth::user()->username,
