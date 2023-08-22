@@ -236,24 +236,24 @@ class ClavePreController extends Controller
                     'capital' => $request->data[0]['capital'],
                     'proyecto_obra' => $request->data[0]['proyectoObra'],
                     'ejercicio' =>  $request->ejercicio, 
-                    'enero' => $request->data[0]['enero'],
-                    'febrero' => $request->data[0]['febrero'],  
-                    'marzo' => $request->data[0]['marzo'],   
-                    'abril' => $request->data[0]['abril'],  
-                    'mayo' => $request->data[0]['mayo'],   
-                    'junio' => $request->data[0]['junio'],    
-                    'julio' => $request->data[0]['julio'],    
-                    'agosto' => $request->data[0]['agosto'],   
-                    'septiembre' => $request->data[0]['septiembre'],   
-                    'octubre' => $request->data[0]['octubre'],   
-                    'noviembre' => $request->data[0]['noviembre'],  
-                    'diciembre' => $request->data[0]['diciembre'],  
+                    'enero' => $request->data[0]['enero'] ? $request->data[0]['enero'] : 0,
+                    'febrero' => $request->data[0]['febrero'] ? $request->data[0]['febrero'] : 0,  
+                    'marzo' => $request->data[0]['marzo'] ? $request->data[0]['marzo'] : 0,   
+                    'abril' => $request->data[0]['abril'] ? $request->data[0]['abril'] : 0,  
+                    'mayo' => $request->data[0]['mayo'] ? $request->data[0]['mayo'] : 0,   
+                    'junio' => $request->data[0]['junio'] ? $request->data[0]['junio'] : 0,    
+                    'julio' => $request->data[0]['julio'] ? $request->data[0]['julio'] : 0,    
+                    'agosto' => $request->data[0]['agosto'] ? $request->data[0]['agosto'] : 0,   
+                    'septiembre' => $request->data[0]['septiembre'] ? $request->data[0]['septiembre'] : 0,   
+                    'octubre' => $request->data[0]['octubre'] ? $request->data[0]['octubre'] : 0,   
+                    'noviembre' => $request->data[0]['noviembre'] ? $request->data[0]['noviembre'] : 0,  
+                    'diciembre' => $request->data[0]['diciembre'] ? $request->data[0]['diciembre'] : 0,  
                     'total' => $request->data[0]['total'],   
                     'estado' => 0,    
                     'tipo' => $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH',    
                     'created_user' => Auth::user()->username, 
                 ]);
-                $aplanado = DB::select("CALL insert_pp_aplanado('$request->ejercicio')");
+                $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
                 $b = array(
                     "username"=>Auth::user()->username,
                     "accion"=>'Guardar',
@@ -278,18 +278,18 @@ class ClavePreController extends Controller
         Controller::check_permission('putClaves');
         try {
             ProgramacionPresupuesto::where('id', $request->data[0]['idClave'])->update([
-                'enero' => $request->data[0]['enero'],
-                'febrero' => $request->data[0]['febrero'],  
-                'marzo' => $request->data[0]['marzo'],   
-                'abril' => $request->data[0]['abril'],  
-                'mayo' => $request->data[0]['mayo'],   
-                'junio' => $request->data[0]['junio'],    
-                'julio' => $request->data[0]['julio'],    
-                'agosto' => $request->data[0]['agosto'],   
-                'septiembre' => $request->data[0]['septiembre'],   
-                'octubre' => $request->data[0]['octubre'],   
-                'noviembre' => $request->data[0]['noviembre'],  
-                'diciembre' => $request->data[0]['diciembre'],  
+                'enero' => $request->data[0]['enero'] ? $request->data[0]['enero'] : 0,
+                'febrero' => $request->data[0]['febrero'] ? $request->data[0]['febrero'] : 0,  
+                'marzo' => $request->data[0]['marzo'] ? $request->data[0]['marzo'] : 0,   
+                'abril' => $request->data[0]['abril'] ? $request->data[0]['abril'] : 0,  
+                'mayo' => $request->data[0]['mayo'] ? $request->data[0]['mayo'] : 0,   
+                'junio' => $request->data[0]['junio'] ? $request->data[0]['junio'] : 0,    
+                'julio' => $request->data[0]['julio'] ? $request->data[0]['julio'] : 0,    
+                'agosto' => $request->data[0]['agosto'] ? $request->data[0]['agosto'] : 0,   
+                'septiembre' => $request->data[0]['septiembre'] ? $request->data[0]['septiembre'] : 0,   
+                'octubre' => $request->data[0]['octubre'] ? $request->data[0]['octubre'] : 0,   
+                'noviembre' => $request->data[0]['noviembre'] ? $request->data[0]['noviembre'] : 0,  
+                'diciembre' => $request->data[0]['diciembre'] ? $request->data[0]['diciembre'] : 0,  
                 'total' => $request->data[0]['total'],
             ]);
             $b = array(
@@ -430,24 +430,30 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($proyectos,200);
     }
-    public function getLineaAccion($uppId,$id,$ejercicio){
+    public function getLineaAccion($uppId,$id,$ejercicio,$programa,$subPrograma,$proyecto){
         $linea = DB::table('v_epp')
         ->SELECT('clv_linea_accion','linea_accion')
         ->WHERE('clv_upp','=', $uppId)
         ->WHERE('clv_ur','=',$id)
         ->WHERE('ejercicio','=',$ejercicio)
+        ->WHERE('clv_programa','=', $programa)
+        ->WHERE('clv_subprograma','=',$subPrograma)
+        ->WHERE('clv_proyecto','=',$proyecto)
         ->orderBy('clv_linea_accion')
         ->DISTINCT()
         ->get();
         return response()->json($linea,200);
     }
-    public function getAreaFuncional($uppId,$id,$ejercicio, $subPrograma){
+    public function getAreaFuncional($uppId,$id,$ejercicio, $subPrograma,$linea,$programa,$proyecto){
         $areaFuncional = DB::table('v_epp')
         ->SELECT('clv_finalidad', 'clv_funcion', 'clv_subfuncion', 'clv_eje', 'clv_programa_sectorial','clv_tipologia_conac')
         ->WHERE ('clv_upp', '=', $uppId)
         ->WHERE ('clv_ur', '=', $id)
         ->WHERE ('ejercicio', '=', $ejercicio)
         ->WHERE ('clv_subprograma', '=',  $subPrograma)
+        ->where ('clv_linea_accion', '=', $linea)
+        ->where ('clv_programa', '=', $programa)
+        ->where ('clv_proyecto', '=', $proyecto)
         ->DISTINCT()
         ->first();
         return response()->json($areaFuncional,200);

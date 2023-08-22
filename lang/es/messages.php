@@ -133,7 +133,7 @@ return [
     'nombre_aseguradora' => 'Nombre aseguradora',
     'nombre_perfil' => 'Nombre perfil',
     'nombre_propietario' => 'Nombre del propietario',
-    'nombre_sistema' => 'Sistema de Validación de Concesión',
+    'nombre_sistema' => 'Calendarización y Asignación de Presupuesto',
     'nombre_user' => 'Nombre de usuario',
     'nuevo_org' => 'Crear Nuevo Organismo',
     'nuevo_registro' => 'Nuevo Registro',

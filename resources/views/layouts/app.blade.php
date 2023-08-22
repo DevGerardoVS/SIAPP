@@ -3,23 +3,24 @@
 
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<?php ini_set('memory_limit', '-1');?>
+<?php ini_set('memory_limit', '-1');
+date_default_timezone_set('America/Mexico_City');
+?>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     @php
-    use Carbon\Carbon;
-         $lastActivity = Session::get('last_activity');
+        use Carbon\Carbon;
+        $lastActivity = Session::get('last_activity');
         $inactivityLimit = 1800; // 30 minutes (in seconds)
         if (!Auth::guest()) {
-            $fullname= Auth::user()->nombre;
-        }
-        else{
-            $fullname= "";
+            $fullname = Auth::user()->nombre;
+        } else {
+            $fullname = '';
         }
         
-      
     @endphp
     <!-- CSRF Token -->
     <meta id="meta" name="csrf-token" content="{{ csrf_token() }}">
@@ -35,13 +36,13 @@
     @else
         <title>Sistema Integral de Análisis Programático Presupuestal </title>
     @endif
-  
+
 
     {{-- Page Scripts --}}
     @yield('page_scripts')
 
     <!-- Styles -->
- 
+
 
 
     {{-- Page Styles --}}
@@ -104,26 +105,23 @@
                             @endforeach
                             <!--CERRAR SESION Y CAMBIO DE CONTRASEÑA-->
                             <li class="nav-item dropdown">
-
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle text-sm-left" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre
-                                title={{{$fullname}}}>
-                                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-end " aria-labelledby="navbarDropdown"
-                                style="text-align: center;">
-                                <h5 style=" border-bottom: 5px solid #FFC3D0;"><i class=" fa fa-user" aria-hidden="true"></i>
-                                    &nbsp <b>{{{Auth::user()->username}}}</b></h5>
-                                <a class="dropdown-item text-sm-left" href="{{ route('cambiar_contrasenia') }}">
-                                    <i class="fa fa-key" aria-hidden="true"></i>
-                                        {{ __('Cambiar contraseña') }}
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle text-sm-left" href="#"
+                                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    v-pre title={{ $fullname }}><i class="fa fa-user-circle-o"
+                                        aria-hidden="true"></i>
                                 </a>
-                                
-                                <a class="dropdown-item text-sm-left"  onclick="_gen.logOut()">
-                                    <i class="fa fa-sign-out" aria-hidden="true"></i>
-                                    {{ __('Cerrar Sesión') }}
-                                </a>
+                                <div class="dropdown-menu dropdown-menu-end " aria-labelledby="navbarDropdown"
+                                    style="text-align: center;">
+                                    <h5 style=" border-bottom: 3px solid #FFC3D0;">
+                                        <i class=" fa fa-user" aria-hidden="true"></i>&nbsp
+                                        <b>{{ Auth::user()->username }}</b>
+                                    </h5>
+                                    <a class="dropdown-item text-sm-left" href="{{ route('cambiar_contrasenia') }}">
+                                        <i class="fa fa-key" aria-hidden="true">&nbsp;</i>{{ __('Cambiar contraseña') }}
+                                    </a>
+                                    <a class="dropdown-item text-sm-left" onclick="_gen.logOut()">
+                                        <i class="fa fa-sign-out" aria-hidden="true">&nbsp;</i>{{ __('Cerrar Sesión') }}
+                                    </a>
                                 </div>
                             </li>
                         </ul>
