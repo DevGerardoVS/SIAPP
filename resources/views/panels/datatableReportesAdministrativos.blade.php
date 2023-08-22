@@ -10,9 +10,9 @@
             success: function(data) {
                 var par = $('#fechaCorte_filter');
                 par.html('');
-                par.append(new Option("Todo", ""));
+                par.append(new Option("Actuales", ""));
                 $.each(data, function(i, val){
-                    par.append(new Option(data[i].deleted_at, data[i].deleted_at));
+                    par.append(new Option("V"+ data[i].version +" - "+data[i].deleted_at , data[i].deleted_at));
                 });
             }
         });
@@ -146,6 +146,16 @@
                     data: response.dataSet,
                     searching: true,
                     autoWidth: true,
+                    // processing: false,
+                    // serverSide: true,
+                    // ajax: {
+                            
+                    //     url:   $(ruta).attr("action"),
+                    //     "data": {
+                    //         "filtros":  $(ruta).serializeArray()
+                    //     },
+                    //     "type": "POST",
+                    //     },
                     order:[],
                     group: [],
                     rowGroup: estatus,

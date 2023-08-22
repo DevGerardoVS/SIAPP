@@ -101,6 +101,7 @@ Route::controller(UsuarioController::class)->group(function () {
 		Route::post('/admon-capturas/clavesPresupuestarias', 'clavesPresupuestarias')->name('claves_presupuestarias');
 		Route::post('/admon-capturas/metasActividades', 'metasActividades')->name('metas_actividades');
 		Route::put('/admon-capturas/update', 'update')->name('admon_capturas_update');
+		Route::put('/admon-capturas/update-PPH', 'updateProgramacionPH')->name('pph_update');
 
 	});
 ?>

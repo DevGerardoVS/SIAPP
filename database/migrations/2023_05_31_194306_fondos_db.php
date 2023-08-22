@@ -40,6 +40,8 @@ return new class extends Migration
             $table->string('objetivo_central',255)->nullable(false);
             $table->string('comentarios_upp',255)->nullable(false);
             $table->integer('ejercicio')->nullable(false);
+            $table->string('created_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -57,10 +59,12 @@ return new class extends Migration
             $table->enum('tipo_objeto',['Superior','Directo','Indirecto'])->nullable(true);
             $table->string('descripcion',255)->nullable(false);
             $table->integer('ejercicio')->nullable(false);
+            $table->string('created_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
-
+            
             $table->foreign('problema_id')->references('id')->on('mml_definicion_problema');
             /* $table->foreign('upp_id')->references('id')->on('catalogo'); */
 
@@ -80,10 +84,11 @@ return new class extends Migration
             $table->tinyInteger('seleccion_mir')->nullable(false);
             $table->enum('tipo_indicador',['Componente','Actividad'])->nullable(true);
             $table->integer('ejercicio')->nullable(false);
+            $table->string('created_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
-
             $table->foreign('problema_id')->references('id')->on('mml_definicion_problema');
             /* $table->foreign('upp_id')->references('id')->on('catalogo'); */
 
@@ -99,10 +104,10 @@ return new class extends Migration
             $table->string('ruta',200)->nullable(true);
             $table->string('nombre',70)->nullable(true);
             $table->integer('ejercicio')->nullable(true);
+            $table->string('created_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            $table->string('created_user',45)->nullable(false);
-            $table->string('updated_user',45)->nullable(true);
             $table->softDeletes();
             $table->foreign('problema_id')->references('id')->on('mml_definicion_problema');
 /*             $table->foreign('clv_upp')->references('clv_upp')->on('catalogo');
@@ -115,6 +120,8 @@ return new class extends Migration
             $table->string('clv_estrategia', 9)->nullable(false);
             $table->text('estrategia')->nullable(false);
             $table->string('clv_cpladem_linea_accion', 12)->nullable(false);
+            $table->string('created_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -144,17 +151,19 @@ return new class extends Migration
             $table->string('lb_valor_absoluto',255)->nullable(false);
             $table->string('lb_valor_relativo',255)->nullable(false);
             $table->integer('lb_anio')->nullable(false);
-            $table->enum('lb_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(false);
-            $table->enum('lb_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(false);
+            $table->enum('lb_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
+            $table->enum('lb_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
             $table->string('mp_valor_absoluto',255)->nullable(false);
             $table->string('mp_valor_relativo',255)->nullable(false);
             $table->integer('mp_anio')->nullable(false);
             $table->integer('mp_anio_meta')->nullable(false);
-            $table->integer('mp_periodo_i')->nullable(false);
-            $table->integer('mp_periodo_f')->nullable(false);
+            $table->enum('mp_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
+            $table->enum('mp_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
             $table->text('supuestos')->nullable(false);
             $table->text('estrategias')->nullable(false);
             $table->integer('ejercicio')->nullable(false);
+            $table->string('created_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -176,11 +185,12 @@ return new class extends Migration
             $table->tinyInteger('etapa_5')->nullable(false);
             $table->integer('estatus')->unsigned()->nullable(false);
             $table->integer('ejercicio')->nullable(false)->default(0);
-            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->string('created_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
             $table->string('deleted_user',45)->nullable(true);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+           
             $table->softDeletes();
     
             /* $table->foreign('upp_id')->references('id')->on('catalogo'); */
@@ -196,6 +206,8 @@ return new class extends Migration
             $table->text('ods')->nullable(false);
             $table->string('clv_objetivos_y_metas_ods',5)->nullable(false);
             $table->text('objetivos_y_metas_ods')->nullable(false);
+            $table->string('created_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();

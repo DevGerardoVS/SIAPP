@@ -1,10 +1,10 @@
 @section('page_scripts')
     <script type="text/javascript">
-        $(".alert").delay(10000).slideUp(200, function() {
-            $(this).alert('close');
-        });
 
         $(document).ready(function() {
+            $(".alert").delay(10000).slideUp(200, function() {
+                $(this).alert('close');
+            });
             function getDataFechaCorte(anio) { //función para actualizar el select fechas de corte
                 $.ajax({
                     url: "/Reportes/data-fecha-corte/" + anio,
@@ -13,9 +13,9 @@
                     success: function(data) {
                         var par = $('#fechaCorte_filter');
                         par.html('');
-                        par.append(new Option("Todo", ""));
+                        par.append(new Option("Actuales", ""));
                         $.each(data, function(i, val) {
-                            par.append(new Option(data[i].deleted_at, data[i].deleted_at));
+                            par.append(new Option("V"+ data[i].version +" - "+data[i].deleted_at , data[i].deleted_at));
                         });
                     }
                 });
@@ -42,6 +42,7 @@
 
             $("#buscarForm").on("change", ".filters_anio", function(e) {
                 e.preventDefault();
+                $("#fechaCorte_filter").val("");
                 $(".anio").val($('#anio_filter').val());
                 getDataFechaCorte($('#anio_filter').val());
             });
