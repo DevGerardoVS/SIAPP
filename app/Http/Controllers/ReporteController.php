@@ -44,7 +44,6 @@ class ReporteController extends Controller
         $anio = $request->anio;
         $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
         $dataSet = array();
-        // $data = DB::select("CALL calendario_fondo_mensual(".$anio.", null)");
         $data = DB::select("CALL calendario_fondo_mensual(".$anio.", ".$fecha.")");
         foreach ($data as $d) {
 

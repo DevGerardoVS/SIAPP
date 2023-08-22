@@ -14,13 +14,14 @@ class AdmonCapturaController extends Controller
     public function index(){
         Controller::check_permission('getCaptura');
         $dataSet = array(); 
-        $countData = count(DB::select("SELECT id FROM programacion_presupuesto_hist")); //Comprobar si hay datos
         $anioActivo = DB::select('SELECT ejercicio FROM cierre_ejercicio_claves order by ejercicio desc LIMIT 1');
         $anio = $anioActivo[0]->ejercicio;
         session(["anio"=>$anio]); //variable de sesión para usar en las demás funciones
-
+        $comprobarAnioPP = DB::select("SELECT ejercicio FROM programacion_presupuesto WHERE ejercicio = $anio"); // Comprobar si existen datos en PP con el año dado
+       
+        $countData = count(DB::select("SELECT id FROM programacion_presupuesto_hist WHERE ejercicio = $anio")); //Comprobar si hay datos en PPH
         $version = 0;
-        if($countData > 0){
+        if($countData > 0){ // Comprobar si hay datos en la tabla
             $getVersion = DB::select("SELECT distinct(version) FROM programacion_presupuesto_hist where ejercicio = $anio ORDER BY version DESC LIMIT 1");
             $version = $getVersion[0]->version;
             session(["version"=>$version]);
@@ -28,13 +29,14 @@ class AdmonCapturaController extends Controller
 
         $comprobarEstadoPP = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = $anio GROUP BY upp");
         $comprobarEstadoMetas = DB::select("SELECT m.estatus, am.clv_upp, am.ejercicio FROM metas m JOIN mml_mir am ON m.mir_id = am.id WHERE am.ejercicio = $anio GROUP BY am.clv_upp");        
-        $upps = DB::select('SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND activos = 1 AND c.deleted_at is null ORDER BY clave ASC');
+        $upps = DB::select("SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND ejercicio = $anio AND c.deleted_at is null ORDER BY clave ASC");
         return view("captura.admonCaptura", [
             'dataSet' => json_encode($dataSet),
             'anio' => $anio,
             'upps' => $upps,
             'comprobarEstadoPP' => $comprobarEstadoPP,
             'comprobarEstadoMetas' => $comprobarEstadoMetas,
+            'comprobarAnioPP' => $comprobarAnioPP,
             'version' => $version,
         ]);
     }  
@@ -124,7 +126,7 @@ class AdmonCapturaController extends Controller
             $checar_ambos = "AND cec.clv_upp = '$upp' AND cem.clv_upp = '$upp'";
             $checar_clave = "AND clv_upp = '$upp'";
             $checar_upp_PP = "AND upp = '$upp'";
-            $checar_upp_metas = "AND pm.clv_upp = '$upp'";
+            $checar_upp_metas = "AND am.clv_upp = '$upp'";
         }  
 
         try {
@@ -137,7 +139,7 @@ class AdmonCapturaController extends Controller
                     DB::update("UPDATE programacion_presupuesto SET estado = 0 WHERE ejercicio = $anio  $checar_upp_PP");
                 }
                 if($modulo == "cierre_ejercicio_metas cem" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
-                    DB::update("UPDATE metas m JOIN actividades_mir am ON m.actividad_id = am.id JOIN proyectos_mir pm ON am.proyecto_mir_id = pm.id SET m.estatus = 0 WHERE pm.ejercicio = $anio AND m.estatus = 1 $checar_upp_metas");
+                    DB::update("UPDATE metas m JOIN mml_mir am ON m.mir_id = am.id SET m.estatus = 0 WHERE am.ejercicio = $anio AND m.estatus = 1 $checar_upp_metas");
                 }
             }
 
@@ -159,9 +161,9 @@ class AdmonCapturaController extends Controller
     public function updateProgramacionPH(Request $request){
         Controller::check_permission('getCaptura');
         
-        $countData = count(DB::select("SELECT id FROM programacion_presupuesto_hist")); //Comprobar si hay datos
         $getAnio = session("anio");
         $getVersion = session("version");
+        $countData = count(DB::select("SELECT id FROM programacion_presupuesto_hist WHERE ejercicio = $getAnio")); //Comprobar si hay datos en PPH
 
         $version =  $countData > 0 ? $getVersion + 1 : 1;
 
@@ -175,12 +177,13 @@ class AdmonCapturaController extends Controller
                 "accion"=> "Editar programación Presupuesto Hist",
                 "modulo"=> "programación Presupuesto Hist",
             );
+
             Controller::bitacora($b);
             DB::commit();
-            return redirect()->route("index")->withSuccess('¡Recorte hecho!');
+            return redirect()->route("index")->withSuccess('¡Corte hecho!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['msg'=>'¡Ocurrió un error al hacer el recorte!']);
+            return back()->withErrors(['msg'=>'¡Ocurrió un error al hacer el corte!']);
         }
     }
 
