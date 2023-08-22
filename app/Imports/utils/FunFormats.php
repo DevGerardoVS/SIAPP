@@ -9,9 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\calendarizacion\ActividadesMir;
-use App\Models\calendarizacion\ProyectosMir;
-
+use App\Models\Mir;
 
 class FunFormats
 {
@@ -72,24 +70,16 @@ class FunFormats
                     );
                     return $error;
                 } else {
-                    $actividad = ActividadesMir::where('deleted_at', null)->where('actividades_mir.clv_actividad', $k[13])->first();
+                    $actividad=Mir::where('deleted_at', null)->where('id', $k[13])->first();
                     if ($actividad) {
-                        
                         $area= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]).'';
-                        $proy = DB::table('proyectos_mir')
-                        ->select('*')
-                        ->where('deleted_at', null)
-                        ->where('id', $actividad['proyecto_mir_id'])
-                        ->where('area_funcional',$area)
-                        ->where('clv_upp',$k[7])
-                        ->get();
-                        if (count($proy)>=1) {
+                        if ($actividad->area_funcional==$area) {
                             $clave =''. strval($k[0]) . '-' .strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]). '-' .strval($k[4]).'-'. strval($k[5]) . '-' .strval($k[6]) .'-'. strval($k[7]) . '-' .strval($k[8]) . '-' . strval($k[9]) . '-' . strval($k[10]). '-' .strval($k[11]).'';
-                            $pres=FunFormats::existPP($clave);
+                            $pres=FunFormats::existPP($clave,$actividad->ejercicio);
                             if (count($pres)) {
                                 $aux[] = [
                                     'clv_fondo' => $k[12],
-                                    'actividad_id' => $k[13],
+                                    'mir_id' => $k[13],
                                     'tipo' => $k[16],
                                     'beneficiario_id' => $k[29],
                                     'unidad_medida_id' => $k[32],
@@ -180,7 +170,7 @@ class FunFormats
 		$columns=['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA'];
 		return $columns[$i];
 	}
-    public static function existPP($clave){
+    public static function existPP($clave,$anio){
         
         $arrayclave=explode( '-', $clave);
         try {
@@ -201,7 +191,7 @@ class FunFormats
             ->where('programa_presupuestario', $arrayclave[9])
             ->where('subprograma_presupuestario', $arrayclave[10])
 			->where('proyecto_presupuestario', $arrayclave[11])
-            ->where('programacion_presupuesto.ejercicio', '=', 2023)
+            ->where('programacion_presupuesto.ejercicio', '=', $anio)
             ->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 			->distinct()
             ->get();
