@@ -13,6 +13,7 @@
                         <h2>Proyectos con actividades</h2>
                     </header>
                 </div>
+                    <label id="validMetas"  ></label>
                 <div class="row">
                     @if (Auth::user()->id_grupo != 4)
                     <div class="col-md-4">
@@ -27,9 +28,6 @@
                         <select class="form-control filters select2" id="anio_filter" name="anio_filter"
                             autocomplete="anio_filter" placeholder="Seleccione un año">
                             <option value="" disabled selected>Seleccione un año</option>
-                            @foreach (getAnios() as $item)
-                            <option value="{{{$item->ejercicio}}}" >{{{$item->ejercicio}}}</option>
-                            @endforeach
                         </select>
                     </div>
                     <div class="col-md-2"></div>
@@ -39,9 +37,6 @@
                         <select class="form-control filters select2" id="anio_filter" name="anio_filter"
                             autocomplete="anio_filter" placeholder="Seleccione un año">
                             <option value="" disabled selected>Seleccione un año</option>
-                            @foreach (getAnios() as $item)
-                            <option value="{{{$item->ejercicio}}}" >{{{$item->ejercicio}}}</option>
-                            @endforeach
                         </select>
                     </div>
                     <div class="col-md-6 "></div>
@@ -59,13 +54,15 @@
                         <div class="col-md-12">
                             <br>
                                 @if (Auth::user()->id_grupo == 4)
-                                <button  type="button" class="btn btn-outline-primary col-md-2" onclick="dao.exportJasperMetas()">Formato Metas</button>&nbsp
-                                <button  type="button" class="btn btn-outline-primary col-md-2" onclick="dao.exportJasper()">Formato</button>&nbsp
+                                <button  type="button" class="btn btn-outline-primary col-md-2" onclick="dao.exportJasperMetas()">Formato Metas</button>&nbsp;
+                                <button  type="button" class="btn btn-outline-primary col-md-2" onclick="dao.exportJasper()">Formato</button>&nbsp;
                                 @endif
                                 
                                 <button type="button" style="justify-content: flex-end; " onclick="dao.exportPdf()"class="btn btn-outline-danger col-md-2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar PDF</button>&nbsp
                                 <button type="button" style="justify-content: float-right;" onclick="dao.exportExcel()" class="btn btn-outline-success col-md-2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar Excel</button> &nbsp
-                        </div>   
+                                <button type="button" class="btn btn-outline-primary float-right confirmacion" onclick="dao.ConfirmarMetas()"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Confirmar Metas</button>
+
+                            </div>   
                     @endif
                 </div>
                 &nbsp
