@@ -986,6 +986,7 @@ class MetasController extends Controller
 			->where('mml_mir.clv_upp', $upp)
 			->where('mml_mir.ejercicio', $anio)
 			->where('mml_mir.deleted_at', null)
+			->where('metas.deleted_at', null)
 			->where('metas.estatus', 0)->get();
 		$pp = [];
 		foreach ($metas as $key) {
@@ -1028,9 +1029,7 @@ class MetasController extends Controller
 			->where('deleted_at', null)
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
 			->get();
-		Log::debug(count($pp));
-		Log::debug(count($metas));
-		Log::debug(count($activsPP));
+
 		if (count($metas) == count($pp) && count($metas) >= 1 && count($activs) >= 1 && count($metas) >= count($activsPP)) {
 			return ["status" => true];
 		} else {
@@ -1046,6 +1045,28 @@ class MetasController extends Controller
 			->groupBy('mml_mir.ejercicio')
 			->get();
 		return $anio;
+	}
+	public static function cmetasUpp($anio)
+	{
+		$upp = Auth::user()->clv_upp;
+		$metas = DB::table('metas')
+			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
+			->select(
+				'mml_mir.entidad_ejecutora',
+				'mml_mir.area_funcional',
+				'mml_mir.clv_upp'
+			)
+			->where('mml_mir.clv_upp', $upp)
+			->where('mml_mir.ejercicio', $anio)
+			->where('mml_mir.deleted_at', null)
+			->where('metas.deleted_at', null)
+			->where('metas.estatus', 1)->get();
+
+		if (count($metas)>=1) {
+			return ["status" => true];
+		} else {
+			return ["status" => false];
+		}
 	}
 
 }
