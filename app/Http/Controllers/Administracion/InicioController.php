@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use PDF;
+use App\Exports\InicioExport;
+
 
 class InicioController extends Controller
 {
@@ -56,4 +60,41 @@ class InicioController extends Controller
         }
     }
 
+    public function exportPdf()
+    {
+        ini_set('max_execution_time', 5000);
+        ini_set('memory_limit', '1024M');
+        $data = DB::table('inicio_b')
+        ->select(DB::raw('
+            clave,
+            fondo,
+            FORMAT(asignado,"Currency") as asignado,
+            FORMAT(programado,"Currency") as programado,
+            FORMAT(avance, 2) as avance '))
+        ->get();
+        view()->share('data', $data);
+        $pdf = PDF::loadView('inicioPdf')->setPaper('a4', 'landscape');
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Descargar Inicio PDF',
+            "modulo" => 'Inicio'
+        );
+        Controller::bitacora($b);
+        return $pdf->download('Presupuesto por fondo.pdf');
+    }
+
+    public function exportExcel()
+    {
+        /*Si no coloco estas lineas Falla*/
+        ob_end_clean();
+        ob_start();
+        /*Si no coloco estas lineas Falla*/
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Descargar Inicio Excel',
+            "modulo" => 'Inicio'
+        );
+        Controller::bitacora($b);
+        return Excel::download(new InicioExport(), 'Presupuesto por fondo..xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
 }
