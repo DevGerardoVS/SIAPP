@@ -568,13 +568,30 @@ var dao = {
         }).done(function (data) {
             if (!data.status) {
                 $(".confirmacion").hide();
+  
+            } else {
                 if ($('#upp').val() != '') {
-                    $('#validMetas').addClass(" alert alert-danger").addClass("text-center")
-                    $('#validMetas').text("Las metas ya fueron confirmadas")
+                   
                     $(".cierreMetas").hide();
                 }
-            } else {
                 $(".confirmacion").show();
+            }
+            
+
+        });
+    },
+    rCMetasUpp: function (anio) {
+        $.ajax({
+            type: "GET",
+            url: '/actividades/rev-confirmar-metas-upp/'+anio,
+            dataType: "JSON"
+        }).done(function (data) {
+            if (data.status) {
+                $(".cmupp").show();
+                $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
+                $('#validMetas').text("Las metas ya fueron confirmadas");
+            } else {
+                $(".cmupp").hide();
             }
             
 
@@ -611,6 +628,7 @@ var dao = {
                     });
                     dao.getData(upp, anio);
                     dao.revConfirmarMetas(upp, anio);
+                    dao.rCMetasUpp(anio);
                 });
             } /* else if (result.isDenied) {
               Swal.fire('Changes are not saved', '', 'info')
@@ -659,6 +677,7 @@ var init = {
 };
 
 $(document).ready(function () {
+    dao.rCMetasUpp($('#anio_filter').val());
     const moonLanding = new Date();
     $("#anio_filter option[value='" + moonLanding.getFullYear() + "']").attr("selected", true);
     $("#cerrar").click(function(){
@@ -712,7 +731,7 @@ $(document).ready(function () {
             dao.revConfirmarMetas($('#upp_filter').val(), $('#anio_filter').val());
         } else {
             dao.getData($('#upp').val(), $('#anio_filter').val());
-            dao.revrevConfirmarMetas($('#upp').val(), $('#anio_filter').val());
+            dao.revConfirmarMetas($('#upp').val(), $('#anio_filter').val());
         }
     });
 
