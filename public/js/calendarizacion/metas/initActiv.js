@@ -610,6 +610,7 @@ var dao = {
                         text: mensaje.text,
                     });
                     dao.getData(upp, anio);
+                    dao.revConfirmarMetas(upp, anio);
                 });
             } /* else if (result.isDenied) {
               Swal.fire('Changes are not saved', '', 'info')

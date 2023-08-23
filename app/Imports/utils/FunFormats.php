@@ -404,7 +404,8 @@ class FunFormats
             ->where('mml_mir.area_funcional',$areaAux[0]) */
             ->where('metas.clv_fondo', $fondo)
             ->where('metas.mir_id', $mir)
-			->where('mml_mir.deleted_at', null)->get();
+			->where('mml_mir.deleted_at', null)
+            ->where('metas.deleted_at', null)->get();
             if(count($metas)==0){
             return ["status" => true];
             }else{
