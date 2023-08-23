@@ -88,6 +88,13 @@ DB::unprepared("INSERT INTO mml_avance_etapas_pp (clv_upp,clv_pp,etapa_0,etapa_1
 	 (1,'080','YJ','Causa',17,'3.1','Indirecto','Deficiente Sistema Integral de Planeación',2024,'2023-08-16 17:37:36','2023-08-02 10:19:50',NULL);
         ");
 
+    DB::unprepared("INSERT INTO mml_observaciones_pp (clv_upp,clv_pp,problema_id,etapa,comentario,ruta,nombre,ejercicio,created_at,updated_at,created_user,updated_user,deleted_at) VALUES
+    ('080','YJ',1,1,'Falta definir bien el árbol del problema',NULL,NULL,2024,'2023-08-21 14:19:11.0','2023-08-21 14:19:11.0','SISTEMA',NULL,NULL),
+    ('080','YJ',1,2,'Los efectos se deben redactar de acuerdo a la metodología',NULL,NULL,2024,'2023-08-21 14:21:31.0','2023-08-21 14:21:31.0','SISTEMA',NULL,NULL),
+    ('080','YJ',1,3,'Todo bien',NULL,NULL,2024,'2023-08-21 14:23:47.0','2023-08-21 14:23:47.0','SISTEMA',NULL,NULL),
+    ('080','YJ',1,5,'En la MIR se debe redactar de forma diferente el FIN',NULL,NULL,2024,'2023-08-21 14:26:14.0','2023-08-21 14:26:14.0','SISTEMA',NULL,NULL);
+     ");
+
         DB::unprepared("INSERT INTO mml_arbol_objetivos (problema_id,clv_upp,clv_pp,tipo,padre_id,indice,tipo_objeto,descripcion,calificacion_id,seleccion_mir,tipo_indicador,ejercicio,created_at,updated_at,deleted_at) VALUES
 	 (1,'080','YJ','Fin',0,NULL,'Superior','Incremento en el desarrollo económico',2,1,NULL,2024,'2023-08-16 14:00:02','2023-08-02 10:19:50',NULL),
 	 (1,'080','YJ','Fin',0,'1','Directo','Proyectos y acciones con beneficio socioeconómico',1,0,NULL,2024,'2023-08-16 17:36:07','2023-08-02 10:19:50',NULL),
