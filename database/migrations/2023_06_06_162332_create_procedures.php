@@ -1404,91 +1404,98 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE if not exists avance_proyectos_actividades_upp(in anio int, in corte date)
         begin
+            set @corte := 'mm.deleted_at is null';
+            if (corte is not null) then 
+                set @corte := CONCAT('mm.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+            end if;
+                
+            set @query := CONCAT('
             select 
-            clv_upp,
-            upp,
-            proyectos,
-            actividades,
-            (actividades/proyectos)*100 avance,
-            case 
-                when estatus > 0 then 'Confirmado'
-                else 'Registrado'
-            end estatus
-        from (
-            select 
-                ve.clv_upp,
-                ve.upp,
-                count(proyecto) proyectos,
-                count(distinct proyecto_mir_id) actividades,
-                sum(am.estatus) estatus
-            from v_epp ve
-            left join proyectos_mir pm on 
-                pm.clv_upp = ve.clv_upp and 
-                substring(pm.entidad_ejecutora,5,2) = ve.clv_ur and 
-                substring(pm.entidad_ejecutora,9,2) = ve.clv_programa and 
-                substring(pm.entidad_ejecutora,11,3) = ve.clv_subprograma and 
-                substring(pm.entidad_ejecutora,14,3) = ve.clv_proyecto
-            left join actividades_mir am on pm.id = am.proyecto_mir_id
-            where pm.ejercicio = anio and if (
-                corte is null,
-                am.deleted_at is null,
-                am.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-            )
-            group by clv_upp,upp
-        ) tabla;
+                clv_upp,
+                upp,
+                sum(proyectos) proyectos,
+                sum(actividades) actividades,
+                (sum(actividades)/sum(proyectos))*100 avance,
+                case 
+                    when sum(actividades) >= sum(proyectos) then \"Confirmado\"
+                    else \"Registrado\"
+                end estatus
+            from (
+                select 
+                    ve.clv_upp,
+                    ve.upp,
+                    count(mm.id) proyectos,
+                    0 actividades
+                from mml_mir mm 
+                join v_epp ve on mm.id_epp = ve.id
+                where mm.nivel = 10 and mm.ejercicio = ',anio,' and ',@corte,'
+                group by clv_upp,upp
+                union all
+                select 
+                    ve.clv_upp,
+                    ve.upp,
+                    0 proyectos,
+                    count(distinct mm.componente_padre) actividades
+                from mml_mir mm 
+                join v_epp ve on mm.id_epp = ve.id
+                where mm.nivel = 11 and mm.ejercicio = ',anio,' and ',@corte,'
+                group by clv_upp,upp
+            ) t
+            group by clv_upp,upp;
+            ');
+
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
         END;");
         
         DB::unprepared("CREATE PROCEDURE if not exists proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date)
         begin
-            select 
-                pm.clv_upp,
-                substring(pm.entidad_ejecutora,5,2) clv_ur,
-                pm.clv_programa,
-                substring(pm.entidad_ejecutora,11,3) clv_subprograma,
-                substring(pm.entidad_ejecutora,14,3) clv_proyecto,
-                m.clv_fondo,
-                am.actividad,
-                m.cantidad_beneficiarios,
-                b.beneficiario,
-                um.unidad_medida,
-                case 
-                    when m.tipo = 0 then 'Continua'
-                    when m.tipo = 1 then 'Acumulativa'
-                    when m.tipo = 2 then 'Especial'
-                    else 'No Especificada'
-                end tipo,
-                case 
-                    when m.tipo = 0 then enero
-                    when m.tipo = 1 then total
-                    when m.tipo = 2 then greatest(enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre)
-                end meta_anual,
-                enero,
-                febrero,
-                marzo,
-                abril,
-                mayo,
-                junio,
-                julio,
-                agosto,
-                septiembre,
-                octubre,
-                noviembre,
-                diciembre
-            from metas m
-            join actividades_mir am on m.actividad_id = am.id 
-            join proyectos_mir pm on am.proyecto_mir_id = pm.id
-            join beneficiarios b on m.beneficiario_id = b.id 
-            join unidades_medida um on m.unidad_medida_id = um.id 
-            where pm.ejercicio = anio and 
-                pm.deleted_at is null and if (
-                    upp is null,
-                    pm.clv_upp != '',
-                    pm.clv_upp = upp
-                ) and if (
-                corte is null,
-                am.deleted_at is null,
-                am.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-            );
+            set @corte := 'mm.deleted_at is null';
+            set @upp := '';
+            if (corte is not null) then 
+                set @corte := CONCAT('mm.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+            end if;
+            if (upp is not null) then 
+                set @upp := CONCAT('and mm.clv_upp = \"',upp,'\"');
+            end if;
+                
+            set @query := CONCAT('
+                select 
+                    mm.clv_upp,
+                    substr(mm.entidad_ejecutora,5,2) clv_ur,
+                    substr(mm.area_funcional,9,2) clv_programa,
+                    substr(mm.area_funcional,11,3) clv_subprograma,
+                    substr(mm.area_funcional,14,3) clv_proyecto,
+                    m.clv_fondo,
+                    mm.indicador actividad,
+                    m.cantidad_beneficiarios,
+                    b.beneficiario,
+                    um.unidad_medida,
+                    m.tipo,
+                    case 
+                        when m.tipo = \"Acumulativa\" then 
+                            (m.enero+m.febrero+m.marzo+m.abril+m.mayo+m.junio+m.julio+
+                            m.agosto+m.septiembre+m.octubre+m.noviembre+m.diciembre)
+                        when m.tipo = \"Continua\" then m.enero
+                        when m.tipo = \"Especial\" then greatest
+                            (m.enero,m.febrero,m.marzo,m.abril,m.mayo,
+                            m.junio,m.julio,m.agosto,m.septiembre,
+                            m.octubre,m.noviembre,m.diciembre)
+                    end meta_anual,
+                    m.enero,m.febrero,m.marzo,m.abril,m.mayo,
+                    m.junio,m.julio,m.agosto,m.septiembre,
+                    m.octubre,m.noviembre,m.diciembre
+                from mml_mir mm 
+                join metas m on m.mir_id = mm.id
+                join unidades_medida um on m.unidad_medida_id = um.id 
+                join beneficiarios b on m.beneficiario_id = b.id
+                where mm.nivel = 11 ',@upp,' and mm.ejercicio = ',anio,' and ',@corte,';
+            ');
+
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
         END;");
         
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_5(in anio int, in corte date)
@@ -2364,202 +2371,140 @@ return new class extends Migration {
 
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_II(in anio int, in corte date)
         begin
-            select 
-                case 
-                    when indicador = '' then clv_upp
-                    else ''
-                end clv_upp,
-                case 
-                    when indicador = '' then upp
-                    else ''
-                end upp,
-                case 
-                    when indicador = '' then clv_fuente_financiamiento
-                    else ''
-                end clv_fuente_financiamiento,
-                case 
-                    when indicador = '' then fuente_financiamiento
-                    else ''
-                end fuente_financiamiento,
-                case 
-                    when indicador = '' then clv_programa
-                    else ''
-                end clv_programa,
-                case 
-                    when indicador = '' then programa
-                    else ''
-                end programa,
-                case 
-                    when indicador = '' then clv_subprograma
-                    else ''
-                end clv_subprograma,
-                case 
-                    when indicador = '' then subprograma
-                    else ''
-                end subprograma,
-                indicador,
-                actividad,
-                metas,
-                importe
-            from (
+            set @corte := 'mm.deleted_at is null';
+            if (corte is not null) then 
+                set @corte := CONCAT('mm.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+            end if;
+            
+            set @fromj := CONCAT('from mml_mir mm
+            join metas m on m.mir_id = mm.id
+            left join pp_aplanado pa 
+            on pa.clv_upp = mm.clv_upp  
+            and pa.clv_ur = mm.clv_ur
+            and pa.clv_finalidad = substring(mm.area_funcional,1,1)
+            and pa.clv_funcion = substring(mm.area_funcional,2,1)
+            and pa.clv_subfuncion = substring(mm.area_funcional,3,1)
+            and pa.clv_eje = substring(mm.area_funcional,4,1)
+            and pa.clv_linea_accion = substring(mm.area_funcional,5,2)
+            and pa.clv_programa_sectorial = substring(mm.area_funcional,7,1)
+            and pa.clv_tipologia_conac = substring(mm.area_funcional,8,1)
+            and pa.clv_programa = substring(mm.area_funcional,9,2)
+            and pa.clv_subprograma = substring(mm.area_funcional,11,3)
+            and pa.clv_proyecto = substring(mm.area_funcional,14,3)
+            where mm.ejercicio = ',anio,' and mm.tipo_indicador = 13 and ',@corte);
+            set @query := CONCAT('
                 select 
-                    pa.clv_upp,
-                    pa.upp,
-                    pa.clv_fuente_financiamiento,
-                    pa.fuente_financiamiento,
-                    pa.clv_programa,
-                    pa.programa,
-                    pa.clv_subprograma,
-                    pa.subprograma,
-                    '' indicador,
-                    '' objetivo,
-                    '' actividad,
-                    0 metas,
-                    0 importe
-                from proyectos_mir pm 
-                join pp_aplanado pa on pa.clv_upp = pm.clv_upp
-                    and pa.clv_ur = substring(pm.entidad_ejecutora,5,2)
-                    and pa.clv_finalidad = substring(pm.area_funcional,1,1)
-                    and pa.clv_funcion = substring(pm.area_funcional,2,1)
-                    and pa.clv_subfuncion = substring(pm.area_funcional,3,1)
-                    and pa.clv_eje = substring(pm.area_funcional,4,1)
-                    and pa.clv_linea_accion = substring(pm.area_funcional,5,2)
-                    and pa.clv_programa_sectorial = substring(pm.area_funcional,7,1)
-                    and pa.clv_tipologia_conac = substring(pm.area_funcional,8,1)
-                    and pa.clv_programa = substring(pm.area_funcional,9,2)
-                    and pa.clv_subprograma = substring(pm.area_funcional,11,3)
-                    and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio and if (
-                    corte is null,
-                    pa.deleted_at is null,
-                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
-                    pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma
-                union all
-                select 
-                    pa.clv_upp,
-                    pa.upp,
-                    pa.clv_fuente_financiamiento,
-                    pa.fuente_financiamiento,
-                    pa.clv_programa,
-                    pa.programa,
-                    pa.clv_subprograma,
-                    pa.subprograma,
-                    pm.indicador,
-                    pm.objetivo,
-                    am.actividad,
-                    count(m.id) metas,
-                    sum(m.total) importe
-                from proyectos_mir pm 
-                join actividades_mir am on am.proyecto_mir_id = pm.id 
-                join metas m on m.actividad_id = am.id
-                join pp_aplanado pa on pa.clv_upp = pm.clv_upp
-                    and pa.clv_ur = substring(pm.entidad_ejecutora,5,2)
-                    and pa.clv_finalidad = substring(pm.area_funcional,1,1)
-                    and pa.clv_funcion = substring(pm.area_funcional,2,1)
-                    and pa.clv_subfuncion = substring(pm.area_funcional,3,1)
-                    and pa.clv_eje = substring(pm.area_funcional,4,1)
-                    and pa.clv_linea_accion = substring(pm.area_funcional,5,2)
-                    and pa.clv_programa_sectorial = substring(pm.area_funcional,7,1)
-                    and pa.clv_tipologia_conac = substring(pm.area_funcional,8,1)
-                    and pa.clv_programa = substring(pm.area_funcional,9,2)
-                    and pa.clv_subprograma = substring(pm.area_funcional,11,3)
-                    and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio and if (
-                    corte is null,
-                    pa.deleted_at is null,
-                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
-                    pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma,
-                    pm.indicador, pm.objetivo, am.actividad
-                order by clv_upp,upp,clv_fuente_financiamiento,fuente_financiamiento,
+                    clv_upp,
+                    upp,
+                    clv_fuente_financiamiento,
+                    fuente_financiamiento,
+                    clv_programa,
+                    programa,
+                    clv_subprograma,
+                    subprograma,
+                    indicador,
+                    objetivo,
+                    actividad,
+                    count(metas) metas,
+                    sum(importe) importe
+                from (
+                    select distinct
+                        pa.clv_upp,
+                        pa.upp,
+                        pa.clv_fuente_financiamiento,
+                        pa.fuente_financiamiento,
+                        pa.clv_programa,
+                        pa.programa,
+                        pa.clv_subprograma,
+                        pa.subprograma,
+                        \"\" indicador,
+                        \"\" objetivo,
+                        \"\" actividad,
+                        0 metas,
+                        0 importe
+                    ',@fromj,'
+                    union all
+                    select distinct
+                        pa.clv_upp,
+                        pa.upp,
+                        pa.clv_fuente_financiamiento,
+                        pa.fuente_financiamiento,
+                        pa.clv_programa,
+                        pa.programa,
+                        pa.clv_subprograma,
+                        pa.subprograma,
+                        mm.indicador,
+                        mm.objetivo,
+                        mm.definicion_indicador actividad,
+                        m.id metas,
+                        m.total importe
+                    ',@fromj,'
+                ) t
+                group by clv_upp,upp,clv_fuente_financiamiento,fuente_financiamiento,
                     clv_programa,programa,clv_subprograma,subprograma,
-                    indicador,objetivo,actividad
-            ) tabla;
+                    indicador,objetivo,actividad;
+            ');
+
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
         END;");
 
         DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_IX(in anio int, in corte date)
         begin
-            select
-                case 
-                    when indicador = '' then clv_programa
-                    else ''
-                end clv_programa,
-                case 
-                    when indicador = '' then programa
-                    else ''
-                end programa,
-                indicador,
-                objetivo,
-                actividad,
-                metas,
-                importe
-            from (
+            set @corte := 'mm.deleted_at is null';
+            if (corte is not null) then 
+                set @corte := CONCAT('mm.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+            end if;
+
+            set @fjw := CONCAT('from mml_mir mm
+            join metas m on m.mir_id = mm.id
+            join v_epp ve on mm.id_epp = ve.id
+            where mm.ejercicio = ',anio,' and mm.tipo_indicador = 13 and ',@corte,'
+            ');
+            set @query := CONCAT('
                 select 
-                    pa.clv_programa,
-                    pa.programa,
-                    '' indicador,
-                    '' objetivo,
-                    '' actividad,
-                    0 metas,
-                    0 importe
-                from proyectos_mir pm 
-                join actividades_mir am on am.proyecto_mir_id = pm.id 
-                join metas m on m.actividad_id = am.id
-                join pp_aplanado pa on pa.clv_upp = pm.clv_upp
-                    and pa.clv_ur = substring(pm.entidad_ejecutora,5,2)
-                    and pa.clv_finalidad = substring(pm.area_funcional,1,1)
-                    and pa.clv_funcion = substring(pm.area_funcional,2,1)
-                    and pa.clv_subfuncion = substring(pm.area_funcional,3,1)
-                    and pa.clv_eje = substring(pm.area_funcional,4,1)
-                    and pa.clv_linea_accion = substring(pm.area_funcional,5,2)
-                    and pa.clv_programa_sectorial = substring(pm.area_funcional,7,1)
-                    and pa.clv_tipologia_conac = substring(pm.area_funcional,8,1)
-                    and pa.clv_programa = substring(pm.area_funcional,9,2)
-                    and pa.clv_subprograma = substring(pm.area_funcional,11,3)
-                    and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio and if (
-                    corte is null,
-                    pa.deleted_at is null,
-                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                group by pa.clv_programa,pa.programa
-                union all
-                select 
-                    pa.clv_programa,
-                    pa.programa,
-                    pm.indicador,
-                    pm.objetivo,
-                    am.actividad,
-                    count(m.id) metas,
-                    sum(m.total) importe
-                from proyectos_mir pm 
-                join actividades_mir am on am.proyecto_mir_id = pm.id 
-                join metas m on m.actividad_id = am.id
-                join pp_aplanado pa on pa.clv_upp = pm.clv_upp
-                    and pa.clv_ur = substring(pm.entidad_ejecutora,5,2)
-                    and pa.clv_finalidad = substring(pm.area_funcional,1,1)
-                    and pa.clv_funcion = substring(pm.area_funcional,2,1)
-                    and pa.clv_subfuncion = substring(pm.area_funcional,3,1)
-                    and pa.clv_eje = substring(pm.area_funcional,4,1)
-                    and pa.clv_linea_accion = substring(pm.area_funcional,5,2)
-                    and pa.clv_programa_sectorial = substring(pm.area_funcional,7,1)
-                    and pa.clv_tipologia_conac = substring(pm.area_funcional,8,1)
-                    and pa.clv_programa = substring(pm.area_funcional,9,2)
-                    and pa.clv_subprograma = substring(pm.area_funcional,11,3)
-                    and pa.clv_proyecto = substring(pm.area_funcional,14,3)
-                where pm.ejercicio = anio and if (
-                    corte is null,
-                    pa.deleted_at is null,
-                    pa.deleted_at between corte and DATE_ADD(corte, INTERVAL 1 DAY)
-                )
-                group by pa.clv_upp, pa.upp, pa.clv_fuente_financiamiento, pa.fuente_financiamiento,
-                    pa.clv_programa, pa.programa, pa.clv_subprograma, pa.subprograma,
-                    pm.indicador, pm.objetivo, am.actividad
-                order by clv_programa,programa,indicador,objetivo,actividad
-            ) tabla;
+                    case 
+                        when indicador != \"\" then \"\"
+                        else clv_programa
+                    end clv_programa,
+                    case 
+                        when indicador != \"\" then \"\"
+                        else programa
+                    end programa,
+                    indicador,
+                    objetivo,
+                    actividad,
+                    metas,
+                    importe
+                from (
+                    select 
+                        ve.clv_programa,
+                        ve.programa,
+                        \"\" indicador,
+                        \"\" objetivo,
+                        \"\" actividad,
+                        0 metas,
+                        0 importe
+                    ',@fjw,'
+                    group by ve.clv_programa,ve.programa
+                    union all
+                    select 
+                        ve.clv_programa,
+                        ve.programa,
+                        mm.indicador,
+                        mm.objetivo,
+                        mm.definicion_indicador actividad,
+                        count(m.id) metas,
+                        sum(m.total) importe
+                    ',@fjw,'
+                    group by ve.clv_programa,ve.programa,mm.indicador,mm.objetivo,mm.definicion_indicador
+                ) t;
+            ');
+
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
         END");
 
         DB::unprepared("CREATE PROCEDURE if not exists sp_epp(in uppC varchar(3),in urC varchar(2), in anio int)
