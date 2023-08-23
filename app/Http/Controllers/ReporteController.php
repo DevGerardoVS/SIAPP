@@ -44,7 +44,6 @@ class ReporteController extends Controller
         $anio = $request->anio;
         $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
         $dataSet = array();
-        // $data = DB::select("CALL calendario_fondo_mensual(".$anio.", null)");
         $data = DB::select("CALL calendario_fondo_mensual(".$anio.", ".$fecha.")");
         foreach ($data as $d) {
 
@@ -151,7 +150,7 @@ class ReporteController extends Controller
     // Administrativos
 
     public function getFechaCorte($anio){
-        $fechaCorte = DB::select('select distinct version, DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto_hist pp where ejercicio = ? and deleted_at is not null',[$anio]);
+        $fechaCorte = DB::select('select distinct version, DATE_FORMAT(deleted_at, "%d-%m-%Y") as deleted_at from programacion_presupuesto_hist pp where ejercicio = ? and deleted_at is not null',[$anio]);
         return $fechaCorte;
     }
 

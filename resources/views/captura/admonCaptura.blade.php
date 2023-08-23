@@ -62,7 +62,7 @@ $titleDesc = 'Administración de Captura';
                 </div>
             </div>
             {{-- Botón corte --}}
-            @if($version != 3)
+            @if($version != 3 && sizeof($comprobarAnioPP) != 0)
                 <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
                     <form id="formPPH" name="formPPH" action="{{route('pph_update')}}" method="POST">
                         @csrf

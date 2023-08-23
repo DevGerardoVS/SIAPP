@@ -29,6 +29,14 @@
         </div>
     </div>
     <br>
+    <div class="text-right">
+        <button type="button" class="btn btn-outline-success"  onclick="exportExcel()">
+            <i class="fa fa-file-excel-o"></i> Exportar Excel
+        </button>
+        <button style="margin: 10px;" type="button" class="btn btn-outline-danger" onclick="exportPdf()">
+            <i class="fa fa-file-pdf-o"></i> Exportar PDF
+        </button>
+    </div>
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <table id="catalogoB" class="table table-striped table-bordered text-center " style="width:100%">
@@ -61,6 +69,15 @@
         getDatos();
 
     });
+    function exportPdf(){
+        _url = "/export-Pdf";
+        window.location.href = _url;
+    }
+
+    function exportExcel(){
+        _url = "/export-Excel";
+        window.location.href = _url;
+    }
 
     function getDatos(){
         var tabla = $("#catalogo");

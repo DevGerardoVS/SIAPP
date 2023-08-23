@@ -80,7 +80,7 @@
 
                                                 <button style="margin: 10px;" type="button" class="btn btn-outline-danger"
                                                     data-bs-toggle="modal" data-bs-target="#TechosExportPDF">
-                                                    <i class="fa fa-file-excel-o"></i> Exportar PDF
+                                                    <i class="fa fa-file-pdf-o"></i> Exportar PDF
                                                 </button>
 
                                                 <button style="margin: 10px;" type="button" class="btn btn-outline-success"
