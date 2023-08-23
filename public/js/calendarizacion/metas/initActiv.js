@@ -7,7 +7,7 @@ var dao = {
             url: '/calendarizacion/upps/',
             dataType: "JSON"
         }).done(function (data) {
-            const { upp, mir } = data;
+            const { upp } = data;
             var par = $('#upp_filter');
             par.html('');
             $.each(upp, function (i, val) {
@@ -17,6 +17,31 @@ var dao = {
                     par.append(new Option(val.upp, val.clv_upp));
                 }
             });
+        });
+    },
+    getAniosM: function () {
+        $.ajax({
+            type: "GET",
+            url: '/actividades/anios-metas/',
+            dataType: "JSON"
+        }).done(function (data) {
+
+            var par = $('#anio_filter');
+            par.html('');
+            if (data.length == 1) {
+                $.each(data, function (i, val) {
+                    par.append(new Option(val.ejercicio, val.ejercicio, true, false));
+                });
+            }
+            else {
+                $.each(upp, function (i, val) {
+                    if (val.clv_upp == '001') {
+                        par.append(new Option(val.upp, val.clv_upp, true, false));
+                    } else {
+                        par.append(new Option(val.upp, val.clv_upp));
+                    }
+                });
+            }
         });
     },
     exportJasper: function () {
@@ -535,6 +560,65 @@ var dao = {
             });
         });
     },
+    revConfirmarMetas: function (upp,anio) {
+        $.ajax({
+            type: "GET",
+            url: '/actividades/rev-confirmar-metas/'+upp+"/"+anio,
+            dataType: "JSON"
+        }).done(function (data) {
+            if (!data.status) {
+                $(".confirmacion").hide();
+                if ($('#upp').val() != '') {
+                    $('#validMetas').addClass(" alert alert-danger").addClass("text-center")
+                    $('#validMetas').text("Las metas ya fueron confirmadas")
+                    $(".cierreMetas").hide();
+                }
+            } else {
+                $(".confirmacion").show();
+            }
+            
+
+        });
+    },
+    ConfirmarMetas: function () {
+        let anio = $('#anio_filter').val();
+        let upp = "";
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+            
+        } else {
+            upp = $('#upp').val();
+        }
+        Swal.fire({
+            icon: 'question',
+            title: '¿Estás de quieres confirmar las metas?',
+            showDenyButton: true,
+            confirmButtonText: 'Confirmar',
+            denyButtonText: `Cancelar`,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "GET",
+                    url: '/actividades/confirmar-metas/'+upp+"/"+anio,
+                    dataType: "JSON"
+                }).done(function (data) {
+                    const { mensaje } = data;
+                    Swal.fire({
+                        icon: mensaje.icon,
+                        title: mensaje.title,
+                        text: mensaje.text,
+                    });
+                    dao.getData(upp, anio);
+                    dao.revConfirmarMetas(upp, anio);
+                });
+            } /* else if (result.isDenied) {
+              Swal.fire('Changes are not saved', '', 'info')
+            } */
+          })
+       
+    },
+    
 };
 
 var init = {
@@ -590,6 +674,7 @@ $(document).ready(function () {
         }
     });
     dao.getSelect();
+    dao.getAniosM();
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
@@ -599,9 +684,11 @@ $(document).ready(function () {
     if ($('#upp').val() == '') {
         dao.getUpps();
         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
+        dao.revConfirmarMetas($('#upp_filter').val(), $('#anio_filter').val());
     } else {
         dao.getData($('#upp').val(), $('#anio_filter').val());
         dao.cierreMetas($('#upp').val());
+        dao.revConfirmarMetas($('#upp').val(), $('#anio_filter').val());
     }
 
     for (let i = 1; i <= 12; i++) {
@@ -616,14 +703,16 @@ $(document).ready(function () {
 
     });
     $('#upp_filter').change(() => {
-        dao.getData($('#upp_filter').val(),$('#anio_filter').val());
+        dao.getData($('#upp_filter').val(), $('#anio_filter').val());
+        dao.revConfirmarMetas($('#upp_filter').val(), $('#anio_filter').val());
     });
     $('#anio_filter').change(() => {
         if ($('#upp').val() == '') {
-            dao.getUpps();
-            dao.getData($('#upp_filter').val(),$('#anio_filter').val());
+            dao.getData($('#upp_filter').val(), $('#anio_filter').val());
+            dao.revConfirmarMetas($('#upp_filter').val(), $('#anio_filter').val());
         } else {
-        dao.getData($('#upp').val(),$('#anio_filter').val());
+            dao.getData($('#upp').val(), $('#anio_filter').val());
+            dao.revrevConfirmarMetas($('#upp').val(), $('#anio_filter').val());
         }
     });
 

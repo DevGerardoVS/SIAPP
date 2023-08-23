@@ -119,7 +119,6 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             const { urs, tAct } = data;
-            console.log("activids",tAct);
             var par = $('#ur_filter');
             par.html('');
             par.append(new Option("-- URS--", ""));
@@ -149,8 +148,7 @@ var dao = {
             url: '/calendarizacion/upps/',
             dataType: "JSON"
         }).done(function (data) {
-            const { upp, mir } = data;
-            console.log("MIR", mir);
+            const { upp } = data;
             var par = $('#upp_filter');
             par.html('');
             par.append(new Option("-- UPPS--", ""));
@@ -291,7 +289,6 @@ var dao = {
             url: '/calendarizacion/fondos/' + area+'/'+enti,
             dataType: "JSON"
         }).done(function (data) {
-            console.log("actividades",data);
             $('#sel_actividad').prop('disabled', false);
             $('#sel_fondo').prop('disabled', false);
             const { fondos, activids, mese} = data;
@@ -300,7 +297,6 @@ var dao = {
             fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
             document.getElementById("sel_fondo").options[0].disabled = true;
             $.each(fondos, function (i, val) {
-                console.log("dfondo",val)
                 fond.append(new Option(val.ramo, val.clave));
             });
             fond.select2({
