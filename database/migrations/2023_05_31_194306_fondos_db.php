@@ -156,7 +156,7 @@ return new class extends Migration
             $table->string('mp_valor_absoluto',255)->nullable(false);
             $table->string('mp_valor_relativo',255)->nullable(false);
             $table->integer('mp_anio')->nullable(false);
-            $table->integer('mp_anio_meta')->nullable(false);
+            $table->integer('mp_anio_meta')->nullable(true);
             $table->enum('mp_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
             $table->enum('mp_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
             $table->text('supuestos')->nullable(false);
