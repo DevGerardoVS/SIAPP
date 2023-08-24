@@ -580,17 +580,20 @@ var dao = {
 
         });
     },
-    rCMetasUpp: function (anio) {
+    rCMetasUpp: function (upp,anio) {
         $.ajax({
             type: "GET",
-            url: '/actividades/rev-confirmar-metas-upp/'+anio,
+            url: '/actividades/rev-confirmar-metas-upp/'+upp+"/"+anio,
             dataType: "JSON"
         }).done(function (data) {
             if (data.status) {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#validMetas').text("Las metas ya fueron confirmadas");
+                $(".cierreMetas").hide();
+                
             } else {
+                $(".cierreMetas").show();
                 $(".cmupp").hide();
             }
             
@@ -628,7 +631,7 @@ var dao = {
                     });
                     dao.getData(upp, anio);
                     dao.revConfirmarMetas(upp, anio);
-                    dao.rCMetasUpp(anio);
+                    dao.rCMetasUpp(upp,anio);
                 });
             } /* else if (result.isDenied) {
               Swal.fire('Changes are not saved', '', 'info')
@@ -677,9 +680,10 @@ var init = {
 };
 
 $(document).ready(function () {
-    dao.rCMetasUpp($('#anio_filter').val());
+    
     const moonLanding = new Date();
     $("#anio_filter option[value='" + moonLanding.getFullYear() + "']").attr("selected", true);
+   
     $("#cerrar").click(function(){
         $("#addActividad").modal('hide')
     });
@@ -704,10 +708,12 @@ $(document).ready(function () {
         dao.getUpps();
         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
         dao.revConfirmarMetas($('#upp_filter').val(), $('#anio_filter').val());
+        dao.rCMetasUpp($('#upp_filter').val(),$('#anio_filter').val());
     } else {
         dao.getData($('#upp').val(), $('#anio_filter').val());
         dao.cierreMetas($('#upp').val());
         dao.revConfirmarMetas($('#upp').val(), $('#anio_filter').val());
+        dao.rCMetasUpp($('#upp').val(),$('#anio_filter').val());
     }
 
     for (let i = 1; i <= 12; i++) {
@@ -724,6 +730,8 @@ $(document).ready(function () {
     $('#upp_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
         dao.revConfirmarMetas($('#upp_filter').val(), $('#anio_filter').val());
+        dao.rCMetasUpp($('#upp_filter').val(),$('#anio_filter').val());
+
     });
     $('#anio_filter').change(() => {
         if ($('#upp').val() == '') {
