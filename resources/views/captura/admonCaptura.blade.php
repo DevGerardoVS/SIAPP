@@ -7,7 +7,7 @@ $titleDesc = 'Administración de Captura';
 @section('content')
     <div class="container w-100 p-4">
         <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
-            <h1 class="fw-bold text-center">{{ $titleDesc }} Ejercicio {{ $anio }}</h1>
+            <h2>{{ $titleDesc }} Ejercicio {{ $anio }}</h2>
             <form action="{{ route('claves_presupuestarias') }}" id="buscarFormA" name="buscarFormA" method="post"></form>
             <form action="{{ route('metas_actividades') }}" id="buscarFormB" name="buscarFormB" method="post"></form>
         </header>
@@ -49,15 +49,32 @@ $titleDesc = 'Administración de Captura';
             </div>
         </form>
 
-        {{-- botón modal --}}
+        {{-- Botón modal --}}
         @if (Auth::user()->id_grupo == 1)
-            <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
-                <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
-                data-keyboard="false" data-toggle="modal">
-                    <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
-                    <span class="d-lg-inline align-middle">Apertura y cierre de captura</span> 
-                </button>
+        <div class="d-flex justify-content-sm-end justify-content-center flex-wrap">
+            <div>
+                <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
+                    <button id="btnAperturaCierre" name="btnAperturaCierre" type="button" class="btn btn-light btn-sm btn-labeled me-3 colorMorado" title="Apertura y cierre de captura" data-target="#aperturaCierreModal" data-backdrop="static"
+                    data-keyboard="false" data-toggle="modal">
+                        <span class="btn-label"><i class="fa fa-rotate-right text-light fs-5 align-middle p-1"></i></span>
+                        <span class="d-lg-inline align-middle">Apertura y cierre de captura</span> 
+                    </button>
+                </div>
             </div>
+            {{-- Botón corte --}}
+            @if($version != 3 && sizeof($comprobarAnioPP) != 0)
+                <div class="d-flex flex-wrap justify-content-md-end justify-content-center mt-lg-0 mt-3">
+                    <form id="formPPH" name="formPPH" action="{{route('pph_update')}}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <button id="corte" name="corte" type="button" class="btn btn-danger btn-sm btn-labeled me-3" title="Corte">
+                            <span class="btn-label"><i class="fa fa-scissors text-light fs-5 align-middle p-1"></i></span>
+                            <span class="d-lg-inline align-middle">Realizar corte</span> 
+                        </button>
+                    </form>
+                </div>
+            @endif
+        </div>
         @endif
         {{-- Llamada al modal --}}
         @include('captura.modalAperturaCierre')
@@ -137,9 +154,24 @@ $titleDesc = 'Administración de Captura';
         //inicializamos el data table
         var tabla;
         var letter;
+
+        // Comprobar si hay algún estado encendido en la tabla programación presupuesto
+        var uppPP = {!! json_encode((array)$comprobarEstadoPP) !!};
+        // Comprobar si hay algún estado encendido en la tabla metas
+        var uppMetas = {!! json_encode((array)$comprobarEstadoMetas) !!};
+        // Comprobar la versión de los datos
+        var version = {!! json_encode($version) !!};
+
+        var checarEstado = false;
+        var obtenerUPP = "";
+        var arregloPP = [];
+        var arregloMetas = [];
+        var texto1 = "";
+        var texto2 = "";
+
         $(document).ready(function() {
 
-            $(".alert").delay(4000).slideUp(200, function() {
+            $(".alert").delay(10000).slideUp(200, function() {
                 $(this).alert('close');
             });
 
@@ -230,17 +262,6 @@ $titleDesc = 'Administración de Captura';
             return checarRadio;
         }
 
-        // Comprobar si hay algún estado encendido en la tabla programación presupuesto
-        var uppPP = {!! json_encode((array)$comprobarEstadoPP) !!};
-        // Comprobar si hay algún estado encendido en la tabla metas
-        var uppMetas = {!! json_encode((array)$comprobarEstadoMetas) !!};
-
-        var checarEstado = false;
-        var obtenerUPP = "";
-        var arregloPP = [];
-        var arregloMetas = [];
-        var texto1 = "";
-        var texto2 = "";
        
         $('#upp_filter').on('change', function (e) {
             obtenerUPP = $(this).find('option').filter(':selected').val();
@@ -307,6 +328,23 @@ $titleDesc = 'Administración de Captura';
                 });
             }
         });
-
+        
+        // Realizar corte
+        $('#corte').on("click", function () {
+            Swal.fire({
+                title: '¿Estas seguro que deseas realizar el corte a los reportes?',
+                text: "Puedes Realizar el corte "+ (3-version) +" veces",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#6A0F49',
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#formPPH').submit();
+                }
+            })
+        });
     </script>
 @endsection

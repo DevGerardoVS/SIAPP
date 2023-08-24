@@ -3,17 +3,12 @@
 @section('content')
     <div class="container">
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
-        <section id="widget-grid" class="conteiner">
             <div class="row">
-                <article class="col-sm-12 col-md-12 col-lg-12 sortable-grid ui-sortable">
-                    <div color="darken" class="jarviswidget" id="wid-id-1" data-widget-editbutton="false"
-                        data-widget-colorbutton="false" data-widget-deletebutton="false">
                         <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
                             <h2>Agregar Actividad</h2>
                         </header>
-                        <br>
-                        <div>
-                            <div class="widget-body-toolbar">
+                        &nbsp;
+                        <label id="validMetas"  ></label>                                                            
                                 <div class="row">
                                     @if (Auth::user()->id_grupo!= 4)
                                         <div class="col-md-4">
@@ -42,9 +37,9 @@
                                     @endif
                                     @if (Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
                                         @if (check_assignFront(1))
-                                            <div class="col-md-4 d-flex " style="justify-content: flex-end">
-                                                <div>
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            <div  id="CargaMasiva" class="col-md-4 d-flex CargaMasiva " style="justify-content: flex-end">
+                                                <div >
+                                                    <button  type="button" class="btn btn-primary CargaMasiva" data-toggle="modal"
                                                         data-target="#carga" data-backdrop="static"
                                                         data-keyboard="false">Carga-Masiva</button>
                                                 </div>
@@ -52,11 +47,9 @@
                                         @endif
                                     @endif
                                 </div>
-                            </div>
-                        </div>
-                        <br>
                         <div id="metasVista" class="row">
                             <div class="container">
+                                &nbsp;
                                 <div class=" table table-responsive-lg d-flex justify-content-center">
                                     <table id="catalogo">
                                         <thead>
@@ -82,9 +75,9 @@
                             <div class="d-flex justify-content-center">
                                 <a type="button" class="btn btn-secondary" href="/calendarizacion/proyecto"
                                     onclick="dao.limpiar()">Actividades capturadas</a>
-                                &nbsp &nbsp
+                                &nbsp; &nbsp;
                                 @if (Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
-                                    <button id="btnSave" type="button" class="btn btn-primary">Guardar</button>
+                                    <button id="btnSave" type="button" class="btn btn-primary btnSave">Guardar</button>
                                 @endif
                             </div>
                         </div>
@@ -96,12 +89,9 @@
                                     </div>
                             </div>
                         </div>
-                    </div>
             </div> 
     </div>
-    </article>
     </div>
-    </section>
     </div>
     <script src="/js/calendarizacion/metas/init.js"></script>
     <script src="/js/utilerias.js"></script>

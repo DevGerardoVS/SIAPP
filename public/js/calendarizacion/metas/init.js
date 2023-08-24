@@ -12,6 +12,10 @@ var dao = {
         }).done(function (data) {
             if (data.status) {
                 $("#ur_filter").removeAttr('disabled');
+                $("#tipo_Ac").removeAttr('disabled');
+                $("#sel_fondo").removeAttr('disabled');
+                $("#sel_actividad").removeAttr('disabled');
+                dao.getSelect();
                 $('#incomplete').hide(); 
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text('');
@@ -21,25 +25,33 @@ var dao = {
                     dao.getUrs($('#upp').val());
                 }
                 $('#metasVista').show();
-                
+                $(".CargaMasiva").show();
+                $(".btnSave").show();
             } else {
+                $(".CargaMasiva").hide();
+                $(".btnSave").hide();
                 dao.getUrs('0');
                 dao.getData('000', '000');
+                $('#carga').hide();
                 $("#ur_filter").attr('disabled', 'disabled');
+                $("#tipo_Ac").attr('disabled', 'disabled');
+                $("#sel_fondo").attr('disabled', 'disabled');
+                $("#sel_actividad").attr('disabled', 'disabled');
+
                 $('#incomplete').show(); 
                 $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text(data.mensaje);
                 $('#metasVista').hide(); 
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Información incompleta',
+                    title: data?.title ? data.title:'Información incompleta',
                     text: data.mensaje,
                     confirmButtonText: 'Aceptar',
                     allowOutsideClick: false
                 }).then((result) => {
                     if (result.isConfirmed) {
                         if (!data.estado) {
-                            window.location.href = "/calendarizacion/claves";
+                            window.location.href = data.url
                         }
                     }
                     
@@ -107,7 +119,6 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             const { urs, tAct } = data;
-            console.log("activids",tAct);
             var par = $('#ur_filter');
             par.html('');
             par.append(new Option("-- URS--", ""));
@@ -137,12 +148,13 @@ var dao = {
             url: '/calendarizacion/upps/',
             dataType: "JSON"
         }).done(function (data) {
+            const { upp } = data;
             var par = $('#upp_filter');
             par.html('');
             par.append(new Option("-- UPPS--", ""));
             document.getElementById("upp_filter").options[0].disabled = true;
-            $.each(data, function (i, val) {
-                par.append(new Option(data[i].upp, data[i].clv_upp));
+            $.each(upp, function (i, val) {
+                par.append(new Option(val.upp, val.clv_upp));
             });
 
 
@@ -195,7 +207,23 @@ var dao = {
             }
         });
     },
+    rCMetasUpp: function (upp) {
+        $.ajax({
+            type: "GET",
+            url: '/agregar-actividades/confirmacion-metas-upp/'+upp,
+            dataType: "JSON"
+        }).done(function (data) {
+            if (data.status) {
+                $(".cmupp").show();
+                $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
+                $('#validMetas').text("Las metas ya fueron confirmadas");
+            } else {
+                $(".cmupp").hide();
+            }
+            
 
+        });
+    },
     crearMetaImp: function () {
         var form = $('#formFile')[0];
         var data = new FormData(form);
@@ -249,7 +277,6 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             const { unidadM, beneficiario } = data;
-
             var med = $('#medida');
             med.html('');
             med.append(new Option("-- Medida--", ""));
@@ -257,10 +284,9 @@ var dao = {
             $.each(unidadM, function (i, val) {
                 med.append(new Option(val.unidad_medida, val.clave));
             });
-            med.select2({
+         /*    med.select2({
                 maximumSelectionLength: 10
-            });
-
+            }); */
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
             tipo_be.append(new Option("--U. Beneficiarios--", ""));
@@ -268,11 +294,9 @@ var dao = {
             $.each(beneficiario, function (i, val) {
                 tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
             });
-            tipo_be.select2({
+    /*         tipo_be.select2({
                 maximumSelectionLength: 10
-            });
-
-
+            }); */
         });
     },
     getFyA: function (area,enti) {
@@ -283,15 +307,13 @@ var dao = {
         }).done(function (data) {
             $('#sel_actividad').prop('disabled', false);
             $('#sel_fondo').prop('disabled', false);
-            const { fondos, activids } = data;
-            console.log("tipo Calendario",activids);
-
+            const { fondos, activids, mese} = data;
             var fond = $('#sel_fondo');
             fond.html('');
             fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
             document.getElementById("sel_fondo").options[0].disabled = true;
             $.each(fondos, function (i, val) {
-                fond.append(new Option(fondos[i].ramo, fondos[i].clv_fondo_ramo));
+                fond.append(new Option(val.ramo, val.clave));
             });
             fond.select2({
                 maximumSelectionLength: 10
@@ -306,16 +328,127 @@ var dao = {
             act.select2({
                 maximumSelectionLength: 10
             });
+            for (const key in mese) {
+                if (Object.hasOwnProperty.call(mese, key)) {
+                    const e = mese[key];
+                    switch (key) {
+                        case 'enero':
+                            if (e != 0.0 || e != 0) {
+                                $("#1").prop('disabled', false);
+                                $("#1").prop('required',true);
+                            } else {
+                                $("#1").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'febrero':
+                            if (e != 0.0) {
+                                $("#2").prop('disabled', false);
+                                $("#2").prop('required',true);
+                            } else {
+                                $("#2").prop('disabled', 'disabled');
+                            }
+                                break;
+                        case 'marzo':
+                            if (e != 0.0) {
+                                $("#3").prop('disabled', false);
+                                $("#3").prop('required',true);
+                            } else {
+                                $("#3").prop('disabled', 'disabled');
+
+                            }
+                                break;
+                        case 'abril':
+                            if (e != 0.0) {
+                                $("#4").prop('disabled', false);
+                                $("#4").prop('required',true);
+                            } else {
+                                $("#4").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'mayo':
+                            if (e != 0.0) {
+                                $("#5").prop('disabled', false);
+                                $("#5").prop('required',true);
+                            } else {
+                                $("#5").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'junio':
+                            if (e != 0.0) {
+                                $("#6").prop('disabled', false);
+                                $("#6").prop('required',true);
+                            } else {
+                                $("#6").prop('disabled', 'disabled');
+                            }
+                               break;
+                        case 'julio':
+                            if (e != 0.0) {
+                                $("#7").prop('disabled', false);
+                                $("#7").prop('required',true);
+                            } else {
+                                $("#7").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'agosto':
+                            if (e != 0.0) {
+                                $("#8").prop('disabled', false);
+                                $("#8").prop('required',true);
+                            } else {
+                                $("#8").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'septiembre':
+                            if (e != 0.0) {
+                                $("#9").prop('disabled', false);
+                                $("#9").prop('required',true);
+                            } else {
+                                $("#9").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'octubre':
+                            if (e != 0.0) {
+                                $("#10").prop('disabled', false);
+                                $("#10").prop('required',true);
+                            } else {
+                                $("#10").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'noviembre':
+                            if (e != 0.0) {
+                                $("#11").prop('disabled', false);
+                                $("#11").prop('required',true);
+                            } else {
+                                $("#11").prop('disabled', 'disabled');
+                            }
+                            break;
+                        case 'diciembre':
+                            if (e != 0.0) {
+                                $("#12").prop('disabled', false);
+                                $("#12").prop('required',true);
+                            } else {
+                                $("#12").prop('disabled', 'disabled');
+                            }
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                    
+                }
+            }
+
 
         });
     },
     limpiar: function () {
+        $('#sumMetas').val('')
         inputs.forEach(e => {
             $('#' + e + '-error').text("").removeClass('#' + e + '-error');
             if (e != 'beneficiario') {
                 $('#' + e).selectpicker('destroy');
             }
         });
+        dao.getUrs(0);
         dao.getSelect();
         $('.form-group').removeClass('has-error');
         for (let i = 1; i <= 12; i++) {
@@ -325,6 +458,10 @@ var dao = {
         for (let i = 1; i <= 12; i++) {
             $("#" + i).prop('disabled', true);
         }
+        $('#sel_actividad').empty();
+        $('#sel_actividad').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
+        $('#sel_fondo').empty();
+        $('#sel_fondo').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
     },
     arrEquals: function (numeros) {
         let duplicados = [];
@@ -452,20 +589,30 @@ var init = {
     },
 };
 $(document).ready(function () {
-    
-    $('#incomplete').hide();
+    $(".CargaMasiva").hide();
+    $(".btnSave").hide();
+    $("#beneficiario").on('paste', function (e) {
+        e.preventDefault();
+    });
+    $("#sumMetas").on('paste', function (e) {
+        e.preventDefault();
+    });
     if ($('#upp').val() == '') {
         dao.getUpps();
     } else {
         dao.checkCombination($('#upp').val())
     }
     $('#upp_filter').change(() => {
-        dao.checkCombination($('#upp_filter').val())
+        dao.checkCombination($('#upp_filter').val());
+        dao.rCMetasUpp($('#upp_filter').val());
     });
     $('#ur_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());
         $('#sel_actividad').empty();
+        $('#sel_actividad').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
         $('#sel_fondo').empty();
+        $('#sel_fondo').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+
     });
 
     dao.getSelect();
@@ -481,15 +628,15 @@ $(document).ready(function () {
     $("#sel_actividad").select2({
         maximumSelectionLength: 10
     });
-    $("#tipo_Ac").select2({
+/*     $("#tipo_Ac").select2({
         maximumSelectionLength: 10
-    });
-
-
-
+    }); */
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
-    }
+        $("#" + i).on('paste', function (e) {
+            e.preventDefault();
+        });
+        }
     $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
@@ -508,12 +655,6 @@ $(document).ready(function () {
         }
     });
 
-    $('#tipo_Ac').change(() => {
-        for (let i = 1; i <= 12; i++) {
-            $("#" + i).prop('disabled', false);
-        }
-
-    });
 
 
 });

@@ -54,11 +54,11 @@
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
-                        <div class="form-group col-md-4">
+                        <div id="passchange" class="form-group col-md-4">
                             <label class="control-label">Contraseña</label>
                             <input type="password" class="form-control" id="password" name="password">
                         </div>
-                        <div class="form-group col-md-4">
+                        <div id="passchange1" class="form-group col-md-4">
                             <label class="control-label">Confirmar
                                 Contraseña</label>
                             <input type="password" class="form-control" id="in_pass_conf" name="in_pass_conf">

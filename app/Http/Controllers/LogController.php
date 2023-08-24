@@ -7,6 +7,7 @@ use Log;
 class LogController extends Controller
 {
     public function logsView(){
+        Controller::check_permission('getLogs');
         $auxRoute = 'Logs.logs';
 
         try{//-----------------------------

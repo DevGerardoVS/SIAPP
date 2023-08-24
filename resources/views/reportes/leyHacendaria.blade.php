@@ -7,7 +7,7 @@
 @section('content')
     <div class="container w-100 p-4">
         <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
-            <h1 class="fw-bold text-center">{{ $titleDesc }}</h1>
+            <h2>{{ $titleDesc }}</h2>
         </header>
 
         @if($errors->any())

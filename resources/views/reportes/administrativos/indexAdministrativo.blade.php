@@ -8,13 +8,14 @@
 
     <div class="mx-auto p-4" style="width:90%;">
 
-        <h1 class="fw-bold text-center">{{ $titleDesc }}</h1>
+        <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8; margin-bottom: 5px;">
+            <h2>{{ $titleDesc }}</h2>
+        </header>
         @if(Auth::user()->id_grupo == 4)
             @foreach ($upps as $upp)
                 <h6 class="text-center">@if(Auth::user()->clv_upp == $upp->clave) {{$upp->clave}} {{$upp->descripcion}} @endif</h6>
             @endforeach
         @endif
-        <div class="rounded-pill" style="height: .5em; background-color: rgb(37, 150, 190)"></div>
         <form action="{{route('calendario_fondo_mensual')}}" id="buscarFormA" name="analisis" method="post"> </form>
         <form action="{{route('resumen_capitulo_partida')}}" id="buscarFormB" name="analisis" method="post"><input type="text" id="catalogoB_val"  style="display: none"></form> 
         <form action="{{route('proyecto_avance_general')}}" id="buscarFormC" name="analisis" method="post"><input type="text" id="catalogoC_val"  style="display: none"></form> 
@@ -54,7 +55,7 @@
                     </select>
                 </div>
             </div>
-            @if(Auth::user()->id_grupo == 1)
+            @if(Auth::user()->id_grupo != 4)
                 <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
                     <div class="col-sm-3 col-md-3 col-lg-2 text-md-end d-none div_upp">
                         <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
@@ -86,34 +87,34 @@
         <br>
 
         <ul class="nav nav-tabs " id="tabs" role="tablist">
-            @if(Auth::user()->id_grupo == 1)
+            @if(Auth::user()->id_grupo != 4)
             <li class="nav-item" >
-                <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 1) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->id_grupo == 1)aria-selected="true"@endif>Calendario fondo mensual</button>
+                <button class="nav-link textoMorado @if(Auth::user()->id_grupo != 4) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->id_grupo != 4)aria-selected="true"@endif>Calendario Ramo-Fondo</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="capituloPartida_tab" data-bs-toggle="tab" data-bs-target="#capituloPartida" aria-controls="capituloPartida" aria-selected="false">Resumen capítulo y partida</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="capituloPartida_tab" data-bs-toggle="tab" data-bs-target="#capituloPartida" aria-controls="capituloPartida" aria-selected="false">Resumen Capítulo y Partida</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="avanceGeneral_tab" data-bs-toggle="tab" data-bs-target="#avanceGeneral" aria-controls="avanceGeneral" aria-selected="false">Proyecto avance general</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="avanceGeneral_tab" data-bs-toggle="tab" data-bs-target="#avanceGeneral" aria-controls="avanceGeneral" aria-selected="false">Proyecto Avance General</button>
             </li>
             @endif
             <li class="nav-item" >
-                <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 4) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->id_grupo == 4)aria-selected="true"@endif>Proyecto calendario general</button>
+                <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 4) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->id_grupo == 4)aria-selected="true"@endif>Calendario Clave Presupuestaria</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Proyecto calendario general de actividades</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Proyecto Calendario General de Actividades</button>
             </li>
-            @if(Auth::user()->id_grupo == 1)
+            @if(Auth::user()->id_grupo != 4)
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Avance de proyectos con actividades por UPP</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Avance de Proyectos con Actividades por UPP</button>
             </li>
             @endif
         </ul>
 
         <div class="tab-content" style="font-size: 14px;">
             {{-- fondo mensual A--}}
-            @if(Auth::user()->id_grupo == 1)
-            <div class="tab-pane @if(Auth::user()->id_grupo == 1) active @endif" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
+            @if(Auth::user()->id_grupo != 4)
+            <div class="tab-pane @if(Auth::user()->id_grupo != 4) active @endif" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
                 <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
@@ -163,13 +164,13 @@
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Capítulo</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Partida</th>
-                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Importe</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Importe</th>
                                         </tr>
                                     </thead>
                                     <tfoot class="colorMorado">
                                         <tr>
                                             <td class="align-middle text-start" colspan="2">TOTAL</td>
-                                            <td class="align-middle text-end total" style="width: 20em;" id="total"></td>
+                                            <td class="align-middle text-end total" style="width: 20em;"></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -310,7 +311,7 @@
                 </div>
             </div>
             {{-- Avance de proyectos con actividades por upp F--}}
-            @if(Auth::user()->id_grupo == 1)
+            @if(Auth::user()->id_grupo != 4)
             <div class="tab-pane" id="avanceProyectoActividadUPP" role="tabpanel" aria-labelledby="avanceProyectoActividadUPP_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
@@ -348,7 +349,7 @@
         var tabla;
         var letter;
         $(document).ready(function() {
-            $(".alert").delay(4000).slideUp(200, function() {
+            $(".alert").delay(10000).slideUp(200, function() {
                 $(this).alert('close');
             });
 
@@ -446,6 +447,7 @@
         });
         
         $("#form").on("change",".filters_anio",function(e){
+            $("#fechaCorte_filter").val("");
             dt.DataTable().clear().destroy();
             getData(tabla,letter);
             getDataFechaCorte($('#anio_filter').val());
@@ -465,7 +467,7 @@
             var nombre = "calendario_fondo_mensual";
             switch (tabla) {
                 case "#catalogoA":
-                    nombre = 'calendario_fondo_mensual';              
+                    nombre = 'calendario_ramo_fondo';              
                     break;
                 case "#catalogoB":
                     var dt = $('#catalogoB');
@@ -476,7 +478,7 @@
                     break;
                 case "#catalogoD":
                     var dt = $('#catalogoD');
-                    nombre = "calendario_general";
+                    nombre = "calendario_clave_presupuestaria";
                     break;
                 case "#catalogoE":
                     nombre = "proyecto_calendario_actividades";

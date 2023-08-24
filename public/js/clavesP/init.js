@@ -416,10 +416,10 @@ var dao = {
       });
     });
   },
-	getLineaDeAccionByUpp : function(uppId,id,ejercicio,idSelected){
+	getLineaDeAccionByUpp : function(uppId,id,ejercicio,programa,subPrograma,proyecto,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-linea-accion/'+ uppId + '/' + id+'/'+ejercicio,
+          	url: '/cat-linea-accion/'+ uppId + '/' + id+'/'+ejercicio+ '/' + programa+'/'+subPrograma+ '/' + proyecto,
         }).done(function(data){
           var par = $('#sel_linea');
           par.html('');
@@ -436,10 +436,10 @@ var dao = {
           });
         });
   },
-  getAreaFuncional: function (uppId,id,ejercicio,subPrograma) {
+  getAreaFuncional: function (uppId,id,ejercicio,subPrograma,linea,programa,proyecto) {
     $.ajax({
       type:'get',
-      url: '/cat-area-funcional/'+uppId +'/'+id+'/'+ejercicio+'/'+subPrograma,
+      url: '/cat-area-funcional/'+uppId +'/'+id+'/'+ejercicio+'/'+subPrograma+'/'+linea+'/'+programa+'/'+proyecto,
     }).done(function (data) {
       document.getElementById('finalidad').innerHTML = data.clv_finalidad;
       document.getElementById('funcion').innerHTML = data.clv_funcion;
@@ -565,6 +565,7 @@ var dao = {
         }else{
             $('#btnNuevaClave').hide(true);
             $('#btn_confirmar').hide(true);
+            $('#button_modal_carga').hide(true);
         }
       }if(response.rol == 0){
         if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
@@ -953,7 +954,7 @@ $(document).ready(function(){
     let ejercicio = document.getElementById('anio').value;
     dao.getSubSecretaria(uppId,id,ejercicio);
 		dao.getProgramaPresupuestarioByur(uppId,id,ejercicio,'');
-		dao.getLineaDeAccionByUpp(uppId,id,ejercicio,'');
+		
     //dao.getAreaFuncional(uppId,id,ejercicio);
     dao.getClasificacionAdmin(uppId,id);
     var urText = $('#sel_unidad_res').find(":selected").text();
@@ -978,18 +979,33 @@ $(document).ready(function(){
     var ur = document.getElementById("sel_unidad_res").value;
 		dao.getProyectoBySubPrograma(programa,id,upp,ur ,ejercicio,'');
     dao.getFondosByUpp(upp, id, ejercicio,'');
-    dao.getAreaFuncional(upp,ur,ejercicio,id);
+    
 	});
   $('#sel_proyecto').change(function (e) {
     e.preventDefault();
     let val = this.value;
     document.getElementById('proyectoPre').innerHTML = val;
+    var proyecto = val;
+    var programa = document.getElementById("sel_programa").value;
+    var subPrograma = document.getElementById("sel_sub_programa").value;
+    var upp = document.getElementById("sel_upp").value;
+    var ejercicio = document.getElementById('anio').value;
+    var ur = document.getElementById("sel_unidad_res").value;
+
+    dao.getLineaDeAccionByUpp(upp,ur,ejercicio,programa,subPrograma,proyecto,'');
   });
   $('#sel_linea').change(function (e) {
     e.preventDefault();
     let clave = this.value;
     document.getElementById('lineaAccion').innerHTML = clave;
     dao.getSector(clave);
+    var programa = document.getElementById("sel_programa").value;
+    var upp = document.getElementById("sel_upp").value;
+    var ejercicio = document.getElementById('anio').value;
+    var ur = document.getElementById("sel_unidad_res").value;
+    var proyecto = document.getElementById("sel_proyecto").value;
+    var subPrograma = document.getElementById("sel_sub_programa").value;
+    dao.getAreaFuncional(upp,ur,ejercicio,subPrograma,clave,programa,proyecto);
   });
   $('#sel_partida').change(function (e) {
     e.preventDefault();

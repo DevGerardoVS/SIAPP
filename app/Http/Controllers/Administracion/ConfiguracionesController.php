@@ -86,11 +86,20 @@ class ConfiguracionesController extends Controller
                 $continua = $d->Continua==1? ' checked' : '';
                 $especial = $d->Especial==1? ' checked' : '';
 
-                $ds = array($d->clave , $d->descripcion, 
-                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'acumulativa\')" id="'.$d->clave.'_a" '.$acumulativa.'></div>',
-                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'continua\')" id="'.$d->clave.'_c" '.$continua.'></div>',
-                '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'especial\')" id="'.$d->clave.'_e" '.$especial.'></div>');
-                $dataSet[] = $ds;
+                if(Auth::user()->id_grupo==1){
+                    $ds = array($d->clave , $d->descripcion, 
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'acumulativa\')" id="'.$d->clave.'_a" '.$acumulativa.'></div>',
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'continua\')" id="'.$d->clave.'_c" '.$continua.'></div>',
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'especial\')" id="'.$d->clave.'_e" '.$especial.'></div>');
+                    $dataSet[] = $ds;
+                }else{
+                    $ds = array($d->clave , $d->descripcion, 
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'acumulativa\')" id="'.$d->clave.'_a" '.$acumulativa.' disabled></div>',
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'continua\')" id="'.$d->clave.'_c" '.$continua.' disabled></div>',
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'especial\')" id="'.$d->clave.'_e" '.$especial.' disabled></div>');
+                    $dataSet[] = $ds;
+                }
+                
             }
 
             return response()->json([
@@ -132,19 +141,19 @@ class ConfiguracionesController extends Controller
                 ->orderBy('clave')
                 ->get();
 
+            $disabled = Auth::user()->id_grupo==1 ? '' : 'disabled';
 
             foreach ($data as $d) {
                 //$d->tipo 
                 $autorizado = $d->autorizado==1? ' checked' : '';
 
+                $ds = array($d->clave , $d->descripcion, '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateAutoUpps(\''.$d->clave.'\')" id="'.$d->clave.'"'.$autorizado.' '.$disabled.' ></div>');
+
                 if($filter==NULL || $filter=='' || $filter == 'undefined'){
-                    $ds = array($d->clave , $d->descripcion, '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateAutoUpps(\''.$d->clave.'\')" id="'.$d->clave.'"'.$autorizado.'></div>');
                     $dataSet[] = $ds;
                 }else if($filter == $d->clave){
-                    $ds = array($d->clave , $d->descripcion, '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateAutoUpps(\''.$d->clave.'\')" id="'.$d->clave.'"'.$autorizado.'></div>');
                     $dataSet[] = $ds;
-                }else{
-
+                    break;
                 }
                 
             }

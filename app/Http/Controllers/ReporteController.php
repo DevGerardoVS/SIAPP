@@ -44,7 +44,6 @@ class ReporteController extends Controller
         $anio = $request->anio;
         $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
         $dataSet = array();
-        // $data = DB::select("CALL calendario_fondo_mensual(".$anio.", null)");
         $data = DB::select("CALL calendario_fondo_mensual(".$anio.", ".$fecha.")");
         foreach ($data as $d) {
 
@@ -87,18 +86,35 @@ class ReporteController extends Controller
     }
 
     public function proyectoCalendarioGeneral(Request $request){
+        // $draw = $request->get('draw');
+        // $drawin = $request->get('filtros');
+        // $search_arr = $request->get('search');
+        // $searchValue = $search_arr && array_key_exists('value', $search_arr) ? $search_arr['value'] : ''; 
+        // $start = $request->get("start");
+        // $rowperpage = $request->get("length"); 
+
+        // Log::info("resultado de array");
+        // log::debug($start);
+        // Log::info("fin resultado de array");
+
         $anio = $request->anio;
         $fecha = $request->fecha != "null" ? "'".$request->fecha."'"  : "null";
         if(Auth::user()->clv_upp != null) $upp = "'".Auth::user()->clv_upp."'"; 
         else $upp = $request->upp != "null" ? "'".$request->upp."'"  : "null";
         $dataSet = array();
+        // $countData = count(DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.",0,1000000)"));
+        // $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.",0,1000000)");
+
+        // $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.",".$start.",".$rowperpage.")");
         $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.")");
+
         foreach ($data as $d) {
             $ds = array($d->upp,$d->clave, number_format($d->monto_anual), number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre));
             $dataSet[] = $ds;
         }
         return response()->json([
             "dataSet" => $dataSet,
+            // "totalRecords" => $countData,
         ]);
     }
 
@@ -134,7 +150,7 @@ class ReporteController extends Controller
     // Administrativos
 
     public function getFechaCorte($anio){
-        $fechaCorte = DB::select('select distinct DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto pp where ejercicio = ? and deleted_at is not null',[$anio]);
+        $fechaCorte = DB::select('select distinct version, DATE_FORMAT(deleted_at, "%Y-%m-%d") as deleted_at from programacion_presupuesto_hist pp where ejercicio = ? and deleted_at is not null',[$anio]);
         return $fechaCorte;
     }
 
@@ -146,10 +162,11 @@ class ReporteController extends Controller
         $fechaCorte = !$request->input('fechaCorte') ? $request->fechaCorte_filter : $request->input('fechaCorte');
         $upp = Auth::user()->clv_upp != null ? Auth::user()->clv_upp : $request->upp_filter;
 
-        $ruta = public_path()."/reportes";
-
-        try {
+        // Comprobar si el reporte es administrativo o de ley hacendaria
+        if(str_contains($report, "reporte_art_20")) $tipoReporte = "Reportes de ley hacendaria"; 
+        else  $tipoReporte = "Reportes administrativos";
         
+        try {
             $logoLeft = public_path()."/img/escudoBN.png";
             $logoRight = public_path()."/img/logo.png";
             $report_path = app_path() ."/Reportes/".$report.".jasper";
@@ -167,12 +184,13 @@ class ReporteController extends Controller
                 $parameters["fecha"] = $fechaCorte;
                 $nameFile = $nameFile."_".$fechaCorte;
             }
-            if($nombre == "calendario_general" || $nombre == "proyecto_calendario_actividades"){
+            if($nombre == "calendario_clave_presupuestaria" || $nombre == "proyecto_calendario_actividades"){
                 if(Auth::user()->clv_upp != null || $upp != null){
                     $parameters["upp"] = $upp;
                     $nameFile = $nameFile."_UPP_".$upp;
                 }
             }
+             
 
             $database_connection = \Config::get('database.connections.mysql');
 
@@ -186,10 +204,18 @@ class ReporteController extends Controller
             )->execute();
                 
             ob_end_clean();
+            // Bitácora
+            $b = array(
+                "username"=>Auth::user()->username,
+                "accion"=> $nameFile.".".$request->action,
+                "modulo"=> $tipoReporte,
+            );
+            Controller::bitacora($b);
+
             return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
         } catch (\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
-            return back()->withErrors(['msg'=>'Hubo un error al descargar el archivo']);
+            return back()->withErrors(['msg'=>'¡Ocurrió un error al descargar el archivo!']);
         }
     }
 }
