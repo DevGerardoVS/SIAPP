@@ -14,6 +14,8 @@ use App\Http\Controllers\BitacoraController as ControllersBitacoraController;
 use App\Helpers\Calendarizacion\MetasHelper;
 
 
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -385,8 +387,15 @@ class TechosController extends Controller
         ]);
         $the_file = $request->file('cmFile');
         DB::beginTransaction();
-        ini_set('max_execution_time', 1200);
         try {
+            ini_set('max_execution_time', 1200);
+            Schema::create('temp_techos', function (Blueprint $table) {
+                $table->temporary();
+                $table->increments('id');
+                $table->string('clv_upp', 3)->nullable(false);
+                $table->string('clv_fondo', 2)->nullable(false);
+                $table->integer('ejercicio')->default(null);
+            });
             if ($xlsx = SimpleXLSX::parse($the_file)) {
                 $filearray = $xlsx->rows();
                 if ($filearray[0][0] == 'EJERCICIO' && $filearray[0][1] == 'UPP' && $filearray[0][2] == 'FONDO' && $filearray[0][3] == 'OPERATIVO' && $filearray[0][4] == 'RECURSOS HUMANOS') {
