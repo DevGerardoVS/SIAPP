@@ -24,6 +24,7 @@ var _gen = {
     },
     logOut: function () {
         Swal.fire({
+            icon:'question',
             title: '¿Estás seguro de que quieres cerrar la sesión?',
             showDenyButton: true,
             confirmButtonText: 'Aceptar',
