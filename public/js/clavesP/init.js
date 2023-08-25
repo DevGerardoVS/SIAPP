@@ -726,7 +726,7 @@ var dao = {
   },
   confirmarClaves: function (upp,ejercicio) {
     Swal.fire({
-      title: '¿Esstás seguro?',
+      title: '¿Estás seguro?',
       text: "Se recomienda que revises tu información antes de confirmar, una vez confirmadas tus claves no podrás editar.",
       icon: 'warning',
       showCancelButton: true,
