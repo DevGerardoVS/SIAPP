@@ -2588,6 +2588,71 @@ return new class extends Migration {
                 );
             END
         ");
+
+        DB::unprepared("CREATE PROCEDURE if not exists avance_etapas(in anio int)
+        begin
+            set @subquery := CONCAT('from mml_avance_etapas_pp ma
+                left join (
+                    select distinct
+                        clv_upp,
+                        upp,
+                        clv_programa,
+                        programa
+                    from v_epp
+                    where ejercicio = ',anio,'
+                    and deleted_at is null
+                ) up on 
+                    ma.clv_upp = up.clv_upp and
+                    ma.clv_pp = up.clv_programa
+                where ma.ejercicio = ',anio);
+            set @query := CONCAT('
+                select 
+                    ma.clv_upp,
+                    up.upp,
+                    count(clv_pp) num_pp,
+                    \"\" clv_pp,
+                    \"\" programa,
+                    0 etapa,
+                    round((sum(etapa_0+etapa_1+etapa_2+etapa_3
+                    +etapa_4+etapa_5)/(count(clv_pp)*6))*100) avance,
+                    0 revisado,
+                    0 m_enviada,
+                    0 m_atendida
+                ',@subquery,'
+                group by clv_upp,upp
+                union all
+                select 
+                    ma.clv_upp,
+                    up.upp,
+                    0 num_pp,
+                    ma.clv_pp,
+                    up.programa,
+                    case 
+                        when etapa_0 = 0 then -1
+                        else (etapa_1+etapa_2+etapa_3+etapa_4+etapa_5)
+                    end etapa,
+                    round(((etapa_0+etapa_1+etapa_2+etapa_3
+                    +etapa_4+etapa_5)/6)*100) avance,
+                    case 
+                        when estatus = 2 then 1
+                        else 0
+                    end revisado,
+                    case 
+                        when estatus = 2 then 1
+                        else 0
+                    end m_enviada,
+                    case 
+                        when estatus = 3 then 1
+                        else 0
+                    end m_atendida
+                ',@subquery,'
+                order by clv_upp,clv_pp;
+            ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        END");
     }
 
     /**
@@ -2632,5 +2697,6 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS lista_upp;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_II;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_IX;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS avance_etapas;");
     }
 };
