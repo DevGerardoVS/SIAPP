@@ -177,6 +177,8 @@ var dao = {
         }).done(function (data) {
             if (!data.status) {
                 $(".cierreMetas").hide();
+            } else {
+                $(".cierreMetas").show();
             }
             
 
@@ -568,12 +570,7 @@ var dao = {
         }).done(function (data) {
             if (!data.status) {
                 $(".confirmacion").hide();
-  
             } else {
-                if ($('#upp').val() != '') {
-                   
-                    $(".cierreMetas").hide();
-                }
                 $(".confirmacion").show();
             }
             
@@ -590,6 +587,7 @@ var dao = {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#validMetas').text("Las metas ya fueron confirmadas");
+                $('#cierreMetas').hide();
             } else {
                 $(".cmupp").hide();
             }
