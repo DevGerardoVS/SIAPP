@@ -93,7 +93,6 @@ class FunFormats
                             $entidad =''. strval($k[0]) . '-' .strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]). '-' .strval($k[4]).'-'. strval($k[5]) . '-' .strval($k[6]) . '-' . strval($k[9]) . '-' . strval($k[10]). '-' .strval($k[11]).'/'. strval($k[7]) . '-' .'0' . '-' . strval($k[8]) . '';
 
                             $pres=FunFormats::existPP($clave,$anio);
-                           
                             if (count($pres)) {
                                 $s=FunFormats::validatecalendar($k[7],$k[15]);
                                 if ($s["status"]) {
