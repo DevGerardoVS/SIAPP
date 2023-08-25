@@ -207,7 +207,23 @@ var dao = {
             }
         });
     },
+    rCMetasUpp: function (upp) {
+        $.ajax({
+            type: "GET",
+            url: '/agregar-actividades/confirmacion-metas-upp/'+upp,
+            dataType: "JSON"
+        }).done(function (data) {
+            if (data.status) {
+                $(".cmupp").show();
+                $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
+                $('#validMetas').text("Las metas ya fueron confirmadas");
+            } else {
+                $(".cmupp").hide();
+            }
+            
 
+        });
+    },
     crearMetaImp: function () {
         var form = $('#formFile')[0];
         var data = new FormData(form);
@@ -588,6 +604,7 @@ $(document).ready(function () {
     }
     $('#upp_filter').change(() => {
         dao.checkCombination($('#upp_filter').val());
+        dao.rCMetasUpp($('#upp_filter').val());
     });
     $('#ur_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());

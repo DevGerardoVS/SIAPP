@@ -1066,23 +1066,45 @@ class MetasController extends Controller
 			->get();
 		return $anio;
 	}
-	public static function cmetasUpp($anio)
+	public static function cmetasUpp($upp,$anio)
 	{
-		$upp = Auth::user()->clv_upp;
+		Log::debug($upp);
+		$_upp = $upp=null?Auth::user()->clv_upp:$upp;
+		Log::debug($_upp);
+		Log::debug($anio);
 		$metas = DB::table('metas')
 			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
 			->select(
-				'mml_mir.entidad_ejecutora',
-				'mml_mir.area_funcional',
 				'mml_mir.clv_upp'
 			)
-			->where('mml_mir.clv_upp', $upp)
+			->where('mml_mir.clv_upp', $_upp)
 			->where('mml_mir.ejercicio', $anio)
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)
 			->where('metas.estatus', 1)->get();
-
-		if (count($metas)>=1) {
+		Log::debug($metas);
+		if (count($metas) >= 1) {
+			return ["status" => true];
+		} else {
+			return ["status" => false];
+		}
+	}
+	public static function cmetasadd($_upp)
+	{
+		Log::debug($_upp);
+		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
+		$metas = DB::table('metas')
+			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
+			->select(
+				'mml_mir.clv_upp'
+			)
+			->where('mml_mir.clv_upp', $_upp)
+			->where('mml_mir.ejercicio', $anio)
+			->where('mml_mir.deleted_at', null)
+			->where('metas.deleted_at', null)
+			->where('metas.estatus', 1)->get();
+		Log::debug($metas);
+		if (count($metas) >= 1) {
 			return ["status" => true];
 		} else {
 			return ["status" => false];
