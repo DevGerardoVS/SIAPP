@@ -194,7 +194,7 @@ class FunFormats
                     $error = array(
                         "icon" => 'error',
                         "title" => 'Error',
-                        "text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acercate a CPLADEM'
+                        "text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM'
                     );
                     return $error;
                 }

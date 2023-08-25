@@ -660,7 +660,7 @@ class MetasController extends Controller
 					$error = array(
 						"icon" => 'error',
 						"title" => 'MIR no confirmadas',
-						"text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acercate a CPLADEM'
+						"text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM'
 					);
 					return response()->json($error);
 				}
@@ -771,7 +771,7 @@ class MetasController extends Controller
 						return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false, "url" => '/calendarizacion/claves'];
 					}
 				} else {
-					return ["status" => false, "mensaje" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acercate a CPLADEM', "estado" => true];
+					return ["status" => false, "mensaje" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM', "estado" => true];
 				}
 				//ver si esta confirmada la mir
 			} else {
