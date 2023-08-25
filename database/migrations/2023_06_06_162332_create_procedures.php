@@ -2588,6 +2588,120 @@ return new class extends Migration {
                 );
             END
         ");
+
+        DB::unprepared("CREATE PROCEDURE if not exists avance_etapas(in anio int)
+        begin
+            set @subquery := CONCAT('from mml_avance_etapas_pp ma
+                left join (
+                    select distinct
+                        clv_upp,
+                        upp,
+                        clv_programa,
+                        programa
+                    from v_epp
+                    where ejercicio = ',anio,'
+                    and deleted_at is null
+                ) up on 
+                    ma.clv_upp = up.clv_upp and
+                    ma.clv_pp = up.clv_programa
+                where ma.ejercicio = ',anio);
+            	set @query := CONCAT('
+                    select 
+                        case 
+                            when clv_pp != \"\" then \"\"
+                            else clv_upp
+                        end clv_upp,
+                        case 
+                            when clv_pp != \"\" then \"\"
+                            else upp
+                        end upp,
+                        num_pp,
+                        clv_pp,
+                        programa,
+                        etapa,
+                        avance,
+                        revisado,
+                        m_enviada,
+                        m_atendida
+                    from (
+                        select 
+                            ma.clv_upp,
+                            up.upp,
+                            count(clv_pp) num_pp,
+                            \"\" clv_pp,
+                            \"\" programa,
+                            0 etapa,
+                            round((sum(etapa_0+etapa_1+etapa_2+etapa_3
+                            +etapa_4+etapa_5)/(count(clv_pp)*6))*100) avance,
+                            0 revisado,
+                            0 m_enviada,
+                            0 m_atendida
+                        ',@subquery,'
+                        group by clv_upp,upp
+                        union all
+                        select 
+                            ma.clv_upp,
+                            up.upp,
+                            0 num_pp,
+                            ma.clv_pp,
+                            up.programa,
+                            case 
+                                when etapa_0 = 0 then -1
+                                else (etapa_1+etapa_2+etapa_3+etapa_4+etapa_5)
+                            end etapa,
+                            round(((etapa_0+etapa_1+etapa_2+etapa_3
+                            +etapa_4+etapa_5)/6)*100) avance,
+                            case 
+                                when estatus = 2 then 1
+                                else 0
+                            end revisado,
+                            case 
+                                when estatus = 2 then 1
+                                else 0
+                            end m_enviada,
+                            case 
+                                when estatus = 3 then 1
+                                else 0
+                            end m_atendida
+                        ',@subquery,'
+                        order by clv_upp,clv_pp
+                    )t;
+                ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        END");
+
+        DB::unprepared("CREATE PROCEDURE if not exists llenado_cierres()
+        begin
+            set @selects := CONCAT('(clv_upp,estatus,ejercicio,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user)
+            select distinct 
+                clv_upp,
+                \"Cerrado\" estatus,
+                ejercicio,
+                now() created_at,
+                now() updated_at,
+                null deleted_at,
+                \"SISTEMA\" created_user,
+                null updated_user,
+                null deleted_user
+            from v_epp
+            where ejercicio = (
+                select max(ejercicio) from v_epp
+            )');
+            
+            update mml_cierre_ejercicio set estatus = 'Cerrado', deleted_at = now(), deleted_user = 'SISTEMA';
+            update cierre_ejercicio_claves set estatus = 'Cerrado', deleted_at = now(), deleted_user = 'SISTEMA';
+            update cierre_ejercicio_metas set estatus = 'Cerrado', deleted_at = now(), deleted_user = 'SISTEMA';
+            
+            set @query := CONCAT('insert into mml_cierre_ejercicio',@selects,';');
+            prepare stmt from @query;execute stmt;deallocate prepare stmt;	
+            set @query := CONCAT('insert into cierre_ejercicio_claves',@selects,';');
+            prepare stmt from @query;execute stmt;deallocate prepare stmt;
+            set @query := CONCAT('insert into cierre_ejercicio_metas',@selects,';');
+            prepare stmt from @query;execute stmt;deallocate prepare stmt;
+        END");
     }
 
     /**
@@ -2632,5 +2746,7 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS lista_upp;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_II;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_IX;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS avance_etapas;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS llenado_cierres;");
     }
 };

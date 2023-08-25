@@ -177,6 +177,8 @@ var dao = {
         }).done(function (data) {
             if (!data.status) {
                 $(".cierreMetas").hide();
+            } else {
+                $(".cierreMetas").show();
             }
             
 
@@ -568,12 +570,7 @@ var dao = {
         }).done(function (data) {
             if (!data.status) {
                 $(".confirmacion").hide();
-  
             } else {
-                if ($('#upp').val() != '') {
-                   
-                    $(".cierreMetas").hide();
-                }
                 $(".confirmacion").show();
             }
             
@@ -593,7 +590,6 @@ var dao = {
                 $(".cierreMetas").hide();
                 
             } else {
-                $(".cierreMetas").show();
                 $(".cmupp").hide();
             }
             
