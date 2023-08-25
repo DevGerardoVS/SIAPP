@@ -423,7 +423,7 @@ $(document).ready(function () {
             }
         }
         if (selectValue == 4) {
-                if ($("#clv_upp").val() == null) {
+                if ($("#clv_upp").val() != null) {
                 init.valUpp($('#frm_create'));
                 if ($('#frm_create').valid()) {
                     dao.crearUsuario();
@@ -433,9 +433,6 @@ $(document).ready(function () {
             }
             
         }
-        $('#email-error').text("Este campo es requerido").addClass('has-error');
-        $('#in_celular-error').text("Este campo es requerido").addClass('has-error');
-        $('#clv_upp-error').text("Este campo es requerido").addClass('has-error');
     });
     $('#btnSaveP').click(function (e) {
         if ($('#frm_permisos').valid()) {

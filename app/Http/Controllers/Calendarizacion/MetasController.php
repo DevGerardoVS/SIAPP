@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Calendarizacion;
 use App\Imports\utils\FunFormats;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
@@ -15,6 +16,7 @@ use Auth;
 use DB;
 use Log;
 use App\Helpers\Calendarizacion\MetasHelper;
+use Illuminate\Support\Facades\Schema;
 use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
@@ -631,6 +633,13 @@ class MetasController extends Controller
 	{
 		DB::beginTransaction();
 		try {
+			Schema::create('metas_temp', function (Blueprint $table) {
+                $table->temporary();
+                $table->increments('id');
+				$table->string('clave', 25)->nullable(false);
+				$table->string('upp', 25)->nullable(false);
+				$table->string('fila', 10)->nullable(false);
+            });
 			$assets = $request->file('cmFile');
 			if ($xlsx = SimpleXLSX::parse($assets)) {
 				$filearray = $xlsx->rows();
@@ -666,49 +675,60 @@ class MetasController extends Controller
 			)
 			->where('mml_mir.deleted_at', null)
 			->where('mml_mir.deleted_at', null)
-			->where('metas.estatus', 1)
+			->where('metas.estatus', 2)
 			->where('mml_mir.clv_upp', $upp)->get();
 		if ($check['status']) {
 			if (count($metas) == 0 || Auth::user()->id_grupo == 1) {
-				$activs = DB::table("programacion_presupuesto")
-					->select(
-						'programa_presupuestario AS programa',
-						DB::raw('CONCAT(upp,subsecretaria,ur) AS area'),
-						DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
-					)
-					->where('programacion_presupuesto.upp', '=', $upp)
-					->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
-					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
-					->distinct()
-					->where('estado', 1)
-					->groupByRaw('programa_presupuestario')->get();
-				if (count($activs)) {
-					$auxAct = count($activs);
-					$index = 0;
-					foreach ($activs as $key) {
-						$proyecto = DB::table('mml_mir')
-							->select(
-								'mml_mir.id',
-								'mml_mir.area_funcional AS area'
-							)
-							->where('mml_mir.deleted_at', null)
-							->where('mml_mir.nivel', 11)
-							->where('mml_mir.clv_upp', $upp)
-							->where('mml_mir.area_funcional', $key->clave)
-							->get();
-						if (count($proyecto)) {
-							$index++;
+				//ver si esta confirmada la mir
+				$isMir = DB::table("mml_avance_etapas_pp")
+					->select('id', 'estatus')
+					->where('clv_upp', '=', $upp)
+					->where('ejercicio', '=', $check['anio'])
+					->where('estatus', 2)->get();
+				if (count($isMir)) {
+					$activs = DB::table("programacion_presupuesto")
+						->select(
+							'programa_presupuestario AS programa',
+							DB::raw('CONCAT(upp,subsecretaria,ur) AS area'),
+							DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
+						)
+						->where('programacion_presupuesto.upp', '=', $upp)
+						->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
+						->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+						->distinct()
+						->where('estado', 1)
+						->groupByRaw('programa_presupuestario')->get();
+					if (count($activs)) {
+						$auxAct = count($activs);
+						$index = 0;
+						foreach ($activs as $key) {
+							$proyecto = DB::table('mml_mir')
+								->select(
+									'mml_mir.id',
+									'mml_mir.area_funcional AS area'
+								)
+								->where('mml_mir.deleted_at', null)
+								->where('mml_mir.nivel', 11)
+								->where('mml_mir.clv_upp', $upp)
+								->where('mml_mir.area_funcional', $key->clave)
+								->get();
+							if (count($proyecto)) {
+								$index++;
+							}
 						}
-					}
-					if ($index >= $auxAct) {
-						return ["status" => true, "mensaje" => '', "estado" => true];
-					} else {
-						return ["status" => false, "mensaje" => 'MIR incompleta acercate a CPLADEM', "estado" => true];
-					}
+						if ($index >= $auxAct) {
+							return ["status" => true, "mensaje" => '', "estado" => true];
+						} else {
+							return ["status" => false, "mensaje" => 'MIR incompleta acercate a CPLADEM', "estado" => true];
+						}
 
+					} else {
+						return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false, "url" => '/calendarizacion/claves'];
+					}
 				} else {
-					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false, "url" => '/calendarizacion/claves'];
+					return ["status" => false, "mensaje" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acercate a CPLADEM', "estado" => true];
 				}
+				//ver si esta confirmada la mir
 			} else {
 				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "title" => 'Metas confirmadas', "estado" => false, "url" => '/calendarizacion/proyecto'];
 			}
