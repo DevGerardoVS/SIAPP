@@ -648,32 +648,58 @@ class MetasController extends Controller
 	{
 		DB::beginTransaction();
 		try {
-			Schema::create('metas_temp', function (Blueprint $table) {
-                $table->temporary();
-                $table->increments('id');
-				$table->string('clave', 25)->nullable(false);
-				$table->string('upp', 25)->nullable(false);
-				$table->string('fila', 10)->nullable(false);
-            });
-			$assets = $request->file('cmFile');
-			if ($xlsx = SimpleXLSX::parse($assets)) {
-				$filearray = $xlsx->rows();
-				array_shift($filearray);
-				$resul = FunFormats::saveImport($filearray);
-				if ($resul['icon'] == 'success') {
-					DB::commit();
-					$b = array(
-						"username" => Auth::user()->username,
-						"accion" => 'Carga masiva metas',
-						"modulo" => 'Metas'
+			$flag = false;
+			if (Auth::user()->id_grupo == 4) {
+				$check = $this->checkClosing(Auth::user()->clv_upp);
+				$isMir = DB::table("mml_avance_etapas_pp")
+                            ->select('id', 'estatus')
+                            ->where('clv_upp', '=', Auth::user()->clv_upp)
+                            ->where('ejercicio', '=', $check['anio'])
+                            ->where('estatus', 3)->get();
+				if(count($isMir)==0){
+					$error = array(
+						"icon" => 'error',
+						"title" => 'MIR no confirmadas',
+						"text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acercate a CPLADEM'
 					);
-					Controller::bitacora($b);
+					return response()->json($error);
 				}
-
+				$flag = $check['status'];
+			} else if (Auth::user()->id_grupo == 1) {
+				$flag = true;
+			}
+			if ($flag) {
+				Schema::create('metas_temp', function (Blueprint $table) {
+					$table->temporary();
+					$table->increments('id');
+					$table->string('clave', 25)->nullable(false);
+					$table->string('upp', 25)->nullable(false);
+					$table->string('fila', 10)->nullable(false);
+				});
+				$assets = $request->file('cmFile');
+				if ($xlsx = SimpleXLSX::parse($assets)) {
+					$filearray = $xlsx->rows();
+					array_shift($filearray);
+					$resul = FunFormats::saveImport($filearray);
+					Log::debug($resul);
+					if ($resul['icon'] == 'success') {
+						DB::commit();
+						$b = array(
+							"username" => Auth::user()->username,
+							"accion" => 'Carga masiva metas',
+							"modulo" => 'Metas'
+						);
+						Controller::bitacora($b);
+					}
 					return response()->json($resul);
-
-			
-				
+				}
+			}else{
+				$error = array(
+					"icon" => 'error',
+					"title" => 'Metas cerradas',
+					"text" => 'La captura de metas esta cerrada'
+				);
+				return response()->json($error);
 			}
 		} catch (\Exception $e) {
 			DB::rollback();
@@ -703,7 +729,7 @@ class MetasController extends Controller
 					->select('id', 'estatus')
 					->where('clv_upp', '=', $upp)
 					->where('ejercicio', '=', $check['anio'])
-					->where('estatus', 2)->get();
+					->where('estatus', 3)->get();
 				if (count($isMir)) {
 					$activs = DB::table("programacion_presupuesto")
 						->select(
@@ -1087,10 +1113,8 @@ class MetasController extends Controller
 	}
 	public static function cmetasUpp($upp,$anio)
 	{
-		Log::debug($upp);
 		$_upp = $upp=null?Auth::user()->clv_upp:$upp;
-		Log::debug($_upp);
-		Log::debug($anio);
+
 		$metas = DB::table('metas')
 			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
 			->select(
@@ -1101,7 +1125,6 @@ class MetasController extends Controller
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)
 			->where('metas.estatus', 1)->get();
-		Log::debug($metas);
 		if (count($metas) >= 1) {
 			return ["status" => true];
 		} else {
