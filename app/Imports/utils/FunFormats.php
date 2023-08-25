@@ -71,7 +71,20 @@ class FunFormats
                     );
                     return $error;
                 } else {
+                    //checar si la mir esta confirmada
+                    $isMir = [];
+                    if (Auth::user()->id_grupo == 4) {
+                        $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', Auth::user()->clv_upp)->select('ejercicio')->get();
+                        $isMir = DB::table("mml_avance_etapas_pp")
+                            ->select('id', 'estatus')
+                            ->where('clv_upp', '=', Auth::user()->clv_upp)
+                            ->where('ejercicio', '=', $anio[0]->ejercicio)
+                            ->where('estatus', 2)->get();
+                    }
+
+				if (count($isMir) ||Auth::user()->id_grupo==1) {
                     $actividad=Mir::where('deleted_at', null)->where('id', $k[13])->first();
+
                     if ($actividad) {
                         $area= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]).'';
                         $anio = $actividad->ejercicio;
@@ -80,7 +93,6 @@ class FunFormats
                             $entidad =''. strval($k[0]) . '-' .strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]). '-' .strval($k[4]).'-'. strval($k[5]) . '-' .strval($k[6]) . '-' . strval($k[9]) . '-' . strval($k[10]). '-' .strval($k[11]).'/'. strval($k[7]) . '-' .'0' . '-' . strval($k[8]) . '';
 
                             $pres=FunFormats::existPP($clave,$anio);
-                           
                             if (count($pres)) {
                                 $s=FunFormats::validatecalendar($k[7],$k[15]);
                                 if ($s["status"]) {
@@ -102,28 +114,33 @@ class FunFormats
                                     if($m["status"]){
                                         $e=FunFormats::isExist($entidad, $k[12],$k[13]);
                                         if($e["status"]){
+                                        $unique= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[13]).'';
+
+                                                Log::debug( $unique);
+                                    DB::table('metas_temp')->insert(['clave' => $unique,'fila'=>$index,'upp'=>strval($k[7])]);
+                                
                                             $aux[] = [
-                                            'clv_fondo' => $k[12],
-                                            'mir_id' => $k[13],
-                                            'tipo' => $k[16],
-                                            'beneficiario_id' => $k[29],
-                                            'unidad_medida_id' => $k[32],
-                                            'cantidad_beneficiarios' => $k[31],
-                                            'enero' => $k[17],
-                                            'febrero' => $k[18],
-                                            'marzo' => $k[19],
-                                            'abril' => $k[20],
-                                            'mayo' => $k[21],
-                                            'junio' => $k[22],
-                                            'julio' => $k[23],
-                                            'agosto' => $k[24],
-                                            'septiembre' => $k[25],
-                                            'octubre' => $k[26],
-                                            'noviembre' => $k[27],
-                                            'diciembre' => $k[28],
-                                            'total' => FunFormats::typeTotal($k),
-                                            'created_user' => auth::user()->username
-                                        ];
+                                                'clv_fondo' => $k[12],
+                                                'mir_id' => $k[13],
+                                                'tipo' => $k[16],
+                                                'beneficiario_id' => $k[29],
+                                                'unidad_medida_id' => $k[32],
+                                                'cantidad_beneficiarios' => $k[31],
+                                                'enero' => $k[17],
+                                                'febrero' => $k[18],
+                                                'marzo' => $k[19],
+                                                'abril' => $k[20],
+                                                'mayo' => $k[21],
+                                                'junio' => $k[22],
+                                                'julio' => $k[23],
+                                                'agosto' => $k[24],
+                                                'septiembre' => $k[25],
+                                                'octubre' => $k[26],
+                                                'noviembre' => $k[27],
+                                                'diciembre' => $k[28],
+                                                'total' => FunFormats::typeTotal($k),
+                                                'created_user' => auth::user()->username
+                                            ];
                                     }else{
                                         $error = array(
                                             "icon" => 'error',
@@ -177,6 +194,16 @@ class FunFormats
                         );
                         return $error;
                     }
+                } else {
+                    $error = array(
+                        "icon" => 'error',
+                        "title" => 'Error',
+                        "text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acercate a CPLADEM'
+                    );
+                    return $error;
+                }
+
+
                 }
                 $index++;
             }
@@ -189,19 +216,61 @@ class FunFormats
             return $error;
         }
         Log::debug('Gurardando ');
-        foreach ($aux as $key) {
-            try {
-                $meta = Metas::create($key);
-            } catch (\Throwable $th) {
-                //throw $th;
+        $reps = DB::table('metas_temp')
+            ->select(
+                DB::raw('COUNT(clave) AS rep'),
+                'clave',
+                'fila',
+                'upp',
+            )->groupBy('clave')
+            ->get();
+        if(count($reps)==count($aux)){
+            if (Auth::user()->id_grupo == 4) {
+                foreach ($reps as $key) {
+                    if ($key->upp != Auth::user()->clv_upp) {
+                        $error = array(
+                            "icon" => 'info',
+                            "title" => 'Cuidado',
+                            "text" => 'Solo puedes registrar metas de la upp ' . Auth::user()->clv_upp
+                        );
+                        return $error;
+                    }
+                }
             }
+            foreach ($aux as $key) {
+                try {
+                    $meta = Metas::create($key);
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
+            }
+            $success = array(
+                "icon" => 'success',
+                "title" => 'Exito',
+                "text" => 'Las metas se registraron correctamente'
+            );
+            return $success;
+
+        }else{
+            $filas = [];
+            foreach ($reps as $key) {
+                if($key->rep>1){
+                    $reps = DB::table('metas_temp')->select('clave','fila')->where('clave',$key->clave)->get();
+                    foreach ($reps as $a ) {
+                        $filas[] = $a->fila;
+                    }
+                }
+            }
+            $f=implode(", ", $filas);
+            $error = array(
+                "icon" => 'info',
+                "title" => 'Cuidado',
+                "text" => 'Existen registros repetidos en el excel '.$f
+            );
+            return $error;
+
         }
-        $success = array(
-            "icon" => 'success',
-            "title" => 'Exito',
-            "text" => 'Las metas se registraron correctamente'
-        );
-        return $success;
+      
     }
     public static function isNULLOrEmpy($datos,$index){
 		for ($i=0; $i <count($datos) ; $i++) {
