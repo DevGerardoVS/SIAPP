@@ -2702,6 +2702,30 @@ return new class extends Migration {
             set @query := CONCAT('insert into cierre_ejercicio_metas',@selects,';');
             prepare stmt from @query;execute stmt;deallocate prepare stmt;
         END");
+
+        DB::unprepared("CREATE PROCEDURE if not exists llenado_etapas()
+        begin
+            insert into mml_avance_etapas_pp(clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at)
+            select distinct
+                clv_upp,
+                clv_programa,
+                0 etapa_0,
+                0 etapa_1,
+                0 etapa_2,
+                0 etapa_3,
+                0 etapa_4,
+                0 etapa_5,
+                0 estatus,
+                ejercicio,
+                'SISTEMA' created_user,
+                null updated_user,
+                null deleted_user,
+                now() created_at,
+                now() updated_at,
+                null deleted_at
+            from v_epp ve
+            where ejercicio = (select max(ejercicio) from v_epp);
+        END");
     }
 
     /**
@@ -2748,5 +2772,6 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_art_20_frac_IX;");
         DB::unprepared("DROP PROCEDURE IF EXISTS avance_etapas;");
         DB::unprepared("DROP PROCEDURE IF EXISTS llenado_cierres;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS llenado_etapas;");
     }
 };
