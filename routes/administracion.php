@@ -40,6 +40,8 @@ Route::controller(UsuarioController::class)->group(function () {
 	Route::controller(InicioController::class)->group(function (){
 		Route::post('adm-inicio/a', 'GetInicioA')->name('inicio_a');
 		Route::post('adm-inicio/b', 'GetInicioB')->name('inicio_b');
+		Route::get('/export-Excel', 'exportExcel');
+		Route::get('/export-Pdf', 'exportPdf');
 	});
 
 	Route::controller(ConfiguracionesController::class)->group(function (){
@@ -101,6 +103,7 @@ Route::controller(UsuarioController::class)->group(function () {
 		Route::post('/admon-capturas/clavesPresupuestarias', 'clavesPresupuestarias')->name('claves_presupuestarias');
 		Route::post('/admon-capturas/metasActividades', 'metasActividades')->name('metas_actividades');
 		Route::put('/admon-capturas/update', 'update')->name('admon_capturas_update');
+		Route::put('/admon-capturas/update-PPH', 'updateProgramacionPH')->name('pph_update');
 
 	});
 ?>

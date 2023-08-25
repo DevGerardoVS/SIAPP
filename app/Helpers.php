@@ -59,11 +59,11 @@ function getExplodePartiqcipacion($data){
 }
 function getAnios()
 {
-    $anio = DB::table('actividades_mir')
+    $anio = DB::table('mml_mir')
         ->select(
-            DB::raw("IFNULL(actividades_mir.ejercicio," . date('Y') . ") AS ejercicio")
+            DB::raw("IFNULL(mml_mir.ejercicio," . date('Y') . ") AS ejercicio")
         )
-        ->groupBy('actividades_mir.ejercicio')
+        ->groupBy('mml_mir.ejercicio')
         ->get();
     return $anio;
 }
@@ -77,32 +77,21 @@ function bitacoraRcont($email)
      );
      Controller::bitacora($b);
 }
-function confirmGoals($upp, $anio)
+
+function cmetas($upp,$anio)
 {
-
-    $proyecto = DB::table('actividades_mir')
-        ->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
-        ->select(
-            'actividades_mir.id',
-            'proyectos_mir.area_funcional AS area',
-            'proyectos_mir.clv_upp'
-        )
-        ->where('actividades_mir.deleted_at', null)
-        ->where('proyectos_mir.deleted_at', null)
-        ->where('proyectos_mir.clv_upp', $upp);
     $metas = DB::table('metas')
-        ->leftJoinSub($proyecto, 'pro', function ($join) {
-            $join->on('metas.actividad_id', '=', 'pro.id');
-        })
+        ->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
         ->select(
-            'metas.id',
-            'metas.estatus'
+            'mml_mir.entidad_ejecutora',
+            'mml_mir.area_funcional'.
+            'mml_mir.clv_upp'
         )
-        ->where('metas.estatus', 1)
-        ->where('pro.clv_upp', '=', $upp)
-        ->get();
-
-    $activs = DB::table("programacion_presupuesto")
+        ->where('mml_mir.clv_upp',$upp)
+        ->where('mml_mir.ejercicio',$anio)
+        ->where('mml_mir.deleted_at',null)
+        ->where('mml_mir.estatus',0)->get();
+        $activs = DB::table("programacion_presupuesto")
         ->select(
             'programa_presupuestario AS programa',
             DB::raw('CONCAT(upp,subsecretaria,ur) AS area'),
@@ -114,27 +103,10 @@ function confirmGoals($upp, $anio)
         ->distinct()
         ->where('estado', 1)
         ->groupByRaw('programa_presupuestario')->get();
-    if (count($activs)) {
-        $auxAct = count($activs);
-        $index = 0;
-        foreach ($activs as $key) {
-            $proyecto = DB::table('actividades_mir')
-                ->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')
-                ->select(
-                    'actividades_mir.id',
-                    'proyectos_mir.area_funcional AS area'
-                )
-                ->where('actividades_mir.deleted_at', null)
-                ->where('proyectos_mir.deleted_at', null)
-                ->where('proyectos_mir.clv_upp', $upp)
-                ->where('proyectos_mir.area_funcional', $key->clave)
-                ->get();
-            if (count($proyecto)) {
-                $index++;
-            }
-        }
+    if (count($metas) == count($activs)) {
+        return ["status" => true];
+    } else {
+        return ["status" => true];
     }
-    return ["status" => false, "mensaje" => 'La captura de metas esté cerrada', "estado" => true];
-
 }
 

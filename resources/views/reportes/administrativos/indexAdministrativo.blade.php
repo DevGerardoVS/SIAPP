@@ -89,24 +89,24 @@
         <ul class="nav nav-tabs " id="tabs" role="tablist">
             @if(Auth::user()->id_grupo != 4)
             <li class="nav-item" >
-                <button class="nav-link textoMorado @if(Auth::user()->id_grupo != 4) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->id_grupo != 4)aria-selected="true"@endif>Calendario fondo mensual</button>
+                <button class="nav-link textoMorado @if(Auth::user()->id_grupo != 4) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->id_grupo != 4)aria-selected="true"@endif>Calendario Ramo-Fondo</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="capituloPartida_tab" data-bs-toggle="tab" data-bs-target="#capituloPartida" aria-controls="capituloPartida" aria-selected="false">Resumen capítulo y partida</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="capituloPartida_tab" data-bs-toggle="tab" data-bs-target="#capituloPartida" aria-controls="capituloPartida" aria-selected="false">Resumen Capítulo y Partida</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="avanceGeneral_tab" data-bs-toggle="tab" data-bs-target="#avanceGeneral" aria-controls="avanceGeneral" aria-selected="false">Proyecto avance general</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="avanceGeneral_tab" data-bs-toggle="tab" data-bs-target="#avanceGeneral" aria-controls="avanceGeneral" aria-selected="false">Proyecto Avance General</button>
             </li>
             @endif
             <li class="nav-item" >
-                <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 4) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->id_grupo == 4)aria-selected="true"@endif>Proyecto calendario general</button>
+                <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 4) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->id_grupo == 4)aria-selected="true"@endif>Calendario Clave Presupuestaria</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Proyecto calendario general de actividades</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Proyecto Calendario General de Actividades</button>
             </li>
             @if(Auth::user()->id_grupo != 4)
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Avance de proyectos con actividades por UPP</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Avance de Proyectos con Actividades por UPP</button>
             </li>
             @endif
         </ul>
@@ -447,6 +447,7 @@
         });
         
         $("#form").on("change",".filters_anio",function(e){
+            $("#fechaCorte_filter").val("");
             dt.DataTable().clear().destroy();
             getData(tabla,letter);
             getDataFechaCorte($('#anio_filter').val());
@@ -466,7 +467,7 @@
             var nombre = "calendario_fondo_mensual";
             switch (tabla) {
                 case "#catalogoA":
-                    nombre = 'calendario_fondo_mensual';              
+                    nombre = 'calendario_ramo_fondo';              
                     break;
                 case "#catalogoB":
                     var dt = $('#catalogoB');
@@ -477,7 +478,7 @@
                     break;
                 case "#catalogoD":
                     var dt = $('#catalogoD');
-                    nombre = "calendario_general";
+                    nombre = "calendario_clave_presupuestaria";
                     break;
                 case "#catalogoE":
                     nombre = "proyecto_calendario_actividades";
