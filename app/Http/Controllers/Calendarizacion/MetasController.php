@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MetasExport;
+use App\Exports\MetasExportErr;
 use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
 use Auth;
@@ -521,6 +522,20 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return Excel::download(new MetasExport($upp, $anio), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
+	public function exportExcelErr($err)
+	{
+		/*Si no coloco estas lineas Falla*/
+		ob_end_clean();
+		ob_start();
+		/*Si no coloco estas lineas Falla*/
+		$b = array(
+			"username" => Auth::user()->username,
+			"accion" => 'Descargar Metas Excel',
+			"modulo" => 'Metas'
+		);
+		Controller::bitacora($b);
+		return Excel::download(new MetasExportErr($err), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+	}
 	public function proyExcel()
 	{
 		Controller::check_permission('getMetas');
@@ -654,7 +669,11 @@ class MetasController extends Controller
 					);
 					Controller::bitacora($b);
 				}
-				return response()->json($resul);
+
+					return response()->json($resul);
+
+			
+				
 			}
 		} catch (\Exception $e) {
 			DB::rollback();

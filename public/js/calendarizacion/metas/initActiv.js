@@ -590,7 +590,6 @@ var dao = {
                 $(".cierreMetas").hide();
                 
             } else {
-                $(".cierreMetas").show();
                 $(".cmupp").hide();
             }
             
