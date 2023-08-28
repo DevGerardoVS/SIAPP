@@ -2589,86 +2589,150 @@ return new class extends Migration {
             END
         ");
 
-        DB::unprepared("CREATE PROCEDURE if not exists avance_etapas(in anio int)
+        DB::unprepared("CREATE PROCEDURE if not exists avance_etapas(in anio int, in upp varchar(3), in programa varchar(2), in lim_i int, in lim_s int)
         begin
-            set @subquery := CONCAT('from mml_avance_etapas_pp ma
-                left join (
-                    select distinct
-                        clv_upp,
-                        upp,
-                        clv_programa,
-                        programa
-                    from v_epp
-                    where ejercicio = ',anio,'
-                    and deleted_at is null
-                ) up on 
-                    ma.clv_upp = up.clv_upp and
-                    ma.clv_pp = up.clv_programa
-                where ma.ejercicio = ',anio);
-            	set @query := CONCAT('
+            set @programa := '';
+            set @upp := '';
+            set @lim_i := 0;
+            set @lim_s := 100;
+            if (programa is not null) then set @programa := CONCAT('and clv_pp = \"',programa,'\"'); end if;
+            if (upp is not null) then set @upp := CONCAT(' and clv_upp = \"',upp,'\"'); end if;
+            if (lim_i is not null) then set @lim_i := lim_i; end if;
+            if (lim_s is not null) then set @lim_s := lim_s; end if;
+
+            set @lim_upp := CONCAT('(select clv_upp
+        from (
+            select 
+                clv_upp,
+                round((sum(etapa_0+etapa_1+etapa_2+etapa_3
+                +etapa_4+etapa_5)/(count(clv_pp)*6))*100) avance
+            from mml_avance_etapas_pp maep
+            where ejercicio = ',anio,' and deleted_at is null
+            group by clv_upp
+        )t where avance between ',@lim_i,' and ',@lim_s,')');
+
+            set @froms := CONCAT('left join (
+                        select distinct
+                            clv_upp,
+                            upp,
+                            clv_programa,
+                            programa
+                        from v_epp
+                        where ejercicio = ',anio,'
+                        and deleted_at is null
+                    ) up on 
+                        ma.clv_upp = up.clv_upp and
+                        ma.clv_pp = up.clv_programa
+                    where ma.ejercicio = ',anio);
+                
+            set @query := CONCAT('
+            select 
+            clv_upp,
+            upp,
+            num_pp,
+            clv_pp,
+            programa,
+            etapa,
+            avance,
+            revisado,
+            m_enviada,
+            m_atendida
+        from (
+            select 
+                clv_upp,
+                upp,
+                num_pp,
+                \"\" clv_pp,
+                \"\" programa,
+                0 etapa,
+                avance,
+                0 revisado,
+                0 m_enviada,
+                0 m_atendida
+            from (
+                select 
+                    sum(aux) aux,
+                    clv_upp,
+                    upp,
+                    max(num_pp) num_pp,
+                    sum(avance) avance
+                from (
                     select 
-                        case 
-                            when clv_pp != \"\" then \"\"
-                            else clv_upp
-                        end clv_upp,
-                        case 
-                            when clv_pp != \"\" then \"\"
-                            else upp
-                        end upp,
-                        num_pp,
-                        clv_pp,
-                        programa,
-                        etapa,
-                        avance,
-                        revisado,
-                        m_enviada,
-                        m_atendida
-                    from (
-                        select 
-                            ma.clv_upp,
-                            up.upp,
-                            count(clv_pp) num_pp,
-                            \"\" clv_pp,
-                            \"\" programa,
-                            0 etapa,
-                            round((sum(etapa_0+etapa_1+etapa_2+etapa_3
-                            +etapa_4+etapa_5)/(count(clv_pp)*6))*100) avance,
-                            0 revisado,
-                            0 m_enviada,
-                            0 m_atendida
-                        ',@subquery,'
-                        group by clv_upp,upp
-                        union all
-                        select 
-                            ma.clv_upp,
-                            up.upp,
-                            0 num_pp,
-                            ma.clv_pp,
-                            up.programa,
-                            case 
-                                when etapa_0 = 0 then -1
-                                else (etapa_1+etapa_2+etapa_3+etapa_4+etapa_5)
-                            end etapa,
-                            round(((etapa_0+etapa_1+etapa_2+etapa_3
-                            +etapa_4+etapa_5)/6)*100) avance,
-                            case 
-                                when estatus = 2 then 1
-                                else 0
-                            end revisado,
-                            case 
-                                when estatus = 2 then 1
-                                else 0
-                            end m_enviada,
-                            case 
-                                when estatus = 3 then 1
-                                else 0
-                            end m_atendida
-                        ',@subquery,'
-                        order by clv_upp,clv_pp
-                    )t;
-                ');
-        
-            prepare stmt  from @query;
+                        0 aux,
+                        ma.clv_upp,
+                        up.upp,
+                        count(clv_pp) num_pp,
+                        round((sum(etapa_0+etapa_1+etapa_2+etapa_3
+                        +etapa_4+etapa_5)/(count(clv_pp)*6))*100) avance
+                    from mml_avance_etapas_pp ma
+                    ',@froms,'
+                    group by clv_upp,upp
+                    union all 
+                    select 
+                        count(ma.clv_upp) aux,
+                        ma.clv_upp,
+                        up.upp,
+                        count(clv_pp) num_pp,
+                        0 avance
+                    from mml_avance_etapas_pp ma
+                    ',@froms,' ',@programa,'
+                    group by clv_upp,upp
+                )t
+                group by clv_upp,upp
+            )t2
+            where aux > 0
+            union all
+            select 
+                ma.clv_upp,
+                up.upp,
+                0 num_pp,
+                ma.clv_pp,
+                up.programa,
+                case 
+                    when etapa_0 = 0 then -1
+                    else (etapa_1+etapa_2+etapa_3+etapa_4+etapa_5)
+                end etapa,
+                round(((etapa_0+etapa_1+etapa_2+etapa_3
+                +etapa_4+etapa_5)/6)*100) avance,
+                case 
+                    when estatus = 2 then 1
+                    else 0
+                end revisado,
+                case 
+                    when estatus = 2 then 1
+                    else 0
+                end m_enviada,
+                case 
+                    when estatus = 3 then 1
+                    else 0
+                end m_atendida
+            from mml_avance_etapas_pp ma
+            ',@froms,' ',@programa,'
+            order by clv_upp,clv_pp
+        )t where clv_upp in ',@lim_upp,@upp,' order by clv_upp,clv_pp');
+
+        set @queryF := CONCAT('
+            select 
+                case 
+                    when clv_pp != \"\" then \"\"
+                    else clv_upp
+                end clv_upp,
+                case 
+                    when clv_pp != \"\" then \"\"
+                    else upp
+                end upp,
+                num_pp,
+                clv_pp,
+                programa,
+                etapa,
+                avance,
+                revisado,
+                m_enviada,
+                m_atendida
+            from (',@query,') f;
+        ');
+
+            prepare stmt  from @queryF;
             execute stmt;
             deallocate prepare stmt;
         END");
