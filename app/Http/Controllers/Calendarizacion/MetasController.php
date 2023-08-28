@@ -120,6 +120,7 @@ class MetasController extends Controller
 					->where('programacion_presupuesto.upp', '=', $upp)
 					->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
 					->where('v_epp.ejercicio', '=', $check['anio'])
+					->where('v_epp.presupuestable', '=',0)
 					->orderBy('programacion_presupuesto.upp')
 					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 					->distinct()
@@ -660,7 +661,7 @@ class MetasController extends Controller
 					$error = array(
 						"icon" => 'error',
 						"title" => 'MIR no confirmadas',
-						"text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acercate a CPLADEM'
+						"text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM'
 					);
 					return response()->json($error);
 				}
@@ -771,7 +772,7 @@ class MetasController extends Controller
 						return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false, "url" => '/calendarizacion/claves'];
 					}
 				} else {
-					return ["status" => false, "mensaje" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acercate a CPLADEM', "estado" => true];
+					return ["status" => false, "mensaje" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM', "estado" => true];
 				}
 				//ver si esta confirmada la mir
 			} else {
@@ -1133,7 +1134,6 @@ class MetasController extends Controller
 	}
 	public static function cmetasadd($_upp)
 	{
-		Log::debug($_upp);
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$metas = DB::table('metas')
 			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
@@ -1145,12 +1145,20 @@ class MetasController extends Controller
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)
 			->where('metas.estatus', 1)->get();
-		Log::debug($metas);
 		if (count($metas) >= 1) {
 			return ["status" => true];
 		} else {
 			return ["status" => false];
 		}
 	}
+	function existMetas()
+{
+    $metas = DB::table('metas')->select(DB::raw("COUNT(*) AS datos"))->get();
+    if ($metas[0]->datos >= 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 }

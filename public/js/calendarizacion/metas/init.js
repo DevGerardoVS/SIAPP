@@ -103,12 +103,28 @@ var dao = {
                     title: 'Esta unidad responsable no cuenta con presupuesto',
                     text: $('#ur_filter').find('option:selected').text(),
                 });
+                dao.limpiar();
+                
+                $('.btnSave').hide();
+                $('#incomplete').show(); 
+                $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text('Esta unidad responsable no cuenta con presupuesto');
+                $('#metasVista').hide();
+                $(".CargaMasiva").hide();
                 if ($('#upp').val() == '') {
                     dao.getUrs($('#upp_filter').val());
                 } else {
                     dao.getUrs($('#upp').val());
                 }
+            } else {
+                $('.btnSave').show();
+                $('#incomplete').hide(); 
+                $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text('');
+                $('#metasVista').show(); 
+                $(".CargaMasiva").show();
             }
+            
         });
     },
     getUrs: function (upp) {
@@ -136,9 +152,19 @@ var dao = {
                     tipo_AC.append(new Option(i, i));
                 }
             });
-            tipo_AC.select2({
-                maximumSelectionLength: 10
-            });
+        });
+    },
+    existMetas: function () {
+        $.ajax({
+            type: "GET",
+            url: '/calendarizacion/metas/e',
+            dataType: "JSON"
+        }).done(function (data) {
+            if (data) {
+                $('.activC').show();
+            } else {
+                $('.activC').hide();
+            }
 
         });
     },
@@ -200,6 +226,7 @@ var dao = {
                 title: mensaje.title,
                 text: mensaje.text,
             });
+            dao.existMetas();
             if ($('#upp').val() == '') {
                 dao.getUpps();
             } else {
@@ -441,7 +468,9 @@ var dao = {
         });
     },
     limpiar: function () {
-        $('#sumMetas').val('')
+        $('#sumMetas').val('');
+        $('#sumMetas-error').removeClass('has-error');
+        $('#sumMetas-error').text('');
         inputs.forEach(e => {
             $('#' + e + '-error').text("").removeClass('#' + e + '-error');
             if (e != 'beneficiario') {
@@ -589,6 +618,7 @@ var init = {
     },
 };
 $(document).ready(function () {
+    dao.existMetas();
     $(".CargaMasiva").hide();
     $(".btnSave").hide();
     $("#beneficiario").on('paste', function (e) {
@@ -628,9 +658,6 @@ $(document).ready(function () {
     $("#sel_actividad").select2({
         maximumSelectionLength: 10
     });
-/*     $("#tipo_Ac").select2({
-        maximumSelectionLength: 10
-    }); */
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
         $("#" + i).on('paste', function (e) {
