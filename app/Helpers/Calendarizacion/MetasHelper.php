@@ -10,7 +10,6 @@ class MetasHelper{
     public static function actividades($upp,$anio){
         try {
 			$proyecto = DB::table('mml_mir')
-				/* ->leftJoin('proyectos_mir', 'proyectos_mir.id', 'actividades_mir.proyecto_mir_id')  */
 				->select(
 					'mml_mir.id',
 					'mml_mir.clv_upp AS upp',
@@ -87,70 +86,4 @@ class MetasHelper{
 		$tipo[] = ['2', 'Especial'];
 		return  $tipo;
 	}
-	public static function mir(){
-       // $proyectoMir = DB::connection('mml')
-		$proyectoMir = DB::table('mml_mir')
-			->leftJoin('epp', 'epp.id', 'mml_mir.id_epp')
-			->select(
-				'epp.id AS id_epp',
-				'epp.sector_publico_id',
-				'epp.sector_publico_f_id',
-				'epp.sector_economia_id',
-				'epp.subsector_economia_id',
-				'epp.ente_publico_id',
-				'epp.upp_id',
-				'epp.subsecretaria_id',
-				'epp.ur_id',
-				'epp.finalidad_id',
-				'epp.funcion_id',
-				'epp.subfuncion_id',
-				'epp.eje_id',
-				'epp.linea_accion_id',
-				'epp.programa_sectorial_id',
-				'epp.tipologia_conac_id',
-				'epp.programa_id',
-				'epp.subprograma_id',
-				'epp.proyecto_id',
-				'epp.ejercicio',
-				'epp.presupuestable',
-				'epp.confirmado',
-				'mml_mir.id AS id_matriz',
-			 	'mml_mir.clv_upp',
-				'mml_mir.clv_ur',
-				'mml_mir.clv_pp',
-				'mml_mir.nivel',
-				'mml_mir.id_epp',
-				'mml_mir.componente_padre',
-				'mml_mir.objetivo',
-				'mml_mir.indicador',
-				'mml_mir.definicion_indicador',
-				'mml_mir.metodo_calculo',
-				'mml_mir.descripcion_metodo',
-				'mml_mir.tipo_indicador',
-				'mml_mir.unidad_medida',
-				'mml_mir.dimension',
-				'mml_mir.comportamiento_indicador',
-				'mml_mir.frecuencia_medicion',
-				'mml_mir.medios_verificacion',
-				'mml_mir.lb_valor_absoluto',
-				'mml_mir.lb_valor_relativo',
-				'mml_mir.lb_anio',
-				'mml_mir.lb_periodo_i',
-				'mml_mir.lb_periodo_f',
-				'mml_mir.mp_valor_absoluto',
-				'mml_mir.mp_valor_relativo',
-				'mml_mir.mp_anio',
-				'mml_mir.mp_anio_meta',
-				'mml_mir.mp_periodo_i',
-				'mml_mir.mp_periodo_f',
-				'mml_mir.supuestos',
-				'mml_mir.estrategias',
-				'mml_mir.ejercicio',
-			)
-			->where('mml_mir.deleted_at', null)
-			->where('mml_mir.nivel', 11)
-			->where('epp.deleted_at', null)
-			->get();
-        return $proyectoMir;
-    }
 }

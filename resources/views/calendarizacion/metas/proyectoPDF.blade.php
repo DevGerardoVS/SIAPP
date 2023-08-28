@@ -12,7 +12,7 @@
             </header>
         </div>
                 <br>
-                    <div>
+                    <div >
                         <table id="catalogo"  style="border: 1px solid #000; ">
                             <thead>
                                 <tr style="background-color: #6A0F49 !important;color: white !important; border: 1px solid #000;">
