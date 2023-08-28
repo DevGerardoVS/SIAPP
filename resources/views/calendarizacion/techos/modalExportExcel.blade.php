@@ -1,4 +1,4 @@
-<div class="modal fade export-excel" id="TechosExportExcel" tabindex="-1" role="dialog"
+<div class="modal fade export-excel" id="exportExcel" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
