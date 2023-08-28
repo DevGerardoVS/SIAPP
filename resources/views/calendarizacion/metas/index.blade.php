@@ -73,8 +73,9 @@
                             <br>
                             @include('calendarizacion.metas.tableMetas')
                             <div class="d-flex justify-content-center">
-                                <a type="button" class="btn btn-secondary" href="/calendarizacion/proyecto"
-                                    onclick="dao.limpiar()">Actividades capturadas</a>
+                                <a type="button" class="btn btn-secondary activC" href="/calendarizacion/proyecto"
+                                onclick="dao.limpiar()">Actividades capturadas</a>
+                                
                                 &nbsp; &nbsp;
                                 @if (Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
                                     <button id="btnSave" type="button" class="btn btn-primary btnSave">Guardar</button>
