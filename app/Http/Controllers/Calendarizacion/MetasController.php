@@ -1134,7 +1134,6 @@ class MetasController extends Controller
 	}
 	public static function cmetasadd($_upp)
 	{
-		Log::debug($_upp);
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$metas = DB::table('metas')
 			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
@@ -1146,12 +1145,20 @@ class MetasController extends Controller
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)
 			->where('metas.estatus', 1)->get();
-		Log::debug($metas);
 		if (count($metas) >= 1) {
 			return ["status" => true];
 		} else {
 			return ["status" => false];
 		}
 	}
+	function existMetas()
+{
+    $metas = DB::table('metas')->select(DB::raw("COUNT(*) AS datos"))->get();
+    if ($metas[0]->datos >= 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 }
