@@ -147,12 +147,19 @@ class FunFormats
 
                                     }
                                     }else{
-                                        $meses=implode(", ", $m["errorM"]);
+                                        $err=implode(", ", $m["errorM"]);
+                                        $meses=implode(", ", $m["mV"]);
+                                        if(count($m["mV"])==1){
+                                            
+                                                $mesaje = '. Solo puede registrar en el mes de: ' . $meses;
+                                        }else{
+                                            $mesaje = '. Solo puede registrar en los meses: ' . $meses;
+                                        }
 
                                         $error = array(
                                             "icon" => 'error',
                                             "title" => 'Error',
-                                            "text" => 'Los meses: '.$meses. ' no coinciden en las claves presupuestales, en la fila '. $index
+                                            "text" => 'Los meses: '.$err. ' no coinciden en las claves presupuestales, en la fila '. $index.$mesaje
                                         );
                                         return $error;
                                     }
@@ -194,7 +201,7 @@ class FunFormats
                     $error = array(
                         "icon" => 'error',
                         "title" => 'Error',
-                        "text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acercate a CPLADEM'
+                        "text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM'
                     );
                     return $error;
                 }
@@ -333,6 +340,7 @@ class FunFormats
        $m=MetasController::meses($areaAux[0],$areaAux[1],$anio);
   
         $arrM = [];
+        $arrMV = [];
         foreach ($m as $key => $value) {
             $e = $value;
             switch ($key) {
@@ -341,6 +349,9 @@ class FunFormats
                         if($meses->enero!=0){
                             $arrM[] ="enero";
                         }
+                        
+                    }else{
+                        $arrMV[] ="ENERO";
                     }
                     break;
                 case 'febrero':
@@ -348,13 +359,19 @@ class FunFormats
                         if($meses->febrero!=0){
                             $arrM[] = "febrero";
                         }
-                    } 
+                        
+                    } else{
+                        $arrMV[] = "FEBRERO";
+                    }
                     break;
                 case 'marzo':
                     if ($e == 0.0 || $e == 0) {
                         if($meses->marzo!=0){
                             $arrM[] = "marzo";
                         }
+                        
+                    }else{
+                        $arrMV[] = "MARZO";
                     }
                     break;
                 case 'abril':
@@ -362,6 +379,10 @@ class FunFormats
                         if($meses->abril!=0){
                             $arrM[] = "abril";
                         }
+                        
+
+                    }else{
+                        $arrMV[] = "ABRIL";
                     }
                     break;
                 case 'mayo':
@@ -369,6 +390,9 @@ class FunFormats
                         if($meses->mayo!=0){
                             $arrM[] = "mayo";
                         }
+                       
+                    }else{
+                        $arrMV[] = "MAYO";
                     }
                     break;
                 case 'junio':
@@ -376,6 +400,8 @@ class FunFormats
                         if($meses->junio!=0){
                             $arrM[] = "junio";
                         }
+                    }else{
+                        $arrMV[] = "JUNIO";
                     }
                     break;
                 case 'julio':
@@ -383,6 +409,8 @@ class FunFormats
                         if($meses->julio!=0){
                             $arrM[] = "julio";
                         }
+                    }else{
+                        $arrMV[] = "JULIO";
                     }
                     break;
                 case 'agosto':
@@ -390,6 +418,9 @@ class FunFormats
                         if($meses->agosto!=0){
                             $arrM[] = "agosto";
                         }
+                        
+                    }else{
+                        $arrMV[] = "AGOSTO";
                     }
                     break;
                 case 'septiembre':
@@ -397,6 +428,9 @@ class FunFormats
                         if($meses->septiembre!=0){
                             $arrM[] = "septiembre";
                         }
+                        
+                    }else{
+                        $arrMV[] = "SEPTIEMBRE";
                     }
                     break;
                 case 'octubre':
@@ -404,6 +438,8 @@ class FunFormats
                         if($meses->octubre!=0){
                             $arrM[] = "octubre";
                         }
+                    }else{
+                        $arrMV[] = "OCTUBRE";
                     }
                     break;
 
@@ -412,6 +448,8 @@ class FunFormats
                         if($meses->noviembre!=0){
                             $arrM[] = "noviembre";
                         }
+                    }else{
+                        $arrMV[] = "NOBIEMBRE";
                     }
                     break;
 
@@ -420,6 +458,8 @@ class FunFormats
                         if($meses->diciembre!=0){
                             $arrM[] = "diciembre";
                         }
+                    }else{
+                        $arrMV[] = "DICIEMBRE";
                     }
             
                 default:
@@ -431,7 +471,7 @@ class FunFormats
         if(count($arrM)==0){
             return ["status"=>true];
         }else{
-            return ["status"=>false,"errorM"=>$arrM];
+            return ["status"=>false,"errorM"=>$arrM,"mV"=>$arrMV];
         }
 
 

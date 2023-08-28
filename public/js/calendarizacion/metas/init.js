@@ -103,12 +103,27 @@ var dao = {
                     title: 'Esta unidad responsable no cuenta con presupuesto',
                     text: $('#ur_filter').find('option:selected').text(),
                 });
+                
+                $('.btnSave').hide();
+                $('#incomplete').show(); 
+                $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text('Esta unidad responsable no cuenta con presupuesto');
+                $('#metasVista').hide();
+                $(".CargaMasiva").hide();
                 if ($('#upp').val() == '') {
                     dao.getUrs($('#upp_filter').val());
                 } else {
                     dao.getUrs($('#upp').val());
                 }
+            } else {
+                $('.btnSave').show();
+                $('#incomplete').hide(); 
+                $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text('');
+                $('#metasVista').show(); 
+                $(".CargaMasiva").show();
             }
+            
         });
     },
     getUrs: function (upp) {
