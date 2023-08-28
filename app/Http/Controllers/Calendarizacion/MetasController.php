@@ -120,6 +120,7 @@ class MetasController extends Controller
 					->where('programacion_presupuesto.upp', '=', $upp)
 					->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
 					->where('v_epp.ejercicio', '=', $check['anio'])
+					->where('v_epp.presupuestable', '=',0)
 					->orderBy('programacion_presupuesto.upp')
 					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 					->distinct()
