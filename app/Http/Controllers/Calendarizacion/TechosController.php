@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Calendarizacion;
 
 use App\Models\administracion\Bitacora;
+use App\Models\calendarizacion\TechosFinancieros;
 
 use App\Exports\PlantillaTechosExport;
 use App\Exports\TechosExport;
@@ -248,10 +249,8 @@ class TechosController extends Controller
                 ->get();
     
                 //si existe en la tabla quiere decir que ya esta asignado y no se puede eliminar
-                if(count($existe) == 0){
-                    DB::beginTransaction();
-                    DB::table('techos_financieros')->where('id', '=', $request->id)->delete();
-                    DB::commit();
+                if(count($existe) == 0 || $data[0]->deleted_at != null){
+                    TechosFinancieros::where('id', $request->id)->delete();
     
                     $b = array(
                         "username"=>Auth::user()->username,

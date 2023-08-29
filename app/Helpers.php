@@ -78,35 +78,13 @@ function bitacoraRcont($email)
      Controller::bitacora($b);
 }
 
-function cmetas($upp,$anio)
+function existMetas()
 {
-    $metas = DB::table('metas')
-        ->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
-        ->select(
-            'mml_mir.entidad_ejecutora',
-            'mml_mir.area_funcional'.
-            'mml_mir.clv_upp'
-        )
-        ->where('mml_mir.clv_upp',$upp)
-        ->where('mml_mir.ejercicio',$anio)
-        ->where('mml_mir.deleted_at',null)
-        ->where('mml_mir.estatus',0)->get();
-        $activs = DB::table("programacion_presupuesto")
-        ->select(
-            'programa_presupuestario AS programa',
-            DB::raw('CONCAT(upp,subsecretaria,ur) AS area'),
-            DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
-        )
-        ->where('programacion_presupuesto.upp', '=', $upp)
-        ->where('programacion_presupuesto.ejercicio', '=', $anio)
-        ->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
-        ->distinct()
-        ->where('estado', 1)
-        ->groupByRaw('programa_presupuestario')->get();
-    if (count($metas) == count($activs)) {
-        return ["status" => true];
+    $metas = DB::table('metas')->select(DB::raw("COUNT(*) AS datos"))->get();
+    if ($metas[0]->datos >= 1) {
+        return true;
     } else {
-        return ["status" => true];
+        return false;
     }
 }
 
