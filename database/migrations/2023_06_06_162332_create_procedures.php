@@ -2797,11 +2797,11 @@ return new class extends Migration {
             update epp_aux a
             left join catalogo c on a.clv_sector_publico = c.clave and c.grupo_id = 1
             set a.id_sector_publico = c.id;
-        
+
             update epp_aux a
             left join catalogo c on a.clv_sector_publico_f = c.clave and c.grupo_id = 2
             set a.id_sector_publico_f = c.id;
-        
+
             update epp_aux a
             left join catalogo c on a.clv_sector_economia = c.clave and c.grupo_id = 3
             set a.id_sector_economia = c.id;
@@ -2865,14 +2865,14 @@ return new class extends Migration {
             update epp_aux a
             left join catalogo c on a.clv_proyecto = c.clave and c.grupo_id = 18
             set a.id_proyecto = c.id;
-        
+
             #Identificar datos no encontrados
             create temporary table if not exists claves_aux(
                 clave varchar(6),
                 descripcion text,
                 grupo_id int
             );
-        
+
             insert into claves_aux 
             select e.clv_sector_publico,e.sector_publico,1 from epp_aux e where e.id_sector_publico is null;
             
@@ -2884,6 +2884,17 @@ return new class extends Migration {
             
             insert into claves_aux 
             select e.clv_subsector_economia,e.subsector_economia,4 from epp_aux e where e.id_subsector_economia is null;
+            set @filasCA := (select 
+                count(*)
+            from epp_aux ea
+            join rel_economica_administrativa re on re.clasificacion_administrativa = concat(
+                ea.clv_sector_publico,
+                ea.clv_sector_publico_f,
+                ea.clv_sector_economia,
+                ea.clv_subsector_economia,
+                ea.clv_ente_publico
+            ));
+            if(@filasCA > 0) then select \"Se necesita actualizar la tabla clasificacion_administrativa\" alerta; end if;
             
             insert into claves_aux 
             select e.clv_ente_publico,e.ente_publico,5 from epp_aux e where e.id_ente_publico is null;
@@ -2911,12 +2922,16 @@ return new class extends Migration {
             
             insert into claves_aux 
             select e.clv_linea_accion,e.linea_accion,13 from epp_aux e where e.id_linea_accion is null;
+            set @filasLA := (select count(*) from epp_aux e where e.id_linea_accion is null);
+            if(@filasLA > 0) then select \"Se necesita actualizar la tabla sector_linea_accion\" alerta; end if;
             
             insert into claves_aux 
             select e.clv_programa_sectorial,e.programa_sectorial,14 from epp_aux e where e.id_programa_sectorial is null;
             
             insert into claves_aux 
             select e.clv_tipologia_conac,e.tipologia_conac,15 from epp_aux e where e.id_tipologia_conac is null;
+            set @filasTC := (select count(*) from epp_aux e where e.id_tipologia_conac is null);
+            if(@filasTC > 0) then select \"Se necesita actualizar la tabla tipologia_conac\" alerta; end if;
             
             insert into claves_aux 
             select e.clv_programa,e.programa,16 from epp_aux e where e.id_programa is null;
@@ -2926,7 +2941,7 @@ return new class extends Migration {
             
             insert into claves_aux 
             select e.clv_proyecto,e.proyecto,18 from epp_aux e where e.id_proyecto is null;
-        
+
             select distinct
                 ca.clave,
                 ca.descripcion,
@@ -2969,11 +2984,24 @@ return new class extends Migration {
                     'SISTEMA'
                 from epp_aux ea;
             
+                insert into entidad_ejecutora(upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at)
+                select 
+                    ea.id_upp,
+                    ea.id_subsecretaria,
+                    ea.id_ur,
+                    null,
+                    'Sistema',
+                    null,
+                    null,
+                    now(),
+                    now()
+                from epp_aux ea;
+            
                 update epp set presupuestable = 0 
                 where ejercicio = anio and  
                 programa_id in (select id from catalogo c where c.grupo_id = 16 and c.clave in ('5H','RM'));
             end if;
-        
+
             drop temporary table claves_aux;
             delete from epp_aux;
         END");
@@ -3025,5 +3053,6 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS llenado_cierres;");
         DB::unprepared("DROP PROCEDURE IF EXISTS llenado_etapas;");
         DB::unprepared("DROP PROCEDURE IF EXISTS llenado_epp;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS crear_tabla_auxiliar;");
     }
 };
