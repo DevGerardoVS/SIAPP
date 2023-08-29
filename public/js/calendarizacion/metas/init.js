@@ -78,7 +78,7 @@ var dao = {
             cache: false,
             dataType: "json"
         }).done(function (_data) {
-            _table = $("#catalogo");
+            _table = $("#entidad");
             _columns = [{
                 width: "0rem",
                 targets: [{ "aTargets": [0], "mData": [0] },
