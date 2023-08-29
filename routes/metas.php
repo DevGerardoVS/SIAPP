@@ -4,7 +4,7 @@
 	Route::controller(MetasController::class)->group(function () {
 		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
 		Route::get('/calendarizacion/pdf/{upp?}/{anio?}', 'pdfView');
-		Route::post('/calendarizacion/data/', 'getMetasP')->name('metasP');
+		Route::post('/calendarizacion/data/', 'getMetasP');
 		Route::get('/actividades/data/{upp?}/{anio?}', 'getActiv')->name('actividades');
 		Route::get('/actividades/proyecto_calendario', 'proyExcel')->name('ProyExcel');
 		Route::get('/actividades/exportExcel/{upp?}/{anio?}', 'exportExcel');

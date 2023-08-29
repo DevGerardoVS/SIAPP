@@ -51,7 +51,7 @@
                             <div class="container">
                                 &nbsp;
                                 <div class=" table table-responsive-lg d-flex justify-content-center">
-                                    <table id="catalogo">
+                                    <table id="entidad">
                                         <thead>
                                             <tr class="colorMorado">
                                                 <th class="vertical sorting">Finalidad</th>
