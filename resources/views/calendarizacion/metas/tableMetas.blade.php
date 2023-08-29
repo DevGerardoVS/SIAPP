@@ -93,7 +93,7 @@
                         <td>
                             <h6><b>Metas Calendarizadas</b></h6>
                         </td>
-                        <td><input onkeypress="return valideKeySum(event)" id="sumMetas" name="sumMetas" type="text" class="form-control" >
+                        <td><input onkeypress="return valideKeySum(event)" id="sumMetas" name="sumMetas" type="text" class="form-control form-group" >
                         </td>
                     </tr>
                 </tbody>
