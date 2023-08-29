@@ -61,24 +61,19 @@ var dao = {
         });
     },
     getData: function (upp, ur) {
-        var data = new FormData();
+      /*   var data = new FormData();
         if ($('#upp').val() != '') {
             data.append('ur_filter', ur);
         } else {
             data.append('ur_filter', ur);
             data.append('upp_filter', upp);
-        }
+        } */
         $.ajax({
-            type: "POST",
-            url: "/calendarizacion/data/",
-            data: data,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-            dataType: "json"
+            type: "GET",
+            url: "/calendarizacion/data/"+upp+"/"+ur,
+            dataType: "JSON"
         }).done(function (_data) {
-            _table = $("#catalogo");
+            _table = $("#entidad");
             _columns = [{
                 width: "0rem",
                 targets: [{ "aTargets": [0], "mData": [0] },
@@ -154,20 +149,6 @@ var dao = {
             });
         });
     },
-    existMetas: function () {
-        $.ajax({
-            type: "GET",
-            url: '/calendarizacion/metas/e',
-            dataType: "JSON"
-        }).done(function (data) {
-            if (data) {
-                $('.activC').show();
-            } else {
-                $('.activC').hide();
-            }
-
-        });
-    },
     getUpps: function () {
         $.ajax({
             type: "GET",
@@ -226,7 +207,6 @@ var dao = {
                 title: mensaje.title,
                 text: mensaje.text,
             });
-            dao.existMetas();
             if ($('#upp').val() == '') {
                 dao.getUpps();
             } else {
@@ -618,7 +598,6 @@ var init = {
     },
 };
 $(document).ready(function () {
-    dao.existMetas();
     $(".CargaMasiva").hide();
     $(".btnSave").hide();
     $("#beneficiario").on('paste', function (e) {
