@@ -133,6 +133,9 @@ class CalendarizacionCargaMasivaController extends Controller
  */
 
                  $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio',$ejercicio[$helperejercicio])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
+                 \Log::debug($valuepresupuesto);
+                 \Log::debug($value);
+
                  if($valuepresupuesto==!$value){
                     return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
                 }
@@ -220,7 +223,10 @@ class CalendarizacionCargaMasivaController extends Controller
                 return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
             }
             array_shift($filearray);
-            $ejercicio = array();
+            if($tipoAdm!=NULL ){
+                $ejercicio = array();
+
+            }
             foreach($filearray as $k){
                 //buscar en el array de upps 
 
@@ -368,6 +374,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 File::delete(storage_path($filename));
                 
             }
+            \Log::debug($ejercicio);
             //mandamos llamar procedimiento de jeff
             $datos = DB::select("CALL insert_pp_aplanado(".$ejercicio[0].")");
            $b = array(
