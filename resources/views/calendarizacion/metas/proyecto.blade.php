@@ -84,6 +84,7 @@
                                     <th class="vertical">Programa</th>
                                     <th class="vertical">Subprograma</th>
                                     <th class="vertical">Proyecto</th>
+                                  {{--   <th class="vertical">Partida</th> --}}
                                     <th class="vertical">Fondo</th>
                                     <th class="vertical">Actividad</th>
                                     <th class="vertical">Tipo Actividad</th>
