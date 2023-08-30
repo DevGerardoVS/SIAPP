@@ -113,20 +113,10 @@
             contentType: false,
             processData: false,
             beforeSend: function() {
-                let timerInterval
-                Swal.fire({
-                    title: 'Cargando datos, por favor espere...',
-                    html: ' <b></b>',
-                    allowOutsideClick: false,
-                    timer: 2000000,
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        Swal.showLoading()
-                    }
-                });
+                $('.custom-swal').css('display', 'block');
             },
             complete: function(){
-                Swal.close();
+                $('.custom-swal').css('display', 'none');
             },
            success: function(response) {
                 if(response.dataSet.length == 0){
