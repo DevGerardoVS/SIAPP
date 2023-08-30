@@ -57,15 +57,15 @@ class BitacoraController extends Controller
 		->distinct()
 		->get();
             Log::debug($data);
-        $dataSet=array();
+        $newdata=array();
         foreach($data as $d){
             $ds = array(
                 $d->anio
             );
             $dataSet[]=$ds;
         }
-        $newdata=array_unique($dataSet);
-        return $newdata;
+        /* $newdata=array_unique($dataSet); */
+        return $dataSet;
     }
     public function exportBitacora($anio,$mes) {
         /*Si no coloco estas lineas Falla*/
