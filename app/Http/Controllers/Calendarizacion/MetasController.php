@@ -89,14 +89,15 @@ class MetasController extends Controller
 		}
 		return $dataSet;
 	}
-	public function getMetasP(Request $request)
+	public function getMetasP($upp_filter,$ur_filter)
 	{
 		Controller::check_permission('getMetas');
 		$dataSet = [];
-		$upp = isset($request->upp_filter) ? $request->upp_filter : auth::user()->clv_upp;
-
-		if ($request->ur_filter != null && $upp != '') {
-
+		$upp = isset($upp_filter)? $upp_filter : auth::user()->clv_upp;
+		if(auth::user()->id_grupo ==4){
+			$upp=auth::user()->clv_upp;
+		}
+		if ($ur_filter != null && $upp != '') {
 			$check = $this->checkClosing($upp);
 			if ($check['status']) {
 				$activs = DB::table("programacion_presupuesto")
@@ -116,7 +117,7 @@ class MetasController extends Controller
 						'programacion_presupuesto.subsecretaria AS subsec',
 						DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto')
 					)
-					->where('programacion_presupuesto.ur', '=', $request->ur_filter)
+					->where('programacion_presupuesto.ur', '=', $ur_filter)
 					->where('programacion_presupuesto.upp', '=', $upp)
 					->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
 					->where('v_epp.ejercicio', '=', $check['anio'])
@@ -128,8 +129,8 @@ class MetasController extends Controller
 
 				foreach ($activs as $key) {
 					$area = '"' . strval($key->finalidad) . '-' . strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje) . '-' . strval($key->linea) . '-' . strval($key->programaSec) . '-' . strval($key->tipologia) . '-' . strval($key->programa) . '-' . strval($key->subprograma) . '-' . strval($key->clv_proyecto) . '"';
-					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($request->ur_filter) . '"';
-					$clave = '"' . strval($upp) . strval($key->subsec) . strval($request->ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
+					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($ur_filter) . '"';
+					$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
 					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . ")' ></div>";
 					$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $accion];
 				}
@@ -1151,14 +1152,5 @@ class MetasController extends Controller
 			return ["status" => false];
 		}
 	}
-	function existMetas()
-{
-    $metas = DB::table('metas')->select(DB::raw("COUNT(*) AS datos"))->get();
-    if ($metas[0]->datos >= 1) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 }
