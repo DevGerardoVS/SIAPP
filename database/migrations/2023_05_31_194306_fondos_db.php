@@ -28,7 +28,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
-            $table->string('poblacion_Objetivo',255)->nullable(false);
+            $table->string('poblacion_objetivo',255)->nullable(false);
             $table->string('descripcion',255)->nullable(false);
             $table->string('magnitud',255)->nullable(false);
             $table->string('necesidad_atender',255)->nullable(false);
