@@ -122,6 +122,7 @@ return new class extends Migration
             $table->string('clv_cpladem_linea_accion', 12)->nullable(false);
             $table->string('created_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
+            $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -768,5 +769,6 @@ return new class extends Migration
         Schema::dropIfExists('mml_observaciones_pp');
         Schema::dropIfExists('mml_objetivo_sectorial_estrategia');
         Schema::dropIfExists('mml_mir');
+        Schema::dropIfExists('epp_aux');
     }
 };
