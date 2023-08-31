@@ -97,4 +97,19 @@ class InicioController extends Controller
         Controller::bitacora($b);
         return Excel::download(new InicioExport(), 'Presupuesto por fondo..xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
+
+    public function getFondos(){
+        $fondos = DB::table("pp_aplanado")
+        ->select("clv_fondo_ramo", "fondo_ramo")
+        ->where("ejercicio", "=", function($query){
+            $query->from("pp_aplanado")
+            ->select("ejercicio")
+        ->limit(1)
+        ->orderBy("ejercicio","desc")
+        ->groupBy("ejercicio");
+        })
+        ->groupBy("clv_fondo_ramo")
+        ->get();
+        return $fondos;
+    }
 }

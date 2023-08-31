@@ -29,6 +29,15 @@
         </div>
     </div>
     <br>
+    <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
+        <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
+            <label for="fondo_filter" class="form-label fw-bold mt-md-1">Fondo:</label>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <select class="form-control filters filters_fondo" id="fondo_filter" name="fondo_filter" autocomplete="fondo_filter">
+            </select>
+        </div>
+    </div>
     <div class="text-right">
         <button type="button" class="btn btn-outline-success"  onclick="exportExcel()">
             <i class="fa fa-file-excel-o"></i> Exportar Excel
@@ -59,6 +68,7 @@
 
 <script>
     $(document).ready(function() {
+        var dt = $('#catalogoB');
 
         $.ajaxSetup({
             headers: {
@@ -66,7 +76,12 @@
             }
         });
 
+        $('#fondo_filter').on('change', function(){
+            dt.DataTable().search(this.value).draw();   
+        });
+
         getDatos();
+        getFondos();
 
     });
     function exportPdf(){
@@ -248,6 +263,22 @@
         }catch (error) {
             console.error("error: "+error);
         }
+    }
+
+    function getFondos() { //función obtener fondos
+        $.ajax({
+            url: "/fondos/inicio",
+            type:'POST',
+            dataType: 'json',
+            success: function(data) {
+                var par = $('#fondo_filter');
+                par.html('');
+                par.append(new Option("Todos", ""));
+                $.each(data, function(i, val){
+                    par.append(new Option(data[i].clv_fondo_ramo +" "+ data[i].fondo_ramo, data[i].fondo_ramo));
+                });
+            }
+        });
     }
 
 
