@@ -18,12 +18,8 @@
                                     @endforeach
                                 </ul>
                             </div>
-                        @else
-                            @php
-                                bitacoraRcont($_GET['email']);
-                            @endphp
-                        @endif
-                        <form method="POST" action="{{ route('password.update') }}">
+                            @endif
+                        <form method="POST" action="{{ route('restablecerPass') }}">
                             @csrf
 
                             <input type="hidden" name="token" value="{{ $token }}">
@@ -35,7 +31,7 @@
                                 <div class="col-md-6">
                                     <input id="email" type="email"
                                         class="form-control @error('email') is-invalid @enderror" name="email"
-                                        value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
+                                        value="{{ $_GET['email'] }}" required autocomplete="email" autofocus>
                                 </div>
                             </div>
 

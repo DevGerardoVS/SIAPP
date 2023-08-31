@@ -28,7 +28,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
-            $table->string('poblacion_Objetivo',255)->nullable(false);
+            $table->string('poblacion_objetivo',255)->nullable(false);
             $table->string('descripcion',255)->nullable(false);
             $table->string('magnitud',255)->nullable(false);
             $table->string('necesidad_atender',255)->nullable(false);
@@ -122,6 +122,7 @@ return new class extends Migration
             $table->string('clv_cpladem_linea_accion', 12)->nullable(false);
             $table->string('created_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
+            $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -768,5 +769,6 @@ return new class extends Migration
         Schema::dropIfExists('mml_observaciones_pp');
         Schema::dropIfExists('mml_objetivo_sectorial_estrategia');
         Schema::dropIfExists('mml_mir');
+        Schema::dropIfExists('epp_aux');
     }
 };
