@@ -186,8 +186,8 @@ return new class extends Migration
             $table->tinyInteger('etapa_5')->nullable(false);
             $table->integer('estatus')->unsigned()->nullable(false);
             $table->integer('ejercicio')->nullable(false)->default(0);
-            $table->string('nombre_minuta',15)->nullable(true);
-            $table->string('ruta',50)->nullable(true);
+            $table->string('nombre_minuta',100)->nullable(true);
+            $table->string('ruta',100)->nullable(true);
             $table->string('extension',4)->nullable(true);
             $table->string('created_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
