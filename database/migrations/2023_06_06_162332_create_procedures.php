@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_III(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_III(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -54,7 +54,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_1(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'vppa.deleted_at is null';
@@ -83,7 +83,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1_2(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_1_2(in anio int, in corte date)
         begin
             set @tabla := 'programacion_presupuesto pp';
             set @corte := 'deleted_at is null';
@@ -136,7 +136,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1_3(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_1_3(in anio int, in corte date)
         begin
             set @tabla := 'programacion_presupuesto pp';
             set @corte := 'deleted_at is null';
@@ -184,7 +184,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_2(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_2(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -226,7 +226,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_3(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_3(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado pa';
             set @corte := 'pa.deleted_at is null';
@@ -295,7 +295,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_4(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_4(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -346,7 +346,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_5(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_5(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -369,7 +369,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_6(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_6(in anio int, in corte date)
         begin
             set @tabla := 'programacion_presupuesto pp';
             set @corte := 'deleted_at is null';
@@ -428,7 +428,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_1(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_1(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -479,7 +479,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_2(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_2(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -536,7 +536,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_3(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_3(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -593,7 +593,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_4(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_4(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -650,7 +650,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_10(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_10(in anio int, in corte date)
         begin
             set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
@@ -687,7 +687,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_1(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_1(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -771,7 +771,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_2(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_2(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -848,7 +848,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_3(in anio int,in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_3(in anio int,in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -872,7 +872,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_4(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_4(in anio int, in corte date)
         begin
         set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -896,7 +896,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_5(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_5(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -971,7 +971,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_6(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_6(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -1028,7 +1028,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_7(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_7(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -1167,7 +1167,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_8(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_8(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'vppa.deleted_at is null';
@@ -1226,7 +1226,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists calendario_general(in anio int, in corte date, in uppC varchar(3))
+        DB::unprepared("CREATE PROCEDURE calendario_general(in anio int, in corte date, in uppC varchar(3))
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -1320,7 +1320,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists calendario_fondo_mensual(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE calendario_fondo_mensual(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'vppa.deleted_at is null';
@@ -1347,7 +1347,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_resumen_por_capitulo_y_partida(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_resumen_por_capitulo_y_partida(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -1402,7 +1402,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists avance_proyectos_actividades_upp(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE avance_proyectos_actividades_upp(in anio int, in corte date)
         begin
             set @corte := 'mm.deleted_at is null';
             if (corte is not null) then 
@@ -1449,7 +1449,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date)
+        DB::unprepared("CREATE PROCEDURE proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date)
         begin
             set @corte := 'mm.deleted_at is null';
             set @upp := '';
@@ -1498,7 +1498,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_5(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_5(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado pa';
             set @corte := 'pa.deleted_at is null';
@@ -1584,7 +1584,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists proyecto_avance_general(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE proyecto_avance_general(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -1749,7 +1749,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64), in anio int)
+        DB::unprepared("CREATE PROCEDURE conceptos_clave(in claveT varchar(64), in anio int)
         begin
             
         set @clave := claveT COLLATE utf8mb4_unicode_ci; 
@@ -1799,7 +1799,7 @@ return new class extends Migration {
             ) tabla;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists insert_pp_aplanado(in anio int)
+        DB::unprepared("CREATE PROCEDURE insert_pp_aplanado(in anio int)
         begin
             drop temporary table if exists temp_pp;
             create temporary table temp_pp(
@@ -2224,7 +2224,7 @@ return new class extends Migration {
             drop temporary table if exists aux_fondo;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists SP_AF_EE(in anio int)
+        DB::unprepared("CREATE PROCEDURE SP_AF_EE(in anio int)
         begin
             select
                 case 
@@ -2342,7 +2342,7 @@ return new class extends Migration {
             ) tabla;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists lista_upp(in tipo int)
+        DB::unprepared("CREATE PROCEDURE lista_upp(in tipo int)
             begin
                 if tipo = 0 then
                     select
@@ -2369,7 +2369,7 @@ return new class extends Migration {
             END;
         ");
 
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_II(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_II(in anio int, in corte date)
         begin
             set @corte := 'mm.deleted_at is null';
             if (corte is not null) then 
@@ -2450,7 +2450,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_IX(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_IX(in anio int, in corte date)
         begin
             set @corte := 'mm.deleted_at is null';
             if (corte is not null) then 
@@ -2507,7 +2507,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END");
 
-        DB::unprepared("CREATE PROCEDURE if not exists sp_epp(in uppC varchar(3),in urC varchar(2), in anio int)
+        DB::unprepared("CREATE PROCEDURE sp_epp(in uppC varchar(3),in urC varchar(2), in anio int)
             BEGIN
                 set @upp := uppC;
                 set @ur := urC;
@@ -2589,7 +2589,7 @@ return new class extends Migration {
             END
         ");
 
-        DB::unprepared("CREATE PROCEDURE if not exists avance_etapas(in anio int, in upp varchar(3), in programa varchar(2), in lim_i int, in lim_s int)
+        DB::unprepared("CREATE PROCEDURE avance_etapas(in anio int, in upp varchar(3), in programa varchar(2), in lim_i int, in lim_s int)
         begin
             set @programa := '';
             set @upp := '';
@@ -2737,7 +2737,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END");
 
-        DB::unprepared("CREATE PROCEDURE if not exists llenado_cierres()
+        DB::unprepared("CREATE PROCEDURE llenado_cierres()
         begin
             set @selects := CONCAT('(clv_upp,estatus,ejercicio,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user)
             select distinct 
@@ -2767,7 +2767,7 @@ return new class extends Migration {
             prepare stmt from @query;execute stmt;deallocate prepare stmt;
         END");
 
-        DB::unprepared("CREATE PROCEDURE if not exists llenado_etapas()
+        DB::unprepared("CREATE PROCEDURE llenado_etapas()
         begin
             insert into mml_avance_etapas_pp(clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at)
             select distinct
@@ -2791,7 +2791,7 @@ return new class extends Migration {
             where ejercicio = (select max(ejercicio) from v_epp);
         END");
 
-        DB::unprepared("CREATE PROCEDURE if not exists llenado_epp(in anio int)
+        DB::unprepared("CREATE PROCEDURE llenado_epp(in anio int)
         begin
             #Buscar id´s
             update epp_aux a
@@ -2867,7 +2867,7 @@ return new class extends Migration {
             set a.id_proyecto = c.id;
 
             #Identificar datos no encontrados
-            create temporary table if not exists claves_aux(
+            create temporary table claves_aux(
                 clave varchar(6),
                 descripcion text,
                 grupo_id int
