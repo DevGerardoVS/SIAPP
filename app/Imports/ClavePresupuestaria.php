@@ -281,15 +281,18 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
          ->where('clv_localidad',$row['loc'])->count();
          $valgeo < 1 ? $row['ef']=NULL : $row['ef']; 
 
-       //validacion si la upp tiene firmados claves presupuestales
-         $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->value('estado');
-         $valupp==1 ? $row['upp']='0' : $row['upp']; 
+
 
         //validacion de año 
         if($row['ano']!=='2'){
             $year = '20'.$row['ano'];
             $row['ano']=$year;
         }
+        $row['user']='CargaMasiva'.Auth::user()->username;
+        //validacion si la upp tiene firmados claves presupuestales
+        $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->where('ejercicio',$row['ano'])->value('estado');
+        $valupp==1 ? $row['upp']='0' : $row['upp']; 
+
         return $row;
     }
 
@@ -347,7 +350,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
           'estado'    => 0,
           'tipo'    => $row['tipo'], 
           'updated_at' => null,
-          'created_user' => Auth::user()->username
+          'created_user' => $row['user']
 
         ]);
 
