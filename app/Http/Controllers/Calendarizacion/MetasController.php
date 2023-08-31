@@ -92,11 +92,11 @@ class MetasController extends Controller
 	public function getMetasP($upp_filter,$ur_filter)
 	{
 		Controller::check_permission('getMetas');
-		Log::debug($upp_filter);
-		Log::debug($ur_filter);
 		$dataSet = [];
-		$upp = isset($upp_filter) ? $upp_filter : auth::user()->clv_upp;
-
+		$upp = isset($upp_filter)? $upp_filter : auth::user()->clv_upp;
+		if(auth::user()->id_grupo ==4){
+			$upp=auth::user()->clv_upp;
+		}
 		if ($ur_filter != null && $upp != '') {
 			$check = $this->checkClosing($upp);
 			if ($check['status']) {

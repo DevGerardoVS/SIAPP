@@ -39,7 +39,6 @@ class ChangePasswordController extends Controller
      */
     public function store(Request $request)
     {
-   
         // bitacora
         try {
             $request->validate([
@@ -51,7 +50,10 @@ class ChangePasswordController extends Controller
             $ModelsUser->password = $request->nueva_contraseña;//Hash::make($request->nueva_contraseña);
             if($ModelsUser->id_grupo !=4){
                 $ModelsUser->clv_upp = NULL;
+            }else{
+                $ModelsUser->clv_upp = Auth::user()->clv_upp;
             }
+
             $ModelsUser->save();
       			$b = array(
 				"username"=>Auth::user()->username,
