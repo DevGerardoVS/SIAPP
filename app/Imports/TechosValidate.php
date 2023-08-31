@@ -15,7 +15,15 @@ class TechosValidate
     {
         if (count($row) >= 1) {
             $pre = [];
+            $tech = [];
             $index = 1;
+            for ($i = 0; $i < count($row); $i++) {
+                DB::table('temp_techos')->insert([
+                    'clv_upp' => $row[$i][1],
+                    'clv_fondo' => $row[$i][2],
+                    'ejercicio' => $row[$i][0]
+                ]);
+            }
             for ($i = 0; $i < count($row); $i++) {
                 $index++;
                 if ($row[$i][3] == null && $row[$i][4] == null) {
@@ -28,7 +36,7 @@ class TechosValidate
                     $error = array(
                         "icon" => 'error',
                         "title" => 'Error',
-                        "text" => 'No se puede cargar la informacion existe clave presupuestal registrada para el fondo: ' . $row[$i][0] . '. Revisa la fila: "' . $index . '"'
+                        "text" => 'No se puede cargar la informacion existe clave presupuestal registrada para el fondo: ' . $row[$i][2] . '. Revisa la fila: "' . $index . '"'
                     );
                     return $error;
                 }
@@ -67,6 +75,10 @@ class TechosValidate
                         "text" => 'No se puede cargar techos para ejercicio no activo. Revisa la fila: "' . $index . '"'
                     );
                     return $error;
+                }
+                $existT = TechosValidate::existTecho($row[$i][1], $row[$i][2], $row[$i][0]);
+                if (count($existT) > 1) {
+                   $tech[] = $index;
                 }
                 if ($row[$i][3] != '') {
                     if (!is_numeric($row[$i][3])) {
@@ -137,26 +149,36 @@ class TechosValidate
                     }
                 }
             }
-            if (count($row) != count($pre)) {
-                $val_tech = TechosFinancieros::select('ejercicio')
-                    ->where('ejercicio', $row[0][0])
-                    ->count();
-                if ($val_tech > 0) {
-                    TechosFinancieros::where('ejercicio', $row[0][0])->delete();
-                    $techos = TechosValidate::insert($row);
-                    return $techos;
+            if (count($tech) == 0) {
+                if (count($row) != count($pre)) {
+                    $val_tech = TechosFinancieros::select('ejercicio')
+                        ->where('ejercicio', $row[0][0])
+                        ->count();
+                    if ($val_tech > 0) {
+                        TechosFinancieros::where('ejercicio', $row[0][0])->delete();
+                        $techos = TechosValidate::insert($row);
+                        return $techos;
+                    } else {
+                        $techos = TechosValidate::insert($row);
+                        return $techos;
+                    }
                 } else {
-                    $techos = TechosValidate::insert($row);
-                    return $techos;
+                    $error = array(
+                        "icon" => 'error',
+                        "title" => 'Error',
+                        "text" => 'La plantilla no tiene presupuestos'
+                    );
+                    return $error;
+
                 }
             } else {
+                $filas=implode(", ", $tech);
                 $error = array(
                     "icon" => 'error',
                     "title" => 'Error',
-                    "text" => 'La plantilla no tiene presupuestos'
+                    "text" => 'La plantilla tiene registros duplicados. Revisa las filas: "' . $filas . '"'
                 );
                 return $error;
-
             }
 
         } else {
@@ -178,6 +200,16 @@ class TechosValidate
         return $val_clave;
     }
 
+    public static function existTecho($upp, $fondo, $ejercicio)
+    {
+        $tech = DB::table('temp_techos')->select('*')
+            ->where('clv_upp', $upp)
+            ->where('clv_fondo', $fondo)
+            ->where('ejercicio', $ejercicio)
+            ->get();
+        return $tech;
+    }
+    
     public static function insert($row)
     {
         foreach ($row as $key) {

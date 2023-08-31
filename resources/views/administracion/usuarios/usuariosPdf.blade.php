@@ -11,6 +11,7 @@
                             <thead>
                                 <tr style="background-color: #6A0F49 !important;color: white !important; border: 1px solid #000;">
                                     <th>ID</th>
+                                    <th>Clave Upp</th>
                                     <th>Nombre</th>
                                     <th>Apellido paterno</th>
                                     <th>Apellido Materno</th>

@@ -15,7 +15,7 @@ class UsersExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
     {
 
         $users = DB::table('adm_users')
-            ->select('id','nombre','p_apellido', 's_apellido', 'username','email','celular')
+            ->select('id','clv_upp','nombre','p_apellido', 's_apellido', 'username','email','celular')
             ->orderBy('nombre', 'asc')
             ->get();
         return $users;
@@ -27,7 +27,7 @@ class UsersExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
      */
     public function headings(): array
     {
-        return ["ID","Nombre", "Apellido Paterno", "Apellido Materno", "Usuario", "Correo", "Telefono"];
+        return ["ID","Clave upp","Nombre", "Apellido Paterno", "Apellido Materno", "Usuario", "Correo", "Telefono"];
     }
 
     public function columnWidths(): array
@@ -40,6 +40,7 @@ class UsersExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
             'E' => 30,
             'F' => 30,
             'G' => 20,
+            'H' => 20,
         ];
     }
 }
