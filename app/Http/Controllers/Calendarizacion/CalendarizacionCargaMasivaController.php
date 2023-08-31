@@ -285,6 +285,14 @@ class CalendarizacionCargaMasivaController extends Controller
 
                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio[$helperejercicio])->count();
                 
+                 $valueExist = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio',$ejercicio[$helperejercicio])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->count();
+ 
+                 if($valueExist<1){
+                    return redirect()->back()->withErrors(['error' => 'No existe esea combinacion en techos financieros para la upp: '.$arraysplit[0].' con fondo: '.$arraysplit[2]]);
+
+                 }
+
+
                  $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio[$helperejercicio])->where('clv_fondo', $arraysplit[2])->value('presupuesto');
                  if($valuepresupuesto==!$value){
                     return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
@@ -379,7 +387,6 @@ class CalendarizacionCargaMasivaController extends Controller
                 File::delete(storage_path($filename));
                 
             }
-            \Log::debug($ejercicio);
             //mandamos llamar procedimiento de jeff
             $datos = DB::select("CALL insert_pp_aplanado(".$ejercicio[0].")");
            $b = array(
