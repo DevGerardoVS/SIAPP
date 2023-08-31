@@ -93,3 +93,8 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     include('calendarizacion.php'); //Agregar las rutas para el módulo de Calendarizacion en este archivo
     //Usuarios
 });
+
+//Vista epp
+Route::get('/epp', [App\Http\Controllers\EppController::class, 'index'])->name('epp');
+Route::post('/get-epp/{anio}/{upp}/{ur}', [App\Http\Controllers\EppController::class, 'getEpp'])->name('get-epp');
+Route::post('/get-ur', [App\Http\Controllers\EppController::class, 'getUR'])->name('get-ur');
