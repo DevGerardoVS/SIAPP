@@ -648,6 +648,8 @@ class MetasController extends Controller
 	}
 	public function importPlantilla(Request $request)
 	{
+		Controller::check_permission('putMetas');
+		Controller::check_assign('Carga masiva');
 		DB::beginTransaction();
 		try {
 			$flag = false;

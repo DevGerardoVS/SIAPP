@@ -49,7 +49,7 @@ class Controller extends BaseController
             ->where('id_user', Auth::user()->id)
             ->where('permisos_funciones.deleted_at',null)
             ->orWhere('cat_permisos.nombre', $name)->get();
-    	if($permiso) {
+    	if(count($permiso)) {
           
                 $estructura = $permiso[0];
                 if(count($estructura) > 0){
