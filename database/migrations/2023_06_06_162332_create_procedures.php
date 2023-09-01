@@ -1801,6 +1801,16 @@ return new class extends Migration {
 
         DB::unprepared("CREATE PROCEDURE insert_pp_aplanado(in anio int)
         begin
+            delete
+            from pp_identificadores
+            where id not in (
+                select id 
+                from programacion_presupuesto pp
+                union all 
+                select id
+                from programacion_presupuesto_hist
+            );
+
             drop temporary table if exists temp_pp;
             create temporary table temp_pp(
                 id_aux int not null,
