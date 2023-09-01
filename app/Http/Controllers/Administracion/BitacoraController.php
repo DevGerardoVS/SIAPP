@@ -20,8 +20,6 @@ class BitacoraController extends Controller
 
 	public static function getBitacora($anio,$mes){
         Controller::check_permission('getBitacora');
-        Log::debug($anio);
-        Log::debug($mes);
         $data = Bitacora::select(
             'username',
             'ip_origen',
@@ -57,7 +55,6 @@ class BitacoraController extends Controller
 		->distinct()
 		->get();
             Log::debug($data);
-        $newdata=array();
         foreach($data as $d){
             $ds = array(
                 $d->anio
