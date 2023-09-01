@@ -270,7 +270,6 @@ class MetasController extends Controller
 			->where('ejercicio', $anio)
 /* 			->groupByRaw('enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,noviembre,diciembre')
  */			->get();
-		Log::debug($meses);
 
 		$dataSet = count($meses) >= 1 ? $meses[0] : [];
 		return $dataSet;
@@ -372,7 +371,6 @@ class MetasController extends Controller
 	}
 	public function putMeta(Request $request)
 	{
-		Log::debug($request);
 		Controller::check_permission('putMetas');
 		$meta = Metas::where('id', $request->id_meta)->firstOrFail();
 		$user = Auth::user()->username;
@@ -685,7 +683,6 @@ class MetasController extends Controller
 					$filearray = $xlsx->rows();
 					array_shift($filearray);
 					$resul = FunFormats::saveImport($filearray);
-					Log::debug($resul);
 					if ($resul['icon'] == 'success') {
 						DB::commit();
 						$b = array(
@@ -924,7 +921,6 @@ class MetasController extends Controller
 		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
 		$fecha = date('d-m-Y');
 		$date = $anio;
-		Log::debug($date);
 		$marca = strtotime($fecha);
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
 		$report = "proyecto_calendario_actividades";
