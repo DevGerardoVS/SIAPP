@@ -47,6 +47,7 @@ class Controller extends BaseController
                 'permisos_funciones.id',
                 'cat_permisos.nombre as permiso')
             ->where('id_user', Auth::user()->id)
+            ->where('permisos_funciones.deleted_at',null)
             ->orWhere('cat_permisos.nombre', $name)->get();
     	if($permiso) {
           
@@ -68,6 +69,7 @@ class Controller extends BaseController
                 'id_permiso',
                 )
         ->where('id_user', auth::user()->id)
+        ->where('permisos_funciones.deleted_at',null)
         ->where('id_permiso', $name)->get();
     	if(count($permiso)) {
     		return true;

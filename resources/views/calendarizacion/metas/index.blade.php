@@ -53,19 +53,20 @@
                                 <div class=" table table-responsive-lg d-flex justify-content-center">
                                     <table id="entidad">
                                         <thead>
-                                            <tr class="colorMorado">
-                                                <th class="vertical sorting">Finalidad</th>
-                                                <th class="vertical sorting">Función</th>
-                                                <th class="vertical sorting">Subfunción</th>
-                                                <th class="vertical sorting">Eje</th>
-                                                <th class="vertical sorting">Linea de Accion</th>
-                                                <th class="vertical sorting">Programa sectorial</th>
-                                                <th class="vertical sorting">Tipologia CONAC</th>
-                                                <th class="vertical sorting">Programas</th>
-                                                <th class="vertical sorting">SubProgramas</th>
-                                                <th class="vertical sorting">Proyecto</th>
-                                                <th class="vertical sorting">Seleccion</th>
+                                            <tr >
+                                                <th class="vertical colorMorado sorting">Finalidad</th>
+                                                <th class="vertical colorMorado sorting">Función</th>
+                                                <th class="vertical colorMorado sorting">Subfunción</th>
+                                                <th class="vertical colorMorado sorting">Eje</th>
+                                                <th class="vertical colorMorado sorting">Linea de acción</th>
+                                                <th class="vertical colorMorado sorting">Programa sectorial</th>
+                                                <th class="vertical colorMorado sorting">Tipologia CONAC</th>
+                                                <th class="vertical colorMorado sorting">Programas</th>
+                                                <th class="vertical colorMorado sorting">SubProgramas</th>
+                                                <th class="vertical colorMorado sorting">Proyecto</th>
+                                                <th class="vertical" style="background-color:#afafaf;">Selección </th>
                                             </tr>
+                                           
                                         </thead>
                                     </table>
                                 </div>
