@@ -14,6 +14,7 @@ use DB;
 use Session;
 use Response;
 use Log;
+use Carbon\Carbon;
 
 class Controller extends BaseController
 {
@@ -75,14 +76,14 @@ class Controller extends BaseController
         return false;
     }
     public static function bitacora($bitArray) {
-                    $fecha_movimiento = \Carbon\Carbon::now()->toDateTimeString();
-                    $bitacora = new Bitacora();
-                    $bitacora->username = $bitArray['username'];
-                    $bitacora->accion =$bitArray['accion']; /* editar,crear,eliminar,consultar, descargar */;
-                    $bitacora->modulo = $bitArray['modulo'];
-                    $bitacora->ip_origen = Request::getClientIp();
-                    $bitacora->fecha_movimiento = $fecha_movimiento;
-                    $bitacora->save();
+ 
+         $bitacora = new Bitacora();
+         $bitacora->username = $bitArray['username'];
+         $bitacora->accion =$bitArray['accion']; /* editar,crear,eliminar,consultar, descargar */;
+         $bitacora->modulo = $bitArray['modulo'];
+         $bitacora->ip_origen = Request::getClientIp();
+         $bitacora->fecha_movimiento = Carbon::now()->isoFormat('YYYY-MM-DD');
+         $bitacora->save();
     }
 
 }

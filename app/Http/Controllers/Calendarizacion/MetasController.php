@@ -241,20 +241,20 @@ class MetasController extends Controller
 		$entidadAux = explode('-', $entidad);
 
 		$meses = DB::table('programacion_presupuesto')
-			->select(
-				'enero',
-				'febrero',
-				'marzo',
-				'abril',
-				'mayo',
-				'junio',
-				'julio',
-				'agosto',
-				'septiembre',
-				'octubre',
-				'noviembre',
-				'diciembre'
-			)
+		->select(
+			DB::raw("SUM(enero) AS enero"),
+			DB::raw("SUM(febrero) AS febrero"),
+			DB::raw("SUM(marzo) AS marzo"),
+			DB::raw("SUM(abril) AS abril"),
+			DB::raw("SUM(mayo) AS mayo"),
+			DB::raw("SUM(junio) AS junio"),
+			DB::raw("SUM(julio) AS julio"),
+			DB::raw("SUM(agosto) AS agosto"),
+			DB::raw("SUM(septiembre) AS septiembre"),
+			DB::raw("SUM(octubre) AS octubre"),
+			DB::raw("SUM(noviembre) AS noviembre"),
+			DB::raw("SUM(diciembre) AS diciembre")
+		)
 			->where('programacion_presupuesto.finalidad', $areaAux[0])
 			->where('programacion_presupuesto.funcion', $areaAux[1])
 			->where('programacion_presupuesto.subfuncion', $areaAux[2])
@@ -268,7 +268,9 @@ class MetasController extends Controller
 			->where('subprograma_presupuestario', $areaAux[8])
 			->where('proyecto_presupuestario', $areaAux[9])
 			->where('ejercicio', $anio)
-			->get();
+/* 			->groupByRaw('enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,noviembre,diciembre')
+ */			->get();
+		Log::debug($meses);
 
 		$dataSet = count($meses) >= 1 ? $meses[0] : [];
 		return $dataSet;
