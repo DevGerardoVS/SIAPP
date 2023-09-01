@@ -140,8 +140,11 @@ var dao = {
 
             var tipo_AC = $('#tipo_Ac');
             tipo_AC.html('');
-            tipo_AC.append(new Option("--Tipo Actividad--", ""));
-            document.getElementById("tipo_Ac").options[0].disabled = true;
+            if (tAct.length>= 2) {
+                tipo_AC.append(new Option("--Tipo Actividad--", ""));
+                document.getElementById("tipo_Ac").options[0].disabled = true;
+
+            } 
             $.each(tAct, function (i, val) {
                 if (val == 1) {
                     tipo_AC.append(new Option(i, i));
@@ -317,8 +320,10 @@ var dao = {
             const { fondos, activids, mese} = data;
             var fond = $('#sel_fondo');
             fond.html('');
-            fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
-            document.getElementById("sel_fondo").options[0].disabled = true;
+            if (fondos.length>= 2) {
+                fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+                document.getElementById("sel_fondo").options[0].disabled = true;
+            } 
             $.each(fondos, function (i, val) {
                 fond.append(new Option(val.ramo, val.clave));
             });
@@ -327,11 +332,15 @@ var dao = {
             });
             var act = $('#sel_actividad');
             act.html('');
-            act.append(new Option("--Actividad--", "true", true, true));
-            document.getElementById("sel_actividad").options[0].disabled = true;
+            if (activids.length>= 2) {
+                act.append(new Option("--Actividad--", "true", true, true));
+                document.getElementById("sel_actividad").options[0].disabled = true;
+            } 
+            
             $.each(activids, function (i, val) {
                 act.append(new Option(val.actividad, val.id));
             });
+           
             act.select2({
                 maximumSelectionLength: 10
             });
