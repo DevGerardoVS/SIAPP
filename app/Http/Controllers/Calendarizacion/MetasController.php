@@ -648,6 +648,9 @@ class MetasController extends Controller
 	}
 	public function importPlantilla(Request $request)
 	{
+		Controller::check_permission('putMetas');
+		Controller::check_assign('Carga masiva');
+		Controller::check_assignFront(1);
 		DB::beginTransaction();
 		try {
 			$flag = false;
@@ -835,9 +838,9 @@ class MetasController extends Controller
 				$pdf = file_get_contents($ruta);
 			}
 			//Hacemos la conexion con la api del login para obtener el token de verificacion...
-			$token = Http::post('http://10.0.250.55/firmaElectronica/firmaElectronica/public/api/login', [
-				'email' => 'pruebasinfraestructura@gmail.com',
-				'password' => 'z2&CS53y',
+			$token = Http::post(env('FIRMA_ELECTRONICA_LOGIN'), [
+				'email' =>env('FEL_EMAIL') ,
+				'password' => env('FEL_PASSWORD'),
 			]);
 			//una vez que tenemos el token hacemos la conexion con la api de firmado...
 			if ($token && $token['token'] && $token['token'] != '') {
@@ -847,8 +850,8 @@ class MetasController extends Controller
 				$response = $response->attach('pdf[]', $pdf, 'Reporte_Calendario_UPP.pdf');
 				$response = $response->attach('cer', $cerFile, $nameSaveCer);
 				$response = $response->attach('key', $keyFile, $nameSaveKey);
-				$response = $response->post('http://10.0.250.55/firmaElectronica/firmaElectronica/public/api/firmarPDF', [
-					'pass' => '12345678a',
+				$response = $response->post(env('FIRMA_ELECTRONICA'), [
+					'pass' => env('FE_PASSWORD'),
 					'cadenaOrigen' => 'prueba',
 					'clave_tramite' => 'IAP01',
 					'encabezado' => 1
