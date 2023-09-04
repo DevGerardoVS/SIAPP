@@ -25,7 +25,6 @@ var dao = {
             url: '/actividades/anios-metas/',
             dataType: "JSON"
         }).done(function (data) {
-
             var par = $('#anio_filter');
             par.html('');
             if (data.length == 1) {
@@ -177,6 +176,8 @@ var dao = {
         }).done(function (data) {
             if (!data.status) {
                 $(".cierreMetas").hide();
+            } else {
+                $(".cierreMetas").show();
             }
             
 
@@ -568,12 +569,7 @@ var dao = {
         }).done(function (data) {
             if (!data.status) {
                 $(".confirmacion").hide();
-  
             } else {
-                if ($('#upp').val() != '') {
-                   
-                    $(".cierreMetas").hide();
-                }
                 $(".confirmacion").show();
             }
             
@@ -593,7 +589,6 @@ var dao = {
                 $(".cierreMetas").hide();
                 
             } else {
-                $(".cierreMetas").show();
                 $(".cmupp").hide();
             }
             

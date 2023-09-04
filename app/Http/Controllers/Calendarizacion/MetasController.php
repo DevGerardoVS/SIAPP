@@ -5,16 +5,19 @@ namespace App\Http\Controllers\Calendarizacion;
 use App\Imports\utils\FunFormats;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MetasExport;
+use App\Exports\MetasExportErr;
 use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
 use Auth;
 use DB;
 use Log;
 use App\Helpers\Calendarizacion\MetasHelper;
+use Illuminate\Support\Facades\Schema;
 use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
 use Illuminate\Support\Facades\File;
@@ -86,14 +89,15 @@ class MetasController extends Controller
 		}
 		return $dataSet;
 	}
-	public function getMetasP(Request $request)
+	public function getMetasP($upp_filter,$ur_filter)
 	{
 		Controller::check_permission('getMetas');
 		$dataSet = [];
-		$upp = isset($request->upp_filter) ? $request->upp_filter : auth::user()->clv_upp;
-
-		if ($request->ur_filter != null && $upp != '') {
-
+		$upp = isset($upp_filter)? $upp_filter : auth::user()->clv_upp;
+		if(auth::user()->id_grupo ==4){
+			$upp=auth::user()->clv_upp;
+		}
+		if ($ur_filter != null && $upp != '') {
 			$check = $this->checkClosing($upp);
 			if ($check['status']) {
 				$activs = DB::table("programacion_presupuesto")
@@ -113,10 +117,11 @@ class MetasController extends Controller
 						'programacion_presupuesto.subsecretaria AS subsec',
 						DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto')
 					)
-					->where('programacion_presupuesto.ur', '=', $request->ur_filter)
+					->where('programacion_presupuesto.ur', '=', $ur_filter)
 					->where('programacion_presupuesto.upp', '=', $upp)
 					->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
 					->where('v_epp.ejercicio', '=', $check['anio'])
+					->where('v_epp.presupuestable', '=',1)
 					->orderBy('programacion_presupuesto.upp')
 					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 					->distinct()
@@ -124,8 +129,8 @@ class MetasController extends Controller
 
 				foreach ($activs as $key) {
 					$area = '"' . strval($key->finalidad) . '-' . strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje) . '-' . strval($key->linea) . '-' . strval($key->programaSec) . '-' . strval($key->tipologia) . '-' . strval($key->programa) . '-' . strval($key->subprograma) . '-' . strval($key->clv_proyecto) . '"';
-					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($request->ur_filter) . '"';
-					$clave = '"' . strval($upp) . strval($key->subsec) . strval($request->ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
+					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($ur_filter) . '"';
+					$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
 					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . ")' ></div>";
 					$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $accion];
 				}
@@ -236,20 +241,20 @@ class MetasController extends Controller
 		$entidadAux = explode('-', $entidad);
 
 		$meses = DB::table('programacion_presupuesto')
-			->select(
-				'enero',
-				'febrero',
-				'marzo',
-				'abril',
-				'mayo',
-				'junio',
-				'julio',
-				'agosto',
-				'septiembre',
-				'octubre',
-				'noviembre',
-				'diciembre'
-			)
+		->select(
+			DB::raw("SUM(enero) AS enero"),
+			DB::raw("SUM(febrero) AS febrero"),
+			DB::raw("SUM(marzo) AS marzo"),
+			DB::raw("SUM(abril) AS abril"),
+			DB::raw("SUM(mayo) AS mayo"),
+			DB::raw("SUM(junio) AS junio"),
+			DB::raw("SUM(julio) AS julio"),
+			DB::raw("SUM(agosto) AS agosto"),
+			DB::raw("SUM(septiembre) AS septiembre"),
+			DB::raw("SUM(octubre) AS octubre"),
+			DB::raw("SUM(noviembre) AS noviembre"),
+			DB::raw("SUM(diciembre) AS diciembre")
+		)
 			->where('programacion_presupuesto.finalidad', $areaAux[0])
 			->where('programacion_presupuesto.funcion', $areaAux[1])
 			->where('programacion_presupuesto.subfuncion', $areaAux[2])
@@ -263,7 +268,8 @@ class MetasController extends Controller
 			->where('subprograma_presupuestario', $areaAux[8])
 			->where('proyecto_presupuestario', $areaAux[9])
 			->where('ejercicio', $anio)
-			->get();
+/* 			->groupByRaw('enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,noviembre,diciembre')
+ */			->get();
 
 		$dataSet = count($meses) >= 1 ? $meses[0] : [];
 		return $dataSet;
@@ -365,7 +371,6 @@ class MetasController extends Controller
 	}
 	public function putMeta(Request $request)
 	{
-		Log::debug($request);
 		Controller::check_permission('putMetas');
 		$meta = Metas::where('id', $request->id_meta)->firstOrFail();
 		$user = Auth::user()->username;
@@ -519,6 +524,20 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return Excel::download(new MetasExport($upp, $anio), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
+	public function exportExcelErr($err)
+	{
+		/*Si no coloco estas lineas Falla*/
+		ob_end_clean();
+		ob_start();
+		/*Si no coloco estas lineas Falla*/
+		$b = array(
+			"username" => Auth::user()->username,
+			"accion" => 'Descargar Metas Excel',
+			"modulo" => 'Metas'
+		);
+		Controller::bitacora($b);
+		return Excel::download(new MetasExportErr($err), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+	}
 	public function proyExcel()
 	{
 		Controller::check_permission('getMetas');
@@ -629,23 +648,62 @@ class MetasController extends Controller
 	}
 	public function importPlantilla(Request $request)
 	{
+		Controller::check_permission('putMetas');
+		Controller::check_assign('Carga masiva');
+		Controller::check_assignFront(1);
 		DB::beginTransaction();
 		try {
-			$assets = $request->file('cmFile');
-			if ($xlsx = SimpleXLSX::parse($assets)) {
-				$filearray = $xlsx->rows();
-				array_shift($filearray);
-				$resul = FunFormats::saveImport($filearray);
-				if ($resul['icon'] == 'success') {
-					DB::commit();
-					$b = array(
-						"username" => Auth::user()->username,
-						"accion" => 'Carga masiva metas',
-						"modulo" => 'Metas'
+			$flag = false;
+			if (Auth::user()->id_grupo == 4) {
+				$check = $this->checkClosing(Auth::user()->clv_upp);
+				$isMir = DB::table("mml_avance_etapas_pp")
+                            ->select('id', 'estatus')
+                            ->where('clv_upp', '=', Auth::user()->clv_upp)
+                            ->where('ejercicio', '=', $check['anio'])
+                            ->where('estatus', 3)->get();
+				if(count($isMir)==0){
+					$error = array(
+						"icon" => 'error',
+						"title" => 'MIR no confirmadas',
+						"text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM'
 					);
-					Controller::bitacora($b);
+					return response()->json($error);
 				}
-				return response()->json($resul);
+				$flag = $check['status'];
+			} else if (Auth::user()->id_grupo == 1) {
+				$flag = true;
+			}
+			if ($flag) {
+				Schema::create('metas_temp', function (Blueprint $table) {
+					$table->temporary();
+					$table->increments('id');
+					$table->string('clave', 25)->nullable(false);
+					$table->string('upp', 25)->nullable(false);
+					$table->string('fila', 10)->nullable(false);
+				});
+				$assets = $request->file('cmFile');
+				if ($xlsx = SimpleXLSX::parse($assets)) {
+					$filearray = $xlsx->rows();
+					array_shift($filearray);
+					$resul = FunFormats::saveImport($filearray);
+					if ($resul['icon'] == 'success') {
+						DB::commit();
+						$b = array(
+							"username" => Auth::user()->username,
+							"accion" => 'Carga masiva metas',
+							"modulo" => 'Metas'
+						);
+						Controller::bitacora($b);
+					}
+					return response()->json($resul);
+				}
+			}else{
+				$error = array(
+					"icon" => 'error',
+					"title" => 'Metas cerradas',
+					"text" => 'La captura de metas esta cerrada'
+				);
+				return response()->json($error);
 			}
 		} catch (\Exception $e) {
 			DB::rollback();
@@ -666,49 +724,60 @@ class MetasController extends Controller
 			)
 			->where('mml_mir.deleted_at', null)
 			->where('mml_mir.deleted_at', null)
-			->where('metas.estatus', 1)
+			->where('metas.estatus', 2)
 			->where('mml_mir.clv_upp', $upp)->get();
 		if ($check['status']) {
 			if (count($metas) == 0 || Auth::user()->id_grupo == 1) {
-				$activs = DB::table("programacion_presupuesto")
-					->select(
-						'programa_presupuestario AS programa',
-						DB::raw('CONCAT(upp,subsecretaria,ur) AS area'),
-						DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
-					)
-					->where('programacion_presupuesto.upp', '=', $upp)
-					->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
-					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
-					->distinct()
-					->where('estado', 1)
-					->groupByRaw('programa_presupuestario')->get();
-				if (count($activs)) {
-					$auxAct = count($activs);
-					$index = 0;
-					foreach ($activs as $key) {
-						$proyecto = DB::table('mml_mir')
-							->select(
-								'mml_mir.id',
-								'mml_mir.area_funcional AS area'
-							)
-							->where('mml_mir.deleted_at', null)
-							->where('mml_mir.nivel', 11)
-							->where('mml_mir.clv_upp', $upp)
-							->where('mml_mir.area_funcional', $key->clave)
-							->get();
-						if (count($proyecto)) {
-							$index++;
+				//ver si esta confirmada la mir
+				$isMir = DB::table("mml_avance_etapas_pp")
+					->select('id', 'estatus')
+					->where('clv_upp', '=', $upp)
+					->where('ejercicio', '=', $check['anio'])
+					->where('estatus', 3)->get();
+				if (count($isMir)) {
+					$activs = DB::table("programacion_presupuesto")
+						->select(
+							'programa_presupuestario AS programa',
+							DB::raw('CONCAT(upp,subsecretaria,ur) AS area'),
+							DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
+						)
+						->where('programacion_presupuesto.upp', '=', $upp)
+						->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
+						->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+						->distinct()
+						->where('estado', 1)
+						->groupByRaw('programa_presupuestario')->get();
+					if (count($activs)) {
+						$auxAct = count($activs);
+						$index = 0;
+						foreach ($activs as $key) {
+							$proyecto = DB::table('mml_mir')
+								->select(
+									'mml_mir.id',
+									'mml_mir.area_funcional AS area'
+								)
+								->where('mml_mir.deleted_at', null)
+								->where('mml_mir.nivel', 11)
+								->where('mml_mir.clv_upp', $upp)
+								->where('mml_mir.area_funcional', $key->clave)
+								->get();
+							if (count($proyecto)) {
+								$index++;
+							}
 						}
-					}
-					if ($index >= $auxAct) {
-						return ["status" => true, "mensaje" => '', "estado" => true];
-					} else {
-						return ["status" => false, "mensaje" => 'MIR incompleta acercate a CPLADEM', "estado" => true];
-					}
+						if ($index >= $auxAct) {
+							return ["status" => true, "mensaje" => '', "estado" => true];
+						} else {
+							return ["status" => false, "mensaje" => 'MIR incompleta acercate a CPLADEM', "estado" => true];
+						}
 
+					} else {
+						return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false, "url" => '/calendarizacion/claves'];
+					}
 				} else {
-					return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false, "url" => '/calendarizacion/claves'];
+					return ["status" => false, "mensaje" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM', "estado" => true];
 				}
+				//ver si esta confirmada la mir
 			} else {
 				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "title" => 'Metas confirmadas', "estado" => false, "url" => '/calendarizacion/proyecto'];
 			}
@@ -769,9 +838,9 @@ class MetasController extends Controller
 				$pdf = file_get_contents($ruta);
 			}
 			//Hacemos la conexion con la api del login para obtener el token de verificacion...
-			$token = Http::post('http://10.0.250.55/firmaElectronica/firmaElectronica/public/api/login', [
-				'email' => 'pruebasinfraestructura@gmail.com',
-				'password' => 'z2&CS53y',
+			$token = Http::post(env('FIRMA_ELECTRONICA_LOGIN'), [
+				'email' =>env('FEL_EMAIL') ,
+				'password' => env('FEL_PASSWORD'),
 			]);
 			//una vez que tenemos el token hacemos la conexion con la api de firmado...
 			if ($token && $token['token'] && $token['token'] != '') {
@@ -781,8 +850,8 @@ class MetasController extends Controller
 				$response = $response->attach('pdf[]', $pdf, 'Reporte_Calendario_UPP.pdf');
 				$response = $response->attach('cer', $cerFile, $nameSaveCer);
 				$response = $response->attach('key', $keyFile, $nameSaveKey);
-				$response = $response->post('http://10.0.250.55/firmaElectronica/firmaElectronica/public/api/firmarPDF', [
-					'pass' => '12345678a',
+				$response = $response->post(env('FIRMA_ELECTRONICA'), [
+					'pass' => env('FE_PASSWORD'),
 					'cadenaOrigen' => 'prueba',
 					'clave_tramite' => 'IAP01',
 					'encabezado' => 1
@@ -855,7 +924,6 @@ class MetasController extends Controller
 		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
 		$fecha = date('d-m-Y');
 		$date = $anio;
-		Log::debug($date);
 		$marca = strtotime($fecha);
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
 		$report = "proyecto_calendario_actividades";
@@ -1048,10 +1116,8 @@ class MetasController extends Controller
 	}
 	public static function cmetasUpp($upp,$anio)
 	{
-		Log::debug($upp);
 		$_upp = $upp=null?Auth::user()->clv_upp:$upp;
-		Log::debug($_upp);
-		Log::debug($anio);
+
 		$metas = DB::table('metas')
 			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
 			->select(
@@ -1062,7 +1128,6 @@ class MetasController extends Controller
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)
 			->where('metas.estatus', 1)->get();
-		Log::debug($metas);
 		if (count($metas) >= 1) {
 			return ["status" => true];
 		} else {
@@ -1071,7 +1136,6 @@ class MetasController extends Controller
 	}
 	public static function cmetasadd($_upp)
 	{
-		Log::debug($_upp);
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$metas = DB::table('metas')
 			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
@@ -1083,7 +1147,6 @@ class MetasController extends Controller
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)
 			->where('metas.estatus', 1)->get();
-		Log::debug($metas);
 		if (count($metas) >= 1) {
 			return ["status" => true];
 		} else {

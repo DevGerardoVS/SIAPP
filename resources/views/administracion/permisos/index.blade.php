@@ -27,6 +27,7 @@
                                                                 <ul class="list-group-item" style="width: 450px">
                                                                     <?php $menus = DB::select('CALL sp_menu_sidebar(?,?, ?)', [Auth::user()->id,Session::get('sistema'), null]); ?>
                                                                     @foreach($menus as $menu)
+                                                                    @if ( $menu->id!=4)
                                                                     <li >
                                                                         <span>
                                                                             <i class="fa fa-lg {{$menu->icono}}"></i>&nbsp;
@@ -151,6 +152,7 @@
                                                                             @endforeach
                                                                         </ul>
                                                                     </li>
+                                                                    @endif
                                                                     @endforeach
                                                                 </ul>
 
