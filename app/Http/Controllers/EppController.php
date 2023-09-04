@@ -31,7 +31,7 @@ class EppController extends Controller
         $anio = '0000';
 
         //OBTENER UPP
-        if($perfil == 1){
+        if($perfil == 1 || $perfil == 3 || $perfil == 5){
             if($request->upp == '000') $upp = "null";
             else $upp = "'$request->upp'";
         }else if($perfil == 4){
@@ -47,7 +47,7 @@ class EppController extends Controller
         }
 
         //OBTENER AÑO
-        if($request->anio == '0000') $anio = "null";
+        if($request->anio == '0000') $anio = date("Y");
         else $anio = "'$request->anio'";
 
         //OBTENER TABLA

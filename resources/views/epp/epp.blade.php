@@ -10,7 +10,7 @@
     <div class="container w-100 p-4">
         <h5 style="text-align: left; font-weight: bold;">{{__("messages.cat_epp")}}</h5>
         
-        @if($perfil == 1)
+        @if($perfil == 1 || $perfil == 3 || $perfil == 5)
             <div class="col-md-10 col-sm-12 d-md-flex">
                 <!--Filtro UPP-->
                 <div>
@@ -39,7 +39,6 @@
                 </div>
                 <div class="col-sm-12 col-md-3 col-lg-2">
                     <select onchange="actualizarTabla(false)" class="form-control filters filters_anio" id="filters_anio" name="estatus_filter" autocomplete="upp_filter">
-                        <option value="0000">Todos</option>
                         @foreach ($anios as $anio)
                             <option value={{$anio->ejercicio}}>{{$anio->ejercicio}}</option>
                         @endforeach
