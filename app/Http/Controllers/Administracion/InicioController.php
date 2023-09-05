@@ -20,7 +20,14 @@ class InicioController extends Controller
         try {
             $anio_act = date('Y')-1;
             $dataSet = array();
-            $data = DB::table('inicio_a')->get();
+            $data = DB::table('inicio_a')
+            ->where("ejercicio", "=", function($query){
+            $query->from("inicio_b")
+            ->select("ejercicio")
+            ->limit(1)
+            ->orderBy("ejercicio","desc")
+            ->groupBy("ejercicio");
+            })->get();
 
             foreach ($data as $d) {
                 $ds = array(number_format($d->presupuesto_asignado, 2, '.', ',') , number_format($d->presupuesto_calendarizado, 2, '.', ','), number_format($d->disponible, 2, '.', ',') , number_format($d->avance, 2, '.', ','));
@@ -42,7 +49,14 @@ class InicioController extends Controller
         try {
             $anio_act = date('Y')-1;
             $dataSet = array();
-            $data = DB::table('inicio_b')->get();
+            $data = DB::table('inicio_b')
+            ->where("ejercicio", "=", function($query){
+            $query->from("inicio_b")
+            ->select("ejercicio")
+            ->limit(1)
+            ->orderBy("ejercicio","desc")
+            ->groupBy("ejercicio");
+            })->get();
 
             foreach ($data as $d) {
                 $ds = array($d->clave, $d->fondo, number_format($d->asignado, 2, '.', ','), number_format($d->programado, 2, '.', ','), number_format($d->avance, 2, '.', ','));
@@ -58,6 +72,39 @@ class InicioController extends Controller
             Log::channel('daily')->debug('exp '.$exp->getMessage());
             throw new \Exception($exp->getMessage());
         }
+    }
+
+    public static function getLinks(){
+        try {
+
+            $data = DB::table('configuracion')
+            ->where("descripcion", "=", "enlaces")->first();
+
+            return response()->json([
+                "dataSet" => $data,
+                "catalogo" => "portada",
+            ]);
+
+        } catch(\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+        }
+    }
+
+    
+    public function getFondos(){
+        $fondos = DB::table("pp_aplanado")
+        ->select("clv_fondo_ramo", "fondo_ramo","ejercicio")
+        ->where("ejercicio", "=", function($query){
+            $query->from("pp_aplanado")
+            ->select("ejercicio")
+        ->limit(1)
+        ->orderBy("ejercicio","desc")
+        ->groupBy("ejercicio");
+        })
+        ->groupBy("clv_fondo_ramo")
+        ->get();
+        return $fondos;
     }
 
     public function exportPdf()

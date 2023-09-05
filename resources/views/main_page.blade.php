@@ -34,9 +34,9 @@
                 <h1 class="name">Sistema Integral de Análisis Programático Presupuestal</h1>
             </div>
             <nav class="menu">
-                <a href="http://10.8.7.95/" id="mir" class="menu-item"> <!--EPP--><i class="fa fa-pie-chart"></i> </a>
-                <a href="{{url('login')}}" id="cap" class="menu-item"> <!--More--><i class="fa fa-calendar"></i> </a> 
-                <a href="#" id="sapp" class="menu-item"> <!--SAPP--><i class="fa fa-bar-chart"></i></a>
+                <a href="http://10.8.7.95/" id="mir" class="menu-item"> <!--MML--><i class="fa fa-pie-chart"></i> </a>
+                <a href="{{url('login')}}" id="cap" class="menu-item"> <!--SIAPP--><i class="fa fa-calendar"></i> </a> 
+                <a href="#" id="siapp" class="menu-item"> <!--SAPP--><i class="fa fa-bar-chart"></i></a>
                 <!--<a href="#" id="app" class="menu-item"><i class="fa fa-envelope"></i> </a>-->
             </nav>
             
@@ -93,7 +93,7 @@
                 $("#dos").addClass("div-content");
             });
 
-            $("#sapp").hover(function(){
+            $("#siapp").hover(function(){
                 $("#tres").addClass("div-content");
             });
 
@@ -110,7 +110,42 @@
                 console.log("entra");
                 
             });*/
+            var formData = new FormData();
+	        var csrf_tpken = $("input[name='_token']").val();
+            formData.append("_token",csrf_tpken);
             
+            $.ajax({
+                url:"/get-links",
+                type: "GET",
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success:function(response){
+                    response = response.dataSet;
+                    //console.log(response.valor);
+                    var json = JSON.parse(response.valor);
+                    $("#mir").attr("href",json.mml);
+                    $("#siapp").attr("href",json.siapp);
+                    $("#cap").attr("href",json.cap);
+
+
+                },
+                error: function(response) {
+                    var mensaje="";
+                    $.each(response.responseJSON.errors, function( key, value ) {
+                        mensaje += value+"\n";
+                    });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensaje,
+                        confirmButtonText: "Aceptar",
+                    });
+                    //$('#errorModal').modal('show');
+                    console.log('Error: ' +  JSON.stringify(response.responseJSON));
+                }
+            });
+
         });
     </script>
 </html>

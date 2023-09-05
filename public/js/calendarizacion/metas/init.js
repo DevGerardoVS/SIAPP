@@ -61,24 +61,19 @@ var dao = {
         });
     },
     getData: function (upp, ur) {
-        var data = new FormData();
+      /*   var data = new FormData();
         if ($('#upp').val() != '') {
             data.append('ur_filter', ur);
         } else {
             data.append('ur_filter', ur);
             data.append('upp_filter', upp);
-        }
+        } */
         $.ajax({
-            type: "POST",
-            url: "/calendarizacion/data/",
-            data: data,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-            dataType: "json"
+            type: "GET",
+            url: "/calendarizacion/data/"+upp+"/"+ur,
+            dataType: "JSON"
         }).done(function (_data) {
-            _table = $("#catalogo");
+            _table = $("#entidad");
             _columns = [{
                 width: "0rem",
                 targets: [{ "aTargets": [0], "mData": [0] },
@@ -103,12 +98,28 @@ var dao = {
                     title: 'Esta unidad responsable no cuenta con presupuesto',
                     text: $('#ur_filter').find('option:selected').text(),
                 });
+                dao.limpiar();
+                
+                $('.btnSave').hide();
+                $('#incomplete').show(); 
+                $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text('Esta unidad responsable no cuenta con presupuesto');
+                $('#metasVista').hide();
+                $(".CargaMasiva").hide();
                 if ($('#upp').val() == '') {
                     dao.getUrs($('#upp_filter').val());
                 } else {
                     dao.getUrs($('#upp').val());
                 }
+            } else {
+                $('.btnSave').show();
+                $('#incomplete').hide(); 
+                $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text('');
+                $('#metasVista').show(); 
+                $(".CargaMasiva").show();
             }
+            
         });
     },
     getUrs: function (upp) {
@@ -129,17 +140,16 @@ var dao = {
 
             var tipo_AC = $('#tipo_Ac');
             tipo_AC.html('');
-            tipo_AC.append(new Option("--Tipo Actividad--", ""));
-            document.getElementById("tipo_Ac").options[0].disabled = true;
+            if (tAct.length>= 2) {
+                tipo_AC.append(new Option("--Tipo Actividad--", ""));
+                document.getElementById("tipo_Ac").options[0].disabled = true;
+
+            } 
             $.each(tAct, function (i, val) {
                 if (val == 1) {
                     tipo_AC.append(new Option(i, i));
                 }
             });
-            tipo_AC.select2({
-                maximumSelectionLength: 10
-            });
-
         });
     },
     getUpps: function () {
@@ -310,8 +320,10 @@ var dao = {
             const { fondos, activids, mese} = data;
             var fond = $('#sel_fondo');
             fond.html('');
-            fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
-            document.getElementById("sel_fondo").options[0].disabled = true;
+            if (fondos.length>= 2) {
+                fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+                document.getElementById("sel_fondo").options[0].disabled = true;
+            } 
             $.each(fondos, function (i, val) {
                 fond.append(new Option(val.ramo, val.clave));
             });
@@ -320,11 +332,15 @@ var dao = {
             });
             var act = $('#sel_actividad');
             act.html('');
-            act.append(new Option("--Actividad--", "true", true, true));
-            document.getElementById("sel_actividad").options[0].disabled = true;
+            if (activids.length>= 2) {
+                act.append(new Option("--Actividad--", "true", true, true));
+                document.getElementById("sel_actividad").options[0].disabled = true;
+            } 
+            
             $.each(activids, function (i, val) {
                 act.append(new Option(val.actividad, val.id));
             });
+           
             act.select2({
                 maximumSelectionLength: 10
             });
@@ -441,7 +457,9 @@ var dao = {
         });
     },
     limpiar: function () {
-        $('#sumMetas').val('')
+        $('#sumMetas').val('');
+        $('#sumMetas-error').removeClass('has-error');
+        $('#sumMetas-error').text('');
         inputs.forEach(e => {
             $('#' + e + '-error').text("").removeClass('#' + e + '-error');
             if (e != 'beneficiario') {
@@ -628,9 +646,6 @@ $(document).ready(function () {
     $("#sel_actividad").select2({
         maximumSelectionLength: 10
     });
-/*     $("#tipo_Ac").select2({
-        maximumSelectionLength: 10
-    }); */
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
         $("#" + i).on('paste', function (e) {

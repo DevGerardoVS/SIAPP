@@ -25,23 +25,21 @@
                     <option value="">---Tipo de Calendario---</option>
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="form-group col-md-3">
                 <label class="control-label">No. Beneficiarios</label>
                 <input type="text" class="form-control" id="beneficiario" name="beneficiario" onkeypress="return valideKey(event)" >
             </div>
-            <div class="col-md-3">
+            <div class="form-group col-md-3">
                 <label class="control-label">Beneficiarios &nbsp; &nbsp; &nbsp; &nbsp;</label>
                 <select class="form-control"  id="tipo_Be" data-live-search="true"
                     name="tipo_Be">
                 </select>
-                <span id="tipo_Be-error" class="has-error" aria-describedby="tipo_Be-erro"></span>
             </div>
             <div class="form-group col-md-3">
                 <label class="control-label">Unidad de medida</label>
                 <select class="form-control" aria-placeholder="Selecciona una Medida" data-live-search="true" id="medida"
                     name="medida">
                 </select>
-                <span id="medida-error" class="has-error"></span>
 
             </div>
         </div>
@@ -95,7 +93,7 @@
                         <td>
                             <h6><b>Metas Calendarizadas</b></h6>
                         </td>
-                        <td><input onkeypress="return valideKeySum(event)" id="sumMetas" name="sumMetas" type="text" class="form-control" >
+                        <td><input onkeypress="return valideKeySum(event)" id="sumMetas" name="sumMetas" type="text" class="form-control form-group" >
                         </td>
                     </tr>
                 </tbody>
