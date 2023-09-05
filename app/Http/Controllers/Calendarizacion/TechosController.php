@@ -397,32 +397,43 @@ class TechosController extends Controller
             });
             if ($xlsx = SimpleXLSX::parse($the_file)) {
                 $filearray = $xlsx->rows();
-                if ($filearray[0][0] == 'EJERCICIO' && $filearray[0][1] == 'UPP' && $filearray[0][2] == 'FONDO' && $filearray[0][3] == 'OPERATIVO' && $filearray[0][4] == 'RECURSOS HUMANOS') {
-                    array_shift($filearray);
-                    $resul = TechosValidate::validate($filearray);
-                    if ($resul == 'done') {
-                        $b = array(
-                            "username"=>Auth::user()->username,
-                            "accion"=>'Carga masiva',
-                            "modulo"=>'Techos financieros'
-                         );
-                         Controller::bitacora($b);
+                for ($i = 0; $i < $filearray; $i++) {
+                    if (count($filearray[$i]) > 5) {
+                        $error = array(
+                            "icon" => 'error',
+                            "title" => 'Error',
+                            "text" => 'No agregue datos a otras columnas. Siga las instrucciones.'
+                        );
+                        return response()->json($error);
+                    } else {
+                        if ($filearray[0][0] == 'EJERCICIO' && $filearray[0][1] == 'UPP' && $filearray[0][2] == 'FONDO' && $filearray[0][3] == 'OPERATIVO' && $filearray[0][4] == 'RECURSOS HUMANOS') {
+                            array_shift($filearray);
+                            $resul = TechosValidate::validate($filearray);
+                            if ($resul == 'done') {
+                                $b = array(
+                                    "username" => Auth::user()->username,
+                                    "accion" => 'Carga masiva',
+                                    "modulo" => 'Techos financieros'
+                                );
+                                Controller::bitacora($b);
 
-                        DB::commit();
+                                DB::commit();
+                            }
+                            return response()->json($resul);
+                        } else {
+                            $error = array(
+                                "icon" => 'error',
+                                "title" => 'Error',
+                                "text" => 'Ingresa la plantilla sin modificaciones. Siga las instrucciones.'
+                            );
+                            return response()->json($error);
+                        }
                     }
-                    return response()->json($resul);
-                } else {
-                    $error = array(
-                        "icon" => 'error',
-                        "title" => 'Error',
-                        "text" => 'Ingresa la plantilla sin eliminar filas'
-                    );
-                    return response()->json($error);
                 }
             }
         } catch (\Exception $e) {
-			DB::rollback();
-		}
+            DB::rollback();
+        }
     }
     
     public function exportExcel(Request $request){
