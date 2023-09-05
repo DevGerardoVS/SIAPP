@@ -50,6 +50,7 @@ function getExplodePartiqcipacion($data){
             'id_permiso',
             )
         ->where('id_user', auth::user()->id)
+        ->where('permisos_funciones.deleted_at',null)
         ->where('id_permiso', $name)->get();
     if(count($permiso)) {
         return true;

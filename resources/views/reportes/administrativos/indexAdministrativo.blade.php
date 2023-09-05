@@ -336,6 +336,14 @@
             </div>
             @endif
         </div>
+        
+        {{-- Loader --}}
+        <div class="custom-swal">
+            <div class="custom-swal-content">
+                <div class="custom-swal-text fs-2 mb-2 fw-bold">Cargando datos, por favor espere...</div>
+                <div class="custom-swal-loader"></div>
+            </div>
+        </div>
     </div>
 
     @isset($dataSet)

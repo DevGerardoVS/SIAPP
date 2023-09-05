@@ -25,7 +25,6 @@ var dao = {
             url: '/actividades/anios-metas/',
             dataType: "JSON"
         }).done(function (data) {
-
             var par = $('#anio_filter');
             par.html('');
             if (data.length == 1) {

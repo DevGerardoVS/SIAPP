@@ -169,7 +169,8 @@ class UsuarioController extends Controller
                 'adm_users.p_apellido',
                 'adm_users.s_apellido',
                 'adm_users.nombre',
-                DB::raw('ifnull(adm_grupos.id, "null") as id_grupo')
+                DB::raw('ifnull(adm_grupos.id, "null") as id_grupo'),
+                'adm_users.clv_upp AS upp'
             )
             ->leftJoin('adm_grupos', 'adm_grupos.id', '=', 'adm_users.id_grupo')
             ->where('adm_users.deleted_at', '=', null)
@@ -191,6 +192,7 @@ class UsuarioController extends Controller
                 '<a title="Inhabilitar/Habilitar Usuario" class="btn btn-sm" onclick="dao.setStatus(' . $key->id . ', ' . $key->estatus . ')">' .
                 '<i class="fa fa-lock"></i></a>&nbsp;' : '';
             $i = array(
+                $key->upp,
                 $key->username,
                 $key->email,
                 $key->nombre_completo,
@@ -214,7 +216,8 @@ class UsuarioController extends Controller
             DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'),
             DB::raw('GROUP_CONCAT(cat_permisos.nombre SEPARATOR " / ") AS permiso'),
             DB::raw('GROUP_CONCAT(permisos_funciones.id_permiso SEPARATOR "/") AS permisos'),
-            'adm_grupos.nombre_grupo AS grupo'
+            'adm_grupos.nombre_grupo AS grupo',
+            
         )
         ->where('adm_users.id_grupo', '!=', 2)
             ->leftJoin('adm_users', 'adm_users.id', '=', 'permisos_funciones.id_user')
@@ -411,7 +414,7 @@ class UsuarioController extends Controller
         ini_set('max_execution_time', 5000);
         ini_set('memory_limit', '1024M');
         $data = DB::table('adm_users')
-            ->select('id', 'nombre', 'p_apellido', 's_apellido', 'username', 'email', 'celular')
+            ->select('id','clv_upp','nombre', 'p_apellido', 's_apellido', 'username', 'email', 'celular')
             ->orderBy('nombre', 'asc')
             ->get();
         view()->share('data', $data);

@@ -55,7 +55,8 @@ class CalendarizacionCargaMasivaController extends Controller
         $message=[
             'file'=> 'El archivo debe ser tipo xlsx' 
           ];
-   
+        $arrayCampos=array('admconac','ef','reg','mpio','loc','upp','subsecretaria','ur','finalidad','funcion','subfuncion','eg','pt','ps','sprconac','prg','spr','py','idpartida','tipogasto','año',
+        'no etiquetado y etiquetado','fconac', 'ramo', 'fondo','ci','obra','total', 'enero','febrero','marzo', 'abril', 'mayo','junio','julio','agosto', 'septiembre','octubre', 'noviembre','diciembre');
           $request->validate([
              'file'=> 'required|mimes:xlsx'
           ], $message );
@@ -77,12 +78,21 @@ class CalendarizacionCargaMasivaController extends Controller
            $errores=0;
            $countO=0;
            $countR=0;
-          if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
+          if ( $xlsx = SimpleXLSX::parse($request->file) ) {
             $filearray =$xlsx->rows();
+            //tomamos los encabezados
+            $encabezados= array_shift($filearray);
+             //Los convertimos todos a lowecase
+            $encabezadosMin = array_map('strtolower', $encabezados);
+            //Verificamos si hay diferencia entre lo que debe ser y lo que mandaron
+           $equals =array_diff($encabezadosMin,$arrayCampos);
+           if(count($equals)>0){
+            return redirect()->back()->withErrors(['error' => 'No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados']);
+           }
              if(count($filearray)<=1){
                 return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
             }
-            array_shift($filearray);
+
             $ejercicio = array();
             foreach($filearray as $k){
 
@@ -129,17 +139,25 @@ class CalendarizacionCargaMasivaController extends Controller
                else{
                 $tipoFondo='Operativo';
                }
-/*                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio[$helperejercicio])->count();
- */
+                 $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio[$helperejercicio])->count();
+ 
 
                  $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio',$ejercicio[$helperejercicio])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
-                 if($valuepresupuesto==!$value){
+
+                 $valueExist = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio',$ejercicio[$helperejercicio])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->count();
+ 
+                 if($valueExist<1){
+                    return redirect()->back()->withErrors(['error' => 'No existe esea combinacion en techos financieros para la upp: '.$arraysplit[0].' con fondo: '.$arraysplit[2]]);
+
+                 }
+
+                 if($valuepresupuesto!=$value){
                     return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
                 }
 
-/*                 if($VerifyEjercicio<1){
+                 if($VerifyEjercicio<1){
                     return redirect()->back()->withErrors(['error' => 'El año del ejercicio  seleccionado no es valido en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
-                }  */
+                }  
                 $helperejercicio++;
 
             }
@@ -149,30 +167,30 @@ class CalendarizacionCargaMasivaController extends Controller
                     if($countR>0){
                      return redirect()->back()->withErrors(['error' => 'Hay claves de RH en el archivo de cargas masivas']);
 
-                    }
+                    }else{
                      //validacion para eliminar registros no confirmados 
-                    foreach($arrayupps as $u){
-                     $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
-                     if($valupp>0){
-                      $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->forceDelete();
-                     }
+                     foreach($arrayupps as $u){
+                        $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+                        if($valupp>0){
+                         $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
+                        }
+                       }
                     }
-    
                     break;
     
                 case 2:
                     if($countO>0){
                         return redirect()->back()->withErrors(['error' => 'Hay claves Operativas en el archivo de cargas masivas']);
 
-                       }
+                       }else{
                     //validacion para eliminar registros no confirmados 
                     foreach($arrayupps as $key=>$u){
-                     $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
-                     if($valupp>0){
-                      $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->forceDelete();
-                     }
-                    }
-    
+                        $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+                        if($valupp>0){
+                         $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
+                        }
+                       }
+                       }
                     break;
                 
                 case 3:
@@ -182,7 +200,7 @@ class CalendarizacionCargaMasivaController extends Controller
                      $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
            
                       if($valupp>0){
-                       $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->forceDelete();
+                       $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
                       }
                     }
                     break;
@@ -220,7 +238,13 @@ class CalendarizacionCargaMasivaController extends Controller
                 return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
             }
             array_shift($filearray);
-            $ejercicio = array();
+
+            if($tipoAdm==NULL){
+                $ejercicio = array();
+
+            }
+
+        
             foreach($filearray as $k){
                 //buscar en el array de upps 
 
@@ -249,7 +273,13 @@ class CalendarizacionCargaMasivaController extends Controller
                }else{
                 if($k['27']!='' && $k['5'].$k['24'] !='' ){
                     $arraypresupuesto[$k['5'].$k['16'].$k['24']] = $k['27']; 
-                    array_push($ejercicio,'20'.$k['20']);
+                    if(strlen($k['20'])==2){
+                        array_push($ejercicio,'20'.$k['20']);
+                    }
+                    else{
+                        return redirect()->back()->withErrors(['error' => 'El año debe estar a 2 digitos']);
+
+                    }
                 }
                }
     
@@ -274,8 +304,17 @@ class CalendarizacionCargaMasivaController extends Controller
 
                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio[$helperejercicio])->count();
                 
+                 $valueExist = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio',$ejercicio[$helperejercicio])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->count();
+ 
+                 if($valueExist<1){
+                    return redirect()->back()->withErrors(['error' => 'No existe esea combinacion en techos financieros para la upp: '.$arraysplit[0].' con fondo: '.$arraysplit[2]]);
+
+                 }
+
+
                  $valuepresupuesto= TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo',$tipoFondo)->where('ejercicio',$ejercicio[$helperejercicio])->where('clv_fondo', $arraysplit[2])->value('presupuesto');
-                 if($valuepresupuesto==!$value){
+                 if($valuepresupuesto!=$value){
+
                     return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: '.$arraysplit[0].' fondo: '.$arraysplit[2]]);
                 }
 
@@ -305,13 +344,20 @@ class CalendarizacionCargaMasivaController extends Controller
                     }
                     switch($uppsautorizadas){
                     case 0: 
+                        if($DiferenteUpp>0){
+                            return redirect()->back()->withErrors(['error' => 'No tiene permiso para registrar de  otras upps']);
+
+                        }
+                        else{
                      //validacion para eliminar registros no confirmados 
                      foreach($arrayupps as $u){
-                     $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
-                      if($valupp>0){
-                       $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->forceDelete();
-                      }
-                    }
+                        $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+                         if($valupp>0){
+                          $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
+                         }
+                       }
+                        }
+
                      break;
 
                      case 1:
@@ -326,7 +372,7 @@ class CalendarizacionCargaMasivaController extends Controller
                            foreach($arrayupps as $u){
                            $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                            if($valupp>0){
-                            $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->forceDelete();
+                            $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
                             }
                            }
                         break;
@@ -344,8 +390,9 @@ class CalendarizacionCargaMasivaController extends Controller
                     foreach($arrayupps as $key=>$u){
                      $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                      if($valupp>0){
-                      $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->forceDelete();
-                     }
+                      $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
+                   
+                    }
                     }
                     break;
                 
@@ -357,17 +404,14 @@ class CalendarizacionCargaMasivaController extends Controller
             }      
           } catch (\Throwable $th) {
             Log::debug($th);
-            return redirect()->back()->withErrors(['error' => 'La información introducida es invalida']);
+            return redirect()->back()->withErrors(['error' => 'Ocurrio un error intentelo más tarde']);
 
         }
         //si todo sale bien procedemos al import
         try {
             (new ClavePresupuestaria)->import($request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
     
-              if(File::exists(storage_path($filename))){
-                File::delete(storage_path($filename));
-                
-            }
+
             //mandamos llamar procedimiento de jeff
             $datos = DB::select("CALL insert_pp_aplanado(".$ejercicio[0].")");
            $b = array(
@@ -380,18 +424,14 @@ class CalendarizacionCargaMasivaController extends Controller
              } 
          catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
              $failures = $e->failures();
-             if(File::exists(storage_path($filename))){
-                File::delete(storage_path($filename));
-            }
+
             foreach ($failures as $key=>$failure) {
                 $valuesar=$failure->values();
                 if(!$valuesar['total']){
                         unset($failures[$key]);
                 } 
             } 
-
              return redirect()->back()->withErrors($failures);
-    
     
     
             

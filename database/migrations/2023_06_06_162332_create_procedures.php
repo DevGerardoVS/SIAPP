@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_III(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_III(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -54,7 +54,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_1(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'vppa.deleted_at is null';
@@ -83,7 +83,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1_2(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_1_2(in anio int, in corte date)
         begin
             set @tabla := 'programacion_presupuesto pp';
             set @corte := 'deleted_at is null';
@@ -136,7 +136,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_1_3(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_1_3(in anio int, in corte date)
         begin
             set @tabla := 'programacion_presupuesto pp';
             set @corte := 'deleted_at is null';
@@ -184,7 +184,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_2(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_2(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -226,7 +226,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_3(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_3(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado pa';
             set @corte := 'pa.deleted_at is null';
@@ -295,7 +295,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_4(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_4(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -346,7 +346,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_5(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_5(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -369,7 +369,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_a_num_6(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_6(in anio int, in corte date)
         begin
             set @tabla := 'programacion_presupuesto pp';
             set @corte := 'deleted_at is null';
@@ -428,7 +428,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_1(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_1(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -479,7 +479,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_2(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_2(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -536,7 +536,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_3(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_3(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -593,7 +593,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_4(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_4(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -650,7 +650,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_10(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_10(in anio int, in corte date)
         begin
             set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
@@ -687,7 +687,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_1(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_1(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -771,7 +771,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_2(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_2(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -848,7 +848,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_3(in anio int,in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_3(in anio int,in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -872,7 +872,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_4(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_4(in anio int, in corte date)
         begin
         set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -896,7 +896,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_5(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_5(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -971,7 +971,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_6(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_6(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -1028,7 +1028,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_7(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_7(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'deleted_at is null';
@@ -1167,7 +1167,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_11_8(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_8(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado vppa';
             set @corte := 'vppa.deleted_at is null';
@@ -1226,7 +1226,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists calendario_general(in anio int, in corte date, in uppC varchar(3))
+        DB::unprepared("CREATE PROCEDURE calendario_general(in anio int, in corte date, in uppC varchar(3))
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -1320,7 +1320,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists calendario_fondo_mensual(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE calendario_fondo_mensual(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'vppa.deleted_at is null';
@@ -1347,7 +1347,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_resumen_por_capitulo_y_partida(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_resumen_por_capitulo_y_partida(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -1402,46 +1402,45 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists avance_proyectos_actividades_upp(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE avance_proyectos_actividades_upp(in anio int, in corte date)
         begin
-            set @corte := 'mm.deleted_at is null';
+            set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @corte := CONCAT('mm.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+                set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-                
+                        
             set @query := CONCAT('
-            select 
-                clv_upp,
-                upp,
-                sum(proyectos) proyectos,
-                sum(actividades) actividades,
-                (sum(actividades)/sum(proyectos))*100 avance,
-                case 
-                    when sum(actividades) >= sum(proyectos) then \"Confirmado\"
-                    else \"Registrado\"
-                end estatus
-            from (
-                select 
-                    ve.clv_upp,
-                    ve.upp,
-                    count(mm.id) proyectos,
-                    0 actividades
-                from mml_mir mm 
-                join v_epp ve on mm.id_epp = ve.id
-                where mm.nivel = 10 and mm.ejercicio = ',anio,' and ',@corte,'
-                group by clv_upp,upp
-                union all
-                select 
-                    ve.clv_upp,
-                    ve.upp,
-                    0 proyectos,
-                    count(distinct mm.componente_padre) actividades
-                from mml_mir mm 
-                join v_epp ve on mm.id_epp = ve.id
-                where mm.nivel = 11 and mm.ejercicio = ',anio,' and ',@corte,'
-                group by clv_upp,upp
-            ) t
-            group by clv_upp,upp;
+                select
+                    clv_upp,
+                    group_concat(upp) upp,
+                    sum(proyectos) proyectos,
+                    sum(proyectos_actividades) actividades,
+                    round((sum(proyectos_actividades)/sum(proyectos))*100) avance,
+                    case
+                        when sum(proyectos) = sum(proyectos_actividades) then \"Confirmado\"
+                        else \"Registrado\"
+                    end estatus
+                from (
+                    select
+                        clv_upp,
+                        upp,
+                        count(*) proyectos,
+                        0 proyectos_actividades
+                    from v_epp ve
+                    where ejercicio = ',anio,' and presupuestable = 1 and ',@corte,'
+                    group by clv_upp,upp
+                    union all 
+                    select 
+                        mm.clv_upp,
+                        \"\" upp,
+                        0 proyectos,
+                        count(distinct mm.area_funcional) proyectos_actividades
+                    from metas m 
+                    left join mml_mir mm on m.mir_id = mm.id
+                    where mm.',@corte,' and mm.ejercicio = ',anio,'
+                    group by clv_upp
+                )t
+                group by clv_upp;
             ');
 
             prepare stmt  from @query;
@@ -1449,7 +1448,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date)
+        DB::unprepared("CREATE PROCEDURE proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date)
         begin
             set @corte := 'mm.deleted_at is null';
             set @upp := '';
@@ -1498,7 +1497,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_X_b_num_5(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_5(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado pa';
             set @corte := 'pa.deleted_at is null';
@@ -1584,7 +1583,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE if not exists proyecto_avance_general(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE proyecto_avance_general(in anio int, in corte date)
         begin
             set @tabla := 'pp_aplanado';
             set @corte := 'deleted_at is null';
@@ -1749,7 +1748,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists conceptos_clave(in claveT varchar(64), in anio int)
+        DB::unprepared("CREATE PROCEDURE conceptos_clave(in claveT varchar(64), in anio int)
         begin
             
         set @clave := claveT COLLATE utf8mb4_unicode_ci; 
@@ -1799,8 +1798,18 @@ return new class extends Migration {
             ) tabla;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists insert_pp_aplanado(in anio int)
+        DB::unprepared("CREATE PROCEDURE insert_pp_aplanado(in anio int)
         begin
+            delete
+            from pp_identificadores
+            where id not in (
+                select id 
+                from programacion_presupuesto pp
+                union all 
+                select id
+                from programacion_presupuesto_hist
+            );
+
             drop temporary table if exists temp_pp;
             create temporary table temp_pp(
                 id_aux int not null,
@@ -2224,7 +2233,7 @@ return new class extends Migration {
             drop temporary table if exists aux_fondo;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists SP_AF_EE(in anio int)
+        DB::unprepared("CREATE PROCEDURE SP_AF_EE(in anio int)
         begin
             select
                 case 
@@ -2342,7 +2351,7 @@ return new class extends Migration {
             ) tabla;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists lista_upp(in tipo int)
+        DB::unprepared("CREATE PROCEDURE lista_upp(in tipo int)
             begin
                 if tipo = 0 then
                     select
@@ -2369,7 +2378,7 @@ return new class extends Migration {
             END;
         ");
 
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_II(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_II(in anio int, in corte date)
         begin
             set @corte := 'mm.deleted_at is null';
             if (corte is not null) then 
@@ -2450,7 +2459,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE if not exists reporte_art_20_frac_IX(in anio int, in corte date)
+        DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_IX(in anio int, in corte date)
         begin
             set @corte := 'mm.deleted_at is null';
             if (corte is not null) then 
@@ -2507,11 +2516,16 @@ return new class extends Migration {
             deallocate prepare stmt;
         END");
 
-        DB::unprepared("CREATE PROCEDURE if not exists sp_epp(in uppC varchar(3),in urC varchar(2), in anio int)
-            BEGIN
-                set @upp := uppC;
-                set @ur := urC;
-            
+        DB::unprepared("CREATE PROCEDURE sp_epp(in delegacion int,in uppC varchar(3),in urC varchar(2), in anio int)
+        BEGIN
+            set @upp := \"\";
+	        set @ur := \"\";
+	        set @del := \"from v_epp e\";
+	        if(uppC is not null) then set @upp := CONCAT(\"and e.clv_upp = '\",uppC,\"'\"); end if;
+	        if(urC is not null) then set @upr := CONCAT(\"and clv_ur = '\",urC,\"'\"); end if;
+	        if(delegacion = 1) then set @del := \"from uppautorizadascpnomina u join v_epp e on u.clv_upp = e.clv_upp\"; end if;
+           
+            set @query := CONCAT(\"
                 select 
                     concat(
                     	e.clv_sector_publico,
@@ -2573,23 +2587,19 @@ return new class extends Migration {
                         e.proyecto
                     ) proyecto,
                     e.ejercicio
-                from v_epp e
-                where if(
-                    @upp is null,
-                    clv_upp != '',
-                    clv_upp = @upp
-                ) and if (anio is null,
-                    ejercicio != 1,
-                    ejercicio = anio
-                ) and if (
-                    @ur is null,
-                    clv_ur != '',
-                    clv_ur = @ur
-                );
-            END
-        ");
+                \",@del,\"
+                where ejercicio = \",anio,\"
+				and e.deleted_at is null
+				\",@upp,\"
+				\",@ur,\"
+			\");
+               
+			prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        END");
 
-        DB::unprepared("CREATE PROCEDURE if not exists avance_etapas(in anio int, in upp varchar(3), in programa varchar(2), in lim_i int, in lim_s int)
+        DB::unprepared("CREATE PROCEDURE avance_etapas(in anio int, in upp varchar(3), in programa varchar(2), in lim_i int, in lim_s int)
         begin
             set @programa := '';
             set @upp := '';
@@ -2737,7 +2747,7 @@ return new class extends Migration {
             deallocate prepare stmt;
         END");
 
-        DB::unprepared("CREATE PROCEDURE if not exists llenado_cierres()
+        DB::unprepared("CREATE PROCEDURE llenado_cierres()
         begin
             set @selects := CONCAT('(clv_upp,estatus,ejercicio,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user)
             select distinct 
@@ -2767,7 +2777,7 @@ return new class extends Migration {
             prepare stmt from @query;execute stmt;deallocate prepare stmt;
         END");
 
-        DB::unprepared("CREATE PROCEDURE if not exists llenado_etapas()
+        DB::unprepared("CREATE PROCEDURE llenado_etapas()
         begin
             insert into mml_avance_etapas_pp(clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at)
             select distinct
@@ -2788,7 +2798,281 @@ return new class extends Migration {
                 now() updated_at,
                 null deleted_at
             from v_epp ve
-            where ejercicio = (select max(ejercicio) from v_epp);
+            where ejercicio = (select max(ejercicio) from v_epp)
+            and presupuestable = 1;
+        END");
+
+        DB::unprepared("CREATE PROCEDURE llenado_nuevo_anio(in anio int)
+        begin
+            #Procedimiento que actualiza al nuevo año las tablas, epp, cierre_ejercicio_claves, cierre_ejercicio_metas y mml_cierre_ejercicio
+            #Buscar id´s
+            update epp_aux a
+            left join catalogo c on a.clv_sector_publico = c.clave and c.grupo_id = 1
+            set a.id_sector_publico = c.id;
+
+            update epp_aux a
+            left join catalogo c on a.clv_sector_publico_f = c.clave and c.grupo_id = 2
+            set a.id_sector_publico_f = c.id;
+
+            update epp_aux a
+            left join catalogo c on a.clv_sector_economia = c.clave and c.grupo_id = 3
+            set a.id_sector_economia = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_subsector_economia = c.clave and c.grupo_id = 4
+            set a.id_subsector_economia = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_ente_publico = c.clave and c.grupo_id = 5
+            set a.id_ente_publico = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_upp = c.clave and c.grupo_id = 6
+            set a.id_upp = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_subsecretaria = c.clave and c.grupo_id = 7
+            set a.id_subsecretaria = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_ur = c.clave and c.grupo_id = 8
+            set a.id_ur = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_finalidad = c.clave and c.grupo_id = 9
+            set a.id_finalidad = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_funcion = c.clave and c.grupo_id = 10
+            set a.id_funcion = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_subfuncion = c.clave and c.grupo_id = 11
+            set a.id_subfuncion = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_eje = c.clave and c.grupo_id = 12
+            set a.id_eje = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_linea_accion = c.clave and c.grupo_id = 13
+            set a.id_linea_accion = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_programa_sectorial = c.clave and c.grupo_id = 14
+            set a.id_programa_sectorial = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_tipologia_conac = c.clave and c.grupo_id = 15
+            set a.id_tipologia_conac = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_programa = c.clave and c.grupo_id = 16
+            set a.id_programa = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_subprograma = c.clave and c.grupo_id = 17
+            set a.id_subprograma = c.id;
+                        
+            update epp_aux a
+            left join catalogo c on a.clv_proyecto = c.clave and c.grupo_id = 18
+            set a.id_proyecto = c.id;
+
+            #Identificar datos no encontrados
+            create temporary table claves_aux(
+                clave varchar(6),
+                descripcion text,
+                grupo_id int
+            );
+
+            insert into claves_aux 
+            select e.clv_sector_publico,e.sector_publico,1 from epp_aux e where e.id_sector_publico is null;
+                        
+            insert into claves_aux 
+            select e.clv_sector_publico_f,e.sector_publico_f,2 from epp_aux e where e.id_sector_publico_f is null;
+                        
+            insert into claves_aux 
+            select e.clv_sector_economia,e.sector_economia,3 from epp_aux e where e.id_sector_economia is null;
+                        
+            insert into claves_aux 
+            select e.clv_subsector_economia,e.subsector_economia,4 from epp_aux e where e.id_subsector_economia is null;
+            set @filasCA := (select count(*)
+            from (
+                select 
+                    ea.*,
+                    re.*
+                from (select distinct
+                    concat(
+                    ea.clv_sector_publico,
+                    ea.clv_sector_publico_f,
+                    ea.clv_sector_economia,
+                    ea.clv_subsector_economia,
+                    ea.clv_ente_publico) clas_admin
+                from epp_aux ea) ea
+                left join (select distinct clasificacion_administrativa from rel_economica_administrativa where deleted_at is null) re 
+                on re.clasificacion_administrativa = ea.clas_admin
+            ) t2 where t2.clasificacion_administrativa is null);
+            if(@filasCA > 0) then select \"Se necesita actualizar la tabla clasificacion_administrativa\" alerta; end if;
+                        
+            insert into claves_aux 
+            select e.clv_ente_publico,e.ente_publico,5 from epp_aux e where e.id_ente_publico is null;
+                        
+            insert into claves_aux 
+            select e.clv_upp,e.upp,6 from epp_aux e where e.id_upp is null;
+                        
+            insert into claves_aux 
+            select e.clv_subsecretaria,e.subsecretaria,7 from epp_aux e where e.id_subsecretaria is null;
+                        
+            insert into claves_aux 
+            select e.clv_ur,e.ur,8 from epp_aux e where e.id_ur is null;
+                        
+            insert into claves_aux 
+            select e.clv_finalidad,e.finalidad,9 from epp_aux e where e.id_finalidad is null;
+                        
+            insert into claves_aux 
+            select e.clv_funcion,e.funcion,10 from epp_aux e where e.id_funcion is null;
+                        
+            insert into claves_aux 
+            select e.clv_subfuncion,e.subfuncion,11 from epp_aux e where e.id_subfuncion is null;
+                        
+            insert into claves_aux 
+            select e.clv_eje,e.eje,12 from epp_aux e where e.id_eje is null;
+                        
+            insert into claves_aux 
+            select e.clv_linea_accion,e.linea_accion,13 from epp_aux e where e.id_linea_accion is null;
+            set @filasLA := (select count(*) from epp_aux e where e.id_linea_accion is null);
+            if(@filasLA > 0) then select \"Se necesita actualizar la tabla sector_linea_accion\" alerta; end if;
+                        
+            insert into claves_aux 
+            select e.clv_programa_sectorial,e.programa_sectorial,14 from epp_aux e where e.id_programa_sectorial is null;
+                        
+            insert into claves_aux 
+            select e.clv_tipologia_conac,e.tipologia_conac,15 from epp_aux e where e.id_tipologia_conac is null;
+            set @filasTC := (select count(*) from epp_aux e where e.id_tipologia_conac is null);
+            if(@filasTC > 0) then select \"Se necesita actualizar la tabla tipologia_conac\" alerta; end if;
+                        
+            insert into claves_aux 
+            select e.clv_programa,e.programa,16 from epp_aux e where e.id_programa is null;
+                        
+            insert into claves_aux 
+            select e.clv_subprograma,e.subprograma,17 from epp_aux e where e.id_subprograma is null;
+                        
+            insert into claves_aux 
+            select e.clv_proyecto,e.proyecto,18 from epp_aux e where e.id_proyecto is null;
+
+            select distinct
+                ca.clave,
+                ca.descripcion,
+                g.grupo
+            from claves_aux ca
+            join grupos g on ca.grupo_id = g.id;
+                        
+            set @filas := (select count(*) from claves_aux);
+            if(@filas > 0) then
+                delete from epp_aux;
+            else 
+                insert into epp(sector_publico_id,sector_publico_f_id,sector_economia_id,subsector_economia_id,ente_publico_id,upp_id,subsecretaria_id,ur_id,finalidad_id,funcion_id,subfuncion_id,eje_id,linea_accion_id,programa_sectorial_id,tipologia_conac_id,programa_id,subprograma_id,proyecto_id,ejercicio,presupuestable,confirmado,created_at,updated_at,deleted_at,deleted_user,updated_user,created_user)
+                select 
+                    ea.id_sector_publico,
+                    ea.id_sector_publico_f,
+                    ea.id_sector_economia,
+                    ea.id_subsector_economia,
+                    ea.id_ente_publico,
+                    ea.id_upp,
+                    ea.id_subsecretaria,
+                    ea.id_ur,
+                    ea.id_finalidad,
+                    ea.id_funcion,
+                    ea.id_subfuncion,
+                    ea.id_eje,
+                    ea.id_linea_accion,
+                    ea.id_programa_sectorial,
+                    ea.id_tipologia_conac,
+                    ea.id_programa,
+                    ea.id_subprograma,
+                    ea.id_proyecto,
+                    anio,
+                    1,
+                    0,
+                    now(),
+                    now(),
+                    null,
+                    null,
+                    null,
+                    'SISTEMA'
+                from epp_aux ea;
+                        
+                insert into entidad_ejecutora(upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at)
+                select 
+                    ea.id_upp,
+                    ea.id_subsecretaria,
+                    ea.id_ur,
+                    null,
+                    'Sistema',
+                    null,
+                    null,
+                    now(),
+                    now()
+                from epp_aux ea;
+                        
+                update epp set presupuestable = 0 
+                where ejercicio = anio and  
+                programa_id in (select id from catalogo c where c.grupo_id = 16 and c.clave in ('5H','RM'));
+            end if;
+
+            drop temporary table claves_aux;
+            delete from epp_aux;
+
+            #Llenado de etapas
+            insert into mml_avance_etapas_pp(clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at)
+            select distinct
+                clv_upp,
+                clv_programa,
+                0 etapa_0,
+                0 etapa_1,
+                0 etapa_2,
+                0 etapa_3,
+                0 etapa_4,
+                0 etapa_5,
+                0 estatus,
+                ejercicio,
+                'SISTEMA' created_user,
+                null updated_user,
+                null deleted_user,
+                now() created_at,
+                now() updated_at,
+                null deleted_at
+            from v_epp ve
+            where ejercicio = (select max(ejercicio) from v_epp)
+            and presupuestable = 1;
+
+            #Llenado de cierres
+            set @selects := CONCAT('(clv_upp,estatus,ejercicio,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user)
+            select distinct 
+                clv_upp,
+                \"Cerrado\" estatus,
+                ejercicio,
+                now() created_at,
+                now() updated_at,
+                null deleted_at,
+                \"SISTEMA\" created_user,
+                null updated_user,
+                null deleted_user
+            from v_epp
+            where ejercicio = (
+                select max(ejercicio) from v_epp
+            )');
+                        
+            update mml_cierre_ejercicio set estatus = 'Cerrado', deleted_at = now(), deleted_user = 'SISTEMA';
+            update cierre_ejercicio_claves set estatus = 'Cerrado', deleted_at = now(), deleted_user = 'SISTEMA';
+            update cierre_ejercicio_metas set estatus = 'Cerrado', deleted_at = now(), deleted_user = 'SISTEMA';
+                        
+            set @query := CONCAT('insert into mml_cierre_ejercicio',@selects,';');
+            prepare stmt from @query;execute stmt;deallocate prepare stmt;	
+            set @query := CONCAT('insert into cierre_ejercicio_claves',@selects,';');
+            prepare stmt from @query;execute stmt;deallocate prepare stmt;
+            set @query := CONCAT('insert into cierre_ejercicio_metas',@selects,';');
+            prepare stmt from @query;execute stmt;deallocate prepare stmt;
         END");
     }
 
@@ -2837,5 +3121,7 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS avance_etapas;");
         DB::unprepared("DROP PROCEDURE IF EXISTS llenado_cierres;");
         DB::unprepared("DROP PROCEDURE IF EXISTS llenado_etapas;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS llenado_epp;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS crear_tabla_auxiliar;");
     }
 };

@@ -14,6 +14,10 @@
     </header>
 <br>
 
+<div class="col-sm-12 col-md-4 col-lg-2">
+    <label class="form-label fw-bold mt-md-1">Ejercicio:</label>
+    <label class="form-label fw-bold mt-md-1" id="anio"></label>
+</div>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <table id="catalogo" class="table table-striped table-bordered text-center " style="width:100%">
@@ -29,13 +33,22 @@
         </div>
     </div>
     <br>
-    <div class="text-right">
-        <button type="button" class="btn btn-outline-success"  onclick="exportExcel()">
-            <i class="fa fa-file-excel-o"></i> Exportar Excel
-        </button>
-        <button style="margin: 10px;" type="button" class="btn btn-outline-danger" onclick="exportPdf()">
-            <i class="fa fa-file-pdf-o"></i> Exportar PDF
-        </button>
+    <div class="row">
+            <div class="col-sm-2 text-md-end my-auto">
+                <label for="fondo_filter" class="form-label fw-bold mt-md-1">Fondo:</label>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-6 my-auto">
+                <select class="form-control filters filters_fondo" id="fondo_filter" name="fondo_filter" autocomplete="fondo_filter">
+                </select>
+            </div>
+            <div class="text-right col-sm-12 col-md-12 col-lg-4 mt-sm-0 mt-2">
+                <button type="button" class="btn btn-outline-success"  onclick="exportExcel()">
+                    <i class="fa fa-file-excel-o"></i> Exportar Excel
+                </button>
+                <button style="margin: 10px;" type="button" class="btn btn-outline-danger" onclick="exportPdf()">
+                    <i class="fa fa-file-pdf-o"></i> Exportar PDF
+                </button>
+            </div>
     </div>
     <div class="row justify-content-center">
         <div class="col-sm-12">
@@ -59,6 +72,7 @@
 
 <script>
     $(document).ready(function() {
+        var dt = $('#catalogoB');
 
         $.ajaxSetup({
             headers: {
@@ -66,7 +80,12 @@
             }
         });
 
+        $('#fondo_filter').on('change', function(){
+            dt.DataTable().search(this.value).draw();   
+        });
+
         getDatos();
+        getFondos();
 
     });
     function exportPdf(){
@@ -248,6 +267,23 @@
         }catch (error) {
             console.error("error: "+error);
         }
+    }
+
+    function getFondos() { //función obtener fondos
+        $.ajax({
+            url: "/fondos/inicio",
+            type:'POST',
+            dataType: 'json',
+            success: function(data) {
+                var par = $('#fondo_filter');
+                $('#anio').text(data[0].ejercicio);
+                par.html('');
+                par.append(new Option("Todos", ""));
+                $.each(data, function(i, val){
+                    par.append(new Option(data[i].clv_fondo +" "+ data[i].fondo_ramo, data[i].clv_fondo+" "+ data[i].fondo_ramo));
+                });
+            }
+        });
     }
 
 

@@ -24,6 +24,7 @@ class ClavePreController extends Controller
     public function getPanelUpdate($id){
         Controller::check_permission('putClaves');
         $clave = ProgramacionPresupuesto::where('id',$id)->first();
+        Controller::check_permissionEdit('putClaves',$clave->upp);
         return view('calendarizacion.clavePresupuestaria.updateCalendarzacion', compact('clave'));
     }
     public function getCreate($ejercicio){

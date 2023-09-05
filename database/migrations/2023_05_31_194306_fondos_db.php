@@ -28,7 +28,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
-            $table->string('poblacion_Objetivo',255)->nullable(false);
+            $table->string('poblacion_objetivo',255)->nullable(false);
             $table->string('descripcion',255)->nullable(false);
             $table->string('magnitud',255)->nullable(false);
             $table->string('necesidad_atender',255)->nullable(false);
@@ -122,6 +122,7 @@ return new class extends Migration
             $table->string('clv_cpladem_linea_accion', 12)->nullable(false);
             $table->string('created_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
+            $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -185,8 +186,8 @@ return new class extends Migration
             $table->tinyInteger('etapa_5')->nullable(false);
             $table->integer('estatus')->unsigned()->nullable(false);
             $table->integer('ejercicio')->nullable(false)->default(0);
-            $table->string('nombre_minuta',15)->nullable(true);
-            $table->string('ruta',50)->nullable(true);
+            $table->string('nombre_minuta',100)->nullable(true);
+            $table->string('ruta',100)->nullable(true);
             $table->string('extension',4)->nullable(true);
             $table->string('created_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
@@ -667,6 +668,64 @@ return new class extends Migration
             $table->timestamp('updated_at')->nullable(true);
             $table->softDeletes();
         });
+
+        Schema::create('epp_aux', function(Blueprint $table){
+            $table->increments('id');
+            $table->integer('id_sector_publico')->nullable(true);
+            $table->string('clv_sector_publico',6)->nullable(false);
+            $table->text('sector_publico')->nullable(false);
+            $table->integer('id_sector_publico_f')->nullable(true);
+            $table->string('clv_sector_publico_f',6)->nullable(false);
+            $table->text('sector_publico_f')->nullable(false);
+            $table->integer('id_sector_economia')->nullable(true);
+            $table->string('clv_sector_economia',6)->nullable(false);
+            $table->text('sector_economia')->nullable(false);
+            $table->integer('id_subsector_economia')->nullable(true);
+            $table->string('clv_subsector_economia',6)->nullable(false);
+            $table->text('subsector_economia')->nullable(false);
+            $table->integer('id_ente_publico')->nullable(true);
+            $table->string('clv_ente_publico',6)->nullable(false);
+            $table->text('ente_publico')->nullable(false);
+            $table->integer('id_upp')->nullable(true);
+            $table->string('clv_upp',6)->nullable(false);
+            $table->text('upp')->nullable(false);
+            $table->integer('id_subsecretaria')->nullable(true);
+            $table->string('clv_subsecretaria',6)->nullable(false);
+            $table->text('subsecretaria')->nullable(false);
+            $table->integer('id_ur')->nullable(true);
+            $table->string('clv_ur',6)->nullable(false);
+            $table->text('ur')->nullable(false);
+            $table->integer('id_finalidad')->nullable(true);
+            $table->string('clv_finalidad',6)->nullable(false);
+            $table->text('finalidad')->nullable(false);
+            $table->integer('id_funcion')->nullable(true);
+            $table->string('clv_funcion',6)->nullable(false);
+            $table->text('funcion')->nullable(false);
+            $table->integer('id_subfuncion')->nullable(true);
+            $table->string('clv_subfuncion',6)->nullable(false);
+            $table->text('subfuncion')->nullable(false);
+            $table->integer('id_eje')->nullable(true);
+            $table->string('clv_eje',6)->nullable(false);
+            $table->text('eje')->nullable(false);
+            $table->integer('id_linea_accion')->nullable(true);
+            $table->string('clv_linea_accion',6)->nullable(false);
+            $table->text('linea_accion')->nullable(false);
+            $table->integer('id_programa_sectorial')->nullable(true);
+            $table->string('clv_programa_sectorial',6)->nullable(false);
+            $table->text('programa_sectorial')->nullable(false);
+            $table->integer('id_tipologia_conac')->nullable(true);
+            $table->string('clv_tipologia_conac',6)->nullable(false);
+            $table->text('tipologia_conac')->nullable(false);
+            $table->integer('id_programa')->nullable(true);
+            $table->string('clv_programa',6)->nullable(false);
+            $table->text('programa')->nullable(false);
+            $table->integer('id_subprograma')->nullable(true);
+            $table->string('clv_subprograma',6)->nullable(false);
+            $table->text('subprograma')->nullable(false);
+            $table->integer('id_proyecto')->nullable(true);
+            $table->string('clv_proyecto',6)->nullable(false);
+            $table->text('proyecto')->nullable(false);
+        });
     }
 
 
@@ -710,5 +769,6 @@ return new class extends Migration
         Schema::dropIfExists('mml_observaciones_pp');
         Schema::dropIfExists('mml_objetivo_sectorial_estrategia');
         Schema::dropIfExists('mml_mir');
+        Schema::dropIfExists('epp_aux');
     }
 };

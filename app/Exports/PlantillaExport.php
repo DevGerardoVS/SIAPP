@@ -5,12 +5,17 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 
-class PlantillaExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths,WithColumnFormatting
+class PlantillaExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths,WithColumnFormatting,WithStyles ,WithEvents
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -71,5 +76,23 @@ class PlantillaExport implements FromCollection, ShouldAutoSize, WithHeadings, W
         ];
     }
 
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            // Style the first row as bold text.
+            1    => ['font' => ['bold' => true,'color' => ['argb' => Color::COLOR_WHITE]]
+                   ],
 
+        ];
+    }
+
+    public function registerEvents():array{
+        return[
+            AfterSheet::class=> function(AfterSheet $event){
+                $sheet=$event->sheet;   
+                
+                $sheet->getStyle('A1:AN1')->getFill()->applyFromArray(['fillType' => 'solid','rotation' => 0, 'color' => ['argb' => '6A0F49'],]);
+            },
+        ];
+    }
 }

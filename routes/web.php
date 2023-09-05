@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Calendarizacion\ClavePreController;
+use App\Http\Controllers\Auth\RestablecerPass;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,9 +78,12 @@ Route::get('/home', function () {
 
 
 Route::get('/Inicio', [App\Http\Controllers\HomeController::class, 'index',])->name('Inicio');
+Route::get('/get-links', [App\Http\Controllers\Administracion\InicioController::class, 'getLinks'])->name('links');
 // Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
+Route::controller(RestablecerPass::class)->group(function (){
+		Route::post('/restablecer-password', 'store')->name('restablecerPass');
+	});
 Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGREGAR AQUI DENTRO LAS RUTAS)
     // cambiar contraseña
     Route::get('/cambiar-contrasenia', [App\Http\Controllers\ChangePasswordController::class, 'index'])->name('cambiar_contrasenia');
@@ -88,5 +92,6 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     Route::post('/logs/download', [App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
     include('administracion.php'); //Agregar las rutas para el módulo de administración en este archivo
     include('calendarizacion.php'); //Agregar las rutas para el módulo de Calendarizacion en este archivo
-    //Usuarios
+    include('epp.php'); //Agregar las rutas para el módulo de Epp en este archivo
 });
+

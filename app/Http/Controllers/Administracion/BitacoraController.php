@@ -20,8 +20,6 @@ class BitacoraController extends Controller
 
 	public static function getBitacora($anio,$mes){
         Controller::check_permission('getBitacora');
-        Log::debug($anio);
-        Log::debug($mes);
         $data = Bitacora::select(
             'username',
             'ip_origen',
@@ -57,15 +55,14 @@ class BitacoraController extends Controller
 		->distinct()
 		->get();
             Log::debug($data);
-        $dataSet=array();
         foreach($data as $d){
             $ds = array(
                 $d->anio
             );
             $dataSet[]=$ds;
         }
-        $newdata=array_unique($dataSet);
-        return $newdata;
+        /* $newdata=array_unique($dataSet); */
+        return $dataSet;
     }
     public function exportBitacora($anio,$mes) {
         /*Si no coloco estas lineas Falla*/
