@@ -178,6 +178,7 @@ class ReporteController extends Controller
                 "anio" => $anio,
                 "logoLeft" => $logoLeft,
                 "logoRight" => $logoRight,
+                "extension" => $request->action,
             );
         
             if($fechaCorte != null) {
@@ -212,7 +213,7 @@ class ReporteController extends Controller
             );
             Controller::bitacora($b);
 
-            return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xls", $nameFile.".xls")->deleteFileAfterSend(); 
+            return $request->action == 'pdf' ? response()->download($file.".pdf", $nameFile.".pdf")->deleteFileAfterSend() : response()->download($file.".xlsx", $nameFile.".xlsx")->deleteFileAfterSend(); 
         } catch (\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
             return back()->withErrors(['msg'=>'¡Ocurrió un error al descargar el archivo!']);
