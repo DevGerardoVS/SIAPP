@@ -110,7 +110,38 @@
                 console.log("entra");
                 
             });*/
+            var formData = new FormData();
+	        var csrf_tpken = $("input[name='_token']").val();
+            formData.append("_token",csrf_tpken);
             
+            $.ajax({
+                url:"/get-links",
+                type: "GET",
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success:function(response){
+                    response = response.dataSet;
+                    var json = JSON.parse(response);
+                    //json.siapp
+
+                },
+                error: function(response) {
+                    var mensaje="";
+                    $.each(response.responseJSON.errors, function( key, value ) {
+                        mensaje += value+"\n";
+                    });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensaje,
+                        confirmButtonText: "Aceptar",
+                    });
+                    //$('#errorModal').modal('show');
+                    console.log('Error: ' +  JSON.stringify(response.responseJSON));
+                }
+            });
+
         });
     </script>
 </html>

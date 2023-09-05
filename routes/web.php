@@ -78,6 +78,7 @@ Route::get('/home', function () {
 
 
 Route::get('/Inicio', [App\Http\Controllers\HomeController::class, 'index',])->name('Inicio');
+Route::get('/get-links', [App\Http\Controllers\HomeController::class, 'getLinks'])->name('links');
 // Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::controller(RestablecerPass::class)->group(function (){

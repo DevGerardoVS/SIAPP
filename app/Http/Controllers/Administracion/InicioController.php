@@ -76,18 +76,12 @@ class InicioController extends Controller
 
     public static function getLinks(){
         try {
-            $anio_act = date('Y')-1;
-            $dataSet = array();
-            $data = DB::table('configuracion')
-            ->where("descripcion", "=", "enlaces")->get();
 
-            foreach ($data as $d) {
-                $ds = array($d->clave, $d->fondo, number_format($d->asignado, 2, '.', ','), number_format($d->programado, 2, '.', ','), number_format($d->avance, 2, '.', ','));
-                $dataSet[] = $ds;
-            }
+            $data = DB::table('configuracion')
+            ->where("descripcion", "=", "enlaces")->first();
 
             return response()->json([
-                "dataSet" => $dataSet,
+                "dataSet" => $data,
                 "catalogo" => "portada",
             ]);
 
