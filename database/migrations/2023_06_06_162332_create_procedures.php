@@ -2516,11 +2516,16 @@ return new class extends Migration {
             deallocate prepare stmt;
         END");
 
-        DB::unprepared("CREATE PROCEDURE sp_epp(in uppC varchar(3),in urC varchar(2), in anio int)
-            BEGIN
-                set @upp := uppC;
-                set @ur := urC;
-            
+        DB::unprepared("CREATE PROCEDURE sp_epp(in delegacion int,in uppC varchar(3),in urC varchar(2), in anio int)
+        BEGIN
+            set @upp := \"\";
+	        set @ur := \"\";
+	        set @del := \"from v_epp e\";
+	        if(uppC is not null) then set @upp := CONCAT(\"and clv_upp = '\",uppC,\"'\"); end if;
+	        if(urC is not null) then set @upr := CONCAT(\"and clv_ur = '\",urC,\"'\"); end if;
+	        if(delegacion = 1) then set @del := \"from uppautorizadascpnomina u join v_epp e on u.clv_upp = e.clv_upp\"; end if;
+           
+            set @query := CONCAT(\"
                 select 
                     concat(
                     	e.clv_sector_publico,
@@ -2582,21 +2587,17 @@ return new class extends Migration {
                         e.proyecto
                     ) proyecto,
                     e.ejercicio
-                from v_epp e
-                where if(
-                    @upp is null,
-                    clv_upp != '',
-                    clv_upp = @upp
-                ) and if (anio is null,
-                    ejercicio != 1,
-                    ejercicio = anio
-                ) and if (
-                    @ur is null,
-                    clv_ur != '',
-                    clv_ur = @ur
-                );
-            END
-        ");
+                \",@del,\"
+                where ejercicio = \",anio,\"
+				and e.deleted_at is null
+				\",@upp,\"
+				\",@ur,\"
+			\");
+               
+			prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        END");
 
         DB::unprepared("CREATE PROCEDURE avance_etapas(in anio int, in upp varchar(3), in programa varchar(2), in lim_i int, in lim_s int)
         begin
