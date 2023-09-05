@@ -364,16 +364,16 @@ class DatabaseSeeder extends Seeder
             ['id'=>79,'id_grupo'=>1,'id_funcion'=>44],
             ['id'=>80,'id_grupo'=>4,'id_funcion'=>44],
             /*  VISTA EPP TODOS LOS USUARIOS */
-            ['id'=>80,'id_grupo'=>1,'id_funcion'=>45],
-            ['id'=>81,'id_grupo'=>1,'id_funcion'=>46],
-            ['id'=>82,'id_grupo'=>2,'id_funcion'=>45],
-            ['id'=>83,'id_grupo'=>2,'id_funcion'=>46],
-            ['id'=>84,'id_grupo'=>3,'id_funcion'=>45],
-            ['id'=>85,'id_grupo'=>3,'id_funcion'=>46],
-            ['id'=>86,'id_grupo'=>4,'id_funcion'=>45],
-            ['id'=>87,'id_grupo'=>4,'id_funcion'=>46],
-            ['id'=>88,'id_grupo'=>5,'id_funcion'=>45],
-            ['id'=>89,'id_grupo'=>5,'id_funcion'=>46],
+            ['id'=>81,'id_grupo'=>1,'id_funcion'=>45],
+            ['id'=>82,'id_grupo'=>1,'id_funcion'=>46],
+            ['id'=>83,'id_grupo'=>2,'id_funcion'=>45],
+            ['id'=>84,'id_grupo'=>2,'id_funcion'=>46],
+            ['id'=>85,'id_grupo'=>3,'id_funcion'=>45],
+            ['id'=>86,'id_grupo'=>3,'id_funcion'=>46],
+            ['id'=>87,'id_grupo'=>4,'id_funcion'=>45],
+            ['id'=>88,'id_grupo'=>4,'id_funcion'=>46],
+            ['id'=>89,'id_grupo'=>5,'id_funcion'=>45],
+            ['id'=>90,'id_grupo'=>5,'id_funcion'=>46],
         );
     public function run()
     {
