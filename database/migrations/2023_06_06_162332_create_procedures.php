@@ -2802,8 +2802,9 @@ return new class extends Migration {
             and presupuestable = 1;
         END");
 
-        DB::unprepared("CREATE PROCEDURE llenado_epp(in anio int)
+        DB::unprepared("CREATE PROCEDURE llenado_nuevo_anio(in anio int)
         begin
+            #Procedimiento que actualiza al nuevo año las tablas, epp, cierre_ejercicio_claves, cierre_ejercicio_metas y mml_cierre_ejercicio
             #Buscar id´s
             update epp_aux a
             left join catalogo c on a.clv_sector_publico = c.clave and c.grupo_id = 1
@@ -2816,63 +2817,63 @@ return new class extends Migration {
             update epp_aux a
             left join catalogo c on a.clv_sector_economia = c.clave and c.grupo_id = 3
             set a.id_sector_economia = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_subsector_economia = c.clave and c.grupo_id = 4
             set a.id_subsector_economia = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_ente_publico = c.clave and c.grupo_id = 5
             set a.id_ente_publico = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_upp = c.clave and c.grupo_id = 6
             set a.id_upp = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_subsecretaria = c.clave and c.grupo_id = 7
             set a.id_subsecretaria = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_ur = c.clave and c.grupo_id = 8
             set a.id_ur = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_finalidad = c.clave and c.grupo_id = 9
             set a.id_finalidad = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_funcion = c.clave and c.grupo_id = 10
             set a.id_funcion = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_subfuncion = c.clave and c.grupo_id = 11
             set a.id_subfuncion = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_eje = c.clave and c.grupo_id = 12
             set a.id_eje = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_linea_accion = c.clave and c.grupo_id = 13
             set a.id_linea_accion = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_programa_sectorial = c.clave and c.grupo_id = 14
             set a.id_programa_sectorial = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_tipologia_conac = c.clave and c.grupo_id = 15
             set a.id_tipologia_conac = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_programa = c.clave and c.grupo_id = 16
             set a.id_programa = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_subprograma = c.clave and c.grupo_id = 17
             set a.id_subprograma = c.id;
-            
+                        
             update epp_aux a
             left join catalogo c on a.clv_proyecto = c.clave and c.grupo_id = 18
             set a.id_proyecto = c.id;
@@ -2886,70 +2887,76 @@ return new class extends Migration {
 
             insert into claves_aux 
             select e.clv_sector_publico,e.sector_publico,1 from epp_aux e where e.id_sector_publico is null;
-            
+                        
             insert into claves_aux 
             select e.clv_sector_publico_f,e.sector_publico_f,2 from epp_aux e where e.id_sector_publico_f is null;
-            
+                        
             insert into claves_aux 
             select e.clv_sector_economia,e.sector_economia,3 from epp_aux e where e.id_sector_economia is null;
-            
+                        
             insert into claves_aux 
             select e.clv_subsector_economia,e.subsector_economia,4 from epp_aux e where e.id_subsector_economia is null;
-            set @filasCA := (select 
-                count(*)
-            from epp_aux ea
-            join rel_economica_administrativa re on re.clasificacion_administrativa = concat(
-                ea.clv_sector_publico,
-                ea.clv_sector_publico_f,
-                ea.clv_sector_economia,
-                ea.clv_subsector_economia,
-                ea.clv_ente_publico
-            ));
+            set @filasCA := (select count(*)
+            from (
+                select 
+                    ea.*,
+                    re.*
+                from (select distinct
+                    concat(
+                    ea.clv_sector_publico,
+                    ea.clv_sector_publico_f,
+                    ea.clv_sector_economia,
+                    ea.clv_subsector_economia,
+                    ea.clv_ente_publico) clas_admin
+                from epp_aux ea) ea
+                left join (select distinct clasificacion_administrativa from rel_economica_administrativa where deleted_at is null) re 
+                on re.clasificacion_administrativa = ea.clas_admin
+            ) t2 where t2.clasificacion_administrativa is null);
             if(@filasCA > 0) then select \"Se necesita actualizar la tabla clasificacion_administrativa\" alerta; end if;
-            
+                        
             insert into claves_aux 
             select e.clv_ente_publico,e.ente_publico,5 from epp_aux e where e.id_ente_publico is null;
-            
+                        
             insert into claves_aux 
             select e.clv_upp,e.upp,6 from epp_aux e where e.id_upp is null;
-            
+                        
             insert into claves_aux 
             select e.clv_subsecretaria,e.subsecretaria,7 from epp_aux e where e.id_subsecretaria is null;
-            
+                        
             insert into claves_aux 
             select e.clv_ur,e.ur,8 from epp_aux e where e.id_ur is null;
-            
+                        
             insert into claves_aux 
             select e.clv_finalidad,e.finalidad,9 from epp_aux e where e.id_finalidad is null;
-            
+                        
             insert into claves_aux 
             select e.clv_funcion,e.funcion,10 from epp_aux e where e.id_funcion is null;
-            
+                        
             insert into claves_aux 
             select e.clv_subfuncion,e.subfuncion,11 from epp_aux e where e.id_subfuncion is null;
-            
+                        
             insert into claves_aux 
             select e.clv_eje,e.eje,12 from epp_aux e where e.id_eje is null;
-            
+                        
             insert into claves_aux 
             select e.clv_linea_accion,e.linea_accion,13 from epp_aux e where e.id_linea_accion is null;
             set @filasLA := (select count(*) from epp_aux e where e.id_linea_accion is null);
             if(@filasLA > 0) then select \"Se necesita actualizar la tabla sector_linea_accion\" alerta; end if;
-            
+                        
             insert into claves_aux 
             select e.clv_programa_sectorial,e.programa_sectorial,14 from epp_aux e where e.id_programa_sectorial is null;
-            
+                        
             insert into claves_aux 
             select e.clv_tipologia_conac,e.tipologia_conac,15 from epp_aux e where e.id_tipologia_conac is null;
             set @filasTC := (select count(*) from epp_aux e where e.id_tipologia_conac is null);
             if(@filasTC > 0) then select \"Se necesita actualizar la tabla tipologia_conac\" alerta; end if;
-            
+                        
             insert into claves_aux 
             select e.clv_programa,e.programa,16 from epp_aux e where e.id_programa is null;
-            
+                        
             insert into claves_aux 
             select e.clv_subprograma,e.subprograma,17 from epp_aux e where e.id_subprograma is null;
-            
+                        
             insert into claves_aux 
             select e.clv_proyecto,e.proyecto,18 from epp_aux e where e.id_proyecto is null;
 
@@ -2959,7 +2966,7 @@ return new class extends Migration {
                 g.grupo
             from claves_aux ca
             join grupos g on ca.grupo_id = g.id;
-            
+                        
             set @filas := (select count(*) from claves_aux);
             if(@filas > 0) then
                 delete from epp_aux;
@@ -2994,7 +3001,7 @@ return new class extends Migration {
                     null,
                     'SISTEMA'
                 from epp_aux ea;
-            
+                        
                 insert into entidad_ejecutora(upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at)
                 select 
                     ea.id_upp,
@@ -3007,7 +3014,7 @@ return new class extends Migration {
                     now(),
                     now()
                 from epp_aux ea;
-            
+                        
                 update epp set presupuestable = 0 
                 where ejercicio = anio and  
                 programa_id in (select id from catalogo c where c.grupo_id = 16 and c.clave in ('5H','RM'));
@@ -3015,6 +3022,57 @@ return new class extends Migration {
 
             drop temporary table claves_aux;
             delete from epp_aux;
+
+            #Llenado de etapas
+            insert into mml_avance_etapas_pp(clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at)
+            select distinct
+                clv_upp,
+                clv_programa,
+                0 etapa_0,
+                0 etapa_1,
+                0 etapa_2,
+                0 etapa_3,
+                0 etapa_4,
+                0 etapa_5,
+                0 estatus,
+                ejercicio,
+                'SISTEMA' created_user,
+                null updated_user,
+                null deleted_user,
+                now() created_at,
+                now() updated_at,
+                null deleted_at
+            from v_epp ve
+            where ejercicio = (select max(ejercicio) from v_epp)
+            and presupuestable = 1;
+
+            #Llenado de cierres
+            set @selects := CONCAT('(clv_upp,estatus,ejercicio,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user)
+            select distinct 
+                clv_upp,
+                \"Cerrado\" estatus,
+                ejercicio,
+                now() created_at,
+                now() updated_at,
+                null deleted_at,
+                \"SISTEMA\" created_user,
+                null updated_user,
+                null deleted_user
+            from v_epp
+            where ejercicio = (
+                select max(ejercicio) from v_epp
+            )');
+                        
+            update mml_cierre_ejercicio set estatus = 'Cerrado', deleted_at = now(), deleted_user = 'SISTEMA';
+            update cierre_ejercicio_claves set estatus = 'Cerrado', deleted_at = now(), deleted_user = 'SISTEMA';
+            update cierre_ejercicio_metas set estatus = 'Cerrado', deleted_at = now(), deleted_user = 'SISTEMA';
+                        
+            set @query := CONCAT('insert into mml_cierre_ejercicio',@selects,';');
+            prepare stmt from @query;execute stmt;deallocate prepare stmt;	
+            set @query := CONCAT('insert into cierre_ejercicio_claves',@selects,';');
+            prepare stmt from @query;execute stmt;deallocate prepare stmt;
+            set @query := CONCAT('insert into cierre_ejercicio_metas',@selects,';');
+            prepare stmt from @query;execute stmt;deallocate prepare stmt;
         END");
     }
 
