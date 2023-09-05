@@ -146,12 +146,22 @@ var dao = {
                   
                 }
         }).fail(function (response){
+            if (response != null) {
+                Swal.fire(
+                    {
+                        showCloseButton: true,
+                        title: response.title,
+                        text: response.text,
+                        icon: response.icon,
+                    }
+                );
+            }
             Swal.fire(
                 {
                     showCloseButton: true,
-                    title: response.title,
-                    text: response.text,
-                    icon: response.icon,
+                    title: 'Error',
+                    text: 'Debe utilizar la plantilla',
+                    icon: 'error',
                 }
             );
         })
