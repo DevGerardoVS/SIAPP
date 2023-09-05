@@ -93,16 +93,20 @@ class InicioController extends Controller
 
     
     public function getFondos(){
-        $fondos = DB::table("pp_aplanado")
-        ->select("clv_fondo_ramo", "fondo_ramo","ejercicio")
-        ->where("ejercicio", "=", function($query){
-            $query->from("pp_aplanado")
-            ->select("ejercicio")
-        ->limit(1)
-        ->orderBy("ejercicio","desc")
-        ->groupBy("ejercicio");
+        $fondos = DB::table("techos_financieros as tf")
+        ->join("fondo as f", function($join){
+            $join->on("f.clv_fondo_ramo", "tf.clv_fondo");
         })
-        ->groupBy("clv_fondo_ramo")
+        ->select("tf.clv_fondo", "tf.ejercicio", "f.fondo_ramo")
+        ->where("ejercicio", "=", function($query){
+                $query->from("pp_aplanado")
+                ->select("ejercicio")
+            ->limit(1)
+            ->orderBy("ejercicio","desc")
+            ->groupBy("ejercicio");
+            })
+        ->whereNull("tf.deleted_at")
+        ->groupBy("tf.clv_fondo")
         ->get();
         return $fondos;
     }
