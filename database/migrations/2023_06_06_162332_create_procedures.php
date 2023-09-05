@@ -2521,7 +2521,7 @@ return new class extends Migration {
             set @upp := \"\";
 	        set @ur := \"\";
 	        set @del := \"from v_epp e\";
-	        if(uppC is not null) then set @upp := CONCAT(\"and clv_upp = '\",uppC,\"'\"); end if;
+	        if(uppC is not null) then set @upp := CONCAT(\"and e.clv_upp = '\",uppC,\"'\"); end if;
 	        if(urC is not null) then set @upr := CONCAT(\"and clv_ur = '\",urC,\"'\"); end if;
 	        if(delegacion = 1) then set @del := \"from uppautorizadascpnomina u join v_epp e on u.clv_upp = e.clv_upp\"; end if;
            
