@@ -1414,7 +1414,7 @@ return new class extends Migration {
                     clv_upp,
                     group_concat(upp) upp,
                     sum(proyectos) proyectos,
-                    sum(proyectos_actividades) proyectos_actividades,
+                    sum(proyectos_actividades) actividades,
                     round((sum(proyectos_actividades)/sum(proyectos))*100) avance,
                     case
                         when sum(proyectos) = sum(proyectos_actividades) then \"Confirmado\"
@@ -2797,7 +2797,8 @@ return new class extends Migration {
                 now() updated_at,
                 null deleted_at
             from v_epp ve
-            where ejercicio = (select max(ejercicio) from v_epp);
+            where ejercicio = (select max(ejercicio) from v_epp)
+            and presupuestable = 1;
         END");
 
         DB::unprepared("CREATE PROCEDURE llenado_epp(in anio int)
