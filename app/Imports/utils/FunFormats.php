@@ -112,7 +112,10 @@ class FunFormats
                                         $e=FunFormats::isExist($entidad, $k[12],$k[13]);
                                         if($e["status"]){
                                         $unique= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[13]).'';
-
+                                        $medidas=DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id',$k[32])->get();
+                                        if(count($medidas)){
+                                            $bene=DB::table('beneficiarios')->select('id','clave')->where('deleted_at', null)->where('clave',$k[29])->get();
+                                            if(count($bene)){
                                         DB::table('metas_temp')->insert(['clave' => $unique,'fila'=>$index,'upp'=>strval($k[7])]);
                                             $aux[] = [
                                                 'meta_id'=>$e["id"],
@@ -137,6 +140,25 @@ class FunFormats
                                                 'total' => FunFormats::typeTotal($k),
                                                 'created_user' => auth::user()->username
                                             ];
+                                            }else{
+                                                $error = array(
+                                                    "icon" => 'error',
+                                                    "title" => 'Error',
+                                                    "text" => 'La clave de beneficiario no existe en la fila '. $index
+                                                );
+                                                return $error;
+        
+                                            }
+                                            }else{
+                                                $error = array(
+                                                    "icon" => 'error',
+                                                    "title" => 'Error',
+                                                    "text" => 'La unidad de medida no existe en la fila '. $index
+                                                );
+                                                return $error;
+        
+                                            }
+
                                     }else{
                                         $error = array(
                                             "icon" => 'error',
@@ -586,6 +608,14 @@ class FunFormats
             Log::debug($meta);
 
         }
+    }
+    public static function checkUnid($arr,$id_uni){
+        
+
+    }
+    public static function checkBenef($arr,$id_benf){
+
+
     }
 
 }

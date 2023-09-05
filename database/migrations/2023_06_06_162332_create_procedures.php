@@ -1404,44 +1404,43 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE avance_proyectos_actividades_upp(in anio int, in corte date)
         begin
-            set @corte := 'mm.deleted_at is null';
+            set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @corte := CONCAT('mm.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+                set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-                
+                        
             set @query := CONCAT('
-            select 
-                clv_upp,
-                upp,
-                sum(proyectos) proyectos,
-                sum(actividades) actividades,
-                (sum(actividades)/sum(proyectos))*100 avance,
-                case 
-                    when sum(actividades) >= sum(proyectos) then \"Confirmado\"
-                    else \"Registrado\"
-                end estatus
-            from (
-                select 
-                    ve.clv_upp,
-                    ve.upp,
-                    count(mm.id) proyectos,
-                    0 actividades
-                from mml_mir mm 
-                join v_epp ve on mm.id_epp = ve.id
-                where mm.nivel = 10 and mm.ejercicio = ',anio,' and ',@corte,'
-                group by clv_upp,upp
-                union all
-                select 
-                    ve.clv_upp,
-                    ve.upp,
-                    0 proyectos,
-                    count(distinct mm.componente_padre) actividades
-                from mml_mir mm 
-                join v_epp ve on mm.id_epp = ve.id
-                where mm.nivel = 11 and mm.ejercicio = ',anio,' and ',@corte,'
-                group by clv_upp,upp
-            ) t
-            group by clv_upp,upp;
+                select
+                    clv_upp,
+                    group_concat(upp) upp,
+                    sum(proyectos) proyectos,
+                    sum(proyectos_actividades) proyectos_actividades,
+                    round((sum(proyectos_actividades)/sum(proyectos))*100) avance,
+                    case
+                        when sum(proyectos) = sum(proyectos_actividades) then \"Confirmado\"
+                        else \"Registrado\"
+                    end estatus
+                from (
+                    select
+                        clv_upp,
+                        upp,
+                        count(*) proyectos,
+                        0 proyectos_actividades
+                    from v_epp ve
+                    where ejercicio = ',anio,' and presupuestable = 1 and ',@corte,'
+                    group by clv_upp,upp
+                    union all 
+                    select 
+                        mm.clv_upp,
+                        \"\" upp,
+                        0 proyectos,
+                        count(distinct mm.area_funcional) proyectos_actividades
+                    from metas m 
+                    left join mml_mir mm on m.mir_id = mm.id
+                    where mm.',@corte,' and mm.ejercicio = ',anio,'
+                    group by clv_upp
+                )t
+                group by clv_upp;
             ');
 
             prepare stmt  from @query;
@@ -2517,11 +2516,16 @@ return new class extends Migration {
             deallocate prepare stmt;
         END");
 
-        DB::unprepared("CREATE PROCEDURE sp_epp(in uppC varchar(3),in urC varchar(2), in anio int)
-            BEGIN
-                set @upp := uppC;
-                set @ur := urC;
-            
+        DB::unprepared("CREATE PROCEDURE sp_epp(in delegacion int,in uppC varchar(3),in urC varchar(2), in anio int)
+        BEGIN
+            set @upp := \"\";
+	        set @ur := \"\";
+	        set @del := \"from v_epp e\";
+	        if(uppC is not null) then set @upp := CONCAT(\"and clv_upp = '\",uppC,\"'\"); end if;
+	        if(urC is not null) then set @upr := CONCAT(\"and clv_ur = '\",urC,\"'\"); end if;
+	        if(delegacion = 1) then set @del := \"from uppautorizadascpnomina u join v_epp e on u.clv_upp = e.clv_upp\"; end if;
+           
+            set @query := CONCAT(\"
                 select 
                     concat(
                     	e.clv_sector_publico,
@@ -2583,21 +2587,17 @@ return new class extends Migration {
                         e.proyecto
                     ) proyecto,
                     e.ejercicio
-                from v_epp e
-                where if(
-                    @upp is null,
-                    clv_upp != '',
-                    clv_upp = @upp
-                ) and if (anio is null,
-                    ejercicio != 1,
-                    ejercicio = anio
-                ) and if (
-                    @ur is null,
-                    clv_ur != '',
-                    clv_ur = @ur
-                );
-            END
-        ");
+                \",@del,\"
+                where ejercicio = \",anio,\"
+				and e.deleted_at is null
+				\",@upp,\"
+				\",@ur,\"
+			\");
+               
+			prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        END");
 
         DB::unprepared("CREATE PROCEDURE avance_etapas(in anio int, in upp varchar(3), in programa varchar(2), in lim_i int, in lim_s int)
         begin

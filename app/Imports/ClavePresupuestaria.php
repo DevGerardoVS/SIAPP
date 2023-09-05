@@ -26,8 +26,9 @@ use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Query\Builder;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
+use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Illuminate\Support\Facades\Log;
-class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,SkipsEmptyRows, WithBatchInserts,WithChunkReading
+class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,SkipsEmptyRows, WithBatchInserts,WithChunkReading,WithCalculatedFormulas
 {
 
     
@@ -35,8 +36,8 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
     use Importable,SkipsFailures;
     
     public function prepareForValidation($row,$index)
-    {
-
+    {  
+        try{
         ///validaciones de catalogo
         $valcat= Catalogo::select()
         ->where('grupo_id','6')
@@ -284,16 +285,28 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
 
 
         //validacion de año 
-        if($row['ano']!=='2'){
+        if(strlen($row['ano'])==2 && is_numeric($row['ano'])){
             $year = '20'.$row['ano'];
-            $row['ano']=$year;
+            $row['ejercicio']=$year;
         }
+        else{
+            if($row['ano']!=2){
+                $row['ejercicio']=2024;
+            }
+        
+        }
+        \Log::debug($row);
         $row['user']='CargaMasiva'.Auth::user()->username;
         //validacion si la upp tiene firmados claves presupuestales
         $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->where('ejercicio',$row['ano'])->value('estado');
         $valupp==1 ? $row['upp']='0' : $row['upp']; 
 
         return $row;
+        }
+        catch(\Throwable $th){
+            \Log::debug($th);
+        }
+
     }
 
     public function model(array $row)
@@ -332,7 +345,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
           'fondo_ramo' => $row['fondo'],
           'capital' => $row['ci'],
           'proyecto_obra' => $row['obra'],
-          'ejercicio' =>  $row['ano'], 
+          'ejercicio' =>  $row['ejercicio'], 
           'fondo_ramo'    => $row['fondo'],
           'enero'    => $row['enero'],
           'febrero'    => $row['febrero'],
@@ -362,13 +375,9 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         return [
             '*.tipo' => Rule::in(['RH', 'Operativo']),
              //cambiar validacion de autorizadas unicamente a operativo
-             '*.upp' => ['required','string',
-                Rule::notIn(['0'])                                       
-            ], 
-            '*.admconac' => ['required','string',
-            Rule::notIn(['0'])                                       
-        ],
-            '*.ano' =>  Rule::notIn(['2']),
+             '*.upp' => ['required','string',Rule::notIn(['0'])], 
+            '*.admconac' => ['required','string',Rule::notIn(['0'])],
+            '*.ano' => ['required',Rule::notIn(['2'])] ,
             '*.ef' =>  ['required','string'],
             '*.subsecretaria' =>  ['required','string'],
             '*.finalidad' =>  ['required','string'],
@@ -430,8 +439,10 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         '*.py' =>  'La clave de py introducida no es valida',
         '*.ur' => 'El campo ur no existe o la combinacion de ur upp y secretaria es invalida',
         '*.no_etiquetado_y_etiquetado' => 'La combinacion de las claves de la celda V a Z es invalida',
+        '*.ano' => 'El año no puede ir vacio',
           //Para palabras compuestas en rules usar '_' para que reconozca el tipo
         '*.ano.not_in' => 'El programa seleccionado no es presupuestable, verifica las columnas A, F a R y el año.',
+
         '*.idpartida' => 'La combinacion de id partida con tipo de gasto es invalida',
         '*.admconac.not_in' => 'La clasificacion economica introducida es invalida para esta clave administrativa',
 

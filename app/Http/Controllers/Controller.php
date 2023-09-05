@@ -39,25 +39,49 @@ class Controller extends BaseController
     	else
     		abort('401');
     }
-    public static function check_assign($name,$bt = true) {
-        $permiso = DB::table('permisos_funciones')
-            ->leftJoin('cat_permisos','cat_permisos.id','permisos_funciones.id_permiso')
-            ->select(
-                'id_user',
-                'permisos_funciones.id',
-                'cat_permisos.nombre as permiso')
-            ->where('id_user', Auth::user()->id)
-            ->where('permisos_funciones.deleted_at',null)
-            ->orWhere('cat_permisos.nombre', $name)->get();
-    	if($permiso) {
-          
-                $estructura = $permiso[0];
-                if(count($estructura) > 0){
-                    return true;
-
-                }else{
+    public static function check_permissionEdit($funcion,$upp) {
+        $bool = false;
+        if (Auth::user()->id_grupo == 1 ) {
+            return true;
+        }else{
+            if($upp ===  Auth::user()->clv_upp){
+                $bool = true;
+            }else{
+                abort('401');
+            }
+        }
+        if($bool){
+            $permiso = DB::select('SELECT p.id
+            FROM adm_rel_funciones_grupos p
+            INNER JOIN adm_funciones f ON f.id = p.id_funcion
+            WHERE f.funcion = ?
+            AND f.id_sistema = ?
+            AND p.id_grupo IN (SELECT u.id_grupo FROM adm_rel_user_grupo u WHERE u.id_usuario = ?);', [$funcion, Session::get('sistema'), Auth::user()->id]);
+                if ($permiso) {
+                    $estructura = DB::select('SELECT modulo, tipo FROM adm_funciones WHERE funcion=? AND id_sistema = ?', [$funcion, Session::get('sistema')]);
+                    if (count($estructura) > 0) {
+                        return true;
+                    } else {
+                        abort('401');
+                    }
+    
+                } else
                     abort('401');
-                }
+
+        }
+        
+    }
+    public static function check_assign($name) {
+            $permiso = DB::table('permisos_funciones')
+                ->select(
+                    'id_user',
+                    'id_permiso',
+                    )
+            ->where('id_user', auth::user()->id)
+            ->where('permisos_funciones.deleted_at',null)
+            ->where('id_permiso', $name)->get();
+    	if(count($permiso)) {
+                    return true;
         }
     	else
     		abort('401');

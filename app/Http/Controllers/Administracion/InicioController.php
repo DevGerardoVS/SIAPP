@@ -74,6 +74,23 @@ class InicioController extends Controller
         }
     }
 
+    public static function getLinks(){
+        try {
+
+            $data = DB::table('configuracion')
+            ->where("descripcion", "=", "enlaces")->first();
+
+            return response()->json([
+                "dataSet" => $data,
+                "catalogo" => "portada",
+            ]);
+
+        } catch(\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+        }
+    }
+
     
     public function getFondos(){
         $fondos = DB::table("pp_aplanado")
