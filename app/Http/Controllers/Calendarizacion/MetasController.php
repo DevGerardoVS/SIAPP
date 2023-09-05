@@ -650,6 +650,7 @@ class MetasController extends Controller
 	{
 		Controller::check_permission('putMetas');
 		Controller::check_assign('Carga masiva');
+		Controller::check_assignFront(1);
 		DB::beginTransaction();
 		try {
 			$flag = false;
