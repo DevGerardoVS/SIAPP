@@ -34,8 +34,8 @@
                 <h1 class="name">Sistema Integral de Análisis Programático Presupuestal</h1>
             </div>
             <nav class="menu">
-                <a href="http://10.8.7.95/" id="mir" class="menu-item"> <!--EPP--><i class="fa fa-pie-chart"></i> </a>
-                <a href="{{url('login')}}" id="cap" class="menu-item"> <!--More--><i class="fa fa-calendar"></i> </a> 
+                <a href="http://10.8.7.95/" id="mir" class="menu-item"> <!--MML--><i class="fa fa-pie-chart"></i> </a>
+                <a href="{{url('login')}}" id="cap" class="menu-item"> <!--SIAPP--><i class="fa fa-calendar"></i> </a> 
                 <a href="#" id="sapp" class="menu-item"> <!--SAPP--><i class="fa fa-bar-chart"></i></a>
                 <!--<a href="#" id="app" class="menu-item"><i class="fa fa-envelope"></i> </a>-->
             </nav>
