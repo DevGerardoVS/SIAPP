@@ -92,10 +92,6 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     Route::post('/logs/download', [App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
     include('administracion.php'); //Agregar las rutas para el módulo de administración en este archivo
     include('calendarizacion.php'); //Agregar las rutas para el módulo de Calendarizacion en este archivo
-    //Usuarios
+    include('epp.php'); //Agregar las rutas para el módulo de Epp en este archivo
 });
 
-//Vista epp
-Route::get('/epp', [App\Http\Controllers\EppController::class, 'index'])->name('epp');
-Route::post('/get-epp/{anio}/{upp}/{ur}', [App\Http\Controllers\EppController::class, 'getEpp'])->name('get-epp');
-Route::post('/get-ur', [App\Http\Controllers\EppController::class, 'getUR'])->name('get-ur');
