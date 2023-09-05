@@ -123,6 +123,7 @@ class MetasController extends Controller
 					->where('v_epp.ejercicio', '=', $check['anio'])
 					->where('v_epp.presupuestable', '=',1)
 					->orderBy('programacion_presupuesto.upp')
+					->where('programacion_presupuesto.deleted_at', null)
 					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 					->distinct()
 					->get();
@@ -274,7 +275,7 @@ class MetasController extends Controller
 		$dataSet = count($meses) >= 1 ? $meses[0] : [];
 		return $dataSet;
 	}
-	public function getSelects()
+	public static function getSelects()
 	{
 		$uMed = DB::table('unidades_medida')
 			->select(
@@ -647,21 +648,21 @@ class MetasController extends Controller
 		}
 	}
 	public function importPlantilla(Request $request)
-	{
+	{			
 		Controller::check_permission('putMetas');
-		Controller::check_assign('Carga masiva');
-		Controller::check_assignFront(1);
+		Controller::check_assign(1);
 		DB::beginTransaction();
 		try {
+
 			$flag = false;
 			if (Auth::user()->id_grupo == 4) {
 				$check = $this->checkClosing(Auth::user()->clv_upp);
 				$isMir = DB::table("mml_avance_etapas_pp")
-                            ->select('id', 'estatus')
-                            ->where('clv_upp', '=', Auth::user()->clv_upp)
-                            ->where('ejercicio', '=', $check['anio'])
-                            ->where('estatus', 3)->get();
-				if(count($isMir)==0){
+					->select('id', 'estatus')
+					->where('clv_upp', '=', Auth::user()->clv_upp)
+					->where('ejercicio', '=', $check['anio'])
+					->where('estatus', 3)->get();
+				if (count($isMir) == 0) {
 					$error = array(
 						"icon" => 'error',
 						"title" => 'MIR no confirmadas',
@@ -697,7 +698,7 @@ class MetasController extends Controller
 					}
 					return response()->json($resul);
 				}
-			}else{
+			} else {
 				$error = array(
 					"icon" => 'error',
 					"title" => 'Metas cerradas',
@@ -723,7 +724,7 @@ class MetasController extends Controller
 				'metas.estatus'
 			)
 			->where('mml_mir.deleted_at', null)
-			->where('mml_mir.deleted_at', null)
+			->where('metas.deleted_at', null)
 			->where('metas.estatus', 2)
 			->where('mml_mir.clv_upp', $upp)->get();
 		if ($check['status']) {
@@ -745,6 +746,7 @@ class MetasController extends Controller
 						->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
 						->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 						->distinct()
+						->where('programacion_presupuesto.deleted_at', null)
 						->where('estado', 1)
 						->groupByRaw('programa_presupuestario')->get();
 					if (count($activs)) {
