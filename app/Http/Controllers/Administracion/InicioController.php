@@ -99,7 +99,7 @@ class InicioController extends Controller
         })
         ->select("tf.clv_fondo", "tf.ejercicio", "f.fondo_ramo")
         ->where("ejercicio", "=", function($query){
-                $query->from("pp_aplanado")
+                $query->from("techos_financieros")
                 ->select("ejercicio")
             ->limit(1)
             ->orderBy("ejercicio","desc")

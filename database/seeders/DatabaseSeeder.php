@@ -145,13 +145,17 @@ class DatabaseSeeder extends Seeder
             ['id' => 13,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Administrativos', 'ruta' => '/Reportes/administrativos', 'icono' => 'fa fa-area-chart', 'nivel' => 2, 'posicion' => 2, 'descripcion' => 'Reportes'],
             ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administración de captura', 'ruta' => '/admon-capturas', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
             ['id' => 15,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Configuraciones', 'ruta' => '/adm-configuracion', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de configuraciones'],
+            ['id' => 16,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Epp', 'ruta' => '/epp', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Consulta de epp'],
+
         );
     protected $menuUpp = array(
         ['id_menu' => 7 ], 
         ['id_menu' => 8 ], 
         ['id_menu' => 9 ], 
         ['id_menu' => 11],
-        ['id_menu' => 13]
+        ['id_menu' => 13],
+        ['id_menu' => 16],
+
     );
     protected $menugob = array(
         ['id_menu' => 2 ], 
@@ -167,7 +171,8 @@ class DatabaseSeeder extends Seeder
         ['id_menu' => 12],
         ['id_menu' => 13],
         ['id_menu' => 14],
-        ['id_menu' => 15]
+        ['id_menu' => 15],
+        ['id_menu' => 16]
     );
     protected $menuAdmin = array(
         ['id_menu' => 3 ], 
@@ -179,7 +184,8 @@ class DatabaseSeeder extends Seeder
         ['id_menu' => 12],
         ['id_menu' => 13],
         ['id_menu' => 14],
-        ['id_menu' => 15]
+        ['id_menu' => 15],
+        ['id_menu' => 16]
     );
     protected $menuAuditor = array(
         ['id_menu' => 3 ], 
@@ -190,11 +196,13 @@ class DatabaseSeeder extends Seeder
         ['id_menu' => 11],
         ['id_menu' => 12],
         ['id_menu' => 13],
-        ['id_menu' => 14]
+        ['id_menu' => 14],
+        ['id_menu' => 16]
     );
     protected $menuDel =array(
         ['id_menu' => 7 ], 
-        ['id_menu' => 8 ]
+        ['id_menu' => 8 ],
+        ['id_menu' => 16]
     );
 
         protected $funciones = array(
@@ -252,6 +260,8 @@ class DatabaseSeeder extends Seeder
             ['id' => 43,  'id_sistema' => 1,'id_menu' => 15, 'modulo' => 'Configuraciones', 'funcion' => 'updateUppsAuto', 'tipo' => 'Actualizacion', 'descripcion' => 'Actualizar el estado de una upp autorizada a la BD'],
             ['id' => 44,  'id_sistema' => 1,'id_menu' => 8, 'modulo' => 'Claves presupuestarias', 'funcion' => 'postClavesManual', 'tipo' => 'Insercion Manual', 'descripcion' => 'Insercion claves presupuestarias Manual'],
 
+            ['id' => 45,  'id_sistema' => 1,'id_menu' => 16, 'modulo' => 'Epp', 'funcion' => 'viewGetEpp', 'tipo' => 'Vista', 'descripcion' => 'Vista de Epp'],
+            ['id' => 46,  'id_sistema' => 1,'id_menu' => 16, 'modulo' => 'Epp', 'funcion' => 'getEpp', 'tipo' => 'Consulta', 'descripcion' => 'Consulta de Epp'],
         );
 
         protected $relFunGroup=array(
@@ -353,11 +363,17 @@ class DatabaseSeeder extends Seeder
 
             ['id'=>79,'id_grupo'=>1,'id_funcion'=>44],
             ['id'=>80,'id_grupo'=>4,'id_funcion'=>44],
-
-
-
-            
-
+            /*  VISTA EPP TODOS LOS USUARIOS */
+            ['id'=>81,'id_grupo'=>1,'id_funcion'=>45],
+            ['id'=>82,'id_grupo'=>1,'id_funcion'=>46],
+            ['id'=>83,'id_grupo'=>2,'id_funcion'=>45],
+            ['id'=>84,'id_grupo'=>2,'id_funcion'=>46],
+            ['id'=>85,'id_grupo'=>3,'id_funcion'=>45],
+            ['id'=>86,'id_grupo'=>3,'id_funcion'=>46],
+            ['id'=>87,'id_grupo'=>4,'id_funcion'=>45],
+            ['id'=>88,'id_grupo'=>4,'id_funcion'=>46],
+            ['id'=>89,'id_grupo'=>5,'id_funcion'=>45],
+            ['id'=>90,'id_grupo'=>5,'id_funcion'=>46],
         );
     public function run()
     {
