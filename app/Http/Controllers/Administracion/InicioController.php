@@ -102,9 +102,10 @@ class InicioController extends Controller
                 $query->from("techos_financieros")
                 ->select("ejercicio")
             ->limit(1)
+            ->whereNull("deleted_at")
             ->orderBy("ejercicio","desc")
             ->groupBy("ejercicio");
-            })
+        })
         ->whereNull("tf.deleted_at")
         ->groupBy("tf.clv_fondo")
         ->get();
