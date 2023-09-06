@@ -99,12 +99,13 @@ class InicioController extends Controller
         })
         ->select("tf.clv_fondo", "tf.ejercicio", "f.fondo_ramo")
         ->where("ejercicio", "=", function($query){
-                $query->from("pp_aplanado")
+                $query->from("techos_financieros")
                 ->select("ejercicio")
             ->limit(1)
+            ->whereNull("deleted_at")
             ->orderBy("ejercicio","desc")
             ->groupBy("ejercicio");
-            })
+        })
         ->whereNull("tf.deleted_at")
         ->groupBy("tf.clv_fondo")
         ->get();
