@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class EppController extends Controller
 {
     public function index(){
+        Controller::check_permission('viewGetEpp');
         $perfil = Auth::user()->id_grupo;
         $dataSet = array();
         $listaUpp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->orderBy('clv_upp')->get();
@@ -31,6 +32,7 @@ class EppController extends Controller
     }
 
     public function getEpp(Request $request){
+        Controller::check_permission('getEpp');
         $perfil = Auth::user()->id_grupo;
         $upp = '000';
         $ur = '00';

@@ -280,7 +280,7 @@
                 par.html('');
                 par.append(new Option("Todos", ""));
                 $.each(data, function(i, val){
-                    par.append(new Option(data[i].clv_fondo_ramo +" "+ data[i].fondo_ramo, data[i].clv_fondo_ramo+" "+ data[i].fondo_ramo));
+                    par.append(new Option(data[i].clv_fondo +" "+ data[i].fondo_ramo, data[i].clv_fondo+" "+ data[i].fondo_ramo));
                 });
             }
         });
