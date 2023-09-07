@@ -230,12 +230,10 @@ class MetasController extends Controller
 				->where('mml_mir.entidad_ejecutora', str_replace("-", '', $entidad))
 				->groupByRaw('clave')->get();
 
-			$meses = MetasController::meses($area, $entidad, $check['anio']);
-
 		}
-		return ['fondos' => $fondos, "activids" => $activ, "mese" => $meses /* ,"mir"=>$mir */];
+		return ['fondos' => $fondos, "activids" => $activ];
 	}
-	public static function meses($area, $entidad, $anio)
+	public static function meses($area, $entidad, $anio,$fondo)
 	{
 
 		$areaAux = explode('-', $area);
@@ -268,6 +266,7 @@ class MetasController extends Controller
 			->where('programa_presupuestario', $areaAux[7])
 			->where('subprograma_presupuestario', $areaAux[8])
 			->where('proyecto_presupuestario', $areaAux[9])
+			->where('fondo_ramo',$fondo)
 			->where('ejercicio', $anio)
 /* 			->groupByRaw('enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,noviembre,diciembre')
  */			->get();
@@ -328,6 +327,7 @@ class MetasController extends Controller
 			->where('metas.mir_id', intval($request->sel_actividad))
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)->get();
+			$anio= DB::table('mml_mir')->select('ejercicio')->where('id',$request->sel_actividad)->get();
 		if (count($metaexist) == 0) {
 			$meta = Metas::create([
 				'mir_id' => intval($request->sel_actividad),
@@ -350,6 +350,7 @@ class MetasController extends Controller
 				'octubre' => $request[10] != NULL ? $request[10] : 0,
 				'noviembre' => $request[11] != NULL ? $request[11] : 0,
 				'diciembre' => $request[12] != NULL ? $request[12] : 0,
+				'ejercicio'=>$anio[0]->ejercicio,
 				'created_user' => $username
 			]);
 			if ($meta) {
@@ -471,7 +472,7 @@ class MetasController extends Controller
 		$data = [];
 		$areaAux = str_split($metas[0]->area_funcional);
 		$area = '' . strval($areaAux[0]) . '-' . strval($areaAux[1]) . '-' . strval($areaAux[2]) . '-' . strval($areaAux[3]) . '-' . strval($areaAux[4]) . strval($areaAux[5]) . '-' . strval($areaAux[6]) . '-' . strval($areaAux[7]) . '-' . strval($areaAux[8]) . strval($areaAux[9]) . "-" . strval($areaAux[10]) . strval($areaAux[11]) . strval($areaAux[12]) . "-" . strval($areaAux[13]) . strval($areaAux[14]) . strval($areaAux[15]) . '';
-		$meses = MetasController::meses($area, "" . $metas[0]->clv_upp . "-" . '0' . "-" . $metas[0]->clv_ur . "", $metas[0]->ejercicio);
+		$meses = MetasController::meses($area, "" . $metas[0]->clv_upp . "-" . '0' . "-" . $metas[0]->clv_ur . "", $metas[0]->ejercicio,$metas[0]->clv_fondo);
 
 		foreach ($metas as $key) {
 			$area = str_split($key->area_funcional);
@@ -986,11 +987,6 @@ class MetasController extends Controller
 
 		return $meses[$n];
 	}
-	public static function validateMonth()
-	{
-		//$meses=MetasController::meses($area,$entidad,$check['anio']);
-
-	}
 	public static function confirmar($upp, $anio)
 	{
 		
@@ -1161,6 +1157,28 @@ class MetasController extends Controller
 		} else {
 			return ["status" => false];
 		}
+	}
+	public static function getMeses($idAc,$idfondo)
+	{
+		$mir = DB::table('mml_mir')
+			->select(
+				'entidad_ejecutora',
+				'area_funcional',
+				'ejercicio'
+			)->where('id',$idAc)->get();
+			if(count($mir)){
+				$areaAux = str_split($mir[0]->area_funcional);
+				$e = str_split($mir[0]->entidad_ejecutora);
+				$area = '' . strval($areaAux[0]) . '-' . strval($areaAux[1]) . '-' . strval($areaAux[2]) . '-' . strval($areaAux[3]) . '-' . strval($areaAux[4]) . strval($areaAux[5]) . '-' . strval($areaAux[6]) . '-' . strval($areaAux[7]) . '-' . strval($areaAux[8]) . strval($areaAux[9]) . "-" . strval($areaAux[10]) . strval($areaAux[11]) . strval($areaAux[12]) . "-" . strval($areaAux[13]) . strval($areaAux[14]) . strval($areaAux[15]) . '';
+				$entidad = '' . strval($e[0]). strval($e[1]). strval($e[2]) . '-' . strval($e[3]).'-'. strval($e[4]). strval($e[5]).'';
+				$anio = $mir[0]->ejercicio;
+		
+				$meses = MetasController::meses($area, $entidad, $anio, $idfondo);
+				return ['mese'=>$meses];
+			}else{
+				return ['mese'=>[]];
+			}
+	
 	}
 
 }
