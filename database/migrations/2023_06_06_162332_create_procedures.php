@@ -3050,6 +3050,67 @@ return new class extends Migration {
             drop temporary table rel_faltantes;
             delete from epp_aux;
         END");
+
+        DB::unprepared("CREATE PROCEDURE avance_etapas_upp_programa(in anio int)
+        begin
+            select 
+                'upp' tipo,
+                count(verde) verde,
+                count(amarillo) amarillo,
+                count(rojo) rojo,
+                (count(verde)+count(amarillo)+count(rojo)) total
+            from (
+                select 
+                    case 
+                        when avance = 100 then 'Verde'
+                    end verde,
+                    case 
+                        when avance < 100 and avance >= 70 then 'Amarillo'
+                    end amarillo,
+                    case 
+                        when avance < 70 then 'Rojo'
+                    end rojo
+                from (
+                    select 
+                        clv_upp,
+                        round((sum(
+                            etapa_0+etapa_1+etapa_2+etapa_3+etapa_4+etapa_5
+                        )/(6*count(clv_pp)))*100) avance
+                    from mml_avance_etapas_pp ma
+                    where ma.deleted_at is null and ejercicio = anio
+                    group by clv_upp
+                )t
+            )t2
+            union all
+            select 
+                'programa' tipo,
+                count(verde) verde,
+                count(amarillo) amarillo,
+                count(rojo) rojo,
+                (count(verde)+count(amarillo)+count(rojo)) total
+            from (
+                select 
+                    case 
+                        when avance = 100 then 'Verde'
+                    end verde,
+                    case 
+                        when avance < 100 and avance >= 70 then 'Amarillo'
+                    end amarillo,
+                    case 
+                        when avance < 70 then 'Rojo'
+                    end rojo
+                from (
+                    select 
+                        clv_pp,
+                        round((sum(
+                            etapa_0+etapa_1+etapa_2+etapa_3+etapa_4+etapa_5
+                        )/(6*count(clv_pp)))*100) avance
+                    from mml_avance_etapas_pp ma
+                    where ma.deleted_at is null and ejercicio = anio
+                    group by clv_pp
+                )t
+            )t2;
+        END");
     }
 
     /**
@@ -3099,5 +3160,6 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS llenado_etapas;");
         DB::unprepared("DROP PROCEDURE IF EXISTS llenado_epp;");
         DB::unprepared("DROP PROCEDURE IF EXISTS crear_tabla_auxiliar;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS avance_etapas_upp_programa;");
     }
 };
