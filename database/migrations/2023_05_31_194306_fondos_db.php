@@ -507,6 +507,7 @@ return new class extends Migration
             $table->integer('diciembre')->default(null);
             $table->integer('total')->default(null);
             $table->integer('estatus')->nullable(false);
+            $table->integer('ejercicio')->nullable(false);
             $table->softDeletes();
             $table->string('created_user',45)->nullable(false);
             $table->string('updated_user',45)->nullable(true);
