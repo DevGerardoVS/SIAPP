@@ -993,10 +993,13 @@ class MetasController extends Controller
 	}
 	public static function confirmar($upp, $anio)
 	{
+		
 
 		try {
 			Controller::check_permission('putMetas');
-			DB::beginTransaction();
+			$s=MetasController::cmetas($upp, $anio);
+			if($s['status']){
+				DB::beginTransaction();
 			$user = Auth::user()->username;
 			$metas = DB::table('metas')
 				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
@@ -1036,6 +1039,10 @@ class MetasController extends Controller
 				return response()->json($res, 200);
 			} else {
 				$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
+				return response()->json($res, 200);
+			}
+		}else{
+				$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'No puedes confirmar las metas', "title" => "Metas incompletas"]];
 				return response()->json($res, 200);
 			}
 		} catch (\Throwable $th) {

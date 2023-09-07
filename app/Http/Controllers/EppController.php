@@ -92,6 +92,7 @@ class EppController extends Controller
     public function getUR(Request $request){
         $listaUR = DB::table('v_epp')
             ->where('clv_upp','=',$request->upp)
+            ->where('ejercicio','=',$request->anio)
             ->distinct()
             ->get(['clv_ur','ur']);
 

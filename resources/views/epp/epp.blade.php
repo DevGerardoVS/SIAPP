@@ -118,11 +118,12 @@
 
         function actualizarListaUR(clv_upp){
             let select = document.getElementById("filters_ur");
+            let ejercicio = document.getElementById("filters_anio");
             select.options.length = 1;
 
             $.ajax({
                 url: "{{ route('get-ur') }}",
-                data: {upp: clv_upp},
+                data: {upp: clv_upp, anio: ejercicio.value},
                 type:'POST',
                 dataType: 'json',
                 success: function(response) {
