@@ -1101,8 +1101,9 @@ class MetasController extends Controller
 			->where('upp', $upp)
 			->where('deleted_at', null)
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
+			->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+			->distinct()
 			->get();
-
 		if (count($metas) == count($pp) && count($metas) >= 1 && count($activs) >= 1 && count($metas) >= count($activsPP)) {
 			return ["status" => true];
 		} else {
