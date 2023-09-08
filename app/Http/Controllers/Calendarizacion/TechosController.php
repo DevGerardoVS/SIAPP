@@ -169,16 +169,18 @@ class TechosController extends Controller
         // y envia el array con las keys del input duplicado
         $repeticion = $data;
         $array_data = DB::table('techos_financieros')
-        ->select('clv_upp','clv_fondo','tipo','ejercicio')
+        ->select('clv_upp','clv_fondo','tipo','ejercicio','deleted_at')
         ->where('ejercicio','=',$ejercicio)
         ->get();
-        
+        log::debug($data);
+        log::debug($array_data);
+
         $c = 0;
         foreach($data as $d){
             foreach($array_data as $ad){
-                if($d[0] == $ad->tipo && $d[1] == $ad->clv_fondo && $upp == $ad->clv_upp){
+                if($d[0] == $ad->tipo && $d[1] == $ad->clv_fondo && $upp == $ad->clv_upp && $ad->deleted_at == null){
                     return [
-                        'status' => 'Ejercicio_Repetido',
+                        'status' =>'Ejercicio_Repetido',
                         'error' => "El registro ya existe en el ejercicio actual",
                         'etiqueta' => array_keys($aRepetidos[$c])
                     ];
