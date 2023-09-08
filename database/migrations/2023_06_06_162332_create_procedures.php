@@ -1460,36 +1460,43 @@ return new class extends Migration {
             end if;
                 
             set @query := CONCAT('
-                select 
-                    mm.clv_upp,
-                    substr(mm.entidad_ejecutora,5,2) clv_ur,
-                    substr(mm.area_funcional,9,2) clv_programa,
-                    substr(mm.area_funcional,11,3) clv_subprograma,
-                    substr(mm.area_funcional,14,3) clv_proyecto,
-                    m.clv_fondo,
-                    mm.indicador actividad,
-                    m.cantidad_beneficiarios,
-                    b.beneficiario,
-                    um.unidad_medida,
-                    m.tipo,
-                    case 
-                        when m.tipo = \"Acumulativa\" then 
-                            (m.enero+m.febrero+m.marzo+m.abril+m.mayo+m.junio+m.julio+
-                            m.agosto+m.septiembre+m.octubre+m.noviembre+m.diciembre)
-                        when m.tipo = \"Continua\" then m.enero
-                        when m.tipo = \"Especial\" then greatest
-                            (m.enero,m.febrero,m.marzo,m.abril,m.mayo,
-                            m.junio,m.julio,m.agosto,m.septiembre,
-                            m.octubre,m.noviembre,m.diciembre)
-                    end meta_anual,
-                    m.enero,m.febrero,m.marzo,m.abril,m.mayo,
-                    m.junio,m.julio,m.agosto,m.septiembre,
-                    m.octubre,m.noviembre,m.diciembre
-                from mml_mir mm 
-                join metas m on m.mir_id = mm.id
-                join unidades_medida um on m.unidad_medida_id = um.id 
-                join beneficiarios b on m.beneficiario_id = b.id
-                where mm.nivel = 11 ',@upp,' and mm.ejercicio = ',anio,' and ',@corte,';
+				select 
+					c.descripcion upp,
+					t.*
+				from (
+	                select 
+	                    mm.clv_upp,
+	                    substr(mm.entidad_ejecutora,5,2) clv_ur,
+	                    substr(mm.area_funcional,9,2) clv_programa,
+	                    substr(mm.area_funcional,11,3) clv_subprograma,
+	                    substr(mm.area_funcional,14,3) clv_proyecto,
+	                    m.clv_fondo,
+	                    mm.indicador actividad,
+	                    m.cantidad_beneficiarios,
+	                    b.beneficiario,
+	                    um.unidad_medida,
+	                    m.tipo,
+	                    case 
+	                        when m.tipo = \"Acumulativa\" then 
+	                            (m.enero+m.febrero+m.marzo+m.abril+m.mayo+m.junio+m.julio+
+	                            m.agosto+m.septiembre+m.octubre+m.noviembre+m.diciembre)
+	                        when m.tipo = \"Continua\" then m.enero
+	                        when m.tipo = \"Especial\" then greatest
+	                            (m.enero,m.febrero,m.marzo,m.abril,m.mayo,
+	                            m.junio,m.julio,m.agosto,m.septiembre,
+	                            m.octubre,m.noviembre,m.diciembre)
+	                    end meta_anual,
+	                    m.enero,m.febrero,m.marzo,m.abril,m.mayo,
+	                    m.junio,m.julio,m.agosto,m.septiembre,
+	                    m.octubre,m.noviembre,m.diciembre
+	                from mml_mir mm 
+	                join metas m on m.mir_id = mm.id
+	                join unidades_medida um on m.unidad_medida_id = um.id 
+	                join beneficiarios b on m.beneficiario_id = b.id
+	                where mm.nivel = 11 ',@upp,' and mm.ejercicio = ',anio,' and ',@corte,'
+				)t
+				left join catalogo c on clv_upp = c.clave and c.deleted_at is null and c.grupo_id = 6
+				order by clv_upp;
             ');
 
             prepare stmt  from @query;
