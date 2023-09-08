@@ -504,6 +504,42 @@ var dao = {
         $('#sel_fondo').empty();
         $('#sel_fondo').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
     },
+    DesConfirmarMetas: function () {
+        let anio = $('#anio_filter').val();
+        let upp = "";
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+            
+        } else {
+            upp = $('#upp').val();
+        }
+        Swal.fire({
+            icon: 'question',
+            title: '¿Estás de quieres desconfirmar las metas?',
+            showDenyButton: true,
+            confirmButtonText: 'Confirmar',
+            denyButtonText: `Cancelar`,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "GET",
+                    url: '/actividades/desconfirmar-metas/'+upp+"/"+anio,
+                    dataType: "JSON"
+                }).done(function (data) {
+                    const { mensaje } = data;
+                    Swal.fire({
+                        icon: mensaje.icon,
+                        title: mensaje.title,
+                        text: mensaje.text,
+                    });
+                });
+            } /* else if (result.isDenied) {
+              Swal.fire('Changes are not saved', '', 'info')
+            } */
+          })
+       
+    },
     arrEquals: function (numeros) {
         let duplicados = [];
         let bool = numeros.length;

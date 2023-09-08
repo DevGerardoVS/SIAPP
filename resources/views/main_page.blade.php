@@ -51,7 +51,7 @@
             </div>
 
             <div id="tres" class="cal">
-                <h1 id="_sapp" class="title">SIAPP - Sistema Integral de Análisis Programático Presupuestal</h1>
+                <h1 id="_sapp" class="title">SAPP - Sistema de Análisis Programático Presupuestal</h1>
 
             </div>
 

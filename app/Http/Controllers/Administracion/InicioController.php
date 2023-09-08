@@ -118,13 +118,20 @@ class InicioController extends Controller
         ini_set('memory_limit', '1024M');
         $data = DB::table('inicio_b')
         ->select(DB::raw('
+            ejercicio,
             clave,
             fondo,
             FORMAT(asignado,"Currency") as asignado,
             FORMAT(programado,"Currency") as programado,
             FORMAT(avance, 2) as avance '))
+            ->where("ejercicio", "=", function($query){
+                $query->from("inicio_b")
+                ->select("ejercicio")
+                ->limit(1)
+                ->orderBy("ejercicio","desc")
+                ->groupBy("ejercicio");})
         ->get();
-        view()->share('data', $data);
+        view()->share(['data'=>$data,"anio"=>$data[0]->ejercicio]);
         $pdf = PDF::loadView('inicioPdf')->setPaper('a4', 'landscape');
         $b = array(
             "username" => Auth::user()->username,

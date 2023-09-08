@@ -51,7 +51,7 @@
                                           
                                     </div>
                                     <div class="col-md-2 text-right">
-                                        @if (Auth::user()->clv_upp==NULL)
+                                        @if (Auth::user()->clv_upp==NULL && Auth::user()->id_grupo==1)
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga_adm" id="button_modal_carga_adm">
