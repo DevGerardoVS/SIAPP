@@ -10,7 +10,7 @@
 		Route::get('/actividades/exportExcel/{upp?}/{anio?}', 'exportExcel');
 		Route::get('/actividades/exportPdf/{upp?}/{anio?}',  'exportPdf');
 		Route::post('/actividades/import', 'importPlantilla');
-		Route::get('/actividades/jasper/{upp?}/{anio?}', 'downloadActividades')->name('exportjasper');
+		Route::get('/actividades/jasper/{upp?}/{anio?}/{tipo?}', 'downloadActividades')->name('exportjasper');
         Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
 		Route::get('/calendarizacion/selects', 'getSelects');
 		Route::get('/calendarizacion/tcalendario/{upp?}', 'getTcalendar');
@@ -24,7 +24,7 @@
 		Route::get('/calendarizacion/update/{id?}','updateMeta');
 		Route::get('/calendarizacion/check/{upp?}','checkCombination');
 		Route::post('/calendarizacion-metas-reporte', 'descargaReporteFirma');
-		Route::get('/actividades/jasper-metas/{upp?}/{anio?}', 'jasperMetas');
+		Route::get('/actividades/jasper-metas/{upp?}/{anio?}/{tipo?}', 'jasperMetas');
 		Route::get('/actividades/cierre-metas/{upp?}', 'checkGoals');
 		Route::get('/actividades/rev-confirmar-metas/{upp?}/{anio?}', 'cmetas');
 		Route::get('/agregar-actividades/confirmacion-metas-upp/{upp?}/{anio?}', 'cmetasadd');

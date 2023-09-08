@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\File;
 use Shuchkin\SimpleXLSX;
 use Illuminate\Support\Facades\Http;
 use Storage;
+use App\Models\calendarizacion\CierreMetas;
 
 
 
@@ -595,7 +596,7 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return $pdf->download('Proyecto con actividades.pdf');
 	}
-	public function downloadActividades($upp, $year)
+	public function downloadActividades($upp, $year, $tipo)
 	{
 		$request = array(
 			"anio" => $year,
@@ -603,6 +604,7 @@ class MetasController extends Controller
 			"logoLeft" => public_path() . '\img\logo.png',
 			"logoRight" => public_path() . '\img\escudoBN.png',
 			"UPP" => $upp,
+			"tipo" => $tipo
 		);
 		$b = array(
 			"username" => Auth::user()->username,
@@ -631,9 +633,16 @@ class MetasController extends Controller
 		$format = array('pdf');
 		$output_file = public_path() . "/reportes";
 
-		$parameters = $request;
+		Log::info('reuqest', [json_encode($request)]);
+		$parameters = [
+			"anio" => $request['anio'],
+			"logoLeft" => $request['logoLeft'],
+			"logoRight" => $request['logoRight'],
+			"UPP" => $request['UPP'],
+		];
 
 		$database_connection = \Config::get('database.connections.mysql');
+		$file =  public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
 
 
 		$jasper = new PHPJasper;
@@ -649,6 +658,11 @@ class MetasController extends Controller
 			'Content-Type' => 'application/pdf'
 		]);
 
+		if ($request['tipo'] == 0) {
+			return response()->download($file, $report.".pdf",[
+				'Content-Type' => 'application/pdf'
+			]);
+		}
 		if ($reportePDF != '') {
 			return response()->json('done', 200);
 		} else {
@@ -927,10 +941,11 @@ class MetasController extends Controller
 		}
 	}
 
-	public function jasperMetas($upp, $anio)
+	public function jasperMetas($upp, $anio, $tipo)
 	{
+		ob_end_clean();
+		ob_start();
 		date_default_timezone_set('America/Mexico_City');
-
 		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
 		$fecha = date('d-m-Y');
 		$date = $anio;
@@ -953,7 +968,7 @@ class MetasController extends Controller
 			"logoRight" => public_path() . '\img\escudoBN.png',
 			"upp" => $upp,
 		);
-
+		$file =  public_path() . "/reportes/proyecto_calendario_actividades.pdf";
 		$database_connection = \Config::get('database.connections.mysql');
 
 
@@ -969,11 +984,19 @@ class MetasController extends Controller
 		$reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
 			'Content-Type' => 'application/pdf'
 		]);
-		if ($reportePDF != '') {
-			return response()->json('done', 200);
-		} else {
-			return response()->json('error', 200);
+		
+		if ($tipo == 0 ) {
+			return response()->download($file, $report.".pdf",[
+				'Content-Type' => 'application/pdf'
+			]);
+		}else {
+			if ($reportePDF != '') {
+				return response()->json('done', 200);
+			} else {
+				return response()->json('error', 400);
+			}
 		}
+		
 	}
 	public static function keyMonth($n)
 	{
@@ -1001,9 +1024,10 @@ class MetasController extends Controller
 		try {
 			Controller::check_permission('putMetas');
 			$s=MetasController::cmetas($upp, $anio);
+			$fecha = Carbon::now()->toDateTimeString();
+			$user = Auth::user()->username;
 			if($s['status']){
 				DB::beginTransaction();
-			$user = Auth::user()->username;
 			$metas = DB::table('metas')
 				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
 				->select(
@@ -1021,7 +1045,7 @@ class MetasController extends Controller
 			$i = 0;
 			foreach ($metas as $key) {
 				$meta = Metas::where('id', $key->id)->firstOrFail();
-				$fecha = Carbon::now()->toDateTimeString();
+				
 				if ($meta) {
 					$meta->estatus = 1;
 					$meta->updated_user = $user;
@@ -1031,6 +1055,13 @@ class MetasController extends Controller
 				}
 			}
 			if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
+					$cierre = CierreMetas::where('deleted_at', null)->where('clv_upp', $upp)->where('estatus','Abierto')->firstOrFail();
+					if ($cierre) {
+						$cierre->estatus = 'Cerrado';
+						$cierre->updated_user = $user;
+						$cierre->updated_at = $fecha;
+						$cierre->save();
+					}
 				DB::commit();
 				$b = array(
 					"username" => $user,
@@ -1097,10 +1128,10 @@ class MetasController extends Controller
 				);
 				Controller::bitacora($b);
 				$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
-				return response()->json($res, 200);
+				return $res;
 			} else {
 				$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
-				return response()->json($res, 200);
+				return $res;
 			}
 		} catch (\Throwable $th) {
 			DB::rollBack();

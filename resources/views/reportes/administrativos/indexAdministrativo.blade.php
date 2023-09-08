@@ -102,11 +102,11 @@
                 <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 4) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->id_grupo == 4)aria-selected="true"@endif>Calendario Clave Presupuestaria</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Proyecto Calendario General de Actividades</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Calendario Actividades</button>
             </li>
             @if(Auth::user()->id_grupo != 4)
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Avance de Proyectos con Actividades por UPP</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Proyectos con Metas</button>
             </li>
             @endif
         </ul>
