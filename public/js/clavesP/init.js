@@ -43,7 +43,7 @@ var dao = {
         let id = _data['claves'][index].id;
         let estado = _data['claves'][index].estado;
         let ejercicioCheck = _data['claves'][index].ejercicio
-        data.push({'id':id,'rol':rol, 'filtroEjercicio':filtroEjercicio , 'ejercicioCheck':ejercicioCheck,'clasificacionAdmin':clasificacionAdmin, 'centroGestor':centroGestor,'areaFuncional':areaFuncional,'periodoPre': periodoPre, 'posicionPre':posicionPre,'fondo':fondo,'proyectoObra': proyectoObra,'row': row,'totalByClave': totalByClave, 'estado':estado, 'estatus':estatus});  
+        data.push({'id':id,'rol':rol, 'filtroEjercicio':filtroEjercicio ,'upp': upp,'ejercicioCheck':ejercicioCheck,'clasificacionAdmin':clasificacionAdmin, 'centroGestor':centroGestor,'areaFuncional':areaFuncional,'periodoPre': periodoPre, 'posicionPre':posicionPre,'fondo':fondo,'proyectoObra': proyectoObra,'row': row,'totalByClave': totalByClave, 'estado':estado, 'estatus':estatus});  
       }
       const ejercicioActual = _data['claves'].length > 0 ? _data['claves'][0].ejercicio : document.getElementById('filAnio').value;
       _table = $("#claves");
@@ -61,7 +61,7 @@ var dao = {
             if (o.estatus != 'Cerrado' && o.estatus != '') {
               if (o.estado == 0) {
                 return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
+              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+o.upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
               }else{
                 return '<p><i class="fa fa-check">&nbsp;Confirmado</i></p>';
               }
@@ -71,7 +71,7 @@ var dao = {
           }if (o.rol == 0) {
             if (o.filtroEjercicio == o.ejercicioCheck) {
               return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
+              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+o.upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
             }else{
               return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
             }
@@ -161,7 +161,14 @@ var dao = {
                 'warning'
               );
               break;
-          
+                
+              case 'invalid':
+              Swal.fire(
+                'Advertencia',
+                'No es posible realizar está acción, el ejercicio se encuentra cerrado.',
+                'warning'
+              );
+              break;
             default:
               Swal.fire(
                 'Error',
@@ -196,30 +203,24 @@ var dao = {
     let noviembre = document.getElementById('noviembre').value;
     let diciembre = document.getElementById('diciembre').value;
     let total = document.getElementById('totalCalendarizado').value;
-    let datos = [{'idClave':idClave,'enero':enero,'febrero':febrero,'marzo':marzo,'abril':abril,'mayo':mayo,'junio':junio,'julio':julio,'agosto':agosto,'septiembre':septiembre,'octubre':octubre,'noviembre':noviembre,'diciembre':diciembre,'total':total}];
+    let ejercicio = document.getElementById('ejercicio'). value;
+    let clvUpp = document.getElementById('clvUpp'). value;
+    let datos = [{'idClave':idClave,'enero':enero,'febrero':febrero,'marzo':marzo,'abril':abril,'mayo':mayo,'junio':junio,'julio':julio,'agosto':agosto,'septiembre':septiembre,'octubre':octubre,'noviembre':noviembre,'diciembre':diciembre,'total':total, 'ejercicio': ejercicio, 'clvUpp':clvUpp}];
     $.ajax({
       type: "POST",
       url: '/calendarizacion-editar-clave',
       data: {'data': datos}
     }).done(function (response) {
-      if (response != 'done') {
         Swal.fire(
-          'Error',
-          'A ocurrido un error por favor intentalo de nuevo...',
-          'error'
+          response.titulo,
+          response.mensaje,
+          response.icon
         );
-      }else{
-        Swal.fire(
-          'Exito',
-          'Registro Exitoso',
-          'success'
-        );
-        window.location.href = '/calendarizacion/claves';
-      }
+      if (response.icon == 'success') window.location.href = '/calendarizacion/claves';
     });
 
   },
-  eliminarClave : function (id) {
+  eliminarClave : function (id,upp,ejercicio) {
     Swal.fire({
       title: '¿Seguro que desea eliminar la clave?',
       text: "Está acción es irreversible",
@@ -234,7 +235,7 @@ var dao = {
         $.ajax({
           type: "POST",
           url: '/calendarizacion-eliminar-clave',
-          data: {'id':id}
+          data: {'id':id,'upp':upp, 'ejercicio':ejercicio}
         }).done(function (response) {
           if (response != 'done') {
             Swal.fire(
@@ -842,7 +843,7 @@ var dao = {
     }).done(function (data) {
       var par = $('#filtro_anio');
       par.html('');
-      par.append(new Option("-- Selecciona un Ejercicio --", ""));
+      // par.append(new Option("-- Selecciona un Ejercicio --", ""));
       $.each(data, function(i, val){
         if (id != '' && data[i].ejercicio  == id) {
          par.append(new Option(data[i].ejercicio , data[i].ejercicio,true,true));
@@ -902,7 +903,6 @@ var init = {
 function calucalarCalendario() {
   var total = 0;
   $(".monto").each(function() {
-
     if (isNaN(parseInt($(this).val()))) {
 
       total += 0;
@@ -916,7 +916,19 @@ function calucalarCalendario() {
   });
   document.getElementById('totalCalendarizado').value = total;
 }
-
+function soloEnteros() {
+  var total = 0;
+  $(".monto").each(function() {
+    if (isNaN(parseInt($(this).val()))) {
+      total += 0;
+    } else {
+      $(this).val(parseInt($(this).val()));
+    }
+    $("#" + $(this)[0].id).on('paste', function (e) {
+        e.preventDefault();
+    });
+  });
+}
 $(document).ready(function(){
   $("#segundaParte").hide();
   $('.select2').select2({
@@ -1174,6 +1186,6 @@ $(document).ready(function(){
     let ejercicio = document.getElementById('filtro_anio').value;
     window.location.href = '/calendarizacion-claves-create/'+ejercicio;
   });
-  
+  soloEnteros();
 
 });
