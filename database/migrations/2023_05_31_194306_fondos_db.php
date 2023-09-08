@@ -102,7 +102,7 @@ return new class extends Migration
             $table->tinyInteger('etapa')->unsigned()->nullable(false);
             $table->string('comentario',255)->nullable(true);
             $table->string('ruta',200)->nullable(true);
-            $table->string('nombre',70)->nullable(true);
+            $table->string('nombre',500)->nullable(true);
             $table->integer('ejercicio')->nullable(true);
             $table->string('created_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
@@ -234,6 +234,7 @@ return new class extends Migration
             $table->string('clv_upp',30)->nullable(false);
             $table->enum('estatus', ['Cerrado', 'Abierto'])->nullable(false);
             $table->integer('ejercicio')->nullable(false);
+            $table->string('capturista',150)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -451,6 +452,7 @@ return new class extends Migration
             $table->string('clv_upp',3)->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
             $table->integer('ejercicio')->nullable(false);
+            $table->string('capturista',150)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('created_user',45)->nullable(false);
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -475,6 +477,7 @@ return new class extends Migration
             $table->string('clv_upp',3)->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
             $table->integer('ejercicio')->nullable(false);
+            $table->string('capturista',150)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('created_user',45)->nullable(false);
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

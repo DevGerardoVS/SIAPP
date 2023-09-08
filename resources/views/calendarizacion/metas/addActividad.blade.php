@@ -8,6 +8,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            <label id="editMetas"  ></label>
             <div class="modal-body">
                 <form id="actividad">
                     <textarea name="id_meta" id="id_meta" style="display: none"></textarea>
