@@ -586,7 +586,10 @@ var dao = {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#validMetas').text("Las metas ya fueron confirmadas");
-                $(".cierreMetas").hide();
+                if ($('#upp').val() !='') {
+                    $(".cierreMetas").hide();
+                }
+                
                 
             } else {
                 $(".cmupp").hide();

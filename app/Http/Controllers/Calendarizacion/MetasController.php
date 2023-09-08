@@ -45,6 +45,7 @@ class MetasController extends Controller
 
 		Controller::check_permission('getMetas');
 		$query = MetasHelper::actividades($upp, $anio);
+		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$dataSet = [];
 		foreach ($query as $key) {
 			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
@@ -53,7 +54,11 @@ class MetasController extends Controller
 				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
 
 			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
-				$button = $accion;
+				if($anio==$anioMax){
+					$button = $accion;
+				}else{
+					$button = '';
+				}
 			} else {
 				if ($key->estatus == 0) {
 					$button = $accion;
@@ -321,18 +326,20 @@ class MetasController extends Controller
 			->select(
 				'mml_mir.entidad_ejecutora',
 				'mml_mir.area_funcional',
-				'mml_mir.clv_upp'
+				'mml_mir.clv_upp',
+
 			)
 			->where('metas.clv_fondo', $request->sel_fondo)
 			->where('metas.mir_id', intval($request->sel_actividad))
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)->get();
-			$anio= DB::table('mml_mir')->select('ejercicio')->where('id',$request->sel_actividad)->get();
+			$anio= DB::table('mml_mir')->select('ejercicio','clv_upp')->where('id',$request->sel_actividad)->get();
+			$confirm = MetasController::cmetasUpp($anio[0]->clv_upp, $anio[0]->ejercicio);
 		if (count($metaexist) == 0) {
 			$meta = Metas::create([
 				'mir_id' => intval($request->sel_actividad),
 				'clv_fondo' => $request->sel_fondo,
-				'estatus' => 0,
+				'estatus' => $confirm['status']?1:0,
 				'tipo' => $request->tipo_Ac,
 				'beneficiario_id' => $request->tipo_Be,
 				'unidad_medida_id' => intval($request->medida),
@@ -726,7 +733,7 @@ class MetasController extends Controller
 			)
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)
-			->where('metas.estatus', 2)
+			->where('metas.estatus', 1)
 			->where('mml_mir.clv_upp', $upp)->get();
 		if ($check['status']) {
 			if (count($metas) == 0 || Auth::user()->id_grupo == 1) {
@@ -1027,7 +1034,7 @@ class MetasController extends Controller
 				DB::commit();
 				$b = array(
 					"username" => $user,
-					"accion" => 'confirmacion de meta',
+					"accion" => 'confirmacion de metas',
 					"modulo" => 'Metas'
 				);
 				Controller::bitacora($b);
@@ -1039,6 +1046,60 @@ class MetasController extends Controller
 			}
 		}else{
 				$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'No puedes confirmar las metas', "title" => "Metas incompletas"]];
+				return response()->json($res, 200);
+			}
+		} catch (\Throwable $th) {
+			DB::rollBack();
+			throw $th;
+		}
+
+	}
+	public static function desconfirmar($upp, $anio)
+	{
+		
+
+		try {
+			Controller::check_permission('putMetas');
+
+				DB::beginTransaction();
+			$user = Auth::user()->username;
+			$metas = DB::table('metas')
+				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
+				->select(
+					'metas.id',
+					'mml_mir.entidad_ejecutora',
+					'mml_mir.area_funcional',
+					'mml_mir.clv_upp'
+				)
+				->where('mml_mir.clv_upp', $upp)
+				->where('mml_mir.ejercicio', $anio)
+				->where('mml_mir.deleted_at', null)
+				->where('metas.deleted_at', null)
+				->where('metas.estatus', 1)->get();
+			$i = 0;
+			foreach ($metas as $key) {
+				$meta = Metas::where('id', $key->id)->firstOrFail();
+				$fecha = Carbon::now()->toDateTimeString();
+				if ($meta) {
+					$meta->estatus = 0;
+					$meta->updated_user = $user;
+					$meta->updated_at = $fecha;
+					$meta->save();
+					$i++;
+				}
+			}
+			if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
+				DB::commit();
+				$b = array(
+					"username" => $user,
+					"accion" => 'desconfirmacion de metas',
+					"modulo" => 'Metas'
+				);
+				Controller::bitacora($b);
+				$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
+				return response()->json($res, 200);
+			} else {
+				$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
 				return response()->json($res, 200);
 			}
 		} catch (\Throwable $th) {

@@ -41,7 +41,9 @@
                                                 <div >
                                                     <button  type="button" class="btn btn-primary CargaMasiva" data-toggle="modal"
                                                         data-target="#carga" data-backdrop="static"
-                                                        data-keyboard="false">Carga-Masiva</button>
+                                                        data-keyboard="false">Carga-Masiva</button>&nbsp;
+{{--                                                         <button type="button" class="btn btn-outline-primary float-right desconfirmacion" onclick="dao.DesConfirmarMetas()"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Desconfirmar Metas</button>
+ --}}
                                                 </div>
                                             </div>
                                         @endif
