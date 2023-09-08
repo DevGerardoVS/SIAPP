@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\File;
 use Shuchkin\SimpleXLSX;
 use Illuminate\Support\Facades\Http;
 use Storage;
+use App\Models\calendarizacion\CierreMetas;
 
 
 
@@ -1023,9 +1024,10 @@ class MetasController extends Controller
 		try {
 			Controller::check_permission('putMetas');
 			$s=MetasController::cmetas($upp, $anio);
+			$fecha = Carbon::now()->toDateTimeString();
+			$user = Auth::user()->username;
 			if($s['status']){
 				DB::beginTransaction();
-			$user = Auth::user()->username;
 			$metas = DB::table('metas')
 				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
 				->select(
@@ -1043,7 +1045,7 @@ class MetasController extends Controller
 			$i = 0;
 			foreach ($metas as $key) {
 				$meta = Metas::where('id', $key->id)->firstOrFail();
-				$fecha = Carbon::now()->toDateTimeString();
+				
 				if ($meta) {
 					$meta->estatus = 1;
 					$meta->updated_user = $user;
@@ -1053,6 +1055,13 @@ class MetasController extends Controller
 				}
 			}
 			if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
+					$cierre = CierreMetas::where('deleted_at', null)->where('clv_upp', $upp)->where('estatus','Abierto')->firstOrFail();
+					if ($cierre) {
+						$cierre->estatus = 'Cerrado';
+						$cierre->updated_user = $user;
+						$cierre->updated_at = $fecha;
+						$cierre->save();
+					}
 				DB::commit();
 				$b = array(
 					"username" => $user,
@@ -1119,10 +1128,10 @@ class MetasController extends Controller
 				);
 				Controller::bitacora($b);
 				$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
-				return response()->json($res, 200);
+				return $res;
 			} else {
 				$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
-				return response()->json($res, 200);
+				return $res;
 			}
 		} catch (\Throwable $th) {
 			DB::rollBack();
