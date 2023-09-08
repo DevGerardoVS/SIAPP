@@ -21,11 +21,18 @@ class InicioExport implements FromCollection, ShouldAutoSize, WithHeadings, With
     {
         $data = DB::table('inicio_b')
             ->select(DB::raw('
+            ejercicio,
             clave,
             fondo,
             asignado,
             programado,
             FORMAT(avance, 2) as avance '))
+            ->where("ejercicio", "=", function($query){
+                $query->from("inicio_b")
+                ->select("ejercicio")
+                ->limit(1)
+                ->orderBy("ejercicio","desc")
+                ->groupBy("ejercicio");})
             ->get();
         return $data;
     }
@@ -36,10 +43,11 @@ class InicioExport implements FromCollection, ShouldAutoSize, WithHeadings, With
      */
     public function headings(): array
     {
-        $title = "                                                                   Presupuesto por fondo ".date('Y')."                                                        ";
+        $title = '                                                                         Presupuesto por fondo                                                                   ';
         return [
             [$title],           
-            ["Clave fondo",
+            ["Ejercicio",
+            "Clave fondo",
             "Fondo",
             "$ Asignado",
             "$ Programado",
@@ -64,11 +72,12 @@ class InicioExport implements FromCollection, ShouldAutoSize, WithHeadings, With
     public function columnWidths(): array
     {
         return [
-            'A' => 14,
-            'B' => 53,
-            'C' => 23,
+            'A' => 9,
+            'B' => 14,
+            'C' => 53,
             'D' => 23,
-            'E' => 12
+            'E' => 23,
+            'F' => 12
         ];
     }
  

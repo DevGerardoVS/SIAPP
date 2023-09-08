@@ -1,12 +1,8 @@
-<@php
-    $anio = date('Y');
-    $title = "Presupuesto por fondo ".$anio;
-@endphp
 <div class="container d-flex justify-content-center">
     <div class="row">
         <div class="d-flex justify-content-center">
             <header>
-                <h2 class="text-justify" style="text-align:center;"> {{$title}}
+                <h2 class="text-justify" style="text-align:center;"> Presupuesto por fondo del ejercicio {{$anio}}
                 </h2>
             </header>
         </div>
