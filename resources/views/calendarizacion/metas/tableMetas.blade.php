@@ -13,7 +13,7 @@
                 <div class="form-group col-md-6">
                     <label class="control-label ">Fondo &nbsp&nbsp&nbsp&nbsp</label>
                     <select class="form-control" placeholder="Selecciona una actividad" id="sel_fondo" data-live-search="true"
-                        name="sel_fondo" autocomplete="anio_filter" placeholder="Seleccione un año"  disabled>
+                        name="sel_fondo" autocomplete="sel_fondo"  disabled>
                         <option value="" >---Fondo---</option>
                     </select>
                 </div>
