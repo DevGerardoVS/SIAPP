@@ -107,7 +107,7 @@ class FunFormats
                                         "noviembre" => $k[27],
                                         "diciembre" => $k[28],
                                     ];
-                                    $m=FunFormats::validateMonth($entidad,json_encode($meses),$anio);
+                                    $m=FunFormats::validateMonth($entidad,json_encode($meses),$anio,$k[12]);
                                     if($m["status"]){
                                         $e=FunFormats::isExist($entidad, $k[12],$k[13]);
                                         if($e["status"]){
@@ -138,6 +138,7 @@ class FunFormats
                                                 'noviembre' => $k[27],
                                                 'diciembre' => $k[28],
                                                 'total' => FunFormats::typeTotal($k),
+                                                'ejercicio'=>$actividad->ejercicio,
                                                 'created_user' => auth::user()->username
                                             ];
                                             }else{
@@ -356,10 +357,10 @@ class FunFormats
  
 	}
 
-    public static function validateMonth($clave,$m,$anio){
+    public static function validateMonth($clave,$m,$anio,$fondo){
         $meses = json_decode($m);
         $areaAux=explode( '/', $clave);
-       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio);
+       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);
   
         $arrM = [];
         $arrMV = [];
@@ -575,6 +576,7 @@ class FunFormats
             'noviembre' => $key->noviembre,
             'diciembre' => $key->diciembre,
             'created_user' => $key->created_user,
+            'ejercicio'=>$key->ejercicio
         ]);
         Log::debug($meta);
 

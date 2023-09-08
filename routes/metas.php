@@ -30,7 +30,10 @@
 		Route::get('/agregar-actividades/confirmacion-metas-upp/{upp?}/{anio?}', 'cmetasadd');
 		Route::get('/actividades/rev-confirmar-metas-upp/{upp?}/{anio?}', 'cmetasUpp');
 		Route::get('/actividades/confirmar-metas/{upp?}/{anio?}', 'confirmar');
+		Route::get('/actividades/desconfirmar-metas/{upp?}/{anio?}', 'desconfirmar');
 		Route::get('/actividades/anios-metas/', 'getAnios');
+		Route::get('/actividades/meses-activos/{mir?}/{fondo?}', 'getMeses');
+
 	});
 ?>
 
