@@ -239,7 +239,7 @@ class TechosController extends Controller
         try{
             //se obtienen los datos del registro para buscarlo en las claves presupuestarias
             $data = DB::table('techos_financieros')
-            ->select('clv_upp','clv_fondo','tipo','ejercicio')
+            ->select('clv_upp','clv_fondo','tipo','ejercicio','deleted_at')
             ->where('id','=',$request->id)
             ->get();
             
@@ -250,7 +250,8 @@ class TechosController extends Controller
                 ->where('tipo','=',$data[0]->tipo)
                 ->where('ejercicio','=',$data[0]->ejercicio)
                 ->get();
-    
+                log::debug($data);
+                log::debug($existe);
                 //si existe en la tabla quiere decir que ya esta asignado y no se puede eliminar
                 if(count($existe) == 0 || $data[0]->deleted_at != null){
                     TechosFinancieros::where('id', $request->id)->delete();
