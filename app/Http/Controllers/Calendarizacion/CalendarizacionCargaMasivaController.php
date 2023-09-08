@@ -89,7 +89,7 @@ class CalendarizacionCargaMasivaController extends Controller
            if(count($equals)>0){
             return redirect()->back()->withErrors(['error' => 'No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados']);
            }
-             if(count($filearray)<=1){
+             if(count($filearray)<=0){
                 return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
             }
 
@@ -98,7 +98,6 @@ class CalendarizacionCargaMasivaController extends Controller
 
                 //buscar en el array de upps 
                 $var= array_search($k['5'], $arrayupps);
-                
                if($k['16']=='UUU'){
                 $countR++;
     
@@ -107,7 +106,13 @@ class CalendarizacionCargaMasivaController extends Controller
                 $countO++;
     
                }
-    
+                if(strlen($k['20'])!==2){
+                    return redirect()->back()->withErrors(['error' => 'El año debe ser a dos digitos']);
+                }
+
+                if($k['27']!=''){
+                    return redirect()->back()->withErrors(['error' => 'El total no puede ir vacio']);
+                }
                 //buscar en el array de totales 
                if(array_key_exists($k['5'].$k['16'].$k['24'], $arraypresupuesto) && $k['27']!=''){
     
@@ -120,14 +125,16 @@ class CalendarizacionCargaMasivaController extends Controller
 
                 }
                }
-    
+
+
                 //Se revisa el valor de var si es 0 significa que existe el key 0 en el array se usa el if para cambiar el valor para evitar que la condicion falle
-                if($var=== 0){
+                if($var== 0){
                 $var=true;
                 }
               $var ==false ? array_push($arrayupps,$k['5']) :  NULL ; 
-    
             }
+  
+
              //validacion de totales
              $helperejercicio=0;
              foreach($arraypresupuesto as $key=>$value){
@@ -172,7 +179,7 @@ class CalendarizacionCargaMasivaController extends Controller
                      foreach($arrayupps as $u){
                         $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                         if($valupp>0){
-                         $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
+                         $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                         }
                        }
                     }
@@ -187,7 +194,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     foreach($arrayupps as $key=>$u){
                         $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                         if($valupp>0){
-                         $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
+                         $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                         }
                        }
                        }
@@ -200,7 +207,7 @@ class CalendarizacionCargaMasivaController extends Controller
                      $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
            
                       if($valupp>0){
-                       $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
+                       $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                       }
                     }
                     break;
@@ -232,16 +239,22 @@ class CalendarizacionCargaMasivaController extends Controller
            $countR=0;
            $ObraCount=0;
            $DiferenteUpp=0;
-          if ( $xlsx = SimpleXLSX::parse(storage_path($filename)) ) {
+          if ( $xlsx = SimpleXLSX::parse($request->file) ) {
             $filearray =$xlsx->rows();
             if(count($filearray)<=1){
                 return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
             }
-            array_shift($filearray);
-
-            if($tipoAdm==NULL){
-                $ejercicio = array();
-
+            //tomamos los encabezados
+            $encabezados= array_shift($filearray);
+             //Los convertimos todos a lowecase
+            $encabezadosMin = array_map('strtolower', $encabezados);
+            //Verificamos si hay diferencia entre lo que debe ser y lo que mandaron
+           $equals =array_diff($encabezadosMin,$arrayCampos);
+           if(count($equals)>0){
+            return redirect()->back()->withErrors(['error' => 'No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados']);
+           }
+             if(count($filearray)<=1){
+                return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
             }
 
         
@@ -353,7 +366,7 @@ class CalendarizacionCargaMasivaController extends Controller
                      foreach($arrayupps as $u){
                         $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                          if($valupp>0){
-                          $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
+                          $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                          }
                        }
                         }
@@ -372,7 +385,7 @@ class CalendarizacionCargaMasivaController extends Controller
                            foreach($arrayupps as $u){
                            $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                            if($valupp>0){
-                            $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
+                            $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                             }
                            }
                         break;
@@ -390,7 +403,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     foreach($arrayupps as $key=>$u){
                      $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                      if($valupp>0){
-                      $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[$helperejercicio])->forceDelete();
+                      $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                    
                     }
                     }

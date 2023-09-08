@@ -562,6 +562,22 @@ class DatabaseSeeder extends Seeder
                     'id_permiso'=>2
                 ]);
             }
+
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+
+            
+            try {
+                echo "\n    -Carga permiso Carga Masiva Delegacion";
+                $user = User::where('deleted_at', null)->where('id_grupo', 5)->get();
+            foreach ($user as $m) {
+                PermisosUpp::create([
+                    'id_user'=>$m->id,
+                    'id_permiso'=>1
+                ]);
+            }
+            
             } catch (\Throwable $th) {
                 throw $th;
             }

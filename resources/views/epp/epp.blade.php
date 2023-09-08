@@ -8,8 +8,10 @@
 
     <!--Tabla de resultados-->
     <div class="container w-100 p-4">
-        <h5 style="text-align: left; font-weight: bold;">{{__("messages.cat_epp")}}</h5>
-        
+        <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
+            <h2>{{__("messages.cat_epp")}}</h2>
+        </header>
+        <br>
         @if($perfil == 1 || $perfil == 3 || $perfil == 5)
             <div class="col-md-10 col-sm-12 d-md-flex">
                 <!--Filtro UPP-->
@@ -118,11 +120,12 @@
 
         function actualizarListaUR(clv_upp){
             let select = document.getElementById("filters_ur");
+            let ejercicio = document.getElementById("filters_anio");
             select.options.length = 1;
 
             $.ajax({
                 url: "{{ route('get-ur') }}",
-                data: {upp: clv_upp},
+                data: {upp: clv_upp, anio: ejercicio.value},
                 type:'POST',
                 dataType: 'json',
                 success: function(response) {

@@ -17,7 +17,7 @@
                         <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <label class="control-label ">Nombre de Usuario</label>
-                            <select id="id_userP" name='id_userP'class="form-control">
+                            <select id="id_userP" name='id_userP'class="form-control" data-live-search="true">
                             </select>
                         </div>
                         <div class="form-group col-md-4">
