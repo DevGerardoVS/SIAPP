@@ -71,25 +71,17 @@ class Controller extends BaseController
         }
         
     }
-    public static function check_assign($name,$bt = true) {
-        $permiso = DB::table('permisos_funciones')
-            ->leftJoin('cat_permisos','cat_permisos.id','permisos_funciones.id_permiso')
-            ->select(
-                'id_user',
-                'permisos_funciones.id',
-                'cat_permisos.nombre as permiso')
-            ->where('id_user', Auth::user()->id)
+    public static function check_assign($name) {
+            $permiso = DB::table('permisos_funciones')
+                ->select(
+                    'id_user',
+                    'id_permiso',
+                    )
+            ->where('id_user', auth::user()->id)
             ->where('permisos_funciones.deleted_at',null)
-            ->orWhere('cat_permisos.nombre', $name)->get();
+            ->where('id_permiso', $name)->get();
     	if(count($permiso)) {
-          
-                $estructura = $permiso[0];
-                if(count($estructura) > 0){
                     return true;
-
-                }else{
-                    abort('401');
-                }
         }
     	else
     		abort('401');

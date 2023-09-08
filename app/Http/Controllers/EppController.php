@@ -9,11 +9,18 @@ use Illuminate\Support\Facades\Auth;
 class EppController extends Controller
 {
     public function index(){
-        $dataSet = array();
-        $listaUpp = DB::table('v_epp')->distinct()->get(['clv_upp','upp']);
-        $listaAnio = DB::table('v_epp')->distinct()->get(['ejercicio']);
+        Controller::check_permission('viewGetEpp');
         $perfil = Auth::user()->id_grupo;
-        //dd(Auth::user()->clv_upp);
+        $dataSet = array();
+        $listaUpp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->orderBy('clv_upp')->get();
+        if($perfil == 5){
+            $listaUpp = DB::table('uppautorizadascpnomina as u')
+                ->leftjoin('v_epp as ve', 'u.clv_upp', '=', 've.clv_upp')
+                ->select('u.clv_upp','ve.upp')->distinct()
+                ->where('ve.deleted_at')->orderBy('u.clv_upp')->get();
+        }
+        $listaAnio = DB::table('v_epp')->distinct()->where('deleted_at')->get(['ejercicio']);
+        $perfil = Auth::user()->id_grupo;
         return view('epp/epp', 
             [
                 'dataSet' => $dataSet,
@@ -25,6 +32,7 @@ class EppController extends Controller
     }
 
     public function getEpp(Request $request){
+        Controller::check_permission('getEpp');
         $perfil = Auth::user()->id_grupo;
         $upp = '000';
         $ur = '00';
@@ -47,11 +55,12 @@ class EppController extends Controller
         }
 
         //OBTENER AÑO
-        if($request->anio == '0000') $anio = date("Y");
+        if($request->anio == '0000') $anio = DB::table('v_epp')->select('ejercicio')->max('ejercicio');
         else $anio = "'$request->anio'";
 
         //OBTENER TABLA
-        $data = DB::select('call sp_epp('.$upp.','.$ur.','.$anio.')');
+        $data = DB::select('call sp_epp(0,'.$upp.','.$ur.','.$anio.')');
+        if($perfil == 5) $data = DB::select('call sp_epp(1,'.$upp.','.$ur.','.$anio.')');
         $dataSet = array();
         foreach($data as $d){
             $ds = array(
@@ -83,6 +92,7 @@ class EppController extends Controller
     public function getUR(Request $request){
         $listaUR = DB::table('v_epp')
             ->where('clv_upp','=',$request->upp)
+            ->where('ejercicio','=',$request->anio)
             ->distinct()
             ->get(['clv_ur','ur']);
 

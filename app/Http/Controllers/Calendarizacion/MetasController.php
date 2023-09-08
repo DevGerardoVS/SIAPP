@@ -45,6 +45,7 @@ class MetasController extends Controller
 
 		Controller::check_permission('getMetas');
 		$query = MetasHelper::actividades($upp, $anio);
+		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$dataSet = [];
 		foreach ($query as $key) {
 			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
@@ -53,7 +54,11 @@ class MetasController extends Controller
 				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
 
 			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
-				$button = $accion;
+				if($anio==$anioMax){
+					$button = $accion;
+				}else{
+					$button = '';
+				}
 			} else {
 				if ($key->estatus == 0) {
 					$button = $accion;
@@ -123,6 +128,7 @@ class MetasController extends Controller
 					->where('v_epp.ejercicio', '=', $check['anio'])
 					->where('v_epp.presupuestable', '=',1)
 					->orderBy('programacion_presupuesto.upp')
+					->where('programacion_presupuesto.deleted_at', null)
 					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 					->distinct()
 					->get();
@@ -229,12 +235,10 @@ class MetasController extends Controller
 				->where('mml_mir.entidad_ejecutora', str_replace("-", '', $entidad))
 				->groupByRaw('clave')->get();
 
-			$meses = MetasController::meses($area, $entidad, $check['anio']);
-
 		}
-		return ['fondos' => $fondos, "activids" => $activ, "mese" => $meses /* ,"mir"=>$mir */];
+		return ['fondos' => $fondos, "activids" => $activ];
 	}
-	public static function meses($area, $entidad, $anio)
+	public static function meses($area, $entidad, $anio,$fondo)
 	{
 
 		$areaAux = explode('-', $area);
@@ -267,6 +271,7 @@ class MetasController extends Controller
 			->where('programa_presupuestario', $areaAux[7])
 			->where('subprograma_presupuestario', $areaAux[8])
 			->where('proyecto_presupuestario', $areaAux[9])
+			->where('fondo_ramo',$fondo)
 			->where('ejercicio', $anio)
 /* 			->groupByRaw('enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,noviembre,diciembre')
  */			->get();
@@ -274,7 +279,7 @@ class MetasController extends Controller
 		$dataSet = count($meses) >= 1 ? $meses[0] : [];
 		return $dataSet;
 	}
-	public function getSelects()
+	public static function getSelects()
 	{
 		$uMed = DB::table('unidades_medida')
 			->select(
@@ -321,17 +326,20 @@ class MetasController extends Controller
 			->select(
 				'mml_mir.entidad_ejecutora',
 				'mml_mir.area_funcional',
-				'mml_mir.clv_upp'
+				'mml_mir.clv_upp',
+
 			)
 			->where('metas.clv_fondo', $request->sel_fondo)
 			->where('metas.mir_id', intval($request->sel_actividad))
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)->get();
+			$anio= DB::table('mml_mir')->select('ejercicio','clv_upp')->where('id',$request->sel_actividad)->get();
+			$confirm = MetasController::cmetasUpp($anio[0]->clv_upp, $anio[0]->ejercicio);
 		if (count($metaexist) == 0) {
 			$meta = Metas::create([
 				'mir_id' => intval($request->sel_actividad),
 				'clv_fondo' => $request->sel_fondo,
-				'estatus' => 0,
+				'estatus' => $confirm['status']?1:0,
 				'tipo' => $request->tipo_Ac,
 				'beneficiario_id' => $request->tipo_Be,
 				'unidad_medida_id' => intval($request->medida),
@@ -349,6 +357,7 @@ class MetasController extends Controller
 				'octubre' => $request[10] != NULL ? $request[10] : 0,
 				'noviembre' => $request[11] != NULL ? $request[11] : 0,
 				'diciembre' => $request[12] != NULL ? $request[12] : 0,
+				'ejercicio'=>$anio[0]->ejercicio,
 				'created_user' => $username
 			]);
 			if ($meta) {
@@ -470,7 +479,7 @@ class MetasController extends Controller
 		$data = [];
 		$areaAux = str_split($metas[0]->area_funcional);
 		$area = '' . strval($areaAux[0]) . '-' . strval($areaAux[1]) . '-' . strval($areaAux[2]) . '-' . strval($areaAux[3]) . '-' . strval($areaAux[4]) . strval($areaAux[5]) . '-' . strval($areaAux[6]) . '-' . strval($areaAux[7]) . '-' . strval($areaAux[8]) . strval($areaAux[9]) . "-" . strval($areaAux[10]) . strval($areaAux[11]) . strval($areaAux[12]) . "-" . strval($areaAux[13]) . strval($areaAux[14]) . strval($areaAux[15]) . '';
-		$meses = MetasController::meses($area, "" . $metas[0]->clv_upp . "-" . '0' . "-" . $metas[0]->clv_ur . "", $metas[0]->ejercicio);
+		$meses = MetasController::meses($area, "" . $metas[0]->clv_upp . "-" . '0' . "-" . $metas[0]->clv_ur . "", $metas[0]->ejercicio,$metas[0]->clv_fondo);
 
 		foreach ($metas as $key) {
 			$area = str_split($key->area_funcional);
@@ -647,21 +656,21 @@ class MetasController extends Controller
 		}
 	}
 	public function importPlantilla(Request $request)
-	{
+	{			
 		Controller::check_permission('putMetas');
-		Controller::check_assign('Carga masiva');
-		Controller::check_assignFront(1);
+		Controller::check_assign(1);
 		DB::beginTransaction();
 		try {
+
 			$flag = false;
 			if (Auth::user()->id_grupo == 4) {
 				$check = $this->checkClosing(Auth::user()->clv_upp);
 				$isMir = DB::table("mml_avance_etapas_pp")
-                            ->select('id', 'estatus')
-                            ->where('clv_upp', '=', Auth::user()->clv_upp)
-                            ->where('ejercicio', '=', $check['anio'])
-                            ->where('estatus', 3)->get();
-				if(count($isMir)==0){
+					->select('id', 'estatus')
+					->where('clv_upp', '=', Auth::user()->clv_upp)
+					->where('ejercicio', '=', $check['anio'])
+					->where('estatus', 3)->get();
+				if (count($isMir) == 0) {
 					$error = array(
 						"icon" => 'error',
 						"title" => 'MIR no confirmadas',
@@ -697,7 +706,7 @@ class MetasController extends Controller
 					}
 					return response()->json($resul);
 				}
-			}else{
+			} else {
 				$error = array(
 					"icon" => 'error',
 					"title" => 'Metas cerradas',
@@ -723,8 +732,8 @@ class MetasController extends Controller
 				'metas.estatus'
 			)
 			->where('mml_mir.deleted_at', null)
-			->where('mml_mir.deleted_at', null)
-			->where('metas.estatus', 2)
+			->where('metas.deleted_at', null)
+			->where('metas.estatus', 1)
 			->where('mml_mir.clv_upp', $upp)->get();
 		if ($check['status']) {
 			if (count($metas) == 0 || Auth::user()->id_grupo == 1) {
@@ -745,6 +754,7 @@ class MetasController extends Controller
 						->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
 						->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 						->distinct()
+						->where('programacion_presupuesto.deleted_at', null)
 						->where('estado', 1)
 						->groupByRaw('programa_presupuestario')->get();
 					if (count($activs)) {
@@ -984,17 +994,15 @@ class MetasController extends Controller
 
 		return $meses[$n];
 	}
-	public static function validateMonth()
-	{
-		//$meses=MetasController::meses($area,$entidad,$check['anio']);
-
-	}
 	public static function confirmar($upp, $anio)
 	{
+		
 
 		try {
 			Controller::check_permission('putMetas');
-			DB::beginTransaction();
+			$s=MetasController::cmetas($upp, $anio);
+			if($s['status']){
+				DB::beginTransaction();
 			$user = Auth::user()->username;
 			$metas = DB::table('metas')
 				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
@@ -1026,7 +1034,65 @@ class MetasController extends Controller
 				DB::commit();
 				$b = array(
 					"username" => $user,
-					"accion" => 'confirmacion de meta',
+					"accion" => 'confirmacion de metas',
+					"modulo" => 'Metas'
+				);
+				Controller::bitacora($b);
+				$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
+				return response()->json($res, 200);
+			} else {
+				$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
+				return response()->json($res, 200);
+			}
+		}else{
+				$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'No puedes confirmar las metas', "title" => "Metas incompletas"]];
+				return response()->json($res, 200);
+			}
+		} catch (\Throwable $th) {
+			DB::rollBack();
+			throw $th;
+		}
+
+	}
+	public static function desconfirmar($upp, $anio)
+	{
+		
+
+		try {
+			Controller::check_permission('putMetas');
+
+				DB::beginTransaction();
+			$user = Auth::user()->username;
+			$metas = DB::table('metas')
+				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
+				->select(
+					'metas.id',
+					'mml_mir.entidad_ejecutora',
+					'mml_mir.area_funcional',
+					'mml_mir.clv_upp'
+				)
+				->where('mml_mir.clv_upp', $upp)
+				->where('mml_mir.ejercicio', $anio)
+				->where('mml_mir.deleted_at', null)
+				->where('metas.deleted_at', null)
+				->where('metas.estatus', 1)->get();
+			$i = 0;
+			foreach ($metas as $key) {
+				$meta = Metas::where('id', $key->id)->firstOrFail();
+				$fecha = Carbon::now()->toDateTimeString();
+				if ($meta) {
+					$meta->estatus = 0;
+					$meta->updated_user = $user;
+					$meta->updated_at = $fecha;
+					$meta->save();
+					$i++;
+				}
+			}
+			if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
+				DB::commit();
+				$b = array(
+					"username" => $user,
+					"accion" => 'desconfirmacion de metas',
 					"modulo" => 'Metas'
 				);
 				Controller::bitacora($b);
@@ -1096,8 +1162,9 @@ class MetasController extends Controller
 			->where('upp', $upp)
 			->where('deleted_at', null)
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
+			->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+			->distinct()
 			->get();
-
 		if (count($metas) == count($pp) && count($metas) >= 1 && count($activs) >= 1 && count($metas) >= count($activsPP)) {
 			return ["status" => true];
 		} else {
@@ -1152,6 +1219,28 @@ class MetasController extends Controller
 		} else {
 			return ["status" => false];
 		}
+	}
+	public static function getMeses($idAc,$idfondo)
+	{
+		$mir = DB::table('mml_mir')
+			->select(
+				'entidad_ejecutora',
+				'area_funcional',
+				'ejercicio'
+			)->where('id',$idAc)->get();
+			if(count($mir)){
+				$areaAux = str_split($mir[0]->area_funcional);
+				$e = str_split($mir[0]->entidad_ejecutora);
+				$area = '' . strval($areaAux[0]) . '-' . strval($areaAux[1]) . '-' . strval($areaAux[2]) . '-' . strval($areaAux[3]) . '-' . strval($areaAux[4]) . strval($areaAux[5]) . '-' . strval($areaAux[6]) . '-' . strval($areaAux[7]) . '-' . strval($areaAux[8]) . strval($areaAux[9]) . "-" . strval($areaAux[10]) . strval($areaAux[11]) . strval($areaAux[12]) . "-" . strval($areaAux[13]) . strval($areaAux[14]) . strval($areaAux[15]) . '';
+				$entidad = '' . strval($e[0]). strval($e[1]). strval($e[2]) . '-' . strval($e[3]).'-'. strval($e[4]). strval($e[5]).'';
+				$anio = $mir[0]->ejercicio;
+		
+				$meses = MetasController::meses($area, $entidad, $anio, $idfondo);
+				return ['mese'=>$meses];
+			}else{
+				return ['mese'=>[]];
+			}
+	
 	}
 
 }

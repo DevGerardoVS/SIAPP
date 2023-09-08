@@ -37,7 +37,6 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
     
     public function prepareForValidation($row,$index)
     {  
-        try{
         ///validaciones de catalogo
         $valcat= Catalogo::select()
         ->where('grupo_id','6')
@@ -295,17 +294,13 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
             }
         
         }
-        \Log::debug($row);
         $row['user']='CargaMasiva'.Auth::user()->username;
         //validacion si la upp tiene firmados claves presupuestales
         $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->where('ejercicio',$row['ano'])->value('estado');
         $valupp==1 ? $row['upp']='0' : $row['upp']; 
 
         return $row;
-        }
-        catch(\Throwable $th){
-            \Log::debug($th);
-        }
+
 
     }
 

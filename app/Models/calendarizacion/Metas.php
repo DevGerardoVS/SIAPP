@@ -33,6 +33,7 @@ class Metas extends Model
         'diciembre',
         'total',
         'estatus',
+        'ejercicio',
         'created_user',
         'updated_user'
     ];

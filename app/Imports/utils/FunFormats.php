@@ -107,12 +107,15 @@ class FunFormats
                                         "noviembre" => $k[27],
                                         "diciembre" => $k[28],
                                     ];
-                                    $m=FunFormats::validateMonth($entidad,json_encode($meses),$anio);
+                                    $m=FunFormats::validateMonth($entidad,json_encode($meses),$anio,$k[12]);
                                     if($m["status"]){
                                         $e=FunFormats::isExist($entidad, $k[12],$k[13]);
                                         if($e["status"]){
                                         $unique= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[13]).'';
-
+                                        $medidas=DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id',$k[32])->get();
+                                        if(count($medidas)){
+                                            $bene=DB::table('beneficiarios')->select('id','clave')->where('deleted_at', null)->where('clave',$k[29])->get();
+                                            if(count($bene)){
                                         DB::table('metas_temp')->insert(['clave' => $unique,'fila'=>$index,'upp'=>strval($k[7])]);
                                             $aux[] = [
                                                 'meta_id'=>$e["id"],
@@ -135,8 +138,28 @@ class FunFormats
                                                 'noviembre' => $k[27],
                                                 'diciembre' => $k[28],
                                                 'total' => FunFormats::typeTotal($k),
+                                                'ejercicio'=>$actividad->ejercicio,
                                                 'created_user' => auth::user()->username
                                             ];
+                                            }else{
+                                                $error = array(
+                                                    "icon" => 'error',
+                                                    "title" => 'Error',
+                                                    "text" => 'La clave de beneficiario no existe en la fila '. $index
+                                                );
+                                                return $error;
+        
+                                            }
+                                            }else{
+                                                $error = array(
+                                                    "icon" => 'error',
+                                                    "title" => 'Error',
+                                                    "text" => 'La unidad de medida no existe en la fila '. $index
+                                                );
+                                                return $error;
+        
+                                            }
+
                                     }else{
                                         $error = array(
                                             "icon" => 'error',
@@ -334,10 +357,10 @@ class FunFormats
  
 	}
 
-    public static function validateMonth($clave,$m,$anio){
+    public static function validateMonth($clave,$m,$anio,$fondo){
         $meses = json_decode($m);
         $areaAux=explode( '/', $clave);
-       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio);
+       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);
   
         $arrM = [];
         $arrMV = [];
@@ -553,6 +576,7 @@ class FunFormats
             'noviembre' => $key->noviembre,
             'diciembre' => $key->diciembre,
             'created_user' => $key->created_user,
+            'ejercicio'=>$key->ejercicio
         ]);
         Log::debug($meta);
 
@@ -586,6 +610,14 @@ class FunFormats
             Log::debug($meta);
 
         }
+    }
+    public static function checkUnid($arr,$id_uni){
+        
+
+    }
+    public static function checkBenef($arr,$id_benf){
+
+
     }
 
 }
