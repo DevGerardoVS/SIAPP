@@ -1146,7 +1146,8 @@ class MetasController extends Controller
 			->select(
 				'mml_mir.entidad_ejecutora',
 				'mml_mir.area_funcional',
-				'mml_mir.clv_upp'
+				'mml_mir.clv_upp',
+				'metas.clv_fondo'
 			)
 			->where('mml_mir.clv_upp', $upp)
 			->where('mml_mir.ejercicio', $anio)
@@ -1176,6 +1177,7 @@ class MetasController extends Controller
 				->where('programa_presupuestario', '' . strval($area[8]) . strval($area[9]) . '', )
 				->where('subprograma_presupuestario', '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '')
 				->where('proyecto_presupuestario', '' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '')
+				->where('programacion_presupuesto.fondo_ramo', '=', $key->clv_fondo)
 				->where('programacion_presupuesto.ejercicio', '=', $anio)
 				->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 				->distinct()

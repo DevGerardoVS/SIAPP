@@ -68,8 +68,8 @@
                                                 <th class="vertical colorMorado sorting">Proyecto</th>
                                                 <th class="vertical" style="background-color:#afafaf;">Selección </th>
                                             </tr>
-                                           
                                         </thead>
+                                        <tbody id="bodyclaves"></tbody>
                                     </table>
                                 </div>
                             </div>
