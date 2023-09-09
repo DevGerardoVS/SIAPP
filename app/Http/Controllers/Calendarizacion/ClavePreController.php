@@ -9,6 +9,8 @@ use Auth;
 use DateTime;
 use DataTables;
 use App\Models\ProgramacionPresupuesto;
+use App\Models\cierreEjercicio;
+use App\Helpers\Calendarizacion\ClavesHelper;
 
 use Illuminate\Validation\ValidationException;
 
@@ -16,9 +18,16 @@ class ClavePreController extends Controller
 {
     public function getPanel(){
         Controller::check_permission('getClaves');
-        $uppUsuario = Auth::user()->clv_upp;
-        $ejer = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE('cierre_ejercicio_claves.estatus','=','Abierto')->first();
-        $ejercicio = $ejer && $ejer != null ? $ejer->ejercicio : '';
+        $array_where = [];
+        $uppUsuario = Auth::user()->clv_upp ? Auth::user()->clv_upp : '';
+        if ($uppUsuario != '') {
+            array_push($array_where, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
+        }
+            array_push($array_where, ['cierre_ejercicio_claves.estatus', '=', 'Abierto']);
+
+        $ejer = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE($array_where)->first();
+        $ultimoEjercicio = DB::table('cierre_ejercicio_claves')->max('ejercicio');
+        $ejercicio = $ejer && $ejer != null ? $ejer->ejercicio : $ultimoEjercicio;
         return view('calendarizacion.clavePresupuestaria.index',compact(['uppUsuario','ejercicio']));
     }
     public function getPanelUpdate($id){
@@ -146,38 +155,13 @@ class ClavePreController extends Controller
         Controller::check_permission('postClavesManual');
 
         try {
-            $clave = ProgramacionPresupuesto::where([
-                'clasificacion_administrativa' => $request->data[0]['clasificacionAdministrativa'],
-                'entidad_federativa' => $request->data[0]['entidadFederativa'],
-                'region' => $request->data[0]['region'],
-                'municipio' => $request->data[0]['municipio'],
-                'localidad' => $request->data[0]['localidad'],
-                'upp' => $request->data[0]['upp'],
-                'subsecretaria' => $request->data[0]['subsecretaria'],
-                'ur' => $request->data[0]['ur'],
-                'finalidad' => $request->data[0]['finalidad'],
-                'funcion' => $request->data[0]['funcion'],
-                'subfuncion' => $request->data[0]['subfuncion'],
-                'eje' => $request->data[0]['eje'],
-                'linea_accion' => $request->data[0]['lineaAccion'],
-                'programa_sectorial' => $request->data[0]['programaSectorial'],
-                'tipologia_conac' => $request->data[0]['conac'],
-                'programa_presupuestario' => $request->data[0]['programaPre'],
-                'subprograma_presupuestario' => $request->data[0]['subPrograma'],
-                'proyecto_presupuestario' => $request->data[0]['proyectoPre'],
-                'periodo_presupuestal' => $request->data[0]['mesAfectacion'],
-                'posicion_presupuestaria' => $request->data[0]['capitulo'] . $request->data[0]['concepto'] . $request->data[0]['partidaGen'] . $request->data[0]['partidaEpecifica'],
-                'tipo_gasto' => $request->data[0]['tipoGasto'],
-                'anio' => $request->data[0]['anioFondo'],
-                'etiquetado' => $request->data[0]['etiquetado'],
-                'fuente_financiamiento' => $request->data[0]['fuenteFinanciamiento'],
-                'ramo' => $request->data[0]['ramo'],
-                'fondo_ramo' => $request->data[0]['fondoRamo'],
-                'capital' => $request->data[0]['capital'],
-                'proyecto_obra' => $request->data[0]['proyectoObra'],
-                'ejercicio' =>  $request->ejercicio,
-         ])->get();
-         if (count($clave)> 0) {
+            $perfil = Auth::user()->id_grupo;
+            $esEjercicioCerrado = ClavesHelper::validaEjercicio( $request->ejercicio,$request->data[0]['upp']);
+            if ($esEjercicioCerrado && $perfil != 1) {
+                return response()->json('invalid',200);
+            }
+            $claveExist = ClavesHelper::claveExist($request);
+         if ($claveExist) {
             return response()->json('duplicado',200);
             throw ValidationException::withMessages(['duplicado'=>'Esta clave ya existe']);
            
@@ -207,6 +191,8 @@ class ClavePreController extends Controller
                 }
             }
             if ( $request->data[0]['total'] <= $disponible ) {
+                $hasMetas = ClavesHelper::tieneMetas($request,1);
+
                 $nuevaClave = ProgramacionPresupuesto::create([
                     'clasificacion_administrativa' => $request->data[0]['clasificacionAdministrativa'],
                     'entidad_federativa' => $request->data[0]['entidadFederativa'],
@@ -278,6 +264,17 @@ class ClavePreController extends Controller
     public function postEditarClave(Request $request){
         Controller::check_permission('putClaves');
         try {
+            $response = [];
+            $perfil = Auth::user()->id_grupo;
+            $esEjercicioCerrado = ClavesHelper::validaEjercicio($request->data[0]['ejercicio'],$request->data[0]['clvUpp']);
+            if ($esEjercicioCerrado && $perfil != 1) {
+                $response = [
+                    'titulo'=> '¡Advertencia!',
+                    'mensaje'=> 'No es posible realizar esta accion, el ejercicio no se encuentra abierto.',
+                    'icon'=> 'warning'
+                ];
+                return response()->json($response,200);
+            }
             ProgramacionPresupuesto::where('id', $request->data[0]['idClave'])->update([
                 'enero' => $request->data[0]['enero'] ? $request->data[0]['enero'] : 0,
                 'febrero' => $request->data[0]['febrero'] ? $request->data[0]['febrero'] : 0,  
@@ -293,6 +290,7 @@ class ClavePreController extends Controller
                 'diciembre' => $request->data[0]['diciembre'] ? $request->data[0]['diciembre'] : 0,  
                 'total' => $request->data[0]['total'],
             ]);
+            $hasMetas = ClavesHelper::tieneMetas($request,2);
             $b = array(
                 "username"=>Auth::user()->username,
                 "accion"=>'Editar',
@@ -305,12 +303,22 @@ class ClavePreController extends Controller
             throw new \Exception($exp->getMessage());
 			return response()->json('error',200);
         }
-        return response()->json('done',200);
+        $response = [
+            'titulo'=> 'Éxito',
+            'mensaje'=> 'El registro se logro con éxito.',
+            'icon'=> 'success'
+        ];
+        return response()->json($response,200);
 
         
     }
     public function postEliminarClave(Request $request){
         Controller::check_permission('deleteClaves');
+        $perfil = Auth::user()->id_grupo;
+            $esEjercicioCerrado = ClavesHelper::validaEjercicio( $request->ejercicio,$request->upp);
+            if ($esEjercicioCerrado && $perfil != 1) {
+                return response()->json('invalid',200);
+            }
         ProgramacionPresupuesto::where('id',$request->id)->delete();
         $b = array(
             "username"=>Auth::user()->username,
@@ -371,6 +379,7 @@ class ClavePreController extends Controller
         ->WHERE('v_epp.clv_upp', '=', $id)
         ->WHERE('v_epp.ejercicio', '=', $ejercicio)
         ->WHERE('v_epp.deleted_at', '=' , null)
+        ->WHERE('v_epp.presupuestable', 1)
         ->orderBy('v_epp.clv_ur')
         ->DISTINCT()
         ->get();
@@ -383,6 +392,7 @@ class ClavePreController extends Controller
         ->WHERE('clv_ur','=',$ur)
         ->WHERE('ejercicio','=',$ejercicio)
         ->WHERE('v_epp.deleted_at','=',null)
+        ->WHERE('v_epp.presupuestable', 1)
         ->first();
         return response()->json($subSecretaria,200);
     }
@@ -392,6 +402,7 @@ class ClavePreController extends Controller
         ->WHERE('clv_upp','=',$uppId)
         ->WHERE('clv_ur','=',$id)
         ->WHERE('ejercicio','=',$ejercicio)
+        ->WHERE('v_epp.presupuestable', 1)
         ->orderBy('clv_programa')
         ->DISTINCT()
         ->get();
@@ -410,6 +421,7 @@ class ClavePreController extends Controller
         array_push($array_where, ['clv_ur','=',$ur]);
         array_push($array_where, ['clv_programa','=',$id]);
         array_push($array_where, ['ejercicio','=',$ejercicio]);
+        array_push($array_where, ['presupuestable','=',1]);
         $subProgramas = DB::table('v_epp')
         ->SELECT('clv_subprograma', 'subprograma')
         ->WHERE($array_where)
@@ -426,6 +438,7 @@ class ClavePreController extends Controller
         ->WHERE('clv_upp','=',$upp)
         ->WHERE('clv_ur','=',$ur)
         ->WHERE('ejercicio','=',$ejercicio)
+        ->WHERE('v_epp.presupuestable', 1)
         ->orderBy('clv_proyecto')
         ->DISTINCT()
         ->get();
@@ -440,6 +453,7 @@ class ClavePreController extends Controller
         ->WHERE('clv_programa','=', $programa)
         ->WHERE('clv_subprograma','=',$subPrograma)
         ->WHERE('clv_proyecto','=',$proyecto)
+        ->WHERE('v_epp.presupuestable', 1)
         ->orderBy('clv_linea_accion')
         ->DISTINCT()
         ->get();
@@ -451,6 +465,7 @@ class ClavePreController extends Controller
         ->WHERE ('clv_upp', '=', $uppId)
         ->WHERE ('clv_ur', '=', $id)
         ->WHERE ('ejercicio', '=', $ejercicio)
+        ->WHERE ('presupuestable', 1)
         ->WHERE ('clv_subprograma', '=',  $subPrograma)
         ->where ('clv_linea_accion', '=', $linea)
         ->where ('clv_programa', '=', $programa)
@@ -485,6 +500,7 @@ class ClavePreController extends Controller
             array_push($array_where, ['tipo', '=', $subP != 'UUU' ? 'Operativo' : 'RH']);
             array_push($array_where, ['techos_financieros.clv_upp', '=', $id]);
             array_push($array_where, ['techos_financieros.ejercicio', '=', $anio]);
+            array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
             array_push($array_where, ['fondo.deleted_at', '=', null]);
         $fondos = DB::table('techos_financieros')
         ->SELECT('techos_financieros.ejercicio' , 'techos_financieros.clv_fondo', 'fondo.fondo_ramo', 'fondo.clv_etiquetado', 
@@ -500,6 +516,7 @@ class ClavePreController extends Controller
         ->SELECT('clv_sector_publico', 'clv_sector_publico_f', 'clv_sector_economia', 'clv_subsector_economia', 'clv_ente_publico')
         ->WHERE('clv_upp', '=', $upp)
         ->WHERE('clv_ur', '=', $ur)
+        ->WHERE('presupuestable', 1)
         ->DISTINCT()
         ->first();
         return response()->json($clasificacion,200);
@@ -907,6 +924,11 @@ class ClavePreController extends Controller
                 ProgramacionPresupuesto::where($array_where)->update([
                     'estado' => 1,
                 ]);
+                cierreEjercicio::where('clv_upp','=',$request->upp ? $request->upp : $uppUsuario)->where('ejercicio','=',$request->ejercicio)
+                ->update([
+                    'estatus'=>'Cerrado',
+                    'updated_user'=>Auth::user()->username
+                ]);
                 $b = array(
                     "username"=>Auth::user()->username,
                     "accion"=>'Confirmar',
@@ -938,6 +960,7 @@ class ClavePreController extends Controller
             $obras = DB::table('proyectos_obra')
             ->SELECT('clv_proyecto_obra','proyecto_obra')
             ->where('deleted_at','=',null)
+            ->orderBy('clv_proyecto_obra')
             ->get();
             $response = [
                 'permisoObra' => 200,
