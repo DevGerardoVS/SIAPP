@@ -596,7 +596,7 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return $pdf->download('Proyecto con actividades.pdf');
 	}
-	public function downloadActividades($upp, $year)
+	public function downloadActividades($upp, $year, $tipo)
 	{
 		$request = array(
 			"anio" => $year,
@@ -604,6 +604,7 @@ class MetasController extends Controller
 			"logoLeft" => public_path() . '\img\logo.png',
 			"logoRight" => public_path() . '\img\escudoBN.png',
 			"UPP" => $upp,
+			"tipo" => $tipo
 		);
 		$b = array(
 			"username" => Auth::user()->username,
@@ -632,9 +633,16 @@ class MetasController extends Controller
 		$format = array('pdf');
 		$output_file = public_path() . "/reportes";
 
-		$parameters = $request;
+		Log::info('reuqest', [json_encode($request)]);
+		$parameters = [
+			"anio" => $request['anio'],
+			"logoLeft" => $request['logoLeft'],
+			"logoRight" => $request['logoRight'],
+			"UPP" => $request['UPP'],
+		];
 
 		$database_connection = \Config::get('database.connections.mysql');
+		$file =  public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
 
 
 		$jasper = new PHPJasper;
@@ -650,6 +658,11 @@ class MetasController extends Controller
 			'Content-Type' => 'application/pdf'
 		]);
 
+		if ($request['tipo'] == 0) {
+			return response()->download($file, $report.".pdf",[
+				'Content-Type' => 'application/pdf'
+			]);
+		}
 		if ($reportePDF != '') {
 			return response()->json('done', 200);
 		} else {
@@ -928,10 +941,11 @@ class MetasController extends Controller
 		}
 	}
 
-	public function jasperMetas($upp, $anio)
+	public function jasperMetas($upp, $anio, $tipo)
 	{
+		ob_end_clean();
+		ob_start();
 		date_default_timezone_set('America/Mexico_City');
-
 		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
 		$fecha = date('d-m-Y');
 		$date = $anio;
@@ -954,7 +968,7 @@ class MetasController extends Controller
 			"logoRight" => public_path() . '\img\escudoBN.png',
 			"upp" => $upp,
 		);
-
+		$file =  public_path() . "/reportes/proyecto_calendario_actividades.pdf";
 		$database_connection = \Config::get('database.connections.mysql');
 
 
@@ -970,11 +984,19 @@ class MetasController extends Controller
 		$reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
 			'Content-Type' => 'application/pdf'
 		]);
-		if ($reportePDF != '') {
-			return response()->json('done', 200);
-		} else {
-			return response()->json('error', 200);
+		
+		if ($tipo == 0 ) {
+			return response()->download($file, $report.".pdf",[
+				'Content-Type' => 'application/pdf'
+			]);
+		}else {
+			if ($reportePDF != '') {
+				return response()->json('done', 200);
+			} else {
+				return response()->json('error', 400);
+			}
 		}
+		
 	}
 	public static function keyMonth($n)
 	{
@@ -1124,7 +1146,8 @@ class MetasController extends Controller
 			->select(
 				'mml_mir.entidad_ejecutora',
 				'mml_mir.area_funcional',
-				'mml_mir.clv_upp'
+				'mml_mir.clv_upp',
+				'metas.clv_fondo'
 			)
 			->where('mml_mir.clv_upp', $upp)
 			->where('mml_mir.ejercicio', $anio)
@@ -1154,6 +1177,7 @@ class MetasController extends Controller
 				->where('programa_presupuestario', '' . strval($area[8]) . strval($area[9]) . '', )
 				->where('subprograma_presupuestario', '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '')
 				->where('proyecto_presupuestario', '' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '')
+				->where('programacion_presupuesto.fondo_ramo', '=', $key->clv_fondo)
 				->where('programacion_presupuesto.ejercicio', '=', $anio)
 				->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 				->distinct()

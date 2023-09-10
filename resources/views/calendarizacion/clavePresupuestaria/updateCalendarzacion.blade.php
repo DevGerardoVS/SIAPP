@@ -142,8 +142,8 @@
                                             <td><input id="diciembre" name="diciembre" type="text"
                                                     class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->diciembre}}></td>
                                             <tr style="border-style: none;">
-                                                <td></td>
-                                                <td></td>
+                                                <td><input type="hidden" name="ejercicio" id="ejercicio" value={{$clave->ejercicio}}></td>
+                                                <td><input type="hidden" name="clvUpp" id="clvUpp" value={{$clave->upp}}></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td>
@@ -229,8 +229,10 @@
         }
         //dao.getPresupuestoPorUpp(upp,clv_fondo,subprograma_presupuestario, ejercicio);
         dao.getPresupuestoPorUppEdit(upp,clv_fondo,subprograma_presupuestario, ejercicio,id);
+        $(document).ready(function () {
+            soloEnteros();
+        });
         
-        //calucalarCalendario();
     </script>
     
 @endsection
