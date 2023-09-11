@@ -3067,7 +3067,7 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE avance_etapas_upp_programa(in anio int)
         begin
             select 
-                'upp' tipo,
+                'UPP' tipo,
                 count(verde) verde,
                 count(amarillo) amarillo,
                 count(rojo) rojo,
@@ -3096,7 +3096,7 @@ return new class extends Migration {
             )t2
             union all
             select 
-                'programa' tipo,
+                'Programa' tipo,
                 count(verde) verde,
                 count(amarillo) amarillo,
                 count(rojo) rojo,
