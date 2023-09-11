@@ -488,7 +488,7 @@ var dao = {
                         dao.getUpps();
                         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
                     } else {
-                        dao.getData($('#upp_filter').val(), $('#anio_filter').val());
+                        dao.getData($('#upp').val(), $('#anio_filter').val());
                     }
                 
                 });

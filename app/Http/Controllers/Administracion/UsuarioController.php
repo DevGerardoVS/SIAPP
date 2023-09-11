@@ -265,7 +265,17 @@ class UsuarioController extends Controller
             if ($validaEmail->isEmpty() == false) {
                 return response()->json(["icon" => 'info', "title" => "Error!", "text" => "email duplicado"], 200);
             }
-            $user = User::create($request->all());
+            $user = User::create([
+                "id_grupo"=>$request->id_grupo,
+                "nombre"=>$request->nombre,
+                "p_apellido"=>$request->p_apellido,
+                "s_apellido"=>$request->s_apellido,
+                "email"=>$request->email,
+                "celular"=>$request->celular,
+                "username"=>$request->username,
+                "password"=>$request->password,
+                "clv_upp"=>$request->id_grupo !=4?NULL:$request->clv_upp
+            ]);
             UsuarioGrupo::create([
                 'id_grupo' => $request->id_grupo,
                 'id_usuario' => $user->id,
