@@ -44,6 +44,7 @@ var dao = {
         });
     },
     exportJasper: function () {
+        let tipo = 0;
         let upp;
         if ($('#upp').val() == '') {
             upp = $('#upp_filter').val();
@@ -51,14 +52,31 @@ var dao = {
             upp = $('#upp').val();
         }
         let anio = $('#anio_filter').val();
-        $.ajax({
-            type: 'get',
-            url: "/actividades/jasper/" + upp + "/" + anio,
-            dataType: "json"
-        }).done(function (params) {
-            document.getElementById('tipoReporte').value = 1;
-            $('#firmaModal').modal('show');
-        });
+        Swal.fire({
+            title: 'Eliga que tipo de firma desea.',
+            icon: 'info',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'E-firma',
+            denyButtonText: `Autografa`,
+            denyButtonColor:'#8CD4F5',
+          }).then((result) => {
+            if (result.isConfirmed) {
+                tipo = 1;
+                $.ajax({
+                    type: 'get',
+                    url: "/actividades/jasper/" + upp + "/" + anio + "/" + tipo,
+                    dataType: "json"
+                }).done(function (params) {
+                    document.getElementById('tipoReporte').value = 1;
+                    $('#firmaModal').modal('show');
+                });
+            } else if (result.isDenied) {
+                let url = "/actividades/jasper/" + upp + "/" + anio + "/" + tipo;
+                window.location.href = url; 
+            }
+          })
+        
     },
     exportJasperMetas: function () {
         let upp;
@@ -68,14 +86,32 @@ var dao = {
             upp = $('#upp').val();
         }
         let anio = $('#anio_filter').val();
-        $.ajax({
-            type: 'get',
-            url: "/actividades/jasper-metas/" + upp + "/" + anio,
-            dataType: "json"
-        }).done(function (params) {
-            document.getElementById('tipoReporte').value = 2;
-            $('#firmaModal').modal('show');
-        });
+        let tipo = 0;
+        Swal.fire({
+            title: 'Eliga que tipo de firma desea.',
+            icon: 'info',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'E-firma',
+            denyButtonText: `Autografa`,
+            denyButtonColor:'#8CD4F5',
+          }).then((result) => {
+            if (result.isConfirmed) {
+                tipo = 1;
+                $.ajax({
+                    type: 'get',
+                    url: "/actividades/jasper-metas/" + upp + "/" + anio+ "/" + tipo,
+                    dataType: "json"
+                }).done(function (params) {
+                    document.getElementById('tipoReporte').value = 2;
+                    $('#firmaModal').modal('show');
+                });
+            } else if (result.isDenied) {
+                let url =  "/actividades/jasper-metas/" + upp + "/" + anio+ "/" + tipo;
+                window.location.href = url; 
+            }
+          })
+        
     },
     exportExcel: function () {
         let upp;
@@ -452,7 +488,7 @@ var dao = {
                         dao.getUpps();
                         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
                     } else {
-                        dao.getData($('#upp_filter').val(), $('#anio_filter').val());
+                        dao.getData($('#upp').val(), $('#anio_filter').val());
                     }
                 
                 });

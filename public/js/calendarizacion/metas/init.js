@@ -90,26 +90,26 @@ var dao = {
             _gen.setTableScrollFotter(_table, _columns, _data.dataSet);
             let index = _data.dataSet;
             if (index.length == 0) {
-                if (upp!='upp'&& ur!='ur') {
+                if (upp != 'upp' && ur != 'ur') {
                     Swal.fire({
                         icon: 'info',
                         title: 'Esta unidad responsable no cuenta con presupuesto',
                         text: $('#ur_filter').find('option:selected').text(),
                     });
+                    $('#incomplete').show();
+                    $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                    $('#texto').text('Esta unidad responsable no cuenta con presupuesto');
+                    $('#metasVista').hide();
                 }
                 dao.limpiar();
-                
                 $('.btnSave').hide();
-                $('#incomplete').show(); 
-                $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
-                $('#texto').text('Esta unidad responsable no cuenta con presupuesto');
-                $('#metasVista').hide();
                 $(".CargaMasiva").hide();
                 if ($('#upp').val() == '') {
                     dao.getUrs($('#upp_filter').val());
                 } else {
                     dao.getUrs($('#upp').val());
                 }
+
             } else {
                 $('.btnSave').show();
                 $('#incomplete').hide(); 
@@ -332,10 +332,12 @@ var dao = {
             });
             if ($('#upp').val() == '') {
                 dao.getUpps();
+               
             } else {
                 dao.checkCombination($('#upp').val())
             }
             dao.getData('upp','ur');
+            
         });
     },
     rCMetasUpp: function (upp) {
