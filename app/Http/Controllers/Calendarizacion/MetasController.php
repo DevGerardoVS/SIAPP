@@ -244,7 +244,8 @@ class MetasController extends Controller
 
 		$areaAux = explode('-', $area);
 		$entidadAux = explode('-', $entidad);
-
+		Log::debug($area);
+		Log::debug($entidad);
 		$meses = DB::table('programacion_presupuesto')
 		->select(
 			DB::raw("SUM(enero) AS enero"),
@@ -334,46 +335,81 @@ class MetasController extends Controller
 			->where('metas.mir_id', intval($request->sel_actividad))
 			->where('mml_mir.deleted_at', null)
 			->where('metas.deleted_at', null)->get();
-			$anio= DB::table('mml_mir')->select('ejercicio','clv_upp')->where('id',$request->sel_actividad)->get();
-			$confirm = MetasController::cmetasUpp($anio[0]->clv_upp, $anio[0]->ejercicio);
+			$mir= DB::table('mml_mir')->select('ejercicio','clv_upp','entidad_ejecutora AS enti','area_funcional AS area')->where('id',$request->sel_actividad)->get();
+			$entidad = str_split($mir[0]->enti);
+			$area = str_split($mir[0]->area);
+			$confirm = MetasController::cmetasUpp($mir[0]->clv_upp, $mir[0]->ejercicio);
+			$meses = [
+			   'enero' => $request[1] != NULL ? $request[1] : 0,
+			   'febrero' => $request[2] != NULL ? $request[2] : 0,
+			   'marzo' => $request[3] != NULL ? $request[3] : 0,
+			   'abril' => $request[4] != NULL ? $request[4] : 0,
+			   'mayo' => $request[5] != NULL ? $request[5] : 0,
+			   'junio' => $request[6] != NULL ? $request[6] : 0,
+			   'julio' => $request[7] != NULL ? $request[7] : 0,
+			   'agosto' => $request[8] != NULL ? $request[8] : 0,
+			   'septiembre' => $request[9] != NULL ? $request[9] : 0,
+			   'octubre' => $request[10] != NULL ? $request[10] : 0,
+			   'noviembre' => $request[11] != NULL ? $request[11] : 0,
+			   'diciembre' => $request[12] != NULL ? $request[12] : 0,
+			];
+		Log::debug($meses);
+			$clave =''. strval($area[0]) . '-' .strval($area[1]) . '-' . strval($area[2]) . '-' . strval($area[3]).'-'.strval($area[4]). strval($area[5]).'-'.strval($area[6]) .'-'.strval($area[7]) . '-' . strval($area[8]).strval($area[9]).'-'.strval($area[10]) . strval($area[11]) . strval($area[12]). '-' .strval($area[13]). strval($area[14]). strval($area[15]).'/'. strval($entidad[0]). strval($entidad[1]). strval($entidad[2]) .'-' . strval($entidad[3]) . '-' . strval($entidad[4]). strval($entidad[5]) . '';
 		if (count($metaexist) == 0) {
-			$meta = Metas::create([
-				'mir_id' => intval($request->sel_actividad),
-				'clv_fondo' => $request->sel_fondo,
-				'estatus' => $confirm['status']?1:0,
-				'tipo' => $request->tipo_Ac,
-				'beneficiario_id' => $request->tipo_Be,
-				'unidad_medida_id' => intval($request->medida),
-				'cantidad_beneficiarios' => $request->beneficiario,
-				'total' => $request->sumMetas,
-				'enero' => $request[1] != NULL ? $request[1] : 0,
-				'febrero' => $request[2] != NULL ? $request[2] : 0,
-				'marzo' => $request[3] != NULL ? $request[3] : 0,
-				'abril' => $request[4] != NULL ? $request[4] : 0,
-				'mayo' => $request[5] != NULL ? $request[5] : 0,
-				'junio' => $request[6] != NULL ? $request[6] : 0,
-				'julio' => $request[7] != NULL ? $request[7] : 0,
-				'agosto' => $request[8] != NULL ? $request[8] : 0,
-				'septiembre' => $request[9] != NULL ? $request[9] : 0,
-				'octubre' => $request[10] != NULL ? $request[10] : 0,
-				'noviembre' => $request[11] != NULL ? $request[11] : 0,
-				'diciembre' => $request[12] != NULL ? $request[12] : 0,
-				'ejercicio'=>$anio[0]->ejercicio,
-				'created_user' => $username
-			]);
-			if ($meta) {
-				$b = array(
-					"username" => $username,
-					"accion" => 'Crear Meta',
-					"modulo" => 'Metas'
-				);
-				Controller::bitacora($b);
-				$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
-				return response()->json($res, 200);
+			$m=FunFormats::validateMonth($clave,json_encode($meses),$mir[0]->ejercicio,$request->sel_fondo);
+			if($m['status']){
+					$meta = Metas::create([
+						'mir_id' => intval($request->sel_actividad),
+						'clv_fondo' => $request->sel_fondo,
+						'estatus' => $confirm['status']?1:0,
+						'tipo' => $request->tipo_Ac,
+						'beneficiario_id' => $request->tipo_Be,
+						'unidad_medida_id' => intval($request->medida),
+						'cantidad_beneficiarios' => $request->beneficiario,
+						'total' => $request->sumMetas,
+						'enero' => $request[1] != NULL ? $request[1] : 0,
+						'febrero' => $request[2] != NULL ? $request[2] : 0,
+						'marzo' => $request[3] != NULL ? $request[3] : 0,
+						'abril' => $request[4] != NULL ? $request[4] : 0,
+						'mayo' => $request[5] != NULL ? $request[5] : 0,
+						'junio' => $request[6] != NULL ? $request[6] : 0,
+						'julio' => $request[7] != NULL ? $request[7] : 0,
+						'agosto' => $request[8] != NULL ? $request[8] : 0,
+						'septiembre' => $request[9] != NULL ? $request[9] : 0,
+						'octubre' => $request[10] != NULL ? $request[10] : 0,
+						'noviembre' => $request[11] != NULL ? $request[11] : 0,
+						'diciembre' => $request[12] != NULL ? $request[12] : 0,
+						'ejercicio'=>$mir[0]->ejercicio,
+						'created_user' => $username
+					]);
+					if ($meta) {
+						$b = array(
+							"username" => $username,
+							"accion" => 'Crear Meta',
+							"modulo" => 'Metas'
+						);
+						Controller::bitacora($b);
+						$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
+						return response()->json($res, 200);
+					
+					} else {
+						$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
+						return response()->json($res, 200);
+					}
+				
 			} else {
-				$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
+				$mesaje='';
+				$err=implode(", ", $m["errorM"]);
+				$meses=implode(", ", $m["mV"]);
+				if(count($m["mV"])==1){
+						$mesaje = 'Solo puede registrar en el mes de: ' . $meses;
+				}else{
+					$mesaje = 'Solo puede registrar en los meses: ' . $meses;
+				}
+				$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Los meses: '.$err. ' no coinciden en las claves presupuestales'.$mesaje, "title" => "Error"]];
 				return response()->json($res, 200);
 			}
+			
 		} else {
 			$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'El programa ya cuenta con una meta ', "title" => "La meta ya existe"]];
 			return response()->json($res, 200);

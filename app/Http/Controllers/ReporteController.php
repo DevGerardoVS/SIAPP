@@ -178,7 +178,7 @@ class ReporteController extends Controller
                 "anio" => $anio,
                 "logoLeft" => $logoLeft,
                 "logoRight" => $logoRight,
-                "extension" => $request->action,
+                // "extension" => $request->action,
             );
         
             if($fechaCorte != null) {

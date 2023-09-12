@@ -361,11 +361,12 @@ class FunFormats
         $meses = json_decode($m);
         $areaAux=explode( '/', $clave);
        $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);
-  
+      
         $arrM = [];
         $arrMV = [];
         foreach ($m as $key => $value) {
             $e = $value;
+       
             switch ($key) {
                 case 'enero':
                     if ($e == 0.0 || $e == 0) {
