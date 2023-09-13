@@ -565,35 +565,43 @@ function eliminarRegistro(){
 }
 
 function editarRegistro(){
-    $.ajax({
-        type: "POST",
-        url: '/calendarizacion/techos/editar',
-        data: {
-            'id': $('#editarID').val(),
-            'presupuesto' : $('#presupuesto').val()
-        },
-        enctype: 'multipart/form-data'
-    }).done(function (response) {
-        $('#editar').modal('hide')
-        if(response.status == 200){
+    if($('#presupuesto').val() != 0){
+
+        $.ajax({
+            type: "POST",
+            url: '/calendarizacion/techos/editar',
+            data: {
+                'id': $('#editarID').val(),
+                'presupuesto' : $('#presupuesto').val()
+            },
+            enctype: 'multipart/form-data'
+        }).done(function (response) {
+            $('#editar').modal('hide')
+            if(response.status == 200){
+                Swal.fire({
+                    icon: 'success',
+                    title: response.mensaje,
+                    showConfirmButton: true
+                });
+            }
+            getData();
+        }).fail(function (error) {
+            let arr = Object.keys(error.responseJSON.errors)
+            arr.forEach(function (item) {
+                $("#frm_create_techo").find("#"+item).addClass('is-invalid');
+            })
             Swal.fire({
-                icon: 'success',
-                title: 'Registro editado correctamente',
-                showConfirmButton: false,
-                timer: 1500
+                icon: 'warning',
+                title: 'Hubo un error, campos vacíos',
+                showConfirmButton: true
             });
-        }
-        getData();
-    }).fail(function (error) {
-        let arr = Object.keys(error.responseJSON.errors)
-        arr.forEach(function (item) {
-            $("#frm_create_techo").find("#"+item).addClass('is-invalid');
-        })
+        });
+    }else{
         Swal.fire({
-            icon: 'warning',
-            title: 'Hubo un error, campos vacíos',
+            icon: 'error',
+            title: 'No puede haber presupuesto de $0',
             showConfirmButton: true
         });
-    });
+    }
 
 }
