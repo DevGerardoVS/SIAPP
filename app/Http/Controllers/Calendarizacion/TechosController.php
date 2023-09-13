@@ -253,7 +253,7 @@ class TechosController extends Controller
                 log::debug($data);
                 log::debug($existe);
                 //si existe en la tabla quiere decir que ya esta asignado y no se puede eliminar
-                if(count($existe) == 0 || $data[0]->deleted_at != null){
+                if(count($existe) == 0 || $data[0]->deleted_at != null || $existe[0]->deleted_at != null){
                     TechosFinancieros::where('id', $request->id)->delete();
     
                     $b = array(

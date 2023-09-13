@@ -151,7 +151,8 @@ var dao = {
             });
         });
     },
-    getMeses: function (idA,idF) {
+    getMeses: function (idA, idF) {
+        
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA+"/"+idF,
@@ -313,6 +314,10 @@ var dao = {
         var form = $('#actividad')[0];
         var data = new FormData(form);
         data.append('sumMetas', $('#sumMetas').val());
+        data.append('upp', $('#upp').val() != '' ? $('#upp').val() : $('#upp_filter').val());
+        let aOld=$('#area').val()
+        let area=aOld.replace('$', '/')
+        data.append('area',area);
         $.ajax({
             type: "POST",
             url: '/calendarizacion/create',
@@ -418,9 +423,6 @@ var dao = {
             $.each(unidadM, function (i, val) {
                 med.append(new Option(val.unidad_medida, val.clave));
             });
-         /*    med.select2({
-                maximumSelectionLength: 10
-            }); */
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
             tipo_be.append(new Option("--U. Beneficiarios--", ""));
@@ -428,60 +430,72 @@ var dao = {
             $.each(beneficiario, function (i, val) {
                 tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
             });
-    /*         tipo_be.select2({
-                maximumSelectionLength: 10
-            }); */
         });
     },
     getFyA: function (area, enti) {
-         for (let i = 1; i <= 12; i++) {
+        $('#actividad_id').attr('disabled', 'disabled');
+        $(".inputAc").hide();
+        $("#idAct").addClass("col-md-6").removeClass("col-md-4");
+        $("#idFond").addClass("col-md-6").removeClass("col-md-4");
+        $(".inputAc").val(null);
+        for (let i = 1; i <= 12; i++) {
             $("#" + i).prop('disabled', true);
         }
+        let clave = `${area}$${enti}`;
+        $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
         $("#sel_actividad").removeAttr('disabled');
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/fondos/' + area+'/'+enti,
+            url: '/calendarizacion/fondos/' + area + '/' + enti,
             dataType: "JSON"
-        }).done(function (data) {
+        }).done(function (data) {     
+            const { fondos, activids } = data;
+            if (area.indexOf("UUU") > 0) {
+                $('.conmir').hide();
+                $('.sinmir').show();
+                $('#actividad_id').prop('disabled', false);
+                $('#sel_fondo').prop('disabled', false);
+                var act = $('#actividad_id');
+                act.html('');
+                if (activids.length >= 2) {
+                    act.append(new Option("--Actividad--", "true", true, true));
+                    document.getElementById("actividad_id").options[0].disabled = true;
+                }
+                $.each(activids, function (i, val) {
+                    act.append(new Option(val.actividad, val.id));
+                });
+                act.append(new Option("Otra actividad", "ot"));
+            } else {
+                $('.sinmir').hide();
+                $('.conmir').show();
+                var act = $('#sel_actividad');
+                act.html('');
+
+                if (activids.length >= 2) {
+                    act.append(new Option("--Actividad--", "true", true, true));
+                    document.getElementById("sel_actividad").options[0].disabled = true;
+                }
+                $.each(activids, function (i, val) {
+                    act.append(new Option(val.actividad, val.id));
+                });
+            }
             $('#sel_actividad').prop('disabled', false);
             $('#sel_fondo').prop('disabled', false);
-            const { fondos, activids, mese} = data;
             var fond = $('#sel_fondo');
             fond.html('');
-            if (fondos.length>= 2) {
+            if (fondos.length >= 2) {
                 fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
                 document.getElementById("sel_fondo").options[0].disabled = true;
-            } 
-            /*     fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
-            document.getElementById("sel_fondo").options[0].disabled = true; */
+            }
             $.each(fondos, function (i, val) {
                 fond.append(new Option(val.ramo, val.clave));
             });
-            fond.select2({
-                maximumSelectionLength: 10
-            });
-            var act = $('#sel_actividad');
-            act.html('');
-                        
-            if (activids.length>= 2) {
-                act.append(new Option("--Actividad--", "true", true, true));
-                document.getElementById("sel_actividad").options[0].disabled = true;
-            } 
-         /*    act.append(new Option("--Actividad--", "true", true, true));
-            document.getElementById("sel_actividad").options[0].disabled = true; */
-            $.each(activids, function (i, val) {
-                act.append(new Option(val.actividad, val.id));
-            });
-           
-            act.select2({
-                maximumSelectionLength: 10
-            });
-        
-            if (fondos.length== 1 && activids.length== 1) {
-                dao.getMeses($('#sel_actividad').val(),$('#sel_fondo').val());
-                }
-            
+
+            if (fondos.length == 1 && activids.length == 1) {
+                dao.getMeses(clave, $('#sel_fondo').val());
+            }
+
         });
     },
     limpiar: function () {
@@ -579,7 +593,10 @@ var dao = {
         for (let i = 1; i <= 12; i++) {
             if ($('#' + i).val() != "") {
                 let suma = parseInt($('#' + i).val());
-                e.push(suma);
+                if ($('#' + i).val() !=0 && $('#' + i).val() != "" && $('#' + i).val() != "null" && $('#' + i).val() !=  null) {
+                    e.push(suma); 
+                }
+               
             }
         }
         if (dao.arrEquals(e)) {
@@ -659,6 +676,32 @@ var init = {
             }
         });
     },
+    validateCreateN: function (form) {
+        _gen.validate(form, {
+            rules: {
+                actividad_id: { required: true },
+                inputAc: { required: true },
+                sel_fondo: { required: true },
+                tipo_Ac: { required: true },
+                beneficiario: { required: true },
+                tipo_Be: { required: true },
+                medida: { required: true },
+                sumMetas: {
+                    required: true,
+                }
+            },
+            messages: {
+                actividad_id: { required: "Este campo es requerido" },
+                inputAc:  { required: "Este campo es requerido" },
+                sel_fondo: { required: "Este campo es requerido" },
+                tipo_Ac: { required: "Este campo es requerido" },
+                beneficiario: { required: "Este campo es requerido" },
+                tipo_Be: { required: "Este campo es requerido" },
+                medida: { required: "Este campo es requerido" },
+                sumMetas: { required: "Este campo es requerido  y mayor a CERO" }
+            }
+        });
+    },
     validateFile: function (form) {
         _gen.validate(form, {
             rules: {
@@ -698,19 +741,40 @@ $(document).ready(function () {
 
     });
     $('#sel_fondo').change(() => {
-        if ($('#sel_actividad').val() !='' &&$('#sel_actividad').val() !=null) {
-            dao.getMeses($('#sel_actividad').val(),$('#sel_fondo').val());
+        if ($('#sel_actividad').val() != '' && $('#sel_actividad').val() != null && $('#sel_actividad').val() != 'ot') {
+            dao.getMeses($('#area').val(),$('#sel_fondo').val());
         }
+  
     });
     $('#sel_actividad').change(() => {
         if ($('#sel_fondo').val() !='' && $('#sel_fondo').val() !=null) {
-            dao.getMeses($('#sel_actividad').val(),$('#sel_fondo').val());
+            dao.getMeses($('#area').val(),$('#sel_fondo').val());
+        }
+    });
+    $('#actividad_id').change(() => {
+        
+        if ($('#actividad_id').val() == 'ot') {
+            $("#inputAc").removeAttr('disabled');
+            $(".inputAc").show();
+            
+            $("#idAct").addClass("col-md-4").removeClass("col-md-6");
+            $("#idFond").addClass("col-md-4").removeClass("col-md-6");
+            
+        } else {
+            $(".inputAc").val(null);
+            $("#inputAc").attr('disabled', 'disabled');
+            $(".inputAc").hide();
+            $("#idAct").addClass("col-md-6").removeClass("col-md-4");
+            $("#idFond").addClass("col-md-6").removeClass("col-md-4");
+        }
+        if ($('#sel_fondo').val() !='' && $('#sel_fondo').val() !=null) {
+            dao.getMeses($('#area').val(),$('#sel_fondo').val());
         }
     });
 
-    if ($('#sel_actividad').val() !='' && $('#sel_fondo').val() !='' &&$('#sel_actividad').val() !=null && $('#sel_fondo').val() !=null) {
-                dao.getMeses($('#sel_actividad').val(),$('#sel_fondo').val());
-            }
+    if ($('#sel_actividad').val() != '' && $('#sel_fondo').val() != '' && $('#sel_actividad').val() != null && $('#sel_fondo').val() != null) {
+        dao.getMeses($('#area').val(), $('#sel_fondo').val());
+    }
     
 
     dao.getSelect();
@@ -739,8 +803,16 @@ $(document).ready(function () {
     })
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        if ($('#actividad').valid()) {
-            dao.crearMeta();
+        if ($('#actividad_id').val() != '' || $('#actividad_id').val() != null) {
+            init.validateCreate($('#actividad'));
+            if ($('#actividad').valid()) {
+                dao.crearMeta();
+            }
+        } else {
+            init.validateCreateN($('#actividad'));
+            if ($('#actividad').valid()) {
+                dao.crearMeta();
+            }
         }
     });
     $('#btnSaveM').click(function (e) {

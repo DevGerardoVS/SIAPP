@@ -23,10 +23,10 @@
             <table id="catalogo" class="table table-striped table-bordered text-center " style="width:100%">
                 <thead>
                     <tr class="colorMorado">
-                        <th>{{__("messages.presupuesto_asignado")}}</th>
-                        <th>{{__("messages.presupuesto_calendarizado")}}</th>
-                        <th>{{__("messages.disponible")}}</th>
-                        <th>{{__("messages.avance")}}</th>
+                        <th>$ {{__("messages.presupuesto_asignado")}}</th>
+                        <th>$ {{__("messages.presupuesto_calendarizado")}}</th>
+                        <th>$ {{__("messages.disponible")}}</th>
+                        <th>% {{__("messages.avance")}}</th>
                     </tr>
                 </thead>
             </table>
