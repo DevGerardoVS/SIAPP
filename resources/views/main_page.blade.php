@@ -47,7 +47,7 @@
             </div>
 
             <div id="dos" class="cal">
-                <h1 id="_cap" class="title">CAP - Calendarizacion y Asignación de Presupuesto</h1>
+                <h1 id="_cap" class="title">CAP - Calendarización y Asignación de Presupuesto</h1>
             </div>
 
             <div id="tres" class="cal">

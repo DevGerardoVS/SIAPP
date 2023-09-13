@@ -34,6 +34,7 @@ class Metas extends Model
         'total',
         'estatus',
         'ejercicio',
+        'actividad_id',
         'created_user',
         'updated_user'
     ];
