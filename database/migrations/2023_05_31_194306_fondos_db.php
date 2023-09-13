@@ -48,6 +48,21 @@ return new class extends Migration
            
              /* $table->foreign('upp_id')->references('id')->on('catalogo'); */ 
         });
+        Schema::create('mml_actividades', function (Blueprint $table){
+            $table->increments('id');
+            $table->string('entidad_ejecutora',6)->nullable(false);
+            $table->string('area_funcional',16)->nullable(false);
+            $table->string('id_catalogo',255)->nullable(true);
+            $table->string('nombre',255)->nullable(true);
+            $table->integer('ejercicio')->nullable(false);
+            $table->string('created_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
+            $table->string('deleted_user',45)->nullable(true);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+        });
+
         Schema::create('mml_arbol_problema', function (Blueprint $table){
             $table->increments('id');
             $table->integer('problema_id')->unsigned()->nullable(false);
@@ -490,8 +505,9 @@ return new class extends Migration
 
         Schema::create('metas',function (Blueprint $table){
             $table->increments('id');
+            $table->string('clv_actividad',255)->unique()->nullable(true);
             $table->string('clv_fondo',2)->nullable(false);
-            $table->integer('mir_id')->unsigned()->nullable(false);
+            $table->integer('mir_id')->unsigned()->nullable(true);
             $table->enum('tipo',['Acumulativa','Continua','Especial'])->nullable(false);
             $table->integer('beneficiario_id')->unsigned()->nullable(false);
             $table->integer('unidad_medida_id')->unsigned()->nullable(false);
@@ -511,6 +527,7 @@ return new class extends Migration
             $table->integer('total')->default(null);
             $table->integer('estatus')->nullable(false);
             $table->integer('ejercicio')->nullable(false);
+            $table->integer('actividad_id')->nullable(true);
             $table->softDeletes();
             $table->string('created_user',45)->nullable(false);
             $table->string('updated_user',45)->nullable(true);
