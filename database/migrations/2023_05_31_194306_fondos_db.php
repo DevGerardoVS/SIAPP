@@ -576,6 +576,7 @@ return new class extends Migration
             $table->integer('proyecto_id')->unsigned()->nullable(false);
             $table->integer('ejercicio')->unsigned()->nullable(false);
             $table->boolean('presupuestable')->default(false);
+            $table->tinyInteger('con_mir')->nullable(false);
             $table->boolean('confirmado')->default(false);
             $table->boolean('conMir')->default(false);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
