@@ -3038,13 +3038,15 @@ return new class extends Migration {
                 if( @filas > 0) then 
                     select * from rel_faltantes;
                 else
-                    insert into epp(sector_publico_id,sector_publico_f_id,sector_economia_id,subsector_economia_id,ente_publico_id,
+                    set @id := (select max(id) from epp);
+                	if (@id is null) then set @id := 0; end if;
+                    insert into epp(id,sector_publico_id,sector_publico_f_id,sector_economia_id,subsector_economia_id,ente_publico_id,
                         upp_id,subsecretaria_id,ur_id,
                         finalidad_id,funcion_id,subfuncion_id,eje_id,linea_accion_id,programa_sectorial_id,tipologia_conac_id,
                         programa_id,subprograma_id,proyecto_id,
                         ejercicio,presupuestable,confirmado,created_at,updated_at,deleted_at,deleted_user,updated_user,created_user)
                     select 
-                        id_sector_publico,id_sector_publico_f,id_sector_economia,id_subsector_economia,id_ente_publico,
+                        (@id := @id+1) id,id_sector_publico,id_sector_publico_f,id_sector_economia,id_subsector_economia,id_ente_publico,
                         id_upp,id_subsecretaria,id_ur,
                         id_finalidad,id_funcion,id_subfuncion,id_eje,id_linea_accion,id_programa_sectorial,id_tipologia_conac,
                         id_programa,id_subprograma,id_proyecto,
