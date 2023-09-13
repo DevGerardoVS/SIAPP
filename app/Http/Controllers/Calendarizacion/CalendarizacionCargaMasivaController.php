@@ -109,8 +109,8 @@ class CalendarizacionCargaMasivaController extends Controller
                 if(strlen($k['20'])!==2){
                     return redirect()->back()->withErrors(['error' => 'El año debe ser a dos digitos']);
                 }
-
-                if($k['27']!=''){
+                
+                if(is_numeric($k['27'])){
                     return redirect()->back()->withErrors(['error' => 'El total no puede ir vacio']);
                 }
                 //buscar en el array de totales 
