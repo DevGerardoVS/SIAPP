@@ -392,8 +392,7 @@ class FunFormats
     public static function validateMonth($clave,$m,$anio,$fondo){
         $meses = json_decode($m);
         $areaAux=explode( '/', $clave);
-       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);
-      
+       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);      
         $arrM = [];
         $arrMV = [];
         foreach ($m as $key => $value) {
@@ -411,7 +410,7 @@ class FunFormats
                     }
                     break;
                 case 'febrero':
-                    if ($e != 0.0 || $e == 0) {
+                    if ($e == 0.0 || $e == 0) {
                         if($meses->febrero!=0){
                             $arrM[] = "febrero";
                         }

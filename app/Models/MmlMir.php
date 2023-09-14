@@ -13,6 +13,7 @@ class MmlMir extends Model
     protected $table = 'mml_actividades';
 
     protected $fillable = [ 
+        'clv_upp',
         'entidad_ejecutora',    
         'area_funcional',
         'id_catalogo',
