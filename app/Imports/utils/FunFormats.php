@@ -34,9 +34,10 @@ class FunFormats
         );
         switch ($tipo) {
             case 0:
-                return FunFormats::totalAcum($auxTotal);
+                return FunFormats::totalContinua($auxTotal);
+               // return FunFormats::totalAcum($auxTotal);
             case 1:
-                return $auxTotal[0];
+                return FunFormats::totalContinua($auxTotal);
             //  return $this->totalAcum($auxTotal);
             case 2:
                 return FunFormats::totalEspecial($auxTotal);
@@ -56,6 +57,36 @@ class FunFormats
             $suma = $suma + $arreglo[$i];
         }
         return $suma;
+    }
+    public static function totalContinua($arreglo)
+    {
+        $e = [];
+        for ($i = 1; $i <= $arreglo; $i++) {
+            if ($arreglo[$i] != "") {
+                $suma = intval($arreglo[$i]);
+                if ($arreglo[$i] !=0 && $arreglo[$i] != "" && $arreglo[$i] != "null" && $arreglo[$i] !=  null) {
+                    $e[]=$suma; 
+                }
+               
+            }
+        }
+
+        if (FunFormats::arrEquals($e)) {
+            return $e[0];
+        }
+    }
+    public static function arrEquals ($numeros) {
+        $duplicados = [];
+        $bool = count($numeros);
+
+        asort($numeros);
+        var_export($numeros);
+        for ($i = 0; $i <= count($numeros); $i++) {
+            if ($numeros[$i + 1] === $numeros[$i]) {
+                $duplicados[]=$numeros[$i];
+            }
+        }
+        if ($bool != count($duplicados)) { return false; } else { return true; }
     }
     public static function saveImport($filearray)
     {
@@ -360,8 +391,7 @@ class FunFormats
     public static function validateMonth($clave,$m,$anio,$fondo){
         $meses = json_decode($m);
         $areaAux=explode( '/', $clave);
-       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);
-      
+       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);      
         $arrM = [];
         $arrMV = [];
         foreach ($m as $key => $value) {
@@ -379,7 +409,7 @@ class FunFormats
                     }
                     break;
                 case 'febrero':
-                    if ($e != 0.0 || $e == 0) {
+                    if ($e == 0.0 || $e == 0) {
                         if($meses->febrero!=0){
                             $arrM[] = "febrero";
                         }
