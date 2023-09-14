@@ -805,7 +805,7 @@ class MetasController extends Controller
 					$error = array(
 						"icon" => 'error',
 						"title" => 'MIR no confirmadas',
-						"text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM'
+						"text" => 'Los registros de la MIR no estan confirmados en el sistema MML, acércate a CPLADEM'
 					);
 					return response()->json($error);
 				}
@@ -889,7 +889,7 @@ class MetasController extends Controller
 						->where('estado', 1)
 						->groupByRaw('programa_presupuestario')->get();
 					if (count($activs)) {
-							$proyecto = DB::table('mml_mir')
+						/* 	$proyecto = DB::table('mml_mir')
 								->select(
 									'mml_mir.id',
 									'mml_mir.area_funcional AS area'
@@ -898,11 +898,11 @@ class MetasController extends Controller
 								->where('mml_mir.nivel', 11)
 								->where('mml_mir.clv_upp', $upp)
 								->get();
-						if (count($proyecto)) {
+						if (count($proyecto)) { */
 							return ["status" => true, "mensaje" => '', "estado" => true];
-						} else {
+						/* } else {
 							return ["status" => false, "mensaje" => 'No hay registros en MIR acercate a CPLADEM', "estado" => true];
-						}
+						} */
 					} else {
 						return ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false, "url" => '/calendarizacion/claves'];
 					}

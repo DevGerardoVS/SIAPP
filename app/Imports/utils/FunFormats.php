@@ -76,15 +76,14 @@ class FunFormats
         }
     }
     public static function arrEquals ($numeros) {
-        Log::debug($numeros);
         $duplicados = [];
         $bool = count($numeros);
 
-        $tempArray = [...$numeros].sort();
-
-        for ($i = 0; i <= count($tempArray); $i++) {
-            if ($tempArray[i + 1] === $tempArray[i]) {
-                $duplicados[]=$tempArray[$i];
+        asort($numeros);
+        var_export($numeros);
+        for ($i = 0; $i <= count($numeros); $i++) {
+            if ($numeros[$i + 1] === $numeros[$i]) {
+                $duplicados[]=$numeros[$i];
             }
         }
         if ($bool != count($duplicados)) { return false; } else { return true; }
