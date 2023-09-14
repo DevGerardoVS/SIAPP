@@ -204,7 +204,9 @@ class MetasController extends Controller
 		if ($check['status']) {
 			$fondos = DB::table('programacion_presupuesto')
 				->leftJoin('fondo', 'fondo.clv_fondo_ramo', 'programacion_presupuesto.fondo_ramo')
+				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
 				->select(
+					
 					'fondo.id',
 					'programacion_presupuesto.fondo_ramo as clave',
 					DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", fondo.ramo) AS ramo')
@@ -222,11 +224,34 @@ class MetasController extends Controller
 				->where('programa_presupuestario', $areaAux[7])
 				->where('subprograma_presupuestario', $areaAux[8])
 				->where('proyecto_presupuestario', $areaAux[9])
+				->where('v_epp.presupuestable', '=',1)
 				->groupByRaw('clave')
+				->where('programacion_presupuesto.ejercicio', $check['anio'])
+				->get();
+				$m = DB::table('v_epp')
+				->select(
+					'v_epp.con_mir'
+				)
+				->where('v_epp.deleted_at', null)
+				->where('clv_finalidad', $areaAux[0])
+				->where('clv_funcion', $areaAux[1])
+				->where('clv_subfuncion', $areaAux[2])
+				->where('clv_eje', $areaAux[3])
+				->where('clv_linea_accion', $areaAux[4])
+				->where('clv_programa_sectorial', $areaAux[5])
+				->where('clv_tipologia_conac', $areaAux[6])
+				->where('clv_upp', $entidadAux[0])
+				->where('clv_ur', $entidadAux[2])
+				->where('clv_programa', $areaAux[7])
+				->where('clv_subprograma', $areaAux[8])
+				->where('clv_proyecto', $areaAux[9])
+				->where('presupuestable', '=',1)
+				->groupByRaw('con_mir')
 				->where('ejercicio', $check['anio'])
 				->get();
+
 			$activ = [];
-			if( $areaAux[8]!='UUU'){
+			if( $m[0]->con_mir==1){
 				$activ = DB::table('mml_mir')
 					->select(
 						'mml_mir.id',
@@ -329,15 +354,39 @@ class MetasController extends Controller
 		Controller::check_permission('postMetas');
 		$anio = DB::table('cierre_ejercicio_metas')->where('deleted_at',null)->max('ejercicio');
 		$clv=explode( '/', $request->area);
+		
 		if(isset($request->actividad_id) && $request->actividad_id!=null && $request->actividad_id!= ''){
-			$act = MmlMir::create([
-				'entidad_ejecutora'=>$clv[1],    
-				'area_funcional'=>$clv[0],
-				'id_catalogo'=>$request->actividad_id=='ot'?null:$request->actividad_id,
-				'nombre'=>isset($request->inputAc)&& $request->inputAc!=null && $request->inputAc!= ''?$request->inputAc:null,
-				'ejercicio'=>$anio,
-				'created_user'=>$username , 
-			]);
+			if($request->actividad_id=='ot'){
+				$act = MmlMir::create([
+					'clv_upp'=>$request->upp,
+					'entidad_ejecutora'=> str_replace('-', "",$clv[1]),    
+					'area_funcional'=> str_replace('-', "",$clv[0]), 
+					'id_catalogo'=>null,
+					'nombre'=>$request->inputAc,
+					'ejercicio'=>$anio,
+					'created_user'=>$username , 
+				]);
+			}else{
+				$meta = MmlMir::where('id_catalogo',$request->actividad_id)->firstOrFail();
+				if($meta){
+					$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'La actvidad ya cuenta con una meta ', "title" => "La meta ya existe"]];
+					return response()->json($res, 200);
+				}else{
+					$act = MmlMir::create([
+						'clv_upp'=>$request->upp,
+						'entidad_ejecutora'=> str_replace('-', "",$clv[1]),    
+						'area_funcional'=> str_replace('-', "",$clv[0]), 
+						'id_catalogo'=>$request->actividad_id,
+						'nombre'=>null,
+						'ejercicio'=>$anio,
+						'created_user'=>$username , 
+					]);
+
+				}
+
+			}
+			
+
 
 		}
 	/* 	$metaexist = DB::table('metas')
@@ -377,8 +426,8 @@ class MetasController extends Controller
 				
 					$meta = Metas::create([
 						'mir_id' => isset($request->sel_actividad) ?intval($request->sel_actividad):NULL,
-						'actividad_id' => isset($request->actividad_id) ?intval($act->is_dir):NULL,
-						'clv_fondo' => $request->sel_fondo,
+						'actividad_id' => isset($request->actividad_id) ?intval($act->id):NULL,
+						'clv_fondo' =>isset($request->sel_fondo)?$request->sel_fondo:$request->fondo_id,
 						'estatus' => $confirm['status']?1:0,
 						'tipo' => $request->tipo_Ac,
 						'beneficiario_id' => $request->tipo_Be,
@@ -400,7 +449,11 @@ class MetasController extends Controller
 						'ejercicio'=>$anio,
 						'created_user' => $username
 					]);
+					
 					if ($meta) {
+						$pp=explode( '-', $clv[0]);
+						$meta->clv_actividad ="".$request->upp."-".$pp[7]."-".$meta->id."-".$anio;
+						$meta->save();
 						$b = array(
 							"username" => $username,
 							"accion" => 'Crear Meta',
@@ -480,8 +533,18 @@ class MetasController extends Controller
 	public function deleteMeta(Request $request)
 	{
 		Controller::check_permission('deleteMetas');
+		$meta = Metas::where('id', $request->id)->firstOrFail();
+		$meta->deleted_user=Auth::user()->username;
+		$meta->save();
 		$mDelete = Metas::where('id', $request->id)->delete();
 		if ($mDelete) {
+			if($meta->actividad_id !=null){
+				$actv = MmlMir::where('id',$meta->actividad_id)->firstOrFail();
+				$actv->deleted_user=Auth::user()->username;
+				$actv->save();
+				$m = MmlMir::where('id', $meta->actividad_id)->delete();
+			}
+			
 			$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
 			$b = array(
 				"username" => Auth::user()->username,
@@ -1303,14 +1366,7 @@ class MetasController extends Controller
 		
 			if(isset($idAc)){
 				$clave = explode("$", $idAc);
-				Log::debug($clave[0]);
-				Log::debug($clave[1]);
-				$area = str_split($clave[0]);
-				$entidad = str_split($clave[1]);
-				/* $area = '' . strval($areaAux[0]) . '-' . strval($areaAux[1]) . '-' . strval($areaAux[2]) . '-' . strval($areaAux[3]) . '-' . strval($areaAux[4]) . strval($areaAux[5]) . '-' . strval($areaAux[6]) . '-' . strval($areaAux[7]) . '-' . strval($areaAux[8]) . strval($areaAux[9]) . "-" . strval($areaAux[10]) . strval($areaAux[11]) . strval($areaAux[12]) . "-" . strval($areaAux[13]) . strval($areaAux[14]) . strval($areaAux[15]) . '';
-				$entidad = '' . strval($e[0]). strval($e[1]). strval($e[2]) . '-' . strval($e[3]).'-'. strval($e[4]). strval($e[5]).'';
-				 */$anio = 2024;
-		
+				$anio = 2024;
 				$meses = MetasController::meses($clave[0], $clave[1], $anio, $idfondo);
 				return ['mese'=>$meses];
 			}else{
