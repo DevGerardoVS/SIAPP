@@ -128,4 +128,13 @@ class MetasHelper{
 		$tipo[] = ['2', 'Especial'];
 		return  $tipo;
 	}
+	public static function cargaMasiva($upp,$anio){
+        try {
+
+           
+        } catch(\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+        }
+    }
 }
