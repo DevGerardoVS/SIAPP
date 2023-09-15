@@ -427,7 +427,7 @@ class MetasController extends Controller
 					$meta = Metas::create([
 						'mir_id' => isset($request->sel_actividad) ?intval($request->sel_actividad):NULL,
 						'actividad_id' => isset($request->actividad_id) ?intval($act->id):NULL,
-						'clv_fondo' =>isset($request->sel_fondo)?$request->sel_fondo:$request->fondo_id,
+						'clv_fondo' =>isset($act->id)?$request->fondo_id:$request->sel_fondo,
 						'estatus' => $confirm['status']?1:0,
 						'tipo' => $request->tipo_Ac,
 						'beneficiario_id' => $request->tipo_Be,
