@@ -133,7 +133,8 @@ class ClavePreController extends Controller
                 $claves->whereIn('programacion_presupuesto.upp',$arrayClaves);
             }
         })
-        ->orderBy('claveUpp');
+        ->orderBy('v_entidad_ejecutora.clv_upp')
+        ->orderBy('v_entidad_ejecutora.clv_ur');
         if ($request->upp && $request->upp != '' || $uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
            $claves =  $claves->get();
         }else {
