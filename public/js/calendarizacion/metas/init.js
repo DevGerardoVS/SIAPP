@@ -625,7 +625,8 @@ var dao = {
             });
         });
     },
-    getFyA: function (area, enti) {
+    getFyA: function (area, enti, mir) {
+        console.log("conmir",mir);
         $('#actividad_id').attr('disabled', 'disabled');
         $(".inputAc").hide();
         $("#idAct").addClass("col-md-6").removeClass("col-md-4");
@@ -650,7 +651,8 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {     
             const { fondos, activids } = data;
-            if (area.indexOf("UUU") > 0) {
+            if (mir == 0) {
+               
                 var fond = $('#fondo_id');
                 fond.html('');
                 if (fondos.length >= 2) {

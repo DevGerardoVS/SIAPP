@@ -2,6 +2,7 @@
 namespace App\Imports\utils;
 
 use App\Models\calendarizacion\Metas;
+use App\Models\MmlMirCatalogo;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -17,7 +18,7 @@ class FunFormats
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     public static function typeTotal($value,$n)
     {
-        $tipo = $value[15];
+        $tipo = $value[16];
         $auxTotal = array(
             $value[18],
             $value[19],
@@ -34,8 +35,7 @@ class FunFormats
         );
         switch ($tipo) {
             case 0:
-                 return FunFormats::totalContinua($auxTotal,$n);
-               //return FunFormats::totalAcum($auxTotal);
+               return FunFormats::totalAcum($auxTotal);
             case 1:
                 return FunFormats::totalContinua($auxTotal,$n);
             //  return $this->totalAcum($auxTotal);
@@ -72,26 +72,6 @@ class FunFormats
             return false;
         }
     }
-    public static function arrEquals ($numeros) {
-        
-
-        Log::debug($numeros);
-        $duplicados = [];
-        $bool = count($numeros);
-        if($bool=0){
-            return false;
-        }
-        asort($numeros);
-        var_export($numeros);
-        for ($i = 0; $i <= count($numeros); $i++) {
-            if ($numeros[$i + 1] === $numeros[$i]) {
-                Log::debug($numeros[$i]);
-                $duplicados[]=$numeros[$i];
-            }
-        }
-        Log::debug($duplicados);
-        if ($bool != count($duplicados)) { return false; } else { return true; }
-    }
     public static function saveImport($filearray)
     {
         if (count($filearray) >= 1) {
@@ -116,8 +96,34 @@ class FunFormats
                             ->where('ejercicio', '=', $anio[0]->ejercicio)
                             ->where('estatus', 3)->get();
 				if (count($isMir)) {
+                        $flg = false;
+                    if($k[13]=='ot' || $k[13]=='NULL'||$k[13]=='null' ){
+                        $flg = true;
+                    }else{
+                            if (is_numeric($k[13])) {
+                                $activ = MmlMirCatalogo::select('id')->where('deleted_at', null)->where('grupo', 'ActividadesGlobales')->where('id', $k[13])->first();
+                                if ($activ) {
+                                    $flg = true;
+                                } else {
+                                    $error = array(
+                                        "icon" => 'error',
+                                        "title" => 'Error',
+                                        "text" => 'Actividad Ingresada no existe en la fila: ' . $index
+                                    );
+                                    return $error;
+
+                                }
+                            }else{
+                                $error = array(
+                                    "icon" => 'error',
+                                    "title" => 'Error',
+                                    "text" => 'Actividad Ingresada en la fila: ' . $index.', no es una clave usa los valores del catalogo proporcionado'
+                                );
+                                return $error;
+                            }
+                    }
                     $actividad=Mir::where('deleted_at', null)->where('id', $k[14])->first();
-                    if ($actividad) {  
+                    if ($actividad && $flg) {  
                         $area= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]).'';
                         $anio = $actividad->ejercicio;
                         if ($actividad->area_funcional==$area) {
@@ -174,7 +180,11 @@ class FunFormats
                                         $e=FunFormats::isExist($entidad, $k[12],$k[13]);
                                           
                                         if($e["status"]){
-                                        $unique= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[13]).'';
+                                            $unique= "";
+                                            if($k[13]=="NULL" ||$k[13]=="null" || is_string($k[13])){
+                                                $unique= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[14]).'';
+                                            }
+                        
                                         $medidas=DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id',$k[33])->get();
                                         
                                         if(count($medidas)){
@@ -182,7 +192,6 @@ class FunFormats
                                             if(count($bene)){
                                         DB::table('metas_temp')->insert(['clave' => $unique,'fila'=>$index,'upp'=>strval($k[7])]);
                                         $type=FunFormats::typeTotal($k,$m["validos"]);
-                                                        Log::debug($type);
                                                         if ($type != false) {
                                                             $aux[] = [
                                                                 'meta_id' => $e["id"],
@@ -389,7 +398,7 @@ class FunFormats
     }
     public static function isNULLOrEmpy($datos,$index){
 		for ($i=0; $i <count($datos) ; $i++) {
-            if (count($datos) === 34) {
+            if (count($datos) === 35) {
                 if ($datos[$i] == '' ||$datos[$i]==' ') {
                     return ["status" => true, "error" => 'El documento contiene campos vacios en la columna:' . FunFormats::abc($i) . ' fila:' . $index . ''];
                 }
