@@ -15,6 +15,7 @@ class Metas extends Model
     protected $fillable = [
         'clv_fondo',
         'mir_id',
+        'actividad_id',
         'tipo',
         'beneficiario_id',
         'unidad_medida_id',
@@ -34,7 +35,6 @@ class Metas extends Model
         'total',
         'estatus',
         'ejercicio',
-        'actividad_id',
         'created_user',
         'updated_user'
     ];

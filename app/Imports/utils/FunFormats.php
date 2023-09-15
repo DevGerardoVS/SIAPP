@@ -76,15 +76,14 @@ class FunFormats
         }
     }
     public static function arrEquals ($numeros) {
-        Log::debug($numeros);
         $duplicados = [];
         $bool = count($numeros);
 
-        $tempArray = [...$numeros].sort();
-
-        for ($i = 0; i <= count($tempArray); $i++) {
-            if ($tempArray[i + 1] === $tempArray[i]) {
-                $duplicados[]=$tempArray[$i];
+        asort($numeros);
+        var_export($numeros);
+        for ($i = 0; $i <= count($numeros); $i++) {
+            if ($numeros[$i + 1] === $numeros[$i]) {
+                $duplicados[]=$numeros[$i];
             }
         }
         if ($bool != count($duplicados)) { return false; } else { return true; }
@@ -392,8 +391,7 @@ class FunFormats
     public static function validateMonth($clave,$m,$anio,$fondo){
         $meses = json_decode($m);
         $areaAux=explode( '/', $clave);
-       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);
-      
+       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);      
         $arrM = [];
         $arrMV = [];
         foreach ($m as $key => $value) {
@@ -411,7 +409,7 @@ class FunFormats
                     }
                     break;
                 case 'febrero':
-                    if ($e != 0.0 || $e == 0) {
+                    if ($e == 0.0 || $e == 0) {
                         if($meses->febrero!=0){
                             $arrM[] = "febrero";
                         }

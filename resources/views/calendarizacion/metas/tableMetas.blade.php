@@ -29,11 +29,12 @@
                 <div class="form-group col-md-4 inputAc" style="display: none">
                     <label class="control-label">Nueva Actividad</label>
                     <input type="text" class="form-control" id="inputAc" name="inputAc" disabled>
+                    <span id="inputAc-error"></span>
                 </div>
                 <div id="idFond" class="form-group col-md-6">
                     <label class="control-label ">Fondo &nbsp&nbsp&nbsp&nbsp</label>
-                    <select class="form-control" placeholder="Selecciona una actividad" id="sel_fondo"
-                        data-live-search="true" name="sel_fondo" autocomplete="sel_fondo" disabled>
+                    <select class="form-control" placeholder="Selecciona una actividad" id="fondo_id"
+                        data-live-search="true" name="fondo_id" autocomplete="fondo_id" >
                         <option value="">---Fondo---</option>
                     </select>
                 </div>
