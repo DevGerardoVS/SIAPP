@@ -565,7 +565,9 @@ var dao = {
             contentType: false,
             cache: false,
         }).done(function (response) {
+            $("#cmFile").val("");
             $('#cerrar').trigger('click');
+
             Swal.fire({
                 icon: response.icon,
                 title: response.title,

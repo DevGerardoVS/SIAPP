@@ -15,11 +15,10 @@ use App\Http\Controllers\Calendarizacion\MetasController;
 class FunFormats
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-    public static function typeTotal($value)
+    public static function typeTotal($value,$n)
     {
         $tipo = $value[15];
         $auxTotal = array(
-            $value[17],
             $value[18],
             $value[19],
             $value[20],
@@ -30,14 +29,15 @@ class FunFormats
             $value[25],
             $value[26],
             $value[27],
-            $value[28]
+            $value[28],
+            $value[29]
         );
         switch ($tipo) {
             case 0:
-               /// return FunFormats::totalContinua($auxTotal);
-               return FunFormats::totalAcum($auxTotal);
+                 return FunFormats::totalContinua($auxTotal,$n);
+               //return FunFormats::totalAcum($auxTotal);
             case 1:
-                return FunFormats::totalContinua($auxTotal);
+                return FunFormats::totalContinua($auxTotal,$n);
             //  return $this->totalAcum($auxTotal);
             case 2:
                 return FunFormats::totalEspecial($auxTotal);
@@ -58,26 +58,15 @@ class FunFormats
         }
         return $suma;
     }
-    public static function totalContinua($arreglo)
+    public static function totalContinua($arreglo,$n)
     {
-        $e = array();
         $newa = array_filter($arreglo, function ($var) {
             return $var != 0;
         });
-       /*  $suma = 0;
-        for ($i = 0; $i <= count($newa); $i++) {
-            $suma = intval($newa[$i]);
-            if ($suma == 0) {
-                Log::debug("if CERO");
-                $e[$i] =$arreglo[$i];
-               /*  unset($arreglo[$i]);
-                $arreglo = array_values($arreglo);
-            }
-        } */
         $newa=array_values($newa);
+        $flag = count($newa) == $n ? true : false;
         $newa=array_unique($newa);
-
-        if (count($newa)) {
+        if (count($newa)==1&&$flag) {
             return $newa[0];
         } else{
             return false;
@@ -127,7 +116,7 @@ class FunFormats
                             ->where('ejercicio', '=', $anio[0]->ejercicio)
                             ->where('estatus', 3)->get();
 				if (count($isMir)) {
-                    $actividad=Mir::where('deleted_at', null)->where('id', $k[13])->first();
+                    $actividad=Mir::where('deleted_at', null)->where('id', $k[14])->first();
                     if ($actividad) {  
                         $area= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]).'';
                         $anio = $actividad->ejercicio;
@@ -137,30 +126,46 @@ class FunFormats
 
                             $pres=FunFormats::existPP($clave,$anio);
                             if (count($pres)) {
-                                $s=FunFormats::validatecalendar($k[7],$k[15]);
+                                $s=FunFormats::validatecalendar($k[7],$k[16]);
                                 if ($s["status"]) {
                                     $meses = [
-                                        "enero" => $k[17],
-                                        "febrero" => $k[18],
-                                        "marzo" => $k[19],
-                                        "abril" => $k[20],
-                                        "mayo" => $k[21],
-                                        "junio" => $k[22],
-                                        "julio" => $k[23],
-                                        "agosto" => $k[24],
-                                        "septiembre" => $k[25],
-                                        "octubre" => $k[26],
-                                        "noviembre" => $k[27],
-                                        "diciembre" => $k[28],
+                                        "enero" => $k[18],
+                                        "febrero" => $k[19],
+                                        "marzo" => $k[20],
+                                        "abril" => $k[21],
+                                        "mayo" => $k[22],
+                                        "junio" => $k[23],
+                                        "julio" => $k[24],
+                                        "agosto" => $k[25],
+                                        "septiembre" => $k[26],
+                                        "octubre" => $k[27],
+                                        "noviembre" => $k[28],
+                                        "diciembre" => $k[29],
                                     ];
-                                    $mCeros = array_filter($meses, function ($var) {
-                                        return $var != 0;
+                                        $mCeros = array_filter($meses, function ($var) {
+                                            return $var != 0;
                                     });
+                                    $mletras=[];
+                                    foreach ($meses as $key => $value) {
+                                       if(!is_numeric(intval($value))){
+                                                $mletras[] = $value;
+
+                                       }
+                                    }
+                                    if(count($mletras)){
+                                        $error = array(
+                                            "icon" => 'error',
+                                            "title" => 'Datos incorrectos',
+                                            "text" => 'los meses solo deben ser numeros enteros positivos en la meta de la fila: '. $index
+                                        );
+                                        return $error;
+                                    }
+
                                     if(!count($mCeros)){
                                         $error = array(
                                             "icon" => 'error',
                                             "title" => 'Datos incorrectos',
-                                            "text" => 'No pueden ir en cero todos los meses en la meta de la fila: '. $index
+                                            "text" => 'No pueden ir en cero todos los meses y deben se numeros enteros positivos en la meta de la fila: '. $index
                                         );
                                         return $error;
                                     }
@@ -170,35 +175,36 @@ class FunFormats
                                           
                                         if($e["status"]){
                                         $unique= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[13]).'';
-                                        $medidas=DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id',$k[32])->get();
+                                        $medidas=DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id',$k[33])->get();
                                         
                                         if(count($medidas)){
-                                            $bene=DB::table('beneficiarios')->select('id','clave')->where('deleted_at', null)->where('clave',$k[29])->get();
+                                            $bene=DB::table('beneficiarios')->select('id','clave')->where('deleted_at', null)->where('clave',$k[30])->get();
                                             if(count($bene)){
                                         DB::table('metas_temp')->insert(['clave' => $unique,'fila'=>$index,'upp'=>strval($k[7])]);
-                                        $type=FunFormats::typeTotal($k);
+                                        $type=FunFormats::typeTotal($k,$m["validos"]);
                                                         Log::debug($type);
                                                         if ($type != false) {
                                                             $aux[] = [
                                                                 'meta_id' => $e["id"],
                                                                 'clv_fondo' => $k[12],
-                                                                'mir_id' => $k[13],
-                                                                'tipo' => $k[16],
-                                                                'beneficiario_id' => $k[29],
-                                                                'unidad_medida_id' => $k[32],
-                                                                'cantidad_beneficiarios' => $k[31],
-                                                                'enero' => $k[17],
-                                                                'febrero' => $k[18],
-                                                                'marzo' => $k[19],
-                                                                'abril' => $k[20],
-                                                                'mayo' => $k[21],
-                                                                'junio' => $k[22],
-                                                                'julio' => $k[23],
-                                                                'agosto' => $k[24],
-                                                                'septiembre' => $k[25],
-                                                                'octubre' => $k[26],
-                                                                'noviembre' => $k[27],
-                                                                'diciembre' => $k[28],
+                                                                'actividad_id' => $k[13],
+                                                                'mir_id' => $k[14],
+                                                                'tipo' => $k[17],
+                                                                'beneficiario_id' => $k[30],
+                                                                'unidad_medida_id' => $k[33],
+                                                                'cantidad_beneficiarios' => $k[32],
+                                                                'enero' => $k[18],
+                                                                'febrero' => $k[19],
+                                                                'marzo' => $k[20],
+                                                                'abril' => $k[21],
+                                                                'mayo' => $k[22],
+                                                                'junio' => $k[23],
+                                                                'julio' => $k[24],
+                                                                'agosto' => $k[25],
+                                                                'septiembre' => $k[26],
+                                                                'octubre' => $k[27],
+                                                                'noviembre' => $k[28],
+                                                                'diciembre' => $k[29],
                                                                 'total' => $type,
                                                                 'ejercicio' => $actividad->ejercicio,
                                                                 'created_user' => auth::user()->username
@@ -248,11 +254,16 @@ class FunFormats
                                         }else{
                                             $mesaje = '. Solo puede registrar en los meses: ' . $meses;
                                         }
+                                            $ceros = '';
+                                        if(count($m["mesCero"])){
+                                            $mesesCero=implode(", ", $m["mesCero"]);
+                                                $ceros = ", los meses ".$mesesCero.", NO pueden ir en CERO o numeros negativos";
+                                        }
 
                                         $error = array(
                                             "icon" => 'error',
                                             "title" => 'Error',
-                                            "text" => 'Los meses: '.$err. ' no coinciden en las claves presupuestales, en la fila '. $index.$mesaje
+                                            "text" => 'Los meses: '.$err. ' no coinciden en las claves presupuestales, en la fila '. $index.$mesaje.$ceros
                                         );
                                         return $error;
                                     }
@@ -427,144 +438,193 @@ class FunFormats
  
 	}
 
-    public static function validateMonth($clave,$m,$anio,$fondo){
+    public static function validateMonth($clave, $m, $anio, $fondo)
+    {
         $meses = json_decode($m);
-        $areaAux=explode( '/', $clave);
-       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);      
+        $areaAux = explode('/', $clave);
+        $m = MetasController::meses($areaAux[0], $areaAux[1], $anio, $fondo);
         $arrM = [];
         $arrMV = [];
+        $mesCero = [];
+        $mesesV = 0;
         foreach ($m as $key => $value) {
             $e = $value;
-       
+
             switch ($key) {
                 case 'enero':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->enero!=0){
-                            $arrM[] ="enero";
+                        if ($meses->enero != 0) {
+                            $arrM[] = "enero";
                         }
-                        
-                    }else{
-                        $arrMV[] ="ENERO";
+
+                    } else {
+                        if ($meses->enero <= 0) {
+                            $mesCero[] = "ENERO";
+                        }
+                        $mesesV++;
+                        $arrMV[] = "ENERO";
                     }
                     break;
                 case 'febrero':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->febrero!=0){
+                        if ($meses->febrero != 0) {
                             $arrM[] = "febrero";
                         }
-                        
-                    } else{
+                    } else {
+                        if ($meses->febrero <= 0) {
+                            $mesCero[] = "FEBRERO";
+                        }
+
+                        $mesesV++;
                         $arrMV[] = "FEBRERO";
                     }
                     break;
                 case 'marzo':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->marzo!=0){
+                        if ($meses->marzo != 0) {
                             $arrM[] = "marzo";
                         }
-                        
-                    }else{
+                    } else {
+                        if ($meses->marzo <= 0) {
+                            $mesCero[] = "MARZO";
+                        }
+                        $mesesV++;
                         $arrMV[] = "MARZO";
                     }
                     break;
                 case 'abril':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->abril!=0){
+                        if ($meses->abril != 0) {
                             $arrM[] = "abril";
                         }
-                        
 
-                    }else{
+
+                    } else {
+                        if ($meses->abril <= 0) {
+                            $mesCero[] = "ABRIL";
+                        }
+                        $mesesV++;
                         $arrMV[] = "ABRIL";
                     }
                     break;
                 case 'mayo':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->mayo!=0){
+                        if ($meses->mayo != 0) {
                             $arrM[] = "mayo";
                         }
-                       
-                    }else{
+                    } else {
+                        if ($meses->mayo <= 0) {
+                            $mesCero[] = "MAYO";
+                        }
+                        $mesesV++;
                         $arrMV[] = "MAYO";
                     }
                     break;
                 case 'junio':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->junio!=0){
+                        if ($meses->junio != 0) {
                             $arrM[] = "junio";
                         }
-                    }else{
+                    } else {
+                        if ($meses->junio <= 0) {
+                            $mesCero[] = "JUNIO";
+                        }
+                        $mesesV++;
                         $arrMV[] = "JUNIO";
                     }
                     break;
                 case 'julio':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->julio!=0){
+                        if ($meses->julio != 0) {
                             $arrM[] = "julio";
                         }
-                    }else{
+                    } else {
+                        if ($meses->julio <= 0) {
+                            $mesCero[] = "JULIO";
+                        }
+                        $mesesV++;
                         $arrMV[] = "JULIO";
                     }
                     break;
                 case 'agosto':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->agosto!=0){
+                        if ($meses->agosto != 0) {
                             $arrM[] = "agosto";
                         }
-                        
-                    }else{
+
+                    } else {
+                        if ($meses->agosto <= 0) {
+                            $mesCero[] = "AGOSTO";
+                        }
+                        $mesesV++;
                         $arrMV[] = "AGOSTO";
                     }
                     break;
                 case 'septiembre':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->septiembre!=0){
+                        if ($meses->septiembre != 0) {
                             $arrM[] = "septiembre";
                         }
-                        
-                    }else{
+                    } else {
+                        if ($meses->septiembre <= 0) {
+                            $mesCero[] = "SEPTIEMBRE";
+                        }
+
+                        $mesesV++;
                         $arrMV[] = "SEPTIEMBRE";
                     }
                     break;
                 case 'octubre':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->octubre!=0){
+                        if ($meses->octubre != 0) {
                             $arrM[] = "octubre";
                         }
-                    }else{
+                    } else {
+                        if ($meses->octubre <= 0) {
+                            $mesCero[] = "OCTUBRE";
+                        }
+
+                        $mesesV++;
                         $arrMV[] = "OCTUBRE";
                     }
                     break;
 
                 case 'noviembre':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->noviembre!=0){
+                        if ($meses->noviembre != 0) {
                             $arrM[] = "noviembre";
                         }
-                    }else{
-                        $arrMV[] = "NOBIEMBRE";
+                    } else {
+                        if ($meses->noviembre <= 0) {
+                            $mesCero[] = "NOVIEMBRE";
+                        }
+                        $mesesV++;
+                        $arrMV[] = "NOVIEMBRE";
                     }
                     break;
 
                 case 'diciembre':
                     if ($e == 0.0 || $e == 0) {
-                        if($meses->diciembre!=0){
+                        if ($meses->diciembre != 0) {
                             $arrM[] = "diciembre";
                         }
-                    }else{
+                    } else {
+                        if ($meses->diciembr <= 0) {
+                            $mesCero[] = "DICIEMBRE";
+                        }
+                        $mesesV++;
                         $arrMV[] = "DICIEMBRE";
                     }
-            
+
                 default:
                     break;
             }
-            
-        }
 
-        if(count($arrM)==0){
-            return ["status"=>true];
-        }else{
-            return ["status"=>false,"errorM"=>$arrM,"mV"=>$arrMV];
+        }
+        if (count($arrM) == 0 && count($mesCero) == 0) {
+            return ["status" => true, "validos" => $mesesV];
+        } else {
+            return ["status" => false, "errorM" => $arrM, "mV" => $arrMV, "mesCero" => $mesCero];
         }
 
 
