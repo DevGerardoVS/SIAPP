@@ -295,9 +295,9 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
         
         }
         $row['user']='CargaMasiva'.Auth::user()->username;
-        //validacion si la upp tiene firmados claves presupuestales
+/*         //validacion si la upp tiene firmados claves presupuestales
         $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->where('ejercicio',$row['ano'])->value('estado');
-        $valupp==1 ? $row['upp']='0' : $row['upp']; 
+        $valupp==1 ? $row['upp']='0' : $row['upp'];  */
 
         return $row;
 
@@ -355,7 +355,7 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
           'noviembre'    => $row['noviembre'],
           'diciembre'    => $row['diciembre'],
           'total'    => $row['total'],
-          'estado'    => 0,
+          'estado'    => 1,
           'tipo'    => $row['tipo'], 
           'updated_at' => null,
           'created_user' => $row['user']
