@@ -134,7 +134,7 @@ class ClavePreController extends Controller
             }
         })
         ->orderBy('v_entidad_ejecutora.clv_upp')
-        ->orderBy('v_entidad_ejecutora.ur');
+        ->orderBy('v_entidad_ejecutora.clv_ur');
         if ($request->upp && $request->upp != '' || $uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
            $claves =  $claves->get();
         }else {
