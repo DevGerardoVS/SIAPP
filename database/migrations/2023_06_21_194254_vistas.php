@@ -35,6 +35,7 @@ return new class extends Migration
             c17.clave clv_subprograma,c17.descripcion subprograma,
             c18.clave clv_proyecto,c18.descripcion proyecto,
             e.presupuestable,
+            e.con_mir,
             e.confirmado,
             e.ejercicio,
             e.deleted_at,

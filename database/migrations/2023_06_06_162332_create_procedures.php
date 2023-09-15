@@ -1245,9 +1245,11 @@ return new class extends Migration {
                     monto_anual,
                     enero,febrero,marzo,abril,mayo,
                     junio,julio,agosto,septiembre,
-                    octubre,noviembre,diciembre
+                    octubre,noviembre,diciembre,
+                    cec.capturista
                 from (
                     select 
+                        clv_upp,
                         concat(
                             clv_upp,\" \",
                             upp
@@ -1263,6 +1265,7 @@ return new class extends Migration {
                     group by vppa.clv_upp,vppa.upp,orden,vppa.upp
                     union all
                     select 
+                        clv_upp,
                         concat(
                             clv_upp,\" \",
                             upp
@@ -1312,7 +1315,8 @@ return new class extends Migration {
                     from ',@tabla,' pp
                     where ejercicio = ',anio,' and ',@corte,' ',@upp,'
                     order by upp,orden
-                ) tabla;
+                ) tabla
+                left join cierre_ejercicio_claves cec on tabla.clv_upp =  cec.clv_upp and cec.deleted_at is null and cec.ejercicio = ',anio,';
             ');
 
             prepare stmt  from @query;
@@ -1450,7 +1454,7 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date)
         begin
-            set @corte := 'mm.deleted_at is null';
+        set @corte := 'mm.deleted_at is null';
             set @upp := '';
             if (corte is not null) then 
                 set @corte := CONCAT('mm.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
@@ -1462,7 +1466,8 @@ return new class extends Migration {
             set @query := CONCAT('
 				select 
 					c.descripcion upp,
-					t.*
+					t.*,
+					cem.capturista
 				from (
 	                select 
 	                    mm.clv_upp,
@@ -1496,6 +1501,7 @@ return new class extends Migration {
 	                where mm.nivel = 11 ',@upp,' and mm.ejercicio = ',anio,' and ',@corte,'
 				)t
 				left join catalogo c on clv_upp = c.clave and c.deleted_at is null and c.grupo_id = 6
+				left join cierre_ejercicio_metas cem on t.clv_upp = cem.clv_upp and cem.ejercicio = ',anio,' and cem.deleted_at is null
 				order by clv_upp;
             ');
 
@@ -3032,13 +3038,15 @@ return new class extends Migration {
                 if( @filas > 0) then 
                     select * from rel_faltantes;
                 else
-                    insert into epp(sector_publico_id,sector_publico_f_id,sector_economia_id,subsector_economia_id,ente_publico_id,
+                    set @id := (select max(id) from epp);
+                	if (@id is null) then set @id := 0; end if;
+                    insert into epp(id,sector_publico_id,sector_publico_f_id,sector_economia_id,subsector_economia_id,ente_publico_id,
                         upp_id,subsecretaria_id,ur_id,
                         finalidad_id,funcion_id,subfuncion_id,eje_id,linea_accion_id,programa_sectorial_id,tipologia_conac_id,
                         programa_id,subprograma_id,proyecto_id,
                         ejercicio,presupuestable,confirmado,created_at,updated_at,deleted_at,deleted_user,updated_user,created_user)
                     select 
-                        id_sector_publico,id_sector_publico_f,id_sector_economia,id_subsector_economia,id_ente_publico,
+                        (@id := @id+1) id,id_sector_publico,id_sector_publico_f,id_sector_economia,id_subsector_economia,id_ente_publico,
                         id_upp,id_subsecretaria,id_ur,
                         id_finalidad,id_funcion,id_subfuncion,id_eje,id_linea_accion,id_programa_sectorial,id_tipologia_conac,
                         id_programa,id_subprograma,id_proyecto,
@@ -3061,7 +3069,7 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE avance_etapas_upp_programa(in anio int)
         begin
             select 
-                'upp' tipo,
+                'UPP' tipo,
                 count(verde) verde,
                 count(amarillo) amarillo,
                 count(rojo) rojo,
@@ -3090,7 +3098,7 @@ return new class extends Migration {
             )t2
             union all
             select 
-                'programa' tipo,
+                'Programa' tipo,
                 count(verde) verde,
                 count(amarillo) amarillo,
                 count(rojo) rojo,

@@ -34,9 +34,10 @@ class FunFormats
         );
         switch ($tipo) {
             case 0:
-                return FunFormats::totalAcum($auxTotal);
+               /// return FunFormats::totalContinua($auxTotal);
+               return FunFormats::totalAcum($auxTotal);
             case 1:
-                return $auxTotal[0];
+                return FunFormats::totalContinua($auxTotal);
             //  return $this->totalAcum($auxTotal);
             case 2:
                 return FunFormats::totalEspecial($auxTotal);
@@ -56,6 +57,51 @@ class FunFormats
             $suma = $suma + $arreglo[$i];
         }
         return $suma;
+    }
+    public static function totalContinua($arreglo)
+    {
+        $e = array();
+        $newa = array_filter($arreglo, function ($var) {
+            return $var != 0;
+        });
+       /*  $suma = 0;
+        for ($i = 0; $i <= count($newa); $i++) {
+            $suma = intval($newa[$i]);
+            if ($suma == 0) {
+                Log::debug("if CERO");
+                $e[$i] =$arreglo[$i];
+               /*  unset($arreglo[$i]);
+                $arreglo = array_values($arreglo);
+            }
+        } */
+        $newa=array_values($newa);
+        $newa=array_unique($newa);
+
+        if (count($newa)) {
+            return $newa[0];
+        } else{
+            return false;
+        }
+    }
+    public static function arrEquals ($numeros) {
+        
+
+        Log::debug($numeros);
+        $duplicados = [];
+        $bool = count($numeros);
+        if($bool=0){
+            return false;
+        }
+        asort($numeros);
+        var_export($numeros);
+        for ($i = 0; $i <= count($numeros); $i++) {
+            if ($numeros[$i + 1] === $numeros[$i]) {
+                Log::debug($numeros[$i]);
+                $duplicados[]=$numeros[$i];
+            }
+        }
+        Log::debug($duplicados);
+        if ($bool != count($duplicados)) { return false; } else { return true; }
     }
     public static function saveImport($filearray)
     {
@@ -82,7 +128,7 @@ class FunFormats
                             ->where('estatus', 3)->get();
 				if (count($isMir)) {
                     $actividad=Mir::where('deleted_at', null)->where('id', $k[13])->first();
-                    if ($actividad) {
+                    if ($actividad) {  
                         $area= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]).'';
                         $anio = $actividad->ejercicio;
                         if ($actividad->area_funcional==$area) {
@@ -107,40 +153,64 @@ class FunFormats
                                         "noviembre" => $k[27],
                                         "diciembre" => $k[28],
                                     ];
+                                    $mCeros = array_filter($meses, function ($var) {
+                                        return $var != 0;
+                                    });
+                                    if(!count($mCeros)){
+                                        $error = array(
+                                            "icon" => 'error',
+                                            "title" => 'Datos incorrectos',
+                                            "text" => 'No pueden ir en cero todos los meses en la meta de la fila: '. $index
+                                        );
+                                        return $error;
+                                    }
                                     $m=FunFormats::validateMonth($entidad,json_encode($meses),$anio,$k[12]);
                                     if($m["status"]){
                                         $e=FunFormats::isExist($entidad, $k[12],$k[13]);
+                                          
                                         if($e["status"]){
                                         $unique= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[13]).'';
                                         $medidas=DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id',$k[32])->get();
+                                        
                                         if(count($medidas)){
                                             $bene=DB::table('beneficiarios')->select('id','clave')->where('deleted_at', null)->where('clave',$k[29])->get();
                                             if(count($bene)){
                                         DB::table('metas_temp')->insert(['clave' => $unique,'fila'=>$index,'upp'=>strval($k[7])]);
-                                            $aux[] = [
-                                                'meta_id'=>$e["id"],
-                                                'clv_fondo' => $k[12],
-                                                'mir_id' => $k[13],
-                                                'tipo' => $k[16],
-                                                'beneficiario_id' => $k[29],
-                                                'unidad_medida_id' => $k[32],
-                                                'cantidad_beneficiarios' => $k[31],
-                                                'enero' => $k[17],
-                                                'febrero' => $k[18],
-                                                'marzo' => $k[19],
-                                                'abril' => $k[20],
-                                                'mayo' => $k[21],
-                                                'junio' => $k[22],
-                                                'julio' => $k[23],
-                                                'agosto' => $k[24],
-                                                'septiembre' => $k[25],
-                                                'octubre' => $k[26],
-                                                'noviembre' => $k[27],
-                                                'diciembre' => $k[28],
-                                                'total' => FunFormats::typeTotal($k),
-                                                'ejercicio'=>$actividad->ejercicio,
-                                                'created_user' => auth::user()->username
-                                            ];
+                                        $type=FunFormats::typeTotal($k);
+                                                        Log::debug($type);
+                                                        if ($type != false) {
+                                                            $aux[] = [
+                                                                'meta_id' => $e["id"],
+                                                                'clv_fondo' => $k[12],
+                                                                'mir_id' => $k[13],
+                                                                'tipo' => $k[16],
+                                                                'beneficiario_id' => $k[29],
+                                                                'unidad_medida_id' => $k[32],
+                                                                'cantidad_beneficiarios' => $k[31],
+                                                                'enero' => $k[17],
+                                                                'febrero' => $k[18],
+                                                                'marzo' => $k[19],
+                                                                'abril' => $k[20],
+                                                                'mayo' => $k[21],
+                                                                'junio' => $k[22],
+                                                                'julio' => $k[23],
+                                                                'agosto' => $k[24],
+                                                                'septiembre' => $k[25],
+                                                                'octubre' => $k[26],
+                                                                'noviembre' => $k[27],
+                                                                'diciembre' => $k[28],
+                                                                'total' => $type,
+                                                                'ejercicio' => $actividad->ejercicio,
+                                                                'created_user' => auth::user()->username
+                                                            ];
+                                                        }else{
+                                                            $error = array(
+                                                                "icon" => 'error',
+                                                                "title" => 'Tipo de calendario CONTINUO',
+                                                                "text" => 'los valores de los meses tienen que ser iguales en la fila '. $index
+                                                            );
+                                                            return $error;
+                                                        }
                                             }else{
                                                 $error = array(
                                                     "icon" => 'error',
@@ -224,7 +294,7 @@ class FunFormats
                     $error = array(
                         "icon" => 'error',
                         "title" => 'Error',
-                        "text" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM'
+                        "text" => 'Los registros de la MIR no estan confirmados en el sistema MML, acércate a CPLADEM'
                     );
                     return $error;
                 }
@@ -360,12 +430,12 @@ class FunFormats
     public static function validateMonth($clave,$m,$anio,$fondo){
         $meses = json_decode($m);
         $areaAux=explode( '/', $clave);
-       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);
-  
+       $m=MetasController::meses($areaAux[0],$areaAux[1],$anio,$fondo);      
         $arrM = [];
         $arrMV = [];
         foreach ($m as $key => $value) {
             $e = $value;
+       
             switch ($key) {
                 case 'enero':
                     if ($e == 0.0 || $e == 0) {
@@ -378,7 +448,7 @@ class FunFormats
                     }
                     break;
                 case 'febrero':
-                    if ($e != 0.0 || $e == 0) {
+                    if ($e == 0.0 || $e == 0) {
                         if($meses->febrero!=0){
                             $arrM[] = "febrero";
                         }
@@ -537,12 +607,13 @@ class FunFormats
 				'mml_mir.area_funcional',
 				'mml_mir.clv_upp'
 			)
-/*             ->where('mml_mir.entidad_ejecutora',$areaAux[1])
-            ->where('mml_mir.area_funcional',$areaAux[0]) */
+            ->where('mml_mir.entidad_ejecutora',$areaAux[1])
+            ->where('mml_mir.area_funcional',$areaAux[0])
             ->where('metas.clv_fondo', $fondo)
             ->where('metas.mir_id', $mir)
 			->where('mml_mir.deleted_at', null)
             ->where('metas.deleted_at', null)->get();
+        log::debug($metas);
             if(count($metas)==0){
             return ["status" => true,"id"=>null];
             }else{
@@ -553,7 +624,6 @@ class FunFormats
         
         public static function guardarMeta($key)
     {
-        Log::debug("creando meta");
         $meta = Metas::create([
             'mir_id' => $key->mir_id,
             'clv_fondo' => $key->clv_fondo,

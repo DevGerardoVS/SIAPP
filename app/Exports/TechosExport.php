@@ -32,8 +32,9 @@ class TechosExport implements FromCollection, WithHeadings, WithStyles,WithEvent
             ->select('tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio')
             ->leftJoinSub('select distinct clv_upp, upp, ejercicio as Ej from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
             ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo')
+            ->where('tf.deleted_at','=',null)
             ->where('tf.ejercicio','=',$this->ejercicio)
-            -> where('vee.Ej','=',$this->ejercicio)
+            ->where('vee.Ej','=',$this->ejercicio)
             ->get();
 
         $b = array(

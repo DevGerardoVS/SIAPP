@@ -109,9 +109,14 @@ class CalendarizacionCargaMasivaController extends Controller
                 if(strlen($k['20'])!==2){
                     return redirect()->back()->withErrors(['error' => 'El año debe ser a dos digitos']);
                 }
-
-                if($k['27']!=''){
-                    return redirect()->back()->withErrors(['error' => 'El total no puede ir vacio']);
+                
+                if(!is_numeric($k['27'])){
+                    return redirect()->back()->withErrors(['error' => 'El total no puede ir vacio y debe ser un número.']);
+                }
+                if(!is_numeric($k['28']) || !is_numeric($k['29']) || !is_numeric($k['30']) || !is_numeric($k['31']) || !is_numeric($k['32']) || !is_numeric($k['33'])
+                || !is_numeric($k['34']) || !is_numeric($k['35']) || !is_numeric($k['36']) || !is_numeric($k['37']) || !is_numeric($k['38']) || !is_numeric($k['39'])
+                ){
+                    return redirect()->back()->withErrors(['error' => 'los campos de enero a diciembre deben ser numeros']);
                 }
                 //buscar en el array de totales 
                if(array_key_exists($k['5'].$k['16'].$k['24'], $arraypresupuesto) && $k['27']!=''){
@@ -179,6 +184,11 @@ class CalendarizacionCargaMasivaController extends Controller
                      foreach($arrayupps as $u){
                         $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                         if($valupp>0){
+                         $confirmadas= ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario','!=','UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio',$ejercicio[0])->value('estado');
+                        if($confirmadas==1){
+                            return redirect()->back()->withErrors(['error' => 'Hay claves operativas confirmadas']);
+
+                        }
                          $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                         }
                        }
@@ -194,6 +204,10 @@ class CalendarizacionCargaMasivaController extends Controller
                     foreach($arrayupps as $key=>$u){
                         $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                         if($valupp>0){
+                            $confirmadas= ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario','UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio',$ejercicio[0])->value('estado');
+                            if($confirmadas==1){
+                                return redirect()->back()->withErrors(['error' => 'Hay claves de RH confirmadas']);
+                            }
                          $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                         }
                        }
@@ -207,6 +221,11 @@ class CalendarizacionCargaMasivaController extends Controller
                      $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
            
                       if($valupp>0){
+                        $confirmadas= ProgramacionPresupuesto::select('estado')->where('upp', $u)->where('estado', 1)->where('ejercicio',$ejercicio[0])->value('estado');
+                        if($confirmadas==1){
+                            return redirect()->back()->withErrors(['error' => 'Hay claves confirmadas']);
+                        }
+
                        $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                       }
                     }
@@ -253,8 +272,11 @@ class CalendarizacionCargaMasivaController extends Controller
            if(count($equals)>0){
             return redirect()->back()->withErrors(['error' => 'No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados']);
            }
-             if(count($filearray)<=1){
+             if(count($filearray)<=0){
                 return redirect()->back()->withErrors(['error' => 'El excel esta vacio']);
+            }
+            if($tipousuario!=1){
+                $ejercicio = array();
             }
 
         
@@ -278,6 +300,19 @@ class CalendarizacionCargaMasivaController extends Controller
                     
                    $ObraCount++; 
                 }
+                if(strlen($k['20'])!==2){
+                    return redirect()->back()->withErrors(['error' => 'El año debe ser a dos digitos']);
+                }
+
+                if(!is_numeric($k['27'])){
+                    return redirect()->back()->withErrors(['error' => 'El total no puede ir vacio y debe ser un número.']);
+                }
+                if(!is_numeric($k['28']) || !is_numeric($k['29']) || !is_numeric($k['30']) || !is_numeric($k['31']) || !is_numeric($k['32']) || !is_numeric($k['33'])
+                || !is_numeric($k['34']) || !is_numeric($k['35']) || !is_numeric($k['36']) || !is_numeric($k['37']) || !is_numeric($k['38']) || !is_numeric($k['39'])
+                ){
+                    return redirect()->back()->withErrors(['error' => 'los campos de enero a diciembre deben ser numeros']);
+                }
+
                 //buscar en el array de totales 
                if(array_key_exists($k['5'].$k['16'].$k['24'], $arraypresupuesto) && $k['27']!=''){
     
@@ -286,13 +321,8 @@ class CalendarizacionCargaMasivaController extends Controller
                }else{
                 if($k['27']!='' && $k['5'].$k['24'] !='' ){
                     $arraypresupuesto[$k['5'].$k['16'].$k['24']] = $k['27']; 
-                    if(strlen($k['20'])==2){
-                        array_push($ejercicio,'20'.$k['20']);
-                    }
-                    else{
-                        return redirect()->back()->withErrors(['error' => 'El año debe estar a 2 digitos']);
-
-                    }
+                    array_push($ejercicio,'20'.$k['20']);
+                    
                 }
                }
     
@@ -366,6 +396,10 @@ class CalendarizacionCargaMasivaController extends Controller
                      foreach($arrayupps as $u){
                         $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                          if($valupp>0){
+                            $confirmadas= ProgramacionPresupuesto::select('estado')->where('upp', $u)->where('estado', 1)->where('ejercicio',$ejercicio[0])->value('estado');
+                            if($confirmadas==1){
+                                return redirect()->back()->withErrors(['error' => 'Hay claves confirmadas']);
+                            }
                           $deleted= ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                          }
                        }
@@ -385,6 +419,11 @@ class CalendarizacionCargaMasivaController extends Controller
                            foreach($arrayupps as $u){
                            $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                            if($valupp>0){
+                            $confirmadas= ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario','!=','UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio',$ejercicio[0])->value('estado');
+                            if($confirmadas==1){
+                                return redirect()->back()->withErrors(['error' => 'Hay claves operativas confirmadas']);
+    
+                            }
                             $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                             }
                            }
@@ -403,6 +442,10 @@ class CalendarizacionCargaMasivaController extends Controller
                     foreach($arrayupps as $key=>$u){
                      $valupp= ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
                      if($valupp>0){
+                      $confirmadas= ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario','UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio',$ejercicio[0])->value('estado');
+                        if($confirmadas==1){
+                            return redirect()->back()->withErrors(['error' => 'Hay claves de RH confirmadas']);
+                        }
                       $deleted= ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','UUU')->where('estado', 0)->where('ejercicio',$ejercicio[0])->forceDelete();
                    
                     }

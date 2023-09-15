@@ -48,6 +48,22 @@ return new class extends Migration
            
              /* $table->foreign('upp_id')->references('id')->on('catalogo'); */ 
         });
+        Schema::create('mml_actividades', function (Blueprint $table){
+            $table->increments('id');
+            $table->string('clv_upp',50)->nullable(false);
+            $table->string('entidad_ejecutora',6)->nullable(false);
+            $table->string('area_funcional',16)->nullable(false);
+            $table->string('id_catalogo',255)->nullable(true);
+            $table->string('nombre',255)->nullable(true);
+            $table->integer('ejercicio')->nullable(false);
+            $table->string('created_user',45)->nullable(true);
+            $table->string('updated_user',45)->nullable(true);
+            $table->string('deleted_user',45)->nullable(true);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+        });
+
         Schema::create('mml_arbol_problema', function (Blueprint $table){
             $table->increments('id');
             $table->integer('problema_id')->unsigned()->nullable(false);
@@ -102,7 +118,7 @@ return new class extends Migration
             $table->tinyInteger('etapa')->unsigned()->nullable(false);
             $table->string('comentario',255)->nullable(true);
             $table->string('ruta',200)->nullable(true);
-            $table->string('nombre',70)->nullable(true);
+            $table->string('nombre',500)->nullable(true);
             $table->integer('ejercicio')->nullable(true);
             $table->string('created_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
@@ -221,7 +237,7 @@ return new class extends Migration
         Schema::create('mml_catalogos', function (Blueprint $table){
             $table->increments('id');
             $table->string('grupo',30)->nullable(false);
-            $table->string('valor',50)->nullable(false);
+            $table->string('valor',255)->nullable(false);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->string('created_user',45)->nullable(false);
@@ -234,6 +250,7 @@ return new class extends Migration
             $table->string('clv_upp',30)->nullable(false);
             $table->enum('estatus', ['Cerrado', 'Abierto'])->nullable(false);
             $table->integer('ejercicio')->nullable(false);
+            $table->string('capturista',150)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
@@ -451,6 +468,7 @@ return new class extends Migration
             $table->string('clv_upp',3)->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
             $table->integer('ejercicio')->nullable(false);
+            $table->string('capturista',150)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('created_user',45)->nullable(false);
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -475,6 +493,7 @@ return new class extends Migration
             $table->string('clv_upp',3)->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
             $table->integer('ejercicio')->nullable(false);
+            $table->string('capturista',150)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('created_user',45)->nullable(false);
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
@@ -487,8 +506,9 @@ return new class extends Migration
 
         Schema::create('metas',function (Blueprint $table){
             $table->increments('id');
+            $table->string('clv_actividad',255)->unique()->nullable(true);
             $table->string('clv_fondo',2)->nullable(false);
-            $table->integer('mir_id')->unsigned()->nullable(false);
+            $table->integer('mir_id')->unsigned()->nullable(true);
             $table->enum('tipo',['Acumulativa','Continua','Especial'])->nullable(false);
             $table->integer('beneficiario_id')->unsigned()->nullable(false);
             $table->integer('unidad_medida_id')->unsigned()->nullable(false);
@@ -508,6 +528,7 @@ return new class extends Migration
             $table->integer('total')->default(null);
             $table->integer('estatus')->nullable(false);
             $table->integer('ejercicio')->nullable(false);
+            $table->integer('actividad_id')->nullable(true);
             $table->softDeletes();
             $table->string('created_user',45)->nullable(false);
             $table->string('updated_user',45)->nullable(true);
@@ -556,6 +577,7 @@ return new class extends Migration
             $table->integer('proyecto_id')->unsigned()->nullable(false);
             $table->integer('ejercicio')->unsigned()->nullable(false);
             $table->boolean('presupuestable')->default(false);
+            $table->tinyInteger('con_mir')->nullable(false);
             $table->boolean('confirmado')->default(false);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

@@ -3,6 +3,7 @@
 @section('content')
     <div class="container">
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
+        <input id='area' type="text" style="display: none" value="">
             <div class="row">
                         <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
                             <h2>Agregar Actividad</h2>
@@ -37,11 +38,11 @@
                                     @endif
                                     @if (Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
                                         @if (check_assignFront(1))
-                                            <div  id="CargaMasiva" class="col-md-4 d-flex CargaMasiva " style="justify-content: flex-end">
+                                            <div  id="CargaMasiva" class="col-md-4 d-flex CargaMasiva " style="justify-content: flex-end" >
                                                 <div >
                                                     <button  type="button" class="btn btn-primary CargaMasiva" data-toggle="modal"
                                                         data-target="#carga" data-backdrop="static"
-                                                        data-keyboard="false">Carga-Masiva</button>&nbsp;
+                                                        data-keyboard="false" style="display: none">Carga-Masiva</button>&nbsp;
 {{--                                                         <button type="button" class="btn btn-outline-primary float-right desconfirmacion" onclick="dao.DesConfirmarMetas()"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Desconfirmar Metas</button>
  --}}
                                                 </div>
@@ -68,8 +69,8 @@
                                                 <th class="vertical colorMorado sorting">Proyecto</th>
                                                 <th class="vertical" style="background-color:#afafaf;">Selección </th>
                                             </tr>
-                                           
                                         </thead>
+                                        <tbody id="bodyclaves"></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -102,6 +103,7 @@
     <script>
         //En las vistas solo se llaman las funciones del archivo init
         init.validateCreate($('#actividad'));
+        init.validateCreateN($('#actividad'));
         init.validateFile($('#formFile'));
     </script>
 @endsection
