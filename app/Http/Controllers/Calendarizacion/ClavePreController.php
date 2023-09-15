@@ -422,6 +422,7 @@ class ClavePreController extends Controller
         array_push($array_where, ['clv_programa','=',$id]);
         array_push($array_where, ['ejercicio','=',$ejercicio]);
         array_push($array_where, ['presupuestable','=',1]);
+        array_push($array_where, ['clv_upp','=',$upp]);
         $subProgramas = DB::table('v_epp')
         ->SELECT('clv_subprograma', 'subprograma')
         ->WHERE($array_where)
@@ -612,15 +613,19 @@ class ClavePreController extends Controller
         $perfil = Auth::user()->id_grupo;
         switch ($perfil) {
             case 1:
+                // rol administrador
                 $rol = 0;
                 break;
             case 4:
+                // rol upp
                 $rol = 1;
                 break;
             case 5:
+                // rol delegacion
                 $rol = 2;
                 break;
             default:
+                // rolauditor y gobDigital
                 $rol = 3;
                 break;
         }

@@ -29,11 +29,12 @@
                 <div class="form-group col-md-4 inputAc" style="display: none">
                     <label class="control-label">Nueva Actividad</label>
                     <input type="text" class="form-control" id="inputAc" name="inputAc" disabled>
+                    <span id="inputAc-error"></span>
                 </div>
                 <div id="idFond" class="form-group col-md-6">
                     <label class="control-label ">Fondo &nbsp&nbsp&nbsp&nbsp</label>
-                    <select class="form-control" placeholder="Selecciona una actividad" id="sel_fondo"
-                        data-live-search="true" name="sel_fondo" autocomplete="sel_fondo" disabled>
+                    <select class="form-control" placeholder="Selecciona una actividad" id="fondo_id"
+                        data-live-search="true" name="fondo_id" autocomplete="fondo_id" >
                         <option value="">---Fondo---</option>
                     </select>
                 </div>
@@ -76,21 +77,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <td><input onkeypress="return valideKey(event)" id="1" name="1" type="text"
-                            class="form-control meses" onkeyup="dao.sumar();" disabled></td>
-                    <td><input onkeypress="return valideKey(event)" id="2" name="2" type="text"
-                            class="form-control meses" onkeyup="dao.sumar();" disabled></td>
-                    <td><input onkeypress="return valideKey(event)" id="3" name="3" type="text"
-                            class="form-control meses" onkeyup="dao.sumar();" disabled></td>
-                    <td><input onkeypress="return valideKey(event)" id="4" name="4" type="text"
-                            class="form-control meses" onkeyup="dao.sumar();" disabled></td>
-                    <td><input onkeypress="return valideKey(event)" id="5" name="5" type="text"
-                            class="form-control meses" onkeyup="dao.sumar();" disabled></td>
-                    <td><input onkeypress="return valideKey(event)" id="6" name="6" type="text"
-                            class="form-control meses" onkeyup="dao.sumar();" disabled></td>
+                    <td><input onkeypress="return valideKey(event)" id="1" name="1" type="text" class="form-control meses" onkeyup="dao.sumar();" disabled>
+                        <span id="1-error" ></span>
+                    </td>
+                    <td><input onkeypress="return valideKey(event)" id="2" name="2" type="text" class="form-control meses" onkeyup="dao.sumar();" disabled>
+                        <span id="2-error"></span>
+                    </td>
+                    <td><input onkeypress="return valideKey(event)" id="3" name="3" type="text" class="form-control meses" onkeyup="dao.sumar();" disabled>
+                        <span id="3-error" ></span>
+                    </td>
+                    <td><input onkeypress="return valideKey(event)" id="4" name="4" type="text" class="form-control meses" onkeyup="dao.sumar();" disabled>
+                        <span id="4-error" ></span>
+                    </td>
+                    <td><input onkeypress="return valideKey(event)" id="5" name="5" type="text" class="form-control meses" onkeyup="dao.sumar();" disabled>
+                        <span id="5-error" ></span>
+                    </td>
+                    <td><input onkeypress="return valideKey(event)" id="6" name="6" type="text" class="form-control meses" onkeyup="dao.sumar();" disabled>
+                        <span id="6-error" ></span>
+                    </td>
                 </tbody>
             </table>
         </div>
+        <label id="meses-error"  class="d-flex justify-content-center" ></label>
         <div class="table-responsive ">
             <table id="meses2" class="table table-hover table-striped" style="border-bottom-style: none;">
                 <thead>
@@ -104,18 +112,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="7"
-                            name="7" type="text" class="form-control  meses" disabled></td>
-                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="8"
-                            name="8" type="text" class="form-control  meses" disabled></td>
-                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="9"
-                            name="9" type="text" class="form-control  meses" disabled></td>
-                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="10"
-                            name="10" type="text" class="form-control  meses" disabled></td>
-                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="11"
-                            name="11" type="text" class="form-control  meses" disabled></td>
-                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="12"
-                            name="12" type="text" class="form-control  meses" disabled></td>
+                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="7" name="7" type="text" class="form-control  meses" disabled   >
+                        <span id="7-error" ></span>
+                    </td>
+                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="8"  name="8" type="text" class="form-control  meses" disabled  >
+                        <span id="8-error" ></span>
+                    </td>
+                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="9" name="9" type="text" class="form-control  meses" disabled   >
+                        <span id="9-error" ></span>
+                    </td>
+                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="10" name="10" type="text" class="form-control  meses" disabled >
+                        <span id="10-error" ></span>
+                    </td>
+                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="11" name="11" type="text" class="form-control  meses" disabled >
+                        <span id="11-error" ></span>
+                    </td>
+                    <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar();" id="12"  name="12" type="text" class="form-control  meses" disabled>
+                        <span id="12-error" ></span>
+                    </td>
                     <tr style="border-style: none;">
                         <td></td>
                         <td></td>
