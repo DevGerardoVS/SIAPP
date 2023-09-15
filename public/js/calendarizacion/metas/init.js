@@ -1,6 +1,19 @@
 
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
-
+let mesesV = {
+    enero:false,
+    febrero:false,
+    marzo:false,
+    abril:false,
+    mayo:false,
+    junio:false,
+    julio:false,
+    agosto:false,
+    septiembre:false,
+    octubre:false,
+    noviembre:false,
+    diciembre:false
+};
 let actividades = [];
 let bandera=false
 var dao = {
@@ -164,6 +177,7 @@ var dao = {
                     switch (key) {
                         case 'enero':
                             if (e != 0.0 || e != 0) {
+                                mesesV.enero = true;
                                 $("#1").prop('disabled', false);
                                 $("#1").prop('required',true);
                             } else {
@@ -172,6 +186,7 @@ var dao = {
                             break;
                         case 'febrero':
                             if (e != 0.0 || e != 0) {
+                                mesesV.febrero = true;
                                 $("#2").prop('disabled', false);
                                 $("#2").prop('required',true);
                             } else {
@@ -180,6 +195,7 @@ var dao = {
                                 break;
                         case 'marzo':
                             if (e != 0.0 || e != 0) {
+                                mesesV.marzo = true;
                                 $("#3").prop('disabled', false);
                                 $("#3").prop('required',true);
                             } else {
@@ -189,6 +205,7 @@ var dao = {
                                 break;
                         case 'abril':
                             if (e != 0.0 || e != 0) {
+                                mesesV.abril = true;
                                 $("#4").prop('disabled', false);
                                 $("#4").prop('required',true);
                             } else {
@@ -197,6 +214,7 @@ var dao = {
                             break;
                         case 'mayo':
                             if (e != 0.0 || e != 0) {
+                                mesesV.mayo = true;
                                 $("#5").prop('disabled', false);
                                 $("#5").prop('required',true);
                             } else {
@@ -205,6 +223,7 @@ var dao = {
                             break;
                         case 'junio':
                             if (e != 0.0 || e != 0) {
+                                mesesV.junio = true;
                                 $("#6").prop('disabled', false);
                                 $("#6").prop('required',true);
                             } else {
@@ -213,6 +232,7 @@ var dao = {
                                break;
                         case 'julio':
                             if (e != 0.0 || e != 0) {
+                                mesesV.julio = true;
                                 $("#7").prop('disabled', false);
                                 $("#7").prop('required',true);
                             } else {
@@ -221,6 +241,7 @@ var dao = {
                             break;
                         case 'agosto':
                             if (e != 0.0 || e != 0) {
+                                mesesV.agosto = true;
                                 $("#8").prop('disabled', false);
                                 $("#8").prop('required',true);
                             } else {
@@ -229,6 +250,7 @@ var dao = {
                             break;
                         case 'septiembre':
                             if (e != 0.0 || e != 0) {
+                                mesesV.septiembre = true;
                                 $("#9").prop('disabled', false);
                                 $("#9").prop('required',true);
                             } else {
@@ -237,6 +259,7 @@ var dao = {
                             break;
                         case 'octubre':
                             if (e != 0.0 || e != 0) {
+                                mesesV.octubre = true;
                                 $("#10").prop('disabled', false);
                                 $("#10").prop('required',true);
                             } else {
@@ -245,6 +268,7 @@ var dao = {
                             break;
                         case 'noviembre':
                             if (e != 0.0 || e != 0) {
+                                mesesV.noviembre = true;
                                 $("#11").prop('disabled', false);
                                 $("#11").prop('required',true);
                             } else {
@@ -254,6 +278,7 @@ var dao = {
                         case 'diciembre':
                             
                             if (e != 0.0 || e != 0) {
+                                mesesV.diciembre = true;
                                 $("#12").prop('disabled', false);
                                 $("#12").prop('required',true);
                             } else {
@@ -271,6 +296,173 @@ var dao = {
 
 
         });
+    },
+    validMeses: function () {
+        let mesesfs = 0;
+        for (const key in mesesV) {
+            if (Object.hasOwnProperty.call(mesesV, key)) {
+                const e = mesesV[key];
+                switch (key) {
+                    case 'enero':
+                        if (e) {
+                           
+                            if ($("#1").val() == 0) {
+                                $('#1-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#1-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'febrero':
+                        if (e) {
+                           
+                            if ($("#2").val() == 0) {
+                                $('#2-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#2-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'marzo':
+                        if (e) {
+                           
+                            if ($("#3").val() == 0) {
+                                $('#3-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#3-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'abril':
+                        if (e) {
+                           
+                            if ($("#4").val() == 0) {
+                                $('#4-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#4-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'mayo':
+                        if (e) {
+                           
+                            if ($("#5").val() == 0) {
+                                $('#5-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#5-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'junio':
+                        if (e) {
+                                if ($("#6").val() == 0 || $("#6").val() == '0') {
+                                $('#6-error').text("Este campo es requerido").addClass('has-error').show();
+                                mesesfs++;
+                            } else {
+                                
+                                $('#6-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'julio':
+                        if (e) {
+                           
+                            if ($("#7").val() == 0) {
+                                $('#7-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#7-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'agosto':
+                        if (e) {
+                           
+                            if ($("#8").val() == 0) {
+                                $('#8-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#8-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'septiembre':
+                        if (e) {
+                           
+                            if ($("#9").val() == 0) {
+                                $('#9-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#9-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'octubre':
+                        if (e) {
+                           
+                            if ($("#10").val() == 0) {
+                                $('#10-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#10-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'noviembre':
+                        if (e) {
+                           
+                            if ($("#11").val() == 0) {
+                                $('#11-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#11-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'diciembre':
+
+                        if (e) {
+                           
+                            if ($("#12").val() == 0) {
+                                $('#12-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#1-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+
+            }
+        }
+        console.log("meses sin llenar:",mesesfs);
+        if (mesesfs >= 1) {
+            $("#meses-error").text("Debes de llenar los meses desbloqueados").addClass('has-error');
+            return false;
+           
+        } else {
+            $("#meses-error").text("").removeClass('has-error');
+            return true;
+       }
     },
     getUpps: function () {
         $.ajax({
@@ -373,7 +565,9 @@ var dao = {
             contentType: false,
             cache: false,
         }).done(function (response) {
+            $("#cmFile").val("");
             $('#cerrar').trigger('click');
+
             Swal.fire({
                 icon: response.icon,
                 title: response.title,
@@ -698,7 +892,7 @@ var init = {
                 medida: { required: true },
                 sumMetas: {
                     required: true,
-                }
+                },
             },
             messages: {
                 sel_actividad: { required: "Este campo es requerido" },
@@ -710,6 +904,7 @@ var init = {
                 sumMetas: { required: "Este campo es requerido  y mayor a CERO" }
             }
         });
+
     },
     validateCreateN: function (form) {
         _gen.validate(form, {
@@ -733,7 +928,7 @@ var init = {
                 beneficiario: { required: "Este campo es requerido" },
                 tipo_Be: { required: "Este campo es requerido" },
                 medida: { required: "Este campo es requerido" },
-                sumMetas: { required: "Este campo es requerido  y mayor a CERO" }
+                sumMetas: { required: "Este campo es requerido  y mayor a CERO" },
             }
         });
     },
@@ -838,19 +1033,20 @@ $(document).ready(function () {
     })
     $('#btnSave').click(function (e) {
         e.preventDefault();
+        let flag = dao.validMeses();
         if ($('#actividad_id').val() == 'ot' && $('#actividad_id').val() != ''  && $('#actividad_id').val() != null) {
             init.validateCreateN($('#actividad'));
             
-            if ($('#actividad').valid() && $('#inputAc').val() != null && $('#inputAc').val() != '') {
+            if ($('#actividad').valid() && $('#inputAc').val() != null && $('#inputAc').val() != '' && flag) {
                 dao.crearMeta();
             } else {
                 if ($('#inputAc').val() != null || $('#inputAc').val() != '') {
-                    $('#inputAc-error').text("Este campo es requerido").addClass('has-error');
+                    $('#inputAc-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
             }
             }
         } else {
             init.validateCreate($('#actividad'));
-            if ($('#actividad').valid()) {
+            if ($('#actividad').valid() &&  flag) {
                 dao.crearMeta();
             }
         

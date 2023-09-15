@@ -42,6 +42,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings,WithTit
 				'' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
 				'' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
                 '',
+                'NULL',
                 $key->id,
                 $key->indicador,
                 '',
@@ -79,7 +80,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings,WithTit
     }
     public function headings(): array
     {
-        return ["FINALIDAD","FUNCION","SUBFUNCION","EJE","L ACCION","PRG SECTORIAL","TIPO CONAC","UPP", "UR", "PRG", "SPR", "PY", "FONDO", "CVE_ACT", "ACTIVIDAD", "CVE_CAL", "TIPO_CALENDARIO", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE", "CVE_BENEF", "BENEFICIARIO","N.BENEFICIARIOS" ,"CVE_UM", "UNIDAD_MEDIDA"];
+        return ["FINALIDAD","FUNCION","SUBFUNCION","EJE","L ACCION","PRG SECTORIAL","TIPO CONAC","UPP", "UR", "PRG", "SPR", "PY", "FONDO", "CVE_ACTADMON","MIR_ACT", "ACTIVIDAD", "CVE_CAL", "TIPO_CALENDARIO", "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE", "CVE_BENEF", "BENEFICIARIO","N.BENEFICIARIOS" ,"CVE_UM", "UNIDAD_MEDIDA"];
 
     }
     public function styles(Worksheet $sheet)

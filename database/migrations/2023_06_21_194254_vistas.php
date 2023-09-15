@@ -16,7 +16,6 @@ return new class extends Migration
         DB::unprepared("CREATE VIEW v_epp AS
         select 
             e.id,
-            e.con_mir AS con_mir,
             c01.clave clv_sector_publico,c01.descripcion sector_publico,
             c02.clave clv_sector_publico_f,c02.descripcion sector_publico_f,
             c03.clave clv_sector_economia,c03.descripcion sector_economia,
