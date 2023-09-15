@@ -739,8 +739,12 @@ class MetasController extends Controller
 		$fecha = date('d-m-Y');
 		$marca = strtotime($fecha);
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
-		$report = "Reporte_Calendario_UPP";
-
+		$report = '';
+		if ($request['tipo'] == 0) {
+			$report = "reporte_calendario_upp_autografa";
+		}else {
+			$report = "Reporte_Calendario_UPP";
+		}
 		$ruta = public_path() . "/reportes";
 		//Eliminación si ya existe reporte
 		if (File::exists($ruta . "/" . $report . ".pdf")) {
@@ -1059,7 +1063,13 @@ class MetasController extends Controller
 		$date = $anio;
 		$marca = strtotime($fecha);
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
-		$report = "proyecto_calendario_actividades";
+		
+		$report = '';
+		if ($tipo == 0) {
+			$report = "proyecto_calendario_actividades_autografa";
+		}else {
+			$report = "proyecto_calendario_actividades";
+		}
 
 		$ruta = public_path() . "/reportes";
 		//Eliminación si ya existe reporte
