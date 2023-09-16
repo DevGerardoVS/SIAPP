@@ -260,6 +260,8 @@ class MetasController extends Controller
 					)
 					->where('mml_mir.deleted_at', null)
 					->where('mml_mir.nivel', 11)
+					->where('mml_mir.area_funcional', str_replace("-", '', $area))
+					->where('mml_mir.entidad_ejecutora', str_replace("-", '', $entidad))
 					->where('mml_mir.clv_upp', $entidadAux[0])
 					->where('mml_mir.clv_ur',  $entidadAux[2])
 					->where('mml_mir.clv_pp',   $areaAux[7])
@@ -305,6 +307,7 @@ class MetasController extends Controller
 			->where('proyecto_presupuestario', $areaAux[9])
 			->where('fondo_ramo',$fondo)
 			->where('ejercicio', $anio)
+			->where('programacion_presupuesto.deleted_at', null)
 /* 			->groupByRaw('enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,noviembre,diciembre')
  */			->get();
 
