@@ -171,7 +171,9 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             let { mese } = data;
+            console.log("Meses:",mese);
             for (const key in mese) {
+               
                 if (Object.hasOwnProperty.call(mese, key)) {
                     const e = mese[key];
                     switch (key) {
@@ -625,7 +627,7 @@ var dao = {
             });
         });
     },
-    getFyA: function (area, enti, mir) {
+    getFyA: function (area, enti, mir,anio) {
         $('#actividad_id').attr('disabled', 'disabled');
         $(".inputAc").hide();
         $("#idAct").addClass("col-md-6").removeClass("col-md-4");
@@ -640,7 +642,7 @@ var dao = {
             $("#" + i).val(0);
             $("#" + i).prop('disabled', true);
         }
-        let clave = `${area}$${enti}`;
+        let clave = `${area}$${enti}$${anio}`;
         $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
         $("#sel_actividad").removeAttr('disabled');

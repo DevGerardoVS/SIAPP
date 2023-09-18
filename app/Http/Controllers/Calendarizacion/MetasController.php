@@ -123,7 +123,8 @@ class MetasController extends Controller
 						'proyecto_presupuestario AS  clv_proyecto',
 						'programacion_presupuesto.subsecretaria AS subsec',
 						DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto'),
-						'v_epp.con_mir AS mir'
+						'v_epp.con_mir AS mir',
+						'programacion_presupuesto.ejercicio'
 					)
 					->where('programacion_presupuesto.ur', '=', $ur_filter)
 					->where('programacion_presupuesto.upp', '=', $upp)
@@ -162,7 +163,7 @@ class MetasController extends Controller
 					$area = '"' . strval($key->finalidad) . '-' . strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje) . '-' . strval($key->linea) . '-' . strval($key->programaSec) . '-' . strval($key->tipologia) . '-' . strval($key->programa) . '-' . strval($key->subprograma) . '-' . strval($key->clv_proyecto) . '"';
 					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($ur_filter) . '"';
 					$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
-					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . ",".$mirx.")' ></div>";
+					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . ",".$mirx.",".$key->ejercicio.")' ></div>";
 					$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $accion];
 				}
 			}
@@ -235,6 +236,7 @@ class MetasController extends Controller
 					DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", fondo.ramo) AS ramo')
 				)
 				->where('fondo.deleted_at', null)
+				->where('programacion_presupuesto.deleted_at', null)
 				->where('programacion_presupuesto.finalidad', $areaAux[0])
 				->where('programacion_presupuesto.funcion', $areaAux[1])
 				->where('programacion_presupuesto.subfuncion', $areaAux[2])
@@ -288,6 +290,7 @@ class MetasController extends Controller
 					->where('mml_mir.clv_upp', $entidadAux[0])
 					->where('mml_mir.clv_ur',  $entidadAux[2])
 					->where('mml_mir.clv_pp',   $areaAux[7])
+					->where('mml_mir.ejercicio', $check['anio'])
 					->groupByRaw('clave')->get();
 			}else{
 				$activ = MmlMirCatalogo::select('id','id AS clave',DB::raw('CONCAT(id, " - ",valor) AS actividad'))->where('deleted_at',null)->where('grupo','ActividadesGlobales')->get();
@@ -1062,7 +1065,7 @@ class MetasController extends Controller
 
 			}
 		} else {
-			return ["status" => false, "anio" => 0000];
+			return ["status" => false,"anio" => $anio[0]->ejercicio];
 		}
 
 	}
@@ -1410,8 +1413,7 @@ class MetasController extends Controller
 		
 			if(isset($idAc)){
 				$clave = explode("$", $idAc);
-				$anio = 2024;
-				$meses = MetasController::meses($clave[0], $clave[1], $anio, $idfondo);
+				$meses = MetasController::meses($clave[0], $clave[1], $clave[2], $idfondo);
 				return ['mese'=>$meses];
 			}else{
 				return ['mese'=>[]];
