@@ -1,4 +1,3 @@
-
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 let mesesV = {
     enero:false,
@@ -14,6 +13,20 @@ let mesesV = {
     noviembre:false,
     diciembre:false
 };
+let mesesName = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre'
+];
 let actividades = [];
 let bandera=false
 var dao = {
@@ -165,13 +178,20 @@ var dao = {
         });
     },
     getMeses: function (idA, idF) {
+        for (const key in mesesV) {
+            if (Object.hasOwnProperty.call(mesesV, key)) {
+                mesesV[key]=false;
+            }
+        }
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA+"/"+idF,
             dataType: "JSON"
         }).done(function (data) {
             let { mese } = data;
+            console.log("meses: ",mese);
             for (const key in mese) {
+               
                 if (Object.hasOwnProperty.call(mese, key)) {
                     const e = mese[key];
                     switch (key) {
@@ -625,7 +645,7 @@ var dao = {
             });
         });
     },
-    getFyA: function (area, enti, mir) {
+    getFyA: function (area, enti, mir,anio) {
         $('#actividad_id').attr('disabled', 'disabled');
         $(".inputAc").hide();
         $("#idAct").addClass("col-md-6").removeClass("col-md-4");
@@ -640,7 +660,7 @@ var dao = {
             $("#" + i).val(0);
             $("#" + i).prop('disabled', true);
         }
-        let clave = `${area}$${enti}`;
+        let clave = `${area}$${enti}$${anio}`;
         $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
         $("#sel_actividad").removeAttr('disabled');
