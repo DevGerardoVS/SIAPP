@@ -236,6 +236,7 @@ class MetasController extends Controller
 					DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", fondo.ramo) AS ramo')
 				)
 				->where('fondo.deleted_at', null)
+				->where('fondo.programacion_presupuesto', null)
 				->where('programacion_presupuesto.deleted_at', null)
 				->where('programacion_presupuesto.finalidad', $areaAux[0])
 				->where('programacion_presupuesto.funcion', $areaAux[1])
@@ -335,8 +336,7 @@ class MetasController extends Controller
 			->where('fondo_ramo',$fondo)
 			->where('ejercicio', $anio)
 			->where('programacion_presupuesto.deleted_at', null)
-/* 			->groupByRaw('enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,noviembre,diciembre')
- */			->get();
+			->get();
 
 		$dataSet = count($meses) >= 1 ? $meses[0] : [];
 		return $dataSet;
@@ -1050,22 +1050,26 @@ class MetasController extends Controller
 	}
 	public static function checkClosing($upp)
 	{
+		$date = Carbon::now();
+		$year = $date->format('Y');
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select(
 				'estatus',
-				'ejercicio'
+				DB::raw("MAX(ejercicio) AS ejercicio")
 			)
+			->where('deleted_at', null)
 			->where('clv_upp', '=', $upp)
 			->get();
+		Log::debug($anio);
 		if (count($anio)) {
 			if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
 				return ["status" => true, "anio" => $anio[0]->ejercicio];
 			} else {
-				return ["status" => false, "anio" => $anio[0]->ejercicio];
+				return ["status" => false, "anio" => $year];
 
 			}
 		} else {
-			return ["status" => false,"anio" => $anio[0]->ejercicio];
+			return ["status" => false,"anio" =>$year];
 		}
 
 	}
@@ -1074,8 +1078,9 @@ class MetasController extends Controller
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select(
 				'estatus',
-				'ejercicio'
+				DB::raw("MAX(ejercicio) AS ejercicio")
 			)
+			->where('deleted_at', null)
 			->where('clv_upp', '=', $upp)
 			->get();
 		if (count($anio)) {
@@ -1413,6 +1418,7 @@ class MetasController extends Controller
 		
 			if(isset($idAc)){
 				$clave = explode("$", $idAc);
+			Log::debug($clave);
 				$meses = MetasController::meses($clave[0], $clave[1], $clave[2], $idfondo);
 				return ['mese'=>$meses];
 			}else{
