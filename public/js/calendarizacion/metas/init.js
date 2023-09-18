@@ -1,4 +1,3 @@
-
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 let mesesV = {
     enero:false,
@@ -14,6 +13,20 @@ let mesesV = {
     noviembre:false,
     diciembre:false
 };
+let mesesName = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre'
+];
 let actividades = [];
 let bandera=false
 var dao = {
@@ -165,13 +178,18 @@ var dao = {
         });
     },
     getMeses: function (idA, idF) {
+        for (const key in mesesV) {
+            if (Object.hasOwnProperty.call(mesesV, key)) {
+                mesesV[key]=false;
+            }
+        }
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA+"/"+idF,
             dataType: "JSON"
         }).done(function (data) {
             let { mese } = data;
-            console.log("Meses:",mese);
+
             for (const key in mese) {
                
                 if (Object.hasOwnProperty.call(mese, key)) {
