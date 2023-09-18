@@ -651,11 +651,14 @@ var dao = {
         }).done(function (data) {     
             const { fondos, activids } = data;
             let flag = false;
-            if (activids.length==1 && activids[0].clave=='ot') {
+            if (activids.length==0 && mir==1) {
                 flag = true;
             }
-            if (mir == 0 ||flag) {
-               
+            if (mir == 0) {
+                flag = true;
+            }
+            if (flag) {
+                console.log("sinmir y conmir pero vacio");
                 var fond = $('#fondo_id');
                 fond.html('');
                 if (fondos.length >= 2) {
