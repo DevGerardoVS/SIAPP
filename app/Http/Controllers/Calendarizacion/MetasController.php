@@ -236,7 +236,6 @@ class MetasController extends Controller
 					DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", fondo.ramo) AS ramo')
 				)
 				->where('fondo.deleted_at', null)
-				->where('fondo.programacion_presupuesto', null)
 				->where('programacion_presupuesto.deleted_at', null)
 				->where('programacion_presupuesto.finalidad', $areaAux[0])
 				->where('programacion_presupuesto.funcion', $areaAux[1])
