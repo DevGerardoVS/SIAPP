@@ -122,7 +122,8 @@ class MetasController extends Controller
 						'subprograma_presupuestario as subprograma',
 						'proyecto_presupuestario AS  clv_proyecto',
 						'programacion_presupuesto.subsecretaria AS subsec',
-						DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto')
+						DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto'),
+						'v_epp.con_mir AS mir'
 					)
 					->where('programacion_presupuesto.ur', '=', $ur_filter)
 					->where('programacion_presupuesto.upp', '=', $upp)
@@ -136,10 +137,32 @@ class MetasController extends Controller
 					->get();
 
 				foreach ($activs as $key) {
+					$m = DB::table('v_epp')
+					->select(
+						'v_epp.con_mir'
+					)
+					->where('v_epp.deleted_at', null)
+					->where('clv_finalidad',$key->finalidad)
+					->where('clv_funcion', $key->funcion)
+					->where('clv_subfuncion', $key->subfuncion)
+					->where('clv_eje',$key->eje)
+					->where('clv_linea_accion', $key->linea)
+					->where('clv_programa_sectorial', $key->programaSec)
+					->where('clv_tipologia_conac', $key->tipologia)
+					->where('clv_upp', $upp)
+					->where('clv_ur', $ur_filter)
+					->where('clv_programa', $key->programa)
+					->where('clv_subprograma', $key->subprograma)
+					->where('clv_proyecto', $key->clv_proyecto)
+					->where('presupuestable', '=',1)
+					->groupByRaw('con_mir')
+					->where('ejercicio', $check['anio'])
+					->get();
+					$mirx = $m[0]->con_mir;
 					$area = '"' . strval($key->finalidad) . '-' . strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje) . '-' . strval($key->linea) . '-' . strval($key->programaSec) . '-' . strval($key->tipologia) . '-' . strval($key->programa) . '-' . strval($key->subprograma) . '-' . strval($key->clv_proyecto) . '"';
 					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($ur_filter) . '"';
 					$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
-					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . ")' ></div>";
+					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . ",".$mirx.")' ></div>";
 					$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $accion];
 				}
 			}
@@ -266,11 +289,17 @@ class MetasController extends Controller
 					->where('mml_mir.clv_ur',  $entidadAux[2])
 					->where('mml_mir.clv_pp',   $areaAux[7])
 					->groupByRaw('clave')->get();
+						
+					if(count($activ)==0){
+						$activ = ["id"=>00,"clave"=>'ot',"actividad"=>"Otra actividad"];
+						}
+					
 			}else{
 				$activ = MmlMirCatalogo::select('id','id AS clave',DB::raw('CONCAT(id, " - ",valor) AS actividad'))->where('deleted_at',null)->where('grupo','ActividadesGlobales')->get();
 
 			}
 		}
+		
 		return ['fondos' => $fondos, "activids" => $activ];
 	}
 	public static function meses($area, $entidad, $anio,$fondo)
@@ -822,6 +851,13 @@ class MetasController extends Controller
 			}
 			if ($flag) {
 				Schema::create('metas_temp', function (Blueprint $table) {
+					$table->temporary();
+					$table->increments('id');
+					$table->string('clave', 25)->nullable(false);
+					$table->string('upp', 25)->nullable(false);
+					$table->string('fila', 10)->nullable(false);
+				});
+				Schema::create('metas_temp_Nomir', function (Blueprint $table) {
 					$table->temporary();
 					$table->increments('id');
 					$table->string('clave', 25)->nullable(false);

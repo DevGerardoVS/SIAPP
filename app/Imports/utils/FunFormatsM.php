@@ -97,23 +97,9 @@ class FunFormats
                             ->where('estatus', 3)->get();
 				if (count($isMir)) {
                         $flg = false;
-                        if (strtoupper($k[13]) == 'NULL'&& strtoupper($k[14]) == 'NULL') {
-                            $error = array(
-                                "icon" => 'error',
-                                "title" => 'Error',
-                                "text" => 'Las dos actividades Ingresadas en la fila : ' . $index.', son "NULL" tienes que llenar una en NULL y la otra con los datos correspondientes',
-                            );
-                            return $error;
-                        }
-                        if (strtolower($k[13]) == 'ot'&& is_numeric($k[14]) || is_numeric($k[14]) && is_numeric($k[14])) {
-                            $error = array(
-                                "icon" => 'error',
-                                "title" => 'Error',
-                                "text" => 'Las actividades Ingresadas en la fila : ' . $index.', tienen valores, debes elegir llenar una en NULL y la otra con los datos correspondientes',
-                            );
-                            return $error;
-                        }
-                    if(strtoupper($k[13])=='NULL'){
+                    if($k[13]=='ot' || $k[13]=='NULL'||$k[13]=='null' ){
+                        $flg = true;
+                    }else{
                             if (is_numeric($k[13])) {
                                 $activ = MmlMirCatalogo::select('id')->where('deleted_at', null)->where('grupo', 'ActividadesGlobales')->where('id', $k[13])->first();
                                 if ($activ) {
@@ -136,194 +122,7 @@ class FunFormats
                                 return $error;
                             }
                     }
-                    $actividad=Mir::where('deleted_at', null)->where('id', $k[14])->first();
-                    if ($actividad && $flg) {  
-                        $area= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]).'';
-                        $anio = $actividad->ejercicio;
-                        if ($actividad->area_funcional==$area) {
-                            $clave =''. strval($k[0]) . '-' .strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]). '-' .strval($k[4]).'-'. strval($k[5]) . '-' .strval($k[6]) .'-'. strval($k[7]) . '-' .strval($k[8]) . '-' . strval($k[9]) . '-' . strval($k[10]). '-' .strval($k[11]).'';
-                            $entidad =''. strval($k[0]) . '-' .strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]). '-' .strval($k[4]).'-'. strval($k[5]) . '-' .strval($k[6]) . '-' . strval($k[9]) . '-' . strval($k[10]). '-' .strval($k[11]).'/'. strval($k[7]) . '-' .'0' . '-' . strval($k[8]) . '';
 
-                            $pres=FunFormats::existPP($clave,$anio);
-                            if (count($pres)) {
-                                $s=FunFormats::validatecalendar($k[7],$k[16]);
-                                if ($s["status"]) {
-                                    $meses = [
-                                        "enero" => $k[18],
-                                        "febrero" => $k[19],
-                                        "marzo" => $k[20],
-                                        "abril" => $k[21],
-                                        "mayo" => $k[22],
-                                        "junio" => $k[23],
-                                        "julio" => $k[24],
-                                        "agosto" => $k[25],
-                                        "septiembre" => $k[26],
-                                        "octubre" => $k[27],
-                                        "noviembre" => $k[28],
-                                        "diciembre" => $k[29],
-                                    ];
-                                        $mCeros = array_filter($meses, function ($var) {
-                                            return $var != 0;
-                                    });
-                                    $mletras=[];
-                                    foreach ($meses as $key => $value) {
-                                       if(!is_numeric(intval($value))){
-                                                $mletras[] = $value;
-
-                                       }
-                                    }
-                                    if(count($mletras)){
-                                        $error = array(
-                                            "icon" => 'error',
-                                            "title" => 'Datos incorrectos',
-                                            "text" => 'los meses solo deben ser numeros enteros positivos en la meta de la fila: '. $index
-                                        );
-                                        return $error;
-                                    }
-
-                                    if(!count($mCeros)){
-                                        $error = array(
-                                            "icon" => 'error',
-                                            "title" => 'Datos incorrectos',
-                                            "text" => 'No pueden ir en cero todos los meses y deben se numeros enteros positivos en la meta de la fila: '. $index
-                                        );
-                                        return $error;
-                                    }
-                                    $m=FunFormats::validateMonth($entidad,json_encode($meses),$anio,$k[12]);
-                                    if($m["status"]){
-                                        $e=FunFormats::isExist($entidad, $k[12],$k[13]);
-                                          
-                                        if($e["status"]){
-                                            $unique= "";
-                                            if($k[13]=="NULL" ||$k[13]=="null" || is_string($k[13])){
-                                                $unique= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[14]).'';
-                                            }
-                        
-                                        $medidas=DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id',$k[33])->get();
-                                        
-                                        if(count($medidas)){
-                                            $bene=DB::table('beneficiarios')->select('id','clave')->where('deleted_at', null)->where('clave',$k[30])->get();
-                                            if(count($bene)){
-                                        DB::table('metas_temp')->insert(['clave' => $unique,'fila'=>$index,'upp'=>strval($k[7])]);
-                                        $type=FunFormats::typeTotal($k,$m["validos"]);
-                                                        if ($type != false) {
-                                                            $aux[] = [
-                                                                'meta_id' => $e["id"],
-                                                                'clv_fondo' => $k[12],
-                                                                'actividad_id' => $k[13],
-                                                                'mir_id' => $k[14],
-                                                                'tipo' => $k[17],
-                                                                'beneficiario_id' => $k[30],
-                                                                'unidad_medida_id' => $k[33],
-                                                                'cantidad_beneficiarios' => $k[32],
-                                                                'enero' => $k[18],
-                                                                'febrero' => $k[19],
-                                                                'marzo' => $k[20],
-                                                                'abril' => $k[21],
-                                                                'mayo' => $k[22],
-                                                                'junio' => $k[23],
-                                                                'julio' => $k[24],
-                                                                'agosto' => $k[25],
-                                                                'septiembre' => $k[26],
-                                                                'octubre' => $k[27],
-                                                                'noviembre' => $k[28],
-                                                                'diciembre' => $k[29],
-                                                                'total' => $type,
-                                                                'ejercicio' =>$anio,
-                                                                'created_user' => auth::user()->username
-                                                            ];
-                                                        }else{
-                                                            $error = array(
-                                                                "icon" => 'error',
-                                                                "title" => 'Tipo de calendario CONTINUO',
-                                                                "text" => 'los valores de los meses tienen que ser iguales en la fila '. $index
-                                                            );
-                                                            return $error;
-                                                        }
-                                            }else{
-                                                $error = array(
-                                                    "icon" => 'error',
-                                                    "title" => 'Error',
-                                                    "text" => 'La clave de beneficiario no existe en la fila '. $index
-                                                );
-                                                return $error;
-        
-                                            }
-                                            }else{
-                                                $error = array(
-                                                    "icon" => 'error',
-                                                    "title" => 'Error',
-                                                    "text" => 'La unidad de medida no existe en la fila '. $index
-                                                );
-                                                return $error;
-        
-                                            }
-
-                                    }else{
-                                        $error = array(
-                                            "icon" => 'error',
-                                            "title" => 'Error',
-                                            "text" => 'La meta ya existe en la fila '. $index
-                                        );
-                                        return $error;
-
-                                    }
-                                    }else{
-                                        $err=implode(", ", $m["errorM"]);
-                                        $meses=implode(", ", $m["mV"]);
-                                        if(count($m["mV"])==1){
-                                            
-                                                $mesaje = '. Solo puede registrar en el mes de: ' . $meses;
-                                        }else{
-                                            $mesaje = '. Solo puede registrar en los meses: ' . $meses;
-                                        }
-                                            $ceros = '';
-                                        if(count($m["mesCero"])){
-                                            $mesesCero=implode(", ", $m["mesCero"]);
-                                                $ceros = ", los meses ".$mesesCero.", NO pueden ir en CERO o numeros negativos";
-                                        }
-
-                                        $error = array(
-                                            "icon" => 'error',
-                                            "title" => 'Error',
-                                            "text" => 'Los meses: '.$err. ' no coinciden en las claves presupuestales, en la fila '. $index.$mesaje.$ceros
-                                        );
-                                        return $error;
-                                    }
-                                } else {
-                                    $error = array(
-                                        "icon" => 'error',
-                                        "title" => 'Error',
-                                        "text" => 'El tipo de calendario ' . $s["a"] . ' no esta autorizado para la upp  ' . $s["upp"] . ' en la fila ' . $index
-                                    );
-                                    return $error;
-                                }
-                            }else{
-                                $error = array(
-                                    "icon" => 'error',
-                                    "title" => 'Error',
-                                    "text" => 'El Proyecto Ingresado no tiene presupuesto en la fila: ' . $index
-                                );
-                                return $error;
-                            }
-
-
-                        } else {
-                            $error = array(
-                                "icon" => 'error',
-                                "title" => 'Error',
-                                "text" => 'El areafuncional no coinciden en las claves presupuestales, en la fila' . $index
-                            );
-                            return $error;
-                        }
-                    } else {
-                        $error = array(
-                            "icon" => 'error',
-                            "title" => 'Error',
-                            "text" => 'Actividad Ingresada no existe en la fila: ' . $index
-                        );
-                        return $error;
-                    }
                 } else {
                     $error = array(
                         "icon" => 'error',
@@ -346,7 +145,7 @@ class FunFormats
             return $error;
         }
         
-        $reps = DB::table('metas_temp')
+/*         $reps = DB::table('metas_temp')
             ->select(
                 DB::raw('COUNT(clave) AS rep'),
                 'clave',
@@ -376,7 +175,6 @@ class FunFormats
                             FunFormats::editarMeta($key);
                          
                         }
-                      /*   $meta = Metas::create($key); */
                     } catch (\Throwable $th) {
                         //throw $th;
                     }               
@@ -407,7 +205,7 @@ class FunFormats
             );
             return $error;
 
-        }
+        } */
       
     }
     public static function isNULLOrEmpy($datos,$index){
