@@ -289,8 +289,9 @@ class MetasController extends Controller
 					->where('mml_mir.clv_ur',  $entidadAux[2])
 					->where('mml_mir.clv_pp',   $areaAux[7])
 					->groupByRaw('clave')->get();
+						
 					if(count($activ)==0){
-						$activ = json_encode(["id"=>00,"clave"=>'ot',"actividad"=>"Otra actividad"]);
+						$activ = ["id"=>00,"clave"=>'ot',"actividad"=>"Otra actividad"];
 						}
 					
 			}else{
@@ -850,6 +851,13 @@ class MetasController extends Controller
 			}
 			if ($flag) {
 				Schema::create('metas_temp', function (Blueprint $table) {
+					$table->temporary();
+					$table->increments('id');
+					$table->string('clave', 25)->nullable(false);
+					$table->string('upp', 25)->nullable(false);
+					$table->string('fila', 10)->nullable(false);
+				});
+				Schema::create('metas_temp_Nomir', function (Blueprint $table) {
 					$table->temporary();
 					$table->increments('id');
 					$table->string('clave', 25)->nullable(false);

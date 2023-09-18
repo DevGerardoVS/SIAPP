@@ -626,7 +626,6 @@ var dao = {
         });
     },
     getFyA: function (area, enti, mir) {
-        console.log("conmir",mir);
         $('#actividad_id').attr('disabled', 'disabled');
         $(".inputAc").hide();
         $("#idAct").addClass("col-md-6").removeClass("col-md-4");
@@ -651,7 +650,11 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {     
             const { fondos, activids } = data;
-            if (mir == 0) {
+            let flag = false;
+            if (activids.length==1 && activids[0].clave=='ot') {
+                flag = true;
+            }
+            if (mir == 0 ||flag) {
                
                 var fond = $('#fondo_id');
                 fond.html('');
