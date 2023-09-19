@@ -668,7 +668,7 @@ var dao = {
         }).done(function (data) {     
             const { fondos, activids } = data;
             let flag = false;
-            if (activids.length==0 && mir==1) {
+            if (activids[0].id=='ot' && mir==1) {
                 flag = true;
             }
             if (mir == 0) {
@@ -698,7 +698,6 @@ var dao = {
                 $.each(activids, function (i, val) {
                     act.append(new Option(val.actividad, val.id));
                 });
-                act.append(new Option("Otra actividad", "ot"));
 
                 var fond = $('#sel_fondo');
                 fond.html('');
