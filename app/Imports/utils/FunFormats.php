@@ -380,7 +380,6 @@ class FunFormats
                     } catch (\Throwable $th) {
                         //throw $th;
                     }               
-               
             }
             $success = array(
                 "icon" => 'success',

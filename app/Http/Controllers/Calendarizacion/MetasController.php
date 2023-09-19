@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Http;
 use Storage;
 use App\Models\calendarizacion\CierreMetas;
 use App\Models\MmlMir;
-use App\Models\MmlMirCatalogo;
+use App\Models\Catalogo;
 
 
 class MetasController extends Controller
@@ -303,7 +303,7 @@ class MetasController extends Controller
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
 			}else{
-				$activ = MmlMirCatalogo::select('id','id AS clave',DB::raw('CONCAT(id, " - ",valor) AS actividad'))->where('deleted_at',null)->where('grupo','ActividadesGlobales')->get();
+				$activ = Catalogo::select('id','clave',DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('clave',$areaAux[8])->where('deleted_at',null)->where('grupo_id',20)->get();
 
 			}
 		}
