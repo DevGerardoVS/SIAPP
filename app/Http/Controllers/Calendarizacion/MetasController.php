@@ -175,10 +175,12 @@ class MetasController extends Controller
 	{
 		$urs = [];
 		$tAct = [];
+		Log::debug($_upp);
 		if ($_upp != 0) {
 			$upp = $_upp != null ? $_upp : auth::user()->clv_upp;
 			$check = $this->checkClosing($upp);
-			if ($check['status']) {
+			
+			if ($check['status'] && $upp !=null) {
 				$urs = DB::table('v_epp')
 					->select(
 						'id',
@@ -200,7 +202,11 @@ class MetasController extends Controller
 					->orderBy('clv_upp')
 					->where('clv_upp', $upp)
 					->get();
-				$tAct = $Act[0];
+
+					if(count($Act)>=1){
+						$tAct = $Act[0];
+					}
+				
 			}
 		}
 
@@ -335,7 +341,6 @@ class MetasController extends Controller
 			->where('ejercicio', $anio)
 			->where('programacion_presupuesto.deleted_at', null)
 			->get();
-			Log::debug($meses);
 		$dataSet = count($meses) >= 1 ? $meses[0] : [];
 		return $dataSet;
 	}
@@ -382,7 +387,7 @@ class MetasController extends Controller
 		Controller::check_permission('postMetas');
 		$anio = DB::table('cierre_ejercicio_metas')->where('deleted_at',null)->max('ejercicio');
 		$clv=explode( '/', $request->area);
-		
+		$fondo = $request->sel_fondo != '' && $request->sel_fondo != null ? $request->sel_fondo : $request->fondo_id;
 		if(isset($request->actividad_id) && $request->actividad_id!=null && $request->actividad_id!= ''){
 			if($request->actividad_id=='ot'){
 				$act = MmlMir::create([
@@ -449,7 +454,12 @@ class MetasController extends Controller
 			];
 			//$clave =''. strval($area[0]) . '-' .strval($area[1]) . '-' . strval($area[2]) . '-' . strval($area[3]).'-'.strval($area[4]). strval($area[5]).'-'.strval($area[6]) .'-'.strval($area[7]) . '-' . strval($area[8]).strval($area[9]).'-'.strval($area[10]) . strval($area[11]) . strval($area[12]). '-' .strval($area[13]). strval($area[14]). strval($area[15]).'/'. strval($entidad[0]). strval($entidad[1]). strval($entidad[2]) .'-' . strval($entidad[3]) . '-' . strval($entidad[4]). strval($entidad[5]) . '';
 		/* if (count($metaexist) == 0) { */
-			$m = FunFormats::validateMonth($request->area, json_encode($meses),$anio, $request->sel_fondo);
+		Log::debug("areaFuncional".$request->area);
+		Log::debug(json_encode($meses));
+		Log::debug($fondo);
+		Log::debug($anio);
+		$area=str_replace('$', "/", $request->area);
+			$m = FunFormats::validateMonth($area, json_encode($meses),$anio, $fondo);
 			if($m['status']){
 				
 					$meta = Metas::create([
@@ -1058,7 +1068,6 @@ class MetasController extends Controller
 			->where('deleted_at', null)
 			->where('clv_upp', '=', $upp)
 			->get();
-		Log::debug($anio);
 		if (count($anio)) {
 			if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
 				return ["status" => true, "anio" => $anio[0]->ejercicio];
@@ -1199,7 +1208,6 @@ class MetasController extends Controller
 				->where('mml_mir.deleted_at', null)
 				->where('metas.deleted_at', null)
 				->where('metas.estatus', 0)->get();
-			log::debug($metas);
 			$i = 0;
 			foreach ($metas as $key) {
 				$meta = Metas::where('id', $key->id)->firstOrFail();
@@ -1416,8 +1424,6 @@ class MetasController extends Controller
 		
 			if(isset($idAc)){
 				$clave = explode("$", $idAc);
-			Log::debug($clave);
-			Log::debug($idfondo);
 				$meses = MetasController::meses($clave[0], $clave[1], $clave[2], $idfondo);
 				return ['mese'=>$meses];
 			}else{
