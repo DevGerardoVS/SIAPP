@@ -674,7 +674,7 @@ var dao = {
                 var fond = $('#fondo_id');
                 fond.html('');
                 if (fondos.length >= 2) {
-                    fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+                    fond.append("<option value='' class='text-center' ><b>-- Fondos--</b></option>");
                     document.getElementById("fondo_id").options[0].disabled = true;
                 }
                 $.each(fondos, function (i, val) {
@@ -780,6 +780,7 @@ var dao = {
         $('#fondo_id').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
     },
     limpiarErrors: function () {
+        $("#meses-error").text("").removeClass('has-error');
         $("#conmir").val(true);
         $('#actividad_id').attr('disabled', 'disabled');
         $(".inputAc").hide().removeClass('has-error');
@@ -795,10 +796,14 @@ var dao = {
         $('#sumMetas-error').text("").removeClass('has-error');
         $("#idAct").addClass("col-md-6").removeClass("col-md-4");
         $("#idFond").addClass("col-md-6").removeClass("col-md-4");
-        
+        $('#sel_actividad').val('');
+        $('#fondo_id').val('');
         $("#inputAc").val('');
+        $("#sel_fondo").val('');
         $("#beneficiario").val('');
         $("#sumMetas").val('');
+        $("#sel_fondo").empty(''); 
+        $('#fondo_id').empty('');
         $('#actividad_id').empty();
         $('#sel_actividad').empty();
         $('.form-group').removeClass('has-error');
@@ -1097,13 +1102,13 @@ $(document).ready(function () {
             if ($('#actividad').valid() && flag) {
                 dao.crearMeta();
             }
-        }/*  else {
-            init.validateCreate($('#actividad'));
+        }else {
+            init.validateCreateN($('#actividad'));
             if ($('#actividad').valid() && flag) {
                 dao.crearMeta();
             }
             
-        } */
+        }
            
     });
     $('#btnSaveM').click(function (e) {
