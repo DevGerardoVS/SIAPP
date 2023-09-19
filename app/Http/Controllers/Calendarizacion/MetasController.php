@@ -298,6 +298,10 @@ class MetasController extends Controller
 					->where('mml_mir.clv_pp',   $areaAux[7])
 					->where('mml_mir.ejercicio', $check['anio'])
 					->groupByRaw('clave')->get();
+
+				if(count($activ)==0){
+					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
+				}
 			}else{
 				$activ = MmlMirCatalogo::select('id','id AS clave',DB::raw('CONCAT(id, " - ",valor) AS actividad'))->where('deleted_at',null)->where('grupo','ActividadesGlobales')->get();
 
