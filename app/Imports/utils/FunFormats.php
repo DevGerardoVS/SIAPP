@@ -632,7 +632,7 @@ class FunFormats
                             $arrM[] = "diciembre";
                         }
                     } else {
-                        if ($meses->diciembr <= 0) {
+                        if ($meses->diciembre <= 0) {
                             $mesCero[] = "DICIEMBRE";
                         }
                         $mesesV++;
