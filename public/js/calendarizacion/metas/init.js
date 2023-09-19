@@ -43,10 +43,15 @@ var dao = {
                 $('#incomplete').hide(); 
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text('');
-                if ($('#upp').val() == '') {
-                    dao.getUrs($('#upp_filter').val());
-                } else {
+                if ($('#upp').val() != '') {
                     dao.getUrs($('#upp').val());
+                } else {
+                    if ($('#upp_filter').val() !='') {
+                        dao.getUrs($('#upp_filter').val());
+                    } else {
+                        dao.getUrs('0');
+                    }
+                    
                 }
                 $('#metasVista').show();
                 $(".CargaMasiva").show();
