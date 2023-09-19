@@ -122,7 +122,9 @@ class MetasController extends Controller
 						'subprograma_presupuestario as subprograma',
 						'proyecto_presupuestario AS  clv_proyecto',
 						'programacion_presupuesto.subsecretaria AS subsec',
-						DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto')
+						DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto'),
+						'v_epp.con_mir AS mir',
+						'programacion_presupuesto.ejercicio'
 					)
 					->where('programacion_presupuesto.ur', '=', $ur_filter)
 					->where('programacion_presupuesto.upp', '=', $upp)
@@ -136,10 +138,32 @@ class MetasController extends Controller
 					->get();
 
 				foreach ($activs as $key) {
+					$m = DB::table('v_epp')
+					->select(
+						'v_epp.con_mir'
+					)
+					->where('v_epp.deleted_at', null)
+					->where('clv_finalidad',$key->finalidad)
+					->where('clv_funcion', $key->funcion)
+					->where('clv_subfuncion', $key->subfuncion)
+					->where('clv_eje',$key->eje)
+					->where('clv_linea_accion', $key->linea)
+					->where('clv_programa_sectorial', $key->programaSec)
+					->where('clv_tipologia_conac', $key->tipologia)
+					->where('clv_upp', $upp)
+					->where('clv_ur', $ur_filter)
+					->where('clv_programa', $key->programa)
+					->where('clv_subprograma', $key->subprograma)
+					->where('clv_proyecto', $key->clv_proyecto)
+					->where('presupuestable', '=',1)
+					->groupByRaw('con_mir')
+					->where('ejercicio', $check['anio'])
+					->get();
+					$mirx = $m[0]->con_mir;
 					$area = '"' . strval($key->finalidad) . '-' . strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje) . '-' . strval($key->linea) . '-' . strval($key->programaSec) . '-' . strval($key->tipologia) . '-' . strval($key->programa) . '-' . strval($key->subprograma) . '-' . strval($key->clv_proyecto) . '"';
 					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($ur_filter) . '"';
 					$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
-					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . ")' ></div>";
+					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . ",".$mirx.",".$key->ejercicio.")' ></div>";
 					$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $accion];
 				}
 			}
@@ -212,6 +236,7 @@ class MetasController extends Controller
 					DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", fondo.ramo) AS ramo')
 				)
 				->where('fondo.deleted_at', null)
+				->where('programacion_presupuesto.deleted_at', null)
 				->where('programacion_presupuesto.finalidad', $areaAux[0])
 				->where('programacion_presupuesto.funcion', $areaAux[1])
 				->where('programacion_presupuesto.subfuncion', $areaAux[2])
@@ -260,20 +285,23 @@ class MetasController extends Controller
 					)
 					->where('mml_mir.deleted_at', null)
 					->where('mml_mir.nivel', 11)
+					->where('mml_mir.area_funcional', str_replace("-", '', $area))
+					->where('mml_mir.entidad_ejecutora', str_replace("-", '', $entidad))
 					->where('mml_mir.clv_upp', $entidadAux[0])
 					->where('mml_mir.clv_ur',  $entidadAux[2])
 					->where('mml_mir.clv_pp',   $areaAux[7])
+					->where('mml_mir.ejercicio', $check['anio'])
 					->groupByRaw('clave')->get();
 			}else{
 				$activ = MmlMirCatalogo::select('id','id AS clave',DB::raw('CONCAT(id, " - ",valor) AS actividad'))->where('deleted_at',null)->where('grupo','ActividadesGlobales')->get();
 
 			}
 		}
+		
 		return ['fondos' => $fondos, "activids" => $activ];
 	}
 	public static function meses($area, $entidad, $anio,$fondo)
 	{
-
 		$areaAux = explode('-', $area);
 		$entidadAux = explode('-', $entidad);
 		$meses = DB::table('programacion_presupuesto')
@@ -305,9 +333,9 @@ class MetasController extends Controller
 			->where('proyecto_presupuestario', $areaAux[9])
 			->where('fondo_ramo',$fondo)
 			->where('ejercicio', $anio)
-/* 			->groupByRaw('enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,noviembre,diciembre')
- */			->get();
-
+			->where('programacion_presupuesto.deleted_at', null)
+			->get();
+			Log::debug($meses);
 		$dataSet = count($meses) >= 1 ? $meses[0] : [];
 		return $dataSet;
 	}
@@ -825,6 +853,13 @@ class MetasController extends Controller
 					$table->string('upp', 25)->nullable(false);
 					$table->string('fila', 10)->nullable(false);
 				});
+				Schema::create('metas_temp_Nomir', function (Blueprint $table) {
+					$table->temporary();
+					$table->increments('id');
+					$table->string('clave', 25)->nullable(false);
+					$table->string('upp', 25)->nullable(false);
+					$table->string('fila', 10)->nullable(false);
+				});
 				$assets = $request->file('cmFile');
 				if ($xlsx = SimpleXLSX::parse($assets)) {
 					$filearray = $xlsx->rows();
@@ -1013,22 +1048,26 @@ class MetasController extends Controller
 	}
 	public static function checkClosing($upp)
 	{
+		$date = Carbon::now();
+		$year = $date->format('Y');
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select(
 				'estatus',
-				'ejercicio'
+				DB::raw("MAX(ejercicio) AS ejercicio")
 			)
+			->where('deleted_at', null)
 			->where('clv_upp', '=', $upp)
 			->get();
+		Log::debug($anio);
 		if (count($anio)) {
 			if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
 				return ["status" => true, "anio" => $anio[0]->ejercicio];
 			} else {
-				return ["status" => false, "anio" => $anio[0]->ejercicio];
+				return ["status" => false, "anio" => $year];
 
 			}
 		} else {
-			return ["status" => false, "anio" => 0000];
+			return ["status" => false,"anio" =>$year];
 		}
 
 	}
@@ -1037,8 +1076,9 @@ class MetasController extends Controller
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select(
 				'estatus',
-				'ejercicio'
+				DB::raw("MAX(ejercicio) AS ejercicio")
 			)
+			->where('deleted_at', null)
 			->where('clv_upp', '=', $upp)
 			->get();
 		if (count($anio)) {
@@ -1376,8 +1416,9 @@ class MetasController extends Controller
 		
 			if(isset($idAc)){
 				$clave = explode("$", $idAc);
-				$anio = 2024;
-				$meses = MetasController::meses($clave[0], $clave[1], $anio, $idfondo);
+			Log::debug($clave);
+			Log::debug($idfondo);
+				$meses = MetasController::meses($clave[0], $clave[1], $clave[2], $idfondo);
 				return ['mese'=>$meses];
 			}else{
 				return ['mese'=>[]];

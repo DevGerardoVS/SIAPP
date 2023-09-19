@@ -1443,6 +1443,16 @@ return new class extends Migration {
                     left join mml_mir mm on m.mir_id = mm.id
                     where mm.',@corte,' and mm.ejercicio = ',anio,'
                     group by clv_upp
+					union all
+					select 
+						mm.clv_upp,
+						\"\" upp,
+						0 proyectos,
+						count(distinct mm.area_funcional) proyectos_actividades
+					from metas m 
+					left join mml_actividades mm on m.actividad_id = mm.id 
+					where mm.',@corte,' and mm.ejercicio = ',anio,'
+					group by clv_upp
                 )t
                 group by clv_upp;
             ');
@@ -1499,6 +1509,37 @@ return new class extends Migration {
 	                join unidades_medida um on m.unidad_medida_id = um.id 
 	                join beneficiarios b on m.beneficiario_id = b.id
 	                where mm.nivel = 11 ',@upp,' and mm.ejercicio = ',anio,' and ',@corte,'
+					union all 
+					select 
+					    mm.clv_upp,
+					    substr(mm.entidad_ejecutora,5,2) clv_ur,
+					    substr(mm.area_funcional,9,2) clv_programa,
+					    substr(mm.area_funcional,11,3) clv_subprograma,
+					    substr(mm.area_funcional,14,3) clv_proyecto,
+					    m.clv_fondo,
+					    mm.nombre actividad,
+					    m.cantidad_beneficiarios,
+					    b.beneficiario,
+					    um.unidad_medida,
+					    m.tipo,
+					    case 
+					        when m.tipo = \"Acumulativa\" then 
+					            (m.enero+m.febrero+m.marzo+m.abril+m.mayo+m.junio+m.julio+
+					            m.agosto+m.septiembre+m.octubre+m.noviembre+m.diciembre)
+					        when m.tipo = \"Continua\" then m.enero
+					        when m.tipo = \"Especial\" then greatest
+					            (m.enero,m.febrero,m.marzo,m.abril,m.mayo,
+					            m.junio,m.julio,m.agosto,m.septiembre,
+					            m.octubre,m.noviembre,m.diciembre)
+					    end meta_anual,
+					    m.enero,m.febrero,m.marzo,m.abril,m.mayo,
+					    m.junio,m.julio,m.agosto,m.septiembre,
+					    m.octubre,m.noviembre,m.diciembre
+					from mml_actividades mm
+					join metas m on m.actividad_id = mm.id
+					join unidades_medida um on m.unidad_medida_id = um.id 
+					join beneficiarios b on m.beneficiario_id = b.id
+					where mm.ejercicio = ',anio,' ',@upp,'  and ',@corte,'
 				)t
 				left join catalogo c on clv_upp = c.clave and c.deleted_at is null and c.grupo_id = 6
 				left join cierre_ejercicio_metas cem on t.clv_upp = cem.clv_upp and cem.ejercicio = ',anio,' and cem.deleted_at is null

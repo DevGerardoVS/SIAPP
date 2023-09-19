@@ -3,7 +3,8 @@
 @section('content')
     <div class="container">
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
-        <input id='area' type="text" style="display: none" value="">
+        <input id='area' type="text" style="display: none">
+        <input id='conmir' type="text" style="display: none">
             <div class="row">
                         <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
                             <h2>Agregar Actividad</h2>
@@ -101,9 +102,6 @@
     <script src="/js/calendarizacion/metas/init.js"></script>
     <script src="/js/utilerias.js"></script>
     <script>
-        //En las vistas solo se llaman las funciones del archivo init
-        init.validateCreate($('#actividad'));
-        init.validateCreateN($('#actividad'));
         init.validateFile($('#formFile'));
     </script>
 @endsection
