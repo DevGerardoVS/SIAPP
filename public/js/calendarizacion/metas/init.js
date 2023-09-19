@@ -674,7 +674,7 @@ var dao = {
                 var fond = $('#fondo_id');
                 fond.html('');
                 if (fondos.length >= 2) {
-                    fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+                    fond.append("<option value='' class='text-center' ><b>-- Fondos--</b></option>");
                     document.getElementById("fondo_id").options[0].disabled = true;
                 }
                 $.each(fondos, function (i, val) {
@@ -795,7 +795,8 @@ var dao = {
         $('#sumMetas-error').text("").removeClass('has-error');
         $("#idAct").addClass("col-md-6").removeClass("col-md-4");
         $("#idFond").addClass("col-md-6").removeClass("col-md-4");
-        
+        $('#sel_actividad').val('');
+        $('#fondo_id').val('');
         $("#inputAc").val('');
         $("#beneficiario").val('');
         $("#sumMetas").val('');
@@ -1097,13 +1098,13 @@ $(document).ready(function () {
             if ($('#actividad').valid() && flag) {
                 dao.crearMeta();
             }
-        }/*  else {
-            init.validateCreate($('#actividad'));
+        }else {
+            init.validateCreateN($('#actividad'));
             if ($('#actividad').valid() && flag) {
                 dao.crearMeta();
             }
             
-        } */
+        }
            
     });
     $('#btnSaveM').click(function (e) {
