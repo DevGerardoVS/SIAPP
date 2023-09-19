@@ -645,16 +645,8 @@ var dao = {
             });
         });
     },
-    getFyA: function (area, enti, mir,anio) {
-        $('#actividad_id').attr('disabled', 'disabled');
-        $(".inputAc").hide();
-        $("#idAct").addClass("col-md-6").removeClass("col-md-4");
-        $("#idFond").addClass("col-md-6").removeClass("col-md-4");
-        $("#inputAc").val('');
-        $("#beneficiario").val('');
-        $("#sumMetas").val('');
-        $('#actividad_id').empty();
-        $('#sel_actividad').empty();
+    getFyA: function (area, enti, mir, anio) {
+        dao.limpiarErrors();
         dao.getSelect();
         for (let i = 1; i <= 12; i++) {
             $("#" + i).val(0);
@@ -678,7 +670,7 @@ var dao = {
                 flag = true;
             }
             if (flag) {
-                console.log("sinmir y conmir pero vacio");
+                $("#conmir").val(false);
                 var fond = $('#fondo_id');
                 fond.html('');
                 if (fondos.length >= 2) {
@@ -713,6 +705,7 @@ var dao = {
                     fond.append(new Option(val.ramo, val.clave));
                 });
             } else {
+                $("#conmir").val(true);
                 var fond = $('#sel_fondo');
                 fond.html('');
                 if (fondos.length >= 2) {
@@ -743,9 +736,15 @@ var dao = {
                 $("#idAct").addClass("col-md-4").removeClass("col-md-6");
                 $("#idFond").addClass("col-md-4").removeClass("col-md-6");
             }
-
-            if (fondos.length == 1 && activids.length == 1 || activids.length == 0) {
-                dao.getMeses(clave, $('#sel_fondo').val()!=''|| $('#sel_fondo').val()!=null? $('#sel_fondo').val(): $('#fondo_id').val());
+            if (fondos.length == 1 && activids.length == 0) {
+                console.log("solo uno");
+                let fondo = '';
+                if ($('#sel_fondo').val()!=''|| $('#sel_fondo').val()!=null) {
+                    fondo = $('#sel_fondo').val();
+                } else {
+                    fondo = $('#fondo_id').val();
+                }
+                dao.getMeses(clave,fondo);
             }
 
         });
@@ -779,6 +778,30 @@ var dao = {
         $('#actividad_id').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
         $('#fondo_id').empty();
         $('#fondo_id').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+    },
+    limpiarErrors: function () {
+        $("#conmir").val(true);
+        $('#actividad_id').attr('disabled', 'disabled');
+        $(".inputAc").hide().removeClass('has-error');
+        $("#medida-error").text("").removeClass('has-error');
+        $("#inputAc-error").text("").removeClass('has-error');
+        $("#tipo_Be-error").text("").removeClass('has-error');
+        $("#beneficiario-error").text("").removeClass('has-error');
+        $("#tipo_Ac-error").text("").removeClass('has-error');
+        $("#fondo_id-error").text("").removeClass('has-error');
+        $("#actividad_id-error").text("").removeClass('has-error');
+        $("#sel_fondo-error").text("").removeClass('has-error');
+        $("#sel_actividad-error").text("").removeClass('has-error');
+        $('#sumMetas-error').text("").removeClass('has-error');
+        $("#idAct").addClass("col-md-6").removeClass("col-md-4");
+        $("#idFond").addClass("col-md-6").removeClass("col-md-4");
+        
+        $("#inputAc").val('');
+        $("#beneficiario").val('');
+        $("#sumMetas").val('');
+        $('#actividad_id').empty();
+        $('#sel_actividad').empty();
+        $('.form-group').removeClass('has-error');
     },
     DesConfirmarMetas: function () {
         let anio = $('#anio_filter').val();
@@ -912,6 +935,9 @@ var init = {
     validateCreate: function (form) {
         _gen.validate(form, {
             rules: {
+                actividad_id: { required: true },
+                inputAc: { required: true },
+                fondo_id: { required: true },
                 sel_actividad: { required: true },
                 sel_fondo: { required: true },
                 tipo_Ac: { required: true },
@@ -923,6 +949,9 @@ var init = {
                 },
             },
             messages: {
+                actividad_id: { required: "Este campo es requerido" },
+                inputAc:  { required: "Este campo es requerido" },
+                fondo_id: { required: "Este campo es requerido" },
                 sel_actividad: { required: "Este campo es requerido" },
                 sel_fondo: { required: "Este campo es requerido" },
                 tipo_Ac: { required: "Este campo es requerido" },
@@ -939,7 +968,7 @@ var init = {
             rules: {
                 actividad_id: { required: true },
                 inputAc: { required: true },
-                sel_fondo: { required: true },
+                fondo_id: { required: true },
                 tipo_Ac: { required: true },
                 beneficiario: { required: true },
                 tipo_Be: { required: true },
@@ -951,7 +980,7 @@ var init = {
             messages: {
                 actividad_id: { required: "Este campo es requerido" },
                 inputAc:  { required: "Este campo es requerido" },
-                sel_fondo: { required: "Este campo es requerido" },
+                fondo_id: { required: "Este campo es requerido" },
                 tipo_Ac: { required: "Este campo es requerido" },
                 beneficiario: { required: "Este campo es requerido" },
                 tipo_Be: { required: "Este campo es requerido" },
@@ -999,15 +1028,16 @@ $(document).ready(function () {
 
     });
     $('#sel_fondo').change(() => {
-        if ($('#sel_actividad').val() != '' && $('#sel_actividad').val() != null && $('#sel_actividad').val() != 'ot') {
             dao.getMeses($('#area').val(),$('#sel_fondo').val());
-        }
-  
+
     });
     $('#sel_actividad').change(() => {
         if ($('#sel_fondo').val() !='' && $('#sel_fondo').val() !=null) {
             dao.getMeses($('#area').val(),$('#sel_fondo').val());
         }
+    });
+    $('#fondo_id').change(() => {
+            dao.getMeses($('#area').val(),$('#fondo_id').val());
     });
     $('#actividad_id').change(() => {
         
@@ -1062,23 +1092,19 @@ $(document).ready(function () {
     $('#btnSave').click(function (e) {
         e.preventDefault();
         let flag = dao.validMeses();
-        if ($('#actividad_id').val() == 'ot' && $('#actividad_id').val() != ''  && $('#actividad_id').val() != null) {
-            init.validateCreateN($('#actividad'));
-            
-            if ($('#actividad').valid() && $('#inputAc').val() != null && $('#inputAc').val() != '' && flag) {
-                dao.crearMeta();
-            } else {
-                if ($('#inputAc').val() != null || $('#inputAc').val() != '') {
-                    $('#inputAc-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
-            }
-            }
-        } else {
+        if ($('#conmir').val()&& flag) {
             init.validateCreate($('#actividad'));
-            if ($('#actividad').valid() &&  flag) {
+            if ($('#actividad').valid() && flag) {
                 dao.crearMeta();
             }
-        
-        }
+        }/*  else {
+            init.validateCreate($('#actividad'));
+            if ($('#actividad').valid() && flag) {
+                dao.crearMeta();
+            }
+            
+        } */
+           
     });
     $('#btnSaveM').click(function (e) {
         e.preventDefault();

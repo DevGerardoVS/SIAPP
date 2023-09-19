@@ -302,7 +302,6 @@ class MetasController extends Controller
 	}
 	public static function meses($area, $entidad, $anio,$fondo)
 	{
-
 		$areaAux = explode('-', $area);
 		$entidadAux = explode('-', $entidad);
 		$meses = DB::table('programacion_presupuesto')
@@ -336,7 +335,7 @@ class MetasController extends Controller
 			->where('ejercicio', $anio)
 			->where('programacion_presupuesto.deleted_at', null)
 			->get();
-
+			Log::debug($meses);
 		$dataSet = count($meses) >= 1 ? $meses[0] : [];
 		return $dataSet;
 	}
@@ -1418,6 +1417,7 @@ class MetasController extends Controller
 			if(isset($idAc)){
 				$clave = explode("$", $idAc);
 			Log::debug($clave);
+			Log::debug($idfondo);
 				$meses = MetasController::meses($clave[0], $clave[1], $clave[2], $idfondo);
 				return ['mese'=>$meses];
 			}else{
