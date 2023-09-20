@@ -1424,8 +1424,7 @@ class MetasController extends Controller
 			->select(
 				'upp AS clv_upp',
 				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
-				'fondo_ramo'
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional')
 				)
 			->where('upp', $upp)
 			->where('deleted_at', null)
@@ -1433,27 +1432,8 @@ class MetasController extends Controller
 			->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 			->distinct()
 			->get();
-			$activsPP2 = DB::table('programacion_presupuesto')
-			->select(
-				'upp AS clv_upp',
-				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
-				'fondo_ramo'
-				)
-			->where('upp', $upp)
-			->where('deleted_at', null)
-			->where('programacion_presupuesto.ejercicio', '=', $anio)
-			//->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
-			->distinct()
-			->get();
 		if (count($metas) > 1) {
 			if (count($metas) >= count($activsPP)) {
-				$b = array(
-					"username" => Auth::user()->username,
-					"accion" => 'Meta:'.count($metas)." / programa:".count($activsPP)."/ sinagrupar:".count($activsPP2),
-					"modulo" => 'Metas'
-				);
-				Controller::bitacora($b);
 				return ["status" => true,"metas"=>$metas,"programa"=>$activsPP];
 				
 			} else {

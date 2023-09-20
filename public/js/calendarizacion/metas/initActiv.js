@@ -657,7 +657,6 @@ var dao = {
             url: '/actividades/rev-confirmar-metas/'+upp+"/"+anio,
             dataType: "JSON"
         }).done(function (data) {
-            console.log("status",data);
             if (!data.status) {
                 $(".confirmacion").hide();
             } else {
