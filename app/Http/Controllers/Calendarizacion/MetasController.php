@@ -1434,10 +1434,10 @@ class MetasController extends Controller
 			->get();
 		if (count($metas) > 1) {
 			if (count($metas) >= count($activsPP)) {
-				return ["status" => true,"metas"=>$metas,"programa"=>$activsPP];
+				return ["status" => true];
 				
 			} else {
-				return ["status" => false,"metas"=>$metas,"programa"=>$activsPP];
+				return ["status" => false];
 			}
 		}else{
 			return ["status" => false];
