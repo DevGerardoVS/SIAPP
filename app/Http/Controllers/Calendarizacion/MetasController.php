@@ -1364,7 +1364,14 @@ class MetasController extends Controller
 			->get();
 		if (count($metas) > 1) {
 			if (count($metas) >= count($activsPP)) {
+				$b = array(
+					"username" => Auth::user()->username,
+					"accion" => 'Meta'.count($metas)."/ programa:".count($activsPP),
+					"modulo" => 'Metas'
+				);
+				Controller::bitacora($b);
 				return ["status" => true,"metas"=>$metas,"programa"=>$activsPP];
+				
 			} else {
 				return ["status" => false,"metas"=>$metas,"programa"=>$activsPP];
 			}
