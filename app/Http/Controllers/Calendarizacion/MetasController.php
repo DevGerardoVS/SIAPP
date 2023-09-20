@@ -1304,19 +1304,85 @@ class MetasController extends Controller
 	}
 	public static function cmetas($upp, $anio)
 	{
-		$metas = DB::table('metas')
-			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
-			->select(
-				'mml_mir.entidad_ejecutora',
-				'mml_mir.area_funcional',
-				'mml_mir.clv_upp',
-				'metas.clv_fondo'
-			)
-			->where('mml_mir.clv_upp', $upp)
-			->where('mml_mir.ejercicio', $anio)
-			->where('mml_mir.deleted_at', null)
-			->where('metas.deleted_at', null)
-			->where('metas.estatus', 0)->get();
+		$proyecto = DB::table('mml_mir')
+		->select(
+			'mml_mir.id',
+			'mml_mir.clv_upp AS upp',
+			'mml_mir.entidad_ejecutora AS entidad',
+			'mml_mir.area_funcional AS area',
+			'mml_mir.ejercicio',
+			'mml_mir.indicador as actividad'
+		)
+		->where('mml_mir.deleted_at', '=', null)
+		->where('mml_mir.nivel', '=', 11)
+		->where('mml_mir.ejercicio', $anio)
+		->where('mml_mir.clv_upp', $upp);
+	$actv = DB::table('mml_actividades')
+	->leftJoin('mml_catalogos', 'mml_catalogos.id', '=', 'mml_actividades.id_catalogo')
+		->select(
+			'clv_upp',
+			'mml_actividades.id',
+			'entidad_ejecutora AS entidad',
+			'area_funcional AS area',
+			DB::raw("IFNULL(nombre,IFNULL(mml_catalogos.valor,nombre)) AS actividad"),
+			'ejercicio',
+		)
+		->where('mml_actividades.deleted_at', '=', null)
+		->where('mml_catalogos.deleted_at', '=', null)
+		->where('mml_actividades.clv_upp',$upp)
+		->where('mml_actividades.ejercicio', $anio);
+	$query2 = DB::table('metas')
+		->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+		->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+		->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+		->leftJoinSub($actv, 'act', function ($join) {
+			$join->on('metas.actividad_id', '=', 'act.id');
+		})
+		->select(
+			'metas.id',
+			'metas.estatus',
+			'act.entidad',
+			'act.area',
+			'metas.ejercicio',
+			'metas.clv_fondo as fondo',
+			'act.actividad AS actividad',
+			'metas.tipo',
+			'metas.total',
+			'metas.cantidad_beneficiarios',
+			'beneficiarios.beneficiario',
+			'unidades_medida.unidad_medida',
+		)
+		->where('metas.mir_id', '=', null)
+		->where('metas.deleted_at', '=', null)
+		->where('act.clv_upp',$upp)
+		->where('metas.ejercicio', $anio);
+	 $metas = DB::table('metas')
+		->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+		->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+		->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+		->leftJoinSub($proyecto, 'pro', function ($join) {
+			$join->on('metas.mir_id', '=', 'pro.id');
+		})
+		->select(
+			'metas.id',
+			'metas.estatus',
+			'pro.entidad',
+			'pro.area',
+			'metas.ejercicio',
+			'metas.clv_fondo as fondo',
+			'pro.actividad AS actividad',
+			'metas.tipo',
+			'metas.total',
+			'metas.cantidad_beneficiarios',
+			'beneficiarios.beneficiario',
+			'unidades_medida.unidad_medida',
+		)
+		->where('metas.actividad_id', '=', null)
+		->where('metas.deleted_at', '=', null)
+		->where('metas.estatus', '=', 0)
+		->where('pro.ejercicio',$anio)
+		->where('pro.upp',$upp)
+		->unionAll($query2)->get();
 		$pp = [];
 		
 		foreach ($metas as $key) {
@@ -1353,20 +1419,34 @@ class MetasController extends Controller
 		$activsPP = DB::table('programacion_presupuesto')
 			->select(
 				'upp AS clv_upp',
-				DB::raw('CONCAT(upp,subsecretaria,ur) AS area_funcional'),
-				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS entidad_ejecutora')
-			)
+				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
+				'fondo_ramo'
+				)
 			->where('upp', $upp)
 			->where('deleted_at', null)
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
-			->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+			->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+			->distinct()
+			->get();
+			$activsPP2 = DB::table('programacion_presupuesto')
+			->select(
+				'upp AS clv_upp',
+				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
+				'fondo_ramo'
+				)
+			->where('upp', $upp)
+			->where('deleted_at', null)
+			->where('programacion_presupuesto.ejercicio', '=', $anio)
+			->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 			->distinct()
 			->get();
 		if (count($metas) > 1) {
 			if (count($metas) >= count($activsPP)) {
 				$b = array(
 					"username" => Auth::user()->username,
-					"accion" => 'Meta'.count($metas)."/ programa:".count($activsPP),
+					"accion" => 'Meta:'.count($metas)." / programa:".count($activsPP)."/ sinagrupar:".count($activsPP2),
 					"modulo" => 'Metas'
 				);
 				Controller::bitacora($b);
