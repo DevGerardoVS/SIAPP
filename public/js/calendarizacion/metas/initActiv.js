@@ -659,12 +659,12 @@ var dao = {
         }).done(function (data) {
             console.log("status",data.status);
             if (!data.status) {
-                console.log("metas", metas);
-                console.log("programa", programa);
+                console.log("metas", data.metas);
+                console.log("programa", data.programa);
                 $(".confirmacion").hide();
             } else {
-                console.log("metas", metas);
-                console.log("programa", programa);
+                console.log("metas", data.metas);
+                console.log("programa", data.programa);
                 $(".confirmacion").show();
             }
             
