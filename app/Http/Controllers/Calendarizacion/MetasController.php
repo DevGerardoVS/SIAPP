@@ -282,7 +282,7 @@ class MetasController extends Controller
 				->get();
 
 			$activ = [];
-			if( $m[0]->con_mir==1){
+			if ($m[0]->con_mir == 1) {
 				$activ = DB::table('mml_mir')
 					->select(
 						'mml_mir.id',
@@ -294,17 +294,16 @@ class MetasController extends Controller
 					->where('mml_mir.area_funcional', str_replace("-", '', $area))
 					->where('mml_mir.entidad_ejecutora', str_replace("-", '', $entidad))
 					->where('mml_mir.clv_upp', $entidadAux[0])
-					->where('mml_mir.clv_ur',  $entidadAux[2])
-					->where('mml_mir.clv_pp',   $areaAux[7])
+					->where('mml_mir.clv_ur', $entidadAux[2])
+					->where('mml_mir.clv_pp', $areaAux[7])
 					->where('mml_mir.ejercicio', $check['anio'])
 					->groupByRaw('clave')->get();
 
-				if(count($activ)==0){
+				if (count($activ) == 0) {
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
-			}else{
-				$activ = Catalogo::select('id','clave',DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('clave',$areaAux[8])->where('deleted_at',null)->where('grupo_id',20)->get();
-
+			} else {
+				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
 			}
 		}
 		
@@ -401,11 +400,11 @@ class MetasController extends Controller
 					'id_catalogo'=>null,
 					'nombre'=>$request->inputAc,
 					'ejercicio'=>$anio,
-					'created_user'=>$username , 
+					'created_user'=>$username
 				]);
 			}else{
-				$meta = MmlMir::where('id_catalogo',$request->actividad_id)->firstOrFail();
-				if($meta){
+				$meta = MmlMir::where('id_catalogo',$request->actividad_id)->where('deleted_at',null)->get();
+				if(count($meta)){
 					$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'La actvidad ya cuenta con una meta ', "title" => "La meta ya existe"]];
 					return response()->json($res, 200);
 				}else{
@@ -416,7 +415,7 @@ class MetasController extends Controller
 						'id_catalogo'=>$request->actividad_id,
 						'nombre'=>null,
 						'ejercicio'=>$anio,
-						'created_user'=>$username , 
+						'created_user'=>$username 
 					]);
 
 				}
@@ -458,10 +457,6 @@ class MetasController extends Controller
 			];
 			//$clave =''. strval($area[0]) . '-' .strval($area[1]) . '-' . strval($area[2]) . '-' . strval($area[3]).'-'.strval($area[4]). strval($area[5]).'-'.strval($area[6]) .'-'.strval($area[7]) . '-' . strval($area[8]).strval($area[9]).'-'.strval($area[10]) . strval($area[11]) . strval($area[12]). '-' .strval($area[13]). strval($area[14]). strval($area[15]).'/'. strval($entidad[0]). strval($entidad[1]). strval($entidad[2]) .'-' . strval($entidad[3]) . '-' . strval($entidad[4]). strval($entidad[5]) . '';
 		/* if (count($metaexist) == 0) { */
-		Log::debug("areaFuncional".$request->area);
-		Log::debug(json_encode($meses));
-		Log::debug($fondo);
-		Log::debug($anio);
 		$area=str_replace('$', "/", $request->area);
 			$m = FunFormats::validateMonth($area, json_encode($meses),$anio, $fondo);
 			if($m['status']){
@@ -1190,8 +1185,6 @@ class MetasController extends Controller
 	}
 	public static function confirmar($upp, $anio)
 	{
-		
-
 		try {
 			Controller::check_permission('putMetas');
 			$s=MetasController::cmetas($upp, $anio);
@@ -1325,6 +1318,7 @@ class MetasController extends Controller
 			->where('metas.deleted_at', null)
 			->where('metas.estatus', 0)->get();
 		$pp = [];
+		
 		foreach ($metas as $key) {
 			$area = str_split($key->area_funcional);
 			$entidad = str_split($key->entidad_ejecutora);
@@ -1368,9 +1362,15 @@ class MetasController extends Controller
 			->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
 			->distinct()
 			->get();
-		if (count($metas) == count($pp) && count($metas) >= 1 && count($activs) >= 1 && count($metas) >= count($activsPP)) {
-			return ["status" => true];
-		} else {
+		if (count($metas) > 1) {
+			Log::debug("metas".count($metas));
+			Log::debug("programacio".count($activsPP));
+			if (count($metas) == count($pp) && count($metas) >= count($activsPP)) {
+				return ["status" => true];
+			} else {
+				return ["status" => false];
+			}
+		}else{
 			return ["status" => false];
 		}
 	}

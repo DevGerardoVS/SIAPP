@@ -35,6 +35,7 @@ class fondosSeeder extends Seeder
             (17,'SUBPROGRAMA PRESUPUESTARIO',null,now(),now(),null,null,'SEEDER'),
             (18,'PROYECTO PRESUPUESTARIO',null,now(),now(),null,null,'SEEDER'),
             (19,'METAS_TIPO',null,now(),now(),null,null,'SEEDER');
+            (20,'ACTIVIDADES ADMON',null,now(),now(),null,null,'SEEDER');
         ");
 
         DB::unprepared("INSERT INTO catalogo(id,grupo_id, clave, descripcion, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values 
@@ -2404,6 +2405,8 @@ class fondosSeeder extends Seeder
         (2364,13,'VR','4.6.3.5 Impulsar el Marco Normativo en Movilidad y Seguridad Vial.',null,now(),now(),null,null,'SEEDER'),
         (2365,13,'VS','4.6.3.6 Impulsar Planes y Sistemas Integrales de Movilidad Urbana Sustentable para los Principales centros Urbanos del Estado.',null,now(),now(),null,null,'SEEDER'),
         (2366,13,'VT','4.6.3.7 Impulsar la Creación del Sistema Estatal de Movilidad y Seguridad Vial.',null,now(),now(),null,null,'SEEDER');
+        (2367,20,'UUU','Cumplimiento de obligaciones patronales',null,now(),now(),null,null,'SEEDER'),
+        (2368,20,'21B','Cumplimiento de resoluciones emitidas por autoridad judicial y laudos',null,now(),now(),null,null,'SEEDER');
         ");
 
         DB::unprepared("INSERT INTO entidad_ejecutora(id,upp_id, subsecretaria_id, ur_id, deleted_at, updated_at, created_at, deleted_user, updated_user, created_user) values 
