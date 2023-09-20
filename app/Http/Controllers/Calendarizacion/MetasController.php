@@ -133,7 +133,7 @@ class MetasController extends Controller
 					->where('v_epp.presupuestable', '=',1)
 					->orderBy('programacion_presupuesto.upp')
 					->where('programacion_presupuesto.deleted_at', null)
-					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 					->distinct()
 					->get();
 
@@ -1395,8 +1395,8 @@ class MetasController extends Controller
 			$activs = DB::table('programacion_presupuesto')
 				->select(
 					'upp AS clv_upp',
-					DB::raw('CONCAT(upp,subsecretaria,ur) AS area_funcional'),
-					DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS entidad_ejecutora')
+					DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
+					DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional')
 				)
 				->where('deleted_at', null)
 				->where('finalidad', $area[0])

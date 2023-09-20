@@ -229,7 +229,9 @@ class FunFormats
                                                     DB::table('metas_temp')->insert($conmirData);
                                                 }
                                                 if($unique!=''){
-                                                    DB::table('metas_temp_Nomir')->insert(['clave' => $unique,'fila'=>$index,'upp'=>strval($k[7])]);
+                                                            $sinmir = ['clave' => $unique, 'fila' => $index, 'upp' => strval($k[7])];
+                                                            Log::debug($sinmir);
+                                                    DB::table('metas_temp_Nomir')->insert($sinmir);
                                                 }
                                                   $type=FunFormats::typeTotal($k,$m["validos"]);
                                                         if ($type != false) {
@@ -502,7 +504,7 @@ class FunFormats
             ->where('subprograma_presupuestario', $arrayclave[10])
 			->where('proyecto_presupuestario', $arrayclave[11])
             ->where('programacion_presupuesto.ejercicio', '=', $anio)
-            ->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+            ->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 			->distinct()
             ->get();
                 return $activs;
