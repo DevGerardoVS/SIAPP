@@ -1320,7 +1320,7 @@ class MetasController extends Controller
 	$actv = DB::table('mml_actividades')
 	->leftJoin('mml_catalogos', 'mml_catalogos.id', '=', 'mml_actividades.id_catalogo')
 		->select(
-			'clv_upp',
+			'clv_upp as upp',
 			'mml_actividades.id',
 			'entidad_ejecutora AS entidad',
 			'area_funcional AS area',
@@ -1341,6 +1341,7 @@ class MetasController extends Controller
 		->select(
 			'metas.id',
 			'metas.estatus',
+			'act.upp',
 			'act.entidad',
 			'act.area',
 			'metas.ejercicio',
@@ -1351,10 +1352,11 @@ class MetasController extends Controller
 			'metas.cantidad_beneficiarios',
 			'beneficiarios.beneficiario',
 			'unidades_medida.unidad_medida',
+			 'metas.clv_fondo'
 		)
 		->where('metas.mir_id', '=', null)
 		->where('metas.deleted_at', '=', null)
-		->where('act.clv_upp',$upp)
+		->where('act.upp',$upp)
 		->where('metas.ejercicio', $anio);
 	 $metas = DB::table('metas')
 		->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
@@ -1366,6 +1368,7 @@ class MetasController extends Controller
 		->select(
 			'metas.id',
 			'metas.estatus',
+			'pro.upp',
 			'pro.entidad',
 			'pro.area',
 			'metas.ejercicio',
@@ -1376,6 +1379,7 @@ class MetasController extends Controller
 			'metas.cantidad_beneficiarios',
 			'beneficiarios.beneficiario',
 			'unidades_medida.unidad_medida',
+			'metas.clv_fondo'
 		)
 		->where('metas.actividad_id', '=', null)
 		->where('metas.deleted_at', '=', null)
@@ -1402,7 +1406,7 @@ class MetasController extends Controller
 				->where('linea_accion', '' . strval($area[4]) . strval($area[5]) . '')
 				->where('programa_sectorial', $area[6])
 				->where('tipologia_conac', $area[7])
-				->where('upp', $key->clv_upp)
+				->where('upp', $key->upp)
 				->where('ur', '' . strval($entidad[4]) . strval($entidad[5]) . '', )
 				->where('programa_presupuestario', '' . strval($area[8]) . strval($area[9]) . '', )
 				->where('subprograma_presupuestario', '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '')
