@@ -1386,8 +1386,8 @@ class MetasController extends Controller
 		$pp = [];
 		
 		foreach ($metas as $key) {
-			$area = str_split($key->area_funcional);
-			$entidad = str_split($key->entidad_ejecutora);
+			$area = str_split($key->area);
+			$entidad = str_split($key->entidad);
 			$activs = DB::table('programacion_presupuesto')
 				->select(
 					'upp AS clv_upp',
