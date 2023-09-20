@@ -386,6 +386,8 @@ class MetasController extends Controller
 	}
 	public function createMeta(Request $request)
 	{
+		DB::beginTransaction();
+		try {
 		$username = Auth::user()->username;
 		Controller::check_permission('postMetas');
 		$anio = DB::table('cierre_ejercicio_metas')->where('deleted_at',null)->max('ejercicio');
@@ -417,13 +419,8 @@ class MetasController extends Controller
 						'ejercicio'=>$anio,
 						'created_user'=>$username 
 					]);
-
 				}
-
 			}
-			
-
-
 		}
 	/* 	$metaexist = DB::table('metas')
 			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
@@ -460,7 +457,6 @@ class MetasController extends Controller
 		$area=str_replace('$', "/", $request->area);
 			$m = FunFormats::validateMonth($area, json_encode($meses),$anio, $fondo);
 			if($m['status']){
-				
 					$meta = Metas::create([
 						'mir_id' => isset($request->sel_actividad) ?intval($request->sel_actividad):NULL,
 						'actividad_id' => isset($request->actividad_id) ?intval($act->id):NULL,
@@ -497,6 +493,7 @@ class MetasController extends Controller
 							"modulo" => 'Metas'
 						);
 						Controller::bitacora($b);
+						DB::commit();
 						$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
 						return response()->json($res, 200);
 					
@@ -517,6 +514,9 @@ class MetasController extends Controller
 				$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Los meses: '.$err. ' no coinciden en las claves presupuestales'.$mesaje, "title" => "Error"]];
 				return response()->json($res, 200);
 			}
+		} catch (\Exception $e) {
+			DB::rollback();
+		}
 			
 	/* 	} else {
 			$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'El programa ya cuenta con una meta ', "title" => "La meta ya existe"]];
@@ -1363,12 +1363,10 @@ class MetasController extends Controller
 			->distinct()
 			->get();
 		if (count($metas) > 1) {
-			Log::debug("metas".count($metas));
-			Log::debug("programacio".count($activsPP));
-			if (count($metas) == count($pp) && count($metas) >= count($activsPP)) {
-				return ["status" => true];
+			if (count($metas) >= count($activsPP)) {
+				return ["status" => true,"metas"=>$metas,"programa"=>$activsPP];
 			} else {
-				return ["status" => false];
+				return ["status" => false,"metas"=>$metas,"programa"=>$activsPP];
 			}
 		}else{
 			return ["status" => false];
