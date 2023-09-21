@@ -41,6 +41,9 @@ return new class extends Migration
             $table->string('password', 200);
             $table->string('clv_upp', 20)->nullable();
             $table->tinyInteger('estatus')->default(1);
+            $table->string('created_user',45)->nullable(false);
+            $table->string('updated_user',45)->nullable(true);
+            $table->string('deleted_user',45)->nullable(true);
             $table->softDeletes();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

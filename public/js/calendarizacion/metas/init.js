@@ -1,4 +1,3 @@
-
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 let mesesV = {
     enero:false,
@@ -14,6 +13,20 @@ let mesesV = {
     noviembre:false,
     diciembre:false
 };
+let mesesName = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre'
+];
 let actividades = [];
 let bandera=false
 var dao = {
@@ -30,10 +43,15 @@ var dao = {
                 $('#incomplete').hide(); 
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text('');
-                if ($('#upp').val() == '') {
-                    dao.getUrs($('#upp_filter').val());
-                } else {
+                if ($('#upp').val() != '') {
                     dao.getUrs($('#upp').val());
+                } else {
+                    if ($('#upp_filter').val() !='') {
+                        dao.getUrs($('#upp_filter').val());
+                    } else {
+                        dao.getUrs('0');
+                    }
+                    
                 }
                 $('#metasVista').show();
                 $(".CargaMasiva").show();
@@ -165,13 +183,20 @@ var dao = {
         });
     },
     getMeses: function (idA, idF) {
+        for (const key in mesesV) {
+            if (Object.hasOwnProperty.call(mesesV, key)) {
+                mesesV[key]=false;
+            }
+        }
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA+"/"+idF,
             dataType: "JSON"
         }).done(function (data) {
             let { mese } = data;
+            console.log("meses: ",mese);
             for (const key in mese) {
+               
                 if (Object.hasOwnProperty.call(mese, key)) {
                     const e = mese[key];
                     switch (key) {
@@ -625,22 +650,14 @@ var dao = {
             });
         });
     },
-    getFyA: function (area, enti) {
-        $('#actividad_id').attr('disabled', 'disabled');
-        $(".inputAc").hide();
-        $("#idAct").addClass("col-md-6").removeClass("col-md-4");
-        $("#idFond").addClass("col-md-6").removeClass("col-md-4");
-        $("#inputAc").val('');
-        $("#beneficiario").val('');
-        $("#sumMetas").val('');
-        $('#actividad_id').empty();
-        $('#sel_actividad').empty();
+    getFyA: function (area, enti, mir, anio) {
+        dao.limpiarErrors();
         dao.getSelect();
         for (let i = 1; i <= 12; i++) {
             $("#" + i).val(0);
             $("#" + i).prop('disabled', true);
         }
-        let clave = `${area}$${enti}`;
+        let clave = `${area}$${enti}$${anio}`;
         $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
         $("#sel_actividad").removeAttr('disabled');
@@ -650,11 +667,19 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {     
             const { fondos, activids } = data;
-            if (area.indexOf("UUU") > 0) {
+            let flag = false;
+            if (activids[0].id=='ot' && mir==1) {
+                flag = true;
+            }
+            if (mir == 0) {
+                flag = true;
+            }
+            if (flag) {
+                $("#conmir").val(false);
                 var fond = $('#fondo_id');
                 fond.html('');
                 if (fondos.length >= 2) {
-                    fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+                    fond.append("<option value='' class='text-center' ><b>-- Fondos--</b></option>");
                     document.getElementById("fondo_id").options[0].disabled = true;
                 }
                 $.each(fondos, function (i, val) {
@@ -673,7 +698,6 @@ var dao = {
                 $.each(activids, function (i, val) {
                     act.append(new Option(val.actividad, val.id));
                 });
-                act.append(new Option("Otra actividad", "ot"));
 
                 var fond = $('#sel_fondo');
                 fond.html('');
@@ -685,6 +709,7 @@ var dao = {
                     fond.append(new Option(val.ramo, val.clave));
                 });
             } else {
+                $("#conmir").val(true);
                 var fond = $('#sel_fondo');
                 fond.html('');
                 if (fondos.length >= 2) {
@@ -715,9 +740,14 @@ var dao = {
                 $("#idAct").addClass("col-md-4").removeClass("col-md-6");
                 $("#idFond").addClass("col-md-4").removeClass("col-md-6");
             }
-
-            if (fondos.length == 1 && activids.length == 1 || activids.length == 0) {
-                dao.getMeses(clave, $('#sel_fondo').val()!=''|| $('#sel_fondo').val()!=null? $('#sel_fondo').val(): $('#fondo_id').val());
+            if (fondos.length == 1 && activids.length == 1) {
+                let fondo = '';
+                if ($('#sel_fondo').val()!=''|| $('#sel_fondo').val()!=null) {
+                    fondo = $('#sel_fondo').val();
+                } else {
+                    fondo = $('#fondo_id').val();
+                }
+                dao.getMeses(clave,fondo);
             }
 
         });
@@ -751,6 +781,35 @@ var dao = {
         $('#actividad_id').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
         $('#fondo_id').empty();
         $('#fondo_id').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+    },
+    limpiarErrors: function () {
+        $("#meses-error").text("").removeClass('has-error');
+        $("#conmir").val(true);
+        $('#actividad_id').attr('disabled', 'disabled');
+        $(".inputAc").hide().removeClass('has-error');
+        $("#medida-error").text("").removeClass('has-error');
+        $("#inputAc-error").text("").removeClass('has-error');
+        $("#tipo_Be-error").text("").removeClass('has-error');
+        $("#beneficiario-error").text("").removeClass('has-error');
+        $("#tipo_Ac-error").text("").removeClass('has-error');
+        $("#fondo_id-error").text("").removeClass('has-error');
+        $("#actividad_id-error").text("").removeClass('has-error');
+        $("#sel_fondo-error").text("").removeClass('has-error');
+        $("#sel_actividad-error").text("").removeClass('has-error');
+        $('#sumMetas-error').text("").removeClass('has-error');
+        $("#idAct").addClass("col-md-6").removeClass("col-md-4");
+        $("#idFond").addClass("col-md-6").removeClass("col-md-4");
+        $('#sel_actividad').val('');
+        $('#fondo_id').val('');
+        $("#inputAc").val('');
+        $("#sel_fondo").val('');
+        $("#beneficiario").val('');
+        $("#sumMetas").val('');
+        $("#sel_fondo").empty(''); 
+        $('#fondo_id').empty('');
+        $('#actividad_id').empty();
+        $('#sel_actividad').empty();
+        $('.form-group').removeClass('has-error');
     },
     DesConfirmarMetas: function () {
         let anio = $('#anio_filter').val();
@@ -884,6 +943,9 @@ var init = {
     validateCreate: function (form) {
         _gen.validate(form, {
             rules: {
+                actividad_id: { required: true },
+                inputAc: { required: true },
+                fondo_id: { required: true },
                 sel_actividad: { required: true },
                 sel_fondo: { required: true },
                 tipo_Ac: { required: true },
@@ -895,6 +957,9 @@ var init = {
                 },
             },
             messages: {
+                actividad_id: { required: "Este campo es requerido" },
+                inputAc:  { required: "Este campo es requerido" },
+                fondo_id: { required: "Este campo es requerido" },
                 sel_actividad: { required: "Este campo es requerido" },
                 sel_fondo: { required: "Este campo es requerido" },
                 tipo_Ac: { required: "Este campo es requerido" },
@@ -911,7 +976,7 @@ var init = {
             rules: {
                 actividad_id: { required: true },
                 inputAc: { required: true },
-                sel_fondo: { required: true },
+                fondo_id: { required: true },
                 tipo_Ac: { required: true },
                 beneficiario: { required: true },
                 tipo_Be: { required: true },
@@ -923,7 +988,7 @@ var init = {
             messages: {
                 actividad_id: { required: "Este campo es requerido" },
                 inputAc:  { required: "Este campo es requerido" },
-                sel_fondo: { required: "Este campo es requerido" },
+                fondo_id: { required: "Este campo es requerido" },
                 tipo_Ac: { required: "Este campo es requerido" },
                 beneficiario: { required: "Este campo es requerido" },
                 tipo_Be: { required: "Este campo es requerido" },
@@ -971,15 +1036,16 @@ $(document).ready(function () {
 
     });
     $('#sel_fondo').change(() => {
-        if ($('#sel_actividad').val() != '' && $('#sel_actividad').val() != null && $('#sel_actividad').val() != 'ot') {
             dao.getMeses($('#area').val(),$('#sel_fondo').val());
-        }
-  
+
     });
     $('#sel_actividad').change(() => {
         if ($('#sel_fondo').val() !='' && $('#sel_fondo').val() !=null) {
             dao.getMeses($('#area').val(),$('#sel_fondo').val());
         }
+    });
+    $('#fondo_id').change(() => {
+            dao.getMeses($('#area').val(),$('#fondo_id').val());
     });
     $('#actividad_id').change(() => {
         
@@ -1034,23 +1100,19 @@ $(document).ready(function () {
     $('#btnSave').click(function (e) {
         e.preventDefault();
         let flag = dao.validMeses();
-        if ($('#actividad_id').val() == 'ot' && $('#actividad_id').val() != ''  && $('#actividad_id').val() != null) {
-            init.validateCreateN($('#actividad'));
-            
-            if ($('#actividad').valid() && $('#inputAc').val() != null && $('#inputAc').val() != '' && flag) {
-                dao.crearMeta();
-            } else {
-                if ($('#inputAc').val() != null || $('#inputAc').val() != '') {
-                    $('#inputAc-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
-            }
-            }
-        } else {
+        if ($('#conmir').val()&& flag) {
             init.validateCreate($('#actividad'));
-            if ($('#actividad').valid() &&  flag) {
+            if ($('#actividad').valid() && flag) {
                 dao.crearMeta();
             }
-        
+        }else {
+            init.validateCreateN($('#actividad'));
+            if ($('#actividad').valid() && flag) {
+                dao.crearMeta();
+            }
+            
         }
+           
     });
     $('#btnSaveM').click(function (e) {
         e.preventDefault();
