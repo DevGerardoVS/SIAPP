@@ -88,6 +88,101 @@ class ClavesHelper{
         }
 
     }
+    public static function getPresupuestooperativo($uppUsuario,$anio,$upp){
+        $OpCalendarizado = 0;
+        $disponible = 0;
+        $clv_upp = $uppUsuario ? $uppUsuario : $upp;
+        $presupuestoOperativo = DB::table('techos_financieros')
+        ->SELECT(DB::raw('SUM(presupuesto) as totalAsignado'))
+        ->where(function ($presupuestoOperativo) use ($clv_upp,$anio) {
+            $presupuestoOperativo->where('tipo','=','Operativo')->where('ejercicio','=',$anio)->where('deleted_at','=',null);
+            if ($clv_upp && $clv_upp != '') {
+                $presupuestoOperativo->where('techos_financieros.clv_upp', '=', $clv_upp);   
+            }
+        })
+        ->get();
+        $calendarizadoOperativo = DB::table('programacion_presupuesto')
+        ->SELECT(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre as calendarizado'))
+        ->where(function ($calendarizadoOperativo) use ($clv_upp,$anio) {
+            $calendarizadoOperativo->where('tipo','=','Operativo')->where('ejercicio','=',$anio)->where('deleted_at','=',null);
+            if ($clv_upp && $clv_upp != '') {
+                $calendarizadoOperativo->where('programacion_presupuesto.upp', '=', $clv_upp); 
+            }
+        })
+        ->get();
+        foreach ($calendarizadoOperativo as $key => $value) {
+            $OpCalendarizado = $OpCalendarizado + $value->calendarizado;
+        }
+        if ($OpCalendarizado != 0 ) {
+            $disponible = $presupuestoOperativo[0]->totalAsignado - $OpCalendarizado;
+        }else {
+            $disponible = $presupuestoOperativo[0]->totalAsignado;
+        }
+        $resOperativo = [
+            'presupuestoOperativo' => $presupuestoOperativo[0]->totalAsignado,
+            'operativoCalendarizado' =>  $OpCalendarizado,
+            'operativoDisponible' => $disponible,
+        ];
+        return $resOperativo;
+        
 
-	
+    }
+    public static function getPresupuestoRH($uppUsuario,$anio,$upp,$rol){
+        $RHCalendarizado = 0;
+        $disponible = 0;
+        $clv_upp = $uppUsuario ? $uppUsuario : $upp;
+        $presupuestoRH = DB::table('techos_financieros')
+        ->SELECT(DB::raw('SUM(presupuesto) as totalAsignado'))
+        ->where(function ($presupuestoRH) use ($clv_upp,$anio,$rol) {
+            $presupuestoRH->where('tipo','=','RH')->where('ejercicio','=',$anio)->where('deleted_at','=',null);
+            if ($clv_upp && $clv_upp != '') {
+                $presupuestoRH->where('techos_financieros.clv_upp', '=', $clv_upp);   
+            }
+            if ($rol == 2) {
+                $arrayClaves = [];
+                $uppAutorizados = DB::table('uppautorizadascpnomina')->select('clv_upp')->where('deleted_at','=',null)->get()->toArray();
+                foreach ($uppAutorizados as $key => $value) {
+                    array_push($arrayClaves, $value->clv_upp);
+                }
+                $presupuestoRH->whereIn('techos_financieros.clv_upp',$arrayClaves);
+                $presupuestoRH->where('techos_financieros.tipo', '=', 'RH');
+            }
+        })
+        ->get();
+        $calendarizadoRH = DB::table('programacion_presupuesto')
+        ->SELECT(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre as calendarizado'))
+        ->where(function ($calendarizadoRH) use ($clv_upp,$anio,$rol) {
+            $calendarizadoRH->where('tipo','=','RH')->where('ejercicio','=',$anio)->where('deleted_at','=',null);
+            if ($clv_upp && $clv_upp != '') {
+                $calendarizadoRH->where('programacion_presupuesto.upp', '=', $clv_upp); 
+            }
+            if ($rol == 2) {
+                $arrayClaves = [];
+                $uppAutorizados = DB::table('uppautorizadascpnomina')->select('clv_upp')->where('deleted_at','=',null)->get()->toArray();
+                foreach ($uppAutorizados as $key => $value) {
+                    array_push($arrayClaves, $value->clv_upp);
+                }
+                $calendarizadoRH->whereIn('programacion_presupuesto.upp',$arrayClaves);
+                $calendarizadoRH->where('programacion_presupuesto.tipo', '=', 'RH');
+            }
+        })
+        ->get();
+        foreach ($calendarizadoRH as $key => $value) {
+            $RHCalendarizado = $RHCalendarizado + $value->calendarizado;
+        }
+        if ($RHCalendarizado != 0 ) {
+            $disponible = $presupuestoRH[0]->totalAsignado - $RHCalendarizado;
+        }else {
+            $disponible = $presupuestoRH[0]->totalAsignado;
+        }
+        $resOperativo = [
+            'presupuestoRH' => $presupuestoRH[0]->totalAsignado,
+            'RHCalendarizado' =>  $RHCalendarizado,
+            'RHDisponible' => $disponible,
+        ];
+        return $resOperativo;
+        
+
+    }
+
 }
