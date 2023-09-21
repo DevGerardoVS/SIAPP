@@ -184,5 +184,18 @@ class ClavesHelper{
         
 
     }
+    public static function esAutorizada($clvUpp){
+        $uppAutorizados = DB::table('uppautorizadascpnomina')
+        ->SELECT('clv_upp')
+        ->WHERE('deleted_at','=', null)
+        ->WHERE('clv_upp','=',$clvUpp)
+        ->get();
+        if (count($uppAutorizados)>0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
 }

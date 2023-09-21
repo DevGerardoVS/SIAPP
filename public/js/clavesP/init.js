@@ -25,6 +25,11 @@ var dao = {
       let data = [];
       let estatus = _data['estatus'] != null ? _data['estatus'].estatus : '';
       let rol = _data['rol'] != null ? _data['rol'] : 1;
+      if (rol == 0 && _data['esAutorizada'] == true) {
+        $('#alertaUppAutorizado').show(true);
+      }else{
+        $('#alertaUppAutorizado').hide(true);
+      }
       let filtroEjercicio = document.getElementById('filAnioAbierto').value;
       for (let index = 0; index < _data['claves'].length; index++) {
         let estatusVista = '';
@@ -567,7 +572,7 @@ var dao = {
       }
 
       if (response.rol == 1) {
-        if (response.esAutorizado && response.esAutorizado > 0) {
+        if (response.esAutorizado) {
           $('#presupuestoDeRh').hide(true);
         }
         if (response.estatus != null && response.estatus.estatus && response.estatus.estatus == 'Abierto') {
