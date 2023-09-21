@@ -60,6 +60,7 @@ class ClavePreController extends Controller
         Controller::check_permission('getClaves');
         $uppUsuario =  Auth::user()->clv_upp;
         $rol = '';
+        $clvUpp = $request->upp ? $request->upp : $uppUsuario;
         $perfil = Auth::user()->id_grupo;
         switch ($perfil) {
             case 1:
@@ -144,10 +145,12 @@ class ClavePreController extends Controller
                 $claves =  $claves->limit(1000)->get();
             }
         }
+        $esAutorizada = ClavesHelper::esAutorizada($clvUpp);
         $response = [
             'claves'=> $claves,
             'estatus' => $estatusCierre,
             'rol'=>$rol,
+            'esAutorizada'=>$esAutorizada,
         ];
         return response()->json($response, 200);
     } 
@@ -411,12 +414,8 @@ class ClavePreController extends Controller
     }
     public function getSubProgramas($ur, $id, $upp, $ejercicio){
         $array_where = [];
-        $uppAutorizados = DB::table('uppautorizadascpnomina')
-        ->SELECT('clv_upp')
-        ->WHERE('deleted_at','=', null)
-        ->WHERE('clv_upp','=',$upp)
-        ->get();
-        if ($uppAutorizados && count($uppAutorizados) > 0) {
+        $uppAutorizados = ClavesHelper::esAutorizada($upp);
+        if ($uppAutorizados) {
             array_push($array_where, ['clv_subprograma', '!=', 'UUU']);
         }
         array_push($array_where, ['clv_ur','=',$ur]);
@@ -639,12 +638,8 @@ class ClavePreController extends Controller
         }else {
             $anio = date('Y');
         }
-            $uppAutorizados = DB::table('uppautorizadascpnomina')
-                ->SELECT('clv_upp')
-                ->WHERE('deleted_at','=', null)
-                ->WHERE('clv_upp','=',$uppUsuario)
-                ->get();
-            $autorizado =  count($uppAutorizados) > 0 ? count($uppAutorizados) : 0;
+        $autorizado = ClavesHelper::esAutorizada($uppUsuario ? $uppUsuario : $upp);
+
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
                 array_push($array_where, ['techos_financieros.clv_upp', '=', $uppUsuario]);
                 array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
@@ -654,7 +649,7 @@ class ClavePreController extends Controller
                 array_push($array_where2, ['programacion_presupuesto.ejercicio', '=', $anio]);
                 array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
                 array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
-            if ($uppAutorizados && count($uppAutorizados) > 0  ) {
+            if ($autorizado) {
                 array_push($array_where, ['techos_financieros.tipo', '=', 'Operativo']);
                 array_push($array_where2, ['programacion_presupuesto.tipo', '=', 'Operativo']);
             }
@@ -758,11 +753,7 @@ class ClavePreController extends Controller
         }else {
             $anio = date('Y');
         }
-        $uppAutorizados = DB::table('uppautorizadascpnomina')
-            ->SELECT('clv_upp')
-            ->WHERE('deleted_at','=', null)
-            ->WHERE('clv_upp','=', $clvUpp != '' ? $clvUpp : $uppUsuario)
-            ->get();
+        $uppAutorizados = ClavesHelper::esAutorizada($clvUpp != '' ? $clvUpp : $uppUsuario);
         $arrayTechos = "tf.deleted_at IS NULL  && tf.ejercicio = ".$anio;
         $arrayProgramacion = "pp.deleted_at IS NULL && pp.ejercicio = ".$anio;
         
@@ -814,7 +805,7 @@ class ClavePreController extends Controller
         join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
         group by clv_fondo,f.fondo_ramo,ejercicio;");
         }else {
-            if ($uppAutorizados && count($uppAutorizados) > 0 ) {
+            if ($uppAutorizados) {
                 $fondos = DB::select("
                 select 
                     clv_fondo,
