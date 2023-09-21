@@ -77,6 +77,8 @@ class FunFormats
         if (count($filearray) >= 1) {
             $index = 2;
             foreach ($filearray as $k) {
+                $conmir = 0;
+                $sinmir = 0;
                 $status =FunFormats::isNULLOrEmpy($k,$index);
 
                 if ($status['status']) {
@@ -105,7 +107,7 @@ class FunFormats
                             );
                             return $error;
                         }
-                        if (strtolower($k[13]) == 'ot'&& is_numeric($k[14]) || is_numeric($k[14]) && is_numeric($k[14])) {
+                        if (strtolower($k[13]) == 'ot'&& is_numeric($k[14])) {
                             $error = array(
                                 "icon" => 'error',
                                 "title" => 'Error',
@@ -113,7 +115,7 @@ class FunFormats
                             );
                             return $error;
                         }
-                    if(strtoupper($k[13])=='NULL'){
+                    if(strtoupper($k[13])!='NULL' &&is_numeric($k[13])){
                             if (is_numeric($k[13])) {
                                 $activ = MmlMirCatalogo::select('id')->where('deleted_at', null)->where('grupo', 'ActividadesGlobales')->where('id', $k[13])->first();
                                 if ($activ) {
@@ -122,7 +124,7 @@ class FunFormats
                                     $error = array(
                                         "icon" => 'error',
                                         "title" => 'Error',
-                                        "text" => 'Actividad Ingresada no existe en la fila: ' . $index
+                                        "text" => 'Actividad SIN MIR Ingresada no existe en la fila: ' . $index
                                     );
                                     return $error;
 
@@ -136,7 +138,18 @@ class FunFormats
                                 return $error;
                             }
                     }
-                    $actividad=Mir::where('deleted_at', null)->where('id', $k[14])->first();
+                    if(strtoupper($k[13])=='NULL' &&is_numeric($k[14])){
+                            $flg = true;
+                    }
+                    if(strtolower($k[13]) == 'ot' &&strtoupper($k[14])=='NULL'){
+                        $flg = true;
+                    }
+
+                    if(is_numeric($k[14])){
+                        $actividad=Mir::where('deleted_at', null)->where('id', $k[14])->first();
+                    }
+                    
+                    
                     if ($actividad && $flg) {  
                         $area= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]).'';
                         $anio = $actividad->ejercicio;
@@ -195,8 +208,14 @@ class FunFormats
                                           
                                         if($e["status"]){
                                             $unique= "";
-                                            if($k[13]=="NULL" ||$k[13]=="null" || is_string($k[13])){
-                                                $unique= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[14]).'';
+                                            $uniqueMir= "";
+                                            if(strtoupper($k[13])=='NULL'|| is_string($k[13]) && is_numeric($k[14])){
+                                                $conmir++;
+                                                $uniqueMir= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[14]).'';
+                                            }
+                                            if(strtoupper($k[14])=='NULL'&& is_numeric($k[13])){
+                                                $sinmir++;
+                                                $unique= ''.strval($k[0]).strval($k[1]).strval($k[2]).strval($k[3]).strval($k[4]).strval($k[5]).strval($k[6]).strval($k[9]).strval($k[10]). strval($k[11]). strval($k[12]). strval($k[13]).'';
                                             }
                         
                                         $medidas=DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id',$k[33])->get();
@@ -204,8 +223,17 @@ class FunFormats
                                         if(count($medidas)){
                                             $bene=DB::table('beneficiarios')->select('id','clave')->where('deleted_at', null)->where('clave',$k[30])->get();
                                             if(count($bene)){
-                                        DB::table('metas_temp')->insert(['clave' => $unique,'fila'=>$index,'upp'=>strval($k[7])]);
-                                        $type=FunFormats::typeTotal($k,$m["validos"]);
+                                                if($uniqueMir!=''){
+                                                            $conmirData = ['clave' => $uniqueMir, 'fila' => $index, 'upp' => strval($k[7])];
+                                                            Log::debug($conmirData);
+                                                    DB::table('metas_temp')->insert($conmirData);
+                                                }
+                                                if($unique!=''){
+                                                            $sinmir = ['clave' => $unique, 'fila' => $index, 'upp' => strval($k[7])];
+                                                            Log::debug($sinmir);
+                                                    DB::table('metas_temp_Nomir')->insert($sinmir);
+                                                }
+                                                  $type=FunFormats::typeTotal($k,$m["validos"]);
                                                         if ($type != false) {
                                                             $aux[] = [
                                                                 'meta_id' => $e["id"],
@@ -345,8 +373,8 @@ class FunFormats
             );
             return $error;
         }
-        
-        $reps = DB::table('metas_temp')
+
+        $repsmir = DB::table('metas_temp')
             ->select(
                 DB::raw('COUNT(clave) AS rep'),
                 'clave',
@@ -354,8 +382,26 @@ class FunFormats
                 'upp',
             )->groupBy('clave')
             ->get();
-        if(count($reps)==count($aux)){
+        $reps = DB::table('metas_temp_Nomir')
+            ->select(
+                DB::raw('COUNT(clave) AS rep'),
+                'clave',
+                'fila',
+                'upp',
+            )->groupBy('clave')
+            ->get();
+        if (count($repsmir) == $conmir && count($reps) == $conmir) {
             if (Auth::user()->id_grupo == 4) {
+                foreach ($repsmir as $key) {
+                    if ($key->upp != Auth::user()->clv_upp) {
+                        $error = array(
+                            "icon" => 'info',
+                            "title" => 'Cuidado',
+                            "text" => 'Solo puedes registrar metas de la upp ' . Auth::user()->clv_upp
+                        );
+                        return $error;
+                    }
+                }
                 foreach ($reps as $key) {
                     if ($key->upp != Auth::user()->clv_upp) {
                         $error = array(
@@ -366,6 +412,7 @@ class FunFormats
                         return $error;
                     }
                 }
+
             }
             foreach ($aux as $key) {
                     try {
@@ -380,7 +427,6 @@ class FunFormats
                     } catch (\Throwable $th) {
                         //throw $th;
                     }               
-               
             }
             $success = array(
                 "icon" => 'success',
@@ -391,7 +437,7 @@ class FunFormats
 
         }else{
             $filas = [];
-            foreach ($reps as $key) {
+            foreach ($repsmir as $key) {
                 if($key->rep>1){
                     $reps = DB::table('metas_temp')->select('clave','fila')->where('clave',$key->clave)->get();
                     foreach ($reps as $a ) {
@@ -399,7 +445,16 @@ class FunFormats
                     }
                 }
             }
+            foreach ($reps  as $key) {
+                if($key->rep>1){
+                    $r = DB::table('metas_temp_Nomir')->select('clave','fila')->where('clave',$key->clave)->get();
+                    foreach ($r as $a ) {
+                        $filas[] = $a->fila;
+                    }
+                }
+            }
             $f=implode(", ", $filas);
+            Log::debug($f);
             $error = array(
                 "icon" => 'info',
                 "title" => 'Cuidado',
@@ -449,7 +504,7 @@ class FunFormats
             ->where('subprograma_presupuestario', $arrayclave[10])
 			->where('proyecto_presupuestario', $arrayclave[11])
             ->where('programacion_presupuesto.ejercicio', '=', $anio)
-            ->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+            ->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 			->distinct()
             ->get();
                 return $activs;
@@ -632,7 +687,7 @@ class FunFormats
                             $arrM[] = "diciembre";
                         }
                     } else {
-                        if ($meses->diciembr <= 0) {
+                        if ($meses->diciembre <= 0) {
                             $mesCero[] = "DICIEMBRE";
                         }
                         $mesesV++;

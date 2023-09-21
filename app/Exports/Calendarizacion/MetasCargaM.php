@@ -18,7 +18,6 @@ class MetasCargaM implements WithMultipleSheets
         $sheets = [];
 
             $sheets[] = new MetasIndex();
-            $sheets[] = new ActividadesAdmon();
             $sheets[] = new Beneficiarios();
             $sheets[] = new UnidadMedida();
             $sheets[] = new TipoCalendar();

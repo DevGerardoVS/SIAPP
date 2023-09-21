@@ -547,8 +547,29 @@ var dao = {
       $('#asignadoUpp').val(totalAsignado);
       $('#calendarizado').val(Totcalendarizado);
       $('#disponibleUpp').val(disponible);
+      if (response.recursosOperativos ) {
+        let operativos = response.recursosOperativos;
+        let presupuestoOperativo = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(operativos.presupuestoOperativo);
+        let operativoCalendarizado = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(operativos.operativoCalendarizado);
+        let operativoDisponible = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(operativos.operativoDisponible);
+        $('#asignadoOperativo').val(presupuestoOperativo);
+        $('#calendarizadoOperativo').val(operativoCalendarizado);
+        $('#disponibleOperativo').val(operativoDisponible);
+      }
+      if (response.recursosRH) {
+        let RH = response.recursosRH;
+        let presupuestoRH = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(RH.presupuestoRH);
+        let RHCalendarizado = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(RH.RHCalendarizado);
+        let RHDisponible = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(RH.RHDisponible);
+        $('#asignadoRH').val(presupuestoRH);
+        $('#calendarizadoRH').val(RHCalendarizado);
+        $('#disponibleRH').val(RHDisponible);
+      }
 
       if (response.rol == 1) {
+        if (response.esAutorizado && response.esAutorizado > 0) {
+          $('#presupuestoDeRh').hide(true);
+        }
         if (response.estatus != null && response.estatus.estatus && response.estatus.estatus == 'Abierto') {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
@@ -569,6 +590,7 @@ var dao = {
             $('#button_modal_carga').hide(true);
         }
       }if(response.rol == 0){
+        $('#presupuestoDeRh').show(true);
         if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
@@ -590,6 +612,13 @@ var dao = {
         
       }
       if (response.rol == 2) {
+        $('#presupuestoDeRh').hide(true);
+        $('#asignadoOperativo').val($('#asignadoRH').val());
+        $('#calendarizadoOperativo').val($('#calendarizadoRH').val());
+        $('#disponibleOperativo').val($('#disponibleRH').val());
+        $('#lbl_operativo').text('Asignado:');
+        $('#asignado_opertivo').text('Calendarizado:');
+        $('#disponible_operativo').text('Disponible:');
         if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
@@ -615,6 +644,7 @@ var dao = {
         $('#btn_confirmar').hide(true);
         $('#button_modal_carga_adm').hide(true);
         $('#button_modal_carga').hide(true);
+        $('#presupuestoDeRh').hide(true);
       }
     });
 

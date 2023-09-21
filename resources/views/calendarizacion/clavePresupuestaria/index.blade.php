@@ -27,16 +27,16 @@
                                      @endif
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <label for="asignadoUpp">Asignado:</label>
-                                        <input type="text" id="asignadoUpp" name="asignadoUpp" class="form-control" disabled>
+                                        <label for="lbl_operativo" id="lbl_operativo">Operativo Asignado:</label>
+                                        <input type="text" id="asignadoOperativo" name="asignadoOperativo" class="form-control" disabled>
                                     </div>
                                     <div class="col-md-2">
-                                        <label for="asignadoUpp">Calendarizado:</label>
-                                        <input type="text" id="calendarizado" name="calendarizado" class="form-control" disabled>
+                                        <label for="asignado_opertivo" id="asignado_opertivo">Operativo Calendarizado:</label>
+                                        <input type="text" id="calendarizadoOperativo" name="calendarizadoOperativo" class="form-control" disabled>
                                     </div>
                                     <div class="col-md-2">
-                                        <label for="asignadoUpp">Disponible:</label>
-                                        <input type="text" id="disponibleUpp" name="disponibleUpp" class="form-control" disabled>
+                                        <label for="disponible_operativo" id="disponible_operativo">Operativo Disponible:</label>
+                                        <input type="text" id="disponibleOperativo" name="disponibleOperativo" class="form-control" disabled>
                                     </div>
                                     <div class="col-md-2 text-right">
                                         <label for="buttonPresupuesto">&nbsp;</label>
@@ -48,9 +48,7 @@
                                         <input type="hidden" id="filAnioAbierto" name="filAnioAbierto">
                                     </div>
                                     <div class="col-md-2 text-right">
-                                          
-                                    </div>
-                                    <div class="col-md-2 text-right">
+                                        <label for="buttonBtnNew">&nbsp;</label>
                                         @if (Auth::user()->clv_upp==NULL && Auth::user()->id_grupo==1)
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
@@ -67,6 +65,9 @@
                                         </div>
                                         @endif
                                         @endif
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                       
                                         <div class="row">
                                             <label for="buttonBtnNew">&nbsp;</label>
                                             <button type="button" id='btnNuevaClave' class="btn btn-success form-control" ><i class="fa fa-plus"> &nbsp;Nueva Clave</i></button>
@@ -79,6 +80,42 @@
                                     </div> 
                                 </div>
                             </div>
+                            <br>
+                            {{-- seccion para desglose de presupuesto  --}}
+                            <div class="row" id="presupuestoDeRh" >
+                                {{-- presupuesto RH --}}
+                                <div class="col-md-2">
+                                    <label for="asignadoRH">RH Asignado:</label>
+                                    <input type="text" id="asignadoRH" name="asignadoRH" class="form-control" disabled>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="asignadoUpp">RH Calendarizado:</label>
+                                    <input type="text" id="calendarizadoRH" name="calendarizadoRH" class="form-control" disabled>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="asignadoUpp">RH Disponible:</label>
+                                    <input type="text" id="disponibleRH" name="disponibleRH" class="form-control" disabled>
+                                </div>
+                            </div>
+                            
+                            {{-- fin de seccion de desglose --}}
+                            {{-- valores ocultos --}}
+                            <div class="row" style="display: none">
+                                <div class="col-md-2">
+                                    <label for="asignadoUpp">Asignado:</label>
+                                    <input type="text" id="asignadoUpp" name="asignadoUpp" class="form-control" disabled>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="asignadoUpp">Calendarizado:</label>
+                                    <input type="text" id="calendarizado" name="calendarizado" class="form-control" disabled>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="asignadoUpp">Disponible:</label>
+                                    <input type="text" id="disponibleUpp" name="disponibleUpp" class="form-control" disabled>
+                                </div>
+                                
+                            </div>
+                            {{-- fin valores ocultos --}}
                             <br>
                             <div class="row">
                                 <form id="filtrosClaves" class="row align-items-center">
