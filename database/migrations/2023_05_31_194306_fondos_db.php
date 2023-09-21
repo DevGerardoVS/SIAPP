@@ -246,7 +246,8 @@ return new class extends Migration
             $table->softDeletes();
         });
         Schema::create('mml_cierre_ejercicio', function (Blueprint $table){
-            $table->increments('id')->nullable(false);
+            $table->primary(['id', 'clv_upp','ejercicio']);	
+            $table->integer('id')->unsigned();
             $table->string('clv_upp',30)->nullable(false);
             $table->enum('estatus', ['Cerrado', 'Abierto'])->nullable(false);
             $table->integer('ejercicio')->nullable(false);
@@ -299,7 +300,8 @@ return new class extends Migration
         });
 
         Schema::create('clasificacion_geografica', function (Blueprint $table){
-            $table->increments('id');
+            $table->primary(['id', 'clv_entidad_federativa','clv_region','clv_municipio','clv_localidad']);	
+            $table->integer('id')->unsigned();
             $table->string('clv_entidad_federativa',2)->nullable(false);
             $table->string('entidad_federativa',255)->nullable(false);
             $table->string('clv_region',2)->nullable(false);
@@ -464,7 +466,8 @@ return new class extends Migration
         });
 
         Schema::create('cierre_ejercicio_metas',function (Blueprint $table){
-            $table->increments('id');
+            $table->primary(['id', 'clv_upp','ejercicio']);	
+            $table->integer('id')->unsigned();
             $table->string('clv_upp',3)->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
             $table->integer('ejercicio')->nullable(false);
@@ -489,7 +492,8 @@ return new class extends Migration
         });
 
         Schema::create('cierre_ejercicio_claves',function (Blueprint $table){
-            $table->increments('id');
+            $table->primary(['id', 'clv_upp','ejercicio']);	
+            $table->integer('id')->unsigned();
             $table->string('clv_upp',3)->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
             $table->integer('ejercicio')->nullable(false);
