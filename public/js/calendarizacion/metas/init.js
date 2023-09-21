@@ -43,10 +43,15 @@ var dao = {
                 $('#incomplete').hide(); 
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text('');
-                if ($('#upp').val() == '') {
-                    dao.getUrs($('#upp_filter').val());
-                } else {
+                if ($('#upp').val() != '') {
                     dao.getUrs($('#upp').val());
+                } else {
+                    if ($('#upp_filter').val() !='') {
+                        dao.getUrs($('#upp_filter').val());
+                    } else {
+                        dao.getUrs('0');
+                    }
+                    
                 }
                 $('#metasVista').show();
                 $(".CargaMasiva").show();
@@ -663,7 +668,7 @@ var dao = {
         }).done(function (data) {     
             const { fondos, activids } = data;
             let flag = false;
-            if (activids.length==0 && mir==1) {
+            if (activids[0].id=='ot' && mir==1) {
                 flag = true;
             }
             if (mir == 0) {
@@ -674,7 +679,7 @@ var dao = {
                 var fond = $('#fondo_id');
                 fond.html('');
                 if (fondos.length >= 2) {
-                    fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+                    fond.append("<option value='' class='text-center' ><b>-- Fondos--</b></option>");
                     document.getElementById("fondo_id").options[0].disabled = true;
                 }
                 $.each(fondos, function (i, val) {
@@ -693,7 +698,6 @@ var dao = {
                 $.each(activids, function (i, val) {
                     act.append(new Option(val.actividad, val.id));
                 });
-                act.append(new Option("Otra actividad", "ot"));
 
                 var fond = $('#sel_fondo');
                 fond.html('');
@@ -736,8 +740,7 @@ var dao = {
                 $("#idAct").addClass("col-md-4").removeClass("col-md-6");
                 $("#idFond").addClass("col-md-4").removeClass("col-md-6");
             }
-            if (fondos.length == 1 && activids.length == 0) {
-                console.log("solo uno");
+            if (fondos.length == 1 && activids.length == 1) {
                 let fondo = '';
                 if ($('#sel_fondo').val()!=''|| $('#sel_fondo').val()!=null) {
                     fondo = $('#sel_fondo').val();
@@ -780,6 +783,7 @@ var dao = {
         $('#fondo_id').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
     },
     limpiarErrors: function () {
+        $("#meses-error").text("").removeClass('has-error');
         $("#conmir").val(true);
         $('#actividad_id').attr('disabled', 'disabled');
         $(".inputAc").hide().removeClass('has-error');
@@ -795,10 +799,14 @@ var dao = {
         $('#sumMetas-error').text("").removeClass('has-error');
         $("#idAct").addClass("col-md-6").removeClass("col-md-4");
         $("#idFond").addClass("col-md-6").removeClass("col-md-4");
-        
+        $('#sel_actividad').val('');
+        $('#fondo_id').val('');
         $("#inputAc").val('');
+        $("#sel_fondo").val('');
         $("#beneficiario").val('');
         $("#sumMetas").val('');
+        $("#sel_fondo").empty(''); 
+        $('#fondo_id').empty('');
         $('#actividad_id').empty();
         $('#sel_actividad').empty();
         $('.form-group').removeClass('has-error');
@@ -1097,13 +1105,13 @@ $(document).ready(function () {
             if ($('#actividad').valid() && flag) {
                 dao.crearMeta();
             }
-        }/*  else {
-            init.validateCreate($('#actividad'));
+        }else {
+            init.validateCreateN($('#actividad'));
             if ($('#actividad').valid() && flag) {
                 dao.crearMeta();
             }
             
-        } */
+        }
            
     });
     $('#btnSaveM').click(function (e) {

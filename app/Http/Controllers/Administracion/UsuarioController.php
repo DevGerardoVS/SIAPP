@@ -274,7 +274,8 @@ class UsuarioController extends Controller
                 "celular"=>$request->celular,
                 "username"=>$request->username,
                 "password"=>$request->password,
-                "clv_upp"=>$request->id_grupo !=4?NULL:$request->clv_upp
+                "clv_upp"=>$request->id_grupo !=4?NULL:$request->clv_upp,
+                'created_user'=>Auth::user()->username
             ]);
             UsuarioGrupo::create([
                 'id_grupo' => $request->id_grupo,
@@ -289,6 +290,7 @@ class UsuarioController extends Controller
     {
         $user = User::find($request->id);
         $user->password = $request->password;
+        $user->updated_user = Auth::user()->username;
         $user->save();
         return response(200);
     }
@@ -308,6 +310,7 @@ class UsuarioController extends Controller
             $userEdit->clv_upp = NULL;
         }
         $userEdit->updated_at = $date;
+        $userEdit->updated_user = Auth::user()->username;
         $userEdit->save();
         if($userEdit->wasChanged()){
             return response()->json(["success" => 'success', "title" => "Éxito!", "text" => "Usuario modificado"], 200);
@@ -321,6 +324,9 @@ class UsuarioController extends Controller
     public function postDelete(Request $request)
     {
         Controller::check_permission('deleteUsuarios');
+        $userEdit = User::where('id', $request->id)->firstOrFail();
+        $userEdit->deleted_user = Auth::user()->username;
+        $userEdit->save();
         User::where('id', $request->id)->delete();
         return response()->json("done", 200);
     }
@@ -393,6 +399,7 @@ class UsuarioController extends Controller
         $usuario = User::find(Auth::user()->id);
         if (\Hash::check($request->old_password, $usuario->password)) {
             $usuario->password = $request->new_password;
+            $usuario->updated_user = Auth::user()->username;
             $usuario->save();
             return "success";
         }

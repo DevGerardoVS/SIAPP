@@ -640,19 +640,20 @@ class ClavePreController extends Controller
             $anio = date('Y');
         }
             $uppAutorizados = DB::table('uppautorizadascpnomina')
-            ->SELECT('clv_upp')
-            ->WHERE('deleted_at','=', null)
-            ->WHERE('clv_upp','=',$uppUsuario)
-            ->get();
+                ->SELECT('clv_upp')
+                ->WHERE('deleted_at','=', null)
+                ->WHERE('clv_upp','=',$uppUsuario)
+                ->get();
+            $autorizado =  count($uppAutorizados) > 0 ? count($uppAutorizados) : 0;
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
-            array_push($array_where, ['techos_financieros.clv_upp', '=', $uppUsuario]);
-            array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
-            array_push($array_where, ['techos_financieros.ejercicio', '=', $anio]);
-            array_push($array_where2, ['programacion_presupuesto.upp', '=', $uppUsuario]);
-            array_push($array_where2, ['programacion_presupuesto.deleted_at', '=', null]);
-            array_push($array_where2, ['programacion_presupuesto.ejercicio', '=', $anio]);
-            array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
-            array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
+                array_push($array_where, ['techos_financieros.clv_upp', '=', $uppUsuario]);
+                array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
+                array_push($array_where, ['techos_financieros.ejercicio', '=', $anio]);
+                array_push($array_where2, ['programacion_presupuesto.upp', '=', $uppUsuario]);
+                array_push($array_where2, ['programacion_presupuesto.deleted_at', '=', null]);
+                array_push($array_where2, ['programacion_presupuesto.ejercicio', '=', $anio]);
+                array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
+                array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
             if ($uppAutorizados && count($uppAutorizados) > 0  ) {
                 array_push($array_where, ['techos_financieros.tipo', '=', 'Operativo']);
                 array_push($array_where2, ['programacion_presupuesto.tipo', '=', 'Operativo']);
@@ -713,6 +714,8 @@ class ClavePreController extends Controller
         }else {
             $disponible = $presupuestoAsignado[0]->totalAsignado;
         }
+        $recursosOperativos = ClavesHelper::getPresupuestooperativo($uppUsuario,$anio,$upp);
+        $recursosRH = ClavesHelper::getPresupuestoRH($uppUsuario,$anio,$upp,$rol);
         $response = [
             'presupuestoAsignado'=>$presupuestoAsignado,
             'disponible'=>$disponible,
@@ -720,6 +723,9 @@ class ClavePreController extends Controller
             'estatus'=>$estatusCierre,
             'rol' => $rol,
             'estado'=>count($calendarizados) ? $calendarizados[0]->estado : 0,
+            'recursosOperativos'=>$recursosOperativos,
+            'recursosRH'=>$recursosRH,
+            'esAutorizado'=>$autorizado,
         ];
         return response()->json($response,200);
     }
