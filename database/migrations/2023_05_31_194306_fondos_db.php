@@ -301,8 +301,8 @@ return new class extends Migration
         });
 
         Schema::create('clasificacion_geografica', function (Blueprint $table){
-            $table->primary(['id', 'clv_entidad_federativa','clv_region','clv_municipio','clv_localidad']);	
-            $table->integer('id')->unsigned();
+            $table->unique(['clv_entidad_federativa','clv_region','clv_municipio','clv_localidad'],'clave_cg');	
+            $table->increments('id');
             $table->string('clv_entidad_federativa',2)->nullable(false);
             $table->string('entidad_federativa',255)->nullable(false);
             $table->string('clv_region',2)->nullable(false);
@@ -321,6 +321,7 @@ return new class extends Migration
 
         Schema::create('fondo', function (Blueprint $table){
             $table->increments('id');
+            $table->unique(['clv_etiquetado','clv_fuente_financiamiento','clv_ramo','clv_fondo_ramo','clv_capital'],'llave_fondo');
             $table->string('clv_etiquetado',1)->nullable(false);
             $table->string('etiquetado', 255)->nullable(false);
             $table->string('clv_fuente_financiamiento',1)->nullable(false);
