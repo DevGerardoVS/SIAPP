@@ -512,6 +512,8 @@ return new class extends Migration
 
         Schema::create('metas',function (Blueprint $table){
             $table->increments('id');
+            $table->unique(['clv_actividad','clv_fondo','mir_id'],'clave_mir');	
+            $table->unique(['clv_actividad','clv_fondo','actividad_id'],'clave_actividad');	
             $table->string('clv_actividad',255)->unique()->nullable(true);
             $table->string('clv_fondo',2)->nullable(false);
             $table->integer('mir_id')->unsigned()->nullable(true);
