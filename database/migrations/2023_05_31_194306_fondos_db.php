@@ -287,7 +287,8 @@ return new class extends Migration
         });
 
         Schema::create('entidad_ejecutora', function (Blueprint $table){
-            $table->increments('id');
+            $table->primary(['id', 'upp_id','subsecretaria_id','ur_id']);	
+            $table->integer('id')->unsigned();
             $table->integer('upp_id')->unsigned()->nullable(false);
             $table->integer('subsecretaria_id')->unsigned()->nullable(false);
             $table->integer('ur_id')->unsigned()->nullable(false);
