@@ -20,6 +20,7 @@ var dao = {
         });
     },
     getAniosM: function () {
+
         $.ajax({
             type: "GET",
             url: '/actividades/anios-metas/',
@@ -31,15 +32,11 @@ var dao = {
                 $.each(data, function (i, val) {
                     par.append(new Option(val.ejercicio, val.ejercicio, true, false));
                 });
-            }
-            else {
-                $.each(upp, function (i, val) {
-                    if (val.clv_upp == '001') {
-                        par.append(new Option(val.upp, val.clv_upp, true, false));
-                    } else {
-                        par.append(new Option(val.upp, val.clv_upp));
-                    }
-                });
+            }else {
+                var  d = new  Date();
+                var  n = d.getFullYear();
+                par.append(new Option(n,n, true, false));
+             
             }
         });
     },

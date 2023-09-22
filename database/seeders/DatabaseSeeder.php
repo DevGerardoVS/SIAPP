@@ -382,8 +382,7 @@ class DatabaseSeeder extends Seeder
             pp_identificadoresSeeder::class,
             ProgramacionPresupuestoSeeder::class,
             TipoActividadUppSeeder::class,
-            mml_seeder::class,
-            prueba2024::class
+            mml_seeder::class
         ]);
         
         echo "\nInicializacion de Catalogos del Sistema";
