@@ -26,6 +26,7 @@ return new class extends Migration
 
         Schema::create('mml_definicion_problema', function (Blueprint $table){
             $table->increments('id');
+            $table->unique(['clv_upp','clv_pp','ejercicio']);	
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
             $table->string('poblacion_objetivo',255)->nullable(false);
@@ -192,6 +193,7 @@ return new class extends Migration
 
         Schema::create('mml_avance_etapas_pp', function (Blueprint $table){
             $table->increments('id');
+            $table->unique(['clv_upp','clv_pp','ejercicio']);
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',5)->nullable(false);
             $table->tinyInteger('etapa_0')->nullable(false);
