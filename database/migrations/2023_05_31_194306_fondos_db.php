@@ -117,7 +117,7 @@ return new class extends Migration
             $table->string('clv_pp',255)->nullable(false);
             $table->integer('problema_id')->unsigned()->nullable(false);
             $table->tinyInteger('etapa')->unsigned()->nullable(false);
-            $table->string('comentario',255)->nullable(true);
+            $table->text('comentario')->nullable(true);
             $table->string('ruta',200)->nullable(true);
             $table->string('nombre',500)->nullable(true);
             $table->integer('ejercicio')->nullable(true);
