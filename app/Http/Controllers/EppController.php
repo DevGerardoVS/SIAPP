@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Log;
+use PDF;
+use App\Exports\EppExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EppController extends Controller
 {
@@ -99,5 +103,80 @@ class EppController extends Controller
         return response()->json([
             'listaUR'=> $listaUR
         ]);
+    }
+
+    public function exportExcelEPP(Request $request){
+        /*Si no coloco estas lineas Falla*/
+        ob_end_clean();
+        ob_start();
+        /*Si no coloco estas lineas Falla*/
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Descargar EPP Excel',
+            "modulo" => 'EPP'
+        );
+        Controller::bitacora($b);
+        $anio = $request->anio;
+        $nombre = "Lista de EPP $anio.xlsx";
+        return Excel::download(new EppExport($anio), $nombre, \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    public function exportPdfEPP(Request $request){
+        return view('epp/eppPDFA', 
+            [
+                'dataSet' => $dataSet
+            ]
+        );
+
+        ini_set('max_execution_time', 5000);
+        ini_set('memory_limit', '10240M');
+        $data = DB::table('v_epp')
+                ->select(DB::raw("
+                    CONCAT(
+                        clv_sector_publico,
+                        clv_sector_publico_f,
+                        clv_sector_economia,
+                        clv_subsector_economia,
+                        clv_ente_publico
+                    ) AS clas_admin,
+                    concat(clv_upp,' ',
+                    upp) upp,
+                    concat(clv_subsecretaria,' ',
+                    subsecretaria) subsecretaria,
+                    concat(clv_ur,' ',
+                    ur) ur,
+                    concat(clv_finalidad,' ',
+                    finalidad) finalidad,
+                    concat(clv_funcion,' ',
+                    funcion) funcion,
+                    concat(clv_subfuncion,' ',
+                    subfuncion) subfuncion,
+                    concat(clv_eje,' ',
+                    eje) eje,
+                    concat(clv_linea_accion,' ',
+                    linea_accion) linea_accion,
+                    concat(clv_programa_sectorial,' ',
+                    programa_sectorial) programa_sectorial,
+                    concat(clv_tipologia_conac,' ',
+                    tipologia_conac) tipologia_conac,
+                    concat(clv_programa,' ',
+                    programa) programa,
+                    concat(clv_subprograma,' ',
+                    subprograma) subprograma,
+                    concat(clv_proyecto,' ',
+                    proyecto) proyecto
+                "))
+                ->where('ejercicio', $request->anio)
+                ->get();
+        view()->share('data', $data);
+        $pdf = PDF::loadView('epp.eppPDF',$data)->setPaper('a3', 'landscape');
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Descargar EPP PDF',
+            "modulo" => 'EPP'
+        );
+        Controller::bitacora($b);
+        $nombre = "Listado de EPP $request->anio.pdf";
+        return $pdf->download($nombre);
     }
 }
