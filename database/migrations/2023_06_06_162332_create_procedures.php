@@ -2687,7 +2687,7 @@ return new class extends Migration {
                     ) up on 
                         ma.clv_upp = up.clv_upp and
                         ma.clv_pp = up.clv_programa
-                    where ma.ejercicio = ',anio);
+                    where ma.deleted_at is null and ma.ejercicio = ',anio);
                 
             set @query := CONCAT('
             select 
