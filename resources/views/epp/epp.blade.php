@@ -39,6 +39,10 @@
                 <div>
                     <label for="estatus_filter" class="form-label fw-bold">AÑO:</label>
                 </div>
+        @endif
+        @if($perfil == 4)
+            <div class="col-md-10 col-sm-12 d-md-flex">
+        @endif
                 <div class="col-sm-12 col-md-3 col-lg-2">
                     <select onchange="actualizarTabla(false)" class="form-control filters filters_anio" id="filters_anio" name="estatus_filter" autocomplete="upp_filter">
                         <?php $i = 0; $len = count($anios); ?>
@@ -48,7 +52,6 @@
                     </select>
                 </div>
             </div>
-        @endif
 
         <form action="{{ route('get-epp', ['anio'=>'0000', 'upp'=>'000', 'ur'=>'00']) }}" id="buscarForm" method="post">
             @csrf

@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Illuminate\Support\Facades\Auth;
 use Log;
 
 class EppExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths
@@ -19,44 +20,13 @@ class EppExport implements FromCollection, ShouldAutoSize, WithHeadings, WithCol
 
     public function collection()
     {
-        $epp = DB::table('v_epp')
-            ->select(DB::raw("
-                CONCAT(
-                    clv_sector_publico,
-                    clv_sector_publico_f,
-                    clv_sector_economia,
-                    clv_subsector_economia,
-                    clv_ente_publico
-                ) AS clas_admin,
-                clv_upp,
-                upp,
-                clv_subsecretaria,
-                subsecretaria,
-                clv_ur,
-                ur,
-                clv_finalidad,
-                finalidad,
-                clv_funcion,
-                funcion,
-                clv_subfuncion,
-                subfuncion,
-                clv_eje,
-                eje,
-                clv_linea_accion,
-                linea_accion,
-                clv_programa_sectorial,
-                programa_sectorial,
-                clv_tipologia_conac,
-                tipologia_conac,
-                clv_programa,
-                programa,
-                clv_subprograma,
-                subprograma,
-                clv_proyecto,
-                proyecto
-            "))
-            ->where('ejercicio', $this->anio)
-            ->get();
+        $perfil = Auth::user()->id_grupo;
+        $epp = '';
+
+        if($perfil == 5) {$epp = DB::select('call sp_epp(1,null,null,'.$this->anio.')');}
+        else if($perfil == 4) {$epp = DB::select('call sp_epp(0,'.Auth::user()->clv_upp.',null,'.$this->anio.')');}
+        else {$epp = DB::select('call sp_epp(0,null,null,'.$this->anio.')');}
+
         return $epp;
     }
 
