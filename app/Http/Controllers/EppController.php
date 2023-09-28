@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Log;
+use PDF;
+use App\Exports\EppExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EppController extends Controller
 {
@@ -99,5 +103,21 @@ class EppController extends Controller
         return response()->json([
             'listaUR'=> $listaUR
         ]);
+    }
+
+    public function exportExcelEPP(Request $request){
+        /*Si no coloco estas lineas Falla*/
+        ob_end_clean();
+        ob_start();
+        /*Si no coloco estas lineas Falla*/
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Descargar EPP Excel',
+            "modulo" => 'EPP'
+        );
+        Controller::bitacora($b);
+        $anio = $request->anio;
+        $nombre = "Lista de EPP $anio.xlsx";
+        return Excel::download(new EppExport($anio), $nombre, \Maatwebsite\Excel\Excel::XLSX);
     }
 }
