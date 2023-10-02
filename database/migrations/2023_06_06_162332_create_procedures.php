@@ -2687,7 +2687,7 @@ return new class extends Migration {
                     ) up on 
                         ma.clv_upp = up.clv_upp and
                         ma.clv_pp = up.clv_programa
-                    where ma.ejercicio = ',anio);
+                    where ma.deleted_at is null and ma.ejercicio = ',anio);
                 
             set @query := CONCAT('
             select 
@@ -3056,24 +3056,24 @@ return new class extends Migration {
                 and c.deleted_at is null
                 set a.id_proyecto = c.id;
                 
-                insert into rel_faltantes(clave,grupo) select ea.clv_sector_publico clave,clv_sector_publico grupo from epp_aux ea where ea.id_sector_publico is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_sector_publico_f clave,clv_sector_publico_f grupo from epp_aux ea where ea.id_sector_publico_f is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_sector_economia clave,clv_sector_economia grupo from epp_aux ea where ea.id_sector_economia is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_subsector_economia clave,clv_subsector_economia grupo from epp_aux ea where ea.id_subsector_economia is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_ente_publico clave,clv_ente_publico grupo from epp_aux ea where ea.id_ente_publico is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_upp clave,clv_upp grupo from epp_aux ea where ea.id_upp is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_subsecretaria clave,clv_subsecretaria grupo from epp_aux ea where ea.id_subsecretaria is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_ur clave,clv_ur grupo from epp_aux ea where ea.id_ur is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_finalidad clave,clv_finalidad grupo from epp_aux ea where ea.id_finalidad is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_funcion clave,clv_funcion grupo from epp_aux ea where ea.id_funcion is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_subfuncion clave,clv_subfuncion grupo from epp_aux ea where ea.id_subfuncion is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_eje clave,clv_eje grupo from epp_aux ea where ea.id_eje is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_linea_accion clave,clv_linea_accion grupo from epp_aux ea where ea.id_linea_accion is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_programa_sectorial clave,clv_programa_sectorial grupo from epp_aux ea where ea.id_programa_sectorial is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_tipologia_conac clave,clv_tipologia_conac grupo from epp_aux ea where ea.id_tipologia_conac is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_programa  clave,clv_programa grupo from epp_aux ea where ea.id_programa is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_subprograma clave,clv_subprograma grupo from epp_aux ea where ea.id_subprograma is null;
-                insert into rel_faltantes(clave,grupo) select ea.clv_proyecto clave,clv_proyecto grupo from epp_aux ea where ea.id_proyecto is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_sector_publico clave,'sector_publico' grupo from epp_aux ea where ea.id_sector_publico is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_sector_publico_f clave,'sector_publico_f' grupo from epp_aux ea where ea.id_sector_publico_f is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_sector_economia clave,'sector_economia' grupo from epp_aux ea where ea.id_sector_economia is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_subsector_economia clave,'subsector_economia' grupo from epp_aux ea where ea.id_subsector_economia is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_ente_publico clave,'ente_publico' grupo from epp_aux ea where ea.id_ente_publico is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_upp clave,'upp' grupo from epp_aux ea where ea.id_upp is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_subsecretaria clave,'subsecretaria' grupo from epp_aux ea where ea.id_subsecretaria is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_ur clave,'ur' grupo from epp_aux ea where ea.id_ur is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_finalidad clave,'finalidad' grupo from epp_aux ea where ea.id_finalidad is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_funcion clave,'funcion' grupo from epp_aux ea where ea.id_funcion is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_subfuncion clave,'subfuncion' grupo from epp_aux ea where ea.id_subfuncion is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_eje clave,'eje' grupo from epp_aux ea where ea.id_eje is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_linea_accion clave,'linea_accion' grupo from epp_aux ea where ea.id_linea_accion is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_programa_sectorial clave,'programa_sectorial' grupo from epp_aux ea where ea.id_programa_sectorial is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_tipologia_conac clave,'tipologia_conac' grupo from epp_aux ea where ea.id_tipologia_conac is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_programa  clave,'programa' grupo from epp_aux ea where ea.id_programa is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_subprograma clave,'subprograma' grupo from epp_aux ea where ea.id_subprograma is null;
+                insert into rel_faltantes(clave,grupo) select distinct ea.clv_proyecto clave,'proyecto' grupo from epp_aux ea where ea.id_proyecto is null;
             
                 set @filas := (select count(*) from rel_faltantes);
                 if( @filas > 0) then 
@@ -3167,6 +3167,64 @@ return new class extends Migration {
                 )t
             )t2;
         END");
+
+        DB::unprepared("CREATE PROCEDURE mml_comprobacion(in upp varchar(3),in programa varchar(2),in ur varchar(2),in anio int)
+        begin
+            set @upp := '';
+            set @programa := '';
+            set @ur := '';
+            if(upp is not null) then set @upp := CONCAT('and mm.clv_upp = \"',upp,'\"'); end if;
+            if(programa is not null) then set @programa := CONCAT('and mm.clv_pp = \"',programa,'\"'); end if;
+            if(ur is not null) then set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); end if;
+        
+            set @query := CONCAT('select 
+                case 
+                    when nivel = 11 then \"\"
+                    else clv_upp
+                end clv_upp,
+                case 
+                    when nivel = 11 then \"\"
+                    else clv_pp
+                end clv_pp,
+                case 
+                    when nivel = 11 then \"\"
+                    else clv_ur
+                end clv_ur,
+                case 
+                    when nivel = 11 then \"\"
+                    else area_funcional
+                end area_funcional,
+                case 
+                    when nivel = 11 then \"\"
+                    else clv_proyecto
+                end nombre_proyecto,
+                case 
+                    when nivel = 10 then \"Componente\"
+                    else \"Actividad\"
+                end nivel,
+                objetivo,
+                indicador
+            from (
+                select 
+                    mm.clv_upp,
+                    mm.clv_pp,
+                    mm.clv_ur,
+                    mm.area_funcional,
+                    ve.clv_proyecto,
+                    mm.nivel,
+                    mm.objetivo,
+                    mm.indicador
+                from mml_mir mm
+                join v_epp ve on mm.id_epp = ve.id
+                where mm.ejercicio = ',anio,' and mm.deleted_at is null 
+                and nivel in (10,11) ',@upp,' ',@programa,' ',@ur,'
+                order by clv_upp,clv_pp,clv_ur,nivel
+            )t;');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        END;");
     }
 
     /**
@@ -3217,5 +3275,6 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS llenado_epp;");
         DB::unprepared("DROP PROCEDURE IF EXISTS crear_tabla_auxiliar;");
         DB::unprepared("DROP PROCEDURE IF EXISTS avance_etapas_upp_programa;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS mml_comprobacion;");
     }
 };
