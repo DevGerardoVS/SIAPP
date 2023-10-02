@@ -31,7 +31,11 @@ class User extends Authenticatable
         'username',
         'password',
         'clv_upp',
-        'status'
+        'status',
+        'created_user',
+        'updated_user',
+        'deleted_user'
+
     ];
 
     protected $dates = ['deleted_at'];

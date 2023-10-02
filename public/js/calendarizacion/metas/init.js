@@ -740,8 +740,7 @@ var dao = {
                 $("#idAct").addClass("col-md-4").removeClass("col-md-6");
                 $("#idFond").addClass("col-md-4").removeClass("col-md-6");
             }
-            if (fondos.length == 1 && activids.length == 0) {
-                console.log("solo uno");
+            if (fondos.length == 1 && activids.length == 1) {
                 let fondo = '';
                 if ($('#sel_fondo').val()!=''|| $('#sel_fondo').val()!=null) {
                     fondo = $('#sel_fondo').val();

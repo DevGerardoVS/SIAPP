@@ -26,6 +26,7 @@ return new class extends Migration
 
         Schema::create('mml_definicion_problema', function (Blueprint $table){
             $table->increments('id');
+            $table->unique(['clv_upp','clv_pp','ejercicio']);	
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
             $table->string('poblacion_objetivo',255)->nullable(false);
@@ -116,7 +117,7 @@ return new class extends Migration
             $table->string('clv_pp',255)->nullable(false);
             $table->integer('problema_id')->unsigned()->nullable(false);
             $table->tinyInteger('etapa')->unsigned()->nullable(false);
-            $table->string('comentario',255)->nullable(true);
+            $table->text('comentario')->nullable(true);
             $table->string('ruta',200)->nullable(true);
             $table->string('nombre',500)->nullable(true);
             $table->integer('ejercicio')->nullable(true);
@@ -192,6 +193,7 @@ return new class extends Migration
 
         Schema::create('mml_avance_etapas_pp', function (Blueprint $table){
             $table->increments('id');
+            $table->unique(['clv_upp','clv_pp','ejercicio']);
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',5)->nullable(false);
             $table->tinyInteger('etapa_0')->nullable(false);
@@ -246,7 +248,8 @@ return new class extends Migration
             $table->softDeletes();
         });
         Schema::create('mml_cierre_ejercicio', function (Blueprint $table){
-            $table->increments('id')->nullable(false);
+            $table->unique(['clv_upp','ejercicio']);	
+            $table->increments('id')->unsigned();
             $table->string('clv_upp',30)->nullable(false);
             $table->enum('estatus', ['Cerrado', 'Abierto'])->nullable(false);
             $table->integer('ejercicio')->nullable(false);
@@ -286,7 +289,8 @@ return new class extends Migration
         });
 
         Schema::create('entidad_ejecutora', function (Blueprint $table){
-            $table->increments('id');
+            $table->unique(['upp_id','subsecretaria_id','ur_id']);	
+            $table->increments('id')->unsigned();
             $table->integer('upp_id')->unsigned()->nullable(false);
             $table->integer('subsecretaria_id')->unsigned()->nullable(false);
             $table->integer('ur_id')->unsigned()->nullable(false);
@@ -299,6 +303,7 @@ return new class extends Migration
         });
 
         Schema::create('clasificacion_geografica', function (Blueprint $table){
+            $table->unique(['clv_entidad_federativa','clv_region','clv_municipio','clv_localidad'],'clave_cg');	
             $table->increments('id');
             $table->string('clv_entidad_federativa',2)->nullable(false);
             $table->string('entidad_federativa',255)->nullable(false);
@@ -318,6 +323,7 @@ return new class extends Migration
 
         Schema::create('fondo', function (Blueprint $table){
             $table->increments('id');
+            $table->unique(['clv_etiquetado','clv_fuente_financiamiento','clv_ramo','clv_fondo_ramo','clv_capital'],'llave_fondo');
             $table->string('clv_etiquetado',1)->nullable(false);
             $table->string('etiquetado', 255)->nullable(false);
             $table->string('clv_fuente_financiamiento',1)->nullable(false);
@@ -464,7 +470,8 @@ return new class extends Migration
         });
 
         Schema::create('cierre_ejercicio_metas',function (Blueprint $table){
-            $table->increments('id');
+            $table->unique(['clv_upp','ejercicio']);	
+            $table->increments('id')->unsigned();
             $table->string('clv_upp',3)->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
             $table->integer('ejercicio')->nullable(false);
@@ -489,7 +496,8 @@ return new class extends Migration
         });
 
         Schema::create('cierre_ejercicio_claves',function (Blueprint $table){
-            $table->increments('id');
+            $table->unique(['clv_upp','ejercicio']);	
+            $table->increments('id')->unsigned();
             $table->string('clv_upp',3)->nullable(false);
             $table->enum('estatus',['Cerrado','Abierto'])->default(null);
             $table->integer('ejercicio')->nullable(false);
@@ -506,6 +514,8 @@ return new class extends Migration
 
         Schema::create('metas',function (Blueprint $table){
             $table->increments('id');
+            $table->unique(['clv_actividad','clv_fondo','mir_id'],'clave_mir');	
+            $table->unique(['clv_actividad','clv_fondo','actividad_id'],'clave_actividad');	
             $table->string('clv_actividad',255)->unique()->nullable(true);
             $table->string('clv_fondo',2)->nullable(false);
             $table->integer('mir_id')->unsigned()->nullable(true);
@@ -557,6 +567,9 @@ return new class extends Migration
 
         Schema::create('epp',function (Blueprint $table){
             $table->increments('id');
+            $table->unique(['sector_publico_id','sector_publico_f_id','sector_economia_id','subsector_economia_id','ente_publico_id','upp_id','subsecretaria_id',
+        'ur_id','finalidad_id','funcion_id','subfuncion_id','eje_id','linea_accion_id','programa_sectorial_id','tipologia_conac_id','programa_id','subprograma_id',
+    'proyecto_id','ejercicio'],'llave_epp');	
             $table->integer('sector_publico_id')->unsigned()->nullable(false);
             $table->integer('sector_publico_f_id')->unsigned()->nullable(false);
             $table->integer('sector_economia_id')->unsigned()->nullable(false);
