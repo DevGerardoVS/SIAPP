@@ -3174,6 +3174,7 @@ return new class extends Migration {
             set @upp2 := '';
             set @programa := '';
             set @ur := '';
+            set @ur2 := '';
            	set @programa2 := '';
             if(upp is not null) then 
            		set @upp := CONCAT('and mm.clv_upp = \"',upp,'\"'); 
@@ -3183,7 +3184,10 @@ return new class extends Migration {
            		set @programa := CONCAT('and mm.clv_pp = \"',programa,'\"'); 
            		set @programa2 := CONCAT('and clv_programa = \"',programa,'\"'); 
            	end if;
-            if(ur is not null) then set @ur := CONCAT('and clv_ur = \"',ur,'\"'); end if;
+            if(ur is not null) then 
+                set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); 
+                set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
+            end if;
         
             set @query := CONCAT(\"select 
 				case 
@@ -3238,7 +3242,7 @@ return new class extends Migration {
 					'' objetivo,
 					'' indicador
 				from v_epp ve
-				where ejercicio = \",anio,\" and deleted_at is null \",@upp2,\" \",@ur,\" \",@programa2,\"
+				where ejercicio = \",anio,\" and deleted_at is null \",@upp2,\" \",@ur2,\" \",@programa2,\"
 				group by clv_upp,clv_pp,clv_ur,nivel
 				order by clv_upp,clv_pp,clv_ur,nivel
 			)t;\");
