@@ -3167,6 +3167,64 @@ return new class extends Migration {
                 )t
             )t2;
         END");
+
+        DB::unprepared("CREATE PROCEDURE mml_comprobacion(in upp varchar(3),in programa varchar(2),in ur varchar(2),in anio int)
+        begin
+            set @upp := '';
+            set @programa := '';
+            set @ur := '';
+            if(upp is not null) then set @upp := CONCAT('and mm.clv_upp = \"',upp,'\"'); end if;
+            if(programa is not null) then set @programa := CONCAT('and mm.clv_pp = \"',programa,'\"'); end if;
+            if(ur is not null) then set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); end if;
+        
+            set @query := CONCAT('select 
+                case 
+                    when nivel = 11 then \"\"
+                    else clv_upp
+                end clv_upp,
+                case 
+                    when nivel = 11 then \"\"
+                    else clv_pp
+                end clv_pp,
+                case 
+                    when nivel = 11 then \"\"
+                    else clv_ur
+                end clv_ur,
+                case 
+                    when nivel = 11 then \"\"
+                    else area_funcional
+                end area_funcional,
+                case 
+                    when nivel = 11 then \"\"
+                    else clv_proyecto
+                end nombre_proyecto,
+                case 
+                    when nivel = 10 then \"Componente\"
+                    else \"Actividad\"
+                end nivel,
+                objetivo,
+                indicador
+            from (
+                select 
+                    mm.clv_upp,
+                    mm.clv_pp,
+                    mm.clv_ur,
+                    mm.area_funcional,
+                    ve.clv_proyecto,
+                    mm.nivel,
+                    mm.objetivo,
+                    mm.indicador
+                from mml_mir mm
+                join v_epp ve on mm.id_epp = ve.id
+                where mm.ejercicio = ',anio,' and mm.deleted_at is null 
+                and nivel in (10,11) ',@upp,' ',@programa,' ',@ur,'
+                order by clv_upp,clv_pp,clv_ur,nivel
+            )t;');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        END;");
     }
 
     /**
@@ -3217,5 +3275,6 @@ return new class extends Migration {
         DB::unprepared("DROP PROCEDURE IF EXISTS llenado_epp;");
         DB::unprepared("DROP PROCEDURE IF EXISTS crear_tabla_auxiliar;");
         DB::unprepared("DROP PROCEDURE IF EXISTS avance_etapas_upp_programa;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS mml_comprobacion;");
     }
 };
