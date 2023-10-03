@@ -3171,56 +3171,82 @@ return new class extends Migration {
 
         DB::unprepared("CREATE PROCEDURE mml_comprobacion(in upp varchar(3),in programa varchar(2),in ur varchar(2),in anio int)
         begin
-            set @upp := '';
+        set @upp := '';
+            set @upp2 := '';
             set @programa := '';
             set @ur := '';
-            if(upp is not null) then set @upp := CONCAT('and mm.clv_upp = \"',upp,'\"'); end if;
-            if(programa is not null) then set @programa := CONCAT('and mm.clv_pp = \"',programa,'\"'); end if;
-            if(ur is not null) then set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); end if;
+            set @ur2 := '';
+           	set @programa2 := '';
+            if(upp is not null) then 
+           		set @upp := CONCAT('and mm.clv_upp = \"',upp,'\"'); 
+           		set @upp2 := CONCAT('and clv_upp = \"',upp,'\"'); 
+           	end if;
+            if(programa is not null) then
+           		set @programa := CONCAT('and mm.clv_pp = \"',programa,'\"'); 
+           		set @programa2 := CONCAT('and clv_programa = \"',programa,'\"'); 
+           	end if;
+            if(ur is not null) then 
+                set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); 
+                set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
+            end if;
         
-            set @query := CONCAT('select 
-                case 
-                    when nivel = 11 then \"\"
-                    else clv_upp
-                end clv_upp,
-                case 
-                    when nivel = 11 then \"\"
-                    else clv_pp
-                end clv_pp,
-                case 
-                    when nivel = 11 then \"\"
-                    else clv_ur
-                end clv_ur,
-                case 
-                    when nivel = 11 then \"\"
-                    else area_funcional
-                end area_funcional,
-                case 
-                    when nivel = 11 then \"\"
-                    else clv_proyecto
-                end nombre_proyecto,
-                case 
-                    when nivel = 10 then \"Componente\"
-                    else \"Actividad\"
-                end nivel,
-                objetivo,
-                indicador
-            from (
-                select 
-                    mm.clv_upp,
-                    mm.clv_pp,
-                    mm.clv_ur,
-                    mm.area_funcional,
-                    ve.clv_proyecto,
-                    mm.nivel,
-                    mm.objetivo,
-                    mm.indicador
-                from mml_mir mm
-                join v_epp ve on mm.id_epp = ve.id
-                where mm.ejercicio = ',anio,' and mm.deleted_at is null 
-                and nivel in (10,11) ',@upp,' ',@programa,' ',@ur,'
-                order by clv_upp,clv_pp,clv_ur,nivel
-            )t;');
+            set @query := CONCAT(\"select 
+				case 
+					when nivel = 9 then clv_upp
+					else ''
+				end clv_upp,
+				case 
+					when nivel = 9 then clv_pp
+					else ''
+				end clv_pp,
+				case 
+					when nivel = 9 then clv_ur
+					else ''
+				end clv_ur,
+				case 
+					when nivel != 9 then area_funcional
+					else ''
+				end area_funcional,
+				case 
+					when nivel != 9 then proyecto
+					else ''
+				end nombre_proyecto,
+				case 
+					when nivel = 10 then 'Componente'
+					when nivel = 11 then 'Actividad'
+					else ''
+				end nivel,
+				objetivo,
+				indicador
+			from (
+				select 
+					mm.clv_upp,
+					mm.clv_pp,
+					mm.clv_ur,
+					mm.area_funcional,
+					ve.proyecto,
+					mm.nivel,
+					mm.objetivo,
+					mm.indicador
+				from mml_mir mm
+				join v_epp ve on ve.id = mm.id_epp
+				where mm.ejercicio = \",anio,\" and mm.deleted_at is null
+				and nivel in (10,11) \",@upp,\" \",@ur,\" \",@programa,\"
+				union all
+				select distinct
+					ve.clv_upp,
+					ve.clv_programa clv_pp,
+					ve.clv_ur,
+					'' area_funcional,
+					'' proyecto,
+					9 nivel,
+					'' objetivo,
+					'' indicador
+				from v_epp ve
+				where ejercicio = \",anio,\" and deleted_at is null \",@upp2,\" \",@ur2,\" \",@programa2,\"
+				group by clv_upp,clv_pp,clv_ur,nivel
+				order by clv_upp,clv_pp,clv_ur,nivel
+			)t;\");
         
             prepare stmt  from @query;
             execute stmt;
