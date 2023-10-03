@@ -2683,6 +2683,7 @@ return new class extends Migration {
                             programa
                         from v_epp
                         where ejercicio = ',anio,'
+                        and con_mir = 1
                         and deleted_at is null
                     ) up on 
                         ma.clv_upp = up.clv_upp and
