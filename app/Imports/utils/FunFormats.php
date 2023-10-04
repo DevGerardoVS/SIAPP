@@ -230,7 +230,6 @@ class FunFormats
                                         $e = FunFormats::isExist($entidad, $k[12], $mir, $noMir);
                                         $area_funcional = '' . strval($k[0]) . strval($k[1]) . strval($k[2]) . strval($k[3]) . strval($k[4]) . strval($k[5]) . strval($k[6]) . strval($k[9]) . strval($k[10]) . strval($k[11]) . '';
                                         $entidad_ejecutora = '' . strval($k[7]) . '0' . strval($k[8]) . '';
-                                        /*   Log::debug($e);  */
                                         if ($e["status"]) {
 
                                             $unique = "";
@@ -458,7 +457,6 @@ class FunFormats
             foreach ($aux as $key) {
                 try {
                     if (($key['meta_id']) == NULL) {
-                        Log::debug(json_encode($key));
                         FunFormats::guardarMeta($key);
 
                     } else {

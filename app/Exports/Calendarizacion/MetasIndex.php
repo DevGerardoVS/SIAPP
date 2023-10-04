@@ -1,6 +1,7 @@
 <?php
 namespace App\Exports\Calendarizacion;
 
+use Illuminate\Database\Query\JoinClause;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -36,22 +37,22 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'mml_mir.clv_upp')
             ->leftJoin('programacion_presupuesto', 'programacion_presupuesto.upp', '=', 'mml_mir.clv_upp')
             ->select(
+                'mml_mir.id',
                 'mml_mir.clv_upp',
+                'mml_mir.clv_ur',
                 'mml_mir.entidad_ejecutora',
                 'mml_mir.area_funcional',
-                DB::raw('"NULL" AS fondo'),
                 DB::raw('"NULL" AS clv_actadmon'),
                 DB::raw('mml_mir.id AS mir_act'),
                 DB::raw('indicador AS actividad'),
-                DB::raw('"" AS fondo'),
+                DB::raw('programacion_presupuesto.fondo_ramo AS fondo'),
             )
             ->where('mml_mir.deleted_at', null)
             ->where('mml_mir.nivel', 11)
             ->where('mml_avance_etapas_pp.estatus', 3)
             ->where('programacion_presupuesto.estado', 1)
             ->where('mml_mir.ejercicio', $anio)
-            ->groupByRaw('entidad_ejecutora,area_funcional')
-
+            ->groupByRaw('programacion_presupuesto.fondo_ramo,entidad_ejecutora,area_funcional')
             ->distinct();
         if (Auth::user()->id_grupo == 4) {
             $upp = Auth::user()->clv_upp;
@@ -64,16 +65,19 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
 
         $data2 = DB::table('programacion_presupuesto')
             ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'programacion_presupuesto.upp')
+            ->joinSub($data3, 'mir', function (JoinClause $join) {
+                $join->on('mir.clv_upp', '=', 'programacion_presupuesto.upp');
+            })
             ->select(
                 'upp AS clv_upp',
                 DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
                 DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
-                'programacion_presupuesto.fondo_ramo AS fondo',
                 DB::raw('"NULL" AS clv_actadmon'),
-                DB::raw('"NULL"AS mir_act'),
-                DB::raw('"" AS actividad'),
+                DB::raw('IFNULL(mir.id,"NULL") AS mir_act'),
+                DB::raw('IFNULL(mir.actividad,"NULL") AS actividad'),
                 DB::raw('programacion_presupuesto.fondo_ramo AS fondo'),
             )
+            ->where('mir.clv_ur', '=', 'programacion_presupuesto.ur')
             ->where('programacion_presupuesto.estado', 1)
             ->where('programacion_presupuesto.deleted_at', null)
             ->where('programacion_presupuesto.ejercicio', '=', $anio)
@@ -101,7 +105,6 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
                 'upp AS clv_upp',
                 DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
                 DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
-                'programacion_presupuesto.fondo_ramo AS fondo',
                 DB::raw('IFNULL(catalogo.id,"NULL") AS clv_actadmon'),
                 DB::raw('"NULL"AS mir_act'),
                 DB::raw('IFNULL(catalogo.descripcion," ") AS actividad'),
@@ -114,7 +117,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             ->where('catalogo.grupo_id', 20)
             ->where('mml_avance_etapas_pp.estatus', 3)
             ->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-            ->unionAll($data3)
+            //->unionAll($data3)
             ->unionAll($data2)
             ->distinct();
 
