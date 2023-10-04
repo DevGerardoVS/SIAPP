@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Calendarizacion;
 use App\Imports\utils\FunFormats;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -175,7 +176,6 @@ class MetasController extends Controller
 	{
 		$urs = [];
 		$tAct = [];
-		Log::debug($_upp);
 		if ($_upp != 0) {
 			$upp = $_upp != null ? $_upp : auth::user()->clv_upp;
 			$check = $this->checkClosing($upp);
@@ -1059,6 +1059,7 @@ class MetasController extends Controller
 	{
 		$date = Carbon::now();
 		$year = $date->format('Y');
+		$anioMax = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', $upp)->max('ejercicio');
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select(
 				'estatus',
@@ -1066,7 +1067,9 @@ class MetasController extends Controller
 			)
 			->where('deleted_at', null)
 			->where('clv_upp', '=', $upp)
+			->where('ejercicio',$anioMax)
 			->get();
+
 		if (count($anio)) {
 			if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
 				return ["status" => true, "anio" => $anio[0]->ejercicio];
@@ -1081,6 +1084,7 @@ class MetasController extends Controller
 	}
 	function checkGoals($upp)
 	{
+		$anioMax = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', $upp)->max('ejercicio');
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select(
 				'estatus',
@@ -1088,6 +1092,7 @@ class MetasController extends Controller
 			)
 			->where('deleted_at', null)
 			->where('clv_upp', '=', $upp)
+			->where('ejercicio',$anioMax)
 			->get();
 		if (count($anio)) {
 			if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
@@ -1433,8 +1438,6 @@ class MetasController extends Controller
 			->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct()
 			->get();
-		Log::debug("Metas: " . count($metas));
-		Log::debug("pp: " . count($activsPP));
 		if (count($metas) > 1) {
 			if (count($metas) >= count($activsPP)) {
 				return ["status" => true];
