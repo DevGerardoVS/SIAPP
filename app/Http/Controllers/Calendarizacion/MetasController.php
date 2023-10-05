@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Http;
 use Storage;
 use App\Models\calendarizacion\CierreMetas;
 use App\Models\MmlMir;
+
 use App\Models\Catalogo;
 
 
@@ -597,45 +598,88 @@ class MetasController extends Controller
 	}
 	public function updateMeta($id)
 	{
-		$metas = DB::table('metas')
-			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
-			->select(
-				DB::raw('CONCAT(mml_mir.id, " - ", mml_mir.indicador) AS actividad'),
-				'mml_mir.area_funcional',
-				'mml_mir.entidad_ejecutora',
-				'mml_mir.clv_upp',
-				'mml_mir.clv_ur',
-				'mml_mir.id as mir_id',
-				'metas.id',
-				'metas.clv_fondo',
-				'metas.tipo',
-				'metas.beneficiario_id',
-				'metas.unidad_medida_id',
-				'metas.cantidad_beneficiarios',
-				'metas.enero',
-				'metas.febrero',
-				'metas.marzo',
-				'metas.abril',
-				'metas.mayo',
-				'metas.junio',
-				'metas.julio',
-				'metas.agosto',
-				'metas.septiembre',
-				'metas.octubre',
-				'metas.noviembre',
-				'metas.diciembre',
-				'metas.total',
-				'mml_mir.ejercicio'
+		$metas = [];
+		$m = Metas::where('deleted_at', null)->where('id', $id)->get();
+		Log::debug($m );
+		if ($m[0]->mir_id != null) {
+			$metas = DB::table('metas')
+				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
+				->select(
+					DB::raw('CONCAT(mml_mir.id, " - ", mml_mir.indicador) AS actividad'),
+					'mml_mir.area_funcional',
+					'mml_mir.entidad_ejecutora',
+					'mml_mir.clv_upp',
+					'mml_mir.clv_ur',
+					'mml_mir.id as mir_id',
+					'metas.id',
+					'metas.clv_fondo',
+					'metas.tipo',
+					'metas.beneficiario_id',
+					'metas.unidad_medida_id',
+					'metas.cantidad_beneficiarios',
+					'metas.enero',
+					'metas.febrero',
+					'metas.marzo',
+					'metas.abril',
+					'metas.mayo',
+					'metas.junio',
+					'metas.julio',
+					'metas.agosto',
+					'metas.septiembre',
+					'metas.octubre',
+					'metas.noviembre',
+					'metas.diciembre',
+					'metas.total',
+					'mml_mir.ejercicio'
 
-			)
-			->where('mml_mir.deleted_at', null)
-			->where('metas.deleted_at', null)
-			->where('metas.id', $id)->get();
+				)
+				->where('mml_mir.deleted_at', null)
+				->where('metas.deleted_at', null)
+				->where('metas.id', $id)->get();
+		}
+		if($m[0]->actividad_id != null){
+			$metas = DB::table('metas')
+				->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
+				->leftJoin('catalogo', 'catalogo.id', 'mml_actividades.id_catalogo')
+				->select(
+					DB::raw('CONCAT(mml_actividades.id, " - ", IFNULL(mml_actividades.nombre,catalogo.descripcion)) AS actividad'),
+					'mml_actividades.area_funcional',
+					'mml_actividades.entidad_ejecutora',
+					'mml_actividades.clv_upp',
+					DB::raw('"" AS clv_ur'),
+					'mml_actividades.id as actividad_id',
+					'metas.id',
+					'metas.clv_fondo',
+					'metas.tipo',
+					'metas.beneficiario_id',
+					'metas.unidad_medida_id',
+					'metas.cantidad_beneficiarios',
+					'metas.enero',
+					'metas.febrero',
+					'metas.marzo',
+					'metas.abril',
+					'metas.mayo',
+					'metas.junio',
+					'metas.julio',
+					'metas.agosto',
+					'metas.septiembre',
+					'metas.octubre',
+					'metas.noviembre',
+					'metas.diciembre',
+					'metas.total',
+					'metas.ejercicio'
+
+				)
+				->where('mml_actividades.deleted_at', null)
+				->where('metas.deleted_at', null)
+				->where('metas.id', $id)->get();
+
+		}
 		$data = [];
 		$areaAux = str_split($metas[0]->area_funcional);
+		$entiAux = str_split($metas[0]->entidad_ejecutora);
 		$area = '' . strval($areaAux[0]) . '-' . strval($areaAux[1]) . '-' . strval($areaAux[2]) . '-' . strval($areaAux[3]) . '-' . strval($areaAux[4]) . strval($areaAux[5]) . '-' . strval($areaAux[6]) . '-' . strval($areaAux[7]) . '-' . strval($areaAux[8]) . strval($areaAux[9]) . "-" . strval($areaAux[10]) . strval($areaAux[11]) . strval($areaAux[12]) . "-" . strval($areaAux[13]) . strval($areaAux[14]) . strval($areaAux[15]) . '';
-		$meses = MetasController::meses($area, "" . $metas[0]->clv_upp . "-" . '0' . "-" . $metas[0]->clv_ur . "", $metas[0]->ejercicio, $metas[0]->clv_fondo);
-
+		$meses = MetasController::meses($area, "" . $metas[0]->clv_upp . "-" . strval($entiAux[3]) . "-" . strval($entiAux[4]) . strval($entiAux[5]) . "", $metas[0]->ejercicio, $metas[0]->clv_fondo);
 		foreach ($metas as $key) {
 			$area = str_split($key->area_funcional);
 			$entidad = str_split($key->entidad_ejecutora);
