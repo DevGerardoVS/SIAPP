@@ -58,6 +58,8 @@ Route::get('', function () {
 Route::get('/login', function () {
     if ((!Auth::check())) {
         return view('auth.login');
+    }else{
+        return view('home');
     }
 })->name('login');
 
