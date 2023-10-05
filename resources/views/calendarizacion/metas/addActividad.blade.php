@@ -66,6 +66,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <label id="meses-error"  class="d-flex justify-content-center" ></label>
                     <div class="table-responsive ">
                         <table id="meses2" class="table table-hover table-striped"
                             style="border-bottom-style: none;">
