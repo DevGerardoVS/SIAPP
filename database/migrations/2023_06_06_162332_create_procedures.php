@@ -250,7 +250,10 @@ return new class extends Migration {
                         else padre
                     end padre,
                     hijo,
-                    importe
+                    case
+                        when importe is null then 0
+                        else importe
+                    end importe
                 from (
                     select
                         0 id,
@@ -291,9 +294,8 @@ return new class extends Migration {
                         '' hijo,
                         sum(pa.total) importe
                     from tipologia_conac tc 
-                    join \",@tabla,\" on tc.descripcion = pa.tipologia_conac 
+                    left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac and \",@corte,\" and pa.ejercicio = \",anio,\"
                     where tc.deleted_at is null and tc.tipo = 1
-                    and \",@corte,\" and pa.ejercicio = \",anio,\"
                     group by tc.descripcion
                     order by id
                 )t;
@@ -1590,77 +1592,101 @@ return new class extends Migration {
                 set @corte := CONCAT('pa.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
 
-            set @query := CONCAT('
+            set @query := CONCAT(\"
                 select 
                     case 
-                        when abuelo != \"\" then \"\"
+                        when abuelo != '' then ''
                         else etiquetado
                     end etiquetado,
                     case 
-                        when padre != \"\" then \"\"
+                        when padre != '' then ''
                         else abuelo
                     end abuelo,
                     case 
-                        when hijo != \"\" then \"\"
+                        when hijo != '' then ''
                         else padre
                     end padre,
                     hijo,
-                    importe
+                    case 
+                        when importe is null then 0
+                        else importe
+                    end importe
                 from (
-                    select 
-                        pa.etiquetado,
-                        1 orden,
-                        0 tipo,
-                        \"\" abuelo,
-                        \"\" padre,
-                        \"\" hijo,
+                    select
+                        etiquetado,
+                        '' abuelo,
+                        -2 orden,
+                        '' padre,
+                        '' hijo,
                         sum(total) importe
-                    from tipologia_conac tc 
-                    join ',@tabla,' on tc.clave_conac = pa.clv_tipologia_conac
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by pa.etiquetado
+                    from \",@tabla,\"
+                    where ejercicio = \",anio,\" and \",@corte,\"
+                    group by etiquetado
                     union all
                     select 
                         pa.etiquetado,
-                        2 orden,
-                        tc.tipo,
-                        \"Programas\" abuelo,
-                        \"\" padre,
-                        \"\" hijo,
+                        'Programas' abuelo,
+                        -1 orden,
+                        '' padre,
+                        '' hijo,
                         sum(total) importe
-                    from tipologia_conac tc 
-                    join ',@tabla,' on tc.clave_conac = pa.clv_tipologia_conac
-                    where tc.tipo = 0 and ejercicio = ',anio,' and ',@corte,'
-                    group by pa.etiquetado,tc.tipo
-                    union all
+                    from tipologia_conac tc
+                    join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                    where ejercicio = \",anio,\" and \",@corte,\" and tc.deleted_at is null
+                    group by etiquetado
+                    union all 
                     select 
                         pa.etiquetado,
-                        2 orden,
-                        tc.tipo,
-                        \"Programas\" abuelo,
+                        'Programas' abuelo,
+                        min(tc.id) orden,
                         tc.descripcion padre,
-                        \"\" hijo,
+                        '' hijo,
                         sum(total) importe
-                    from tipologia_conac tc 
-                    join ',@tabla,' on tc.clave_conac = pa.clv_tipologia_conac
-                    where tc.tipo = 0 and ejercicio = ',anio,' and ',@corte,'
-                    group by pa.etiquetado,tc.tipo,tc.descripcion
+                    from tipologia_conac tc
+                    join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                    where ejercicio = \",anio,\" and \",@corte,\" and tc.deleted_at is null
+                    group by etiquetado,padre
                     union all
                     select 
                         pa.etiquetado,
-                        2 orden,
-                        tc.tipo,
-                        \"Programas\" abuelo,
+                        'Programas' abuelo,
+                        min(tc.id) orden,
                         tc.descripcion padre,
                         tc.descripcion_conac hijo,
                         sum(total) importe
                     from tipologia_conac tc 
-                    join ',@tabla,' on tc.clave_conac = pa.clv_tipologia_conac
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by pa.etiquetado,tc.tipo,tc.descripcion,tc.descripcion_conac
-                    order by etiquetado,orden,tipo,padre,hijo
-                ) tabla;
-            ');
+                    join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                    where  pa.ejercicio = \",anio,\" and \",@corte,\" and pa.deleted_at is null
+                    group by etiquetado,padre,hijo
+                    union all 
+                    select 
+                        'No etiquetado' etiquetado,
+                        tc.descripcion abuelo,
+                        min(tc.id) orden,
+                        '' padre,
+                        '' hijo,
+                        sum(total) importe
+                    from tipologia_conac tc
+                    left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac
+                    and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 1
+                    where tc.deleted_at is null and tc.tipo = 1
+                    group by abuelo
+                    union all 
+                    select 
+                        'Etiquetado' etiquetado,
+                        tc.descripcion abuelo,
+                        min(tc.id) orden,
+                        '' padre,
+                        '' hijo,
+                        sum(total) importe
+                    from tipologia_conac tc
+                    left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac
+                    and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 2
+                    where tc.deleted_at is null and tc.tipo = 1
+                    group by abuelo
+                    order by etiquetado desc,orden,padre,hijo
+                )t;
+            \");
 
             prepare stmt  from @query;
             execute stmt;
