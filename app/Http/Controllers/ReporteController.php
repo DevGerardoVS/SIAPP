@@ -203,7 +203,24 @@ class ReporteController extends Controller
             $parameters,
             $database_connection
             )->execute();
-                
+            
+            
+            if ($request->action == 'xlsx') { // Verificar el tipo de archivo
+                if (filesize($file.".xlsx") < 4097){ // Verificar si el archivo generado está vacío
+                    if(File::exists($output_file."/".$report.".xlsx")) { // Verificar si existe el archivo guardado en caso de existir lo elimina
+                        File::delete($output_file."/".$report.".xlsx");
+                    }
+                    return back()->withErrors(['msg'=>"$nameFile.xlsx está vacío."]); // Regresar un mensaje para dar a entender al usuario que el archivo esta vacío
+                } 
+            }else{
+                if(filesize($file.".pdf") < 4097){ 
+                    if(File::exists($output_file."/".$report.".pdf")) {
+                        File::delete($output_file."/".$report.".pdf");
+                    }
+                    return back()->withErrors(['msg'=>"$nameFile.pdf está vacío."]);
+                } 
+            }
+
             ob_end_clean();
             // Bitácora
             $b = array(

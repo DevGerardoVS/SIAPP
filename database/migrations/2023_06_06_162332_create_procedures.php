@@ -470,7 +470,8 @@ return new class extends Migration {
                     select 
                         case 
                             when upp != \"\" then \"\"
-                            else etiquetado
+                            when etiquetado = \"Etiquetado\" then \"Gasto Etiquetado\"
+                            else \"Gasto No Etiquetado\"
                         end etiquetado,
                         clv_upp,
                         upp,
@@ -516,7 +517,8 @@ return new class extends Migration {
                 select 
                     case 
                         when finalidad != \"\" then \"\"
-                        else etiquetado
+                        when etiquetado = \"Etiquetado\" then \"Gasto Etiquetado\"
+                        else \"Gasto No Etiquetado\"
                     end etiquetado,
                     case 
                         when funcion != \"\" then \"\"
@@ -576,7 +578,8 @@ return new class extends Migration {
                 select 
                     case 
                         when finalidad != \"\" then \"\"
-                        else etiquetado
+                        when etiquetado = \"Etiquetado\" then \"Gasto Etiquetado\"
+                        else \"Gasto No Etiquetado\"
                     end etiquetado,
                     case 
                         when funcion != \"\" then \"\"
@@ -636,7 +639,8 @@ return new class extends Migration {
                 select 
                     case 
                         when capitulo != \"\" then \"\"
-                        else etiquetado
+                        when etiquetado = \"Etiquetado\" then \"Gasto Etiquetado\"
+                            else \"Gasto No Etiquetado\"
                     end etiquetado,
                     case 
                         when concepto != \"\" then \"\"
@@ -1600,7 +1604,8 @@ return new class extends Migration {
                 select 
                     case 
                         when abuelo != '' then ''
-                        else etiquetado
+                        when etiquetado = \'Etiquetado\' then \'Gasto Etiquetado\'
+                        else \'Gasto No Etiquetado\'
                     end etiquetado,
                     case 
                         when padre != '' then ''
