@@ -3236,7 +3236,7 @@ return new class extends Migration {
 
         DB::unprepared("CREATE PROCEDURE mml_comprobacion(in upp varchar(3),in programa varchar(2),in ur varchar(2),in anio int)
         begin
-        set @upp := '';
+            set @upp := '';
             set @upp2 := '';
             set @programa := '';
             set @ur := '';
@@ -3251,9 +3251,9 @@ return new class extends Migration {
            		set @programa2 := CONCAT('and clv_programa = \"',programa,'\"'); 
            	end if;
             if(ur is not null) then 
-                set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); 
-                set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
-            end if;
+           		set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); 
+           		set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
+           	end if;
         
             set @query := CONCAT(\"select 
 				case 
