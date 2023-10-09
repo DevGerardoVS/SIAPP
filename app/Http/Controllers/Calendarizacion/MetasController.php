@@ -1241,23 +1241,10 @@ class MetasController extends Controller
 			$user = Auth::user()->username;
 			if ($s['status']) {
 				DB::beginTransaction();
-				$metas = DB::table('metas')
-					->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
-					->select(
-						'metas.id',
-						'mml_mir.entidad_ejecutora',
-						'mml_mir.area_funcional',
-						'mml_mir.clv_upp'
-					)
-					->where('mml_mir.clv_upp', $upp)
-					->where('mml_mir.ejercicio', $anio)
-					->where('mml_mir.deleted_at', null)
-					->where('metas.deleted_at', null)
-					->where('metas.estatus', 0)->get();
+				$metas = MetasHelper::actividades($upp, $anio);
 				$i = 0;
 				foreach ($metas as $key) {
 					$meta = Metas::where('id', $key->id)->firstOrFail();
-
 					if ($meta) {
 						$meta->estatus = 1;
 						$meta->updated_user = $user;
@@ -1267,12 +1254,15 @@ class MetasController extends Controller
 					}
 				}
 				if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
-					$cierre = CierreMetas::where('deleted_at', null)->where('clv_upp', $upp)->where('estatus', 'Abierto')->firstOrFail();
+					$cierre = CierreMetas::where('deleted_at', null)->where('clv_upp', $upp)->where('estatus', 'Abierto')->get();
 					if ($cierre) {
-						$cierre->estatus = 'Cerrado';
-						$cierre->updated_user = $user;
-						$cierre->updated_at = $fecha;
-						$cierre->save();
+						foreach ($cierre as $key ) {
+							$key->estatus = 'Cerrado';
+							$key->updated_user = $user;
+							$key->updated_at = $fecha;
+							$key->save();
+						}
+						
 					}
 					DB::commit();
 					$b = array(
@@ -1299,30 +1289,16 @@ class MetasController extends Controller
 	}
 	public static function desconfirmar($upp, $anio)
 	{
-
-
 		try {
 			Controller::check_permission('putMetas');
-
 			DB::beginTransaction();
 			$user = Auth::user()->username;
-			$metas = DB::table('metas')
-				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
-				->select(
-					'metas.id',
-					'mml_mir.entidad_ejecutora',
-					'mml_mir.area_funcional',
-					'mml_mir.clv_upp'
-				)
-				->where('mml_mir.clv_upp', $upp)
-				->where('mml_mir.ejercicio', $anio)
-				->where('mml_mir.deleted_at', null)
-				->where('metas.deleted_at', null)
-				->where('metas.estatus', 1)->get();
+			$metas = MetasHelper::actividadesConf($upp, $anio);
+			$fecha = Carbon::now()->toDateTimeString();
 			$i = 0;
 			foreach ($metas as $key) {
-				$meta = Metas::where('id', $key->id)->firstOrFail();
-				$fecha = Carbon::now()->toDateTimeString();
+				$m = Metas::where('id', $key->id)->get();
+				$meta = $m[0];
 				if ($meta) {
 					$meta->estatus = 0;
 					$meta->updated_user = $user;
@@ -1332,6 +1308,16 @@ class MetasController extends Controller
 				}
 			}
 			if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
+				$cierre = CierreMetas::where('deleted_at', null)->where('clv_upp', $upp)->where('estatus', 'Cerrado')->get();
+				if ($cierre) {
+					foreach ($cierre as $key ) {
+						$key->estatus = 'Abierto';
+						$key->updated_user = $user;
+						$key->updated_at = $fecha;
+						$key->save();
+					}
+					
+				}
 				DB::commit();
 				$b = array(
 					"username" => $user,

@@ -876,6 +876,45 @@ var dao = {
           })
        
     },
+    DesconfirmarMetas: function () {
+        let anio = $('#anio_filter').val();
+        let upp = "";
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+            
+        } else {
+            upp = $('#upp').val();
+        }
+        Swal.fire({
+            icon: 'question',
+            title: '¿Estás de quieres desconfirmar las metas?',
+            showDenyButton: true,
+            confirmButtonText: 'Confirmar',
+            denyButtonText: `Cancelar`,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "GET",
+                    url: '/actividades/desconfirmar-metas/'+upp+"/"+anio,
+                    dataType: "JSON"
+                }).done(function (data) {
+                    const { mensaje } = data;
+                    Swal.fire({
+                        icon: mensaje.icon,
+                        title: mensaje.title,
+                        text: mensaje.text,
+                    });
+                    dao.getData(upp, anio);
+                    dao.revConfirmarMetas(upp, anio);
+                    dao.rCMetasUpp(upp,anio);
+                });
+            } /* else if (result.isDenied) {
+              Swal.fire('Changes are not saved', '', 'info')
+            } */
+          })
+       
+    },
     
 };
 
