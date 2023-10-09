@@ -210,21 +210,25 @@ return new class extends Migration {
                     importe
                 from (
                     select 
-                        vppa.finalidad,
-                        \"\" funcion,
-                        sum(total) importe
-                    from ',@tabla,' vppa
+                       	pa.clv_finalidad,
+						pa.finalidad,
+						\"\" clv_funcion,
+						\"\" funcion,
+						sum(total) importe
+                    from ',@tabla,' pa
                     where ejercicio = ',anio,' and ',@corte,'
-                    group by finalidad
+                    group by clv_finalidad,finalidad
                     union all 
                     select 
-                        vppa.finalidad,
-                        vppa.funcion,
-                        sum(total) importe
-                    from ',@tabla,' vppa
+                        pa.clv_finalidad,
+						pa.finalidad,
+						pa.clv_funcion,
+						pa.funcion,
+						sum(total) importe
+                    from ',@tabla,' pa
                     where ejercicio = ',anio,' and ',@corte,'
-                    group by vppa.finalidad,vppa.funcion
-                    order by finalidad
+                    group by pa.clv_finalidad,pa.finalidad,pa.clv_funcion,pa.funcion
+					order by clv_finalidad,clv_funcion
                 ) tabla;
             ');
 
@@ -3232,7 +3236,7 @@ return new class extends Migration {
 
         DB::unprepared("CREATE PROCEDURE mml_comprobacion(in upp varchar(3),in programa varchar(2),in ur varchar(2),in anio int)
         begin
-        set @upp := '';
+            set @upp := '';
             set @upp2 := '';
             set @programa := '';
             set @ur := '';
@@ -3247,9 +3251,9 @@ return new class extends Migration {
            		set @programa2 := CONCAT('and clv_programa = \"',programa,'\"'); 
            	end if;
             if(ur is not null) then 
-                set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); 
-                set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
-            end if;
+           		set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); 
+           		set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
+           	end if;
         
             set @query := CONCAT(\"select 
 				case 
