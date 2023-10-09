@@ -1,7 +1,9 @@
 <?php
 namespace App\Exports\Calendarizacion;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Database\Schema\Blueprint;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -35,7 +37,8 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
         }
         $data3 = DB::table('mml_mir')
             ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'mml_mir.clv_upp')
-            ->leftJoin('programacion_presupuesto', 'programacion_presupuesto.upp', '=', 'mml_mir.clv_upp')
+            ->leftJoin('programacion_presupuesto AS pp', 'pp.upp', '=', 'mml_mir.clv_upp')
+            ->leftJoin('v_epp', 'v_epp.id', '=', 'mml_mir.id_epp')
             ->select(
                 'mml_mir.clv_upp',
                 'mml_mir.entidad_ejecutora',
@@ -45,12 +48,19 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
                 DB::raw('indicador AS actividad'),
                 DB::raw('"" AS fondo'),
             )
+            ->where(function ($query) use ($c) {
+                foreach ($c as $sub) {
+                    $query->where('v_epp.clv_subprograma', '!=', $sub);
+                }
+            })
             ->where('mml_mir.deleted_at', null)
             ->where('mml_mir.nivel', 11)
             ->where('mml_avance_etapas_pp.estatus', 3)
-            ->where('programacion_presupuesto.estado', 1)
+            ->where('pp.estado', 1)
             ->where('mml_mir.ejercicio', $anio)
-            ->groupByRaw('programacion_presupuesto.fondo_ramo,entidad_ejecutora,area_funcional')
+            ->where('pp.ejercicio', $anio)
+            ->groupByRaw('mml_mir.id_epp')
+
             ->distinct();
         if (Auth::user()->id_grupo == 4) {
             $upp = Auth::user()->clv_upp;
@@ -60,38 +70,111 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
                 ->where('cierre_ejercicio_metas.ejercicio', $anio)
                 ->where('cierre_ejercicio_metas.estatus', 'Abierto');
         }
+        $prueba = DB::table('programacion_presupuesto AS pp')
+        ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'pp.upp')
+        ->join('mml_mir', function (JoinClause $join) {
+        $join->on('pp.upp', '=', 'mml_mir.clv_upp')
+        ->on('pp.ur', '=', 'mml_mir.clv_ur');
+    })
+        ->select(
+            'mml_mir.clv_upp',
+            DB::raw('mml_mir.entidad_ejecutora'),
+            DB::raw('mml_mir.area_funcional'),
+            DB::raw('"NULL" AS clv_actadmon'),
+            DB::raw('mml_mir.id AS mir_act'),
+            DB::raw('mml_mir.indicador AS actividad'),
+            DB::raw('pp.fondo_ramo AS fondo'),
+        )
+        ->where(function ($query) use ($c) {
+            foreach ($c as $sub) {
+                $query->where('pp.subprograma_presupuestario', '!=', $sub);
+            }
+        })
+        ->where('pp.estado', 1)
+        ->where('pp.deleted_at', null)
+        ->where('mml_mir.nivel', 11)
+        ->where('pp.ejercicio', '=', $anio)
+        ->where('mml_avance_etapas_pp.estatus', 3)
+        ->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
+        ->distinct();
 
-        $data2 = DB::table('programacion_presupuesto')
-            ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'programacion_presupuesto.upp')
+    if (Auth::user()->id_grupo == 4) {
+        $upp = Auth::user()->clv_upp;
+        $prueba = $prueba->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'pp.upp')
+            ->where("pp.upp", $upp)
+            ->where('cierre_ejercicio_metas.deleted_at', null)
+            ->where('cierre_ejercicio_metas.ejercicio', $anio)
+            ->where('cierre_ejercicio_metas.estatus', 'Abierto');
+    }
+    Schema::create('pptemp', function (Blueprint $table) {
+        $table->temporary();
+        $table->increments('id');
+        $table->string('clv_upp', 25)->nullable(false);
+        $table->string('entidad_ejecutora', 55)->nullable(false);
+        $table->string('area_funcional', 55)->nullable(false);
+        $table->string('clv_actadmon', 55)->nullable(false);
+        $table->string('mir_act', 55)->nullable(false);
+        $table->string('actividad', 55)->nullable(false);
+        $table->string('fondo', 55)->nullable(false);
+    });
+
+        $data2 = DB::table('programacion_presupuesto AS pp')
+            ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'pp.upp')
+            ->leftJoin('v_epp', 'v_epp.clv_upp', '=', 'pp.upp')
             ->select(
-                'upp AS clv_upp',
-                DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-                DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
+                'pp.upp AS clv_upp',
+                DB::raw('CONCAT(pp.upp,pp.subsecretaria,pp.ur) AS entidad_ejecutora'),
+                DB::raw('CONCAT(pp.finalidad,pp.funcion,pp.subfuncion,pp.eje,pp.linea_accion,pp.programa_sectorial,pp.tipologia_conac,pp.programa_presupuestario,pp.subprograma_presupuestario,pp.proyecto_presupuestario) AS area_funcional'),
                 DB::raw('"ot" AS clv_actadmon'),
                 DB::raw('"NULL" AS mir_act'),
                 DB::raw('"NULL" AS actividad'),
-                DB::raw('programacion_presupuesto.fondo_ramo AS fondo'),
+                DB::raw('pp.fondo_ramo AS fondo'),
             )
-            ->where('programacion_presupuesto.estado', 1)
-            ->where('programacion_presupuesto.deleted_at', null)
-            ->where('programacion_presupuesto.ejercicio', '=', $anio)
+            ->where('v_epp.con_mir', 0)
+            ->where('pp.estado', 1)
+            ->where('pp.deleted_at', null)
+            ->where('pp.ejercicio', '=', $anio)
             ->where('mml_avance_etapas_pp.estatus', 3)
             ->where(function ($query) use ($c) {
                 foreach ($c as $sub) {
-                    $query->where('subprograma_presupuestario', '!=', $sub);
+                    $query->where('pp.subprograma_presupuestario', '!=', $sub);
                 }
             })
-            ->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
+            ->groupByRaw('pp.fondo_ramo,pp.finalidad,pp.funcion,pp.subfuncion,pp.eje,pp.linea_accion,pp.programa_sectorial,pp.tipologia_conac,pp.programa_presupuestario,pp.subprograma_presupuestario,pp.proyecto_presupuestario')
             ->distinct();
         if (Auth::user()->id_grupo == 4) {
             $upp = Auth::user()->clv_upp;
-            $data2 = $data2->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'programacion_presupuesto.upp')
-                ->where("programacion_presupuesto.upp", $upp)
+            $data2 = $data2->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'pp.upp')
+                ->where("pp.upp", $upp)
                 ->where('cierre_ejercicio_metas.deleted_at', null)
                 ->where('cierre_ejercicio_metas.ejercicio', $anio)
                 ->where('cierre_ejercicio_metas.estatus', 'Abierto');
         }
+        $data2 = $data2->get();
+        foreach ($data2 as $key) {
+            DB::table('pptemp')->insert(get_object_vars($key));
+            
+        }
+        $mirdatos = $data3->get();
 
+        $newdata2 = DB::table('pptemp')
+            ->leftJoin('mml_mir', 'mml_mir.clv_upp', '=', 'pptemp.clv_upp')
+            ->select(
+                'pptemp.clv_upp',
+                'pptemp.entidad_ejecutora',
+                'pptemp.area_funcional',
+                'pptemp.clv_actadmon',
+                'pptemp.mir_act',
+                'pptemp.actividad',
+                'pptemp.fondo'
+            )
+            ->where('mml_mir.nivel', 11)
+            ->where(function ($query) use ($mirdatos) {
+                foreach ($mirdatos as $sub) {
+                    $query->where('pptemp.entidad_ejecutora', '!=', $sub->entidad_ejecutora);
+                }
+            })
+            ->distinct();
         $data = DB::table('programacion_presupuesto')
             ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'programacion_presupuesto.upp')
             ->leftJoin('catalogo', 'catalogo.clave', '=', 'programacion_presupuesto.subprograma_presupuestario')
@@ -111,8 +194,8 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             ->where('catalogo.grupo_id', 20)
             ->where('mml_avance_etapas_pp.estatus', 3)
             ->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-            ->unionAll($data3)
-            ->unionAll($data2)
+            ->unionAll($prueba)
+            ->unionAll($newdata2)
             ->distinct();
 
         if (Auth::user()->id_grupo == 4) {
