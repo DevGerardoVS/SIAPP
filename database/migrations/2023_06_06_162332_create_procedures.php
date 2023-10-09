@@ -210,21 +210,25 @@ return new class extends Migration {
                     importe
                 from (
                     select 
-                        vppa.finalidad,
-                        \"\" funcion,
-                        sum(total) importe
-                    from ',@tabla,' vppa
+                       	pa.clv_finalidad,
+						pa.finalidad,
+						\"\" clv_funcion,
+						\"\" funcion,
+						sum(total) importe
+                    from ',@tabla,' pa
                     where ejercicio = ',anio,' and ',@corte,'
-                    group by finalidad
+                    group by clv_finalidad,finalidad
                     union all 
                     select 
-                        vppa.finalidad,
-                        vppa.funcion,
-                        sum(total) importe
-                    from ',@tabla,' vppa
+                        pa.clv_finalidad,
+						pa.finalidad,
+						pa.clv_funcion,
+						pa.funcion,
+						sum(total) importe
+                    from ',@tabla,' pa
                     where ejercicio = ',anio,' and ',@corte,'
-                    group by vppa.finalidad,vppa.funcion
-                    order by finalidad
+                    group by pa.clv_finalidad,pa.finalidad,pa.clv_funcion,pa.funcion
+					order by clv_finalidad,clv_funcion
                 ) tabla;
             ');
 
