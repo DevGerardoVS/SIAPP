@@ -201,7 +201,7 @@ class FunFormats
                                     });
                                     $mletras = [];
                                     foreach ($meses as $key => $value) {
-                                        if (!is_numeric(intval($value))) {
+                                        if (!is_numeric($value)) {
                                             $mletras[] = $value;
 
                                         }
@@ -238,9 +238,25 @@ class FunFormats
 
                                                 $uniqueMir = $area_funcional . strval($k[12]) . strval($k[14]) . '';
                                             }
+                                            if(strtoupper($k[13]) != 'N/A' && is_numeric($k[14])){
+                                                $error = array(
+                                                    "icon" => 'error',
+                                                    "title" => 'Datos incorrectos',
+                                                    "text" => 'No modificar la plantilla para su correcto funcionamiento, para dejar un campo sin datos utiliza N/A en la fila : ' . $index
+                                                );
+                                                return $error;
+                                            }
                                             if (strtoupper($k[14]) == 'N/A' && is_numeric($k[13])) {
 
                                                 $unique = $area_funcional . strval($k[12]) . strval($k[13]) . '';
+                                            }
+                                            if(strtoupper($k[14]) != 'N/A'&& is_numeric($k[13])){
+                                                $error = array(
+                                                    "icon" => 'error',
+                                                    "title" => 'Datos incorrectos',
+                                                    "text" => 'No modificar la plantilla para su correcto funcionamiento, para dejar un campo sin datos utiliza N/A en la fila : ' . $index
+                                                );
+                                                return $error;
                                             }
 
                                             $medidas = DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id', $k[33])->get();
@@ -248,6 +264,25 @@ class FunFormats
                                             if (count($medidas)) {
                                                 $bene = DB::table('beneficiarios')->select('id', 'clave')->where('deleted_at', null)->where('clave', $k[30])->get();
                                                 if (count($bene)) {
+                                                        if (!is_numeric($k[32])) {
+                                                            $error = array(
+                                                                "icon" => 'error',
+                                                                "title" => 'Datos incorrectos',
+                                                                "text" => 'El numero de beneficiarios debe ser un NUMERO mayor a 0 en la fila: ' . $index
+                                                            );
+                                                            return $error;
+                                                           
+                                                        }else{
+                                                            if($k[32]<=0){
+                                                                $error = array(
+                                                                    "icon" => 'error',
+                                                                    "title" => 'Datos incorrectos',
+                                                                    "text" => 'El numero de beneficiarios debe ser un NUMERO mayor a 0 en la fila: ' . $index
+                                                                );
+                                                                return $error;
+
+                                                            }
+                                                        }
                                                     if ($uniqueMir != '') {
                                                         $conmirData = ['clave' => $uniqueMir, 'fila' => $index, 'upp' => strval($k[7])];
                                                         DB::table('metas_temp')->insert($conmirData);
