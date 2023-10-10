@@ -180,6 +180,32 @@ class FunFormats
 
                             $pres = FunFormats::existPP($clave, $anio, $k[12]);
                             if (count($pres)) {
+                               
+                                if (is_string($k[16])) {
+                                    $error = array(
+                                        "icon" => 'error',
+                                        "title" => 'Datos erróneos',
+                                        "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
+                                    );
+                                    return $error;
+                                    
+                                }else{
+                                    if ($k[16]<0 ) {
+                                        $error = array(
+                                            "icon" => 'error',
+                                            "title" => 'Datos erróneos',
+                                            "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
+                                        );
+                                        return $error;
+                                    }else if($k[16]>=4){
+                                        $error = array(
+                                            "icon" => 'error',
+                                            "title" => 'Datos erróneos',
+                                            "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
+                                        );
+                                        return $error;
+                                    }
+                                }
                                 $s = FunFormats::validatecalendar($k[7], $k[16]);
                                 if ($s["status"]) {
                                     $meses = [
@@ -293,6 +319,7 @@ class FunFormats
                                                         DB::table('metas_temp_Nomir')->insert($sinmirData);
                                                         $sinmir++;
                                                     }
+                                                  
 
                                                     $type = FunFormats::typeTotal($k, $m["validos"]);
                                                     if ($type != false) {
@@ -318,6 +345,7 @@ class FunFormats
                                                                 'created_user' => auth::user()->username
                                                             ]);
                                                         }
+                       
                                                         $aux[] = [
                                                             'pp' => strval($k[11]),
                                                             'upp' => strval($k[7]),
@@ -325,7 +353,7 @@ class FunFormats
                                                             'clv_fondo' => $k[12],
                                                             'actividad_id' => is_numeric($k[14]) ? NULL : $act->id,
                                                             'mir_id' => is_numeric($k[13]) || strtolower($k[13]) == 'ot' ? NULL : $k[14],
-                                                            'tipo' => $k[17],
+                                                            'tipo' => $s['a'],
                                                             'beneficiario_id' => $k[30],
                                                             'unidad_medida_id' => $k[33],
                                                             'cantidad_beneficiarios' => $k[32],
@@ -798,19 +826,19 @@ class FunFormats
                 if ($tipo->Acumulativa != 1) {
                     return ["status" => false, "a" => 'Acumulativa', "upp" => $upp];
                 } else {
-                    return ["status" => true];
+                    return ["status" => true, "a" => 'Acumulativa', "upp" => $upp];
                 }
             case 1:
                 if ($tipo->Continua != 1) {
                     return ["status" => false, "a" => 'Continua', "upp" => $upp];
                 } else {
-                    return ["status" => true];
+                    return ["status" => true, "a" => 'Continua', "upp" => $upp];
                 }
             case 2:
                 if ($tipo->Especial != 1) {
-                    return ["status" => false, "a" => 'Continua', "upp" => $upp];
+                    return ["status" => false, "a" => 'Especial', "upp" => $upp];
                 } else {
-                    return ["status" => true];
+                    return ["status" => true, "a" => 'Especial', "upp" => $upp];
                 }
             default:
                 # code...
