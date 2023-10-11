@@ -1222,5 +1222,5 @@ $(document).ready(function(){
     window.location.href = '/calendarizacion-claves-create/'+ejercicio;
   });
   soloEnteros();
-
+  //pruebas para version...
 });
