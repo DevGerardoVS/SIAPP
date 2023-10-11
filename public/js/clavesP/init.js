@@ -65,8 +65,9 @@ var dao = {
           if (o.rol == 1) {
             if (o.estatus != 'Cerrado' && o.estatus != '') {
               if (o.estado == 0) {
+                let upp = "'"+o.upp+"'";
                 return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+o.upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
+              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
               }else{
                 return '<p><i class="fa fa-check">&nbsp;Confirmado</i></p>';
               }
@@ -75,8 +76,9 @@ var dao = {
             }
           }if (o.rol == 0) {
             if (o.filtroEjercicio == o.ejercicioCheck) {
+              let upp = "'"+o.upp+"'";
               return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+o.upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
+              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
             }else{
               return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
             }
@@ -1222,5 +1224,4 @@ $(document).ready(function(){
     window.location.href = '/calendarizacion-claves-create/'+ejercicio;
   });
   soloEnteros();
-  //pruebas para version...
 });
