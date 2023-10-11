@@ -22,7 +22,6 @@ var dao = {
       dataType : "json",
       data:{'ejercicio':ejercicio,'upp':upp, 'ur':ur}
     }).done(function(_data){
-      console.log("🚀 ~ file: init.js:25 ~ _data:", _data)
       let data = [];
       let estatus = _data['estatus'] != null ? _data['estatus'].estatus : '';
       let rol = _data['rol'] != null ? _data['rol'] : 1;
