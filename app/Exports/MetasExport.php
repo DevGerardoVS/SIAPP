@@ -18,24 +18,20 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
     protected $upp;
     protected $anio;
 
-    function __construct($upp,$anio) {
-
+    function __construct($upp, $anio)
+    {
         $this->upp = $upp;
         $this->anio = $anio;
-        
-
     }
     public function collection()
     {
-/* 
-        $query = MetasHelper::actividades($this->upp); */
-        $dataSet = MetasController::getActiv($this->upp,$this->anio);
+        $dataSet = MetasController::getActiv($this->upp, $this->anio);
         $this->filas = count($dataSet);
-        for ($i=0; $i <count($dataSet); $i++) { 
-			unset($dataSet[$i][19]);
-			$dataSet=array_values($dataSet);
-		}
-		return collect($dataSet);
+        for ($i = 0; $i < count($dataSet); $i++) {
+            unset($dataSet[$i][19]);
+            $dataSet = array_values($dataSet);
+        }
+        return collect($dataSet);
     }
 
     /**

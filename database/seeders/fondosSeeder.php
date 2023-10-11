@@ -7243,7 +7243,7 @@ class fondosSeeder extends Seeder
  (4376, 1, 2, 3, 5, 9, 74, 91, 454, 528, 541, 570, 618, 632, 902, 914, 1037, 1060, 1992, 2024, 1, 0, 1, '2023-09-24 19:04:41', '2023-09-24 19:06:08', NULL, NULL, NULL, 'SISTEMA');
          ");
  
- DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+ DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (1,'001','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (2,'002','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (3,'020','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7255,7 +7255,7 @@ class fondosSeeder extends Seeder
 	 (9,'100','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (10,'107','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (11,'012','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (12,'019','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (13,'014','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7267,7 +7267,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (19,'046','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (20,'106','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (21,'003','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (22,'006','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (23,'008','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7279,7 +7279,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (29,'104','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (30,'105','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (31,'024','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (32,'041','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (33,'042','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7291,7 +7291,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (39,'110','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (40,'031','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (41,'035','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (42,'036','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (43,'037','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7303,7 +7303,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (49,'052','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (50,'063','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (51,'070','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (52,'074','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (53,'081','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7315,7 +7315,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (59,'094','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (60,'099','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (61,'101','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (62,'103','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (63,'078','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7327,7 +7327,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (69,'040','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (70,'048','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (71,'053','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (72,'080','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (73,'083','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7339,7 +7339,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (79,'096','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (80,'060','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (255,'001','Abierto',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:18:32.0','administrador',NULL,NULL,1),
 	 (256,'002','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (257,'020','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7351,7 +7351,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (263,'100','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (264,'107','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (265,'012','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (266,'019','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (267,'014','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7363,7 +7363,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (273,'046','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (274,'106','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (275,'003','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (276,'006','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (277,'008','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7375,7 +7375,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (283,'105','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (284,'024','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (285,'111','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (286,'112','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (287,'041','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7387,7 +7387,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (293,'075','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (294,'110','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (295,'031','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (296,'035','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (297,'036','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7399,7 +7399,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (303,'051','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (304,'052','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (305,'063','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (306,'070','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (307,'074','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7411,7 +7411,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (313,'093','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (314,'094','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (315,'099','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (316,'101','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (317,'103','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7423,7 +7423,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (323,'033','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (324,'040','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (325,'048','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (326,'053','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (327,'080','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7435,11 +7435,11 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (333,'109','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (334,'096','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (335,'060','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
 
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (1,'001','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (2,'002','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (3,'020','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7451,7 +7451,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (9,'100','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (10,'107','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (11,'012','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (12,'019','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (13,'014','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7463,7 +7463,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (19,'046','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (20,'106','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (21,'003','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (22,'006','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (23,'008','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7475,7 +7475,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (29,'104','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (30,'105','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (31,'024','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (32,'041','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (33,'042','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7487,7 +7487,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (39,'110','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (40,'031','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (41,'035','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (42,'036','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (43,'037','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7499,7 +7499,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (49,'052','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (50,'063','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (51,'070','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (52,'074','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (53,'081','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7511,7 +7511,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (59,'094','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (60,'099','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (61,'101','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (62,'103','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (63,'078','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7523,7 +7523,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (69,'040','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (70,'048','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (71,'053','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (72,'080','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (73,'083','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7535,7 +7535,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (79,'096','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (80,'060','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (255,'001','Abierto',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:18:10.0','administrador',NULL,NULL,1),
 	 (256,'002','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (257,'020','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7547,7 +7547,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (263,'100','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (264,'107','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (265,'012','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (266,'019','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (267,'014','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7559,7 +7559,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (273,'046','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (274,'106','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (275,'003','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (276,'006','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (277,'008','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7571,7 +7571,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (283,'105','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (284,'024','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (285,'111','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (286,'112','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (287,'041','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7583,7 +7583,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (293,'075','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (294,'110','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (295,'031','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (296,'035','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (297,'036','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7595,7 +7595,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (303,'051','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (304,'052','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (305,'063','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (306,'070','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (307,'074','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7607,7 +7607,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (313,'093','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (314,'094','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (315,'099','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (316,'101','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (317,'103','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7619,7 +7619,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (323,'033','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (324,'040','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (325,'048','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (326,'053','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (327,'080','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7631,11 +7631,11 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (333,'109','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (334,'096','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (335,'060','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
 
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (1,'001','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (2,'002','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (3,'020','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
@@ -7647,7 +7647,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (9,'100','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (10,'107','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (11,'012','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (12,'019','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (13,'014','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
@@ -7659,7 +7659,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (19,'046','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (20,'106','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (21,'003','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (22,'006','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (23,'008','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
@@ -7671,7 +7671,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (29,'104','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (30,'105','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (31,'024','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (32,'041','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (33,'042','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
@@ -7683,7 +7683,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (39,'110','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-24 23:36:29.0','2023-09-23 23:32:15.0','SISTEMA','admin',NULL),
 	 (40,'031','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (41,'035','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (42,'036','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (43,'037','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
@@ -7695,7 +7695,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (49,'052','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (50,'063','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (51,'070','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (52,'074','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (53,'081','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
@@ -7707,7 +7707,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (59,'094','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (60,'099','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (61,'101','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (62,'103','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (63,'078','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
@@ -7719,7 +7719,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (69,'040','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (70,'048','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (71,'053','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (72,'080','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (73,'083','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
@@ -7731,7 +7731,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (79,'096','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
 	 (80,'060','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (255,'001','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (256,'002','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (257,'020','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
@@ -7743,7 +7743,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (263,'100','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (264,'107','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (265,'012','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (266,'019','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (267,'014','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
@@ -7755,7 +7755,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (273,'046','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (274,'106','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (275,'003','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (276,'006','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (277,'008','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
@@ -7767,7 +7767,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (283,'105','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (284,'024','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (285,'111','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (286,'112','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (287,'041','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
@@ -7779,7 +7779,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (293,'075','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (294,'110','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (295,'031','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (296,'035','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (297,'036','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
@@ -7791,7 +7791,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (303,'051','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (304,'052','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (305,'063','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (306,'070','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (307,'074','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
@@ -7803,7 +7803,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (313,'093','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (314,'094','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (315,'099','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (316,'101','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (317,'103','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
@@ -7815,7 +7815,7 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (323,'033','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (324,'040','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (325,'048','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (326,'053','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (327,'080','Abierto',2024,NULL,'2023-09-24 15:57:23.0','2023-09-24 20:57:24.0',NULL,'SISTEMA','admin',NULL),
@@ -7827,10 +7827,10 @@ DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,eje
 	 (333,'109','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
 	 (334,'096','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
 	 (335,'060','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (638,'001','4B',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (639,'002','2U',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (640,'020','MX',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7841,7 +7841,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (645,'023','3B',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (646,'031','ZG',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (647,'032','ZH',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (648,'032','11',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (649,'035','ZK',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (650,'036','ZL',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7852,7 +7852,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (655,'045','ZQ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (656,'047','ZR',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (657,'049','ZT',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (658,'049','21',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (659,'050','ZU',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (660,'051','SA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7863,7 +7863,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (665,'069','1A',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (666,'071','1A',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (667,'079','3T',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (668,'081','MQ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (669,'081','15',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (670,'081','74',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7874,7 +7874,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (675,'087','YM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (676,'089','YQ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (677,'093','YR',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (678,'094','YS',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (679,'100','YX',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (682,'103','YZ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7885,7 +7885,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (687,'010','ND',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (688,'098','YV',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (689,'011','MM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (690,'021','MU',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (691,'021','68',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (692,'046','MQ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7896,7 +7896,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (697,'068','YD',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (698,'068','RP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (699,'068','RX',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (700,'106','MQ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (701,'003','1M',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (702,'003','1F',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7907,7 +7907,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (707,'006','RJ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (708,'008','ZC',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (709,'008','03',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (710,'008','07',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (711,'008','08',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (712,'008','YA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7918,7 +7918,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (717,'017','VE',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (718,'017','20',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (719,'017','03',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (720,'017','GM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (721,'017','25',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (722,'033','ZI',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7929,7 +7929,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (727,'084','RP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (728,'084','YB',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (729,'088','YP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (730,'095','4K',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (731,'095','55',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (732,'095','ZB',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7940,7 +7940,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (737,'108','BM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (738,'108','DB',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (739,'108','MS',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (740,'108','DD',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (741,'108','3V',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (742,'108','AA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7951,7 +7951,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (747,'105','LA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (748,'060','RP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (749,'060','YB',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (750,'038','RP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (751,'038','40',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (752,'038','RX',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7962,7 +7962,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (758,'074','YG',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (759,'099','YW',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (760,'012','AA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (761,'012','BM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (762,'012','DH',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (763,'012','DA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7973,7 +7973,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (768,'012','5F',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (769,'012','3W',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (770,'012','3N',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (771,'025','ZF',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (772,'A13','RA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (773,'009','MN',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7984,7 +7984,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (778,'040','AM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (779,'040','BC',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (780,'040','GP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (781,'040','39',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (782,'053','RP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (783,'053','SB',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7995,7 +7995,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (788,'040','4K',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (789,'112','YF',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (790,'053','ZW',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (791,'111','RD',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (792,'012','DD',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (793,'012','DE',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
@@ -21025,7 +21025,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
         (12977,'16','Michoacán','00','Michoacán de Ocampo','999','ESTATAL','999','COBERTURA ESTATAL',null,'SEEDER',null,null,now(),now());
         ");
 
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (1,11,91,123,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (2,11,91,124,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (3,11,91,125,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21037,7 +21037,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (9,11,91,131,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (10,11,91,132,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (11,12,91,133,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (12,12,91,134,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (13,12,91,135,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21049,7 +21049,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (19,13,91,141,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (20,13,92,142,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (21,13,92,143,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (22,14,91,144,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (23,15,91,145,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21061,7 +21061,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (29,17,91,151,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (30,17,91,152,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (31,17,91,153,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (32,17,91,154,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (33,17,91,155,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21073,7 +21073,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (39,18,91,159,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (40,18,91,160,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (41,18,91,161,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (42,18,91,162,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (43,18,91,163,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21085,7 +21085,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (49,22,91,167,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (50,22,91,168,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (51,22,91,169,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (52,22,91,170,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (53,22,91,171,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21097,7 +21097,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (59,24,91,177,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (60,25,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (61,25,91,306,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (62,25,91,179,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (63,25,91,180,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21109,7 +21109,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (69,26,91,185,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (70,27,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (71,28,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (72,28,91,186,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (73,28,91,187,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21121,7 +21121,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (79,29,91,187,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (80,29,91,191,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (81,29,91,192,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (82,29,91,183,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (83,30,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21133,7 +21133,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (89,31,91,195,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (90,32,91,198,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (91,32,91,199,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (92,32,91,200,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (93,32,91,195,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21145,7 +21145,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (99,34,91,203,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (100,35,91,166,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (101,35,91,204,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (102,35,91,205,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (103,35,91,206,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21157,7 +21157,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (109,36,91,212,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (110,36,91,213,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (111,36,91,214,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (112,36,91,141,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (113,37,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21169,7 +21169,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (119,38,91,219,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (120,38,91,220,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (121,38,91,221,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (122,39,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (123,39,91,222,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21181,7 +21181,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (129,41,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (130,41,91,225,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (131,41,91,226,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (132,41,91,227,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (133,41,91,228,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21193,7 +21193,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (139,42,91,232,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (140,42,91,233,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (141,42,91,183,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (142,43,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (143,43,91,234,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21205,7 +21205,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (149,44,91,239,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (150,44,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (151,44,91,240,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (152,44,91,241,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (153,44,91,242,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21217,7 +21217,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (159,47,91,246,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (160,47,91,165,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (161,48,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (162,48,93,248,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (163,48,93,249,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21229,7 +21229,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (169,48,94,255,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (170,48,94,256,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (171,48,94,257,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (172,48,95,258,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (173,48,95,259,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21241,7 +21241,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (179,48,97,265,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (180,48,97,266,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (181,48,91,267,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (182,49,91,268,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (183,49,91,269,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21253,7 +21253,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (189,50,98,271,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (190,50,99,272,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (191,50,98,273,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (192,50,98,274,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (193,50,99,275,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21265,7 +21265,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (199,50,91,281,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (200,50,91,282,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (201,50,91,283,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (202,50,91,284,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (203,50,91,285,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21277,7 +21277,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (209,50,98,291,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (210,51,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (211,51,91,292,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (212,51,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (213,51,91,293,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21289,7 +21289,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (219,52,91,298,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (220,52,101,299,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (221,52,91,300,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (222,52,100,301,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (223,52,101,302,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21301,7 +21301,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (229,53,91,308,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (230,53,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (231,54,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (232,54,102,309,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (233,54,102,310,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21313,7 +21313,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (239,54,103,316,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (240,54,91,317,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (241,55,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (242,55,91,318,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (243,55,91,319,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21325,7 +21325,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (249,55,91,324,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (250,56,91,325,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (251,57,91,326,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (252,57,91,327,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (253,57,91,328,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21337,7 +21337,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (259,58,91,331,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (260,58,91,183,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (261,58,91,332,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (262,59,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (263,59,91,333,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21349,7 +21349,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (269,60,91,337,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (270,60,91,195,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (271,61,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (272,61,91,338,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (273,61,91,339,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21361,7 +21361,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (279,62,91,344,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (280,62,91,345,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (281,62,91,346,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (282,62,91,347,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (283,62,91,348,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21373,7 +21373,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (289,62,91,354,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (290,62,91,355,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (291,62,91,356,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (292,62,91,357,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (293,62,91,358,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21385,7 +21385,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (299,63,91,364,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (300,63,91,365,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (301,63,91,366,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (302,63,91,367,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (303,63,91,368,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21397,7 +21397,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (309,63,91,374,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (310,63,91,375,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (311,64,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (312,64,104,376,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (313,64,104,377,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21409,7 +21409,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (319,64,105,383,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (320,64,105,384,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (321,64,105,385,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (322,64,105,386,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (323,64,91,387,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21421,7 +21421,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (329,65,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (330,65,107,393,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (331,65,91,394,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (332,65,107,395,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (333,65,91,396,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21433,7 +21433,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (339,65,91,401,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (340,66,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (341,66,108,402,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (342,66,108,403,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (343,66,108,404,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21445,7 +21445,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (349,66,91,410,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (350,67,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (351,67,110,411,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (352,67,91,412,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (353,67,111,413,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21457,7 +21457,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (359,67,113,419,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (360,67,114,420,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (361,67,110,421,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (362,67,111,422,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (363,67,110,423,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21469,7 +21469,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (369,67,113,429,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (370,67,91,430,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (371,67,91,431,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (372,67,111,432,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (373,67,111,433,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21481,7 +21481,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (379,68,91,438,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (380,68,91,439,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (381,68,91,440,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (382,68,91,441,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (383,68,91,442,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21493,7 +21493,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (389,70,91,445,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (390,70,91,446,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (391,70,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (392,71,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (393,71,91,447,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21505,7 +21505,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (399,72,91,141,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (400,72,91,451,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (401,73,91,452,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (402,74,91,453,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (403,74,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21517,7 +21517,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (409,76,91,457,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (410,76,91,458,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (411,77,91,459,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (412,77,91,460,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (413,77,91,461,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21529,7 +21529,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (419,78,116,467,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (420,78,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (421,78,116,468,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (422,79,91,469,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (423,79,91,470,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21541,7 +21541,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (429,80,91,474,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (430,80,91,475,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (431,80,91,476,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (432,80,91,477,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (433,80,91,183,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21553,7 +21553,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (439,81,91,481,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (440,82,117,482,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (441,82,117,483,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (442,82,117,484,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (443,82,91,485,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21565,7 +21565,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (449,82,118,491,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (450,82,91,492,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (451,82,119,493,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (452,82,118,494,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (453,82,119,495,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21577,7 +21577,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (459,82,91,501,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (460,82,91,502,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (461,82,121,503,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (462,82,121,504,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (463,82,121,505,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21589,7 +21589,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (469,82,91,511,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (470,82,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (471,83,91,218,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (472,83,91,512,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (473,83,91,513,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21601,7 +21601,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (479,84,91,195,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (480,85,91,464,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (481,85,91,518,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (482,85,91,519,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (483,85,91,520,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21613,7 +21613,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (489,86,91,524,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (490,86,91,170,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (491,87,91,525,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (492,88,91,166,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (493,89,91,526,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21625,7 +21625,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (499,41,91,2371,NULL,'PRUEBA',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (500,52,101,2379,NULL,'PRUEBA',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (502,62,2393,345,NULL,'Prueba',NULL,NULL,'2023-09-23 21:55:57.0','2023-09-23 23:32:16.0'),
 	 (503,62,2393,346,NULL,'Prueba',NULL,NULL,'2023-09-23 23:27:00.0','2023-09-23 23:32:17.0'),
 	 (504,62,2393,347,NULL,'Prueba',NULL,NULL,'2023-09-23 23:27:00.0','2023-09-23 23:32:19.0'),
@@ -21637,7 +21637,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (510,70,91,2394,NULL,'Prueba',NULL,NULL,'2023-09-24 00:00:08.0','2023-09-24 00:00:08.0'),
 	 (511,2409,91,146,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:11:24.0','2023-09-24 00:11:24.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (512,2409,91,2402,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:11:24.0','2023-09-24 00:11:24.0'),
 	 (513,2409,91,2403,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:11:24.0','2023-09-24 00:11:24.0'),
 	 (514,2409,91,2404,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:11:24.0','2023-09-24 00:11:24.0'),
@@ -21649,7 +21649,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (520,77,91,2397,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:36:09.0','2023-09-24 00:36:09.0'),
 	 (521,52,91,2398,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:36:09.0','2023-09-24 00:36:09.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (522,48,93,2399,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:36:09.0','2023-09-24 00:36:09.0'),
 	 (523,66,109,2400,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:36:09.0','2023-09-24 00:36:09.0'),
 	 (524,41,91,2401,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:36:09.0','2023-09-24 00:36:09.0'),

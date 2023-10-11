@@ -36,7 +36,8 @@ class Metas extends Model
         'estatus',
         'ejercicio',
         'created_user',
-        'updated_user'
+        'updated_user',
+        'clv_actividad'
     ];
 
     protected $dates = ['deleted_at'];
