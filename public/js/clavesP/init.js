@@ -37,7 +37,7 @@ var dao = {
         const centroGestor = _data['claves'][index].entidad_federativa + _data['claves'][index].region + _data['claves'][index].municipio + _data['claves'][index].localidad + _data['claves'][index].upp + _data['claves'][index].subsecretaria + _data['claves'][index].ur;
         const areaFuncional = _data['claves'][index].finalidad + _data['claves'][index].funcion + _data['claves'][index].subfuncion + _data['claves'][index].eje + _data['claves'][index].linea_accion + _data['claves'][index].programa_sectorial + _data['claves'][index].tipologia_conac + _data['claves'][index].programa_presupuestario + _data['claves'][index].subprograma_presupuestario + _data['claves'][index].proyecto_presupuestario;
         const periodoPre = _data['claves'][index].periodo_presupuestal;
-        const posicionPre = _data['claves'][index].posicion_presupuestaria;
+        const posicionPre = _data['claves'][index].posicion_presupuestaria + _data['claves'][index].tipo_gasto;
         let upp = _data['claves'][index].claveUpp;
         let status = _data['claves'][index].estado;
         status == 1 ? estatusVista = 'Confirmadas' : estatusVista = 'Registradas';
@@ -1222,5 +1222,5 @@ $(document).ready(function(){
     window.location.href = '/calendarizacion-claves-create/'+ejercicio;
   });
   soloEnteros();
-
+  //pruebas para version...
 });
