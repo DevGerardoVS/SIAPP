@@ -37,7 +37,7 @@ var dao = {
         const centroGestor = _data['claves'][index].entidad_federativa + _data['claves'][index].region + _data['claves'][index].municipio + _data['claves'][index].localidad + _data['claves'][index].upp + _data['claves'][index].subsecretaria + _data['claves'][index].ur;
         const areaFuncional = _data['claves'][index].finalidad + _data['claves'][index].funcion + _data['claves'][index].subfuncion + _data['claves'][index].eje + _data['claves'][index].linea_accion + _data['claves'][index].programa_sectorial + _data['claves'][index].tipologia_conac + _data['claves'][index].programa_presupuestario + _data['claves'][index].subprograma_presupuestario + _data['claves'][index].proyecto_presupuestario;
         const periodoPre = _data['claves'][index].periodo_presupuestal;
-        const posicionPre = _data['claves'][index].posicion_presupuestaria;
+        const posicionPre = _data['claves'][index].posicion_presupuestaria + _data['claves'][index].tipo_gasto;
         let upp = _data['claves'][index].claveUpp;
         let status = _data['claves'][index].estado;
         status == 1 ? estatusVista = 'Confirmadas' : estatusVista = 'Registradas';
@@ -65,8 +65,9 @@ var dao = {
           if (o.rol == 1) {
             if (o.estatus != 'Cerrado' && o.estatus != '') {
               if (o.estado == 0) {
+                let upp = "'"+o.upp+"'";
                 return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+o.upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
+              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
               }else{
                 return '<p><i class="fa fa-check">&nbsp;Confirmado</i></p>';
               }
@@ -75,8 +76,9 @@ var dao = {
             }
           }if (o.rol == 0) {
             if (o.filtroEjercicio == o.ejercicioCheck) {
+              let upp = "'"+o.upp+"'";
               return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+o.upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
+              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
             }else{
               return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
             }
@@ -1222,5 +1224,4 @@ $(document).ready(function(){
     window.location.href = '/calendarizacion-claves-create/'+ejercicio;
   });
   soloEnteros();
-
 });

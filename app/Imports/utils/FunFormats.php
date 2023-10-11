@@ -101,11 +101,11 @@ class FunFormats
                         ->where('estatus', 3)->get();
                     if (count($isMir)) {
                         $flg = false;
-                        if (strtoupper($k[13]) == 'NULL' && strtoupper($k[14]) == 'NULL') {
+                        if (strtoupper($k[13]) == 'N/A' && strtoupper($k[14]) == 'N/A') {
                             $error = array(
                                 "icon" => 'error',
                                 "title" => 'Error',
-                                "text" => 'Las dos actividades Ingresadas en la fila : ' . $index . ', son "NULL" tienes que llenar una en NULL y la otra con los datos correspondientes',
+                                "text" => 'Las dos actividades Ingresadas en la fila : ' . $index . ', son "N/A" tienes que llenar una en N/A y la otra con los datos correspondientes',
                             );
                             return $error;
                         }
@@ -113,11 +113,11 @@ class FunFormats
                             $error = array(
                                 "icon" => 'error',
                                 "title" => 'Error',
-                                "text" => 'Las actividades Ingresadas en la fila : ' . $index . ', tienen valores, debes elegir llenar una en NULL y la otra con los datos correspondientes',
+                                "text" => 'Las actividades Ingresadas en la fila : ' . $index . ', tienen valores, debes elegir llenar una en N/A y la otra con los datos correspondientes',
                             );
                             return $error;
                         }
-                        if (strtoupper($k[13]) != 'NULL' && is_numeric($k[13])) {
+                        if (strtoupper($k[13]) != 'N/A' && is_numeric($k[13])) {
                             if (is_numeric($k[13])) {
                                 $activ = DB::table('catalogo')->where('deleted_at', null)->where('grupo_id', 20)->where('id', $k[13])->get();
                                 if ($activ) {
@@ -141,10 +141,10 @@ class FunFormats
                                 return $error;
                             }
                         }
-                        if (strtoupper($k[13]) == 'NULL' && is_numeric($k[14])) {
+                        if (strtoupper($k[13]) == 'N/A' && is_numeric($k[14])) {
                             $flg = true;
                         }
-                        if (strtolower($k[13]) == 'ot' && strtoupper($k[14]) == 'NULL') {
+                        if (strtolower($k[13]) == 'ot' && strtoupper($k[14]) == 'N/A') {
                             $flg = true;
                         }
 
@@ -164,7 +164,7 @@ class FunFormats
                         if ($flg) {
                             $area = '' . strval($k[0]) . strval($k[1]) . strval($k[2]) . strval($k[3]) . strval($k[4]) . strval($k[5]) . strval($k[6]) . strval($k[9]) . strval($k[10]) . strval($k[11]) . '';
                             $anio = isset($actividad->ejercicio) ? $actividad->ejercicio : $anio[0]->ejercicio;
-                            if (isset($actividad->area_funcional) && strtoupper($k[14]) != 'NULL') {
+                            if (isset($actividad->area_funcional) && strtoupper($k[14]) != 'N/A') {
                                 if ($actividad->area_funcional != $area) {
                                     $error = array(
                                         "icon" => 'error',
@@ -180,6 +180,32 @@ class FunFormats
 
                             $pres = FunFormats::existPP($clave, $anio, $k[12]);
                             if (count($pres)) {
+                               
+                                if (is_string($k[16])) {
+                                    $error = array(
+                                        "icon" => 'error',
+                                        "title" => 'Datos erróneos',
+                                        "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
+                                    );
+                                    return $error;
+                                    
+                                }else{
+                                    if ($k[16]<0 ) {
+                                        $error = array(
+                                            "icon" => 'error',
+                                            "title" => 'Datos erróneos',
+                                            "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
+                                        );
+                                        return $error;
+                                    }else if($k[16]>=4){
+                                        $error = array(
+                                            "icon" => 'error',
+                                            "title" => 'Datos erróneos',
+                                            "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
+                                        );
+                                        return $error;
+                                    }
+                                }
                                 $s = FunFormats::validatecalendar($k[7], $k[16]);
                                 if ($s["status"]) {
                                     $meses = [
@@ -201,7 +227,7 @@ class FunFormats
                                     });
                                     $mletras = [];
                                     foreach ($meses as $key => $value) {
-                                        if (!is_numeric(intval($value))) {
+                                        if (!is_numeric($value)) {
                                             $mletras[] = $value;
 
                                         }
@@ -234,13 +260,29 @@ class FunFormats
 
                                             $unique = "";
                                             $uniqueMir = "";
-                                            if (strtoupper($k[13]) == 'NULL' || is_string($k[13]) && is_numeric($k[14])) {
+                                            if (strtoupper($k[13]) == 'N/A' || is_string($k[13]) && is_numeric($k[14])) {
 
                                                 $uniqueMir = $area_funcional . strval($k[12]) . strval($k[14]) . '';
                                             }
-                                            if (strtoupper($k[14]) == 'NULL' && is_numeric($k[13])) {
+                                            if(strtoupper($k[13]) != 'N/A' && is_numeric($k[14])){
+                                                $error = array(
+                                                    "icon" => 'error',
+                                                    "title" => 'Datos incorrectos',
+                                                    "text" => 'No modificar la plantilla para su correcto funcionamiento, para dejar un campo sin datos utiliza N/A en la fila : ' . $index
+                                                );
+                                                return $error;
+                                            }
+                                            if (strtoupper($k[14]) == 'N/A' && is_numeric($k[13])) {
 
                                                 $unique = $area_funcional . strval($k[12]) . strval($k[13]) . '';
+                                            }
+                                            if(strtoupper($k[14]) != 'N/A'&& is_numeric($k[13])){
+                                                $error = array(
+                                                    "icon" => 'error',
+                                                    "title" => 'Datos incorrectos',
+                                                    "text" => 'No modificar la plantilla para su correcto funcionamiento, para dejar un campo sin datos utiliza N/A en la fila : ' . $index
+                                                );
+                                                return $error;
                                             }
 
                                             $medidas = DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id', $k[33])->get();
@@ -248,6 +290,25 @@ class FunFormats
                                             if (count($medidas)) {
                                                 $bene = DB::table('beneficiarios')->select('id', 'clave')->where('deleted_at', null)->where('clave', $k[30])->get();
                                                 if (count($bene)) {
+                                                        if (!is_numeric($k[32])) {
+                                                            $error = array(
+                                                                "icon" => 'error',
+                                                                "title" => 'Datos incorrectos',
+                                                                "text" => 'El numero de beneficiarios debe ser un NUMERO mayor a 0 en la fila: ' . $index
+                                                            );
+                                                            return $error;
+                                                           
+                                                        }else{
+                                                            if($k[32]<=0){
+                                                                $error = array(
+                                                                    "icon" => 'error',
+                                                                    "title" => 'Datos incorrectos',
+                                                                    "text" => 'El numero de beneficiarios debe ser un NUMERO mayor a 0 en la fila: ' . $index
+                                                                );
+                                                                return $error;
+
+                                                            }
+                                                        }
                                                     if ($uniqueMir != '') {
                                                         $conmirData = ['clave' => $uniqueMir, 'fila' => $index, 'upp' => strval($k[7])];
                                                         DB::table('metas_temp')->insert($conmirData);
@@ -258,6 +319,7 @@ class FunFormats
                                                         DB::table('metas_temp_Nomir')->insert($sinmirData);
                                                         $sinmir++;
                                                     }
+                                                  
 
                                                     $type = FunFormats::typeTotal($k, $m["validos"]);
                                                     if ($type != false) {
@@ -283,6 +345,7 @@ class FunFormats
                                                                 'created_user' => auth::user()->username
                                                             ]);
                                                         }
+                       
                                                         $aux[] = [
                                                             'pp' => strval($k[11]),
                                                             'upp' => strval($k[7]),
@@ -290,7 +353,7 @@ class FunFormats
                                                             'clv_fondo' => $k[12],
                                                             'actividad_id' => is_numeric($k[14]) ? NULL : $act->id,
                                                             'mir_id' => is_numeric($k[13]) || strtolower($k[13]) == 'ot' ? NULL : $k[14],
-                                                            'tipo' => $k[17],
+                                                            'tipo' => $s['a'],
                                                             'beneficiario_id' => $k[30],
                                                             'unidad_medida_id' => $k[33],
                                                             'cantidad_beneficiarios' => $k[32],
@@ -763,19 +826,19 @@ class FunFormats
                 if ($tipo->Acumulativa != 1) {
                     return ["status" => false, "a" => 'Acumulativa', "upp" => $upp];
                 } else {
-                    return ["status" => true];
+                    return ["status" => true, "a" => 'Acumulativa', "upp" => $upp];
                 }
             case 1:
                 if ($tipo->Continua != 1) {
                     return ["status" => false, "a" => 'Continua', "upp" => $upp];
                 } else {
-                    return ["status" => true];
+                    return ["status" => true, "a" => 'Continua', "upp" => $upp];
                 }
             case 2:
                 if ($tipo->Especial != 1) {
-                    return ["status" => false, "a" => 'Continua', "upp" => $upp];
+                    return ["status" => false, "a" => 'Especial', "upp" => $upp];
                 } else {
-                    return ["status" => true];
+                    return ["status" => true, "a" => 'Especial', "upp" => $upp];
                 }
             default:
                 # code...
@@ -867,46 +930,6 @@ class FunFormats
                 $metaSinMir->save();
             }
         }
-        /*             if ($key['actividad_id']=='ot') {
-                        $act = MmlMir::create([
-                            'clv_upp' => $key['upp'],
-                            'entidad_ejecutora' => $key['entidad_ejecutora'],
-                            'area_funcional' => $key['area_funcional'],
-                            'id_catalogo' => null,
-                            'nombre' => '$key->inputAc',
-                            'ejercicio' => $key['ejercicio'],
-                            'created_user' => $key['username']
-                        ]);
-                        $meta = new Metas;
-                            $meta->mir_id = NULL;
-                            $meta->clv_fondo=$key['clv_fondo'];
-                            $meta->actividad_id= $act->id;
-                            $meta->tipo=$key['tipo'];
-                            $meta->beneficiario_id=$key['beneficiario_id'];
-                            $meta->unidad_medida_id=$key['unidad_medida_id'];
-                            $meta->cantidad_beneficiarios=$key['cantidad_beneficiarios'];
-                            $meta->enero=$key['enero'];
-                            $meta->febrero=$key['febrero'];
-                            $meta->marzo=$key['marzo'];
-                            $meta->abril=$key['abril'];
-                            $meta->mayo=$key['mayo'];
-                            $meta->junio=$key['junio'];
-                            $meta->julio=$key['julio'];
-                            $meta->agosto=$key['agosto'];
-                            $meta->septiembre=$key['septiembre'];
-                            $meta->octubre=$key['octubre'];
-                            $meta->noviembre=$key['noviembre'];
-                            $meta->diciembre=$key['diciembre'];
-                            $meta->total=$key['total'];
-                            $meta->estatus=0;
-                            $meta->ejercicio=$key['ejercicio'];
-                            $meta->created_user=$key['created_user'];
-                            $meta->save();
-                        if ($meta) {
-                            $meta->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $meta->id . '-' . $key['ejercicio'];
-                            $meta->save();
-                        }
-                    } */
 
         if (is_numeric($key['mir_id'])) {
             $metaConMir = new Metas;
@@ -970,16 +993,6 @@ class FunFormats
             Log::debug($meta);
 
         }
-    }
-    public static function checkUnid($arr, $id_uni)
-    {
-
-
-    }
-    public static function checkBenef($arr, $id_benf)
-    {
-
-
     }
 
 }
