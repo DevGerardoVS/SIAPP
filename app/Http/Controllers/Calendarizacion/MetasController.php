@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Calendarizacion;
 use App\Imports\utils\FunFormats;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Http;
 use Storage;
 use App\Models\calendarizacion\CierreMetas;
 use App\Models\MmlMir;
+
 use App\Models\Catalogo;
 
 
@@ -175,7 +177,6 @@ class MetasController extends Controller
 	{
 		$urs = [];
 		$tAct = [];
-		Log::debug($_upp);
 		if ($_upp != 0) {
 			$upp = $_upp != null ? $_upp : auth::user()->clv_upp;
 			$check = $this->checkClosing($upp);
@@ -597,45 +598,88 @@ class MetasController extends Controller
 	}
 	public function updateMeta($id)
 	{
-		$metas = DB::table('metas')
-			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
-			->select(
-				DB::raw('CONCAT(mml_mir.id, " - ", mml_mir.indicador) AS actividad'),
-				'mml_mir.area_funcional',
-				'mml_mir.entidad_ejecutora',
-				'mml_mir.clv_upp',
-				'mml_mir.clv_ur',
-				'mml_mir.id as mir_id',
-				'metas.id',
-				'metas.clv_fondo',
-				'metas.tipo',
-				'metas.beneficiario_id',
-				'metas.unidad_medida_id',
-				'metas.cantidad_beneficiarios',
-				'metas.enero',
-				'metas.febrero',
-				'metas.marzo',
-				'metas.abril',
-				'metas.mayo',
-				'metas.junio',
-				'metas.julio',
-				'metas.agosto',
-				'metas.septiembre',
-				'metas.octubre',
-				'metas.noviembre',
-				'metas.diciembre',
-				'metas.total',
-				'mml_mir.ejercicio'
+		$metas = [];
+		$m = Metas::where('deleted_at', null)->where('id', $id)->get();
+		Log::debug($m );
+		if ($m[0]->mir_id != null) {
+			$metas = DB::table('metas')
+				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
+				->select(
+					DB::raw('CONCAT(mml_mir.id, " - ", mml_mir.indicador) AS actividad'),
+					'mml_mir.area_funcional',
+					'mml_mir.entidad_ejecutora',
+					'mml_mir.clv_upp',
+					'mml_mir.clv_ur',
+					'mml_mir.id as mir_id',
+					'metas.id',
+					'metas.clv_fondo',
+					'metas.tipo',
+					'metas.beneficiario_id',
+					'metas.unidad_medida_id',
+					'metas.cantidad_beneficiarios',
+					'metas.enero',
+					'metas.febrero',
+					'metas.marzo',
+					'metas.abril',
+					'metas.mayo',
+					'metas.junio',
+					'metas.julio',
+					'metas.agosto',
+					'metas.septiembre',
+					'metas.octubre',
+					'metas.noviembre',
+					'metas.diciembre',
+					'metas.total',
+					'mml_mir.ejercicio'
 
-			)
-			->where('mml_mir.deleted_at', null)
-			->where('metas.deleted_at', null)
-			->where('metas.id', $id)->get();
+				)
+				->where('mml_mir.deleted_at', null)
+				->where('metas.deleted_at', null)
+				->where('metas.id', $id)->get();
+		}
+		if($m[0]->actividad_id != null){
+			$metas = DB::table('metas')
+				->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
+				->leftJoin('catalogo', 'catalogo.id', 'mml_actividades.id_catalogo')
+				->select(
+					DB::raw('CONCAT(mml_actividades.id, " - ", IFNULL(mml_actividades.nombre,catalogo.descripcion)) AS actividad'),
+					'mml_actividades.area_funcional',
+					'mml_actividades.entidad_ejecutora',
+					'mml_actividades.clv_upp',
+					DB::raw('"" AS clv_ur'),
+					'mml_actividades.id as actividad_id',
+					'metas.id',
+					'metas.clv_fondo',
+					'metas.tipo',
+					'metas.beneficiario_id',
+					'metas.unidad_medida_id',
+					'metas.cantidad_beneficiarios',
+					'metas.enero',
+					'metas.febrero',
+					'metas.marzo',
+					'metas.abril',
+					'metas.mayo',
+					'metas.junio',
+					'metas.julio',
+					'metas.agosto',
+					'metas.septiembre',
+					'metas.octubre',
+					'metas.noviembre',
+					'metas.diciembre',
+					'metas.total',
+					'metas.ejercicio'
+
+				)
+				->where('mml_actividades.deleted_at', null)
+				->where('metas.deleted_at', null)
+				->where('metas.id', $id)->get();
+
+		}
 		$data = [];
 		$areaAux = str_split($metas[0]->area_funcional);
+		$entiAux = str_split($metas[0]->entidad_ejecutora);
 		$area = '' . strval($areaAux[0]) . '-' . strval($areaAux[1]) . '-' . strval($areaAux[2]) . '-' . strval($areaAux[3]) . '-' . strval($areaAux[4]) . strval($areaAux[5]) . '-' . strval($areaAux[6]) . '-' . strval($areaAux[7]) . '-' . strval($areaAux[8]) . strval($areaAux[9]) . "-" . strval($areaAux[10]) . strval($areaAux[11]) . strval($areaAux[12]) . "-" . strval($areaAux[13]) . strval($areaAux[14]) . strval($areaAux[15]) . '';
-		$meses = MetasController::meses($area, "" . $metas[0]->clv_upp . "-" . '0' . "-" . $metas[0]->clv_ur . "", $metas[0]->ejercicio, $metas[0]->clv_fondo);
-
+		$meses = MetasController::meses($area, "" . $metas[0]->clv_upp . "-" . strval($entiAux[3]) . "-" . strval($entiAux[4]) . strval($entiAux[5]) . "", $metas[0]->ejercicio, $metas[0]->clv_fondo);
 		foreach ($metas as $key) {
 			$area = str_split($key->area_funcional);
 			$entidad = str_split($key->entidad_ejecutora);
@@ -1059,6 +1103,7 @@ class MetasController extends Controller
 	{
 		$date = Carbon::now();
 		$year = $date->format('Y');
+		$anioMax = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', $upp)->max('ejercicio');
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select(
 				'estatus',
@@ -1066,7 +1111,9 @@ class MetasController extends Controller
 			)
 			->where('deleted_at', null)
 			->where('clv_upp', '=', $upp)
+			->where('ejercicio',$anioMax)
 			->get();
+
 		if (count($anio)) {
 			if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
 				return ["status" => true, "anio" => $anio[0]->ejercicio];
@@ -1081,6 +1128,7 @@ class MetasController extends Controller
 	}
 	function checkGoals($upp)
 	{
+		$anioMax = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', $upp)->max('ejercicio');
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select(
 				'estatus',
@@ -1088,6 +1136,7 @@ class MetasController extends Controller
 			)
 			->where('deleted_at', null)
 			->where('clv_upp', '=', $upp)
+			->where('ejercicio',$anioMax)
 			->get();
 		if (count($anio)) {
 			if (Auth::user()->id_grupo == 1 || $anio[0]->estatus == 'Abierto') {
@@ -1192,23 +1241,10 @@ class MetasController extends Controller
 			$user = Auth::user()->username;
 			if ($s['status']) {
 				DB::beginTransaction();
-				$metas = DB::table('metas')
-					->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
-					->select(
-						'metas.id',
-						'mml_mir.entidad_ejecutora',
-						'mml_mir.area_funcional',
-						'mml_mir.clv_upp'
-					)
-					->where('mml_mir.clv_upp', $upp)
-					->where('mml_mir.ejercicio', $anio)
-					->where('mml_mir.deleted_at', null)
-					->where('metas.deleted_at', null)
-					->where('metas.estatus', 0)->get();
+				$metas = MetasHelper::actividades($upp, $anio);
 				$i = 0;
 				foreach ($metas as $key) {
 					$meta = Metas::where('id', $key->id)->firstOrFail();
-
 					if ($meta) {
 						$meta->estatus = 1;
 						$meta->updated_user = $user;
@@ -1218,12 +1254,15 @@ class MetasController extends Controller
 					}
 				}
 				if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
-					$cierre = CierreMetas::where('deleted_at', null)->where('clv_upp', $upp)->where('estatus', 'Abierto')->firstOrFail();
+					$cierre = CierreMetas::where('deleted_at', null)->where('clv_upp', $upp)->where('estatus', 'Abierto')->get();
 					if ($cierre) {
-						$cierre->estatus = 'Cerrado';
-						$cierre->updated_user = $user;
-						$cierre->updated_at = $fecha;
-						$cierre->save();
+						foreach ($cierre as $key ) {
+							$key->estatus = 'Cerrado';
+							$key->updated_user = $user;
+							$key->updated_at = $fecha;
+							$key->save();
+						}
+						
 					}
 					DB::commit();
 					$b = array(
@@ -1250,30 +1289,16 @@ class MetasController extends Controller
 	}
 	public static function desconfirmar($upp, $anio)
 	{
-
-
 		try {
 			Controller::check_permission('putMetas');
-
 			DB::beginTransaction();
 			$user = Auth::user()->username;
-			$metas = DB::table('metas')
-				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
-				->select(
-					'metas.id',
-					'mml_mir.entidad_ejecutora',
-					'mml_mir.area_funcional',
-					'mml_mir.clv_upp'
-				)
-				->where('mml_mir.clv_upp', $upp)
-				->where('mml_mir.ejercicio', $anio)
-				->where('mml_mir.deleted_at', null)
-				->where('metas.deleted_at', null)
-				->where('metas.estatus', 1)->get();
+			$metas = MetasHelper::actividadesConf($upp, $anio);
+			$fecha = Carbon::now()->toDateTimeString();
 			$i = 0;
 			foreach ($metas as $key) {
-				$meta = Metas::where('id', $key->id)->firstOrFail();
-				$fecha = Carbon::now()->toDateTimeString();
+				$m = Metas::where('id', $key->id)->get();
+				$meta = $m[0];
 				if ($meta) {
 					$meta->estatus = 0;
 					$meta->updated_user = $user;
@@ -1283,6 +1308,16 @@ class MetasController extends Controller
 				}
 			}
 			if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
+				$cierre = CierreMetas::where('deleted_at', null)->where('clv_upp', $upp)->where('estatus', 'Cerrado')->get();
+				if ($cierre) {
+					foreach ($cierre as $key ) {
+						$key->estatus = 'Abierto';
+						$key->updated_user = $user;
+						$key->updated_at = $fecha;
+						$key->save();
+					}
+					
+				}
 				DB::commit();
 				$b = array(
 					"username" => $user,
@@ -1433,8 +1468,6 @@ class MetasController extends Controller
 			->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct()
 			->get();
-		Log::debug("Metas: " . count($metas));
-		Log::debug("pp: " . count($activsPP));
 		if (count($metas) > 1) {
 			if (count($metas) >= count($activsPP)) {
 				return ["status" => true];

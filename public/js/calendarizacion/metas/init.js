@@ -194,7 +194,6 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             let { mese } = data;
-            console.log("meses: ",mese);
             for (const key in mese) {
                
                 if (Object.hasOwnProperty.call(mese, key)) {
