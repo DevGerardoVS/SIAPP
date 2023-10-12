@@ -131,7 +131,7 @@ class TechosController extends Controller
 
     public function addTecho(Request $request){
         Controller::check_permission('putTechos'); 
-        log::debug($request);
+        
         $data = array_chunk(array_slice($request->all(),3),3);
         $aRepetidos = array_chunk(array_slice($request->all(),3),3,true);
         $aKeys = array_keys(array_slice($request->all(),3));
@@ -375,10 +375,8 @@ class TechosController extends Controller
             ->where('deleted_at','=',null)
             ->limit(1)
             ->get();
-            log::debug($confirmadoClave);
             
             $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp, $data[0]->ejercicio);
-            log::debug($confirmacionMeta);
                 
             if(count($confirmadoClave) == 0){ //si no esta asignado a una clave presupuestaria se EDITA normalmente
                 DB::beginTransaction();
