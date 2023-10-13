@@ -34,7 +34,7 @@ date_default_timezone_set('America/Mexico_City');
     @if (isset($titleDesc) && $titleDesc != '' && isset($acr))
         <title>{{ $acr . ' - ' . $titleDesc }}</title>
     @else
-        <title>Sistema Integral de Análisis Programático Presupuestal </title>
+        <title>Calendarización y Asignación de Presupuesto </title>
     @endif
 
 
@@ -60,7 +60,7 @@ date_default_timezone_set('America/Mexico_City');
                             style="max-height: 45px; margin-left:10px; margin-right:10px; pointer-events: none !important;"
                             alt="logo">
 
-                        <b>SIAPP </b>
+                        <b>Calendarización y Asignación de Presupuesto </b>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
