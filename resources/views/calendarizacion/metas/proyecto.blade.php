@@ -3,7 +3,7 @@
 @include('calendarizacion.metas.modalFirmaElectronica')
 @section('content')
     <div class="container">
-        
+       
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
         <section id="widget-grid" class="conteiner">
             <div class="row">
