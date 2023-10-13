@@ -310,127 +310,137 @@ var dao = {
                     mesesV[key]=false;
                 }
             }
-            for (const key in mese) {
+            if ( data.subprograma!='UUU') {
+                for (const key in mese) {
                
-                if (Object.hasOwnProperty.call(mese, key)) {
-                    const e = mese[key];
-                    switch (key) {
-                        case 'enero':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.enero = true;
-                                $("#1").prop('disabled', false);
-                                $("#1").prop('required',true);
-                            } else {
-                                $("#1").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'febrero':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.febrero = true;
-                                $("#2").prop('disabled', false);
-                                $("#2").prop('required',true);
-                            } else {
-                                $("#2").prop('disabled', 'disabled');
-                            }
+                    if (Object.hasOwnProperty.call(mese, key)) {
+                        const e = mese[key];
+                        switch (key) {
+                            case 'enero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.enero = true;
+                                    $("#1").prop('disabled', false);
+                                    $("#1").prop('required', true);
+                                } else {
+                                    $("#1").prop('disabled', 'disabled');
+                                }
                                 break;
-                        case 'marzo':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.marzo = true;
-                                $("#3").prop('disabled', false);
-                                $("#3").prop('required',true);
-                            } else {
-                                $("#3").prop('disabled', 'disabled');
+                            case 'febrero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.febrero = true;
+                                    $("#2").prop('disabled', false);
+                                    $("#2").prop('required', true);
+                                } else {
+                                    $("#2").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'marzo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.marzo = true;
+                                    $("#3").prop('disabled', false);
+                                    $("#3").prop('required', true);
+                                } else {
+                                    $("#3").prop('disabled', 'disabled');
 
-                            }
+                                }
                                 break;
-                        case 'abril':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.abril = true;
-                                $("#4").prop('disabled', false);
-                                $("#4").prop('required',true);
-                            } else {
-                                $("#4").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'mayo':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.mayo = true;
-                                $("#5").prop('disabled', false);
-                                $("#5").prop('required',true);
-                            } else {
-                                $("#5").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'junio':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.junio = true;
-                                $("#6").prop('disabled', false);
-                                $("#6").prop('required',true);
-                            } else {
-                                $("#6").prop('disabled', 'disabled');
-                            }
-                               break;
-                        case 'julio':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.julio = true;
-                                $("#7").prop('disabled', false);
-                                $("#7").prop('required',true);
-                            } else {
-                                $("#7").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'agosto':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.agosto = true;
-                                $("#8").prop('disabled', false);
-                                $("#8").prop('required',true);
-                            } else {
-                                $("#8").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'septiembre':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.septiembre = true;
-                                $("#9").prop('disabled', false);
-                                $("#9").prop('required',true);
-                            } else {
-                                $("#9").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'octubre':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.octubre = true;
-                                $("#10").prop('disabled', false);
-                                $("#10").prop('required',true);
-                            } else {
-                                $("#10").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'noviembre':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.noviembre = true;
-                                $("#11").prop('disabled', false);
-                                $("#11").prop('required',true);
-                            } else {
-                                $("#11").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'diciembre':
+                            case 'abril':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.abril = true;
+                                    $("#4").prop('disabled', false);
+                                    $("#4").prop('required', true);
+                                } else {
+                                    $("#4").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'mayo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.mayo = true;
+                                    $("#5").prop('disabled', false);
+                                    $("#5").prop('required', true);
+                                } else {
+                                    $("#5").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'junio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.junio = true;
+                                    $("#6").prop('disabled', false);
+                                    $("#6").prop('required', true);
+                                } else {
+                                    $("#6").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'julio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.julio = true;
+                                    $("#7").prop('disabled', false);
+                                    $("#7").prop('required', true);
+                                } else {
+                                    $("#7").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'agosto':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.agosto = true;
+                                    $("#8").prop('disabled', false);
+                                    $("#8").prop('required', true);
+                                } else {
+                                    $("#8").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'septiembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.septiembre = true;
+                                    $("#9").prop('disabled', false);
+                                    $("#9").prop('required', true);
+                                } else {
+                                    $("#9").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'octubre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.octubre = true;
+                                    $("#10").prop('disabled', false);
+                                    $("#10").prop('required', true);
+                                } else {
+                                    $("#10").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'noviembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.noviembre = true;
+                                    $("#11").prop('disabled', false);
+                                    $("#11").prop('required', true);
+                                } else {
+                                    $("#11").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'diciembre':
                             
-                            if (e != 0.0 || e != 0) {
-                                mesesV.diciembre = true;
-                                $("#12").prop('disabled', false);
-                                $("#12").prop('required',true);
-                            } else {
-                                $("#12").prop('disabled', 'disabled');
-                            }
-                            break;
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.diciembre = true;
+                                    $("#12").prop('disabled', false);
+                                    $("#12").prop('required', true);
+                                } else {
+                                    $("#12").prop('disabled', 'disabled');
+                                }
+                                break;
                     
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
+                    
                     }
-                    
                 }
+            } else {
+                
+                $("#sumMetas").prop('disabled', 'disabled');
+                for (let i = 1; i <= 12; i++) {
+                    $("#" + i).prop('disabled', 'disabled');
+
+                }
+                
             }
 
             if (edit) {
