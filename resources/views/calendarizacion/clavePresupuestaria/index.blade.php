@@ -217,6 +217,8 @@
         var helper =  value[0].replace('There was an error on row', 'Hay un error en la fila: ');
         fails.push(helper);
         });
+        console.log(fails);
+
         Swal.fire({
                 icon: 'error',
                 title: 'Error al importar la carga masiva',
