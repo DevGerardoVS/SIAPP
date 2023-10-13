@@ -438,7 +438,17 @@ return new class extends Migration
                 0 asignado,
                 sum(pa.total) programado,
                 pa.ejercicio
-            from pp_aplanado pa
+            FROM (
+                SELECT 
+                    f.clv_fondo_ramo,
+                    f.fondo_ramo,
+                    pp.ejercicio,
+                    pp.total,
+                    pp.deleted_at
+                FROM pp_identificadores pt
+                JOIN programacion_presupuesto pp ON pt.id = pp.id
+                JOIN fondo f ON pt.fondo_id = f.id
+            ) pa
             where deleted_at is null
             group by clv_fondo_ramo,fondo_ramo,ejercicio
             union all

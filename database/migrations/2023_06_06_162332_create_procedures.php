@@ -3400,63 +3400,85 @@ return new class extends Migration {
            		set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
            	end if;
         
-            set @query := CONCAT(\"select 
-				case 
-					when nivel = 9 then clv_upp
-					else ''
-				end clv_upp,
-				case 
-					when nivel = 9 then clv_pp
-					else ''
-				end clv_pp,
-				case 
-					when nivel = 9 then clv_ur
-					else ''
-				end clv_ur,
-				case 
-					when nivel != 9 then area_funcional
-					else ''
-				end area_funcional,
-				case 
-					when nivel != 9 then proyecto
-					else ''
-				end nombre_proyecto,
-				case 
-					when nivel = 10 then 'Componente'
-					when nivel = 11 then 'Actividad'
-					else ''
-				end nivel,
-				objetivo,
-				indicador
-			from (
-				select 
-					mm.clv_upp,
-					mm.clv_pp,
-					mm.clv_ur,
-					mm.area_funcional,
-					ve.proyecto,
-					mm.nivel,
-					mm.objetivo,
-					mm.indicador
-				from mml_mir mm
-				join v_epp ve on ve.id = mm.id_epp
-				where mm.ejercicio = \",anio,\" and mm.deleted_at is null
-				and nivel in (10,11) \",@upp,\" \",@ur,\" \",@programa,\"
-				union all
-				select distinct
-					ve.clv_upp,
-					ve.clv_programa clv_pp,
-					ve.clv_ur,
-					'' area_funcional,
-					'' proyecto,
-					9 nivel,
-					'' objetivo,
-					'' indicador
-				from v_epp ve
-				where ejercicio = \",anio,\" and deleted_at is null \",@upp2,\" \",@ur2,\" \",@programa2,\"
-				group by clv_upp,clv_pp,clv_ur,nivel
-				order by clv_upp,clv_pp,clv_ur,nivel
-			)t;\");
+            set @query := concat(\"
+                SELECT
+                    case 
+                        when nivel = 9 then clv_upp
+                        else ''
+                    end clv_upp,
+                    case 
+                        when nivel = 9 then clv_pp
+                        else ''
+                    end clv_pp,
+                    case 
+                        when nivel = 9 then clv_ur
+                        else ''
+                    end clv_ur,
+                    case 
+                        when nivel != 9 then area_funcional
+                        else ''
+                    end area_funcional,
+                    case 
+                        when nivel != 9 then proyecto
+                        else ''
+                    end nombre_proyecto,
+                    case 
+                        when nivel = 10 then 'Componente'
+                        when nivel = 11 then 'Actividad'
+                        else ''
+                    end nivel,
+                    objetivo,
+                    indicador 
+                FROM (
+                    SELECT *
+                    FROM (
+                        SELECT 
+                            mm.id,
+                            mm.clv_upp,
+                            mm.clv_pp,
+                            mm.clv_ur,
+                            mm.area_funcional,
+                            ve.proyecto,
+                            mm.nivel,
+                            mm.objetivo,
+                            mm.indicador
+                        from mml_mir mm
+                        join v_epp ve on ve.id = mm.id_epp
+                        where mm.ejercicio = \",anio,\" and mm.deleted_at is null
+                        and nivel in (10) \",@upp,\" \",@ur,\" \",@programa,\"
+                        UNION ALL 
+                        SELECT 
+                            mm.componente_padre id,
+                            mm.clv_upp,
+                            mm.clv_pp,
+                            mm.clv_ur,
+                            mm.area_funcional,
+                            ve.proyecto,
+                            mm.nivel,
+                            mm.objetivo,
+                            mm.indicador
+                        from mml_mir mm
+                        join v_epp ve on ve.id = mm.id_epp
+                        where mm.ejercicio = \",anio,\" and mm.deleted_at is null
+                        and nivel IN (11) \",@upp,\" \",@ur,\" \",@programa,\"
+                        UNION ALL 
+                        select distinct
+                            0 id,
+                            ve.clv_upp,
+                            ve.clv_programa clv_pp,
+                            ve.clv_ur,
+                            '' area_funcional,
+                            '' proyecto,
+                            9 nivel,
+                            '' objetivo,
+                            '' indicador
+                        from v_epp ve
+                        where ejercicio = \",anio,\" and deleted_at is NULL \",@upp2,\" \",@ur2,\" \",@programa2,\"
+                    )t 
+                    GROUP BY clv_upp,clv_pp,clv_ur,id,nivel
+                    ORDER BY clv_upp,clv_pp,clv_ur,id,nivel
+                )t2;
+            \");
         
             prepare stmt  from @query;
             execute stmt;

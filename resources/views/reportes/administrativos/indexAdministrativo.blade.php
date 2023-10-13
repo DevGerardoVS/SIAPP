@@ -47,13 +47,15 @@
                     </select>
                 </div>
                 
-                <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
-                    <label for="fechaCorte_filter" class="form-label fw-bold mt-md-1">Fecha de corte:</label>
-                </div>
-                <div class="col-sm-12 col-md-3 col-lg-2">
-                    <select class="form-control filters filters_fechaCorte" id="fechaCorte_filter" name="fechaCorte_filter" autocomplete="fechaCorte_filter">
-                    </select>
-                </div>
+                @if(Auth::user()->id_grupo != 4)
+                    <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
+                        <label for="fechaCorte_filter" class="form-label fw-bold mt-md-1">Fecha de corte:</label>
+                    </div>
+                    <div class="col-sm-12 col-md-3 col-lg-2">
+                        <select class="form-control filters filters_fechaCorte" id="fechaCorte_filter" name="fechaCorte_filter" autocomplete="fechaCorte_filter">
+                        </select>
+                    </div>
+                @endif
             </div>
             @if(Auth::user()->id_grupo != 4)
                 <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
