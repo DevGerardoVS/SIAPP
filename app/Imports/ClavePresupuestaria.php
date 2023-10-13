@@ -341,7 +341,6 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
           'capital' => $row['ci'],
           'proyecto_obra' => $row['obra'],
           'ejercicio' =>  $row['ejercicio'], 
-          'fondo_ramo'    => $row['fondo'],
           'enero'    => $row['enero'],
           'febrero'    => $row['febrero'],
           'marzo'    => $row['marzo'],

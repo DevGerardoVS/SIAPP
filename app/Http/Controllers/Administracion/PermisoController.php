@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administracion;
 
 use App\Http\Controllers\Controller;
+use Auth;
 use Illuminate\Http\Request;
 use App\Models\administracion\Grupo;
 use App\Models\administracion\Menu;
@@ -59,12 +60,25 @@ class PermisoController extends Controller
 		$permiso->id_grupo = $request->role;
 		$permiso->id_funcion = $request->modulo;
 		$permiso->save();
+
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Asignando Permisos de grupos:'.$request->role.'de el modulo:'.$request->modulo,
+            "modulo" => 'Permisos'
+        );
+        Controller::bitacora($b);
 		return "true";
     }
     //Elimina Permisos de Usuario
     public function postRemueve(Request $request) {
         Controller::check_permission('deletePermisos', false);
     	Permisos::where('id_grupo', '=', $request->role)->where('id_funcion', '=', $request->modulo)->delete();
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Elimina Permisos de grupos:'.$request->role.'de el modulo:'.$request->modulo,
+            "modulo" => 'Permisos'
+        );
+        Controller::bitacora($b);
     }
     //Asigna Menu a Grupo
     public function postMasigna(Request $request) {
@@ -74,12 +88,24 @@ class PermisoController extends Controller
 		$menu->id_grupo = $request->role;
 		$menu->id_menu = $request->menu;
 		$menu->save();
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Asignando Permisos de grupos:'.$request->role.'de el modulo:'.$request->modulo,
+            "modulo" => 'Permisos'
+        );
+        Controller::bitacora($b);
 		return "true";
     }
     //Desasigna Menu a Grupo
     public function postMremueve(Request $request) {
         Controller::check_permission('deletePermisos', false);
     	MenuGrupo::where('id_grupo', '=', $request->role)->where('id_menu', '=', $request->menu)->delete();
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'eliminando Permisos de grupos:'.$request->role.'de el modulo:'.$request->modulo,
+            "modulo" => 'Permisos'
+        );
+        Controller::bitacora($b);
     }
     //Asigna Rol a Sistema
     public function postSasigna(Request $request) {
@@ -87,12 +113,24 @@ class PermisoController extends Controller
     	$sistema = new SistemaGrupo();
     	$sistema->id_grupo = $request->role;
     	$sistema->save();
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'asignando Permisos de grupos:'.$request->role,
+            "modulo" => 'Permisos'
+        );
+        Controller::bitacora($b);
     	return "true";
     }
     //DesAsigna Rol a Sistema
     public function postSremueve(Request $request) {
         Controller::check_permission('deletePermisos', false);
     	SistemaGrupo::where('id_grupo', '=', $request->role)->delete();
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'eliminando Permisos de grupos:'.$request->role,
+            "modulo" => 'Permisos'
+        );
+        Controller::bitacora($b);
     }
     //Asigna Todos los Permisos a Grupo
     public function postAllPermission(Request $request) {
@@ -124,6 +162,12 @@ class PermisoController extends Controller
             foreach($funciones as $funcion) {
                 Permisos::where('id_grupo', $request->role)->where('id_funcion', $funcion->id)->delete();
             }
+            $b = array(
+                "username" => Auth::user()->username,
+                "accion" => 'eliminando Permisos de grupos:'.$request->role,
+                "modulo" => 'Permisos'
+            );
+            Controller::bitacora($b);
         }
         return 200;
     }
