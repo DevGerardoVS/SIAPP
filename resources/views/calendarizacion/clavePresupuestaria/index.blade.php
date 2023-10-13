@@ -97,7 +97,13 @@
                                     <input type="text" id="disponibleRH" name="disponibleRH" class="form-control" disabled>
                                 </div>
                             </div>
-                            
+                            <br>
+                            <div class="alert alert-info alert-dismissible fade show" role="alert" id="alertaUppAutorizado" style="display: none">
+                                <i class="fa fa-info-circle" aria-hidden="true"></i> La delegación carga la nómina de esta UPP.
+                                <button type="button" class="close" aria-label="Close" onclick="hideAletr();">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                             {{-- fin de seccion de desglose --}}
                             {{-- valores ocultos --}}
                             <div class="row" style="display: none">
@@ -116,7 +122,7 @@
                                 
                             </div>
                             {{-- fin valores ocultos --}}
-                            <br>
+                            {{-- <br> --}}
                             <div class="row">
                                 <form id="filtrosClaves" class="row align-items-center">
                                 <div class="col-md-4">
@@ -135,7 +141,7 @@
                                 </div>
                                 </form>
                             </div>
-                            <br>
+                            {{-- <br> --}}
                             
                                 <div class="table-responsive">
                                     <table id="claves" class="table table-hover table-striped" style="width: 100%">
@@ -182,6 +188,9 @@
     <script src="/js/clavesP/cargamasiva.js"></script>
 
     <script>
+        function hideAletr(params) {
+            $('#alertaUppAutorizado').hide(true);
+        }
         let upp = "{{$uppUsuario}}";
         let ejercicio = "{{$ejercicio}}";
         dao.getEjercicios(ejercicio);
@@ -208,6 +217,8 @@
         var helper =  value[0].replace('There was an error on row', 'Hay un error en la fila: ');
         fails.push(helper);
         });
+        console.log(fails);
+
         Swal.fire({
                 icon: 'error',
                 title: 'Error al importar la carga masiva',
@@ -219,8 +230,8 @@
 
             },
             }).then(function(){
-    location.reload();
-});
+                location.reload();
+            });
         @endif
     </script>
 @endsection

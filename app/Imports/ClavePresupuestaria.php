@@ -279,9 +279,9 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
          ->where('clv_region',$row['reg'])
          ->where('clv_municipio',$row['mpio'])
          ->where('clv_localidad',$row['loc'])->count();
-         $valgeo < 1 ? $row['ef']=NULL : $row['ef']; 
+         $valgeo < 1 ? $row['ef']=NULL : null; 
 
-
+         log::debug(gettype($row['ef']));
 
         //validacion de año 
         if(strlen($row['ano'])==2 && is_numeric($row['ano'])){
@@ -341,7 +341,6 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
           'capital' => $row['ci'],
           'proyecto_obra' => $row['obra'],
           'ejercicio' =>  $row['ejercicio'], 
-          'fondo_ramo'    => $row['fondo'],
           'enero'    => $row['enero'],
           'febrero'    => $row['febrero'],
           'marzo'    => $row['marzo'],
@@ -373,22 +372,22 @@ class ClavePresupuestaria implements ToModel,WithHeadingRow,WithValidation,Skips
              '*.upp' => ['required','string',Rule::notIn(['0'])], 
             '*.admconac' => ['required','string',Rule::notIn(['0'])],
             '*.ano' => ['required',Rule::notIn(['2'])] ,
-            '*.ef' =>  ['required','string'],
-            '*.subsecretaria' =>  ['required','string'],
-            '*.finalidad' =>  ['required','string'],
-            '*.funcion' =>  ['required','string'],
-            '*.subfuncion' =>  ['required','string'],
+            '*.ef' =>  ['required'],
+            '*.subsecretaria' =>  ['required'],
+            '*.finalidad' =>  ['required'],
+            '*.funcion' =>  ['required'],
+            '*.subfuncion' =>  ['required'],
             '*.pt' =>  ['required','string'],
             '*.ps' =>  ['required','string'],
             '*.sprconac' =>   ['required','string'],
             '*.prg' =>   ['required','string'],
-            '*.no_etiquetado_y_etiquetado' =>   ['required','string'],
+            '*.no_etiquetado_y_etiquetado' =>   ['required'],
             '*.spr' => ['required','string'],
             '*.py' =>   ['required','string'],
             '*.obra' =>  ['required',
             Rule::exists('proyectos_obra','clv_proyecto_obra')                                        
         ],
-            '*.idpartida' =>   ['required','string'],
+            '*.idpartida' =>   ['required'],
             '*.tipogasto' =>  ['required',
             Rule::exists('posicion_presupuestaria','clv_tipo_gasto')                                        
         ],

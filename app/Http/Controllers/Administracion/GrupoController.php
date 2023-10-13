@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administracion;
 
 use App\Http\Controllers\Controller;
+use Auth;
 use Illuminate\Http\Request;
 use App\Models\administracion\Grupo;
 use Illuminate\Support\Facades\DB;
@@ -54,6 +55,12 @@ class GrupoController extends Controller
         }else{
             Grupo::create(['nombre_grupo'=>$request->nombre]);
         }
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Creando grupos:'. $request->nombre,
+            "modulo" => 'Grupos'
+        );
+        Controller::bitacora($b);
     	return response()->json("done", 200);
     }
     //Actualiza Grupo
@@ -71,12 +78,24 @@ class GrupoController extends Controller
     public function postUpdate(Request $request){
         Controller::check_permission('putGrupos');
     	Grupo::find($request->id)->update(["nombre_grupo" => $request->nombre]);
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Modificando grupo:'. $request->nombre,
+            "modulo" => 'Grupos'
+        );
+        Controller::bitacora($b);
     	return response()->json("done", 200);
     }
     //Elimina Grupo Borrado Lógico
     public function postDelete(Request $request){
         Controller::check_permission('deleteGrupos');
     	Grupo::where('id', $request->id)->delete();
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Eliminando grupo:'. $request->id,
+            "modulo" => 'Grupos'
+        );
+        Controller::bitacora($b);
     	return response()->json("done", 200);
     }
 }

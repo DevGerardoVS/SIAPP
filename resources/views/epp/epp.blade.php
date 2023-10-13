@@ -39,6 +39,10 @@
                 <div>
                     <label for="estatus_filter" class="form-label fw-bold">AÑO:</label>
                 </div>
+        @endif
+        @if($perfil == 4)
+            <div class="col-md-10 col-sm-12 d-md-flex">
+        @endif
                 <div class="col-sm-12 col-md-3 col-lg-2">
                     <select onchange="actualizarTabla(false)" class="form-control filters filters_anio" id="filters_anio" name="estatus_filter" autocomplete="upp_filter">
                         <?php $i = 0; $len = count($anios); ?>
@@ -48,14 +52,12 @@
                     </select>
                 </div>
             </div>
-        @endif
 
         <form action="{{ route('get-epp', ['anio'=>'0000', 'upp'=>'000', 'ur'=>'00']) }}" id="buscarForm" method="post">
             @csrf
         </form>
-        <br>
        
-        <table id="catalogo" class="table table-striped table-bordered text-center " style="width:100%">
+        <table id="catalogo" class="table table-striped table-bordered text-center display" style="width:100%">
             <thead>
                 <tr class="colorMorado">
                     <th>{{__("messages.clasificacion_administrativa")}}</th>
@@ -79,68 +81,8 @@
     </div>
 
     @isset($dataSet)
-    @include('panels.datatable')
+    @include('panels.datatable_epp')
     @endisset
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
-    <script type="text/javascript">
-        //inicializamos el data table
-
-        $(document).ready(function() {
-            getData();
-
-            $("buscarForm").keypress(function(e) {
-                //Enter key
-                if (e.which == 13) {
-                    return false;
-                }
-            });
-        });
-
-        function actualizarTabla(updateUR){
-            var e = document.getElementById("filters_upp");
-            var upp = e.value;
-
-            var e = document.getElementById("filters_ur");
-            var ur = e.value;
-
-            var e = document.getElementById("filters_anio");
-            var anio = e.value;
-            
-            //RECARGAR TABLA
-            var opt = document.getElementById("buscarForm");
-            var largo = opt.action.length - 11;
-            var accion = opt.action.substring(0,largo)+anio+"/"+upp;
-            if(updateUR) actualizarListaUR(upp);
-
-            accion += "/" + ur;
-            opt.action = accion;
-            //console.log(accion);
-            getData();
-        }
-
-        function actualizarListaUR(clv_upp){
-            let select = document.getElementById("filters_ur");
-            let ejercicio = document.getElementById("filters_anio");
-            select.options.length = 1;
-
-            $.ajax({
-                url: "{{ route('get-ur') }}",
-                data: {upp: clv_upp, anio: ejercicio.value},
-                type:'POST',
-                dataType: 'json',
-                success: function(response) {
-                    listaur = response.listaUR;
-                    listaur.forEach((c) => {
-                        var ur = c.clv_ur + " - " + c.ur;
-                        var newOption = new Option(ur,c.clv_ur);
-                        select.add(newOption,undefined);
-                    });
-                },
-                error: function(response) {
-                    console.log('Error: ' + response);
-                }
-            });
-        }
-    </script>
-
+    <script src="/js/epp/utils.js"></script>
 @endsection
