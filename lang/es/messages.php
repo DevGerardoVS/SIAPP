@@ -51,6 +51,7 @@ return [
     'datos_propietario' => 'Datos del propietario',
     'delegacion' => 'Delegación',
     'descargar_cedula' => 'Descargar cédula',
+    'descargar_manual' => 'Descargar Manual',
     'descargar_plantilla' => 'Descargar plantilla .xlsx',
     'descargar_poliza' => 'Descargar póliza',
     //'descuentos' => 'Descuentos',
