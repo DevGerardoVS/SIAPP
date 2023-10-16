@@ -116,6 +116,9 @@ date_default_timezone_set('America/Mexico_City');
                                         <i class=" fa fa-user" aria-hidden="true"></i>&nbsp
                                         <b>{{ Auth::user()->username }}</b>
                                     </h5>
+                                    <a class="dropdown-item text-sm-left" href="{{ route('manual') }}">
+                                        <i class="fa fa-download" aria-hidden="true">&nbsp;</i>{{ __('Descargar Manual') }}
+                                    </a>
                                     <a class="dropdown-item text-sm-left" href="{{ route('cambiar_contrasenia') }}">
                                         <i class="fa fa-key" aria-hidden="true">&nbsp;</i>{{ __('Cambiar contraseña') }}
                                     </a>
