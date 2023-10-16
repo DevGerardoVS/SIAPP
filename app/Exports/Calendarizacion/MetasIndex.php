@@ -211,6 +211,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
         foreach ($data as $key) {
             $area = str_split($key->area_funcional);
             $entidad = str_split($key->entidad_ejecutora);
+            
             $i = array(
                 $area[0],
                 $area[1],
@@ -243,6 +244,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
                 '',
                 '',
                 '',
+
                 '',
                 '',
                 '',
