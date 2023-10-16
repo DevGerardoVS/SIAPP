@@ -208,20 +208,39 @@ class FunFormats
                                 }
                                 $s = FunFormats::validatecalendar($k[7], $k[16]);
                                 if ($s["status"]) {
-                                    $meses = [
-                                        "enero" => $k[18],
-                                        "febrero" => $k[19],
-                                        "marzo" => $k[20],
-                                        "abril" => $k[21],
-                                        "mayo" => $k[22],
-                                        "junio" => $k[23],
-                                        "julio" => $k[24],
-                                        "agosto" => $k[25],
-                                        "septiembre" => $k[26],
-                                        "octubre" => $k[27],
-                                        "noviembre" => $k[28],
-                                        "diciembre" => $k[29],
-                                    ];
+                                    if($k[10]!='UUU'){
+                                        $meses = [
+                                            "enero" => $k[18],
+                                            "febrero" => $k[19],
+                                            "marzo" => $k[20],
+                                            "abril" => $k[21],
+                                            "mayo" => $k[22],
+                                            "junio" => $k[23],
+                                            "julio" => $k[24],
+                                            "agosto" => $k[25],
+                                            "septiembre" => $k[26],
+                                            "octubre" => $k[27],
+                                            "noviembre" => $k[28],
+                                            "diciembre" => $k[29],
+                                        ];
+
+                                    }else{
+                                        $meses = [
+                                            "enero"=>2,
+                                            "febrero"=>2,
+                                            "marzo"=>2,
+                                            "abril"=>2,
+                                            "mayo"=>2,
+                                            "junio"=>2,
+                                            "julio"=>2,
+                                            "agosto"=>2,
+                                            "septiembre"=>2,
+                                            "octubre"=>2,
+                                            "noviembre"=>2,
+                                            "diciembre"=>3,
+                                        ];
+                                    }
+                               
                                     $mCeros = array_filter($meses, function ($var) {
                                         return $var != 0;
                                     });
@@ -345,34 +364,66 @@ class FunFormats
                                                                 'created_user' => auth::user()->username
                                                             ]);
                                                         }
-                       
-                                                        $aux[] = [
-                                                            'pp' => strval($k[11]),
-                                                            'upp' => strval($k[7]),
-                                                            'meta_id' => $e["id"],
-                                                            'clv_fondo' => $k[12],
-                                                            'actividad_id' => is_numeric($k[14]) ? NULL : $act->id,
-                                                            'mir_id' => is_numeric($k[13]) || strtolower($k[13]) == 'ot' ? NULL : $k[14],
-                                                            'tipo' => $s['a'],
-                                                            'beneficiario_id' => $k[30],
-                                                            'unidad_medida_id' => $k[33],
-                                                            'cantidad_beneficiarios' => $k[32],
-                                                            'enero' => $k[18],
-                                                            'febrero' => $k[19],
-                                                            'marzo' => $k[20],
-                                                            'abril' => $k[21],
-                                                            'mayo' => $k[22],
-                                                            'junio' => $k[23],
-                                                            'julio' => $k[24],
-                                                            'agosto' => $k[25],
-                                                            'septiembre' => $k[26],
-                                                            'octubre' => $k[27],
-                                                            'noviembre' => $k[28],
-                                                            'diciembre' => $k[29],
-                                                            'total' => $type,
-                                                            'ejercicio' => $anio,
-                                                            'created_user' => auth::user()->username
-                                                        ];
+                                                        if(strval($k[10])!='UUU'){
+                                                            $aux[] = [
+                                                                'pp' => strval($k[11]),
+                                                                'upp' => strval($k[7]),
+                                                                'meta_id' => $e["id"],
+                                                                'clv_fondo' => $k[12],
+                                                                'actividad_id' => is_numeric($k[14]) ? NULL : $act->id,
+                                                                'mir_id' => is_numeric($k[13]) || strtolower($k[13]) == 'ot' ? NULL : $k[14],
+                                                                'tipo' => $s['a'],
+                                                                'beneficiario_id' => $k[30],
+                                                                'unidad_medida_id' => $k[33],
+                                                                'cantidad_beneficiarios' => $k[32],
+                                                                'enero' => $k[18],
+                                                                'febrero' => $k[19],
+                                                                'marzo' => $k[20],
+                                                                'abril' => $k[21],
+                                                                'mayo' => $k[22],
+                                                                'junio' => $k[23],
+                                                                'julio' => $k[24],
+                                                                'agosto' => $k[25],
+                                                                'septiembre' => $k[26],
+                                                                'octubre' => $k[27],
+                                                                'noviembre' => $k[28],
+                                                                'diciembre' => $k[29],
+                                                                'total' => $type,
+                                                                'ejercicio' => $anio,
+                                                                'created_user' => auth::user()->username
+                                                            ];
+
+                                                        }else{
+                                                            $aux[] = [
+                                                                'pp' => strval($k[11]),
+                                                                'upp' => strval($k[7]),
+                                                                'meta_id' => $e["id"],
+                                                                'clv_fondo' => $k[12],
+                                                                'actividad_id' => is_numeric($k[14]) ? NULL : $act->id,
+                                                                'mir_id' => is_numeric($k[13]) || strtolower($k[13]) == 'ot' ? NULL : $k[14],
+                                                                'tipo' => $s['a'],
+                                                                'beneficiario_id' => $k[30],
+                                                                'unidad_medida_id' => $k[33],
+                                                                'cantidad_beneficiarios' => $k[32],
+                                                                'enero' => 2,
+                                                                'febrero' => 2,
+                                                                'marzo' => 2,
+                                                                'abril' => 2,
+                                                                'mayo' => 2,
+                                                                'junio' => 2,
+                                                                'julio' => 2,
+                                                                'agosto' => 2,
+                                                                'septiembre' => 2,
+                                                                'octubre' => 2,
+                                                                'noviembre' => 2,
+                                                                'diciembre' => 3,
+                                                                'total' => 25,
+                                                                'ejercicio' => $anio,
+                                                                'created_user' => auth::user()->username
+                                                            ];
+
+                                                        }
+
                                                     } else {
                                                         $error = array(
                                                             "icon" => 'error',
@@ -882,7 +933,6 @@ class FunFormats
                 ->where('metas.mir_id', null)
                 ->where('mml_actividades.deleted_at', null)
                 ->where('metas.deleted_at', null)->get();
-            Log::debug($metas);
 
         }
         if ($noMir == 'ot') {

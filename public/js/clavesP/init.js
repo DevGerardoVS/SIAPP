@@ -554,6 +554,8 @@ var dao = {
       $('#asignadoUpp').val(totalAsignado);
       $('#calendarizado').val(Totcalendarizado);
       $('#disponibleUpp').val(disponible);
+
+      // Asignacion de valores Operativos...
       if (response.recursosOperativos ) {
         let operativos = response.recursosOperativos;
         let presupuestoOperativo = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(operativos.presupuestoOperativo);
@@ -563,6 +565,8 @@ var dao = {
         $('#calendarizadoOperativo').val(operativoCalendarizado);
         $('#disponibleOperativo').val(operativoDisponible);
       }
+
+      // Asignacion de valores RH...
       if (response.recursosRH) {
         let RH = response.recursosRH;
         let presupuestoRH = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(RH.presupuestoRH);
@@ -572,11 +576,12 @@ var dao = {
         $('#calendarizadoRH').val(RHCalendarizado);
         $('#disponibleRH').val(RHDisponible);
       }
-
+      //Tipo de rol Upp...
       if (response.rol == 1) {
-        if (response.esAutorizado) {
-          $('#presupuestoDeRh').hide(true);
-        }
+        // ocultamos el dic contenedor del preuspuesto de RH para las upps
+        $('#presupuestoDeRh').hide(true);
+      
+        // Validaciones para la upp...
         if (response.estatus != null && response.estatus.estatus && response.estatus.estatus == 'Abierto') {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
@@ -596,8 +601,16 @@ var dao = {
             $('#btn_confirmar').hide(true);
             $('#button_modal_carga').hide(true);
         }
-      }if(response.rol == 0){
-        $('#presupuestoDeRh').show(true);
+      }
+      // Tipo de rol administrador...
+      if(response.rol == 0){
+        // Si la upp seleccionada en el filtro de upp es autorizada se muestran los recursos RH, de lo contrario se ocultaran...
+        if (response.esAutorizado) {
+          $('#presupuestoDeRh').show(true);  
+        }else{
+          $('#presupuestoDeRh').hide(true);
+        }
+        // Validaciones para administrador...
         if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
@@ -618,6 +631,7 @@ var dao = {
         }
         
       }
+      // Tipo de rol Delegacion...
       if (response.rol == 2) {
         $('#presupuestoDeRh').hide(true);
         $('#asignadoOperativo').val($('#asignadoRH').val());
@@ -646,8 +660,9 @@ var dao = {
         }
         
       }
+      // Tipo de rol auditor y gobDigital
       if (response.rol >= 3 ) {
-        $('#btnNuevaClave').hide(true);
+        $('#btnNuevaClave').hide(true); 
         $('#btn_confirmar').hide(true);
         $('#button_modal_carga_adm').hide(true);
         $('#button_modal_carga').hide(true);
