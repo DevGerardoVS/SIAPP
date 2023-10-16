@@ -98,14 +98,38 @@ class CalendarizacionCargaMasivaController extends Controller
 
                 //buscar en el array de upps 
                 $var= array_search($k['5'], $arrayupps);
-               if($k['16']=='UUU'){
-                $countR++;
+
+                switch($k['16']){
+                    case 'UUU':
+                        $countR++;
+                        //buscar en el array de totales 
+                         if(array_key_exists($k['5'].'CRH'.$k['24'], $arraypresupuesto) && $k['27']!='' && $k['5'].$k['24'] !=''){
     
-               }
-               else{
-                $countO++;
+                          $arraypresupuesto[$k['5'].'CRH'.$k['24']] =  $arraypresupuesto[$k['5'].'CRH'.$k['24']]+$k['27']; 
+                        }
+                        else{
+                            $arraypresupuesto[$k['5'].'CRH'.$k['24']] = $k['27']; 
+                            array_push($ejercicio,'20'.$k['20']);
+                        }
+                        break;
+                    case '':
+                        return redirect()->back()->withErrors(['error' => 'El Subprograma no puede ir vacio']);
+
+                    default:
+                    $countO++;
+                    //buscar en el array de totales 
+                    if(array_key_exists($k['5'].'COP'.$k['24'], $arraypresupuesto) && $k['27']!='' && $k['5'].$k['24'] !=''){
     
-               }
+                        $arraypresupuesto[$k['5'].'COP'.$k['24']] =  $arraypresupuesto[$k['5'].'COP'.$k['24']]+$k['27']; 
+                          
+                      }
+                      else{
+                        $arraypresupuesto[$k['5'].'COP'.$k['24']] = $k['27']; 
+                        array_push($ejercicio,'20'.$k['20']);
+                      }
+
+                }
+
                 if(strlen($k['20'])!==2){
                     return redirect()->back()->withErrors(['error' => 'El año debe ser a dos digitos']);
                 }
@@ -118,20 +142,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 ){
                     return redirect()->back()->withErrors(['error' => 'los campos de enero a diciembre deben ser numeros']);
                 }
-                //buscar en el array de totales 
-               if(array_key_exists($k['5'].$k['16'].$k['24'], $arraypresupuesto) && $k['27']!=''){
-    
-                $arraypresupuesto[$k['5'].$k['16'].$k['24']] =  $arraypresupuesto[$k['5'].$k['16'].$k['24']]+$k['27']; 
-    
-               }else{
-                if($k['27']!='' && $k['5'].$k['24'] !='' ){
-                    $arraypresupuesto[$k['5'].$k['16'].$k['24']] = $k['27']; 
-                    array_push($ejercicio,'20'.$k['20']);
-
-                }
-               }
-
-
+                       
                 //Se revisa el valor de var si es 0 significa que existe el key 0 en el array se usa el if para cambiar el valor para evitar que la condicion falle
                 if($var== 0){
                 $var=true;
@@ -145,14 +156,15 @@ class CalendarizacionCargaMasivaController extends Controller
              foreach($arraypresupuesto as $key=>$value){
               $arraysplit = str_split($key, 3);
               $tipoFondo='';
-               if($arraysplit[1]=='UUU'){
+               if($arraysplit[1]=='CRH'){
                 $tipoFondo='RH';
                }
                else{
                 $tipoFondo='Operativo';
                }
+
                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio[$helperejercicio])->count();
- 
+
 
                  $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio',$ejercicio[$helperejercicio])->where('tipo',$tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
 
@@ -285,14 +297,36 @@ class CalendarizacionCargaMasivaController extends Controller
 
                 $var= array_search($k['5'], $arrayupps);
                 
-               if($k['16']=='UUU'){
-                $countR++;
+                switch($k['16']){
+                    case 'UUU':
+                        $countR++;
+                        //buscar en el array de totales 
+                         if(array_key_exists($k['5'].'CRH'.$k['24'], $arraypresupuesto) && $k['27']!='' && $k['5'].$k['24'] !=''){
     
-               }
-               else{
-                $countO++;
+                          $arraypresupuesto[$k['5'].'CRH'.$k['24']] =  $arraypresupuesto[$k['5'].'CRH'.$k['24']]+$k['27']; 
+                        }
+                        else{
+                            $arraypresupuesto[$k['5'].'CRH'.$k['24']] = $k['27']; 
+                            array_push($ejercicio,'20'.$k['20']);
+                        }
+                        break;
+                    case '':
+                        return redirect()->back()->withErrors(['error' => 'El Subprograma no puede ir vacio']);
+
+                    default:
+                    $countO++;
+                    //buscar en el array de totales 
+                    if(array_key_exists($k['5'].'COP'.$k['24'], $arraypresupuesto) && $k['27']!='' && $k['5'].$k['24'] !=''){
     
-               }
+                        $arraypresupuesto[$k['5'].'COP'.$k['24']] =  $arraypresupuesto[$k['5'].'COP'.$k['24']]+$k['27']; 
+                          
+                      }
+                      else{
+                        $arraypresupuesto[$k['5'].'COP'.$k['24']] = $k['27']; 
+                        array_push($ejercicio,'20'.$k['20']);
+                      }
+
+                }
                 if($k['5']!=$uppUsuario){
                     $DiferenteUpp++;  
                 }
@@ -313,19 +347,6 @@ class CalendarizacionCargaMasivaController extends Controller
                     return redirect()->back()->withErrors(['error' => 'los campos de enero a diciembre deben ser numeros']);
                 }
 
-                //buscar en el array de totales 
-               if(array_key_exists($k['5'].$k['16'].$k['24'], $arraypresupuesto) && $k['27']!=''){
-    
-                $arraypresupuesto[$k['5'].$k['16'].$k['24']] =  $arraypresupuesto[$k['5'].$k['16'].$k['24']]+$k['27']; 
-    
-               }else{
-                if($k['27']!='' && $k['5'].$k['24'] !='' ){
-                    $arraypresupuesto[$k['5'].$k['16'].$k['24']] = $k['27']; 
-                    array_push($ejercicio,'20'.$k['20']);
-                    
-                }
-               }
-    
                 //Se revisa el valor de var si es 0 significa que existe el key 0 en el array se usa el if para cambiar el valor para evitar que la condicion falle
                 if($var=== 0){
                 $var=true;
@@ -338,12 +359,13 @@ class CalendarizacionCargaMasivaController extends Controller
              foreach($arraypresupuesto as $key=>$value){
               $arraysplit = str_split($key, 3);
               $tipoFondo='';
-               if($arraysplit[1]=='UUU'){
+              if($arraysplit[1]=='CRH'){
                 $tipoFondo='RH';
                }
                else{
                 $tipoFondo='Operativo';
                }
+
 
                  $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus','Abierto')->where('ejercicio',$ejercicio[$helperejercicio])->count();
                 

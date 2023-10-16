@@ -21,7 +21,91 @@ return new class extends Migration {
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
 
-            set @query := CONCAT('
+            set @query := CONCAT(\"
+            select 
+                case 
+                    when clv_ur != '' then ''
+                    else clv_upp
+                end clv_upp,
+                case 
+                    when clv_ur != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when clv_programa != '' then ''
+                    else clv_ur
+                end clv_ur,
+                case 
+                    when clv_programa != '' then ''
+                    else ur
+                end ur,
+                case 
+                    when clv_subprograma != '' then ''
+                    else clv_programa
+                end clv_programa,
+                case 
+                    when clv_subprograma != '' then ''
+                    else programa
+                end programa,
+                case 
+                    when clv_partida != '' then ''
+                    else clv_subprograma
+                end clv_subprograma,
+                case 
+                    when clv_partida != '' then ''
+                    else subprograma
+                end subprograma,
+                clv_partida,
+                partida_especifica,
+                importe
+            from (
+                select 
+                    va.clv_upp,va.upp,
+                    '' clv_ur,'' ur,
+                    '' clv_programa, ''programa,
+                    '' clv_subprograma,'' subprograma,
+                    '' clv_partida, '' partida_especifica,
+                    sum(va.total) importe
+                from \",@tabla,\" va
+                where va.ejercicio = \",anio,\" and \",@corte,\"
+                group by va.clv_upp,va.upp
+                union all
+                select 
+                    va.clv_upp,va.upp,
+                    va.clv_ur,va.ur,
+                    '' clv_programa, ''programa,
+                    '' clv_subprograma,'' subprograma,
+                    '' clv_partida, '' partida_especifica,
+                    sum(va.total) importe
+                from \",@tabla,\" va
+                where va.ejercicio = \",anio,\" and \",@corte,\"
+                group by va.clv_upp,va.upp,va.clv_ur,va.ur
+                union all
+                select 
+                    va.clv_upp,va.upp,
+                    va.clv_ur,va.ur,
+                    va.clv_programa,va.programa,
+                    '' clv_subprograma,'' subprograma,
+                    '' clv_partida, '' partida_especifica,
+                    sum(va.total) importe
+                from \",@tabla,\" va
+                where va.ejercicio = \",anio,\" and \",@corte,\"
+                group by va.clv_upp,va.upp,va.clv_ur,va.ur,
+                    va.clv_programa,va.programa
+                union all
+                select 
+                    va.clv_upp,va.upp,
+                    va.clv_ur,va.ur,
+                    va.clv_programa,va.programa,
+                    va.clv_subprograma,va.subprograma,
+                    '' clv_partida, 
+                    '' partida_especifica,
+                    sum(va.total) importe
+                from \",@tabla,\" va
+                where va.ejercicio = \",anio,\" and \",@corte,\"
+                group by va.clv_upp,va.upp,va.clv_ur,va.ur,
+                    va.clv_programa,va.programa,va.clv_subprograma,va.subprograma
+                union all
                 select 
                     va.clv_upp,va.upp,
                     va.clv_ur,va.ur,
@@ -34,27 +118,15 @@ return new class extends Migration {
                         va.clv_partida_especifica
                     ) as clv_partida, va.partida_especifica,
                     sum(va.total) importe
-                from ',@tabla,' va
-                where va.ejercicio = ',anio,' and ',@corte,'
-                group by 
-                    va.clv_upp,va.upp,
-                    va.clv_ur,va.ur,
-                    va.clv_programa,va.programa,
-                    va.clv_subprograma,va.subprograma,
-                    va.clv_capitulo,
-                    va.clv_concepto,
-                    va.clv_partida_generica,
-                    va.clv_partida_especifica,
-                    va.clv_tipo_gasto,
-                    va.partida_especifica
-                union all
-				select 
-					clv_upp
-					,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",
-					sum(total) importe
-				from ',@tabla,' where ejercicio = ',anio,' and ',@corte,' group by clv_upp
-				order by clv_upp,clv_ur,clv_programa,clv_subprograma,clv_partida;
-            ');
+                from \",@tabla,\" va
+                where va.ejercicio = \",anio,\" and \",@corte,\"
+                group by va.clv_upp,va.upp,va.clv_ur,va.ur,
+                    va.clv_programa,va.programa,va.clv_subprograma,va.subprograma,
+                    va.clv_capitulo,va.clv_concepto,va.clv_partida_generica,
+                    va.clv_partida_especifica,va.clv_tipo_gasto,va.partida_especifica
+                order by clv_upp,clv_ur,clv_programa,clv_subprograma,clv_partida
+            )t;
+            \");
 
             prepare stmt  from @query;
             execute stmt;
@@ -166,7 +238,7 @@ return new class extends Migration {
                     0 importe
                 union all
                 select
-                    \"Entidades Paraestatales Empresariales No Financieras cpn Participaciones Estatal Mayoritaria\" concepto,
+                    \"Entidades Paraestatales Empresariales No Financieras con Participaciones Estatal Mayoritaria\" concepto,
                     0 importe
                 union all
                 select
@@ -200,37 +272,51 @@ return new class extends Migration {
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
 
-            set @query := CONCAT('
-                select 
-                    case 
-                        when funcion != \"\" then \"\"
-                        else finalidad
-                    end finalidad,
-                    funcion,
-                    importe
-                from (
-                    select 
-                       	pa.clv_finalidad,
-						pa.finalidad,
-						\"\" clv_funcion,
-						\"\" funcion,
-						sum(total) importe
-                    from ',@tabla,' pa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_finalidad,finalidad
-                    union all 
-                    select 
-                        pa.clv_finalidad,
-						pa.finalidad,
-						pa.clv_funcion,
-						pa.funcion,
-						sum(total) importe
-                    from ',@tabla,' pa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by pa.clv_finalidad,pa.finalidad,pa.clv_funcion,pa.funcion
-					order by clv_finalidad,clv_funcion
-                ) tabla;
-            ');
+            set @query := CONCAT(\"
+			select 
+				case 
+					when funcion != '' then ''
+					else finalidad
+				end finalidad,
+				funcion,
+				importe
+			from (
+				select 
+					ff.clv_finalidad,
+					ff.finalidad,
+					'' clv_funcion,
+					'' funcion,
+					sum(pa.total) importe
+				from (
+					select distinct 
+						clv_finalidad,
+						finalidad
+					from v_epp ve where ejercicio = \",anio,\" and deleted_at is null
+				) ff
+				left join \",@tabla,\" pa on ff.clv_finalidad = pa.clv_finalidad 
+				and pa.ejercicio = \",anio,\" and \",@corte,\"
+				group by ff.clv_finalidad,ff.finalidad
+				union all
+				select 
+					ff.clv_finalidad,
+					ff.finalidad,
+					ff.clv_funcion,
+					ff.funcion,
+					sum(pa.total) importe
+				from (
+					select distinct
+						ve.clv_finalidad,
+						ve.finalidad,
+						ve.clv_funcion,
+						ve.funcion
+					from v_epp ve where ejercicio = \",anio,\" and deleted_at is null
+				) ff
+				left join \",@tabla,\" pa on ff.clv_funcion = pa.clv_funcion
+					and ff.funcion = pa.funcion and pa.ejercicio = \",anio,\" and \",@corte,\"
+				group by ff.clv_finalidad,ff.finalidad,ff.clv_funcion,ff.funcion
+				order by clv_finalidad,clv_funcion
+			)t;
+            \");
 
             prepare stmt  from @query;
             execute stmt;
@@ -247,62 +333,69 @@ return new class extends Migration {
             end if;
 
             set @query := CONCAT(\"
+            select 
+                abuelo,
+                padre,
+                hijo,
+                case 
+                    when importe is null then 0
+                    else importe
+                end importe
+            from (
                 select 
-                    abuelo,
+                    'Programa' abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc 
+                left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                    and pa.ejercicio = \",anio,\" and \",@corte,\"
+                where tc.clave_conac is not null and tc.deleted_at is null
+                union all
+                select 
+                    '' abuelo,
                     case 
                         when hijo != '' then ''
                         else padre
                     end padre,
                     hijo,
-                    case
-                        when importe is null then 0
-                        else importe
-                    end importe
+                    importe
                 from (
-                    select
-                        0 id,
-                        'Programas' abuelo,
-                        '' padre,
-                        '' hijo,
-                        sum(total) importe
-                    from \",@tabla,\"
-                    where pa.clv_tipologia_conac in (select clave_conac from tipologia_conac tc where deleted_at is null)
-                    and \",@corte,\" and pa.ejercicio = \",anio,\"
-                    union all
                     select 
-                        min(tc.id) id,
-                        '' abuelo,
+                        min(tc.id) orden,
                         tc.descripcion padre,
                         '' hijo,
                         sum(pa.total) importe
-                    from tipologia_conac tc
-                    join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                    where pa.ejercicio = \",anio,\" and tc.deleted_at is null and \",@corte,\"
+                    from tipologia_conac tc 
+                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                        and pa.ejercicio = \",anio,\" and \",@corte,\"
+                    where tc.clave_conac is not null and tc.deleted_at is null
                     group by tc.descripcion
                     union all
                     select 
-                        tc.id,
-                        '' abuelo,
+                        min(tc.id) orden,
                         tc.descripcion padre,
                         tc.descripcion_conac hijo,
                         sum(pa.total) importe
                     from tipologia_conac tc 
-                    join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                    where pa.ejercicio = \",anio,\" and tc.deleted_at is null and \",@corte,\"
-                    group by tc.descripcion,tc.descripcion_conac,tc.id
-                    union all 
-                    select 
-                        min(tc.id) id,
-                        tc.descripcion abuelo,
-                        '' padre,
-                        '' hijo,
-                        sum(pa.total) importe
-                    from tipologia_conac tc 
-                    left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac and \",@corte,\" and pa.ejercicio = \",anio,\"
-                    where tc.deleted_at is null and tc.tipo = 1
-                    group by tc.descripcion
-                    order by id
-                )t;
+                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                        and pa.ejercicio = \",anio,\" and \",@corte,\"
+                    where tc.clave_conac is not null and tc.deleted_at is null
+                    group by tc.descripcion,tc.descripcion_conac
+                    order by orden,padre,hijo
+                )t
+                union all 
+                select 
+                    tc.descripcion abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc
+                left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac
+                    and pa.ejercicio = \",anio,\" and \",@corte,\"
+                where tc.tipo = 1 and tc.deleted_at is null
+                group by tc.descripcion
+            )t2;
             \");
 
             prepare stmt  from @query;
@@ -332,7 +425,9 @@ return new class extends Migration {
                     octubre,noviembre,diciembre
                 from (
                 select 
+					vppa.clv_capitulo,
                     vppa.capitulo,
+					\"\" clv_partida_generica,
                     \"\" partida_generica,
                     sum(total) total,
                     sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
@@ -340,10 +435,12 @@ return new class extends Migration {
                     sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
                 from ',@tabla,' vppa
                 where ejercicio = ',anio,' and ',@corte,'
-                group by capitulo
+                group by clv_capitulo,capitulo
                 union all
                 select 
+					vppa.clv_capitulo,
                     vppa.capitulo,
+					vppa.clv_partida_generica,
                     vppa.partida_generica,
                     sum(total) total,
                     sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
@@ -351,8 +448,8 @@ return new class extends Migration {
                     sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
                 from ',@tabla,' vppa
                 where ejercicio = ',anio,' and ejercicio = ',anio,' and ',@corte,'
-                group by capitulo,partida_generica
-                order by capitulo,partida_generica
+                group by clv_capitulo,capitulo,clv_partida_generica,partida_generica
+                order by clv_capitulo,clv_partida_generica
                 ) tabla;
             ');
 
@@ -1601,100 +1698,148 @@ return new class extends Migration {
             end if;
 
             set @query := CONCAT(\"
+            select 
+                etiquetado,
+                abuelo,
+                padre,
+                hijo,
+                case 
+                    when importe is null then 0
+                    else importe
+                end importe
+            from (
                 select 
-                    case 
-                        when abuelo != '' then ''
-                        when etiquetado = \'Etiquetado\' then \'Gasto Etiquetado\'
-                        else \'Gasto No Etiquetado\'
-                    end etiquetado,
-                    case 
-                        when padre != '' then ''
-                        else abuelo
-                    end abuelo,
+                    'Gasto No Etiquetado' etiquetado,
+                    '' abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from \",@tabla,\"
+                where ejercicio = \",anio,\" and deleted_at is null and clv_etiquetado = 1
+                union all
+                select 
+                    '' etiquetado,
+                    'Programa' abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc 
+                left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                    and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 1
+                where tc.clave_conac is not null and tc.deleted_at is null
+                union all
+                select 
+                    '' etiquetado,
+                    '' abuelo,
                     case 
                         when hijo != '' then ''
                         else padre
                     end padre,
                     hijo,
-                    case 
-                        when importe is null then 0
-                        else importe
-                    end importe
+                    importe
                 from (
-                    select
-                        etiquetado,
-                        '' abuelo,
-                        -2 orden,
-                        '' padre,
-                        '' hijo,
-                        sum(total) importe
-                    from \",@tabla,\"
-                    where ejercicio = \",anio,\" and \",@corte,\"
-                    group by etiquetado
-                    union all
                     select 
-                        pa.etiquetado,
-                        'Programas' abuelo,
-                        -1 orden,
-                        '' padre,
-                        '' hijo,
-                        sum(total) importe
-                    from tipologia_conac tc
-                    join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                    where ejercicio = \",anio,\" and \",@corte,\" and tc.deleted_at is null
-                    group by etiquetado
-                    union all 
-                    select 
-                        pa.etiquetado,
-                        'Programas' abuelo,
                         min(tc.id) orden,
                         tc.descripcion padre,
                         '' hijo,
-                        sum(total) importe
-                    from tipologia_conac tc
-                    join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                    where ejercicio = \",anio,\" and \",@corte,\" and tc.deleted_at is null
-                    group by etiquetado,padre
+                        sum(pa.total) importe
+                    from tipologia_conac tc 
+                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                        and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 1
+                    where tc.clave_conac is not null and tc.deleted_at is null
+                    group by tc.descripcion
                     union all
                     select 
-                        pa.etiquetado,
-                        'Programas' abuelo,
                         min(tc.id) orden,
                         tc.descripcion padre,
                         tc.descripcion_conac hijo,
-                        sum(total) importe
+                        sum(pa.total) importe
                     from tipologia_conac tc 
-                    join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                    where  pa.ejercicio = \",anio,\" and \",@corte,\" and pa.deleted_at is null
-                    group by etiquetado,padre,hijo
-                    union all 
-                    select 
-                        'No etiquetado' etiquetado,
-                        tc.descripcion abuelo,
-                        min(tc.id) orden,
-                        '' padre,
-                        '' hijo,
-                        sum(total) importe
-                    from tipologia_conac tc
-                    left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac
+                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                        and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 1
+                    where tc.clave_conac is not null and tc.deleted_at is null
+                    group by tc.descripcion,tc.descripcion_conac
+                    order by orden,padre,hijo
+                )t
+                union all 
+                select 
+                    '' etiquetado,
+                    tc.descripcion abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc
+                left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac
                     and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 1
-                    where tc.deleted_at is null and tc.tipo = 1
-                    group by abuelo
-                    union all 
+                where tc.tipo = 1 and tc.deleted_at is null 
+                group by tc.descripcion
+                union all
                     select 
-                        'Etiquetado' etiquetado,
-                        tc.descripcion abuelo,
-                        min(tc.id) orden,
-                        '' padre,
-                        '' hijo,
-                        sum(total) importe
-                    from tipologia_conac tc
-                    left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac
+                    'Gasto Etiquetado' etiquetado,
+                    '' abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from \",@tabla,\"
+                where ejercicio = \",anio,\" and deleted_at is null and clv_etiquetado = 2
+                union all
+                select 
+                    '' etiquetado,
+                    'Programa' abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc 
+                left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
                     and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 2
-                    where tc.deleted_at is null and tc.tipo = 1
-                    group by abuelo
-                    order by etiquetado desc,orden,padre,hijo
-                )t;
+                where tc.clave_conac is not null and tc.deleted_at is null
+                union all
+                select 
+                    '' etiquetado,
+                    '' abuelo,
+                    case 
+                        when hijo != '' then ''
+                        else padre
+                    end padre,
+                    hijo,
+                    importe
+                from (
+                    select 
+                        min(tc.id) orden,
+                        tc.descripcion padre,
+                        '' hijo,
+                        sum(pa.total) importe
+                    from tipologia_conac tc 
+                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                        and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 2
+                    where tc.clave_conac is not null and tc.deleted_at is null
+                    group by tc.descripcion
+                    union all
+                    select 
+                        min(tc.id) orden,
+                        tc.descripcion padre,
+                        tc.descripcion_conac hijo,
+                        sum(pa.total) importe
+                    from tipologia_conac tc 
+                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
+                        and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 2
+                    where tc.clave_conac is not null and tc.deleted_at is null
+                    group by tc.descripcion,tc.descripcion_conac
+                    order by orden,padre,hijo
+                )t
+                union all 
+                select 
+                    '' etiquetado,
+                    tc.descripcion abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(total) importe
+                from tipologia_conac tc
+                left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac
+                    and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 2
+                where tc.tipo = 1 and tc.deleted_at is null
+                group by tc.descripcion
+            )t2;
             \");
 
             prepare stmt  from @query;
@@ -3255,63 +3400,85 @@ return new class extends Migration {
            		set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
            	end if;
         
-            set @query := CONCAT(\"select 
-				case 
-					when nivel = 9 then clv_upp
-					else ''
-				end clv_upp,
-				case 
-					when nivel = 9 then clv_pp
-					else ''
-				end clv_pp,
-				case 
-					when nivel = 9 then clv_ur
-					else ''
-				end clv_ur,
-				case 
-					when nivel != 9 then area_funcional
-					else ''
-				end area_funcional,
-				case 
-					when nivel != 9 then proyecto
-					else ''
-				end nombre_proyecto,
-				case 
-					when nivel = 10 then 'Componente'
-					when nivel = 11 then 'Actividad'
-					else ''
-				end nivel,
-				objetivo,
-				indicador
-			from (
-				select 
-					mm.clv_upp,
-					mm.clv_pp,
-					mm.clv_ur,
-					mm.area_funcional,
-					ve.proyecto,
-					mm.nivel,
-					mm.objetivo,
-					mm.indicador
-				from mml_mir mm
-				join v_epp ve on ve.id = mm.id_epp
-				where mm.ejercicio = \",anio,\" and mm.deleted_at is null
-				and nivel in (10,11) \",@upp,\" \",@ur,\" \",@programa,\"
-				union all
-				select distinct
-					ve.clv_upp,
-					ve.clv_programa clv_pp,
-					ve.clv_ur,
-					'' area_funcional,
-					'' proyecto,
-					9 nivel,
-					'' objetivo,
-					'' indicador
-				from v_epp ve
-				where ejercicio = \",anio,\" and deleted_at is null \",@upp2,\" \",@ur2,\" \",@programa2,\"
-				group by clv_upp,clv_pp,clv_ur,nivel
-				order by clv_upp,clv_pp,clv_ur,nivel
-			)t;\");
+            set @query := concat(\"
+                SELECT
+                    case 
+                        when nivel = 9 then clv_upp
+                        else ''
+                    end clv_upp,
+                    case 
+                        when nivel = 9 then clv_pp
+                        else ''
+                    end clv_pp,
+                    case 
+                        when nivel = 9 then clv_ur
+                        else ''
+                    end clv_ur,
+                    case 
+                        when nivel != 9 then area_funcional
+                        else ''
+                    end area_funcional,
+                    case 
+                        when nivel != 9 then proyecto
+                        else ''
+                    end nombre_proyecto,
+                    case 
+                        when nivel = 10 then 'Componente'
+                        when nivel = 11 then 'Actividad'
+                        else ''
+                    end nivel,
+                    objetivo,
+                    indicador 
+                FROM (
+                    SELECT *
+                    FROM (
+                        SELECT 
+                            mm.id,
+                            mm.clv_upp,
+                            mm.clv_pp,
+                            mm.clv_ur,
+                            mm.area_funcional,
+                            ve.proyecto,
+                            mm.nivel,
+                            mm.objetivo,
+                            mm.indicador
+                        from mml_mir mm
+                        join v_epp ve on ve.id = mm.id_epp
+                        where mm.ejercicio = \",anio,\" and mm.deleted_at is null
+                        and nivel in (10) \",@upp,\" \",@ur,\" \",@programa,\"
+                        UNION ALL 
+                        SELECT 
+                            mm.componente_padre id,
+                            mm.clv_upp,
+                            mm.clv_pp,
+                            mm.clv_ur,
+                            mm.area_funcional,
+                            ve.proyecto,
+                            mm.nivel,
+                            mm.objetivo,
+                            mm.indicador
+                        from mml_mir mm
+                        join v_epp ve on ve.id = mm.id_epp
+                        where mm.ejercicio = \",anio,\" and mm.deleted_at is null
+                        and nivel IN (11) \",@upp,\" \",@ur,\" \",@programa,\"
+                        UNION ALL 
+                        select distinct
+                            0 id,
+                            ve.clv_upp,
+                            ve.clv_programa clv_pp,
+                            ve.clv_ur,
+                            '' area_funcional,
+                            '' proyecto,
+                            9 nivel,
+                            '' objetivo,
+                            '' indicador
+                        from v_epp ve
+                        where ejercicio = \",anio,\" and deleted_at is NULL \",@upp2,\" \",@ur2,\" \",@programa2,\"
+                    )t 
+                    GROUP BY clv_upp,clv_pp,clv_ur,id,nivel
+                    ORDER BY clv_upp,clv_pp,clv_ur,id,nivel
+                )t2;
+            \");
         
             prepare stmt  from @query;
             execute stmt;
