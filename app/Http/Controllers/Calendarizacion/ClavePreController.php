@@ -160,6 +160,7 @@ class ClavePreController extends Controller
 
         try {
             $perfil = Auth::user()->id_grupo;
+            $tipo = '';
             $esEjercicioCerrado = ClavesHelper::validaEjercicio( $request->ejercicio,$request->data[0]['upp']);
             if ($esEjercicioCerrado && $perfil != 1) {
                 return response()->json('invalid',200);
@@ -176,7 +177,7 @@ class ClavePreController extends Controller
             ->WHERE('clv_upp', '=', $request->data[0]['upp'])
             ->WHERE('clv_fondo', '=', $request->data[0]['fondoRamo'])
             ->WHERE('ejercicio', '=', $request->ejercicio)
-            ->WHERE('tipo', '=', $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH' )
+            // ->WHERE('tipo', '=', $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH' )
             ->WHERE('deleted_at', '=', null)
             ->first();
             $presupuestoAsignado = DB::table('programacion_presupuesto')
@@ -184,7 +185,7 @@ class ClavePreController extends Controller
             ->WHERE ('upp', '=', $request->data[0]['upp'])
             ->WHERE('fondo_ramo', '=', $request->data[0]['fondoRamo'])
             ->WHERE('ejercicio', '=', $request->ejercicio)
-            ->WHERE('tipo', '=', $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH' )
+            // ->WHERE('tipo', '=', $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH' )
             ->WHERE('deleted_at', '=', null)
             ->first();
             if ($presupuestoUpp && $presupuestoUpp != '') {
@@ -196,6 +197,12 @@ class ClavePreController extends Controller
             }
             if ( $request->data[0]['total'] <= $disponible ) {
                 $hasMetas = ClavesHelper::tieneMetas($request,1);
+                $esAutorizada = ClavesHelper::esAutorizada($request->data[0]['upp']);
+                if (!$esAutorizada) {
+                    $tipo = 'Operativo';
+                }else {
+                    $tipo = $request->data[0]['subPrograma'] != 'UUU'  ? 'Operativo' : 'RH';
+                }
 
                 $nuevaClave = ProgramacionPresupuesto::create([
                     'clasificacion_administrativa' => $request->data[0]['clasificacionAdministrativa'],
@@ -241,7 +248,7 @@ class ClavePreController extends Controller
                     'diciembre' => $request->data[0]['diciembre'] ? $request->data[0]['diciembre'] : 0,  
                     'total' => $request->data[0]['total'],   
                     'estado' => 0,    
-                    'tipo' => $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH',    
+                    'tipo' => $tipo,   
                     'created_user' => Auth::user()->username, 
                 ]);
                 $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
@@ -493,12 +500,19 @@ class ClavePreController extends Controller
     public function getFondos($id,$subP,$ejercicio = 0){
         $array_where = [];
         $anio = '';
+        $tipo = '';
         if ($ejercicio && $ejercicio > 0) {
             $anio = $ejercicio;
         }else {
             $anio = date('Y');
         }
-            array_push($array_where, ['tipo', '=', $subP != 'UUU' ? 'Operativo' : 'RH']);
+        $esAutorizada = ClavesHelper::esAutorizada($id);
+                if (!$esAutorizada) {
+                    $tipo = 'Operativo';
+                }else {
+                    $tipo = $subP != 'UUU'  ? 'Operativo' : 'RH';
+                }
+            array_push($array_where, ['tipo', '=', $tipo]);
             array_push($array_where, ['techos_financieros.clv_upp', '=', $id]);
             array_push($array_where, ['techos_financieros.ejercicio', '=', $anio]);
             array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
@@ -529,7 +543,7 @@ class ClavePreController extends Controller
         ->WHERE('clv_upp', '=', $upp)
         ->WHERE('clv_fondo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
-        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
         $presupuestoAsignado = DB::table('programacion_presupuesto')
@@ -537,7 +551,7 @@ class ClavePreController extends Controller
         ->WHERE ('upp', '=', $upp)
         ->WHERE('fondo_ramo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
-        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
         if ($presupuestoUpp && $presupuestoUpp != '') {
@@ -562,7 +576,7 @@ class ClavePreController extends Controller
         ->WHERE('clv_upp', '=', $upp)
         ->WHERE('clv_fondo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
-        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
         $presupuestoAsignado = DB::table('programacion_presupuesto')
@@ -570,7 +584,7 @@ class ClavePreController extends Controller
         ->WHERE ('upp', '=', $upp)
         ->WHERE('fondo_ramo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
-        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
         $asignado = DB::table('programacion_presupuesto')
@@ -578,7 +592,7 @@ class ClavePreController extends Controller
         ->WHERE ('upp', '=', $upp)
         ->WHERE('fondo_ramo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
-        ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->WHERE('id',$id)
         ->first();
@@ -625,7 +639,7 @@ class ClavePreController extends Controller
                 $rol = 2;
                 break;
             default:
-                // rolauditor y gobDigital
+                // rol auditor y gobDigital
                 $rol = 3;
                 break;
         }
@@ -721,6 +735,7 @@ class ClavePreController extends Controller
             'recursosOperativos'=>$recursosOperativos,
             'recursosRH'=>$recursosRH,
             'esAutorizado'=>$autorizado,
+            'upp'=>$upp,
         ];
         return response()->json($response,200);
     }
