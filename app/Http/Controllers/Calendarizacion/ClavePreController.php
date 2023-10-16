@@ -735,6 +735,7 @@ class ClavePreController extends Controller
             'recursosOperativos'=>$recursosOperativos,
             'recursosRH'=>$recursosRH,
             'esAutorizado'=>$autorizado,
+            'upp'=>$upp,
         ];
         return response()->json($response,200);
     }
