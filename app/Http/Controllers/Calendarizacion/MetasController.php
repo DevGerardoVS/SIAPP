@@ -880,8 +880,10 @@ class MetasController extends Controller
 		$report = '';
 		if ($request['tipo'] == 0) {
 			$report = "reporte_calendario_upp_autografa";
+			$file = public_path() . "/reportes/reporte_calendario_upp_autografa.pdf";
 		} else {
 			$report = "Reporte_Calendario_UPP";
+			$file = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
 		}
 		$ruta = public_path() . "/reportes";
 		//Eliminación si ya existe reporte
@@ -897,12 +899,10 @@ class MetasController extends Controller
 			"anio" => $request['anio'],
 			"logoLeft" => $request['logoLeft'],
 			"logoRight" => $request['logoRight'],
-			"UPP" => $request['UPP'],
+			"upp" => $request['UPP'],
 		];
 
 		$database_connection = \Config::get('database.connections.mysql');
-		$file = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
-
 
 		$jasper = new PHPJasper;
 		$jasper->process(
@@ -920,7 +920,7 @@ class MetasController extends Controller
 		if ($request['tipo'] == 0) {
 			return response()->download($file, $report . ".pdf", [
 				'Content-Type' => 'application/pdf'
-			]);
+			])->deleteFileAfterSend();
 		}
 		if ($reportePDF != '') {
 			return response()->json('done', 200);
@@ -1140,6 +1140,9 @@ class MetasController extends Controller
 				if ($response && $response[0]['pdfFirmado']) {
 					$file = $response[0]['pdfFirmado'];
 					$response = ['estatus' => 'done', 'data' => $file];
+					if(File::exists($ruta)) {
+                        File::delete($ruta);
+                    }
 					return $response;
 				} else {
 					$responseError = ['estatus' => 'error', 'data' => $response];
@@ -1221,8 +1224,10 @@ class MetasController extends Controller
 		$report = '';
 		if ($tipo == 0) {
 			$report = "proyecto_calendario_actividades_autografa";
+			$file = public_path() . "/reportes/proyecto_calendario_actividades_autografa.pdf";
 		} else {
 			$report = "proyecto_calendario_actividades";
+			$file = public_path() . "/reportes/proyecto_calendario_actividades.pdf";
 		}
 
 		$ruta = public_path() . "/reportes";
@@ -1240,7 +1245,8 @@ class MetasController extends Controller
 			"logoRight" => public_path() . '\img\escudoBN.png',
 			"upp" => $upp,
 		);
-		$file = public_path() . "/reportes/proyecto_calendario_actividades.pdf";
+		if($tipo != 0) $parameters["extension"] = "pdf";
+		
 		$database_connection = \Config::get('database.connections.mysql');
 
 
@@ -1260,7 +1266,7 @@ class MetasController extends Controller
 		if ($tipo == 0) {
 			return response()->download($file, $report . ".pdf", [
 				'Content-Type' => 'application/pdf'
-			]);
+			])->deleteFileAfterSend();
 		} else {
 			if ($reportePDF != '') {
 				return response()->json('done', 200);
