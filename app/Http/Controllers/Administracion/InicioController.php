@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+
+use Illuminate\Support\Facades\Storage;
 use PDF;
 use App\Exports\InicioExport;
 
@@ -91,6 +93,13 @@ class InicioController extends Controller
         }
     }
 
+    public function getManual(){
+        $file= public_path(). "\CAP_Manual_de_Usuario_UPP.pdf";
+        //Log::channel('daily')->debug('exp '.public_path());
+        $headers = array('Content-Type: application/pdf',);
+
+        return response()->download($file,'CAP_Manual_de_Usuario_UPP.pdf',$headers);
+    }
     
     public function getFondos(){
         $fondos = DB::table("techos_financieros as tf")

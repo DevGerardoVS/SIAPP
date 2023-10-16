@@ -605,10 +605,16 @@ var dao = {
       // Tipo de rol administrador...
       if(response.rol == 0){
         // Si la upp seleccionada en el filtro de upp es autorizada se muestran los recursos RH, de lo contrario se ocultaran...
+        $('#presupuestoDeRh').show(true); 
         if (response.esAutorizado) {
-          $('#presupuestoDeRh').show(true);  
+          $('#presupuestoDeRh').show(true);
         }else{
-          $('#presupuestoDeRh').hide(true);
+          if (response.upp != '') {
+            $('#presupuestoDeRh').hide(true);  
+          }else{
+            $('#presupuestoDeRh').show(true);
+          }
+          
         }
         // Validaciones para administrador...
         if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
