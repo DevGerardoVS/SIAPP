@@ -929,10 +929,12 @@ class ClavePreController extends Controller
         array_push($array_where, ['programacion_presupuesto.deleted_at', '=', null]);
         array_push($array_where, ['programacion_presupuesto.ejercicio', '=', $request->ejercicio]);
         try {
-            $ejer = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE('cierre_ejercicio_claves.estatus','=','Abierto')->where('clv_upp','=' , $request->upp ? $request->upp : $uppUsuario)->first();
-            $ejercicio = $ejer && $ejer != null ? $ejer->ejercicio : '';
+            $upp = $request->upp ? $request->upp : $uppUsuario;
+            $ejer = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio','estatus')->where('clv_upp','=' ,$upp)->where('ejercicio','=' ,$request->ejercicio)->first();
+            $ejercicio = $ejer && $ejer != null ? $ejer->estatus : '';
             $estado = DB::table('programacion_presupuesto')->SELECT('estado')->WHERE($array_where)->first();
-            if ($request->ejercicio != $ejercicio || $estado && $estado->estado != 0 && $rol != 0) {
+            if ($ejercicio !='Abierto' && $rol != 0 || $estado && $estado->estado != 0 && $rol != 0) {
+
                 $response = [
                     'response'=>'errorAutorizacion',
                     'rol'=>$rol
