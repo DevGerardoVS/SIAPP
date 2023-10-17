@@ -117,5 +117,11 @@
         .custom-select {
             min-width: 4em;
         }
+        @media(max-width: 575px) {
+            div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
     </style>
 @endsection
