@@ -222,7 +222,7 @@ class CalendarizacionCargaMasivaController extends Controller
                                 $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->count();
 
                                 if ($valupp > 0) {
-                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '!=', 'UUU')->where('ejercicio', $ejercicio[0])->forceDelete();
+                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('ejercicio', $ejercicio[0])->forceDelete();
                                 }
                                 $confirmadas = ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
 
