@@ -236,4 +236,37 @@ class ReporteController extends Controller
             return back()->withErrors(['msg'=>'¡Ocurrió un error al descargar el archivo!']);
         }
     }
+
+    public function consultarAvanceMIR(){
+        Controller::check_permission('getAdmon');
+        $anios = DB::select('SELECT ejercicio FROM mml_avance_etapas_pp GROUP BY ejercicio ORDER BY ejercicio DESC');
+        $anios = $anios == null ? Date("Y") : $anios;
+        $dataSet = array();
+        return view('reportes.avanceMIR',[
+            'dataSet' => json_encode($dataSet),
+            'anios' => $anios,
+        ]);
+    }
+
+    public function getAvanceMIR(Request $request){
+        $dataSet = array();
+        $data = DB::table("mml_avance_etapas_pp as ae")
+        ->join("v_epp as ve", function($join){
+            $join->on("ae.clv_upp", "=", "ve.clv_upp");
+            $join->on("ae.clv_pp", "=", "ve.clv_programa");
+        })
+        ->select("ae.clv_upp", "ve.upp", "ae.clv_pp", "ve.programa", "ae.estatus", "ae.ejercicio")
+        ->where("ae.ejercicio", $request->input("anio"))
+        ->groupBy("ve.clv_upp", "ve.clv_programa")
+        ->get();
+        $estatus = "";
+        foreach ($data as $d) {
+            $estatus = $d->estatus == 3 ? "Validado" : "Pendiente";
+            $ds = array($d->clv_upp, $d->upp, $d->clv_pp, $d->programa, $estatus);
+            $dataSet[] = $ds;
+        }
+        return response()->json([
+            "dataSet" => $dataSet,
+        ]);
+    }
 }
