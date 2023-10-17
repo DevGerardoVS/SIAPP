@@ -98,11 +98,11 @@ class InicioController extends Controller
         $name = "";
         if(Auth::user()->id_grupo==1){
             $name = "CAP_Manual_de_Usuario_Administrador.pdf";
-            $file= public_path(). "\\". $name;
+            $file= public_path(). "/". $name;
         } 
         if(Auth::user()->id_grupo==4){
             $name = "CAP_Manual_de_Usuario_UPP.pdf";
-            $file= public_path()."\\". $name;
+            $file= public_path()."/". $name;
         } 
         
         //Log::channel('daily')->debug('exp '.public_path());

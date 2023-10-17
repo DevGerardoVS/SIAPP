@@ -120,7 +120,7 @@
                 <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body table-responsive">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
                                     id="catalogoA" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="0,1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%; font-size: 14px;">
                                     <thead class="colorMorado">
@@ -159,7 +159,7 @@
                 <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body table-responsive">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
                                     id="catalogoB" data-right="2" data-left="0,1" data-center="0,1,2" style="width:100%; font-size: 14px;">
                                     <thead  class="colorMorado">
@@ -186,7 +186,7 @@
                 <div class="row mx-auto" >
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body table-responsive">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
                                     id="catalogoC" data-right="3,4,5,6" data-left="0,1,2,7" data-center="0,1,2,3,4,5,6,7" style="width:100%; font-size: 14px;">
                                     <thead class="colorMorado">
@@ -223,7 +223,7 @@
                 <div class="row mx-auto" >
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body table-responsive">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
                                     id="catalogoD" data-right="2,3,4,5,6,7,8,9,10,11,12,13,14" data-left="1" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14" style="width:100%; font-size: 14px;">
                                     <thead  class="colorMorado " style="text-align: center !important">
@@ -275,7 +275,7 @@
                 <div class="row mx-auto" >
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body table-responsive">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
                                     id="catalogoE" data-right="7,11,12,13,14,15,16,17,18,19,20,21,22,23" data-left="0,1,2,3,4,5,6,8,9,10" data-center="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23" style="width:100%; font-size: 14px;">
                                     <thead  class="colorMorado">
@@ -318,7 +318,7 @@
                 <div class="row mx-auto" >
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body table-responsive">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
                                     id="catalogoF" data-right="1,2,3" data-left="0,4" data-center="0,1,2,3,4" style="width:100%; font-size: 14px;">
                                     <thead class="colorMorado">
