@@ -57,8 +57,9 @@
                         <div class="col-sm-10">
                             <div class="form-group">
                                 <label for="instruccion 2">
-                                    <span style="vertical-align: inherit;"><span
-                                            style="vertical-align: inherit;">Los datos de claves presupuestarias guardados no confirmados <b>seran borrados</b></span></span>
+                                    <span style="vertical-align: inherit;"><span style="vertical-align: inherit;">Los
+                                            datos de claves presupuestarias guardados no confirmados <b>seran
+                                                borrados</b></span></span>
                                 </label>
                             </div>
                         </div>
@@ -92,46 +93,37 @@
                                 <button style="width: 20%; border: 1px solid #555;" type="button"
                                     class="btn colorMorado"
                                     onclick="document.getElementById('file_adm').click()">Seleccionar archivo</button>
-                                <input type="file" id="file_adm" name="file" style="display:none" class="file_adm"
-                                    accept=".xlsx ">
+                                <input type="file" id="file_adm" name="file" style="display:none"
+                                    class="file_adm" accept=".xlsx ">
                                 <input id="fileadm_label" style="width: 70%" type="text" readonly
                                     value="Sin archivos seleccionados">
                             </div>
                         </div>
                     </div>
                 </div>
-                <div  class="row d-flex justify-content-center" >Atención se borraran los registros no confirmados. Si elige Operativo solo se borraran los operativos y viceversa</div>
-                <div class="row" >
+                <div style="font-weight: bold;" class="row d-flex justify-content-center">Atención se borraran todos los registros de las upps en el excel al hacer una carga masiva.
+                   </div>
+                <div class="row">
                     <div class="form-group d-flex justify-content-around">
-                        
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input " value="1" type="radio" name="tipo"
-                                    id="Operativo" checked>
-                                <label class="form-check-label " for="tipo">
-                                    Claves tipo Operativo
-                                </label>
-                            </div>
-                        
 
-                        
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" value="2" type="radio" name="tipo"
-                                    id="RH">
-                                <label class="form-check-label" for="tipo">
-                                    Claves tipo RH
-                                </label>
-                            </div>
-                     
+                        <div style="display: none;" class="form-check form-check-inline">
+                            <input class="form-check-input " value="1" type="radio" name="tipo" id="Operativo"
+                                checked>
+                            <label class="form-check-label " for="tipo">
+                                Claves para usuarios operativos
+                            </label>
+                        </div>
 
-                        
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" value="3" type="radio" name="tipo"
-                                    id="all">
-                                <label class="form-check-label" for="tipo">
-                                    Claves tipo Operativo y RH
-                                </label>
-                            </div>
-                      
+
+{{-- 
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" value="2" type="radio" name="tipo"
+                                id="RH">
+                            <label class="form-check-label" for="tipo">
+                                Claves para usuarios autorizados RH
+                            </label>
+                        </div> --}}
+
 
                     </div>
                 </div>

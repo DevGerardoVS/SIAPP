@@ -352,7 +352,7 @@ var dao = {
             if (idSelected != '' && val.clv_ur == idSelected) {
               par.append(new Option(data[i].clv_ur+ ' - '+ data[i].ur, data[i].clv_ur,true,true));
               document.getElementById('ur').innerHTML = data[i].clv_ur;
-              document.getElementById('lbl_ur').innerText ='Ur: ' + data[i].ur;
+              document.getElementById('lbl_ur').innerText ='Ur: '+ data[i].clv_ur+ ' - ' + data[i].ur;
              }else{
               par.append(new Option(data[i].clv_ur+ ' - '+ data[i].ur, data[i].clv_ur,false,false));
              }
@@ -501,7 +501,7 @@ var dao = {
             document.getElementById('ramo').innerHTML = data[i].clv_ramo;
             document.getElementById('fondoRamo').innerHTML = data[i].clv_fondo;
             document.getElementById('capital').innerHTML = data[i].clv_capital;
-            document.getElementById('lbl_fondo').innerText ='Fondo: ' + data[i].fondo_ramo;
+            document.getElementById('lbl_fondo').innerText ='Fondo: '+ data[i].clv_fondo+ ' - ' + data[i].fondo_ramo;
             }else{
             par.append(new Option(data[i].clv_fondo+ '-'+  data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,false,false));
             }

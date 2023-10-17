@@ -94,11 +94,21 @@ class InicioController extends Controller
     }
 
     public function getManual(){
-        $file= public_path(). "\CAP_Manual_de_Usuario_UPP.pdf";
+        $file = "";
+        $name = "";
+        if(Auth::user()->id_grupo==1){
+            $name = "CAP_Manual_de_Usuario_Administrador.pdf";
+            $file= public_path(). "\\". $name;
+        } 
+        if(Auth::user()->id_grupo==4){
+            $name = "CAP_Manual_de_Usuario_UPP.pdf";
+            $file= public_path()."\\". $name;
+        } 
+        
         //Log::channel('daily')->debug('exp '.public_path());
         $headers = array('Content-Type: application/pdf',);
 
-        return response()->download($file,'CAP_Manual_de_Usuario_UPP.pdf',$headers);
+        return response()->download($file,$name,$headers);
     }
     
     public function getFondos(){
