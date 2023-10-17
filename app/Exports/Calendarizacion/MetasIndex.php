@@ -71,10 +71,9 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
                 ->where('cierre_ejercicio_metas.estatus', 'Abierto');
         }
         $prueba = DB::table('programacion_presupuesto AS pp')
-        ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'pp.upp')
-        ->join('mml_mir', function (JoinClause $join) {
-        $join->on('pp.upp', '=', 'mml_mir.clv_upp')
-        ->on('pp.ur', '=', 'mml_mir.clv_ur');
+            ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'pp.upp')
+            ->join('mml_mir', function (JoinClause $join) {
+                $join->on('pp.upp', '=', 'mml_mir.clv_upp');
     })
         ->select(
             'mml_mir.clv_upp',
@@ -106,6 +105,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             ->where('cierre_ejercicio_metas.ejercicio', $anio)
             ->where('cierre_ejercicio_metas.estatus', 'Abierto');
     }
+        $checkpp = $prueba->get();
     Schema::create('pptemp', function (Blueprint $table) {
         $table->temporary();
         $table->increments('id');
@@ -194,7 +194,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             ->where('catalogo.grupo_id', 20)
             ->where('mml_avance_etapas_pp.estatus', 3)
             ->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-            ->unionAll($prueba)
+            ->unionAll( $data3 )
             ->unionAll($newdata2)
             ->distinct();
 
