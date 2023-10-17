@@ -10,7 +10,6 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
-use Maatwebsite\Excel\Concerns\WithMapping;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Color;
@@ -45,6 +44,7 @@ class PlantillaExport implements FromCollection, ShouldAutoSize, WithHeadings, W
     }
         public function columnFormats(): array{
         return [
+            //esto da formato a la primera fila unicamente desconozco la razón
             'A' =>  NumberFormat::FORMAT_TEXT,
             'B' => NumberFormat::FORMAT_TEXT,
             'C' => NumberFormat::FORMAT_TEXT,
@@ -90,7 +90,10 @@ class PlantillaExport implements FromCollection, ShouldAutoSize, WithHeadings, W
         return[
             AfterSheet::class=> function(AfterSheet $event){
                 $sheet=$event->sheet;   
-                
+                //esto da formato a toda la columna
+                $sheet->getStyle('A:AN')
+                ->getNumberFormat()
+                ->setFormatCode(NumberFormat::FORMAT_TEXT);
                 $sheet->getStyle('A1:AN1')->getFill()->applyFromArray(['fillType' => 'solid','rotation' => 0, 'color' => ['argb' => '6A0F49'],]);
             },
         ];

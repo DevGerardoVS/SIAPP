@@ -87,7 +87,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row d-flex justify-content-center">Atención se borraran los registros no confirmados</div>
+                <div class="row d-flex justify-content-center" style="font-weight: bold;">Atención se borraran los registros no confirmados</div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
