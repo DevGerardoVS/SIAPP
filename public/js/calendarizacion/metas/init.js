@@ -13,6 +13,7 @@ let mesesV = {
     noviembre: false,
     diciembre: false
 };
+let contValue = 0;
 let mesesName = [
     'enero',
     'febrero',
@@ -1058,6 +1059,16 @@ $(document).ready(function () {
     });
     $('#fondo_id').change(() => {
         dao.getMeses($('#area').val(), $('#fondo_id').val());
+    });
+
+    $('#tipo_Ac').change(() => {
+        console.log($('#tipo_Ac').val());
+        for (let i = 1; i <= 12; i++) {
+              $('#' + i).val(0);
+        }
+        if ($('#tipo_Ac').val() == 'Continua') {
+            $('#continua').modal('show')
+        }
     });
     $('#actividad_id').change(() => {
 
