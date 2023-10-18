@@ -23,7 +23,6 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
         $anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
         $data = DB::table('programacion_presupuesto')
         ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'programacion_presupuesto.upp')
-        ->leftJoin('catalogo', 'catalogo.clave', '=', 'programacion_presupuesto.subprograma_presupuestario')
         ->select(
             'upp AS clv_upp',
             'ur AS clv_ur',
@@ -34,9 +33,6 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
         ->where('programacion_presupuesto.estado', 1)
         ->where('programacion_presupuesto.deleted_at', null)
         ->where('programacion_presupuesto.ejercicio', '=', $anio)
-        ->where('catalogo.deleted_at', null)
-        ->where('catalogo.grupo_id', 20)
-        ->where('mml_avance_etapas_pp.estatus', 3)
         ->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
         ->distinct();
 
@@ -78,15 +74,12 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
 
     public function title(): string
     {
-        return 'Actividades de Administrativas';
+        return 'claves PP';
     }
     public function headings(): array
     {
-        return [
-            "CLAVE",
-            "ACTIVIDAD",
-            ""
-        ];
+        return ["FINALIDAD", "FUNCION", "SUBFUNCION", "EJE", "L ACCION", "PRG SECTORIAL", "TIPO CONAC", "UPP", "UR", "PRG", "SPR", "PY", "FONDO"];
+
     }
     public function styles(Worksheet $sheet)
     {
@@ -97,7 +90,16 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
             // Styling an entire column.
             'A'  => ['font' => ['size' => 10]],
             'B'  => ['font' => ['size' => 10]],
-            'C'  => ['font' => ['size' => 10]]
+            'C'  => ['font' => ['size' => 10]],
+            'D'  => ['font' => ['size' => 10]],
+            'F'  => ['font' => ['size' => 10]],
+            'G'  => ['font' => ['size' => 10]],
+            'H'  => ['font' => ['size' => 10]],
+            'I'  => ['font' => ['size' => 10]],
+            'J'  => ['font' => ['size' => 10]],
+            'K'  => ['font' => ['size' => 10]],
+            'L'  => ['font' => ['size' => 10]],
+            'M'  => ['font' => ['size' => 10]]
        ];
     }
 
@@ -113,7 +115,7 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
             AfterSheet::class=> function(AfterSheet $event){
                 $sheet = $event -> sheet;
                 $event->sheet->getDelegate()
-                ->getStyle('A1:C'.$this->filas)
+                ->getStyle('A1:M'.$this->filas)
                 ->applyFromArray(['alignment'=>['wrapText'=>true]]);
 
                 $styleArray = [
@@ -125,7 +127,7 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
                     ],
                 ];
     
-                $event->sheet->getStyle('A1:C'.$this->filas)->applyFromArray($styleArray);
+                $event->sheet->getStyle('A1:M'.$this->filas)->applyFromArray($styleArray);
                },
              
         ];
