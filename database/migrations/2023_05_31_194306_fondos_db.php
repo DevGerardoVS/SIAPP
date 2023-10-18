@@ -462,6 +462,7 @@ return new class extends Migration
 /**/    Schema::create('tipologia_conac',function (Blueprint $table){
             $table->increments('id');
             $table->integer('tipo')->unsigned()->nullable(false);
+            $table->string('clave',1)->nullable(true);
             $table->string('descripcion',255)->nullable(false);
             $table->string('clave_conac',1)->nullable(true);
             $table->string('descripcion_conac',255)->nullable(true);
