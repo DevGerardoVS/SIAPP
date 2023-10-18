@@ -13,6 +13,7 @@ let mesesV = {
     noviembre: false,
     diciembre: false
 };
+let contValue = 0;
 let mesesName = [
     'enero',
     'febrero',
@@ -181,6 +182,24 @@ var dao = {
                 }
             });
         });
+    },
+    nCont: function () {
+        init.validateCont($('#formContinua'));
+        if ($('#formContinua').valid()) {
+            contValue = $('#nContinua').val();
+            for (let i = 1; i <= 12; i++) {
+                $('#' + i).val(contValue);
+                $('#' + i).attr('disabled', 'disabled');
+            }
+            $('#sumMetas').val(contValue);
+            $('#sumMetas').attr('disabled', 'disabled');
+            dao.clearCont();
+        }
+      
+    },
+    clearCont: function () {
+        $('#nContinua').val("");
+        $('#continua').modal('hide');
     },
     getMeses: function (idA, idF) {
         let arr = idA.split('-');
@@ -546,6 +565,12 @@ var dao = {
         let aOld = $('#area').val()
         let area = aOld.replace('$', '/')
         data.append('area', area);
+        if ($('#tipo_Ac').val() == 'Continua') {
+            for (let i = 0; i <= 12; i++) {
+                data.append(i, contValue); 
+            }
+            data.append('sumMetas', contValue);
+        }
         $.ajax({
             type: "POST",
             url: '/calendarizacion/create',
@@ -1019,6 +1044,16 @@ var init = {
             }
         });
     },
+    validateCont: function (form) {
+        _gen.validate(form, {
+            rules: {
+                nContinua: { required: true }
+            },
+            messages: {
+                nContinua: { required: "Este campo es requerido" }
+            }
+        });
+    },
 };
 $(document).ready(function () {
     $(".CargaMasiva").hide();
@@ -1058,6 +1093,15 @@ $(document).ready(function () {
     });
     $('#fondo_id').change(() => {
         dao.getMeses($('#area').val(), $('#fondo_id').val());
+    });
+
+    $('#tipo_Ac').change(() => {
+        for (let i = 1; i <= 12; i++) {
+              $('#' + i).val(0);
+        }
+        if ($('#tipo_Ac').val() == 'Continua') {
+            $('#continua').modal('show')
+        }
     });
     $('#actividad_id').change(() => {
 
@@ -1131,6 +1175,10 @@ $(document).ready(function () {
         if ($('#formFile').valid()) {
             dao.crearMetaImp();
         }
+    });
+    $('#continua').modal({
+        backdrop: 'static',
+        keyboard: false
     });
 
 

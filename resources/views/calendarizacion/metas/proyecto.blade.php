@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @include('calendarizacion.metas.addActividad')
 @include('calendarizacion.metas.modalFirmaElectronica')
+@include('calendarizacion.metas.actividadContinua')
 @section('content')
     <div class="container">
        

@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @include('calendarizacion.metas.modalCarga')
+@include('calendarizacion.metas.actividadContinua')
 @section('content')
     <div class="container">
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">

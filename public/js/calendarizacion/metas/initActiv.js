@@ -53,6 +53,24 @@ var dao = {
             }
         });
     },
+    nCont: function () {
+        init.validateCont($('#formContinua'));
+        if ($('#formContinua').valid()) {
+            contValue = $('#nContinua').val();
+            for (let i = 1; i <= 12; i++) {
+                $('#' + i).val(contValue);
+                $('#' + i).attr('disabled', 'disabled');
+            }
+            $('#sumMetas').val(contValue);
+            $('#sumMetas').attr('disabled', 'disabled');
+            dao.clearCont();
+        }
+      
+    },
+    clearCont: function () {
+        $('#nContinua').val("");
+        $('#continua').modal('hide');
+    },
     exportJasper: function () {
         let tipo = 0;
         let upp;
@@ -963,6 +981,16 @@ var init = {
         _gen.validate(form, rm);
 
     },
+    validateCont: function (form) {
+        _gen.validate(form, {
+            rules: {
+                nContinua: { required: true }
+            },
+            messages: {
+                nContinua: { required: "Este campo es requerido" }
+            }
+        });
+    },
 };
 
 $(document).ready(function () {
@@ -1037,5 +1065,18 @@ $(document).ready(function () {
             dao.firmarReporte();
         }
 
+    });
+    $('#tipo_Ac').change(() => {
+        console.log($('#tipo_Ac').val());
+        for (let i = 1; i <= 12; i++) {
+              $('#' + i).val(0);
+        }
+        if ($('#tipo_Ac').val() == 'Continua') {
+            $('#continua').modal('show')
+        }
+    });
+    $('#continua').modal({
+        backdrop: 'static',
+        keyboard: false
     });
 });
