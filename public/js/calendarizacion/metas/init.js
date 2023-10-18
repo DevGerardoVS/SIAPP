@@ -171,21 +171,26 @@ var dao = {
 
             var tipo_AC = $('#tipo_Ac');
             tipo_AC.html('');
-            if (tAct.length >= 2) {
+            if (Object.keys(tAct).length >= 2) {
                 tipo_AC.append(new Option("--Tipo Actividad--", ""));
                 document.getElementById("tipo_Ac").options[0].disabled = true;
 
             }
-            $.each(tAct, function (i, val) {
-                if (val == 1) {
-                    tipo_AC.append(new Option(i, i));
-                }
-            });
+            console.log($('#calendar').val());
+            if ($('#calendar').val()=='UUU') {
+                tipo_AC.append(new Option('Acumulativa','Acumulativa'));
+            } else {
+                $.each(tAct, function (i, val) {
+                    if (val == 1) {
+                        tipo_AC.append(new Option(i, i));
+                    }
+                });
+            }
+        
         });
     },
     nCont: function () {
-        init.validateCont($('#formContinua'));
-        if ($('#formContinua').valid()) {
+        if ($('#nContinua').val()!='') {
             contValue = $('#nContinua').val();
             for (let i = 1; i <= 12; i++) {
                 $('#' + i).val(contValue);
@@ -194,6 +199,12 @@ var dao = {
             $('#sumMetas').val(contValue);
             $('#sumMetas').attr('disabled', 'disabled');
             dao.clearCont();
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Este campo es requerido',
+              })
         }
       
     },
@@ -694,6 +705,8 @@ var dao = {
             $("#" + i).val(0);
             $("#" + i).prop('disabled', true);
         }
+        let ar = area.split('-'); 
+        $("#calendar").val(ar[8]); 
         let clave = `${area}$${enti}$${anio}`;
         $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
