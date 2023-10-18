@@ -93,11 +93,11 @@ class FunFormats
                 } else {
                     //checar si la mir esta confirmada
 
-                    $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', strval($k[7]))->select('ejercicio')->get();
+                    $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', strval($k[7]))->where('deleted_at', null)->max('ejercicio');
                     $isMir = DB::table("mml_avance_etapas_pp")
                         ->select('id', 'estatus')
                         ->where('clv_upp', '=', strval($k[7]))
-                        ->where('ejercicio', '=', $anio[0]->ejercicio)
+                        ->where('ejercicio', '=',$anio )
                         ->where('estatus', 3)->get();
                     if (count($isMir)) {
                         $flg = false;
@@ -149,6 +149,7 @@ class FunFormats
                         }
 
                         if (is_numeric($k[14])) {
+                            log::debug("id_mir:".$k[14]);
                             $actividad = Mir::where('deleted_at', null)->where('id', $k[14])->first();
                             if ($actividad) {
                                 $flg = true;
@@ -163,9 +164,11 @@ class FunFormats
                         }
                         if ($flg) {
                             $area = '' . strval($k[0]) . strval($k[1]) . strval($k[2]) . strval($k[3]) . strval($k[4]) . strval($k[5]) . strval($k[6]) . strval($k[9]) . strval($k[10]) . strval($k[11]) . '';
-                            $anio = isset($actividad->ejercicio) ? $actividad->ejercicio : $anio[0]->ejercicio;
+                            $anio = isset($actividad->ejercicio) ? $actividad->ejercicio : $anio;
                             if (isset($actividad->area_funcional) && strtoupper($k[14]) != 'N/A') {
                                 if ($actividad->area_funcional != $area) {
+                                    log::debug($actividad->area_funcional);
+                                    log::debug($area);
                                     $error = array(
                                         "icon" => 'error',
                                         "title" => 'Error',
