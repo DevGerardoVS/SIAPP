@@ -1099,6 +1099,7 @@ $(document).ready(function () {
         for (let i = 1; i <= 12; i++) {
               $('#' + i).val(0);
         }
+        $("#sumMetas").val("");
         if ($('#tipo_Ac').val() == 'Continua') {
             $('#continua').modal('show')
         }

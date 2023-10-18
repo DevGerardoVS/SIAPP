@@ -284,6 +284,7 @@ var dao = {
             url: "/calendarizacion/update/" + id,
             dataType : "json"
         }).done(function (data) {
+            console.log("data",data)
             dao.getActiv(data.clv_upp);
             $('#proyectoMD').empty();
             $('#proyectoMD').append("<thead><tr class='colorRosa'>"
@@ -307,7 +308,8 @@ var dao = {
             $('#Nfondo').text(data.clv_fondo);
             $('#beneficiario').val(data.cantidad_beneficiarios);
             $("#tipo_Be option[value='" + data.beneficiario_id + "']").attr("selected", true);
-            $("#medida option[value='"+ data.unidad_medida_id +"']").attr("selected",true);
+            $("#medida option[value='" + data.unidad_medida_id + "']").attr("selected", true);
+            $("#tipo_Ac option[value='"+ data.tipo +"']").attr("selected",true);
             $('#1').val(data.enero);
             $('#2').val(data.febrero);
             $('#3').val(data.marzo);
@@ -726,12 +728,13 @@ var dao = {
     validatCont: function () {
         let e = [];
         for (let i = 1; i <= 12; i++) { 
-            if($('#' + i).val() != ""){
+            if($('#' + i).val() != "" && $('#' + i).val() != 0){
                 let suma = parseInt($('#' + i).val());
                 e.push(suma);
             }
         }
         if (dao.arrEquals(e)) {
+            $('#sumMetas').val(e[0]);
             return e[0];
         } else {
             $('#sumMetas').val("");
@@ -750,9 +753,6 @@ var dao = {
         switch (actividad) {
             case 'Acumulativa':
                 $('#sumMetas').val(dao.validateAcu()!=0?dao.validateAcu():'');
-                break;
-            case 'Continua':
-                $('#sumMetas').val(dao.validatCont()!=0?dao.validatCont():'');
                 break;
             case 'Especial':
                 $('#sumMetas').val(dao.validatEspe()!=0?dao.validatEspe():'');
@@ -1007,8 +1007,16 @@ $(document).ready(function () {
     $('#btnSave').click(function (e) {
         e.preventDefault();
         let flag = dao.validMeses();
-        if ($('#actividad').valid()  &&flag ) {
-            dao.editarPutMeta();
+        if ($('#tipo_Ac').val() != 'Continua') {
+            if ($('#actividad').valid() && flag) {
+                dao.editarPutMeta();
+            }
+        } else {
+            if (dao.validatCont() != 0) {
+                if ($('#actividad').valid() && flag) {
+                    dao.editarPutMeta();
+                }
+            }
         }
     });
     dao.getSelect();
@@ -1071,6 +1079,7 @@ $(document).ready(function () {
         for (let i = 1; i <= 12; i++) {
               $('#' + i).val(0);
         }
+        $('#sumMetas').val("");
         if ($('#tipo_Ac').val() == 'Continua') {
             $('#continua').modal('show')
         }
