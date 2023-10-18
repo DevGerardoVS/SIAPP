@@ -293,6 +293,12 @@ class UsuarioController extends Controller
                 'id_grupo' => $request->id_grupo,
                 'id_usuario' => $user->id,
             ]);
+            if($request->id_grupo==5 ||$request->id_grupo==1){
+                PermisosUpp::create([
+                    'id_user'=>$user->id,
+                    'id_permiso'=>1
+                ]);
+            }
             $b = array(
                 "username" => Auth::user()->username,
                 "accion" => 'Crear Usuario:'.$request->username,
@@ -355,6 +361,7 @@ class UsuarioController extends Controller
     {
         Controller::check_permission('deleteUsuarios');
         $userEdit = User::where('id', $request->id)->firstOrFail();
+        $userEdit->email = $userEdit->email . "1";
         $userEdit->deleted_user = Auth::user()->username;
         $userEdit->save();
         User::where('id', $request->id)->delete();
