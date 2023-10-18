@@ -237,7 +237,8 @@ class ReporteController extends Controller
         }
     }
 
-    public function consultarAvanceMIR(){
+    // Reportes MML
+    public function indexMML(){
         Controller::check_permission('getAdmon');
         $anios = DB::select('SELECT ejercicio FROM mml_avance_etapas_pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         $anios = $anios == null ? Date("Y") : $anios;
@@ -265,6 +266,21 @@ class ReporteController extends Controller
             $ds = array($d->clv_upp, $d->upp, $d->clv_pp, $d->programa, $estatus);
             $dataSet[] = $ds;
         }
+        return response()->json([
+            "dataSet" => $dataSet,
+        ]);
+    }
+
+    public function getComprobacion(Request $request){
+        $anio = $request->anio;
+        $dataSet = array();
+        $data = DB::select("CALL mml_comprobacion(NULL, NULL, NULL,".$anio.")");
+
+        foreach ($data as $d) {
+            $ds = array($d->clv_upp, $d->clv_pp, $d->clv_ur, $d->area_funcional, $d->nombre_proyecto, $d->nivel, $d->objetivo, $d->indicador);
+            $dataSet[] = $ds;
+        }
+
         return response()->json([
             "dataSet" => $dataSet,
         ]);
