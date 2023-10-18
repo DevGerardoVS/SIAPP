@@ -183,6 +183,24 @@ var dao = {
             });
         });
     },
+    nCont: function () {
+        init.validateCont($('#formContinua'));
+        if ($('#formContinua').valid()) {
+            contValue = $('#nContinua').val();
+            for (let i = 1; i <= 12; i++) {
+                $('#' + i).val(contValue);
+                $('#' + i).attr('disabled', 'disabled');
+            }
+            $('#sumMetas').val(contValue);
+            $('#sumMetas').attr('disabled', 'disabled');
+            dao.clearCont();
+        }
+      
+    },
+    clearCont: function () {
+        $('#nContinua').val("");
+        $('#continua').modal('hide');
+    },
     getMeses: function (idA, idF) {
         let arr = idA.split('-');
         for (const key in mesesV) {
@@ -547,6 +565,12 @@ var dao = {
         let aOld = $('#area').val()
         let area = aOld.replace('$', '/')
         data.append('area', area);
+        if ($('#tipo_Ac').val() == 'Continua') {
+            for (let i = 0; i <= 12; i++) {
+                data.append(i, contValue); 
+            }
+            data.append('sumMetas', contValue);
+        }
         $.ajax({
             type: "POST",
             url: '/calendarizacion/create',
@@ -1020,6 +1044,16 @@ var init = {
             }
         });
     },
+    validateCont: function (form) {
+        _gen.validate(form, {
+            rules: {
+                nContinua: { required: true }
+            },
+            messages: {
+                nContinua: { required: "Este campo es requerido" }
+            }
+        });
+    },
 };
 $(document).ready(function () {
     $(".CargaMasiva").hide();
@@ -1062,7 +1096,6 @@ $(document).ready(function () {
     });
 
     $('#tipo_Ac').change(() => {
-        console.log($('#tipo_Ac').val());
         for (let i = 1; i <= 12; i++) {
               $('#' + i).val(0);
         }
@@ -1142,6 +1175,10 @@ $(document).ready(function () {
         if ($('#formFile').valid()) {
             dao.crearMetaImp();
         }
+    });
+    $('#continua').modal({
+        backdrop: 'static',
+        keyboard: false
     });
 
 

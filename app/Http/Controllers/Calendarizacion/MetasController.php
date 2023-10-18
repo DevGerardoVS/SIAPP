@@ -195,9 +195,9 @@ class MetasController extends Controller
 					->where('ejercicio', $check['anio'])->get();
 				$Act = DB::table('tipo_actividad_upp')
 					->select(
-						'Continua',
 						'Acumulativa',
-						'Especial'
+						'Especial',
+						'Continua',
 					)
 					->where('deleted_at', null)
 					->orderBy('clv_upp')
@@ -374,9 +374,9 @@ class MetasController extends Controller
 	{
 		$Act = DB::table('tipo_actividad_upp')
 			->select(
-				'Continua',
 				'Acumulativa',
-				'Especial'
+				'Especial',
+				'Continua',
 			)
 			->where('deleted_at', null)
 			->orderBy('clv_upp')
