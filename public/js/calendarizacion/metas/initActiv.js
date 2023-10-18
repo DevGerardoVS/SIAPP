@@ -323,6 +323,8 @@ var dao = {
             $('#11').val(data.noviembre);
             $('#12').val(data.diciembre);
             $('#sumMetas').val(data.total);
+            $('#ar').val(data.ar);
+            $('#fondo').val(data.clv_fondo);
             let edit = false;
             const mese = data.meses;
             for (const key in mesesV) {
@@ -635,6 +637,159 @@ var dao = {
             $("#meses-error").text("").removeClass('has-error');
             return true;
        }
+    },
+    getMeses: function (idA, idF) {
+        let arr = idA.split('-');
+        for (const key in mesesV) {
+            if (Object.hasOwnProperty.call(mesesV, key)) {
+                mesesV[key] = false;
+            }
+        }
+        console.log("mes",{area:idA,fondo:idF})
+        $.ajax({
+            type: "GET",
+            url: '/actividades/meses-activos/' + idA + "/" + idF,
+            dataType: "JSON"
+        }).done(function (data) {
+            let { mese } = data;
+            if (arr[8] != 'UUU') {
+                for (const key in mese) {
+                    if (Object.hasOwnProperty.call(mese, key)) {
+                        const e = mese[key];
+                        switch (key) {
+                            case 'enero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.enero = true;
+                                    $("#1").prop('disabled', false);
+                                    $("#1").prop('required', true);
+                                } else {
+                                    $("#1").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'febrero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.febrero = true;
+                                    $("#2").prop('disabled', false);
+                                    $("#2").prop('required', true);
+                                } else {
+                                    $("#2").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'marzo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.marzo = true;
+                                    $("#3").prop('disabled', false);
+                                    $("#3").prop('required', true);
+                                } else {
+                                    $("#3").prop('disabled', 'disabled');
+
+                                }
+                                break;
+                            case 'abril':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.abril = true;
+                                    $("#4").prop('disabled', false);
+                                    $("#4").prop('required', true);
+                                } else {
+                                    $("#4").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'mayo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.mayo = true;
+                                    $("#5").prop('disabled', false);
+                                    $("#5").prop('required', true);
+                                } else {
+                                    $("#5").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'junio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.junio = true;
+                                    $("#6").prop('disabled', false);
+                                    $("#6").prop('required', true);
+                                } else {
+                                    $("#6").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'julio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.julio = true;
+                                    $("#7").prop('disabled', false);
+                                    $("#7").prop('required', true);
+                                } else {
+                                    $("#7").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'agosto':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.agosto = true;
+                                    $("#8").prop('disabled', false);
+                                    $("#8").prop('required', true);
+                                } else {
+                                    $("#8").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'septiembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.septiembre = true;
+                                    $("#9").prop('disabled', false);
+                                    $("#9").prop('required', true);
+                                } else {
+                                    $("#9").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'octubre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.octubre = true;
+                                    $("#10").prop('disabled', false);
+                                    $("#10").prop('required', true);
+                                } else {
+                                    $("#10").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'noviembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.noviembre = true;
+                                    $("#11").prop('disabled', false);
+                                    $("#11").prop('required', true);
+                                } else {
+                                    $("#11").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'diciembre':
+
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.diciembre = true;
+                                    $("#12").prop('disabled', false);
+                                    $("#12").prop('required', true);
+                                } else {
+                                    $("#12").prop('disabled', 'disabled');
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    }
+                }
+            } else {
+                for (let i = 1; i <= 11; i++) {
+                    $("#" + i).val(2);
+                    $("#" + i).prop('disabled', 'disabled');
+                }
+                $("#12").val(3);
+                $("#12").prop('disabled', 'disabled');
+                $("#sumMetas").val(25);
+                $("#sumMetas").prop('disabled', 'disabled')
+
+
+            }
+
+
+
+        });
     },
     eliminar: function (id) {
         Swal.fire({
@@ -1075,10 +1230,10 @@ $(document).ready(function () {
 
     });
     $('#tipo_Ac').change(() => {
-        console.log($('#tipo_Ac').val());
         for (let i = 1; i <= 12; i++) {
               $('#' + i).val(0);
         }
+        dao.getMeses($('#ar').val(), $('#fondo').val());
         $('#sumMetas').val("");
         if ($('#tipo_Ac').val() == 'Continua') {
             $('#continua').modal('show')

@@ -168,25 +168,6 @@ var dao = {
             $.each(urs, function (i, val) {
                 par.append(new Option(val.ur, val.clv_ur));
             });
-
-            var tipo_AC = $('#tipo_Ac');
-            tipo_AC.html('');
-            if (Object.keys(tAct).length >= 2) {
-                tipo_AC.append(new Option("--Tipo Actividad--", ""));
-                document.getElementById("tipo_Ac").options[0].disabled = true;
-
-            }
-            console.log($('#calendar').val());
-            if ($('#calendar').val()=='UUU') {
-                tipo_AC.append(new Option('Acumulativa','Acumulativa'));
-            } else {
-                $.each(tAct, function (i, val) {
-                    if (val == 1) {
-                        tipo_AC.append(new Option(i, i));
-                    }
-                });
-            }
-        
         });
     },
     nCont: function () {
@@ -219,6 +200,7 @@ var dao = {
                 mesesV[key] = false;
             }
         }
+        console.log("mes",{area:idA,fondo:idF})
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF,
@@ -716,7 +698,7 @@ var dao = {
             url: '/calendarizacion/fondos/' + area + '/' + enti,
             dataType: "JSON"
         }).done(function (data) {
-            const { fondos, activids } = data;
+            const { fondos, activids ,tAct} = data;
             let flag = false;
             if (activids[0].id == 'ot' && mir == 1) {
                 flag = true;
@@ -798,6 +780,23 @@ var dao = {
                     fondo = $('#fondo_id').val();
                 }
                 dao.getMeses(clave, fondo);
+            }
+
+            var tipo_AC = $('#tipo_Ac');
+            tipo_AC.html('');
+            if (Object.keys(tAct).length >= 2 && $('#calendar').val()!='UUU') {
+                tipo_AC.append(new Option("--Tipo Actividad--", ""));
+                document.getElementById("tipo_Ac").options[0].disabled = true;
+
+            }
+            if ($('#calendar').val()=='UUU') {
+                tipo_AC.append(new Option('Acumulativa','Acumulativa'));
+            } else {
+                $.each(tAct, function (i, val) {
+                    if (val == 1) {
+                        tipo_AC.append(new Option(i, i));
+                    }
+                });
             }
 
         });
@@ -1112,6 +1111,7 @@ $(document).ready(function () {
         for (let i = 1; i <= 12; i++) {
               $('#' + i).val(0);
         }
+        dao.getMeses($('#area').val(), $('#sel_fondo').val());
         $("#sumMetas").val("");
         if ($('#tipo_Ac').val() == 'Continua') {
             $('#continua').modal('show')

@@ -306,9 +306,10 @@ class MetasController extends Controller
 			} else {
 				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
 			}
+			$tAct = MetasController::getTcalendar($entidadAux[0]);
 		}
 
-		return ['fondos' => $fondos, "activids" => $activ];
+		return ['fondos' => $fondos, "activids" => $activ ,"tAct"=> $tAct];
 	}
 	public static function meses($area, $entidad, $anio, $fondo)
 	{
@@ -736,11 +737,13 @@ class MetasController extends Controller
 		$areaAux = str_split($metas[0]->area_funcional);
 		$entiAux = str_split($metas[0]->entidad_ejecutora);
 		$area = '' . strval($areaAux[0]) . '-' . strval($areaAux[1]) . '-' . strval($areaAux[2]) . '-' . strval($areaAux[3]) . '-' . strval($areaAux[4]) . strval($areaAux[5]) . '-' . strval($areaAux[6]) . '-' . strval($areaAux[7]) . '-' . strval($areaAux[8]) . strval($areaAux[9]) . "-" . strval($areaAux[10]) . strval($areaAux[11]) . strval($areaAux[12]) . "-" . strval($areaAux[13]) . strval($areaAux[14]) . strval($areaAux[15]) . '';
+		$ar = "".$area."$". $metas[0]->clv_upp ."-". strval($entiAux[3]) . "-". strval($entiAux[4]) . strval($entiAux[5]) ."$". $metas[0]->ejercicio;
 		$meses = MetasController::meses($area, "" . $metas[0]->clv_upp . "-" . strval($entiAux[3]) . "-" . strval($entiAux[4]) . strval($entiAux[5]) . "", $metas[0]->ejercicio, $metas[0]->clv_fondo);
 		foreach ($metas as $key) {
 			$area = str_split($key->area_funcional);
 			$entidad = str_split($key->entidad_ejecutora);
 			$i = array(
+				"ar"=>$ar,
 				"area" => $key->area_funcional,
 				"entidad" => $key->entidad_ejecutora,
 				"clv_upp" => $key->clv_upp,
