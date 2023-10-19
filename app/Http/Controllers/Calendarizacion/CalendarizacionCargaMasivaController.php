@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Calendarizacion;
 
+use App\Exports\ImportErrorsExport;
 use App\Http\Controllers\Controller;
 use App\Imports\ClavePresupuestaria;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +28,7 @@ class CalendarizacionCargaMasivaController extends Controller
         $b = array(
             "username" => Auth::user()->username,
             "accion" => 'Descarga',
-            "modulo" => 'claves presupuestales'
+            "modulo" => 'Plantilla carga masiva'
         );
         Controller::bitacora($b);
         /*Si no coloco estas lineas Falla*/
@@ -41,6 +42,22 @@ class CalendarizacionCargaMasivaController extends Controller
     }
 
 
+    public function DownloadErrors($fails){
+
+      $fails=  json_decode($fails);
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Descarga',
+            "modulo" => 'Errores carga masiva'
+        );
+        Controller::bitacora($b);
+        /*Si no coloco estas lineas Falla*/
+        ob_end_clean();
+        ob_start();
+
+
+        return Excel::download(new ImportErrorsExport($fails), 'Errores.xlsx');
+    }
 
     //Obtener datos del excel
     public function loadDataPlantilla(Request $request)
@@ -148,7 +165,7 @@ class CalendarizacionCargaMasivaController extends Controller
                                         }
                                         break;
                                     case '':
-                                        return redirect()->back()->withErrors(['error' => 'El Subprograma no puede ir vacio']);
+                                        return redirect()->back()->withErrors(['error' => 'El Subprograma no puede ir vacio. Revise que no haya filas vacias con formulas']);
 
                                     default:
                                         //buscar en el array de totales 
@@ -222,7 +239,7 @@ class CalendarizacionCargaMasivaController extends Controller
                                 $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->count();
 
                                 if ($valupp > 0) {
-                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '!=', 'UUU')->where('ejercicio', $ejercicio[0])->forceDelete();
+                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('ejercicio', $ejercicio[0])->forceDelete();
                                 }
                                 $confirmadas = ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
 

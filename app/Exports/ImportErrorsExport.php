@@ -24,20 +24,10 @@ class ImportErrorsExport implements  FromCollection, ShouldAutoSize, WithHeading
       $arrayErrores= $this->array;
         foreach ($arrayErrores as $err) {
 
-            $data = str_replace('There was an error on row', 'Hay un error en la fila: ', $err[0]);
 
-            $ds =array($data);
+            $ds =array($err);
             $dataSet[] = $ds;
-/*             $valuesar=$err->values();
-            if($valuesar['total']){
-                $ds = array($err->row(), $err->errors(), $err->attribute(),$valuesar['admconac'],$valuesar['ef'],$valuesar['reg'],$valuesar['mpio'],
-                $valuesar['loc'],$valuesar['upp'],$valuesar['subsecretaria'],$valuesar['ur'],$valuesar['finalidad'],$valuesar['funcion'],$valuesar['subfuncion'],
-                $valuesar['eg'],$valuesar['pt'],$valuesar['ps'],$valuesar['sprconac'],$valuesar['prg'],$valuesar['spr'],$valuesar['py'],
-                $valuesar['idpartida'],$valuesar['tipogasto'],$valuesar['ano'],$valuesar['no_etiquetado_y_etiquetado'],$valuesar['fconac'],$valuesar['ramo'],$valuesar['fondo'],
-                $valuesar['ci'],$valuesar['obra'],$valuesar['total'],$valuesar['enero'],$valuesar['febrero'],$valuesar['marzo'],$valuesar['abril'],$valuesar['mayo'],
-                $valuesar['junio'],$valuesar['julio'],$valuesar['agosto'],$valuesar['septiembre'],$valuesar['octubre'],$valuesar['noviembre'],$valuesar['diciembre']);
-                $dataSet[] = $ds;
-            } */
+
 
         }
 

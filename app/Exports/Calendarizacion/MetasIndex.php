@@ -60,7 +60,6 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             ->where('mml_mir.ejercicio', $anio)
             ->where('pp.ejercicio', $anio)
             ->groupByRaw('mml_mir.id_epp')
-
             ->distinct();
         if (Auth::user()->id_grupo == 4) {
             $upp = Auth::user()->clv_upp;

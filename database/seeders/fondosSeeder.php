@@ -7242,6 +7242,11 @@ class fondosSeeder extends Seeder
  (4375, 1, 2, 3, 5, 9, 74, 91, 453, 528, 541, 570, 618, 871, 902, 914, 1037, 1086, 1992, 2024, 1, 0, 1, '2023-09-24 19:04:41', '2023-09-24 19:06:08', NULL, NULL, NULL, 'SISTEMA'),
  (4376, 1, 2, 3, 5, 9, 74, 91, 454, 528, 541, 570, 618, 632, 902, 914, 1037, 1060, 1992, 2024, 1, 0, 1, '2023-09-24 19:04:41', '2023-09-24 19:06:08', NULL, NULL, NULL, 'SISTEMA');
          ");
+         /*  UPDATE PARA LOS REGISTROS CON MIR Y SIN MIR  EPP*/
+     DB::unprepared("UPDATE epp SET con_mir = 1;
+     UPDATE epp SET con_mir = 0  WHERE subprograma_id=1060;
+     UPDATE epp SET con_mir = 0  WHERE programa_id = 929;
+     UPDATE epp SET con_mir = 0  WHERE programa_id =931;");
  
  DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (1,'001','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -22754,29 +22759,29 @@ DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,
         ");
 
         DB::unprepared("INSERT INTO tipologia_conac(id,tipo, descripcion, clave_conac, descripcion_conac, deleted_at, updated_at, created_at) values
-            (1,0,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','S','SUJETOS A REGLAS DE OPERACIÓN',null,now(),now()),
-            (2,0,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','U','OTROS SUBSIDIOS',null,now(),now()),
-            (3,0,'Desempeño de las Funciones','E','PRESTACIÓN DE SERVICIOS PÚBLICOS',null,now(),now()),
-            (4,0,'Desempeño de las Funciones','B','PROVISIÓN DE BIENES PÚBLICOS',null,now(),now()),
-            (5,0,'Desempeño de las Funciones','P','PLANEACIÓN, SEGUIMIENTO Y EVALUACIÓN DE POLÍTICAS PÚBLICAS',null,now(),now()),
-            (6,0,'Desempeño de las Funciones','F','PROMOCIÓN Y FOMENTO',null,now(),now()),
-            (7,0,'Desempeño de las Funciones','G','REGULACIÓN Y SUPERVISIÓN',null,now(),now()),
-            (8,0,'Desempeño de las Funciones','A','FUNCIONES DE LAS FUERZAS ARMADAS (ÚNICAMENTE GOBIERNO FEDERAL)',null,now(),now()),
-            (9,0,'Desempeño de las Funciones','R','ESPECÍFICOS',null,now(),now()),
-            (10,0,'Desempeño de las Funciones','K','PROYECTOS DE INVERSIÓN',null,now(),now()),
-            (11,0,'Administrativos y de Apoyo','M','APOYO AL PROCESO PRESUPUESTARIO Y PARA MEJORAR LA EFICIENCIA INSTITUCIONAL',null,now(),now()),
-            (12,0,'Administrativos y de Apoyo','O','APOYO A LA FUNCIÓN PÚBLICA Y AL MEJORAMIENTO DE LA GESTIÓN',null,now(),now()),
-            (13,0,'Administrativos y de Apoyo','W','OPERACIONES AJENAS',null,now(),now()),
-            (14,0,'Compromisos','L','OBLIGACIONES DE CUMPLIMIENTO DE RESOLUCIÓN JURISDICCIONAL',null,now(),now()),
-            (15,0,'Compromisos','N','DESASTRES NATURALES',null,now(),now()),
-            (16,0,'Obligaciones','J','PENSIONES Y JUBILACIONES',null,now(),now()),
-            (17,0,'Obligaciones','T','APORTACIONES A LA SEGURIDAD SOCIAL',null,now(),now()),
-            (18,0,'Obligaciones','Y','APORTACIONES A FONDOS DE ESTABILIZACIÓN',null,now(),now()),
-            (19,0,'Obligaciones','Z','APORTACIONES A FONDOS DE INVERSIÓN Y REESTRUCTURA DE PENSIONES',null,now(),now()),
-            (20,0,'Programas de Gasto Federalizado (Gobierno Federal)','I','GASTO FEDERALIZADO',null,now(),now()),
-            (21,1,'PARTICIPACIONES A ENTIDADES FEDERATIVAS Y MUNICIPIOS',null,null,null,now(),now()),
-            (22,1,'COSTO FINANCIERO, DEUDA O APOYOS A DEUDORES Y AHORRADORES DE LA BANCA',null,null,null,now(),now()),
-            (23,1,'ADEUDOS DE EJERCICIOS FISCALES ANTERIORES',null,null,null,now(),now());
+            (1,0,null,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','S','SUJETOS A REGLAS DE OPERACIÓN',null,now(),now()),
+            (2,0,null,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','U','OTROS SUBSIDIOS',null,now(),now()),
+            (3,0,null,'Desempeño de las Funciones','E','PRESTACIÓN DE SERVICIOS PÚBLICOS',null,now(),now()),
+            (4,0,null,'Desempeño de las Funciones','B','PROVISIÓN DE BIENES PÚBLICOS',null,now(),now()),
+            (5,0,null,'Desempeño de las Funciones','P','PLANEACIÓN, SEGUIMIENTO Y EVALUACIÓN DE POLÍTICAS PÚBLICAS',null,now(),now()),
+            (6,0,null,'Desempeño de las Funciones','F','PROMOCIÓN Y FOMENTO',null,now(),now()),
+            (7,0,null,'Desempeño de las Funciones','G','REGULACIÓN Y SUPERVISIÓN',null,now(),now()),
+            (8,0,null,'Desempeño de las Funciones','A','FUNCIONES DE LAS FUERZAS ARMADAS (ÚNICAMENTE GOBIERNO FEDERAL)',null,now(),now()),
+            (9,0,null,'Desempeño de las Funciones','R','ESPECÍFICOS',null,now(),now()),
+            (10,0,null,'Desempeño de las Funciones','K','PROYECTOS DE INVERSIÓN',null,now(),now()),
+            (11,0,null,'Administrativos y de Apoyo','M','APOYO AL PROCESO PRESUPUESTARIO Y PARA MEJORAR LA EFICIENCIA INSTITUCIONAL',null,now(),now()),
+            (12,0,null,'Administrativos y de Apoyo','O','APOYO A LA FUNCIÓN PÚBLICA Y AL MEJORAMIENTO DE LA GESTIÓN',null,now(),now()),
+            (13,0,null,'Administrativos y de Apoyo','W','OPERACIONES AJENAS',null,now(),now()),
+            (14,0,null,'Compromisos','L','OBLIGACIONES DE CUMPLIMIENTO DE RESOLUCIÓN JURISDICCIONAL',null,now(),now()),
+            (15,0,null,'Compromisos','N','DESASTRES NATURALES',null,now(),now()),
+            (16,0,null,'Obligaciones','J','PENSIONES Y JUBILACIONES',null,now(),now()),
+            (17,0,null,'Obligaciones','T','APORTACIONES A LA SEGURIDAD SOCIAL',null,now(),now()),
+            (18,0,null,'Obligaciones','Y','APORTACIONES A FONDOS DE ESTABILIZACIÓN',null,now(),now()),
+            (19,0,null,'Obligaciones','Z','APORTACIONES A FONDOS DE INVERSIÓN Y REESTRUCTURA DE PENSIONES',null,now(),now()),
+            (20,0,null,'Programas de Gasto Federalizado (Gobierno Federal)','I','GASTO FEDERALIZADO',null,now(),now()),
+            (21,1,'C','PARTICIPACIONES A ENTIDADES FEDERATIVAS Y MUNICIPIOS',null,null,null,now(),now()),
+            (22,1,'D','COSTO FINANCIERO, DEUDA O APOYOS A DEUDORES Y AHORRADORES DE LA BANCA',null,null,null,now(),now()),
+            (23,1,'H','ADEUDOS DE EJERCICIOS FISCALES ANTERIORES',null,null,null,now(),now());
         ");
 
         DB::unprepared("INSERT INTO unidades_medida values
