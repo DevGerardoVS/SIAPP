@@ -29,9 +29,7 @@
                             { width: "5em"},
                             { width: "10em"},
                             { width: "20em"},
-                            { width: "10em"},
-                            { width: "20em"},
-                            { width: "20em"},
+                            { width: "5em"},
                         ];
                     break;
                 default:

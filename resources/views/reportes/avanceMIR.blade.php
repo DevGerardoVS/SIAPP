@@ -78,8 +78,8 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body table-responsive">
-                                <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoB" style="width:100%; font-size: 14px;" data-left="4,6,7">
+                                <table class="tableRowStyle table table-hover table-bordered table-striped order-table text-center tableSize align-middle"
+                                    id="catalogoB" style="width:100%; font-size: 14px;" data-left="4">
                                     <thead  class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important;">UPP</th>
@@ -87,9 +87,7 @@
                                             <th class="exportable align-middle text-light" style="text-align: center !important;">UR</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important;">Área funcional</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important;">Nombre del proyecto</th>
-                                            <th class="exportable align-middle text-light" style="text-align: center !important;">Nivel</th>
-                                            <th class="exportable align-middle text-light" style="text-align: center !important;">Objetivo</th>
-                                            <th class="exportable align-middle text-light" style="text-align: center !important;">Indicador</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important;">Con MIR</th>
                                         </tr>
                                     </thead>
                                 </table>
