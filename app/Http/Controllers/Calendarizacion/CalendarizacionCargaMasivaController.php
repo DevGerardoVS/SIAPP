@@ -62,7 +62,7 @@ class CalendarizacionCargaMasivaController extends Controller
     //Obtener datos del excel
     public function loadDataPlantilla(Request $request)
     {
-        ini_set('upload_max_filesize', '1024M');
+        ini_set('upload_max_filesize', '2048M');
         $request->tipo ? $tipoAdm = $request->tipo : $tipoAdm = NULL;
         $uppUsuario = auth::user()->clv_upp;
         $message = [
