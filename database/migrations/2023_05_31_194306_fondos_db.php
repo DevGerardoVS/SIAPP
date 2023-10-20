@@ -563,6 +563,8 @@ return new class extends Migration
             $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->string('linea_accion_num',8)->nullable(false);
+            $table->string('clv_linea_accion',2)->nullable(false);
 
             $table->foreign('linea_accion_id')->references('id')->on('catalogo');
         });
