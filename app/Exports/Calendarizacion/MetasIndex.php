@@ -36,7 +36,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             $c[] = $key->sub;
         }
         $data3 = DB::table('mml_mir')
-            ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'mml_mir.clv_upp')
+            ->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'mml_mir.clv_upp')
             ->leftJoin('programacion_presupuesto AS pp', 'pp.upp', '=', 'mml_mir.clv_upp')
             ->leftJoin('v_epp', 'v_epp.id', '=', 'mml_mir.id_epp')
             ->select(
@@ -55,12 +55,12 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             })
             ->where('mml_mir.deleted_at', null)
             ->where('mml_mir.nivel', 11)
-            ->where('mml_avance_etapas_pp.estatus', 3)
+            ->where('mml_cierre_ejercicio.ejercicio', $anio)
+            ->where('mml_cierre_ejercicio.statusm', 1)
             ->where('pp.estado', 1)
             ->where('mml_mir.ejercicio', $anio)
             ->where('pp.ejercicio', $anio)
             ->groupByRaw('mml_mir.id_epp')
-
             ->distinct();
         if (Auth::user()->id_grupo == 4) {
             $upp = Auth::user()->clv_upp;
@@ -71,10 +71,9 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
                 ->where('cierre_ejercicio_metas.estatus', 'Abierto');
         }
         $prueba = DB::table('programacion_presupuesto AS pp')
-        ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'pp.upp')
-        ->join('mml_mir', function (JoinClause $join) {
-        $join->on('pp.upp', '=', 'mml_mir.clv_upp')
-        ->on('pp.ur', '=', 'mml_mir.clv_ur');
+            ->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'pp.upp')
+            ->join('mml_mir', function (JoinClause $join) {
+                $join->on('pp.upp', '=', 'mml_mir.clv_upp');
     })
         ->select(
             'mml_mir.clv_upp',
@@ -94,7 +93,8 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
         ->where('pp.deleted_at', null)
         ->where('mml_mir.nivel', 11)
         ->where('pp.ejercicio', '=', $anio)
-        ->where('mml_avance_etapas_pp.estatus', 3)
+        ->where('mml_cierre_ejercicio.ejercicio', $anio)
+        ->where('mml_cierre_ejercicio.statusm', 1)
         ->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
         ->distinct();
 
@@ -106,6 +106,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             ->where('cierre_ejercicio_metas.ejercicio', $anio)
             ->where('cierre_ejercicio_metas.estatus', 'Abierto');
     }
+        $checkpp = $prueba->get();
     Schema::create('pptemp', function (Blueprint $table) {
         $table->temporary();
         $table->increments('id');
@@ -119,7 +120,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
     });
 
         $data2 = DB::table('programacion_presupuesto AS pp')
-            ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'pp.upp')
+            ->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'pp.upp')
             ->leftJoin('v_epp', 'v_epp.clv_upp', '=', 'pp.upp')
             ->select(
                 'pp.upp AS clv_upp',
@@ -134,7 +135,8 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             ->where('pp.estado', 1)
             ->where('pp.deleted_at', null)
             ->where('pp.ejercicio', '=', $anio)
-            ->where('mml_avance_etapas_pp.estatus', 3)
+            ->where('mml_cierre_ejercicio.ejercicio', $anio)
+            ->where('mml_cierre_ejercicio.statusm', 1)
             ->where(function ($query) use ($c) {
                 foreach ($c as $sub) {
                     $query->where('pp.subprograma_presupuestario', '!=', $sub);
@@ -176,7 +178,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             })
             ->distinct();
         $data = DB::table('programacion_presupuesto')
-            ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'programacion_presupuesto.upp')
+            ->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'programacion_presupuesto.upp')
             ->leftJoin('catalogo', 'catalogo.clave', '=', 'programacion_presupuesto.subprograma_presupuestario')
             ->select(
                 'upp AS clv_upp',
@@ -192,9 +194,10 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             ->where('programacion_presupuesto.ejercicio', '=', $anio)
             ->where('catalogo.deleted_at', null)
             ->where('catalogo.grupo_id', 20)
-            ->where('mml_avance_etapas_pp.estatus', 3)
+            ->where('mml_cierre_ejercicio.ejercicio', $anio)
+            ->where('mml_cierre_ejercicio.statusm', 1)
             ->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-            ->unionAll($prueba)
+            ->unionAll( $data3 )
             ->unionAll($newdata2)
             ->distinct();
 
@@ -211,6 +214,9 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
         foreach ($data as $key) {
             $area = str_split($key->area_funcional);
             $entidad = str_split($key->entidad_ejecutora);
+            $spr = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
+            if($spr=='UUU'){
+                
             $i = array(
                 $area[0],
                 $area[1],
@@ -222,7 +228,46 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
                 '' . strval($entidad[0]) . strval($entidad[1]) . strval($entidad[2]) . '',
                 '' . strval($entidad[4]) . strval($entidad[5]) . '',
                 '' . strval($area[8]) . strval($area[9]) . '',
-                '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
+                $spr,
+                '' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
+                $key->fondo,
+                $key->clv_actadmon,
+                $key->mir_act,
+                $key->actividad,
+                '0',
+                'Acumulativa',
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                2,
+                3,
+                '',
+                '',
+                '',
+                '',
+                '',
+                ''
+            );
+            }else{
+            $i = array(
+                $area[0],
+                $area[1],
+                $area[2],
+                $area[3],
+                '' . strval($area[4]) . strval($area[5]) . '',
+                $area[6],
+                $area[7],
+                '' . strval($entidad[0]) . strval($entidad[1]) . strval($entidad[2]) . '',
+                '' . strval($entidad[4]) . strval($entidad[5]) . '',
+                '' . strval($area[8]) . strval($area[9]) . '',
+                $spr,
                 '' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
                 $key->fondo,
                 $key->clv_actadmon,
@@ -248,7 +293,7 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
                 '',
                 '',
                 ''
-            );
+            );}
             $dataSet[] = $i;
         }
         $this->filas = 0;

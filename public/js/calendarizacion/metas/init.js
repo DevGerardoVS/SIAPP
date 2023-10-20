@@ -1,18 +1,19 @@
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 let mesesV = {
-    enero:false,
-    febrero:false,
-    marzo:false,
-    abril:false,
-    mayo:false,
-    junio:false,
-    julio:false,
-    agosto:false,
-    septiembre:false,
-    octubre:false,
-    noviembre:false,
-    diciembre:false
+    enero: false,
+    febrero: false,
+    marzo: false,
+    abril: false,
+    mayo: false,
+    junio: false,
+    julio: false,
+    agosto: false,
+    septiembre: false,
+    octubre: false,
+    noviembre: false,
+    diciembre: false
 };
+let contValue = 0;
 let mesesName = [
     'enero',
     'febrero',
@@ -28,7 +29,7 @@ let mesesName = [
     'diciembre'
 ];
 let actividades = [];
-let bandera=false
+let bandera = false
 var dao = {
     checkCombination: function (upp) {
         $.ajax({
@@ -40,18 +41,18 @@ var dao = {
                 $("#ur_filter").removeAttr('disabled');
                 $("#tipo_Ac").removeAttr('disabled');
                 dao.getSelect();
-                $('#incomplete').hide(); 
+                $('#incomplete').hide();
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text('');
                 if ($('#upp').val() != '') {
                     dao.getUrs($('#upp').val());
                 } else {
-                    if ($('#upp_filter').val() !='') {
+                    if ($('#upp_filter').val() != '') {
                         dao.getUrs($('#upp_filter').val());
                     } else {
                         dao.getUrs('0');
                     }
-                    
+
                 }
                 $('#metasVista').show();
                 $(".CargaMasiva").show();
@@ -66,13 +67,13 @@ var dao = {
                 $("#sel_fondo").attr('disabled', 'disabled');
                 $("#sel_actividad").attr('disabled', 'disabled');
 
-                $('#incomplete').show(); 
+                $('#incomplete').show();
                 $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text(data.mensaje);
-                $('#metasVista').hide(); 
+                $('#metasVista').hide();
                 Swal.fire({
                     icon: 'warning',
-                    title: data?.title ? data.title:'Información incompleta',
+                    title: data?.title ? data.title : 'Información incompleta',
                     text: data.mensaje,
                     confirmButtonText: 'Aceptar',
                     allowOutsideClick: false
@@ -82,23 +83,23 @@ var dao = {
                             window.location.href = data.url
                         }
                     }
-                    
+
                 });
             }
 
         });
     },
     getData: function (upp, ur) {
-      /*   var data = new FormData();
-        if ($('#upp').val() != '') {
-            data.append('ur_filter', ur);
-        } else {
-            data.append('ur_filter', ur);
-            data.append('upp_filter', upp);
-        } */
+        /*   var data = new FormData();
+          if ($('#upp').val() != '') {
+              data.append('ur_filter', ur);
+          } else {
+              data.append('ur_filter', ur);
+              data.append('upp_filter', upp);
+          } */
         $.ajax({
             type: "GET",
-            url: "/calendarizacion/data/"+upp+"/"+ur,
+            url: "/calendarizacion/data/" + upp + "/" + ur,
             dataType: "JSON"
         }).done(function (_data) {
             _table = $("#entidad");
@@ -117,7 +118,7 @@ var dao = {
                 { "aTargets": [10], "mData": [10] }]
             }
             ];
-       /*  let columns={ "width": "0%", "targets":  _columns } */
+            /*  let columns={ "width": "0%", "targets":  _columns } */
             _gen.setTableScrollFotter(_table, _columns, _data.dataSet);
             let index = _data.dataSet;
             if (index.length == 0) {
@@ -143,13 +144,13 @@ var dao = {
 
             } else {
                 $('.btnSave').show();
-                $('#incomplete').hide(); 
+                $('#incomplete').hide();
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text('');
-                $('#metasVista').show(); 
+                $('#metasVista').show();
                 $(".CargaMasiva").show();
             }
-            
+
         });
     },
     getUrs: function (upp) {
@@ -167,156 +168,180 @@ var dao = {
             $.each(urs, function (i, val) {
                 par.append(new Option(val.ur, val.clv_ur));
             });
-
-            var tipo_AC = $('#tipo_Ac');
-            tipo_AC.html('');
-            if (tAct.length>= 2) {
-                tipo_AC.append(new Option("--Tipo Actividad--", ""));
-                document.getElementById("tipo_Ac").options[0].disabled = true;
-
-            } 
-            $.each(tAct, function (i, val) {
-                if (val == 1) {
-                    tipo_AC.append(new Option(i, i));
-                }
-            });
         });
     },
+    nCont: function () {
+        if ($('#nContinua').val()!='') {
+            contValue = $('#nContinua').val();
+            for (let i = 1; i <= 12; i++) {
+                $('#' + i).val(contValue);
+                $('#' + i).attr('disabled', 'disabled');
+            }
+            $('#sumMetas').val(contValue);
+            $('#sumMetas').attr('disabled', 'disabled');
+            dao.clearCont();
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Este campo es requerido',
+              })
+        }
+      
+    },
+    clearCont: function () {
+        $('#nContinua').val("");
+        $('#continua').modal('hide');
+    },
     getMeses: function (idA, idF) {
+        let arr = idA.split('-');
         for (const key in mesesV) {
             if (Object.hasOwnProperty.call(mesesV, key)) {
-                mesesV[key]=false;
+                mesesV[key] = false;
             }
         }
+        console.log("mes",{area:idA,fondo:idF})
         $.ajax({
             type: "GET",
-            url: '/actividades/meses-activos/' + idA+"/"+idF,
+            url: '/actividades/meses-activos/' + idA + "/" + idF,
             dataType: "JSON"
         }).done(function (data) {
             let { mese } = data;
-            for (const key in mese) {
-               
-                if (Object.hasOwnProperty.call(mese, key)) {
-                    const e = mese[key];
-                    switch (key) {
-                        case 'enero':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.enero = true;
-                                $("#1").prop('disabled', false);
-                                $("#1").prop('required',true);
-                            } else {
-                                $("#1").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'febrero':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.febrero = true;
-                                $("#2").prop('disabled', false);
-                                $("#2").prop('required',true);
-                            } else {
-                                $("#2").prop('disabled', 'disabled');
-                            }
+            if (arr[8] != 'UUU') {
+                for (const key in mese) {
+                    if (Object.hasOwnProperty.call(mese, key)) {
+                        const e = mese[key];
+                        switch (key) {
+                            case 'enero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.enero = true;
+                                    $("#1").prop('disabled', false);
+                                    $("#1").prop('required', true);
+                                } else {
+                                    $("#1").prop('disabled', 'disabled');
+                                }
                                 break;
-                        case 'marzo':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.marzo = true;
-                                $("#3").prop('disabled', false);
-                                $("#3").prop('required',true);
-                            } else {
-                                $("#3").prop('disabled', 'disabled');
+                            case 'febrero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.febrero = true;
+                                    $("#2").prop('disabled', false);
+                                    $("#2").prop('required', true);
+                                } else {
+                                    $("#2").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'marzo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.marzo = true;
+                                    $("#3").prop('disabled', false);
+                                    $("#3").prop('required', true);
+                                } else {
+                                    $("#3").prop('disabled', 'disabled');
 
-                            }
+                                }
                                 break;
-                        case 'abril':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.abril = true;
-                                $("#4").prop('disabled', false);
-                                $("#4").prop('required',true);
-                            } else {
-                                $("#4").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'mayo':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.mayo = true;
-                                $("#5").prop('disabled', false);
-                                $("#5").prop('required',true);
-                            } else {
-                                $("#5").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'junio':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.junio = true;
-                                $("#6").prop('disabled', false);
-                                $("#6").prop('required',true);
-                            } else {
-                                $("#6").prop('disabled', 'disabled');
-                            }
-                               break;
-                        case 'julio':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.julio = true;
-                                $("#7").prop('disabled', false);
-                                $("#7").prop('required',true);
-                            } else {
-                                $("#7").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'agosto':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.agosto = true;
-                                $("#8").prop('disabled', false);
-                                $("#8").prop('required',true);
-                            } else {
-                                $("#8").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'septiembre':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.septiembre = true;
-                                $("#9").prop('disabled', false);
-                                $("#9").prop('required',true);
-                            } else {
-                                $("#9").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'octubre':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.octubre = true;
-                                $("#10").prop('disabled', false);
-                                $("#10").prop('required',true);
-                            } else {
-                                $("#10").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'noviembre':
-                            if (e != 0.0 || e != 0) {
-                                mesesV.noviembre = true;
-                                $("#11").prop('disabled', false);
-                                $("#11").prop('required',true);
-                            } else {
-                                $("#11").prop('disabled', 'disabled');
-                            }
-                            break;
-                        case 'diciembre':
-                            
-                            if (e != 0.0 || e != 0) {
-                                mesesV.diciembre = true;
-                                $("#12").prop('disabled', false);
-                                $("#12").prop('required',true);
-                            } else {
-                                $("#12").prop('disabled', 'disabled');
-                            }
-                            break;
-                    
-                        default:
-                            break;
+                            case 'abril':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.abril = true;
+                                    $("#4").prop('disabled', false);
+                                    $("#4").prop('required', true);
+                                } else {
+                                    $("#4").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'mayo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.mayo = true;
+                                    $("#5").prop('disabled', false);
+                                    $("#5").prop('required', true);
+                                } else {
+                                    $("#5").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'junio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.junio = true;
+                                    $("#6").prop('disabled', false);
+                                    $("#6").prop('required', true);
+                                } else {
+                                    $("#6").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'julio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.julio = true;
+                                    $("#7").prop('disabled', false);
+                                    $("#7").prop('required', true);
+                                } else {
+                                    $("#7").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'agosto':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.agosto = true;
+                                    $("#8").prop('disabled', false);
+                                    $("#8").prop('required', true);
+                                } else {
+                                    $("#8").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'septiembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.septiembre = true;
+                                    $("#9").prop('disabled', false);
+                                    $("#9").prop('required', true);
+                                } else {
+                                    $("#9").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'octubre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.octubre = true;
+                                    $("#10").prop('disabled', false);
+                                    $("#10").prop('required', true);
+                                } else {
+                                    $("#10").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'noviembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.noviembre = true;
+                                    $("#11").prop('disabled', false);
+                                    $("#11").prop('required', true);
+                                } else {
+                                    $("#11").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'diciembre':
+
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.diciembre = true;
+                                    $("#12").prop('disabled', false);
+                                    $("#12").prop('required', true);
+                                } else {
+                                    $("#12").prop('disabled', 'disabled');
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+
                     }
-                    
                 }
+            } else {
+                for (let i = 1; i <= 11; i++) {
+                    $("#" + i).val(2);
+                    $("#" + i).prop('disabled', 'disabled');
+                }
+                $("#12").val(3);
+                $("#12").prop('disabled', 'disabled');
+                $("#sumMetas").val(25);
+                $("#sumMetas").prop('disabled', 'disabled')
+
+
             }
-     
+
 
 
         });
@@ -329,131 +354,131 @@ var dao = {
                 switch (key) {
                     case 'enero':
                         if (e) {
-                           
+
                             if ($("#1").val() == 0) {
-                                $('#1-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#1-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#1-error').text("").removeClass('has-error');
                             }
                         }
                         break;
                     case 'febrero':
                         if (e) {
-                           
+
                             if ($("#2").val() == 0) {
-                                $('#2-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#2-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#2-error').text("").removeClass('has-error');
                             }
                         }
                         break;
                     case 'marzo':
                         if (e) {
-                           
+
                             if ($("#3").val() == 0) {
-                                $('#3-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#3-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#3-error').text("").removeClass('has-error');
                             }
                         }
                         break;
                     case 'abril':
                         if (e) {
-                           
+
                             if ($("#4").val() == 0) {
-                                $('#4-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#4-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#4-error').text("").removeClass('has-error');
                             }
                         }
                         break;
                     case 'mayo':
                         if (e) {
-                           
+
                             if ($("#5").val() == 0) {
-                                $('#5-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#5-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#5-error').text("").removeClass('has-error');
                             }
                         }
                         break;
                     case 'junio':
                         if (e) {
-                                if ($("#6").val() == 0 || $("#6").val() == '0') {
+                            if ($("#6").val() == 0 || $("#6").val() == '0') {
                                 $('#6-error').text("Este campo es requerido").addClass('has-error').show();
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#6-error').text("").removeClass('has-error');
                             }
                         }
                         break;
                     case 'julio':
                         if (e) {
-                           
+
                             if ($("#7").val() == 0) {
-                                $('#7-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#7-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#7-error').text("").removeClass('has-error');
                             }
                         }
                         break;
                     case 'agosto':
                         if (e) {
-                           
+
                             if ($("#8").val() == 0) {
-                                $('#8-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#8-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#8-error').text("").removeClass('has-error');
                             }
                         }
                         break;
                     case 'septiembre':
                         if (e) {
-                           
+
                             if ($("#9").val() == 0) {
-                                $('#9-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#9-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#9-error').text("").removeClass('has-error');
                             }
                         }
                         break;
                     case 'octubre':
                         if (e) {
-                           
+
                             if ($("#10").val() == 0) {
-                                $('#10-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#10-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#10-error').text("").removeClass('has-error');
                             }
                         }
                         break;
                     case 'noviembre':
                         if (e) {
-                           
+
                             if ($("#11").val() == 0) {
-                                $('#11-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#11-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#11-error').text("").removeClass('has-error');
                             }
                         }
@@ -461,12 +486,12 @@ var dao = {
                     case 'diciembre':
 
                         if (e) {
-                           
+
                             if ($("#12").val() == 0) {
-                                $('#12-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                $('#12-error').text("Este campo es requerido").addClass('has-error').css({ 'display': '' });
                                 mesesfs++;
                             } else {
-                                
+
                                 $('#1-error').text("").removeClass('has-error');
                             }
                         }
@@ -478,15 +503,15 @@ var dao = {
 
             }
         }
-        console.log("meses sin llenar:",mesesfs);
+        console.log("meses sin llenar:", mesesfs);
         if (mesesfs >= 1) {
             $("#meses-error").text("Debes de llenar los meses desbloqueados").addClass('has-error');
             return false;
-           
+
         } else {
             $("#meses-error").text("").removeClass('has-error');
             return true;
-       }
+        }
     },
     getUpps: function () {
         $.ajax({
@@ -530,9 +555,15 @@ var dao = {
         var data = new FormData(form);
         data.append('sumMetas', $('#sumMetas').val());
         data.append('upp', $('#upp').val() != '' ? $('#upp').val() : $('#upp_filter').val());
-        let aOld=$('#area').val()
-        let area=aOld.replace('$', '/')
-        data.append('area',area);
+        let aOld = $('#area').val()
+        let area = aOld.replace('$', '/')
+        data.append('area', area);
+        if ($('#tipo_Ac').val() == 'Continua') {
+            for (let i = 0; i <= 12; i++) {
+                data.append(i, contValue); 
+            }
+            data.append('sumMetas', contValue);
+        }
         $.ajax({
             type: "POST",
             url: '/calendarizacion/create',
@@ -544,7 +575,7 @@ var dao = {
             timeout: 600000
         }).done(function (response) {
             dao.limpiar();
-            const {mensaje } = response;
+            const { mensaje } = response;
             Swal.fire({
                 icon: mensaje.icon,
                 title: mensaje.title,
@@ -552,18 +583,18 @@ var dao = {
             });
             if ($('#upp').val() == '') {
                 dao.getUpps();
-               
+
             } else {
                 dao.checkCombination($('#upp').val())
             }
-            dao.getData('upp','ur');
-            
+            dao.getData('upp', 'ur');
+
         });
     },
     rCMetasUpp: function (upp) {
         $.ajax({
             type: "GET",
-            url: '/agregar-actividades/confirmacion-metas-upp/'+upp,
+            url: '/agregar-actividades/confirmacion-metas-upp/' + upp,
             dataType: "JSON"
         }).done(function (data) {
             if (data.status) {
@@ -573,7 +604,7 @@ var dao = {
             } else {
                 $(".cmupp").hide();
             }
-            
+
 
         });
     },
@@ -597,7 +628,7 @@ var dao = {
                 title: response.title,
                 text: response.text
             });
-            
+
 
         });
     },
@@ -626,7 +657,7 @@ var dao = {
             console.log("error-", error);
         });
     },
-     getSelect: function () {
+    getSelect: function () {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
@@ -656,6 +687,8 @@ var dao = {
             $("#" + i).val(0);
             $("#" + i).prop('disabled', true);
         }
+        let ar = area.split('-'); 
+        $("#calendar").val(ar[8]); 
         let clave = `${area}$${enti}$${anio}`;
         $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
@@ -664,10 +697,10 @@ var dao = {
             type: "GET",
             url: '/calendarizacion/fondos/' + area + '/' + enti,
             dataType: "JSON"
-        }).done(function (data) {     
-            const { fondos, activids } = data;
+        }).done(function (data) {
+            const { fondos, activids ,tAct} = data;
             let flag = false;
-            if (activids[0].id=='ot' && mir==1) {
+            if (activids[0].id == 'ot' && mir == 1) {
                 flag = true;
             }
             if (mir == 0) {
@@ -732,21 +765,38 @@ var dao = {
                 });
             }
             if ($('#actividad_id').val() == 'ot') {
-                
+
                 $("#inputAc").removeAttr('disabled');
                 $(".inputAc").show();
-                
+
                 $("#idAct").addClass("col-md-4").removeClass("col-md-6");
                 $("#idFond").addClass("col-md-4").removeClass("col-md-6");
             }
             if (fondos.length == 1 && activids.length == 1) {
                 let fondo = '';
-                if ($('#sel_fondo').val()!=''|| $('#sel_fondo').val()!=null) {
+                if ($('#sel_fondo').val() != '' || $('#sel_fondo').val() != null) {
                     fondo = $('#sel_fondo').val();
                 } else {
                     fondo = $('#fondo_id').val();
                 }
-                dao.getMeses(clave,fondo);
+                dao.getMeses(clave, fondo);
+            }
+
+            var tipo_AC = $('#tipo_Ac');
+            tipo_AC.html('');
+            if (Object.keys(tAct).length >= 2 && $('#calendar').val()!='UUU') {
+                tipo_AC.append(new Option("--Tipo Actividad--", ""));
+                document.getElementById("tipo_Ac").options[0].disabled = true;
+
+            }
+            if ($('#calendar').val()=='UUU') {
+                tipo_AC.append(new Option('Acumulativa','Acumulativa'));
+            } else {
+                $.each(tAct, function (i, val) {
+                    if (val == 1) {
+                        tipo_AC.append(new Option(i, i));
+                    }
+                });
             }
 
         });
@@ -804,7 +854,7 @@ var dao = {
         $("#sel_fondo").val('');
         $("#beneficiario").val('');
         $("#sumMetas").val('');
-        $("#sel_fondo").empty(''); 
+        $("#sel_fondo").empty('');
         $('#fondo_id').empty('');
         $('#actividad_id').empty();
         $('#sel_actividad').empty();
@@ -815,7 +865,7 @@ var dao = {
         let upp = "";
         if ($('#upp').val() == '') {
             upp = $('#upp_filter').val();
-            
+
         } else {
             upp = $('#upp').val();
         }
@@ -825,12 +875,12 @@ var dao = {
             showDenyButton: true,
             confirmButtonText: 'Confirmar',
             denyButtonText: `Cancelar`,
-          }).then((result) => {
+        }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 $.ajax({
                     type: "GET",
-                    url: '/actividades/desconfirmar-metas/'+upp+"/"+anio,
+                    url: '/actividades/desconfirmar-metas/' + upp + "/" + anio,
                     dataType: "JSON"
                 }).done(function (data) {
                     const { mensaje } = data;
@@ -843,8 +893,8 @@ var dao = {
             } /* else if (result.isDenied) {
               Swal.fire('Changes are not saved', '', 'info')
             } */
-          })
-       
+        })
+
     },
     arrEquals: function (numeros) {
         let duplicados = [];
@@ -880,10 +930,10 @@ var dao = {
         for (let i = 1; i <= 12; i++) {
             if ($('#' + i).val() != "") {
                 let suma = parseInt($('#' + i).val());
-                if ($('#' + i).val() !=0 && $('#' + i).val() != "" && $('#' + i).val() != "null" && $('#' + i).val() !=  null) {
-                    e.push(suma); 
+                if ($('#' + i).val() != 0 && $('#' + i).val() != "" && $('#' + i).val() != "null" && $('#' + i).val() != null) {
+                    e.push(suma);
                 }
-               
+
             }
         }
         if (dao.arrEquals(e)) {
@@ -904,13 +954,13 @@ var dao = {
         let actividad = $("#tipo_Ac option:selected").text();
         switch (actividad) {
             case 'Acumulativa':
-                $('#sumMetas').val(dao.validateAcu()!=0?dao.validateAcu():'');
+                $('#sumMetas').val(dao.validateAcu() != 0 ? dao.validateAcu() : '');
                 break;
             case 'Continua':
-                $('#sumMetas').val(dao.validatCont()!=0?dao.validatCont():'');
+                $('#sumMetas').val(dao.validatCont() != 0 ? dao.validatCont() : '');
                 break;
             case 'Especial':
-                $('#sumMetas').val(dao.validatEspe()!=0?dao.validatEspe():'');
+                $('#sumMetas').val(dao.validatEspe() != 0 ? dao.validatEspe() : '');
                 break;
 
             default:
@@ -957,7 +1007,7 @@ var init = {
             },
             messages: {
                 actividad_id: { required: "Este campo es requerido" },
-                inputAc:  { required: "Este campo es requerido" },
+                inputAc: { required: "Este campo es requerido" },
                 fondo_id: { required: "Este campo es requerido" },
                 sel_actividad: { required: "Este campo es requerido" },
                 sel_fondo: { required: "Este campo es requerido" },
@@ -986,7 +1036,7 @@ var init = {
             },
             messages: {
                 actividad_id: { required: "Este campo es requerido" },
-                inputAc:  { required: "Este campo es requerido" },
+                inputAc: { required: "Este campo es requerido" },
                 fondo_id: { required: "Este campo es requerido" },
                 tipo_Ac: { required: "Este campo es requerido" },
                 beneficiario: { required: "Este campo es requerido" },
@@ -1003,6 +1053,16 @@ var init = {
             },
             messages: {
                 cmFile: { required: "Este campo es requerido" }
+            }
+        });
+    },
+    validateCont: function (form) {
+        _gen.validate(form, {
+            rules: {
+                nContinua: { required: true }
+            },
+            messages: {
+                nContinua: { required: "Este campo es requerido" }
             }
         });
     },
@@ -1031,30 +1091,41 @@ $(document).ready(function () {
         $('#sel_actividad').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
         $('#sel_fondo').empty();
         $('#sel_fondo').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
-   
+
 
     });
     $('#sel_fondo').change(() => {
-            dao.getMeses($('#area').val(),$('#sel_fondo').val());
+        dao.getMeses($('#area').val(), $('#sel_fondo').val());
 
     });
     $('#sel_actividad').change(() => {
-        if ($('#sel_fondo').val() !='' && $('#sel_fondo').val() !=null) {
-            dao.getMeses($('#area').val(),$('#sel_fondo').val());
+        if ($('#sel_fondo').val() != '' && $('#sel_fondo').val() != null) {
+            dao.getMeses($('#area').val(), $('#sel_fondo').val());
         }
     });
     $('#fondo_id').change(() => {
-            dao.getMeses($('#area').val(),$('#fondo_id').val());
+        dao.getMeses($('#area').val(), $('#fondo_id').val());
+    });
+
+    $('#tipo_Ac').change(() => {
+        for (let i = 1; i <= 12; i++) {
+              $('#' + i).val(0);
+        }
+        dao.getMeses($('#area').val(), $('#sel_fondo').val());
+        $("#sumMetas").val("");
+        if ($('#tipo_Ac').val() == 'Continua') {
+            $('#continua').modal('show')
+        }
     });
     $('#actividad_id').change(() => {
-        
+
         if ($('#actividad_id').val() == 'ot') {
             $("#inputAc").removeAttr('disabled');
             $(".inputAc").show();
-            
+
             $("#idAct").addClass("col-md-4").removeClass("col-md-6");
             $("#idFond").addClass("col-md-4").removeClass("col-md-6");
-            
+
         } else {
             $(".inputAc").val('');
             $("#inputAc").attr('disabled', 'disabled');
@@ -1062,15 +1133,15 @@ $(document).ready(function () {
             $("#idAct").addClass("col-md-6").removeClass("col-md-4");
             $("#idFond").addClass("col-md-6").removeClass("col-md-4");
         }
-        if ($('#fondo_id').val() !='' && $('#fondo_id').val() !=null) {
-            dao.getMeses($('#area').val(),$('#fondo_id').val());
+        if ($('#fondo_id').val() != '' && $('#fondo_id').val() != null) {
+            dao.getMeses($('#area').val(), $('#fondo_id').val());
         }
     });
 
     if ($('#sel_actividad').val() != '' && $('#sel_fondo').val() != '' && $('#sel_actividad').val() != null && $('#sel_fondo').val() != null) {
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
     }
-    
+
 
     dao.getSelect();
     $("#ur_filter").select2({
@@ -1090,7 +1161,7 @@ $(document).ready(function () {
         $("#" + i).on('paste', function (e) {
             e.preventDefault();
         });
-        }
+    }
     $('input[type=search]').attr('id', 'serchUr');
     $('#exampleModal').modal({
         backdrop: 'static',
@@ -1099,25 +1170,29 @@ $(document).ready(function () {
     $('#btnSave').click(function (e) {
         e.preventDefault();
         let flag = dao.validMeses();
-        if ($('#conmir').val()&& flag) {
+        if ($('#conmir').val() && flag) {
             init.validateCreate($('#actividad'));
             if ($('#actividad').valid() && flag) {
                 dao.crearMeta();
             }
-        }else {
+        } else {
             init.validateCreateN($('#actividad'));
             if ($('#actividad').valid() && flag) {
                 dao.crearMeta();
             }
-            
+
         }
-           
+
     });
     $('#btnSaveM').click(function (e) {
         e.preventDefault();
         if ($('#formFile').valid()) {
             dao.crearMetaImp();
         }
+    });
+    $('#continua').modal({
+        backdrop: 'static',
+        keyboard: false
     });
 
 
