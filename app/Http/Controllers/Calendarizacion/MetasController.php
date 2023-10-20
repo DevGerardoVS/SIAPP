@@ -941,11 +941,11 @@ class MetasController extends Controller
 			$flag = false;
 			if (Auth::user()->id_grupo == 4) {
 				$check = $this->checkClosing(Auth::user()->clv_upp);
-				$isMir = DB::table("mml_avance_etapas_pp")
+				$isMir = DB::table("mml_cierre_ejercicio")
 					->select('id', 'estatus')
 					->where('clv_upp', '=', Auth::user()->clv_upp)
 					->where('ejercicio', '=', $check['anio'])
-					->where('estatus', 3)->get();
+					->where('statusm', 1)->get();
 				if (count($isMir) == 0) {
 					$error = array(
 						"icon" => 'error',
@@ -1021,11 +1021,11 @@ class MetasController extends Controller
 		if ($check['status']) {
 			if (count($metas) == 0 || Auth::user()->id_grupo == 1) {
 				//ver si esta confirmada la mir
-				$isMir = DB::table("mml_avance_etapas_pp")
+				$isMir = DB::table("mml_cierre_ejercicio")
 					->select('id', 'estatus')
 					->where('clv_upp', '=', $upp)
 					->where('ejercicio', '=', $check['anio'])
-					->where('estatus', 3)->get();
+					->where('statusm', 1)->get();
 				if (count($isMir)) {
 					$activs = DB::table("programacion_presupuesto")
 						->select(
