@@ -5,8 +5,6 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 
 class ImportErrorsExport implements  FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths
@@ -41,9 +39,7 @@ class ImportErrorsExport implements  FromCollection, ShouldAutoSize, WithHeading
      */
     public function headings(): array {
         
-        return ['Lista errores',/*,'Error' ,'Error en columna','admconac','ef','reg','mpio','loc','upp','subsecretaria','ur','finalidad','funcion','subfuncion','eg','pt','ps','sprconac','prg','spr','py','idpartida','tipogasto','año',
-        'no etiquetado y etiquetado','fconac', 'ramo', 'fondo','ci','obra','total', 'enero','febrero','marzo', 'abril', 'mayo','junio','julio','agosto', 'septiembre','octubre', 'noviembre','diciembre', */
-      ];
+        return ['Lista errores',];
     }
 
     public function columnWidths(): array {
