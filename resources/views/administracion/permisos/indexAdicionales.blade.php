@@ -49,6 +49,7 @@
                                     <table id="catalogo" class="table table-hover table-striped ">
                                         <thead>
                                             <tr class="colorMorado">
+                                                <th data-hide="phone">Clave UPP</th>
                                                 <th data-hide="phone">Nombre Usuario</th>
                                                 <th data-hide="phone">Nombre Completo</th>
                                                 <th data-hide="phone">Perfil</th>

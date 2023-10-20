@@ -304,7 +304,7 @@ class MetasController extends Controller
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
 			} else {
-				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
+				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('ejercicio',  $check['anio'])->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
 			}
 			$tAct = MetasController::getTcalendar($entidadAux[0]);
 		}
@@ -1606,21 +1606,4 @@ class MetasController extends Controller
 		}
 
 	}
-	public static function typeTotal($value, $tipo)
-	{
-
-		switch ($tipo) {
-			case 0:
-				return FunFormats::totalAcum($value);
-			case 1:
-				return FunFormats::totalContinua($value);
-			//  return $this->f($auxTotal);
-			case 2:
-				return FunFormats::totalEspecial($value);
-			default:
-				# code...
-				break;
-		}
-	}
-
 }

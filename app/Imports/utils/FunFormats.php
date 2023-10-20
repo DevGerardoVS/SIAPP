@@ -3,7 +3,6 @@ namespace App\Imports\utils;
 
 use App\Models\calendarizacion\Metas;
 use App\Models\MmlMir;
-use App\Models\MmlMirCatalogo;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -119,7 +118,7 @@ class FunFormats
                         }
                         if (strtoupper($k[13]) != 'N/A' && is_numeric($k[13])) {
                             if (is_numeric($k[13])) {
-                                $activ = DB::table('catalogo')->where('deleted_at', null)->where('grupo_id', 20)->where('id', $k[13])->get();
+                                $activ = DB::table('catalogo')->where('ejercicio',  $anio)->where('deleted_at', null)->where('grupo_id', 20)->where('id', $k[13])->get();
                                 if ($activ) {
 
                                     $flg = true;
