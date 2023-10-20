@@ -1,5 +1,40 @@
 @section('page_scripts')
     <script type="text/javascript">
+
+
+        function getUPP(anio) { //función para actualizar el select UPP
+            $.ajax({
+                url: "/Reportes/mml/data-upp/"+ anio,
+                type:'POST',
+                dataType: 'json',
+                success: function(data) {
+                    var par = $('#upp_filter');
+                    par.html('');
+                    par.append(new Option("Todos", ""));
+                    $.each(data, function(i, val){
+                        par.append(new Option(data[i].clv_upp+" - "+data[i].upp, data[i].clv_upp));
+                    });
+                }
+            });
+        }
+
+        function getPrograma(clv_upp) { //función para actualizar el select programa
+            if(clv_upp == "" || clv_upp == null) clv_upp = "0";
+            $.ajax({
+                url: "/Reportes/mml/data-programa/"+ clv_upp,
+                type:'POST',
+                dataType: 'json',
+                success: function(data) {
+                    var par = $('#programa_filter');
+                    par.html('');
+                    par.append(new Option("Todos", ""));
+                    $.each(data, function(i, val){
+                        par.append(new Option(data[i].clv_programa+" - "+data[i].programa, data[i].clv_programa));
+                    });
+                }
+            });
+        }
+
         function getData(tabla, rt) {
 
             var dt = $(tabla);
@@ -66,9 +101,18 @@
             var formData = new FormData();
             var csrf_tpken = $("input[name='_token']").val();
             var anio = $("#anio_filter").val();
+            var upp = $("#upp_filter").val();
+            var programa = $("#programa_filter").val();
+            var estatus = $("#estatus_filter").val();
+            var programa = $("#programa_filter").val();
+            var mir = $("#mir_filter").val();
 
             formData.append("_token", csrf_tpken);
             formData.append("anio", anio);
+            formData.append("upp", upp);
+            formData.append("programa", programa);
+            formData.append("estatus", estatus);
+            formData.append("mir", mir);
 
             dt.DataTable().clear().destroy();
             $.ajax({

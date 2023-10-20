@@ -100,6 +100,8 @@ Route::controller(UsuarioController::class)->group(function () {
     	Route::post('/Reportes/mml/comprobacion', 'getComprobacion')->name('get_comprobacion'); // Ruta comprobación
 
 		Route::post('/Reportes/data-fecha-corte/{ejercicio?}','getFechaCorte')->name('get_fecha_corte'); // Obtener fecha de acuerdo al año
+		Route::post('/Reportes/mml/data-upp/{ejercicio?}','getUPP')->name('get_UPP'); // Obtener UPP de acuerdo a la UPP
+		Route::post('/Reportes/mml/data-programa/{clv_upp?}','getPrograma')->name('get_programa'); // Obtener programa de acuerdo a la UPP
 		Route::post('/Reportes/download/{nombre}', 'downloadReport')->name('downloadReport'); // Descargar reportes
 	});
 

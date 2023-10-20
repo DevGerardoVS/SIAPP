@@ -216,17 +216,13 @@ class ReporteController extends Controller
 
 
             if ($request->action == 'xlsx') { // Verificar el tipo de archivo
-                if (filesize($file . ".xlsx") < 4097) { // Verificar si el archivo generado está vacío
-                    if (File::exists($output_file . "/" . $report . ".xlsx")) { // Verificar si existe el archivo guardado en caso de existir lo elimina
-                        File::delete($output_file . "/" . $report . ".xlsx");
-                    }
+                if (File::exists($output_file . "/" . $report . ".xlsx") && filesize($file . ".xlsx") < 4097) { // Verificar si el archivo generado está vacío y Verificar si existe el archivo guardado en caso de existir lo elimina
+                    File::delete($output_file . "/" . $report . ".xlsx");
                     return back()->withErrors(['msg' => "$nameFile.xlsx está vacío."]); // Regresar un mensaje para dar a entender al usuario que el archivo esta vacío
                 }
             } else {
-                if (filesize($file . ".pdf") < 4097) {
-                    if (File::exists($output_file . "/" . $report . ".pdf")) {
-                        File::delete($output_file . "/" . $report . ".pdf");
-                    }
+                if (File::exists($output_file . "/" . $report . ".pdf") && filesize($file . ".pdf") < 4097) {
+                    File::delete($output_file . "/" . $report . ".pdf");
                     return back()->withErrors(['msg' => "$nameFile.pdf está vacío."]);
                 }
             }
@@ -262,6 +258,10 @@ class ReporteController extends Controller
 
     public function getAvanceMIR(Request $request)
     {
+        $anio = $request->anio;
+        $upp = $request->upp;
+        $estatus = $request->estatus;   
+        session(["anioMIR"=>$anio]);
         $dataSet = array();
         $data = DB::table("mml_avance_etapas_pp as ae")
             ->join("v_epp as ve", function ($join) {
@@ -269,13 +269,13 @@ class ReporteController extends Controller
                 $join->on("ae.clv_pp", "=", "ve.clv_programa");
             })
             ->select("ae.clv_upp", "ve.upp", "ae.clv_pp", "ve.programa", "ae.estatus", "ae.ejercicio")
-            ->where("ae.ejercicio", $request->input("anio"))
+            ->where("ae.ejercicio", $anio)
             ->groupBy("ve.clv_upp", "ve.clv_programa")
             ->get();
-        $estatus = "";
+        $estado = "";
         foreach ($data as $d) {
-            $estatus = $d->estatus == 3 ? "Validado" : "Pendiente";
-            $ds = array($d->clv_upp, $d->upp, $d->clv_pp, $d->programa, $estatus);
+            $estado = $d->estatus == 3 ? "Validado" : "Pendiente";
+            $ds = array($d->clv_upp, $d->upp, $d->clv_pp, $d->programa, $estado);
             $dataSet[] = $ds;
         }
         return response()->json([
@@ -286,6 +286,9 @@ class ReporteController extends Controller
     public function getComprobacion(Request $request)
     {
         $anio = $request->anio;
+        $upp = $request->upp;
+        $programa = $request->programa;
+        $mir = $request->mir;
         $dataSet = array();
         $data = DB::select(DB::raw("
         SELECT DISTINCT(mm.area_funcional),
@@ -302,7 +305,7 @@ class ReporteController extends Controller
             ve.clv_proyecto) AS area_funcional_epp,
         ve.clv_upp,
         ve.clv_programa,
-        mm.clv_ur,
+        ve.clv_ur,
         ve.proyecto
         FROM v_epp ve left JOIN mml_mir mm ON ve.id = mm.id_epp AND mm.nivel = 11
         WHERE ve.ejercicio = $anio AND mm.deleted_at IS NULL 
@@ -319,5 +322,27 @@ class ReporteController extends Controller
         return response()->json([
             "dataSet" => $dataSet,
         ]);
+    }
+
+    public function getUPP($anio){
+        
+        $upp = DB::table("v_epp")->select("clv_upp", "upp")
+        ->where("ejercicio", $anio)
+        ->groupBy("clv_upp")->get();
+        return $upp;
+    }
+
+    public function getPrograma($clv_upp){
+        $anio = session("anioMIR");
+        $array_where=[];
+
+        if( $clv_upp != "0" ){
+            array_push($array_where,["clv_upp", $clv_upp]);
+        }
+        $programa = DB::table("v_epp")->select("clv_programa", "programa")
+        ->where("ejercicio", $anio)
+        ->where($array_where)
+        ->groupBy("clv_programa")->get();
+        return $programa;
     }
 }

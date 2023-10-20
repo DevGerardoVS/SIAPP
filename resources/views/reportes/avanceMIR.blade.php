@@ -26,14 +26,43 @@
             <form id="buscarForm" method="POST"> 
                 @csrf
                 <div class="col-md-10 col-sm-12 d-md-flex">
-                    <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
-                        <label for="anio_filter" class="form-label fw-bold mt-md-1">Año: </label>
-                    </div>
+                    {{-- Select Año --}}
+                    <label for="anio_filter" class="form-label fw-bold mt-md-1">Año: </label>
                     <div class="col-sm-12 col-md-3 col-lg-2">
                         <select class="form-control filters filters_anio" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
                             @foreach ($anios as $anio)
                                 <option value={{$anio->ejercicio}}>{{ $anio->ejercicio}}</option>
-                                @endforeach
+                            @endforeach
+                        </select>
+                    </div>
+                    {{-- Select UPP --}}
+                    <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP: </label>
+                    <div class="col-sm-12 col-md-3 col-lg-2">
+                        <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
+                        </select>
+                    </div>
+                    {{-- Select Programa --}}
+                    <label for="programa_filter" class="form-label fw-bold mt-md-1 mostrar d-none">Programa:</label>
+                    <div class="col-sm-12 col-md-6 col-lg-4 mostrar d-none">
+                        <select class="form-control filters filters_programa" id="programa_filter" name="programa_filter" autocomplete="programa_filter">
+                        </select>
+                    </div>
+                    {{-- Select Estatus --}}
+                    <label for="estatus_filter" class="form-label fw-bold mt-md-1 mostrarEstatus">Estatus: </label>
+                    <div class="col-sm-12 col-md-3 col-lg-2 mostrarEstatus">
+                        <select class="form-control filters filters_estatus" id="estatus_filter" name="estatus_filter" autocomplete="estatus_filter">
+                            <option value="">Todos</option>
+                            <option value="1">Validado</option>
+                            <option value="0">Pendiente</option>
+                        </select>
+                    </div>
+                    {{-- Select con MIR --}}
+                    <label for="mir_filter" class="form-label fw-bold mt-md-1 mostrar d-none">Con MIR: </label>
+                    <div class="col-sm-12 col-md-3 col-lg-2 mostrar d-none">
+                        <select class="form-control filters filters_mir" id="mir_filter" name="mir_filter" autocomplete="mir_filter">
+                            <option value="">Todos</option>
+                            <option value="1">Con MIR</option>
+                            <option value="0">Sin MIR</option>
                         </select>
                     </div>
                 </div>
@@ -42,7 +71,7 @@
 
         <ul class="nav nav-tabs mt-4" id="tabs" role="tablist">
             <li class="nav-item" >
-                <button class="nav-link textoMorado active " role="tab" type="button" id="avanceMir_tab" data-bs-toggle="tab" data-bs-target="#avanceMir" aria-controls="avanceMir" aria-selected="true">Avance por UPP y PP</button>
+                <button class="nav-link textoMorado active " role="tab" type="button" id="avanceMir_tab" data-bs-toggle="tab" data-bs-target="#avanceMir" aria-controls="avanceMir" aria-selected="true">Avance MIR</button>
             </li>
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="comprobacion_tab" data-bs-toggle="tab" data-bs-target="#comprobacion" aria-controls="comprobacion" aria-selected="false">Comprobación</button>
@@ -126,6 +155,9 @@
                 }
             });
             
+            getUPP($('#anio_filter').val());
+            getPrograma($('#upp_filter').val());
+
             $('button[data-bs-toggle="tab"]').on('click', function (e) {
                 var id = e.target.id;
                 selectTable(id);
@@ -155,6 +187,8 @@
                         var dt = $('#catalogoA');
                         tabla="#catalogoA";
                         letter="A";     
+                        $('.mostrar').addClass('d-none');
+                        $('.mostrarEstatus').removeClass('d-none');
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
@@ -162,6 +196,8 @@
                         var dt = $('#catalogoB');
                         tabla="#catalogoB";
                         letter="B";
+                        $('.mostrarEstatus').addClass('d-none');
+                        $('.mostrar').removeClass('d-none');
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
@@ -171,6 +207,30 @@
         });
         
         $("#buscarForm").on("change",".filters_anio",function(e){
+            $("#upp_filter").val("");
+            dt.DataTable().clear().destroy();
+            getData(tabla,letter);
+            getUPP($('#anio_filter').val());
+        });
+
+        $("#buscarForm").on("change",".filters_upp",function(e){
+            $("#programa_filter").val("");
+            dt.DataTable().clear().destroy();
+            getData(tabla,letter);
+            getPrograma($('#upp_filter').val());
+        });
+
+        $("#buscarForm").on("change",".filters_programa",function(e){
+            dt.DataTable().clear().destroy();
+            getData(tabla,letter);
+        });
+
+        $("#buscarForm").on("change",".filters_estatus",function(e){
+            dt.DataTable().clear().destroy();
+            getData(tabla,letter);
+        });
+
+        $("#buscarForm").on("change",".filters_mir",function(e){
             dt.DataTable().clear().destroy();
             getData(tabla,letter);
         });
