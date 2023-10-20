@@ -94,11 +94,11 @@ class FunFormats
                     //checar si la mir esta confirmada
 
                     $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', strval($k[7]))->where('deleted_at', null)->max('ejercicio');
-                    $isMir = DB::table("mml_avance_etapas_pp")
+                    $isMir = DB::table("mml_cierre_ejercicio")
                         ->select('id', 'estatus')
                         ->where('clv_upp', '=', strval($k[7]))
                         ->where('ejercicio', '=',$anio )
-                        ->where('estatus', 3)->get();
+                        ->where('status', 1)->get();
                     if (count($isMir)) {
                         $flg = false;
                         if (strtoupper($k[13]) == 'N/A' && strtoupper($k[14]) == 'N/A') {

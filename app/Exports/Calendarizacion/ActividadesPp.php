@@ -22,7 +22,7 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
     public function collection(){
         $anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
         $data = DB::table('programacion_presupuesto')
-        ->leftJoin('mml_avance_etapas_pp', 'mml_avance_etapas_pp.clv_upp', '=', 'programacion_presupuesto.upp')
+        ->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'programacion_presupuesto.upp')
         ->select(
             'upp AS clv_upp',
             'ur AS clv_ur',
@@ -33,6 +33,8 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
         ->where('programacion_presupuesto.estado', 1)
         ->where('programacion_presupuesto.deleted_at', null)
         ->where('programacion_presupuesto.ejercicio', '=', $anio)
+        ->where('mml_cierre_ejercicio.ejercicio', '=', $anio)
+        ->where('mml_cierre_ejercicio.statusm',1)
         ->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
         ->distinct();
 
@@ -105,9 +107,18 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
 
     public function columnWidths():array{
         return[
-            'A'=>10,
-            'B'=>14,
-            'C'=>25
+            'A'  =>10,
+            'B'  =>10,
+            'C'  =>13,
+            'D'  =>5,
+            'F'  =>10,
+            'G'  =>10,
+            'H'  =>5,
+            'I'  =>5,
+            'J'  =>8,
+            'K'  =>8,
+            'L'  =>8,
+            'M'  =>8
         ];
     }
     public function registerEvents():array{
