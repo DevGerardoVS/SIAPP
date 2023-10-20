@@ -25,10 +25,10 @@
         <section class="row mt-5" >
             <form id="buscarForm" method="POST"> 
                 @csrf
-                <div class="col-md-10 col-sm-12 d-md-flex">
+                <div class="row ">
                     {{-- Select Año --}}
-                    <label for="anio_filter" class="form-label fw-bold mt-md-1">Año: </label>
-                    <div class="col-sm-12 col-md-3 col-lg-2">
+                    <div class="col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-0">
+                        <label for="anio_filter" class="form-label fw-bold">Año: </label>
                         <select class="form-control filters filters_anio" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
                             @foreach ($anios as $anio)
                                 <option value={{$anio->ejercicio}}>{{ $anio->ejercicio}}</option>
@@ -36,35 +36,34 @@
                         </select>
                     </div>
                     {{-- Select UPP --}}
-                    <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP: </label>
-                    <div class="col-sm-12 col-md-3 col-lg-2">
+                    <div class="col-sm-12 col-md-6 col-lg-4 mb-3 mb-sm-3 mb-md-3 mb-lg-0">
+                        <label for="upp_filter" class="form-label fw-bold">UPP: </label>
                         <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
                         </select>
                     </div>
                     {{-- Select Programa --}}
-                    <label for="programa_filter" class="form-label fw-bold mt-md-1 mostrar d-none">Programa:</label>
-                    <div class="col-sm-12 col-md-6 col-lg-4 mostrar d-none">
+                    <div class="col-sm-12 col-md-6 col-lg-4 mb-3 mb-sm-3 mb-md-3 mb-lg-0 mostrar d-none">
+                        <label for="programa_filter" class="form-label fw-bold">Programa:</label>
                         <select class="form-control filters filters_programa" id="programa_filter" name="programa_filter" autocomplete="programa_filter">
                         </select>
                     </div>
                     {{-- Select Estatus --}}
-                    <label for="estatus_filter" class="form-label fw-bold mt-md-1 mostrarEstatus">Estatus: </label>
-                    <div class="col-sm-12 col-md-3 col-lg-2 mostrarEstatus">
+                    <div class="col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-0 mostrarEstatus">
+                        <label for="estatus_filter" class="form-label fw-bold">Estatus: </label>
                         <select class="form-control filters filters_estatus" id="estatus_filter" name="estatus_filter" autocomplete="estatus_filter">
                             <option value="">Todos</option>
-                            <option value="1">Validado</option>
+                            <option value="3">Validado</option>
                             <option value="0">Pendiente</option>
                         </select>
                     </div>
                     {{-- Select con MIR --}}
-                    <label for="mir_filter" class="form-label fw-bold mt-md-1 mostrar d-none">Con MIR: </label>
-                    <div class="col-sm-12 col-md-3 col-lg-2 mostrar d-none">
+                    <div class="col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-0 mostrar d-none">
+                        <label for="mir_filter" class="form-label fw-bold">Con MIR: </label>
                         <select class="form-control filters filters_mir" id="mir_filter" name="mir_filter" autocomplete="mir_filter">
                             <option value="">Todos</option>
                             <option value="1">Con MIR</option>
                             <option value="0">Sin MIR</option>
                         </select>
-                    </div>
                 </div>
             </form>
         </section>
@@ -107,7 +106,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body table-responsive">
-                                <table class="tableRowStyle table table-hover table-bordered table-striped order-table text-center tableSize align-middle"
+                                <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
                                     id="catalogoB" style="width:100%; font-size: 14px;" data-left="4">
                                     <thead  class="colorMorado">
                                         <tr>
@@ -189,6 +188,9 @@
                         letter="A";     
                         $('.mostrar').addClass('d-none');
                         $('.mostrarEstatus').removeClass('d-none');
+                        $("#upp_filter").val("");
+                        $("#programa_filter").val("");
+                        $("#mir_filter").val("");
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
@@ -198,6 +200,8 @@
                         letter="B";
                         $('.mostrarEstatus').addClass('d-none');
                         $('.mostrar').removeClass('d-none');
+                        $("#upp_filter").val("")
+                        $("#estatus_filter").val("")
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
