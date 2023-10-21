@@ -218,11 +218,15 @@ class CalendarizacionCargaMasivaController extends Controller
 
                                 $valueExist = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio', $ejercicio[$helperejercicio])->where('tipo', $tipoFondo)->where('clv_fondo', $arraysplit[2])->count();
 
+                                
                                 if ($valueExist < 1) {
                                     return redirect()->back()->withErrors(['error' => 'No existe esea combinacion en techos financieros para la upp: ' . $arraysplit[0] . ' con fondo: ' . $arraysplit[2]]);
 
                                 }
 
+                                \Log::debug($value);
+
+                                \Log::debug($valuepresupuesto);
                                 if ($valuepresupuesto != $value) {
                                     return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2]]);
                                 }
