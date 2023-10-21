@@ -16,6 +16,7 @@ class Catalogo extends Model
         'grupo_id',
         'clave',
         'descripcion',
+        'ejercicio'
     ];
 
     protected $dates = ['deleted_at'];

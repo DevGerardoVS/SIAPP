@@ -41,6 +41,18 @@ class ReporteController extends Controller
         ]);
     }
 
+    public function indexMML()
+    {
+        Controller::check_permission('getAdmon');
+        $anios = DB::select('SELECT ejercicio FROM mml_avance_etapas_pp GROUP BY ejercicio ORDER BY ejercicio DESC');
+        $anios = $anios == null ? Date("Y") : $anios;
+        $dataSet = array();
+        return view('reportes.avanceMIR', [
+            'dataSet' => json_encode($dataSet),
+            'anios' => $anios,
+        ]);
+    }
+
     // Administrativos
     public function calendarioFondoMensual(Request $request)
     {
@@ -155,7 +167,6 @@ class ReporteController extends Controller
             "dataSet" => $dataSet,
         ]);
     }
-    // Administrativos
 
     public function getFechaCorte($anio)
     {
@@ -212,9 +223,7 @@ class ReporteController extends Controller
                 $format,
                 $parameters,
                 $database_connection
-            // )->execute();
-            )->output();
-            dd($jasper);
+            )->execute();
 
 
             if ($request->action == 'xlsx') { // Verificar el tipo de archivo
@@ -246,24 +255,17 @@ class ReporteController extends Controller
     }
 
     // Reportes MML
-    public function indexMML()
-    {
-        Controller::check_permission('getAdmon');
-        $anios = DB::select('SELECT ejercicio FROM mml_avance_etapas_pp GROUP BY ejercicio ORDER BY ejercicio DESC');
-        $anios = $anios == null ? Date("Y") : $anios;
-        $dataSet = array();
-        return view('reportes.avanceMIR', [
-            'dataSet' => json_encode($dataSet),
-            'anios' => $anios,
-        ]);
-    }
-
     public function getAvanceMIR(Request $request)
     {
         $anio = $request->anio;
         $upp = $request->upp;
         $estatus = $request->estatus;   
+        $array_where = [];
         session(["anioMIR"=>$anio]);
+        
+        if($upp != null && $upp != "null" && $upp != "") array_push($array_where, ['ae.clv_upp', $upp]);
+        if($estatus != null && $estatus != "null" && $estatus != "") array_push($array_where, ['ae.estatus', $estatus]);
+
         $dataSet = array();
         $data = DB::table("mml_avance_etapas_pp as ae")
             ->join("v_epp as ve", function ($join) {
@@ -272,7 +274,10 @@ class ReporteController extends Controller
             })
             ->select("ae.clv_upp", "ve.upp", "ae.clv_pp", "ve.programa", "ae.estatus", "ae.ejercicio")
             ->where("ae.ejercicio", $anio)
+            ->where($array_where)
             ->groupBy("ve.clv_upp", "ve.clv_programa")
+            ->orderBy("ae.estatus","desc")
+            ->orderBy("ve.clv_upp","asc")
             ->get();
         $estado = "";
         foreach ($data as $d) {
@@ -291,27 +296,33 @@ class ReporteController extends Controller
         $upp = $request->upp;
         $programa = $request->programa;
         $mir = $request->mir;
+        $array_where = [];
+        $isNull = "";
+        $isNull = $request->mir == "0" ? 'mm.area_funcional is null' : ($request->mir == "1" ? 'mm.area_funcional is not null' : null);
+
+        if($upp != null && $upp != "null" && $upp != "") array_push($array_where, ['ve.clv_upp', $upp]);
+        if($programa != null && $programa != "null" && $programa != "") array_push($array_where, ['ve.clv_programa', $programa]);
+        // if($mir != null && $mir != "null" && $mir != "") array_push($ar,);
+
         $dataSet = array();
-        $data = DB::select(DB::raw("
-        SELECT DISTINCT(mm.area_funcional),
-        concat(
-            ve.clv_finalidad,
-            ve.clv_funcion,
-            ve.clv_subfuncion,
-            ve.clv_eje,
-            ve.clv_linea_accion,
-            ve.clv_programa_sectorial,
-            ve.clv_tipologia_conac,
+
+        $data = DB::table("v_epp as ve")
+            ->leftJoin("mml_mir as mm", function($join){
+                $join->on("ve.id", "=", "mm.id_epp")
+                ->where("mm.nivel", "=", 11);
+            })
+            ->select(DB::raw("distinct(mm.area_funcional), concat( ve.clv_finalidad, ve.clv_funcion, ve.clv_subfuncion, ve.clv_eje, ve.clv_linea_accion, ve.clv_programa_sectorial, ve.clv_tipologia_conac, ve.clv_programa, ve.clv_subprograma, ve.clv_proyecto) as area_funcional_epp,
+            ve.clv_upp,
             ve.clv_programa,
-            ve.clv_subprograma,
-            ve.clv_proyecto) AS area_funcional_epp,
-        ve.clv_upp,
-        ve.clv_programa,
-        ve.clv_ur,
-        ve.proyecto
-        FROM v_epp ve left JOIN mml_mir mm ON ve.id = mm.id_epp AND mm.nivel = 11
-        WHERE ve.ejercicio = $anio AND mm.deleted_at IS NULL 
-        ORDER BY ve.clv_upp, ve.clv_ur;"));
+            ve.clv_ur,
+            ve.proyecto"))
+            ->where("ve.ejercicio", "=", $anio)
+            ->where($array_where)
+            ->whereRaw($isNull)
+            ->whereNull("mm.deleted_at")
+            ->orderBy("ve.clv_upp", "asc")
+            ->orderBy("ve.clv_ur", "asc")
+            ->get();
         
         foreach ($data as $d) {
             $conMir = "-";
@@ -327,7 +338,6 @@ class ReporteController extends Controller
     }
 
     public function getUPP($anio){
-        
         $upp = DB::table("v_epp")->select("clv_upp", "upp")
         ->where("ejercicio", $anio)
         ->groupBy("clv_upp")->get();
