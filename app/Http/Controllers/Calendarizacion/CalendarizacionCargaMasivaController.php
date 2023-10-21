@@ -214,7 +214,7 @@ class CalendarizacionCargaMasivaController extends Controller
                                 $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus', 'Abierto')->where('ejercicio', $ejercicio[$helperejercicio])->count();
 
 
-                                $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio', $ejercicio[$helperejercicio])->where('tipo', $tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
+                                $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio', $ejercicio[$helperejercicio])->where('tipo', $tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto')->where('deleted_at',NULL);
 
                                 $valueExist = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio', $ejercicio[$helperejercicio])->where('tipo', $tipoFondo)->where('clv_fondo', $arraysplit[2])->count();
 
@@ -224,9 +224,7 @@ class CalendarizacionCargaMasivaController extends Controller
 
                                 }
 
-                                \Log::debug($value);
 
-                                \Log::debug($valuepresupuesto);
                                 if ($valuepresupuesto != $value) {
                                     return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2]]);
                                 }
@@ -401,7 +399,7 @@ class CalendarizacionCargaMasivaController extends Controller
                         }
 
 
-                        $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo', $tipoFondo)->where('ejercicio', $ejercicio[$helperejercicio])->where('clv_fondo', $arraysplit[2])->value('presupuesto');
+                        $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo', $tipoFondo)->where('ejercicio', $ejercicio[$helperejercicio])->where('clv_fondo', $arraysplit[2])->value('presupuesto')->where('deleted_at',NULL);
                         if ($valuepresupuesto != $value) {
 
                             return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2]]);
