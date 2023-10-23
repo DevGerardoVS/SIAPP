@@ -179,7 +179,7 @@ var dao = {
             }
             $('#sumMetas').val(contValue);
             $('#sumMetas').attr('disabled', 'disabled');
-            dao.clearCont();
+            dao.clearCont('aceptar');
         } else {
             Swal.fire({
                 icon: 'error',
@@ -189,7 +189,10 @@ var dao = {
         }
       
     },
-    clearCont: function () {
+    clearCont: function (tipo) {
+        if (tipo!='aceptar') {
+            $("#tipo_Ac option[value='']").attr("selected", true);
+        }
         $('#nContinua').val("");
         $('#continua').modal('hide');
     },
@@ -683,6 +686,7 @@ var dao = {
     getFyA: function (area, enti, mir, anio) {
         dao.limpiarErrors();
         dao.getSelect();
+        $('#tipo_Ac').empty();
         for (let i = 1; i <= 12; i++) {
             $("#" + i).val(0);
             $("#" + i).prop('disabled', true);
@@ -830,6 +834,37 @@ var dao = {
         $('#actividad_id').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
         $('#fondo_id').empty();
         $('#fondo_id').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+    },
+    clearUR: function () {
+        $('#sumMetas').val('');
+        $('#sumMetas-error').removeClass('has-error');
+        $('#sumMetas-error').text('');
+        inputs.forEach(e => {
+            $('#' + e + '-error').text("").removeClass('#' + e + '-error');
+            if (e != 'beneficiario') {
+                $('#' + e).selectpicker('destroy');
+            }
+        });
+        dao.getSelect();
+        $('.form-group').removeClass('has-error');
+        for (let i = 1; i <= 12; i++) {
+            $('#' + i).val(0);
+        }
+        $('#beneficiario').val("");
+        for (let i = 1; i <= 12; i++) {
+            $("#" + i).prop('disabled', true);
+        }
+        $('#inputAc').val('');
+        $('#sel_actividad').empty();
+        $('#sel_actividad').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
+        $('#sel_fondo').empty();
+        $('#sel_fondo').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+        $('#actividad_id').empty();
+        $('#actividad_id').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
+        $('#fondo_id').empty();
+        $('#fondo_id').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+        $('#tipo_Ac').empty();
+        $('#tipo_Ac').append("<option value=''class='text-center' ><b>-- calendario --</b></option>");
     },
     limpiarErrors: function () {
         $("#meses-error").text("").removeClass('has-error');
@@ -1086,7 +1121,9 @@ $(document).ready(function () {
         dao.rCMetasUpp($('#upp_filter').val());
     });
     $('#ur_filter').change(() => {
+        dao.clearUR()
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());
+        
         $('#sel_actividad').empty();
         $('#sel_actividad').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
         $('#sel_fondo').empty();
@@ -1134,11 +1171,13 @@ $(document).ready(function () {
             $("#idFond").addClass("col-md-6").removeClass("col-md-4");
         }
         if ($('#fondo_id').val() != '' && $('#fondo_id').val() != null) {
+            console.log('fondo_id');
             dao.getMeses($('#area').val(), $('#fondo_id').val());
         }
     });
 
     if ($('#sel_actividad').val() != '' && $('#sel_fondo').val() != '' && $('#sel_actividad').val() != null && $('#sel_fondo').val() != null) {
+        console.log('sel_fondo');
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
     }
 
