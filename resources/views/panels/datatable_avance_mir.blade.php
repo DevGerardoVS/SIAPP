@@ -4,7 +4,7 @@
 
         function getUPP(anio) { //función para actualizar el select UPP
             $.ajax({
-                url: "/Reportes/mml/data-upp/"+ anio,
+                url: "/Reportes/analisis-informativo-mml/data-upp/"+ anio,
                 type:'POST',
                 dataType: 'json',
                 success: function(data) {
@@ -21,7 +21,7 @@
         function getPrograma(clv_upp) { //función para actualizar el select programa
             if(clv_upp == "" || clv_upp == null) clv_upp = "0";
             $.ajax({
-                url: "/Reportes/mml/data-programa/"+ clv_upp,
+                url: "/Reportes/analisis-informativo-mml/data-programa/"+ clv_upp,
                 type:'POST',
                 dataType: 'json',
                 success: function(data) {
