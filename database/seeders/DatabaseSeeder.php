@@ -146,6 +146,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 14,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Administración de captura', 'ruta' => '/admon-capturas', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de capturas'],
             ['id' => 15,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Configuraciones', 'ruta' => '/adm-configuracion', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Administracion de configuraciones'],
             ['id' => 16,  'id_sistema' => 1,'padre' => 0, 'nombre_menu' => 'Epp', 'ruta' => '/epp', 'icono' => '', 'nivel' => 0, 'posicion' => 0, 'descripcion' => 'Consulta de epp'],
+            ['id' => 17,  'id_sistema' => 1,'padre' => 11, 'nombre_menu' => 'Analisis informativo MML', 'ruta' => '/Reportes/analisis-informativo-mml', 'icono' => 'fa fa-bar-chart', 'nivel' => 3, 'posicion' => 3, 'descripcion' => 'analisis-informativo-mml'],
 
         );
     protected $menuUpp = array(
@@ -185,7 +186,8 @@ class DatabaseSeeder extends Seeder
         ['id_menu' => 13],
         ['id_menu' => 14],
         ['id_menu' => 15],
-        ['id_menu' => 16]
+        ['id_menu' => 16],
+        ['id_menu' => 17]
     );
     protected $menuAuditor = array(
         ['id_menu' => 3 ], 
@@ -262,6 +264,9 @@ class DatabaseSeeder extends Seeder
 
             ['id' => 45,  'id_sistema' => 1,'id_menu' => 16, 'modulo' => 'Epp', 'funcion' => 'viewGetEpp', 'tipo' => 'Vista', 'descripcion' => 'Vista de Epp'],
             ['id' => 46,  'id_sistema' => 1,'id_menu' => 16, 'modulo' => 'Epp', 'funcion' => 'getEpp', 'tipo' => 'Consulta', 'descripcion' => 'Consulta de Epp'],
+            
+            ['id' => 47,  'id_sistema' => 1,'id_menu' => 17, 'modulo' => 'Analisis informativo MML', 'funcion' => 'viewGetAnalisis', 'tipo' => 'Vista', 'descripcion' => 'Vista de Analisis informativo MML'],
+            ['id' => 48,  'id_sistema' => 1,'id_menu' => 17, 'modulo' => 'Analisis informativo MML', 'funcion' => 'getAnalisis', 'tipo' => 'Consulta', 'descripcion' => 'Consulta de Analisis informativo MML'],
         );
 
         protected $relFunGroup=array(
@@ -374,6 +379,9 @@ class DatabaseSeeder extends Seeder
             ['id'=>88,'id_grupo'=>4,'id_funcion'=>46],
             ['id'=>89,'id_grupo'=>5,'id_funcion'=>45],
             ['id'=>90,'id_grupo'=>5,'id_funcion'=>46],
+            /* ANÁLISIS INFORMATIVO MML */
+            ['id'=>91,'id_grupo'=>1,'id_funcion'=>47],
+            ['id'=>92,'id_grupo'=>1,'id_funcion'=>48]
         );
     public function run()
     {

@@ -43,7 +43,7 @@ class ReporteController extends Controller
 
     public function indexAnalisisMML()
     {
-        Controller::check_permission('getAdmon');
+        Controller::check_permission('getAnalisis');
         $anios = DB::select('SELECT ejercicio FROM mml_avance_etapas_pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         $anios = $anios == null ? Date("Y") : $anios;
         $dataSet = array();

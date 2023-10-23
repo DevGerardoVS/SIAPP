@@ -22758,7 +22758,7 @@ DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,
             (285,'A13','09',333284743,'Operativo',2023,null,'HISTORICO',null,null,now(),now());
         ");
 
-        DB::unprepared("INSERT INTO tipologia_conac(id,tipo, descripcion, clave_conac, descripcion_conac, deleted_at, updated_at, created_at) values
+        DB::unprepared("INSERT INTO tipologia_conac(id,tipo,clave, descripcion, clave_conac, descripcion_conac, deleted_at, updated_at, created_at) values
             (1,0,null,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','S','SUJETOS A REGLAS DE OPERACIÓN',null,now(),now()),
             (2,0,null,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','U','OTROS SUBSIDIOS',null,now(),now()),
             (3,0,null,'Desempeño de las Funciones','E','PRESTACIÓN DE SERVICIOS PÚBLICOS',null,now(),now()),
@@ -23669,7 +23669,7 @@ DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,
             (51,'103',NULL,'SEEDER',NULL, NULL, null, null); 
         ");
 
-        DB::unprepared("INSERT INTO `sector_linea_accion` VALUES (`id`, `linea_accion_id`, `clv_sector`, `sector`, `deleted_at`, `created_user`, `updated_user`, `deleted_user`, `created_at`, `updated_at`, `linea_accion_num`, `clv_linea_accion`)
+        DB::unprepared("INSERT INTO `sector_linea_accion` (`id`, `linea_accion_id`, `clv_sector`, `sector`, `deleted_at`, `created_user`, `updated_user`, `deleted_user`, `created_at`, `updated_at`, `linea_accion_num`, `clv_linea_accion`) VALUES
         (1, 621, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.1', 'AA'),
         (2, 782, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.2', 'AB'),
         (3, 790, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.3', 'AC'),
