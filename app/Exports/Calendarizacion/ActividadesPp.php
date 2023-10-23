@@ -35,7 +35,7 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
         ->where('programacion_presupuesto.ejercicio', '=', $anio)
         ->where('mml_cierre_ejercicio.ejercicio', '=', $anio)
         ->where('mml_cierre_ejercicio.statusm',1)
-        ->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
+        ->groupByRaw('clv_ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
         ->distinct();
 
     if (Auth::user()->id_grupo == 4) {

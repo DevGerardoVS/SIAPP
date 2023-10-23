@@ -253,6 +253,7 @@ return new class extends Migration
             $table->increments('id')->unsigned();
             $table->string('clv_upp',30)->nullable(false);
             $table->enum('estatus', ['Cerrado', 'Abierto'])->nullable(false);
+            $table->tinyInteger('statusm')->default(0)->nullable(false);
             $table->integer('ejercicio')->nullable(false);
             $table->string('capturista',150)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

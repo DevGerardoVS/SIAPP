@@ -7640,200 +7640,200 @@ DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio
 	 (335,'060','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
 
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (1,'001','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (2,'002','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (3,'020','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (4,'022','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (5,'023','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (6,'032','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (7,'069','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (8,'071','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (9,'100','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (10,'107','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (1,'001','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (2,'002','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (3,'020','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (4,'022','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (5,'023','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (6,'032','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (7,'069','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (8,'071','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (9,'100','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (10,'107','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (11,'012','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (12,'019','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (13,'014','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (14,'010','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (15,'098','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (16,'011','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (17,'021','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (18,'025','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (19,'046','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (20,'106','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (11,'012','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (12,'019','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (13,'014','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (14,'010','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (15,'098','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (16,'011','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (17,'021','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (18,'025','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (19,'046','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (20,'106','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (21,'003','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (22,'006','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (23,'008','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (24,'009','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (25,'016','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (26,'073','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (27,'095','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (28,'007','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (29,'104','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (30,'105','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (21,'003','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (22,'006','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (23,'008','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (24,'009','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (25,'016','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (26,'073','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (27,'095','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (28,'007','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (29,'104','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (30,'105','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (31,'024','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (32,'041','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (33,'042','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (34,'044','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (35,'079','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (36,'A13','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (37,'038','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (38,'075','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (39,'110','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-24 23:36:29.0','2023-09-23 23:32:15.0','SISTEMA','admin',NULL),
-	 (40,'031','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (31,'024','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (32,'041','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (33,'042','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (34,'044','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (35,'079','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (36,'A13','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (37,'038','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (38,'075','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (39,'110','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-24 23:36:29.0','2023-09-23 23:32:15.0','SISTEMA','admin',NULL),
+	 (40,'031','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (41,'035','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (42,'036','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (43,'037','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (44,'045','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (45,'047','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (46,'049','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (47,'050','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (48,'051','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (49,'052','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (50,'063','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (41,'035','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (42,'036','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (43,'037','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (44,'045','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (45,'047','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (46,'049','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (47,'050','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (48,'051','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (49,'052','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (50,'063','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (51,'070','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (52,'074','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (53,'081','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (54,'082','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (55,'085','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (56,'087','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (57,'089','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (58,'093','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (59,'094','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (60,'099','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (51,'070','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (52,'074','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (53,'081','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (54,'082','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (55,'085','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (56,'087','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (57,'089','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (58,'093','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (59,'094','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (60,'099','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (61,'101','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (62,'103','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (63,'078','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (64,'054','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (65,'055','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (66,'068','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (67,'017','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (68,'033','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (69,'040','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (70,'048','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (61,'101','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (62,'103','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (63,'078','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (64,'054','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (65,'055','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (66,'068','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (67,'017','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (68,'033','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (69,'040','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (70,'048','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (71,'053','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (72,'080','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (73,'083','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (74,'084','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (75,'088','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (76,'102','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (77,'108','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (78,'109','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (79,'096','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (80,'060','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (71,'053','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (72,'080','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (73,'083','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (74,'084','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (75,'088','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (76,'102','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (77,'108','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (78,'109','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (79,'096','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (80,'060','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (255,'001','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (256,'002','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (257,'020','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (258,'022','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (259,'023','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (260,'032','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (261,'069','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (262,'071','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (263,'100','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (264,'107','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (255,'001','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (256,'002','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (257,'020','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (258,'022','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (259,'023','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (260,'032','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (261,'069','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (262,'071','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (263,'100','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (264,'107','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (265,'012','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (266,'019','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (267,'014','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (268,'010','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (269,'098','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (270,'011','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (271,'021','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (272,'025','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (273,'046','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (274,'106','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (265,'012','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (266,'019','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (267,'014','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (268,'010','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (269,'098','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (270,'011','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (271,'021','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (272,'025','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (273,'046','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (274,'106','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (275,'003','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (276,'006','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (277,'008','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (278,'009','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (279,'016','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (280,'095','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (281,'007','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (282,'104','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (283,'105','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (284,'024','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (275,'003','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (276,'006','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (277,'008','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (278,'009','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (279,'016','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (280,'095','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (281,'007','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (282,'104','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (283,'105','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (284,'024','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (285,'111','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (286,'112','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (287,'041','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (288,'042','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (289,'044','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (290,'079','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (291,'A13','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (292,'038','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (293,'075','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (294,'110','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (285,'111','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (286,'112','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (287,'041','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (288,'042','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (289,'044','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (290,'079','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (291,'A13','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (292,'038','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (293,'075','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (294,'110','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (295,'031','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (296,'035','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (297,'036','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (298,'037','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (299,'045','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (300,'047','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (301,'049','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (302,'050','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (303,'051','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (304,'052','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (295,'031','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (296,'035','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (297,'036','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (298,'037','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (299,'045','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (300,'047','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (301,'049','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (302,'050','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (303,'051','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (304,'052','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (305,'063','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (306,'070','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (307,'074','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (308,'081','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (309,'082','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (310,'085','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (311,'087','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (312,'089','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (313,'093','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (314,'094','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (305,'063','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (306,'070','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (307,'074','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (308,'081','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (309,'082','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (310,'085','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (311,'087','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (312,'089','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (313,'093','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (314,'094','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (315,'099','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (316,'101','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (317,'103','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (318,'078','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (319,'054','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (320,'055','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (321,'068','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (322,'017','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (323,'033','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (324,'040','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (315,'099','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (316,'101','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (317,'103','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (318,'078','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (319,'054','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (320,'055','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (321,'068','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (322,'017','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (323,'033','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (324,'040','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (325,'048','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (326,'053','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (327,'080','Abierto',2024,NULL,'2023-09-24 15:57:23.0','2023-09-24 20:57:24.0',NULL,'SISTEMA','admin',NULL),
-	 (328,'083','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (329,'084','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (330,'088','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (331,'102','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (332,'108','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (333,'109','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (334,'096','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (325,'048','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (326,'053','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (327,'080','Abierto',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-24 20:57:24.0',NULL,'SISTEMA','admin',NULL),
+	 (328,'083','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (329,'084','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (330,'088','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (331,'102','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (332,'108','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (333,'109','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (334,'096','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (335,'060','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (335,'060','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
 DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (638,'001','4B',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -22758,7 +22758,7 @@ DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,
             (285,'A13','09',333284743,'Operativo',2023,null,'HISTORICO',null,null,now(),now());
         ");
 
-        DB::unprepared("INSERT INTO tipologia_conac(id,tipo, descripcion, clave_conac, descripcion_conac, deleted_at, updated_at, created_at) values
+        DB::unprepared("INSERT INTO tipologia_conac values
             (1,0,null,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','S','SUJETOS A REGLAS DE OPERACIÓN',null,now(),now()),
             (2,0,null,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','U','OTROS SUBSIDIOS',null,now(),now()),
             (3,0,null,'Desempeño de las Funciones','E','PRESTACIÓN DE SERVICIOS PÚBLICOS',null,now(),now()),
@@ -23669,7 +23669,7 @@ DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,
             (51,'103',NULL,'SEEDER',NULL, NULL, null, null); 
         ");
 
-        DB::unprepared("INSERT INTO `sector_linea_accion` VALUES (`id`, `linea_accion_id`, `clv_sector`, `sector`, `deleted_at`, `created_user`, `updated_user`, `deleted_user`, `created_at`, `updated_at`, `linea_accion_num`, `clv_linea_accion`)
+        DB::unprepared("INSERT INTO `sector_linea_accion` VALUES
         (1, 621, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.1', 'AA'),
         (2, 782, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.2', 'AB'),
         (3, 790, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.3', 'AC'),
