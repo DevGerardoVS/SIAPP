@@ -1,5 +1,5 @@
 <?php
-    $titleDesc = "Reporte MML";
+    $titleDesc = "Análisis informativo MML";
     
 ?>
 
@@ -11,7 +11,7 @@
         </header>
 
         <form action="{{route('get_avance_mir')}}" id="buscarFormA" name="analisis" method="post"></form>
-        <form action="{{route('get_comprobacion')}}" id="buscarFormB" name="analisis" method="post"></form>
+        <form action="{{route('get_proyecto_presupuestal')}}" id="buscarFormB" name="analisis" method="post"></form>
 
         @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
@@ -73,7 +73,7 @@
                 <button class="nav-link textoMorado active " role="tab" type="button" id="avanceMir_tab" data-bs-toggle="tab" data-bs-target="#avanceMir" aria-controls="avanceMir" aria-selected="true">Avance MIR</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="comprobacion_tab" data-bs-toggle="tab" data-bs-target="#comprobacion" aria-controls="comprobacion" aria-selected="false">Comprobación</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="proyectoPresupuestal_tab" data-bs-toggle="tab" data-bs-target="#proyectoPresupuestal" aria-controls="proyectoPresupuestal" aria-selected="false">Proyecto presupuestal MIR</button>
             </li>
         </ul>
 
@@ -101,7 +101,7 @@
                 </div>
             </div>
             {{-- Comprobación B--}}
-            <div class="tab-pane" id="comprobacion" role="tabpanel" aria-labelledby="comprobacion_tab" > 
+            <div class="tab-pane" id="proyectoPresupuestal" role="tabpanel" aria-labelledby="proyectoPresupuestal_tab" > 
                 <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
@@ -194,7 +194,7 @@
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
-                    case "comprobacion_tab":
+                    case "proyectoPresupuestal_tab":
                         var dt = $('#catalogoB');
                         tabla="#catalogoB";
                         letter="B";

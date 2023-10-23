@@ -41,13 +41,13 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function indexMML()
+    public function indexAnalisisMML()
     {
         Controller::check_permission('getAdmon');
         $anios = DB::select('SELECT ejercicio FROM mml_avance_etapas_pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         $anios = $anios == null ? Date("Y") : $anios;
         $dataSet = array();
-        return view('reportes.avanceMIR', [
+        return view('reportes.analisisInformativoMML', [
             'dataSet' => json_encode($dataSet),
             'anios' => $anios,
         ]);
@@ -290,7 +290,7 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function getComprobacion(Request $request)
+    public function getProyectoPresupuestal(Request $request)
     {
         $anio = $request->anio;
         $upp = $request->upp;

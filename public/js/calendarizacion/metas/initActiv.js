@@ -54,8 +54,7 @@ var dao = {
         });
     },
     nCont: function () {
-        init.validateCont($('#formContinua'));
-        if ($('#formContinua').valid()) {
+        if ($('#nContinua').val()!='') {
             contValue = $('#nContinua').val();
             for (let i = 1; i <= 12; i++) {
                 $('#' + i).val(contValue);
@@ -63,11 +62,20 @@ var dao = {
             }
             $('#sumMetas').val(contValue);
             $('#sumMetas').attr('disabled', 'disabled');
-            dao.clearCont();
+            dao.clearCont('aceptar');
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Este campo es requerido',
+              })
         }
       
     },
-    clearCont: function () {
+    clearCont: function (tipo) {
+        if (tipo!='aceptar') {
+            $("#tipo_Ac option[value='']").attr("selected", true);
+        }
         $('#nContinua').val("");
         $('#continua').modal('hide');
     },
@@ -218,18 +226,28 @@ var dao = {
             });
         });
     },
-    getActiv: function (upp) {
+    getActiv: function (upp,sub) {
         $("#tipo_Ac").empty();
         $.ajax({
             type: "GET",
             url: '/calendarizacion/tcalendario/'+upp,
             dataType: "JSON"
-        }).done(function (data) {        
-            $.each(data, function (i, val) {
-                if (val == 1) {
-                    $('#tipo_Ac').append("<option value='" + i + "'>" +i+"</option>");
-                }
-            });
+        }).done(function (data) {       
+            if (Object.keys(data).length >= 2&& sub!='UUU') {
+                $("#tipo_Ac").append(new Option("--Tipo Actividad--", ""));
+                document.getElementById("tipo_Ac").options[0].disabled = true;
+
+            }
+            if (sub=='UUU') {
+                $("#tipo_Ac").append(new Option('Acumulativa', 'Acumulativa'));
+            } else {
+                $.each(data, function (i, val) {
+                    if (val == 1) {
+                        $('#tipo_Ac').append("<option value='" + i + "'>" +i+"</option>");
+                    }
+                });
+            }
+
         });
     },
     cierreMetas: function (upp) {
@@ -284,8 +302,7 @@ var dao = {
             url: "/calendarizacion/update/" + id,
             dataType : "json"
         }).done(function (data) {
-            console.log("data",data)
-            dao.getActiv(data.clv_upp);
+            dao.getActiv(data.clv_upp,data.subprograma);
             $('#proyectoMD').empty();
             $('#proyectoMD').append("<thead><tr class='colorRosa'>"
                 + "<th class= 'vertical' > UPP</th >"
@@ -645,7 +662,6 @@ var dao = {
                 mesesV[key] = false;
             }
         }
-        console.log("mes",{area:idA,fondo:idF})
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF,
