@@ -46,7 +46,6 @@ class MetasController extends Controller
 	}
 	public static function getActiv($upp, $anio)
 	{
-
 		Controller::check_permission('getMetas');
 		$query = MetasHelper::actividades($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
