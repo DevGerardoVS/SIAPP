@@ -302,7 +302,6 @@ var dao = {
             url: "/calendarizacion/update/" + id,
             dataType : "json"
         }).done(function (data) {
-            console.log("data",data)
             dao.getActiv(data.clv_upp,data.subprograma);
             $('#proyectoMD').empty();
             $('#proyectoMD').append("<thead><tr class='colorRosa'>"
@@ -663,7 +662,6 @@ var dao = {
                 mesesV[key] = false;
             }
         }
-        console.log("mes",{area:idA,fondo:idF})
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF,

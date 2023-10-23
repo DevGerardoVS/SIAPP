@@ -203,7 +203,6 @@ var dao = {
                 mesesV[key] = false;
             }
         }
-        console.log("mes",{area:idA,fondo:idF})
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF,
@@ -1171,13 +1170,11 @@ $(document).ready(function () {
             $("#idFond").addClass("col-md-6").removeClass("col-md-4");
         }
         if ($('#fondo_id').val() != '' && $('#fondo_id').val() != null) {
-            console.log('fondo_id');
             dao.getMeses($('#area').val(), $('#fondo_id').val());
         }
     });
 
     if ($('#sel_actividad').val() != '' && $('#sel_fondo').val() != '' && $('#sel_actividad').val() != null && $('#sel_fondo').val() != null) {
-        console.log('sel_fondo');
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
     }
 
