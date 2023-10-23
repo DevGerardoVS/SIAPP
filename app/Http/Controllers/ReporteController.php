@@ -297,32 +297,30 @@ class ReporteController extends Controller
         $programa = $request->programa;
         $mir = $request->mir;
         $array_where = [];
-        $isNull = "";
-        $isNull = $request->mir == "0" ? 'mm.area_funcional is null' : ($request->mir == "1" ? 'mm.area_funcional is not null' : null);
-
+        
         if($upp != null && $upp != "null" && $upp != "") array_push($array_where, ['ve.clv_upp', $upp]);
         if($programa != null && $programa != "null" && $programa != "") array_push($array_where, ['ve.clv_programa', $programa]);
-        // if($mir != null && $mir != "null" && $mir != "") array_push($ar,);
-
+        if($mir != null && $mir != "null" && $mir != "" && $mir == "1") array_push($array_where, ['mm.area_funcional','!=','null']);
         $dataSet = array();
-
+        
         $data = DB::table("v_epp as ve")
-            ->leftJoin("mml_mir as mm", function($join){
-                $join->on("ve.id", "=", "mm.id_epp")
-                ->where("mm.nivel", "=", 11);
-            })
-            ->select(DB::raw("distinct(mm.area_funcional), concat( ve.clv_finalidad, ve.clv_funcion, ve.clv_subfuncion, ve.clv_eje, ve.clv_linea_accion, ve.clv_programa_sectorial, ve.clv_tipologia_conac, ve.clv_programa, ve.clv_subprograma, ve.clv_proyecto) as area_funcional_epp,
-            ve.clv_upp,
-            ve.clv_programa,
-            ve.clv_ur,
-            ve.proyecto"))
-            ->where("ve.ejercicio", "=", $anio)
-            ->where($array_where)
-            ->whereRaw($isNull)
-            ->whereNull("mm.deleted_at")
-            ->orderBy("ve.clv_upp", "asc")
-            ->orderBy("ve.clv_ur", "asc")
-            ->get();
+        ->leftJoin("mml_mir as mm", function($join){
+            $join->on("ve.id", "=", "mm.id_epp")
+            ->where("mm.nivel", "=", 11);
+        })
+        ->select(DB::raw("distinct(mm.area_funcional), concat( ve.clv_finalidad, ve.clv_funcion, ve.clv_subfuncion, ve.clv_eje, ve.clv_linea_accion, ve.clv_programa_sectorial, ve.clv_tipologia_conac, ve.clv_programa, ve.clv_subprograma, ve.clv_proyecto) as area_funcional_epp,
+        ve.clv_upp,
+        ve.clv_programa,
+        ve.clv_ur,
+        ve.proyecto"))
+        ->where("ve.ejercicio", "=", $anio)
+        ->where($array_where)
+        ->whereNull("mm.deleted_at")
+        ->orderBy("ve.clv_upp", "asc")
+        ->orderBy("ve.clv_ur", "asc");
+
+        if($mir == "0") $data->whereRaw('mm.area_funcional IS NULL'); // Comprobar si el valor en la variable MIR corresponde a los datos sin MIR
+        $data = $data->get();
         
         foreach ($data as $d) {
             $conMir = "-";
@@ -337,14 +335,14 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function getUPP($anio){
+    public function getUPP($anio){ // Obtener las UPP para llenar el select del mismo
         $upp = DB::table("v_epp")->select("clv_upp", "upp")
         ->where("ejercicio", $anio)
         ->groupBy("clv_upp")->get();
         return $upp;
     }
 
-    public function getPrograma($clv_upp){
+    public function getPrograma($clv_upp){ // Obtener los programas para llenar el select del mismo
         $anio = session("anioMIR");
         $array_where=[];
 
