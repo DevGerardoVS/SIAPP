@@ -1,5 +1,5 @@
 <?php
-    $titleDesc = "Reporte MML";
+    $titleDesc = "Análisis informativo MML";
     
 ?>
 
@@ -11,7 +11,7 @@
         </header>
 
         <form action="{{route('get_avance_mir')}}" id="buscarFormA" name="analisis" method="post"></form>
-        <form action="{{route('get_comprobacion')}}" id="buscarFormB" name="analisis" method="post"></form>
+        <form action="{{route('get_proyecto_presupuestal')}}" id="buscarFormB" name="analisis" method="post"></form>
 
         @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
@@ -25,10 +25,10 @@
         <section class="row mt-5" >
             <form id="buscarForm" method="POST"> 
                 @csrf
-                <div class="col-md-10 col-sm-12 d-md-flex">
+                <div class="row ">
                     {{-- Select Año --}}
-                    <label for="anio_filter" class="form-label fw-bold mt-md-1">Año: </label>
-                    <div class="col-sm-12 col-md-3 col-lg-2">
+                    <div class="col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-0">
+                        <label for="anio_filter" class="form-label fw-bold">Año: </label>
                         <select class="form-control filters filters_anio" id="anio_filter" name="anio_filter" autocomplete="anio_filter">
                             @foreach ($anios as $anio)
                                 <option value={{$anio->ejercicio}}>{{ $anio->ejercicio}}</option>
@@ -36,35 +36,34 @@
                         </select>
                     </div>
                     {{-- Select UPP --}}
-                    <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP: </label>
-                    <div class="col-sm-12 col-md-3 col-lg-2">
+                    <div class="col-sm-12 col-md-6 col-lg-4 mb-3 mb-sm-3 mb-md-3 mb-lg-0">
+                        <label for="upp_filter" class="form-label fw-bold">UPP: </label>
                         <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
                         </select>
                     </div>
                     {{-- Select Programa --}}
-                    <label for="programa_filter" class="form-label fw-bold mt-md-1 mostrar d-none">Programa:</label>
-                    <div class="col-sm-12 col-md-6 col-lg-4 mostrar d-none">
+                    <div class="col-sm-12 col-md-6 col-lg-4 mb-3 mb-sm-3 mb-md-3 mb-lg-0 mostrar d-none">
+                        <label for="programa_filter" class="form-label fw-bold">Programa:</label>
                         <select class="form-control filters filters_programa" id="programa_filter" name="programa_filter" autocomplete="programa_filter">
                         </select>
                     </div>
                     {{-- Select Estatus --}}
-                    <label for="estatus_filter" class="form-label fw-bold mt-md-1 mostrarEstatus">Estatus: </label>
-                    <div class="col-sm-12 col-md-3 col-lg-2 mostrarEstatus">
+                    <div class="col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-0 mostrarEstatus">
+                        <label for="estatus_filter" class="form-label fw-bold">Estatus: </label>
                         <select class="form-control filters filters_estatus" id="estatus_filter" name="estatus_filter" autocomplete="estatus_filter">
                             <option value="">Todos</option>
-                            <option value="1">Validado</option>
+                            <option value="3">Validado</option>
                             <option value="0">Pendiente</option>
                         </select>
                     </div>
                     {{-- Select con MIR --}}
-                    <label for="mir_filter" class="form-label fw-bold mt-md-1 mostrar d-none">Con MIR: </label>
-                    <div class="col-sm-12 col-md-3 col-lg-2 mostrar d-none">
+                    <div class="col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-0 mostrar d-none">
+                        <label for="mir_filter" class="form-label fw-bold">Con MIR: </label>
                         <select class="form-control filters filters_mir" id="mir_filter" name="mir_filter" autocomplete="mir_filter">
                             <option value="">Todos</option>
                             <option value="1">Con MIR</option>
                             <option value="0">Sin MIR</option>
                         </select>
-                    </div>
                 </div>
             </form>
         </section>
@@ -74,7 +73,7 @@
                 <button class="nav-link textoMorado active " role="tab" type="button" id="avanceMir_tab" data-bs-toggle="tab" data-bs-target="#avanceMir" aria-controls="avanceMir" aria-selected="true">Avance MIR</button>
             </li>
             <li class="nav-item" >
-                <button class="nav-link textoMorado" role="tab" type="button" id="comprobacion_tab" data-bs-toggle="tab" data-bs-target="#comprobacion" aria-controls="comprobacion" aria-selected="false">Comprobación</button>
+                <button class="nav-link textoMorado" role="tab" type="button" id="proyectoPresupuestal_tab" data-bs-toggle="tab" data-bs-target="#proyectoPresupuestal" aria-controls="proyectoPresupuestal" aria-selected="false">Proyecto presupuestal MIR</button>
             </li>
         </ul>
 
@@ -102,12 +101,12 @@
                 </div>
             </div>
             {{-- Comprobación B--}}
-            <div class="tab-pane" id="comprobacion" role="tabpanel" aria-labelledby="comprobacion_tab" > 
+            <div class="tab-pane" id="proyectoPresupuestal" role="tabpanel" aria-labelledby="proyectoPresupuestal_tab" > 
                 <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body table-responsive">
-                                <table class="tableRowStyle table table-hover table-bordered table-striped order-table text-center tableSize align-middle"
+                                <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
                                     id="catalogoB" style="width:100%; font-size: 14px;" data-left="4">
                                     <thead  class="colorMorado">
                                         <tr>
@@ -189,15 +188,20 @@
                         letter="A";     
                         $('.mostrar').addClass('d-none');
                         $('.mostrarEstatus').removeClass('d-none');
+                        $("#upp_filter").val("");
+                        $("#programa_filter").val("");
+                        $("#mir_filter").val("");
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
-                    case "comprobacion_tab":
+                    case "proyectoPresupuestal_tab":
                         var dt = $('#catalogoB');
                         tabla="#catalogoB";
                         letter="B";
                         $('.mostrarEstatus').addClass('d-none');
                         $('.mostrar').removeClass('d-none');
+                        $("#upp_filter").val("")
+                        $("#estatus_filter").val("")
                         dt.DataTable().clear().destroy();
                         getData(tabla,letter);
                         break;
