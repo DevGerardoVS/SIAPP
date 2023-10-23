@@ -317,7 +317,8 @@ class ReporteController extends Controller
         ->where($array_where)
         ->whereNull("mm.deleted_at")
         ->orderBy("ve.clv_upp", "asc")
-        ->orderBy("ve.clv_ur", "asc");
+        ->orderBy("ve.clv_ur", "asc")
+        ->orderBy("ve.clv_programa", "asc");
 
         if($mir == "0") $data->whereRaw('mm.area_funcional IS NULL'); // Comprobar si el valor en la variable MIR corresponde a los datos sin MIR
         $data = $data->get();
@@ -326,7 +327,7 @@ class ReporteController extends Controller
             $conMir = "-";
             if ($d->area_funcional != null) $conMir = '<p><i class="fa fa-check"></i></p>';
             
-            $ds = array($d->clv_upp, $d->clv_programa, $d->clv_ur, $d->area_funcional_epp, $d->proyecto, $conMir);
+            $ds = array($d->clv_upp, $d->clv_ur, $d->clv_programa, $d->area_funcional_epp, $d->proyecto, $conMir);
             $dataSet[] = $ds;
         }
 

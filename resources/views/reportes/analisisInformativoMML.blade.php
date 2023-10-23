@@ -111,8 +111,8 @@
                                     <thead  class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important;">UPP</th>
-                                            <th class="exportable align-middle text-light" style="text-align: center !important;">PP</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important;">UR</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important;">PP</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important;">Área funcional</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important;">Nombre del proyecto</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important;">Con MIR</th>
