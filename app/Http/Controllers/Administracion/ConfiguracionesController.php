@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\administracion\TipoActividadUpp;
 use App\Models\administracion\UppAutorizadascpNomina;
+use App\Models\calendarizacion\TechosFinancieros;
 use App\Helpers\BitacoraHelper;
 
 class ConfiguracionesController extends Controller
@@ -176,6 +177,8 @@ class ConfiguracionesController extends Controller
             $array_data_act = [];
             $data_old_act = [];
 
+            DB::beginTransaction();
+
             $upp_autorizada = UppAutorizadascpNomina::where('clv_upp',$request->id)->first();
 
             if(!empty($upp_autorizada)){
@@ -199,7 +202,7 @@ class ConfiguracionesController extends Controller
                 else{
                     $upp_autorizada->deleted_at = NULL;
                 } 
-                Log::channel('daily')->debug('upp '.$upp_autorizada->deleted_at);
+                //Log::channel('daily')->debug('upp '.$upp_autorizada->deleted_at);
                 $upp_autorizada->updated_user = Auth::user()->username;
                 $upp_autorizada->updated_at = date("Y-m-d H:i:s");
                 $upp_autorizada->deleted_user = Auth::user()->username;
@@ -234,6 +237,61 @@ class ConfiguracionesController extends Controller
 
             BitacoraHelper::saveBitacora(BitacoraHelper::getIp(),"uppautorizadascpnomina", "Edicion",json_encode($array_data_act));
             
+            //validar en techos financieros si tiene recursos de RH
+            $array_data_act = [];
+            $data_old_act = [];
+            
+            if($request->value=='false'){
+                $techo = TechosFinancieros::where('clv_upp',$request->id)->where('tipo','RH')->where('ejercicio',date('Y'))->first();
+
+                if(!empty($techo)){
+                    $ds = "El presupuesto para RH se eliminará, se debe agregar este presupuesto a Operativo";
+                    $dataSet[] = $ds;
+                    
+                    $data_old_act = array(
+                        'id' => $techo->id,
+                        'clv_upp' => $techo->clv_upp,
+                        'clv_fondo' => $techo->clv_fondo,
+                        'presupuesto' => $techo->presupuesto,
+                        'tipo' => $techo->tipo,
+                        'deleted_at'=> date("Y/m/d H:i:s", strtotime($techo->deleted_at)),
+                        'deleted_user'=> $techo->deleted_user,
+                        'created_at' => $techo->usuario_creacion,
+                        'updated_user' => $techo->usuario_modificacion,
+                        'created_at'=>date("d/m/Y H:i:s", strtotime($techo->created_at)),
+                        'updated_at'=>date("d/m/Y H:i:s", strtotime($techo->updated_at)),
+                    );
+
+                    $techo->deleted_at = date("Y-m-d H:i:s");
+                    $techo->deleted_user =  Auth::user()->username;
+                    $techo->save();
+
+                    $data_new_act = array(
+                        'id' => $techo->id,
+                        'clv_upp' => $techo->clv_upp,
+                        'clv_fondo' => $techo->clv_fondo,
+                        'presupuesto' => $techo->presupuesto,
+                        'tipo' => $techo->tipo,
+                        'deleted_at'=> date("Y/m/d H:i:s", strtotime($techo->deleted_at)),
+                        'deleted_user'=> $techo->deleted_user,
+                        'created_at' => $techo->usuario_creacion,
+                        'updated_user' => $techo->usuario_modificacion,
+                        'created_at'=>date("d/m/Y H:i:s", strtotime($techo->created_at)),
+                        'updated_at'=>date("d/m/Y H:i:s", strtotime($techo->updated_at)),
+                    );
+
+                    $array_data_act = array(
+                        'tabla'=>'techos_financieros',
+                        'anterior'=>$data_old_act,
+                        'nuevo'=>$data_new_act
+                    );
+
+                    BitacoraHelper::saveBitacora(BitacoraHelper::getIp(),"uppautorizadascpnomina", "Edicion",json_encode($array_data_act));
+                }
+            } 
+
+            DB::commit();
+
             return response()->json([
                 "dataSet" => $dataSet,
                 "catalogo" => "Configuraciones",
@@ -248,13 +306,17 @@ class ConfiguracionesController extends Controller
     public static function updateUpps(Request $request){
         Controller::check_permission('updateUpps');
         try {
-            $dataSet = array();
+            $dataSet = "";
             $array_data_act = [];
             $data_old_act = [];
 
             $tipo_actividad = TipoActividadUpp::where('clv_upp',$request->id)->firstOrFail();
 
             if(!empty($tipo_actividad)){
+
+                //validación de casillas
+                if($tipo_actividad->continua != "" || $tipo_actividad->acumulativa || $tipo_actividad->especial)
+            
 
                 $data_old_act = array(
                     'id' => $tipo_actividad->id,
@@ -273,12 +335,37 @@ class ConfiguracionesController extends Controller
 
                 switch($request->field){
                     case "continua":
+                        if($tipo_actividad->acumulativa == 0 && $tipo_actividad->especial == 0 && $request->value == 0){
+                            $dataSet = "error";
+
+                            return response()->json([
+                                "dataSet" => $dataSet,
+                                "catalogo" => "Configuraciones",
+                            ]);
+                        }
+
                         $tipo_actividad->Continua = $request->value;
                         break;
                     case "acumulativa":
+                        if($tipo_actividad->continua == 0 && $tipo_actividad->especial == 0 && $request->value == 0){
+                            $dataSet = "error";
+                            
+                            return response()->json([
+                                "dataSet" => $dataSet,
+                                "catalogo" => "Configuraciones",
+                            ]);
+                        }
                         $tipo_actividad->Acumulativa = $request->value;
                         break;
                     case "especial":
+                        if($tipo_actividad->acumulativa == 0 && $tipo_actividad->continua == 0 && $request->value == 0){
+                            $dataSet = "error";
+                            
+                            return response()->json([
+                                "dataSet" => $dataSet,
+                                "catalogo" => "Configuraciones",
+                            ]);
+                        }
                         $tipo_actividad->Especial = $request->value;
                         break;
                     default:
@@ -287,12 +374,9 @@ class ConfiguracionesController extends Controller
                 
 
             }
-
             
             $tipo_actividad->updated_user = Auth::user()->username;
             $tipo_actividad->save();
-           
-
 
             $data_new_act = array(
                 'id' => $tipo_actividad->id,

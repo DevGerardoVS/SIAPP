@@ -187,6 +187,15 @@ function updateAutoUpps(id){
         contentType: false,
         success:function(response){
             response = response.dataSet;
+			//colocar codigo de respuesta
+			if(response.length>0){
+				Swal.fire({
+					icon: 'warning',
+					title: 'Advertencia',
+					text: response,
+					confirmButtonText: "Aceptar",
+				});
+			}
         },
         error: function(response) {
             var mensaje="";
@@ -237,8 +246,15 @@ function updateData(id,field){
         contentType: false,
         success:function(response){
             response = response.dataSet;
-            console.log(response);
-            
+            if(response == "error"){
+				Swal.fire({
+					icon: 'error',
+					title: 'Error',
+					text: "No puedes deshabilitar todas las casillas.",
+					confirmButtonText: "Aceptar",
+				});
+				
+			}
         },
         error: function(response) {
             var mensaje="";
