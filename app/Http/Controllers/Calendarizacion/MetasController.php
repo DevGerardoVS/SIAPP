@@ -1530,8 +1530,8 @@ class MetasController extends Controller
 				->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 				->distinct()
 				->get();
-			if ($activs) {
-				$pp[] = json_encode($activs[0]);
+			if (count($activs)) {
+				$pp[] = json_encode($activs);
 			}
 		}
 		$activsPP = DB::table('programacion_presupuesto')
