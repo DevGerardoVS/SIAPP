@@ -807,10 +807,24 @@ class MetasController extends Controller
 	}
 	public function proyExcel()
 	{
+		ini_set('max_execution_time', 5000);
+        ini_set('memory_limit', '1024M');
+		Schema::create('pptemp', function (Blueprint $table) {
+			$table->temporary();
+			$table->increments('id');
+			$table->string('clv_upp', 25)->nullable(false);
+			$table->string('entidad_ejecutora', 55)->nullable(false);
+			$table->string('area_funcional', 55)->nullable(false);
+			$table->string('clv_actadmon', 55)->nullable(false);
+			$table->string('mir_act', 55)->nullable(false);
+			$table->string('actividad', 55)->nullable(false);
+			$table->string('fondo', 55)->nullable(false);
+		});
 		Controller::check_permission('getMetas');
 		/*Si no coloco estas lineas Falla*/
 		ob_end_clean();
 		ob_start();
+
 		/*Si no coloco estas lineas Falla*/
 		$b = array(
 			"username" => Auth::user()->username,
