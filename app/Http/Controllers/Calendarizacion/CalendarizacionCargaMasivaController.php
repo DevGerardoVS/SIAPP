@@ -109,9 +109,9 @@ class CalendarizacionCargaMasivaController extends Controller
             'noviembre',
             'diciembre'
         );
-        $request->validate([
+/*         $request->validate([
             'file' => 'required|mimes:xlsx'
-        ], $message);
+        ], $message); */
 
         ini_set('max_execution_time', 1200);
 
