@@ -14,8 +14,10 @@ class EppExport implements FromCollection, ShouldAutoSize, WithHeadings, WithCol
 {
     protected $anio;
 
-    function __construct($anio){
-        $this->anio = $anio;
+    function __construct($request){
+        $this->anio = $request->anio;
+        $this->upp = $request->upp;
+        $this->ur = $request->ur;
     }
 
     public function collection()
@@ -106,6 +108,11 @@ class EppExport implements FromCollection, ShouldAutoSize, WithHeadings, WithCol
             ->get();
         }
         else {
+            $uppS = '=';
+            $urS = '=';
+            if($this->upp == '000') $uppS = '!=';
+            if($this->ur == '00') $urS = '!=';
+
             $epp = DB::table('v_epp')
             ->select(DB::raw("
                 CONCAT(
@@ -143,6 +150,8 @@ class EppExport implements FromCollection, ShouldAutoSize, WithHeadings, WithCol
                 proyecto
             "))
             ->where('ejercicio', $this->anio)
+            ->where('clv_upp',$uppS,$this->upp)
+            ->where('clv_ur',$urS,$this->ur)
             ->get();
         }
         
