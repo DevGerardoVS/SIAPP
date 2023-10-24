@@ -240,9 +240,18 @@ class CalendarizacionCargaMasivaController extends Controller
                             foreach ($arrayupps as $u) {
                                 $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->count();
 
-                                if ($valupp > 0) {
-                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('ejercicio', $ejercicio[0])->forceDelete();
+
+                                $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+
+                                if ($confirmadas>0) {
+                                    return redirect()->back()->withErrors(['error' => 'No se pueden añadir más claves por carga masiva a la upp: '.$u.' porque ya tiene claves confirmadas']);
+
                                 }
+
+                                if ($valupp > 0) {
+                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('ejercicio', $ejercicio[0])->where('estado', 0)->forceDelete();
+                                }
+
 
                             }
                             $b = array(

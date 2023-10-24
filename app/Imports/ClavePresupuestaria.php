@@ -297,8 +297,8 @@ class ClavePresupuestaria implements ToModel, WithHeadingRow, WithValidation, Sk
         }
         $row['user'] = 'CargaMasiva' . Auth::user()->username;
 
-        Auth::user()->id_grupo == 1? $row['estado'] = 1 : $row['estado']=0;
-
+/*         Auth::user()->id_grupo == 1? $row['estado'] = 1 : $row['estado']=0;
+ */
                 return $row;
 
 
@@ -355,7 +355,7 @@ class ClavePresupuestaria implements ToModel, WithHeadingRow, WithValidation, Sk
             'noviembre' => $row['noviembre'],
             'diciembre' => $row['diciembre'],
             'total' => $row['total'],
-            'estado' => 1,
+            'estado' => 0,
             'tipo' => $row['tipo'],
             'updated_at' => null,
             'created_user' => $row['user']
