@@ -1,10 +1,13 @@
 @extends('layouts.app')
 @include('calendarizacion.metas.addActividad')
 @include('calendarizacion.metas.modalFirmaElectronica')
+@include('calendarizacion.metas.actividadContinua')
 @section('content')
     <div class="container">
        
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
+        <input id='ar' type="text" style="display: none">
+        <input id='fondo' type="text" style="display: none">
         <section id="widget-grid" class="conteiner">
             <div class="row">
                 <div>

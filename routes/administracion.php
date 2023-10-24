@@ -86,7 +86,7 @@ Route::controller(UsuarioController::class)->group(function () {
 	Route::controller(ReporteController::class)->group(function(){
 		Route::get('/Reportes/ley-planeacion','indexPlaneacion')->name('index_planeacion');
 		Route::get('/Reportes/administrativos', 'indexAdministrativo')->name('index_administrativo');
-		Route::get('/Reportes/avance-mir', 'consultarAvanceMIR')->name('consultar_avance_mir');
+		Route::get('/Reportes/analisis-informativo-mml', 'indexAnalisisMML')->name('index_analisis_mml');
 		
 		// Reportes administrativos
 		Route::post('/Reportes/administrativos/calendarioFondoMensual', 'calendarioFondoMensual')->name('calendario_fondo_mensual');
@@ -96,8 +96,12 @@ Route::controller(UsuarioController::class)->group(function () {
     	Route::post('/Reportes/administrativos/proyectoCalendarioGeneralActividad', 'proyectoCalendarioGeneralActividad')->name('proyecto_calendario_general_actividad');
     	Route::post('/Reportes/administrativos/avanceProyectoActividadUPP', 'avanceProyectoActividadUPP')->name('avance_proyecto_actividad_upp');
 		
-    	Route::post('/Reportes/avance-mir/datos', 'getAvanceMIR')->name('get_avance_mir'); // Ruta avance_etapas
+    	Route::post('/Reportes/analisis-informativo-mml/avance-mir', 'getAvanceMIR')->name('get_avance_mir'); // Ruta avance_mir
+    	Route::post('/Reportes/analisis-informativo-mml/proyecto-presupuestal', 'getProyectoPresupuestal')->name('get_proyecto_presupuestal'); // Ruta comprobación
+
 		Route::post('/Reportes/data-fecha-corte/{ejercicio?}','getFechaCorte')->name('get_fecha_corte'); // Obtener fecha de acuerdo al año
+		Route::post('/Reportes/analisis-informativo-mml/data-upp/{ejercicio?}','getUPP')->name('get_UPP'); // Obtener UPP de acuerdo a la UPP
+		Route::post('/Reportes/analisis-informativo-mml/data-programa/{clv_upp?}','getPrograma')->name('get_programa'); // Obtener programa de acuerdo a la UPP
 		Route::post('/Reportes/download/{nombre}', 'downloadReport')->name('downloadReport'); // Descargar reportes
 	});
 

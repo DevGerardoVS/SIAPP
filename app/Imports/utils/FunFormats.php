@@ -3,7 +3,6 @@ namespace App\Imports\utils;
 
 use App\Models\calendarizacion\Metas;
 use App\Models\MmlMir;
-use App\Models\MmlMirCatalogo;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -93,12 +92,12 @@ class FunFormats
                 } else {
                     //checar si la mir esta confirmada
 
-                    $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', strval($k[7]))->select('ejercicio')->get();
-                    $isMir = DB::table("mml_avance_etapas_pp")
+                    $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', strval($k[7]))->where('deleted_at', null)->max('ejercicio');
+                    $isMir = DB::table("mml_cierre_ejercicio")
                         ->select('id', 'estatus')
                         ->where('clv_upp', '=', strval($k[7]))
-                        ->where('ejercicio', '=', $anio[0]->ejercicio)
-                        ->where('estatus', 3)->get();
+                        ->where('ejercicio', '=',$anio )
+                        ->where('status', 1)->get();
                     if (count($isMir)) {
                         $flg = false;
                         if (strtoupper($k[13]) == 'N/A' && strtoupper($k[14]) == 'N/A') {
@@ -119,7 +118,7 @@ class FunFormats
                         }
                         if (strtoupper($k[13]) != 'N/A' && is_numeric($k[13])) {
                             if (is_numeric($k[13])) {
-                                $activ = DB::table('catalogo')->where('deleted_at', null)->where('grupo_id', 20)->where('id', $k[13])->get();
+                                $activ = DB::table('catalogo')->where('ejercicio',  $anio)->where('deleted_at', null)->where('grupo_id', 20)->where('id', $k[13])->get();
                                 if ($activ) {
 
                                     $flg = true;
@@ -149,6 +148,7 @@ class FunFormats
                         }
 
                         if (is_numeric($k[14])) {
+                            log::debug("id_mir:".$k[14]);
                             $actividad = Mir::where('deleted_at', null)->where('id', $k[14])->first();
                             if ($actividad) {
                                 $flg = true;
@@ -163,9 +163,11 @@ class FunFormats
                         }
                         if ($flg) {
                             $area = '' . strval($k[0]) . strval($k[1]) . strval($k[2]) . strval($k[3]) . strval($k[4]) . strval($k[5]) . strval($k[6]) . strval($k[9]) . strval($k[10]) . strval($k[11]) . '';
-                            $anio = isset($actividad->ejercicio) ? $actividad->ejercicio : $anio[0]->ejercicio;
+                            $anio = isset($actividad->ejercicio) ? $actividad->ejercicio : $anio;
                             if (isset($actividad->area_funcional) && strtoupper($k[14]) != 'N/A') {
                                 if ($actividad->area_funcional != $area) {
+                                    log::debug($actividad->area_funcional);
+                                    log::debug($area);
                                     $error = array(
                                         "icon" => 'error',
                                         "title" => 'Error',
