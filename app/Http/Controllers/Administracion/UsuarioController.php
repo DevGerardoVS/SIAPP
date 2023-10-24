@@ -225,6 +225,7 @@ class UsuarioController extends Controller
             'permisos_funciones.id_user',
             'permisos_funciones.id_permiso',
             'adm_users.username',
+            'adm_users.clv_upp',
             DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'),
             DB::raw('GROUP_CONCAT(cat_permisos.nombre SEPARATOR " / ") AS permiso'),
             DB::raw('GROUP_CONCAT(permisos_funciones.id_permiso SEPARATOR "/") AS permisos'),
@@ -244,6 +245,7 @@ class UsuarioController extends Controller
             $accion = Auth::user()->id_grupo != 3 ? '<a  data-toggle="modal" data-target=".permisosModalE" data-backdrop="static"
 			data-keyboard="false" onclick="dao.editarUp(' . $key->id . ',' . $key->id_user . ',' .$p  . ')"><i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' : '';
             $i = array(
+                $key->clv_upp,
                 $key->username,
                 $key->nombre_completo,
                 $key->grupo,
@@ -293,6 +295,12 @@ class UsuarioController extends Controller
                 'id_grupo' => $request->id_grupo,
                 'id_usuario' => $user->id,
             ]);
+            if($request->id_grupo==5 ||$request->id_grupo==1){
+                PermisosUpp::create([
+                    'id_user'=>$user->id,
+                    'id_permiso'=>1
+                ]);
+            }
             $b = array(
                 "username" => Auth::user()->username,
                 "accion" => 'Crear Usuario:'.$request->username,
@@ -355,6 +363,7 @@ class UsuarioController extends Controller
     {
         Controller::check_permission('deleteUsuarios');
         $userEdit = User::where('id', $request->id)->firstOrFail();
+        $userEdit->email = $userEdit->email . "1";
         $userEdit->deleted_user = Auth::user()->username;
         $userEdit->save();
         User::where('id', $request->id)->delete();

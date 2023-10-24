@@ -217,11 +217,10 @@
         var helper =  value[0].replace('There was an error on row', 'Hay un error en la fila: ');
         fails.push(helper);
         });
-        console.log(fails);
-
+        var serializada= JSON.stringify(fails);
         Swal.fire({
                 icon: 'error',
-                title: 'Error al importar la carga masiva',
+                title: 'Error al importar la carga masiva <a type="button" class="btn btn-success" href="/calendarizacion/download-errors-excel/'+encodeURIComponent(serializada) +'"><i class="fa fa-floppy-o" style="color: #ffffff;">Descargar Errores</a>',
                 text: fails,
                 confirmButtonText: "Aceptar",
                 timerProgressBar: false,

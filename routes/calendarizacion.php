@@ -60,7 +60,7 @@ Route::controller(TechosController::class)->group(function () {
 
 Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
 	Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('getplantilla');
-	Route::post('/calendarizacion/download-errors-excel', 'DownloadErrors')->name('SaveErrors');
+	Route::get('/calendarizacion/download-errors-excel/{fails?}', 'DownloadErrors')->name('SaveErrors');
 	Route::post('/calendarizacion/load-Data-Plantilla', 'loadDataPlantilla')->name('load_data_plantilla');
 });
 ?>

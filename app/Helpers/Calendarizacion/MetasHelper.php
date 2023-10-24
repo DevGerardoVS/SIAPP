@@ -33,11 +33,12 @@ class MetasHelper
 					'entidad_ejecutora AS entidad',
 					'area_funcional AS area',
 					DB::raw("IFNULL(nombre,IFNULL(catalogo.descripcion,nombre)) AS actividad"),
-					'ejercicio',
+					'mml_actividades.ejercicio',
 				)
 				->where('mml_actividades.deleted_at', '=', null)
 				->where('catalogo.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $upp)
+				->where('catalogo.ejercicio', $anio)
 				->where('mml_actividades.ejercicio', $anio);
 			$query2 = DB::table('metas')
 				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')

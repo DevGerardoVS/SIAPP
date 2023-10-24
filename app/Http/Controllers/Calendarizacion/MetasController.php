@@ -46,7 +46,6 @@ class MetasController extends Controller
 	}
 	public static function getActiv($upp, $anio)
 	{
-
 		Controller::check_permission('getMetas');
 		$query = MetasHelper::actividades($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
@@ -135,7 +134,7 @@ class MetasController extends Controller
 					->where('v_epp.presupuestable', '=', 1)
 					->orderBy('programacion_presupuesto.upp')
 					->where('programacion_presupuesto.deleted_at', null)
-					->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
+					->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 					->distinct()
 					->get();
 
@@ -195,9 +194,9 @@ class MetasController extends Controller
 					->where('ejercicio', $check['anio'])->get();
 				$Act = DB::table('tipo_actividad_upp')
 					->select(
-						'Continua',
 						'Acumulativa',
-						'Especial'
+						'Especial',
+						'Continua',
 					)
 					->where('deleted_at', null)
 					->orderBy('clv_upp')
@@ -304,11 +303,12 @@ class MetasController extends Controller
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
 			} else {
-				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
+				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('ejercicio',  $check['anio'])->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
 			}
+			$tAct = MetasController::getTcalendar($entidadAux[0]);
 		}
 
-		return ['fondos' => $fondos, "activids" => $activ];
+		return ['fondos' => $fondos, "activids" => $activ ,"tAct"=> $tAct];
 	}
 	public static function meses($area, $entidad, $anio, $fondo)
 	{
@@ -374,9 +374,9 @@ class MetasController extends Controller
 	{
 		$Act = DB::table('tipo_actividad_upp')
 			->select(
-				'Continua',
 				'Acumulativa',
-				'Especial'
+				'Especial',
+				'Continua',
 			)
 			->where('deleted_at', null)
 			->orderBy('clv_upp')
@@ -736,11 +736,13 @@ class MetasController extends Controller
 		$areaAux = str_split($metas[0]->area_funcional);
 		$entiAux = str_split($metas[0]->entidad_ejecutora);
 		$area = '' . strval($areaAux[0]) . '-' . strval($areaAux[1]) . '-' . strval($areaAux[2]) . '-' . strval($areaAux[3]) . '-' . strval($areaAux[4]) . strval($areaAux[5]) . '-' . strval($areaAux[6]) . '-' . strval($areaAux[7]) . '-' . strval($areaAux[8]) . strval($areaAux[9]) . "-" . strval($areaAux[10]) . strval($areaAux[11]) . strval($areaAux[12]) . "-" . strval($areaAux[13]) . strval($areaAux[14]) . strval($areaAux[15]) . '';
+		$ar = "".$area."$". $metas[0]->clv_upp ."-". strval($entiAux[3]) . "-". strval($entiAux[4]) . strval($entiAux[5]) ."$". $metas[0]->ejercicio;
 		$meses = MetasController::meses($area, "" . $metas[0]->clv_upp . "-" . strval($entiAux[3]) . "-" . strval($entiAux[4]) . strval($entiAux[5]) . "", $metas[0]->ejercicio, $metas[0]->clv_fondo);
 		foreach ($metas as $key) {
 			$area = str_split($key->area_funcional);
 			$entidad = str_split($key->entidad_ejecutora);
 			$i = array(
+				"ar"=>$ar,
 				"area" => $key->area_funcional,
 				"entidad" => $key->entidad_ejecutora,
 				"clv_upp" => $key->clv_upp,
@@ -938,11 +940,11 @@ class MetasController extends Controller
 			$flag = false;
 			if (Auth::user()->id_grupo == 4) {
 				$check = $this->checkClosing(Auth::user()->clv_upp);
-				$isMir = DB::table("mml_avance_etapas_pp")
+				$isMir = DB::table("mml_cierre_ejercicio")
 					->select('id', 'estatus')
 					->where('clv_upp', '=', Auth::user()->clv_upp)
 					->where('ejercicio', '=', $check['anio'])
-					->where('estatus', 3)->get();
+					->where('statusm', 1)->get();
 				if (count($isMir) == 0) {
 					$error = array(
 						"icon" => 'error',
@@ -1018,11 +1020,11 @@ class MetasController extends Controller
 		if ($check['status']) {
 			if (count($metas) == 0 || Auth::user()->id_grupo == 1) {
 				//ver si esta confirmada la mir
-				$isMir = DB::table("mml_avance_etapas_pp")
+				$isMir = DB::table("mml_cierre_ejercicio")
 					->select('id', 'estatus')
 					->where('clv_upp', '=', $upp)
 					->where('ejercicio', '=', $check['anio'])
-					->where('estatus', 3)->get();
+					->where('statusm', 1)->get();
 				if (count($isMir)) {
 					$activs = DB::table("programacion_presupuesto")
 						->select(
@@ -1032,7 +1034,7 @@ class MetasController extends Controller
 						)
 						->where('programacion_presupuesto.upp', '=', $upp)
 						->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
-						->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+						->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 						->distinct()
 						->where('programacion_presupuesto.deleted_at', null)
 						->where('estado', 1)
@@ -1511,7 +1513,7 @@ class MetasController extends Controller
 				->where('proyecto_presupuestario', '' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '')
 				->where('programacion_presupuesto.fondo_ramo', '=', $key->clv_fondo)
 				->where('programacion_presupuesto.ejercicio', '=', $anio)
-				->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario')
+				->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 				->distinct()
 				->get();
 			if ($activs) {
@@ -1528,7 +1530,7 @@ class MetasController extends Controller
 			->where('upp', $upp)
 			->where('deleted_at', null)
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
-			->groupByRaw('fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
+			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct()
 			->get();
 		if (count($metas) > 1) {
@@ -1603,21 +1605,4 @@ class MetasController extends Controller
 		}
 
 	}
-	public static function typeTotal($value, $tipo)
-	{
-
-		switch ($tipo) {
-			case 0:
-				return FunFormats::totalAcum($value);
-			case 1:
-				return FunFormats::totalContinua($value);
-			//  return $this->f($auxTotal);
-			case 2:
-				return FunFormats::totalEspecial($value);
-			default:
-				# code...
-				break;
-		}
-	}
-
 }

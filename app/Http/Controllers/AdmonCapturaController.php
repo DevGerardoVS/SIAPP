@@ -29,7 +29,7 @@ class AdmonCapturaController extends Controller
 
         $comprobarEstadoPP = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = $anio GROUP BY upp");
         $comprobarEstadoMetas = DB::select("SELECT m.estatus, am.clv_upp, am.ejercicio FROM metas m JOIN mml_mir am ON m.mir_id = am.id WHERE am.ejercicio = $anio GROUP BY am.clv_upp");        
-        $upps = DB::select("SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND ejercicio = $anio AND c.deleted_at is null ORDER BY clave ASC");
+        $upps = DB::select("SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND c.ejercicio = $anio AND cec.ejercicio = $anio AND c.deleted_at is null ORDER BY clave ASC");
         return view("captura.admonCaptura", [
             'dataSet' => json_encode($dataSet),
             'anio' => $anio,

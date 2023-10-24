@@ -13,6 +13,7 @@ let mesesV = {
     noviembre: false,
     diciembre: false
 };
+let contValue = 0;
 let mesesName = [
     'enero',
     'febrero',
@@ -167,20 +168,33 @@ var dao = {
             $.each(urs, function (i, val) {
                 par.append(new Option(val.ur, val.clv_ur));
             });
-
-            var tipo_AC = $('#tipo_Ac');
-            tipo_AC.html('');
-            if (tAct.length >= 2) {
-                tipo_AC.append(new Option("--Tipo Actividad--", ""));
-                document.getElementById("tipo_Ac").options[0].disabled = true;
-
-            }
-            $.each(tAct, function (i, val) {
-                if (val == 1) {
-                    tipo_AC.append(new Option(i, i));
-                }
-            });
         });
+    },
+    nCont: function () {
+        if ($('#nContinua').val()!='') {
+            contValue = $('#nContinua').val();
+            for (let i = 1; i <= 12; i++) {
+                $('#' + i).val(contValue);
+                $('#' + i).attr('disabled', 'disabled');
+            }
+            $('#sumMetas').val(contValue);
+            $('#sumMetas').attr('disabled', 'disabled');
+            dao.clearCont('aceptar');
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Este campo es requerido',
+              })
+        }
+      
+    },
+    clearCont: function (tipo) {
+        if (tipo!='aceptar') {
+            $("#tipo_Ac option[value='']").attr("selected", true);
+        }
+        $('#nContinua').val("");
+        $('#continua').modal('hide');
     },
     getMeses: function (idA, idF) {
         let arr = idA.split('-');
@@ -546,6 +560,12 @@ var dao = {
         let aOld = $('#area').val()
         let area = aOld.replace('$', '/')
         data.append('area', area);
+        if ($('#tipo_Ac').val() == 'Continua') {
+            for (let i = 0; i <= 12; i++) {
+                data.append(i, contValue); 
+            }
+            data.append('sumMetas', contValue);
+        }
         $.ajax({
             type: "POST",
             url: '/calendarizacion/create',
@@ -665,10 +685,13 @@ var dao = {
     getFyA: function (area, enti, mir, anio) {
         dao.limpiarErrors();
         dao.getSelect();
+        $('#tipo_Ac').empty();
         for (let i = 1; i <= 12; i++) {
             $("#" + i).val(0);
             $("#" + i).prop('disabled', true);
         }
+        let ar = area.split('-'); 
+        $("#calendar").val(ar[8]); 
         let clave = `${area}$${enti}$${anio}`;
         $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
@@ -678,7 +701,7 @@ var dao = {
             url: '/calendarizacion/fondos/' + area + '/' + enti,
             dataType: "JSON"
         }).done(function (data) {
-            const { fondos, activids } = data;
+            const { fondos, activids ,tAct} = data;
             let flag = false;
             if (activids[0].id == 'ot' && mir == 1) {
                 flag = true;
@@ -762,6 +785,23 @@ var dao = {
                 dao.getMeses(clave, fondo);
             }
 
+            var tipo_AC = $('#tipo_Ac');
+            tipo_AC.html('');
+            if (Object.keys(tAct).length >= 2 && $('#calendar').val()!='UUU') {
+                tipo_AC.append(new Option("--Tipo Actividad--", ""));
+                document.getElementById("tipo_Ac").options[0].disabled = true;
+
+            }
+            if ($('#calendar').val()=='UUU') {
+                tipo_AC.append(new Option('Acumulativa','Acumulativa'));
+            } else {
+                $.each(tAct, function (i, val) {
+                    if (val == 1) {
+                        tipo_AC.append(new Option(i, i));
+                    }
+                });
+            }
+
         });
     },
     limpiar: function () {
@@ -793,6 +833,37 @@ var dao = {
         $('#actividad_id').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
         $('#fondo_id').empty();
         $('#fondo_id').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+    },
+    clearUR: function () {
+        $('#sumMetas').val('');
+        $('#sumMetas-error').removeClass('has-error');
+        $('#sumMetas-error').text('');
+        inputs.forEach(e => {
+            $('#' + e + '-error').text("").removeClass('#' + e + '-error');
+            if (e != 'beneficiario') {
+                $('#' + e).selectpicker('destroy');
+            }
+        });
+        dao.getSelect();
+        $('.form-group').removeClass('has-error');
+        for (let i = 1; i <= 12; i++) {
+            $('#' + i).val(0);
+        }
+        $('#beneficiario').val("");
+        for (let i = 1; i <= 12; i++) {
+            $("#" + i).prop('disabled', true);
+        }
+        $('#inputAc').val('');
+        $('#sel_actividad').empty();
+        $('#sel_actividad').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
+        $('#sel_fondo').empty();
+        $('#sel_fondo').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+        $('#actividad_id').empty();
+        $('#actividad_id').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
+        $('#fondo_id').empty();
+        $('#fondo_id').append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
+        $('#tipo_Ac').empty();
+        $('#tipo_Ac').append("<option value=''class='text-center' ><b>-- calendario --</b></option>");
     },
     limpiarErrors: function () {
         $("#meses-error").text("").removeClass('has-error');
@@ -1019,6 +1090,16 @@ var init = {
             }
         });
     },
+    validateCont: function (form) {
+        _gen.validate(form, {
+            rules: {
+                nContinua: { required: true }
+            },
+            messages: {
+                nContinua: { required: "Este campo es requerido" }
+            }
+        });
+    },
 };
 $(document).ready(function () {
     $(".CargaMasiva").hide();
@@ -1039,7 +1120,9 @@ $(document).ready(function () {
         dao.rCMetasUpp($('#upp_filter').val());
     });
     $('#ur_filter').change(() => {
+        dao.clearUR()
         dao.getData($('#upp_filter').val(), $('#ur_filter').val());
+        
         $('#sel_actividad').empty();
         $('#sel_actividad').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
         $('#sel_fondo').empty();
@@ -1058,6 +1141,17 @@ $(document).ready(function () {
     });
     $('#fondo_id').change(() => {
         dao.getMeses($('#area').val(), $('#fondo_id').val());
+    });
+
+    $('#tipo_Ac').change(() => {
+        for (let i = 1; i <= 12; i++) {
+              $('#' + i).val(0);
+        }
+        dao.getMeses($('#area').val(), $('#sel_fondo').val());
+        $("#sumMetas").val("");
+        if ($('#tipo_Ac').val() == 'Continua') {
+            $('#continua').modal('show')
+        }
     });
     $('#actividad_id').change(() => {
 
@@ -1131,6 +1225,10 @@ $(document).ready(function () {
         if ($('#formFile').valid()) {
             dao.crearMetaImp();
         }
+    });
+    $('#continua').modal({
+        backdrop: 'static',
+        keyboard: false
     });
 
 
