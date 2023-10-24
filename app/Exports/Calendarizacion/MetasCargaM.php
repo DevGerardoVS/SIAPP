@@ -7,7 +7,7 @@ use App\Exports\Calendarizacion\MetasIndex;
 use App\Exports\Calendarizacion\Beneficiarios;
 use App\Exports\Calendarizacion\UnidadMedida;
 use App\Exports\Calendarizacion\TipoCalendar;
-use App\Exports\Calendarizacion\ActividadesAdmon;
+use App\Exports\Calendarizacion\ActividadesPp;
 
 
 
@@ -18,6 +18,7 @@ class MetasCargaM implements WithMultipleSheets
         $sheets = [];
 
             $sheets[] = new MetasIndex();
+            $sheets[] = new ActividadesPp();
             $sheets[] = new Beneficiarios();
             $sheets[] = new UnidadMedida();
             $sheets[] = new TipoCalendar();

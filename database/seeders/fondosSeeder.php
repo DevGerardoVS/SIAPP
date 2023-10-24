@@ -7242,8 +7242,13 @@ class fondosSeeder extends Seeder
  (4375, 1, 2, 3, 5, 9, 74, 91, 453, 528, 541, 570, 618, 871, 902, 914, 1037, 1086, 1992, 2024, 1, 0, 1, '2023-09-24 19:04:41', '2023-09-24 19:06:08', NULL, NULL, NULL, 'SISTEMA'),
  (4376, 1, 2, 3, 5, 9, 74, 91, 454, 528, 541, 570, 618, 632, 902, 914, 1037, 1060, 1992, 2024, 1, 0, 1, '2023-09-24 19:04:41', '2023-09-24 19:06:08', NULL, NULL, NULL, 'SISTEMA');
          ");
+         /*  UPDATE PARA LOS REGISTROS CON MIR Y SIN MIR  EPP*/
+     DB::unprepared("UPDATE epp SET con_mir = 1;
+     UPDATE epp SET con_mir = 0  WHERE subprograma_id=1060;
+     UPDATE epp SET con_mir = 0  WHERE programa_id = 929;
+     UPDATE epp SET con_mir = 0  WHERE programa_id =931;");
  
- DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+ DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (1,'001','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (2,'002','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (3,'020','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7255,7 +7260,7 @@ class fondosSeeder extends Seeder
 	 (9,'100','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (10,'107','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (11,'012','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (12,'019','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (13,'014','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7267,7 +7272,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (19,'046','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (20,'106','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (21,'003','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (22,'006','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (23,'008','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7279,7 +7284,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (29,'104','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (30,'105','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (31,'024','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (32,'041','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (33,'042','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7291,7 +7296,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (39,'110','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (40,'031','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (41,'035','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (42,'036','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (43,'037','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7303,7 +7308,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (49,'052','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (50,'063','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (51,'070','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (52,'074','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (53,'081','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7315,7 +7320,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (59,'094','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (60,'099','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (61,'101','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (62,'103','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (63,'078','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7327,7 +7332,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (69,'040','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (70,'048','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (71,'053','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (72,'080','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (73,'083','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -7339,7 +7344,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (79,'096','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
 	 (80,'060','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (255,'001','Abierto',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:18:32.0','administrador',NULL,NULL,1),
 	 (256,'002','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (257,'020','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7351,7 +7356,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (263,'100','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (264,'107','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (265,'012','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (266,'019','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (267,'014','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7363,7 +7368,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (273,'046','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (274,'106','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (275,'003','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (276,'006','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (277,'008','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7375,7 +7380,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (283,'105','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (284,'024','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (285,'111','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (286,'112','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (287,'041','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7387,7 +7392,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (293,'075','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (294,'110','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (295,'031','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (296,'035','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (297,'036','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7399,7 +7404,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (303,'051','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (304,'052','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (305,'063','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (306,'070','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (307,'074','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7411,7 +7416,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (313,'093','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (314,'094','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (315,'099','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (316,'101','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (317,'103','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7423,7 +7428,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (323,'033','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (324,'040','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (325,'048','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (326,'053','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (327,'080','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7435,11 +7440,11 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,
 	 (333,'109','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (334,'096','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (335,'060','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
 
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (1,'001','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (2,'002','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (3,'020','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7451,7 +7456,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (9,'100','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (10,'107','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (11,'012','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (12,'019','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (13,'014','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7463,7 +7468,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (19,'046','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (20,'106','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (21,'003','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (22,'006','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (23,'008','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7475,7 +7480,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (29,'104','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (30,'105','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (31,'024','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (32,'041','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (33,'042','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7487,7 +7492,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (39,'110','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (40,'031','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (41,'035','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (42,'036','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (43,'037','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7499,7 +7504,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (49,'052','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (50,'063','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (51,'070','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (52,'074','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (53,'081','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7511,7 +7516,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (59,'094','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (60,'099','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (61,'101','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (62,'103','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (63,'078','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7523,7 +7528,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (69,'040','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (70,'048','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (71,'053','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (72,'080','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (73,'083','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
@@ -7535,7 +7540,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (79,'096','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1),
 	 (80,'060','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','SISTEMA','2023-09-22 12:36:06.0',NULL,NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (255,'001','Abierto',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:18:10.0','administrador',NULL,NULL,1),
 	 (256,'002','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (257,'020','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7547,7 +7552,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (263,'100','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (264,'107','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (265,'012','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (266,'019','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (267,'014','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7559,7 +7564,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (273,'046','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (274,'106','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (275,'003','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (276,'006','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (277,'008','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7571,7 +7576,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (283,'105','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (284,'024','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (285,'111','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (286,'112','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (287,'041','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7583,7 +7588,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (293,'075','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (294,'110','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (295,'031','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (296,'035','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (297,'036','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7595,7 +7600,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (303,'051','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (304,'052','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (305,'063','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (306,'070','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (307,'074','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7607,7 +7612,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (313,'093','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (314,'094','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (315,'099','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (316,'101','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (317,'103','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7619,7 +7624,7 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (323,'033','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (324,'040','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (325,'048','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (326,'053','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (327,'080','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
@@ -7631,206 +7636,206 @@ DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,e
 	 (333,'109','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1),
 	 (334,'096','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
-DB::unprepared("INSERT INTO siappBD.cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
+DB::unprepared("INSERT INTO cierre_ejercicio_metas (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (335,'060','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','SISTEMA','2023-09-25 18:17:49.0','administrador',NULL,NULL,1);
          ");
 
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (1,'001','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (2,'002','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (3,'020','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (4,'022','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (5,'023','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (6,'032','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (7,'069','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (8,'071','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (9,'100','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (10,'107','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (1,'001','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (2,'002','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (3,'020','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (4,'022','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (5,'023','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (6,'032','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (7,'069','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (8,'071','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (9,'100','Cerrado' ,0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (10,'107','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (11,'012','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (12,'019','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (13,'014','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (14,'010','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (15,'098','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (16,'011','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (17,'021','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (18,'025','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (19,'046','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (20,'106','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (11,'012','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (12,'019','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (13,'014','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (14,'010','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (15,'098','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (16,'011','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (17,'021','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (18,'025','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (19,'046','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (20,'106','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (21,'003','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (22,'006','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (23,'008','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (24,'009','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (25,'016','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (26,'073','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (27,'095','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (28,'007','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (29,'104','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (30,'105','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (21,'003','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (22,'006','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (23,'008','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (24,'009','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (25,'016','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (26,'073','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (27,'095','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (28,'007','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (29,'104','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (30,'105','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (31,'024','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (32,'041','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (33,'042','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (34,'044','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (35,'079','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (36,'A13','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (37,'038','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (38,'075','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (39,'110','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-24 23:36:29.0','2023-09-23 23:32:15.0','SISTEMA','admin',NULL),
-	 (40,'031','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (31,'024','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (32,'041','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (33,'042','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (34,'044','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (35,'079','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (36,'A13','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (37,'038','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (38,'075','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (39,'110','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-24 23:36:29.0','2023-09-23 23:32:15.0','SISTEMA','admin',NULL),
+	 (40,'031','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (41,'035','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (42,'036','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (43,'037','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (44,'045','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (45,'047','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (46,'049','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (47,'050','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (48,'051','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (49,'052','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (50,'063','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (41,'035','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (42,'036','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (43,'037','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (44,'045','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (45,'047','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (46,'049','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (47,'050','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (48,'051','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (49,'052','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (50,'063','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (51,'070','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (52,'074','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (53,'081','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (54,'082','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (55,'085','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (56,'087','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (57,'089','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (58,'093','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (59,'094','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (60,'099','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (51,'070','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (52,'074','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (53,'081','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (54,'082','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (55,'085','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (56,'087','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (57,'089','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (58,'093','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (59,'094','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (60,'099','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (61,'101','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (62,'103','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (63,'078','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (64,'054','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (65,'055','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (66,'068','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (67,'017','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (68,'033','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (69,'040','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (70,'048','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (61,'101','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (62,'103','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (63,'078','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (64,'054','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (65,'055','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (66,'068','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (67,'017','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (68,'033','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (69,'040','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (70,'048','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (71,'053','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (72,'080','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (73,'083','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (74,'084','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (75,'088','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (76,'102','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (77,'108','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (78,'109','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (79,'096','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
-	 (80,'060','Cerrado',2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (71,'053','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (72,'080','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (73,'083','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (74,'084','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (75,'088','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (76,'102','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (77,'108','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (78,'109','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (79,'096','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL),
+	 (80,'060','Cerrado',0,2023,NULL,'2023-09-22 12:36:06.0','2023-09-23 23:32:15.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (255,'001','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (256,'002','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (257,'020','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (258,'022','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (259,'023','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (260,'032','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (261,'069','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (262,'071','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (263,'100','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (264,'107','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (255,'001','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (256,'002','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (257,'020','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (258,'022','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (259,'023','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (260,'032','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (261,'069','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (262,'071','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (263,'100','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (264,'107','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (265,'012','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (266,'019','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (267,'014','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (268,'010','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (269,'098','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (270,'011','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (271,'021','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (272,'025','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (273,'046','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (274,'106','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (265,'012','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (266,'019','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (267,'014','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (268,'010','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (269,'098','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (270,'011','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (271,'021','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (272,'025','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (273,'046','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (274,'106','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (275,'003','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (276,'006','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (277,'008','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (278,'009','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (279,'016','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (280,'095','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (281,'007','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (282,'104','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (283,'105','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (284,'024','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (275,'003','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (276,'006','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (277,'008','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (278,'009','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (279,'016','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (280,'095','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (281,'007','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (282,'104','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (283,'105','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (284,'024','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (285,'111','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (286,'112','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (287,'041','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (288,'042','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (289,'044','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (290,'079','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (291,'A13','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (292,'038','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (293,'075','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (294,'110','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (285,'111','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (286,'112','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (287,'041','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (288,'042','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (289,'044','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (290,'079','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (291,'A13','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (292,'038','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (293,'075','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (294,'110','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (295,'031','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (296,'035','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (297,'036','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (298,'037','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (299,'045','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (300,'047','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (301,'049','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (302,'050','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (303,'051','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (304,'052','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (295,'031','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (296,'035','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (297,'036','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (298,'037','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (299,'045','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (300,'047','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (301,'049','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (302,'050','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (303,'051','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (304,'052','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (305,'063','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (306,'070','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (307,'074','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (308,'081','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (309,'082','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (310,'085','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (311,'087','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (312,'089','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (313,'093','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (314,'094','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (305,'063','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (306,'070','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (307,'074','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (308,'081','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (309,'082','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (310,'085','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (311,'087','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (312,'089','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (313,'093','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (314,'094','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (315,'099','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (316,'101','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (317,'103','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (318,'078','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (319,'054','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (320,'055','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (321,'068','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (322,'017','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (323,'033','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (324,'040','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (315,'099','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (316,'101','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (317,'103','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (318,'078','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (319,'054','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (320,'055','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (321,'068','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (322,'017','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (323,'033','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (324,'040','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (325,'048','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (326,'053','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (327,'080','Abierto',2024,NULL,'2023-09-24 15:57:23.0','2023-09-24 20:57:24.0',NULL,'SISTEMA','admin',NULL),
-	 (328,'083','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (329,'084','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (330,'088','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (331,'102','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (332,'108','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (333,'109','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
-	 (334,'096','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (325,'048','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (326,'053','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (327,'080','Abierto',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-24 20:57:24.0',NULL,'SISTEMA','admin',NULL),
+	 (328,'083','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (329,'084','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (330,'088','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (331,'102','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (332,'108','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (333,'109','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL),
+	 (334,'096','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_cierre_ejercicio (id,clv_upp,estatus,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
-	 (335,'060','Cerrado',2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
+DB::unprepared("INSERT INTO mml_cierre_ejercicio (id,clv_upp,estatus,statusm,ejercicio,capturista,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user) VALUES
+	 (335,'060','Cerrado',0,2024,NULL,'2023-09-24 15:57:23.0','2023-09-25 16:44:54.0',NULL,'SISTEMA','admin',NULL);
          ");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (638,'001','4B',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (639,'002','2U',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (640,'020','MX',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7841,7 +7846,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (645,'023','3B',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (646,'031','ZG',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (647,'032','ZH',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (648,'032','11',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (649,'035','ZK',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (650,'036','ZL',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7852,7 +7857,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (655,'045','ZQ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (656,'047','ZR',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (657,'049','ZT',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (658,'049','21',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (659,'050','ZU',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (660,'051','SA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7863,7 +7868,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (665,'069','1A',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (666,'071','1A',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (667,'079','3T',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (668,'081','MQ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (669,'081','15',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (670,'081','74',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7874,7 +7879,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (675,'087','YM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (676,'089','YQ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (677,'093','YR',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (678,'094','YS',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (679,'100','YX',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (682,'103','YZ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7885,7 +7890,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (687,'010','ND',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (688,'098','YV',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (689,'011','MM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (690,'021','MU',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (691,'021','68',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (692,'046','MQ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7896,7 +7901,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (697,'068','YD',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (698,'068','RP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (699,'068','RX',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (700,'106','MQ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (701,'003','1M',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (702,'003','1F',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7907,7 +7912,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (707,'006','RJ',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (708,'008','ZC',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (709,'008','03',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (710,'008','07',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (711,'008','08',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (712,'008','YA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7918,7 +7923,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (717,'017','VE',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (718,'017','20',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (719,'017','03',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (720,'017','GM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (721,'017','25',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (722,'033','ZI',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7929,7 +7934,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (727,'084','RP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (728,'084','YB',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (729,'088','YP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (730,'095','4K',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (731,'095','55',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (732,'095','ZB',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7940,7 +7945,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (737,'108','BM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (738,'108','DB',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (739,'108','MS',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (740,'108','DD',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (741,'108','3V',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (742,'108','AA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7951,7 +7956,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (747,'105','LA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (748,'060','RP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (749,'060','YB',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (750,'038','RP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (751,'038','40',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (752,'038','RX',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7962,7 +7967,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (758,'074','YG',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (759,'099','YW',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (760,'012','AA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (761,'012','BM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (762,'012','DH',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (763,'012','DA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7973,7 +7978,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (768,'012','5F',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (769,'012','3W',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (770,'012','3N',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (771,'025','ZF',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (772,'A13','RA',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (773,'009','MN',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7984,7 +7989,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (778,'040','AM',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (779,'040','BC',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (780,'040','GP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (781,'040','39',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (782,'053','RP',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (783,'053','SB',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
@@ -7995,7 +8000,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
 	 (788,'040','4K',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (789,'112','YF',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (790,'053','ZW',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
-DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
+DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etapa_1,etapa_2,etapa_3,etapa_4,etapa_5,estatus,ejercicio,nombre_minuta,ruta,extension,created_user,updated_user,deleted_user,created_at,updated_at,deleted_at) VALUES
 	 (791,'111','RD',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (792,'012','DD',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL),
 	 (793,'012','DE',0,0,0,0,0,0,0,2024,NULL,NULL,NULL,'SISTEMA',NULL,NULL,'2023-09-24 23:24:25.0','2023-09-24 23:24:25.0',NULL);");
@@ -21025,7 +21030,7 @@ DB::unprepared("INSERT INTO siappBD.mml_avance_etapas_pp (id,clv_upp,clv_pp,etap
         (12977,'16','Michoacán','00','Michoacán de Ocampo','999','ESTATAL','999','COBERTURA ESTATAL',null,'SEEDER',null,null,now(),now());
         ");
 
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (1,11,91,123,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (2,11,91,124,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (3,11,91,125,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21037,7 +21042,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (9,11,91,131,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (10,11,91,132,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (11,12,91,133,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (12,12,91,134,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (13,12,91,135,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21049,7 +21054,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (19,13,91,141,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (20,13,92,142,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (21,13,92,143,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (22,14,91,144,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (23,15,91,145,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21061,7 +21066,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (29,17,91,151,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (30,17,91,152,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (31,17,91,153,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (32,17,91,154,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (33,17,91,155,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21073,7 +21078,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (39,18,91,159,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (40,18,91,160,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (41,18,91,161,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (42,18,91,162,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (43,18,91,163,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21085,7 +21090,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (49,22,91,167,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (50,22,91,168,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (51,22,91,169,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (52,22,91,170,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (53,22,91,171,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21097,7 +21102,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (59,24,91,177,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (60,25,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (61,25,91,306,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (62,25,91,179,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (63,25,91,180,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21109,7 +21114,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (69,26,91,185,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (70,27,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (71,28,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (72,28,91,186,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (73,28,91,187,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21121,7 +21126,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (79,29,91,187,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (80,29,91,191,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (81,29,91,192,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (82,29,91,183,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (83,30,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21133,7 +21138,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (89,31,91,195,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (90,32,91,198,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (91,32,91,199,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (92,32,91,200,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (93,32,91,195,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21145,7 +21150,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (99,34,91,203,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (100,35,91,166,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (101,35,91,204,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (102,35,91,205,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (103,35,91,206,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21157,7 +21162,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (109,36,91,212,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (110,36,91,213,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (111,36,91,214,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (112,36,91,141,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (113,37,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21169,7 +21174,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (119,38,91,219,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (120,38,91,220,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (121,38,91,221,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (122,39,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (123,39,91,222,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21181,7 +21186,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (129,41,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (130,41,91,225,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (131,41,91,226,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (132,41,91,227,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (133,41,91,228,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21193,7 +21198,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (139,42,91,232,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (140,42,91,233,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (141,42,91,183,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (142,43,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (143,43,91,234,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21205,7 +21210,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (149,44,91,239,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (150,44,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (151,44,91,240,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (152,44,91,241,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (153,44,91,242,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21217,7 +21222,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (159,47,91,246,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (160,47,91,165,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (161,48,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (162,48,93,248,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (163,48,93,249,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21229,7 +21234,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (169,48,94,255,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (170,48,94,256,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (171,48,94,257,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (172,48,95,258,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (173,48,95,259,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21241,7 +21246,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (179,48,97,265,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (180,48,97,266,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (181,48,91,267,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (182,49,91,268,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (183,49,91,269,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21253,7 +21258,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (189,50,98,271,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (190,50,99,272,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (191,50,98,273,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (192,50,98,274,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (193,50,99,275,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21265,7 +21270,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (199,50,91,281,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (200,50,91,282,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (201,50,91,283,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (202,50,91,284,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (203,50,91,285,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21277,7 +21282,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (209,50,98,291,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (210,51,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (211,51,91,292,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (212,51,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (213,51,91,293,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21289,7 +21294,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (219,52,91,298,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (220,52,101,299,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (221,52,91,300,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (222,52,100,301,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (223,52,101,302,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21301,7 +21306,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (229,53,91,308,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (230,53,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (231,54,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (232,54,102,309,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (233,54,102,310,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21313,7 +21318,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (239,54,103,316,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (240,54,91,317,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (241,55,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (242,55,91,318,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (243,55,91,319,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21325,7 +21330,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (249,55,91,324,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (250,56,91,325,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (251,57,91,326,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (252,57,91,327,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (253,57,91,328,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21337,7 +21342,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (259,58,91,331,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (260,58,91,183,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (261,58,91,332,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (262,59,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (263,59,91,333,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21349,7 +21354,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (269,60,91,337,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (270,60,91,195,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (271,61,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (272,61,91,338,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (273,61,91,339,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21361,7 +21366,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (279,62,91,344,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (280,62,91,345,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (281,62,91,346,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (282,62,91,347,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (283,62,91,348,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21373,7 +21378,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (289,62,91,354,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (290,62,91,355,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (291,62,91,356,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (292,62,91,357,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (293,62,91,358,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21385,7 +21390,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (299,63,91,364,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (300,63,91,365,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (301,63,91,366,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (302,63,91,367,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (303,63,91,368,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21397,7 +21402,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (309,63,91,374,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (310,63,91,375,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (311,64,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (312,64,104,376,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (313,64,104,377,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21409,7 +21414,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (319,64,105,383,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (320,64,105,384,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (321,64,105,385,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (322,64,105,386,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (323,64,91,387,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21421,7 +21426,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (329,65,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (330,65,107,393,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (331,65,91,394,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (332,65,107,395,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (333,65,91,396,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21433,7 +21438,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (339,65,91,401,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (340,66,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (341,66,108,402,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (342,66,108,403,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (343,66,108,404,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21445,7 +21450,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (349,66,91,410,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (350,67,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (351,67,110,411,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (352,67,91,412,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (353,67,111,413,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21457,7 +21462,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (359,67,113,419,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (360,67,114,420,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (361,67,110,421,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (362,67,111,422,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (363,67,110,423,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21469,7 +21474,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (369,67,113,429,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (370,67,91,430,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (371,67,91,431,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (372,67,111,432,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (373,67,111,433,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21481,7 +21486,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (379,68,91,438,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (380,68,91,439,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (381,68,91,440,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (382,68,91,441,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (383,68,91,442,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21493,7 +21498,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (389,70,91,445,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (390,70,91,446,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (391,70,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (392,71,91,515,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (393,71,91,447,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21505,7 +21510,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (399,72,91,141,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (400,72,91,451,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (401,73,91,452,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (402,74,91,453,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (403,74,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21517,7 +21522,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (409,76,91,457,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (410,76,91,458,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (411,77,91,459,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (412,77,91,460,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (413,77,91,461,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21529,7 +21534,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (419,78,116,467,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (420,78,91,150,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (421,78,116,468,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (422,79,91,469,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (423,79,91,470,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21541,7 +21546,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (429,80,91,474,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (430,80,91,475,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (431,80,91,476,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (432,80,91,477,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (433,80,91,183,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21553,7 +21558,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (439,81,91,481,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (440,82,117,482,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (441,82,117,483,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (442,82,117,484,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (443,82,91,485,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21565,7 +21570,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (449,82,118,491,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (450,82,91,492,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (451,82,119,493,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (452,82,118,494,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (453,82,119,495,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21577,7 +21582,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (459,82,91,501,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (460,82,91,502,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (461,82,121,503,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (462,82,121,504,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (463,82,121,505,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21589,7 +21594,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (469,82,91,511,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (470,82,91,247,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (471,83,91,218,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (472,83,91,512,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (473,83,91,513,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21601,7 +21606,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (479,84,91,195,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (480,85,91,464,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (481,85,91,518,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (482,85,91,519,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (483,85,91,520,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21613,7 +21618,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (489,86,91,524,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (490,86,91,170,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (491,87,91,525,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (492,88,91,166,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (493,89,91,526,NULL,'SEEDER',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
@@ -21625,7 +21630,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (499,41,91,2371,NULL,'PRUEBA',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0'),
 	 (500,52,101,2379,NULL,'PRUEBA',NULL,NULL,'2023-09-24 01:00:50.0','2023-09-24 01:00:50.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (502,62,2393,345,NULL,'Prueba',NULL,NULL,'2023-09-23 21:55:57.0','2023-09-23 23:32:16.0'),
 	 (503,62,2393,346,NULL,'Prueba',NULL,NULL,'2023-09-23 23:27:00.0','2023-09-23 23:32:17.0'),
 	 (504,62,2393,347,NULL,'Prueba',NULL,NULL,'2023-09-23 23:27:00.0','2023-09-23 23:32:19.0'),
@@ -21637,7 +21642,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (510,70,91,2394,NULL,'Prueba',NULL,NULL,'2023-09-24 00:00:08.0','2023-09-24 00:00:08.0'),
 	 (511,2409,91,146,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:11:24.0','2023-09-24 00:11:24.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (512,2409,91,2402,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:11:24.0','2023-09-24 00:11:24.0'),
 	 (513,2409,91,2403,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:11:24.0','2023-09-24 00:11:24.0'),
 	 (514,2409,91,2404,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:11:24.0','2023-09-24 00:11:24.0'),
@@ -21649,7 +21654,7 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
 	 (520,77,91,2397,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:36:09.0','2023-09-24 00:36:09.0'),
 	 (521,52,91,2398,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:36:09.0','2023-09-24 00:36:09.0');
         ");
-DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
+DB::unprepared("INSERT INTO entidad_ejecutora (id,upp_id,subsecretaria_id,ur_id,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at) VALUES
 	 (522,48,93,2399,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:36:09.0','2023-09-24 00:36:09.0'),
 	 (523,66,109,2400,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:36:09.0','2023-09-24 00:36:09.0'),
 	 (524,41,91,2401,NULL,'PRUEBA1',NULL,NULL,'2023-09-24 00:36:09.0','2023-09-24 00:36:09.0'),
@@ -22753,30 +22758,30 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
             (285,'A13','09',333284743,'Operativo',2023,null,'HISTORICO',null,null,now(),now());
         ");
 
-        DB::unprepared("INSERT INTO tipologia_conac(id,tipo, descripcion, clave_conac, descripcion_conac, deleted_at, updated_at, created_at) values
-            (1,0,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','S','SUJETOS A REGLAS DE OPERACIÓN',null,now(),now()),
-            (2,0,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','U','OTROS SUBSIDIOS',null,now(),now()),
-            (3,0,'Desempeño de las Funciones','E','PRESTACIÓN DE SERVICIOS PÚBLICOS',null,now(),now()),
-            (4,0,'Desempeño de las Funciones','B','PROVISIÓN DE BIENES PÚBLICOS',null,now(),now()),
-            (5,0,'Desempeño de las Funciones','P','PLANEACIÓN, SEGUIMIENTO Y EVALUACIÓN DE POLÍTICAS PÚBLICAS',null,now(),now()),
-            (6,0,'Desempeño de las Funciones','F','PROMOCIÓN Y FOMENTO',null,now(),now()),
-            (7,0,'Desempeño de las Funciones','G','REGULACIÓN Y SUPERVISIÓN',null,now(),now()),
-            (8,0,'Desempeño de las Funciones','A','FUNCIONES DE LAS FUERZAS ARMADAS (ÚNICAMENTE GOBIERNO FEDERAL)',null,now(),now()),
-            (9,0,'Desempeño de las Funciones','R','ESPECÍFICOS',null,now(),now()),
-            (10,0,'Desempeño de las Funciones','K','PROYECTOS DE INVERSIÓN',null,now(),now()),
-            (11,0,'Administrativos y de Apoyo','M','APOYO AL PROCESO PRESUPUESTARIO Y PARA MEJORAR LA EFICIENCIA INSTITUCIONAL',null,now(),now()),
-            (12,0,'Administrativos y de Apoyo','O','APOYO A LA FUNCIÓN PÚBLICA Y AL MEJORAMIENTO DE LA GESTIÓN',null,now(),now()),
-            (13,0,'Administrativos y de Apoyo','W','OPERACIONES AJENAS',null,now(),now()),
-            (14,0,'Compromisos','L','OBLIGACIONES DE CUMPLIMIENTO DE RESOLUCIÓN JURISDICCIONAL',null,now(),now()),
-            (15,0,'Compromisos','N','DESASTRES NATURALES',null,now(),now()),
-            (16,0,'Obligaciones','J','PENSIONES Y JUBILACIONES',null,now(),now()),
-            (17,0,'Obligaciones','T','APORTACIONES A LA SEGURIDAD SOCIAL',null,now(),now()),
-            (18,0,'Obligaciones','Y','APORTACIONES A FONDOS DE ESTABILIZACIÓN',null,now(),now()),
-            (19,0,'Obligaciones','Z','APORTACIONES A FONDOS DE INVERSIÓN Y REESTRUCTURA DE PENSIONES',null,now(),now()),
-            (20,0,'Programas de Gasto Federalizado (Gobierno Federal)','I','GASTO FEDERALIZADO',null,now(),now()),
-            (21,1,'PARTICIPACIONES A ENTIDADES FEDERATIVAS Y MUNICIPIOS',null,null,null,now(),now()),
-            (22,1,'COSTO FINANCIERO, DEUDA O APOYOS A DEUDORES Y AHORRADORES DE LA BANCA',null,null,null,now(),now()),
-            (23,1,'ADEUDOS DE EJERCICIOS FISCALES ANTERIORES',null,null,null,now(),now());
+        DB::unprepared("INSERT INTO tipologia_conac values
+            (1,0,null,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','S','SUJETOS A REGLAS DE OPERACIÓN',null,now(),now()),
+            (2,0,null,'Subsidios: Sector Social y Privado o Entidades Federativas y Municipios','U','OTROS SUBSIDIOS',null,now(),now()),
+            (3,0,null,'Desempeño de las Funciones','E','PRESTACIÓN DE SERVICIOS PÚBLICOS',null,now(),now()),
+            (4,0,null,'Desempeño de las Funciones','B','PROVISIÓN DE BIENES PÚBLICOS',null,now(),now()),
+            (5,0,null,'Desempeño de las Funciones','P','PLANEACIÓN, SEGUIMIENTO Y EVALUACIÓN DE POLÍTICAS PÚBLICAS',null,now(),now()),
+            (6,0,null,'Desempeño de las Funciones','F','PROMOCIÓN Y FOMENTO',null,now(),now()),
+            (7,0,null,'Desempeño de las Funciones','G','REGULACIÓN Y SUPERVISIÓN',null,now(),now()),
+            (8,0,null,'Desempeño de las Funciones','A','FUNCIONES DE LAS FUERZAS ARMADAS (ÚNICAMENTE GOBIERNO FEDERAL)',null,now(),now()),
+            (9,0,null,'Desempeño de las Funciones','R','ESPECÍFICOS',null,now(),now()),
+            (10,0,null,'Desempeño de las Funciones','K','PROYECTOS DE INVERSIÓN',null,now(),now()),
+            (11,0,null,'Administrativos y de Apoyo','M','APOYO AL PROCESO PRESUPUESTARIO Y PARA MEJORAR LA EFICIENCIA INSTITUCIONAL',null,now(),now()),
+            (12,0,null,'Administrativos y de Apoyo','O','APOYO A LA FUNCIÓN PÚBLICA Y AL MEJORAMIENTO DE LA GESTIÓN',null,now(),now()),
+            (13,0,null,'Administrativos y de Apoyo','W','OPERACIONES AJENAS',null,now(),now()),
+            (14,0,null,'Compromisos','L','OBLIGACIONES DE CUMPLIMIENTO DE RESOLUCIÓN JURISDICCIONAL',null,now(),now()),
+            (15,0,null,'Compromisos','N','DESASTRES NATURALES',null,now(),now()),
+            (16,0,null,'Obligaciones','J','PENSIONES Y JUBILACIONES',null,now(),now()),
+            (17,0,null,'Obligaciones','T','APORTACIONES A LA SEGURIDAD SOCIAL',null,now(),now()),
+            (18,0,null,'Obligaciones','Y','APORTACIONES A FONDOS DE ESTABILIZACIÓN',null,now(),now()),
+            (19,0,null,'Obligaciones','Z','APORTACIONES A FONDOS DE INVERSIÓN Y REESTRUCTURA DE PENSIONES',null,now(),now()),
+            (20,0,null,'Programas de Gasto Federalizado (Gobierno Federal)','I','GASTO FEDERALIZADO',null,now(),now()),
+            (21,1,'C','PARTICIPACIONES A ENTIDADES FEDERATIVAS Y MUNICIPIOS',null,null,null,now(),now()),
+            (22,1,'D','COSTO FINANCIERO, DEUDA O APOYOS A DEUDORES Y AHORRADORES DE LA BANCA',null,null,null,now(),now()),
+            (23,1,'H','ADEUDOS DE EJERCICIOS FISCALES ANTERIORES',null,null,null,now(),now());
         ");
 
         DB::unprepared("INSERT INTO unidades_medida values
@@ -23664,543 +23669,543 @@ DB::unprepared("INSERT INTO siappBD.entidad_ejecutora (id,upp_id,subsecretaria_i
             (51,'103',NULL,'SEEDER',NULL, NULL, null, null); 
         ");
 
-        DB::unprepared("INSERT INTO sector_linea_accion (id,linea_accion_id, clv_sector, sector, deleted_at, updated_at, created_at) VALUES
-        (1,621,'9','Otros',null,now(),now()),
-        (2,782,'9','Otros',null,now(),now()),
-        (3,790,'9','Otros',null,now(),now()),
-        (4,657,'9','Otros',null,now(),now()),
-        (5,777,'9','Otros',null,now(),now()),
-        (6,692,'9','Otros',null,now(),now()),
-        (7,783,'9','Otros',null,now(),now()),
-        (8,2107,'9','Otros',null,now(),now()),
-        (9,794,'9','Otros',null,now(),now()),
-        (10,740,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (11,660,'9','Otros',null,now(),now()),
-        (12,787,'9','Otros',null,now(),now()),
-        (13,646,'9','Otros',null,now(),now()),
-        (14,791,'9','Otros',null,now(),now()),
-        (15,715,'9','Otros',null,now(),now()),
-        (16,816,'3','Grupos Vulnerables',null,now(),now()),
-        (17,674,'9','Otros',null,now(),now()),
-        (18,795,'9','Otros',null,now(),now()),
-        (19,739,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (20,684,'9','Otros',null,now(),now()),
-        (21,2108,'3','Grupos Vulnerables',null,now(),now()),
-        (22,874,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (23,681,'9','Otros',null,now(),now()),
-        (24,682,'9','Otros',null,now(),now()),
-        (25,683,'9','Otros',null,now(),now()),
-        (26,2109,'5','Equidad de Género',null,now(),now()),
-        (27,685,'9','Otros',null,now(),now()),
-        (28,796,'9','Otros',null,now(),now()),
-        (29,2110,'9','Otros',null,now(),now()),
-        (30,792,'2','Género',null,now(),now()),
-        (31,785,'2','Género',null,now(),now()),
-        (32,875,'2','Género',null,now(),now()),
-        (33,781,'2','Género',null,now(),now()),
-        (34,641,'2','Género',null,now(),now()),
-        (35,877,'2','Género',null,now(),now()),
-        (36,2111,'2','Género',null,now(),now()),
-        (37,876,'2','Género',null,now(),now()),
-        (38,2112,'2','Género',null,now(),now()),
-        (39,2113,'2','Género',null,now(),now()),
-        (40,835,'9','Otros',null,now(),now()),
-        (41,838,'9','Otros',null,now(),now()),
-        (42,2114,'9','Otros',null,now(),now()),
-        (43,2115,'9','Otros',null,now(),now()),
-        (44,688,'9','Otros',null,now(),now()),
-        (45,675,'9','Otros',null,now(),now()),
-        (46,2116,'9','Otros',null,now(),now()),
-        (47,841,'9','Otros',null,now(),now()),
-        (48,2117,'9','Otros',null,now(),now()),
-        (49,2118,'9','Otros',null,now(),now()),
-        (50,840,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (51,2119,'9','Otros',null,now(),now()),
-        (52,645,'9','Otros',null,now(),now()),
-        (53,836,'9','Otros',null,now(),now()),
-        (54,2120,'9','Otros',null,now(),now()),
-        (55,643,'9','Otros',null,now(),now()),
-        (56,644,'9','Otros',null,now(),now()),
-        (57,842,'9','Otros',null,now(),now()),
-        (58,2121,'9','Otros',null,now(),now()),
-        (59,844,'9','Otros',null,now(),now()),
-        (60,843,'9','Otros',null,now(),now()),
-        (61,2122,'9','Otros',null,now(),now()),
-        (62,656,'9','Otros',null,now(),now()),
-        (63,839,'9','Otros',null,now(),now()),
-        (64,2123,'9','Otros',null,now(),now()),
-        (65,784,'9','Otros',null,now(),now()),
-        (66,2124,'9','Otros',null,now(),now()),
-        (67,780,'4','Ciencia y Tecnología',null,now(),now()),
-        (68,837,'4','Ciencia y Tecnología',null,now(),now()),
-        (69,788,'9','Otros',null,now(),now()),
-        (70,2125,'3','Grupos Vulnerables',null,now(),now()),
-        (71,642,'9','Otros',null,now(),now()),
-        (72,640,'9','Otros',null,now(),now()),
-        (73,789,'9','Otros',null,now(),now()),
-        (74,797,'9','Otros',null,now(),now()),
-        (75,2126,'9','Otros',null,now(),now()),
-        (76,2127,'9','Otros',null,now(),now()),
-        (77,2128,'9','Otros',null,now(),now()),
-        (78,2129,'9','Otros',null,now(),now()),
-        (79,776,'9','Otros',null,now(),now()),
-        (80,2130,'9','Otros',null,now(),now()),
-        (81,2131,'9','Otros',null,now(),now()),
-        (82,2132,'3','Grupos Vulnerables',null,now(),now()),
-        (83,2133,'3','Grupos Vulnerables',null,now(),now()),
-        (84,2134,'3','Grupos Vulnerables',null,now(),now()),
-        (85,714,'3','Grupos Vulnerables',null,now(),now()),
-        (86,2135,'3','Grupos Vulnerables',null,now(),now()),
-        (87,793,'3','Grupos Vulnerables',null,now(),now()),
-        (88,2136,'3','Grupos Vulnerables',null,now(),now()),
-        (89,2137,'3','Grupos Vulnerables',null,now(),now()),
-        (90,2138,'3','Grupos Vulnerables',null,now(),now()),
-        (91,2139,'3','Grupos Vulnerables',null,now(),now()),
-        (92,2140,'3','Grupos Vulnerables',null,now(),now()),
-        (93,716,'9','Otros',null,now(),now()),
-        (94,779,'9','Otros',null,now(),now()),
-        (95,718,'9','Otros',null,now(),now()),
-        (96,786,'9','Otros',null,now(),now()),
-        (97,2141,'9','Otros',null,now(),now()),
-        (98,2142,'9','Otros',null,now(),now()),
-        (99,2143,'9','Otros',null,now(),now()),
-        (100,778,'9','Otros',null,now(),now()),
-        (101,2144,'9','Otros',null,now(),now()),
-        (102,2145,'9','Otros',null,now(),now()),
-        (103,2146,'9','Otros',null,now(),now()),
-        (104,2147,'9','Otros',null,now(),now()),
-        (105,2148,'9','Otros',null,now(),now()),
-        (106,2149,'9','Otros',null,now(),now()),
-        (107,719,'9','Otros',null,now(),now()),
-        (108,2150,'9','Otros',null,now(),now()),
-        (109,2151,'9','Otros',null,now(),now()),
-        (110,2152,'9','Otros',null,now(),now()),
-        (111,887,'9','Otros',null,now(),now()),
-        (112,2153,'9','Otros',null,now(),now()),
-        (113,2154,'9','Otros',null,now(),now()),
-        (114,717,'9','Otros',null,now(),now()),
-        (115,730,'9','Otros',null,now(),now()),
-        (116,813,'9','Otros',null,now(),now()),
-        (117,2155,'9','Otros',null,now(),now()),
-        (118,814,'9','Otros',null,now(),now()),
-        (119,673,'9','Otros',null,now(),now()),
-        (120,623,'3','Grupos Vulnerables',null,now(),now()),
-        (121,2156,'3','Grupos Vulnerables',null,now(),now()),
-        (122,2157,'9','Otros',null,now(),now()),
-        (123,625,'9','Otros',null,now(),now()),
-        (124,626,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (125,659,'3','Grupos Vulnerables',null,now(),now()),
-        (126,2158,'9','Otros',null,now(),now()),
-        (127,2159,'5','Equidad de Género',null,now(),now()),
-        (128,2160,'5','Equidad de Género',null,now(),now()),
-        (129,737,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (130,736,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (131,2161,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (132,2162,'5','Equidad de Género',null,now(),now()),
-        (133,861,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (134,863,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (135,2163,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (136,627,'3','Grupos Vulnerables',null,now(),now()),
-        (137,687,'3','Grupos Vulnerables',null,now(),now()),
-        (138,2164,'3','Grupos Vulnerables',null,now(),now()),
-        (139,2165,'3','Grupos Vulnerables',null,now(),now()),
-        (140,2166,'3','Grupos Vulnerables',null,now(),now()),
-        (141,2167,'3','Grupos Vulnerables',null,now(),now()),
-        (142,2168,'3','Grupos Vulnerables',null,now(),now()),
-        (143,2169,'3','Grupos Vulnerables',null,now(),now()),
-        (144,2170,'3','Grupos Vulnerables',null,now(),now()),
-        (145,691,'3','Grupos Vulnerables',null,now(),now()),
-        (146,2171,'3','Grupos Vulnerables',null,now(),now()),
-        (147,2172,'3','Grupos Vulnerables',null,now(),now()),
-        (148,878,'2','Género',null,now(),now()),
-        (149,738,'2','Género',null,now(),now()),
-        (150,2173,'2','Género',null,now(),now()),
-        (151,2174,'2','Género',null,now(),now()),
-        (152,2175,'2','Género',null,now(),now()),
-        (153,879,'2','Género',null,now(),now()),
-        (154,2176,'2','Género',null,now(),now()),
-        (155,2177,'5','Equidad de Género',null,now(),now()),
-        (156,2178,'5','Equidad de Género',null,now(),now()),
-        (157,2179,'5','Equidad de Género',null,now(),now()),
-        (158,880,'2','Género',null,now(),now()),
-        (159,2180,'2','Género',null,now(),now()),
-        (160,2181,'2','Género',null,now(),now()),
-        (161,2182,'2','Género',null,now(),now()),
-        (162,628,'2','Género',null,now(),now()),
-        (163,720,'3','Grupos Vulnerables',null,now(),now()),
-        (164,2183,'3','Grupos Vulnerables',null,now(),now()),
-        (165,723,'3','Grupos Vulnerables',null,now(),now()),
-        (166,722,'3','Grupos Vulnerables',null,now(),now()),
-        (167,2184,'3','Grupos Vulnerables',null,now(),now()),
-        (168,721,'9','Otros',null,now(),now()),
-        (169,724,'3','Grupos Vulnerables',null,now(),now()),
-        (170,725,'3','Grupos Vulnerables',null,now(),now()),
-        (171,2185,'3','Grupos Vulnerables',null,now(),now()),
-        (172,680,'1','Junventud',null,now(),now()),
-        (173,2186,'1','Junventud',null,now(),now()),
-        (174,2187,'1','Junventud',null,now(),now()),
-        (175,2188,'1','Junventud',null,now(),now()),
-        (176,696,'9','Otros',null,now(),now()),
-        (177,690,'5','Equidad de Género',null,now(),now()),
-        (178,705,'9','Otros',null,now(),now()),
-        (179,2189,'9','Otros',null,now(),now()),
-        (180,2190,'3','Grupos Vulnerables',null,now(),now()),
-        (181,695,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (182,655,'1','Junventud',null,now(),now()),
-        (183,648,'1','Junventud',null,now(),now()),
-        (184,2191,'9','Otros',null,now(),now()),
-        (185,2192,'9','Otros',null,now(),now()),
-        (186,2193,'9','Otros',null,now(),now()),
-        (187,2194,'9','Otros',null,now(),now()),
-        (188,700,'3','Grupos Vulnerables',null,now(),now()),
-        (189,694,'3','Grupos Vulnerables',null,now(),now()),
-        (190,881,'1','Junventud',null,now(),now()),
-        (191,2195,'6','Niños, Niñas y Adolecentes',null,now(),now()),
-        (192,697,'9','Otros',null,now(),now()),
-        (193,699,'9','Otros',null,now(),now()),
-        (194,2196,'9','Otros',null,now(),now()),
-        (195,2197,'9','Otros',null,now(),now()),
-        (196,882,'9','Otros',null,now(),now()),
-        (197,2198,'9','Otros',null,now(),now()),
-        (198,701,'9','Otros',null,now(),now()),
-        (199,710,'9','Otros',null,now(),now()),
-        (200,698,'9','Otros',null,now(),now()),
-        (201,2199,'9','Otros',null,now(),now()),
-        (202,2200,'9','Otros',null,now(),now()),
-        (203,709,'9','Otros',null,now(),now()),
-        (204,711,'9','Otros',null,now(),now()),
-        (205,2201,'9','Otros',null,now(),now()),
-        (206,704,'9','Otros',null,now(),now()),
-        (207,2202,'9','Otros',null,now(),now()),
-        (208,818,'3','Grupos Vulnerables',null,now(),now()),
-        (209,706,'9','Otros',null,now(),now()),
-        (210,708,'9','Otros',null,now(),now()),
-        (211,883,'4','Ciencia y Tecnología',null,now(),now()),
-        (212,703,'4','Ciencia y Tecnología',null,now(),now()),
-        (213,707,'4','Ciencia y Tecnología',null,now(),now()),
-        (214,2203,'9','Otros',null,now(),now()),
-        (215,693,'9','Otros',null,now(),now()),
-        (216,713,'9','Otros',null,now(),now()),
-        (217,689,'9','Otros',null,now(),now()),
-        (218,702,'9','Otros',null,now(),now()),
-        (219,884,'9','Otros',null,now(),now()),
-        (220,712,'9','Otros',null,now(),now()),
-        (221,2204,'9','Otros',null,now(),now()),
-        (222,2205,'9','Otros',null,now(),now()),
-        (223,834,'9','Otros',null,now(),now()),
-        (224,2206,'3','Grupos Vulnerables',null,now(),now()),
-        (225,2207,'9','Otros',null,now(),now()),
-        (226,2208,'9','Otros',null,now(),now()),
-        (227,2209,'7','Desarrollo Rural',null,now(),now()),
-        (228,2210,'9','Otros',null,now(),now()),
-        (229,2211,'7','Desarrollo Rural',null,now(),now()),
-        (230,2212,'7','Desarrollo Rural',null,now(),now()),
-        (231,2213,'7','Desarrollo Rural',null,now(),now()),
-        (232,2214,'9','Otros',null,now(),now()),
-        (233,2215,'9','Otros',null,now(),now()),
-        (234,2216,'9','Otros',null,now(),now()),
-        (235,2217,'9','Otros',null,now(),now()),
-        (236,860,'3','Grupos Vulnerables',null,now(),now()),
-        (237,2218,'7','Desarrollo Rural',null,now(),now()),
-        (238,2219,'7','Desarrollo Rural',null,now(),now()),
-        (239,2220,'7','Desarrollo Rural',null,now(),now()),
-        (240,2221,'9','Otros',null,now(),now()),
-        (241,849,'9','Otros',null,now(),now()),
-        (242,847,'3','Grupos Vulnerables',null,now(),now()),
-        (243,852,'3','Grupos Vulnerables',null,now(),now()),
-        (244,624,'3','Grupos Vulnerables',null,now(),now()),
-        (245,853,'9','Otros',null,now(),now()),
-        (246,2222,'9','Otros',null,now(),now()),
-        (247,851,'9','Otros',null,now(),now()),
-        (248,848,'9','Otros',null,now(),now()),
-        (249,850,'9','Otros',null,now(),now()),
-        (250,855,'9','Otros',null,now(),now()),
-        (251,2223,'9','Otros',null,now(),now()),
-        (252,2224,'9','Otros',null,now(),now()),
-        (253,2225,'9','Otros',null,now(),now()),
-        (254,2226,'9','Otros',null,now(),now()),
-        (255,658,'9','Otros',null,now(),now()),
-        (256,846,'9','Otros',null,now(),now()),
-        (257,845,'9','Otros',null,now(),now()),
-        (258,798,'9','Otros',null,now(),now()),
-        (259,854,'9','Otros',null,now(),now()),
-        (260,2227,'9','Otros',null,now(),now()),
-        (261,2228,'9','Otros',null,now(),now()),
-        (262,862,'3','Grupos Vulnerables',null,now(),now()),
-        (263,817,'9','Otros',null,now(),now()),
-        (264,2229,'9','Otros',null,now(),now()),
-        (265,867,'9','Otros',null,now(),now()),
-        (266,866,'9','Otros',null,now(),now()),
-        (267,2230,'8','Cambio Climático',null,now(),now()),
-        (268,755,'9','Otros',null,now(),now()),
-        (269,2231,'9','Otros',null,now(),now()),
-        (270,2232,'9','Otros',null,now(),now()),
-        (271,757,'9','Otros',null,now(),now()),
-        (272,2233,'9','Otros',null,now(),now()),
-        (273,2234,'9','Otros',null,now(),now()),
-        (274,635,'9','Otros',null,now(),now()),
-        (275,2235,'9','Otros',null,now(),now()),
-        (276,799,'9','Otros',null,now(),now()),
-        (277,2236,'9','Otros',null,now(),now()),
-        (278,2237,'9','Otros',null,now(),now()),
-        (279,752,'9','Otros',null,now(),now()),
-        (280,2238,'9','Otros',null,now(),now()),
-        (281,2239,'9','Otros',null,now(),now()),
-        (282,754,'9','Otros',null,now(),now()),
-        (283,2240,'9','Otros',null,now(),now()),
-        (284,2241,'9','Otros',null,now(),now()),
-        (285,2242,'3','Grupos Vulnerables',null,now(),now()),
-        (286,2243,'9','Otros',null,now(),now()),
-        (287,2244,'3','Grupos Vulnerables',null,now(),now()),
-        (288,2245,'9','Otros',null,now(),now()),
-        (289,2246,'9','Otros',null,now(),now()),
-        (290,753,'9','Otros',null,now(),now()),
-        (291,2247,'9','Otros',null,now(),now()),
-        (292,756,'9','Otros',null,now(),now()),
-        (293,2248,'9','Otros',null,now(),now()),
-        (294,751,'9','Otros',null,now(),now()),
-        (295,2249,'9','Otros',null,now(),now()),
-        (296,800,'9','Otros',null,now(),now()),
-        (297,2250,'3','Grupos Vulnerables',null,now(),now()),
-        (298,2251,'9','Otros',null,now(),now()),
-        (299,2252,'9','Otros',null,now(),now()),
-        (300,2253,'9','Otros',null,now(),now()),
-        (301,801,'9','Otros',null,now(),now()),
-        (302,2254,'9','Otros',null,now(),now()),
-        (303,2255,'3','Grupos Vulnerables',null,now(),now()),
-        (304,2256,'9','Otros',null,now(),now()),
-        (305,2257,'9','Otros',null,now(),now()),
-        (306,2258,'9','Otros',null,now(),now()),
-        (307,2259,'9','Otros',null,now(),now()),
-        (308,2260,'5','Equidad de Género',null,now(),now()),
-        (309,859,'9','Otros',null,now(),now()),
-        (310,2261,'9','Otros',null,now(),now()),
-        (311,858,'9','Otros',null,now(),now()),
-        (312,2262,'9','Otros',null,now(),now()),
-        (313,857,'9','Otros',null,now(),now()),
-        (314,856,'9','Otros',null,now(),now()),
-        (315,622,'9','Otros',null,now(),now()),
-        (316,885,'9','Otros',null,now(),now()),
-        (317,886,'9','Otros',null,now(),now()),
-        (318,2263,'9','Otros',null,now(),now()),
-        (319,632,'9','Otros',null,now(),now()),
-        (320,871,'9','Otros',null,now(),now()),
-        (321,870,'9','Otros',null,now(),now()),
-        (322,802,'9','Otros',null,now(),now()),
-        (323,807,'9','Otros',null,now(),now()),
-        (324,808,'9','Otros',null,now(),now()),
-        (325,812,'9','Otros',null,now(),now()),
-        (326,809,'9','Otros',null,now(),now()),
-        (327,819,'9','Otros',null,now(),now()),
-        (328,822,'9','Otros',null,now(),now()),
-        (329,820,'9','Otros',null,now(),now()),
-        (330,810,'9','Otros',null,now(),now()),
-        (331,2264,'9','Otros',null,now(),now()),
-        (332,2265,'9','Otros',null,now(),now()),
-        (333,821,'9','Otros',null,now(),now()),
-        (334,803,'9','Otros',null,now(),now()),
-        (335,811,'9','Otros',null,now(),now()),
-        (336,2266,'9','Otros',null,now(),now()),
-        (337,2267,'9','Otros',null,now(),now()),
-        (338,806,'9','Otros',null,now(),now()),
-        (339,2268,'9','Otros',null,now(),now()),
-        (340,2269,'9','Otros',null,now(),now()),
-        (341,2270,'9','Otros',null,now(),now()),
-        (342,2271,'9','Otros',null,now(),now()),
-        (343,815,'9','Otros',null,now(),now()),
-        (344,631,'9','Otros',null,now(),now()),
-        (345,2272,'3','Grupos Vulnerables',null,now(),now()),
-        (346,2273,'3','Grupos Vulnerables',null,now(),now()),
-        (347,804,'3','Grupos Vulnerables',null,now(),now()),
-        (348,2274,'9','Otros',null,now(),now()),
-        (349,2275,'9','Otros',null,now(),now()),
-        (350,825,'9','Otros',null,now(),now()),
-        (351,2276,'7','Desarrollo Rural',null,now(),now()),
-        (352,2277,'9','Otros',null,now(),now()),
-        (353,726,'9','Otros',null,now(),now()),
-        (354,2278,'9','Otros',null,now(),now()),
-        (355,2279,'9','Otros',null,now(),now()),
-        (356,727,'9','Otros',null,now(),now()),
-        (357,2280,'7','Desarrollo Rural',null,now(),now()),
-        (358,677,'9','Otros',null,now(),now()),
-        (359,893,'9','Otros',null,now(),now()),
-        (360,678,'9','Otros',null,now(),now()),
-        (361,679,'5','Equidad de Género',null,now(),now()),
-        (362,732,'9','Otros',null,now(),now()),
-        (363,889,'1','Junventud',null,now(),now()),
-        (364,734,'9','Otros',null,now(),now()),
-        (365,2281,'9','Otros',null,now(),now()),
-        (366,735,'7','Desarrollo Rural',null,now(),now()),
-        (367,2282,'9','Otros',null,now(),now()),
-        (368,759,'3','Grupos Vulnerables',null,now(),now()),
-        (369,2283,'9','Otros',null,now(),now()),
-        (370,731,'3','Grupos Vulnerables',null,now(),now()),
-        (371,686,'3','Grupos Vulnerables',null,now(),now()),
-        (372,2284,'3','Grupos Vulnerables',null,now(),now()),
-        (373,729,'9','Otros',null,now(),now()),
-        (374,888,'4','Ciencia y Tecnología',null,now(),now()),
-        (375,2285,'4','Ciencia y Tecnología',null,now(),now()),
-        (376,873,'9','Otros',null,now(),now()),
-        (377,2286,'3','Grupos Vulnerables',null,now(),now()),
-        (378,2287,'9','Otros',null,now(),now()),
-        (379,728,'9','Otros',null,now(),now()),
-        (380,2288,'9','Otros',null,now(),now()),
-        (381,2289,'9','Otros',null,now(),now()),
-        (382,2290,'9','Otros',null,now(),now()),
-        (383,733,'9','Otros',null,now(),now()),
-        (384,2291,'9','Otros',null,now(),now()),
-        (385,2292,'9','Otros',null,now(),now()),
-        (386,2293,'9','Otros',null,now(),now()),
-        (387,2294,'9','Otros',null,now(),now()),
-        (388,2295,'9','Otros',null,now(),now()),
-        (389,2296,'9','Otros',null,now(),now()),
-        (390,2297,'9','Otros',null,now(),now()),
-        (391,2298,'3','Grupos Vulnerables',null,now(),now()),
-        (392,2299,'9','Otros',null,now(),now()),
-        (393,2300,'3','Grupos Vulnerables',null,now(),now()),
-        (394,2301,'9','Otros',null,now(),now()),
-        (395,2302,'9','Otros',null,now(),now()),
-        (396,2303,'9','Otros',null,now(),now()),
-        (397,629,'3','Grupos Vulnerables',null,now(),now()),
-        (398,2304,'9','Otros',null,now(),now()),
-        (399,636,'9','Otros',null,now(),now()),
-        (400,639,'9','Otros',null,now(),now()),
-        (401,633,'9','Otros',null,now(),now()),
-        (402,638,'9','Otros',null,now(),now()),
-        (403,2305,'1','Junventud',null,now(),now()),
-        (404,2306,'9','Otros',null,now(),now()),
-        (405,637,'4','Ciencia y Tecnología',null,now(),now()),
-        (406,2307,'4','Ciencia y Tecnología',null,now(),now()),
-        (407,827,'7','Desarrollo Rural',null,now(),now()),
-        (408,2308,'7','Desarrollo Rural',null,now(),now()),
-        (409,654,'7','Desarrollo Rural',null,now(),now()),
-        (410,826,'7','Desarrollo Rural',null,now(),now()),
-        (411,828,'7','Desarrollo Rural',null,now(),now()),
-        (412,829,'7','Desarrollo Rural',null,now(),now()),
-        (413,832,'7','Desarrollo Rural',null,now(),now()),
-        (414,824,'7','Desarrollo Rural',null,now(),now()),
-        (415,2309,'5','Equidad de Género',null,now(),now()),
-        (416,830,'7','Desarrollo Rural',null,now(),now()),
-        (417,676,'7','Desarrollo Rural',null,now(),now()),
-        (418,831,'7','Desarrollo Rural',null,now(),now()),
-        (419,2310,'7','Desarrollo Rural',null,now(),now()),
-        (420,2311,'7','Desarrollo Rural',null,now(),now()),
-        (421,833,'7','Desarrollo Rural',null,now(),now()),
-        (422,2312,'7','Desarrollo Rural',null,now(),now()),
-        (423,2313,'7','Desarrollo Rural',null,now(),now()),
-        (424,2314,'7','Desarrollo Rural',null,now(),now()),
-        (425,823,'7','Desarrollo Rural',null,now(),now()),
-        (426,2315,'7','Desarrollo Rural',null,now(),now()),
-        (427,741,'9','Otros',null,now(),now()),
-        (428,744,'9','Otros',null,now(),now()),
-        (429,743,'9','Otros',null,now(),now()),
-        (430,742,'9','Otros',null,now(),now()),
-        (431,746,'9','Otros',null,now(),now()),
-        (432,749,'9','Otros',null,now(),now()),
-        (433,745,'9','Otros',null,now(),now()),
-        (434,634,'9','Otros',null,now(),now()),
-        (435,747,'9','Otros',null,now(),now()),
-        (436,748,'9','Otros',null,now(),now()),
-        (437,750,'9','Otros',null,now(),now()),
-        (438,760,'8','Cambio Climático',null,now(),now()),
-        (439,2316,'9','Otros',null,now(),now()),
-        (440,2317,'8','Cambio Climático',null,now(),now()),
-        (441,762,'9','Otros',null,now(),now()),
-        (442,758,'9','Otros',null,now(),now()),
-        (443,2318,'9','Otros',null,now(),now()),
-        (444,763,'9','Otros',null,now(),now()),
-        (445,2319,'8','Cambio Climático',null,now(),now()),
-        (446,2320,'8','Cambio Climático',null,now(),now()),
-        (447,647,'9','Otros',null,now(),now()),
-        (448,2321,'9','Otros',null,now(),now()),
-        (449,653,'9','Otros',null,now(),now()),
-        (450,652,'9','Otros',null,now(),now()),
-        (451,651,'9','Otros',null,now(),now()),
-        (452,650,'9','Otros',null,now(),now()),
-        (453,2322,'9','Otros',null,now(),now()),
-        (454,764,'4','Ciencia y Tecnología',null,now(),now()),
-        (455,649,'9','Otros',null,now(),now()),
-        (456,2323,'9','Otros',null,now(),now()),
-        (457,2324,'4','Ciencia y Tecnología',null,now(),now()),
-        (458,2325,'9','Otros',null,now(),now()),
-        (459,2326,'9','Otros',null,now(),now()),
-        (460,665,'9','Otros',null,now(),now()),
-        (461,666,'8','Cambio Climático',null,now(),now()),
-        (462,2327,'9','Otros',null,now(),now()),
-        (463,672,'9','Otros',null,now(),now()),
-        (464,670,'9','Otros',null,now(),now()),
-        (465,805,'9','Otros',null,now(),now()),
-        (466,663,'9','Otros',null,now(),now()),
-        (467,2328,'9','Otros',null,now(),now()),
-        (468,671,'9','Otros',null,now(),now()),
-        (469,667,'9','Otros',null,now(),now()),
-        (470,661,'9','Otros',null,now(),now()),
-        (471,662,'9','Otros',null,now(),now()),
-        (472,669,'4','Ciencia y Tecnología',null,now(),now()),
-        (473,765,'9','Otros',null,now(),now()),
-        (474,2329,'9','Otros',null,now(),now()),
-        (475,664,'9','Otros',null,now(),now()),
-        (476,2330,'9','Otros',null,now(),now()),
-        (477,668,'4','Ciencia y Tecnología',null,now(),now()),
-        (478,2331,'9','Otros',null,now(),now()),
-        (479,766,'8','Cambio Climático',null,now(),now()),
-        (480,2332,'8','Cambio Climático',null,now(),now()),
-        (481,2333,'8','Cambio Climático',null,now(),now()),
-        (482,2334,'8','Cambio Climático',null,now(),now()),
-        (483,2335,'8','Cambio Climático',null,now(),now()),
-        (484,2336,'8','Cambio Climático',null,now(),now()),
-        (485,2337,'8','Cambio Climático',null,now(),now()),
-        (486,767,'8','Cambio Climático',null,now(),now()),
-        (487,2338,'8','Cambio Climático',null,now(),now()),
-        (488,768,'9','Otros',null,now(),now()),
-        (489,2339,'9','Otros',null,now(),now()),
-        (490,771,'9','Otros',null,now(),now()),
-        (491,2340,'9','Otros',null,now(),now()),
-        (492,774,'9','Otros',null,now(),now()),
-        (493,2341,'8','Cambio Climático',null,now(),now()),
-        (494,2342,'9','Otros',null,now(),now()),
-        (495,772,'9','Otros',null,now(),now()),
-        (496,761,'9','Otros',null,now(),now()),
-        (497,770,'9','Otros',null,now(),now()),
-        (498,2343,'9','Otros',null,now(),now()),
-        (499,630,'9','Otros',null,now(),now()),
-        (500,2344,'9','Otros',null,now(),now()),
-        (501,769,'9','Otros',null,now(),now()),
-        (502,2345,'4','Ciencia y Tecnología',null,now(),now()),
-        (503,773,'9','Otros',null,now(),now()),
-        (504,2346,'9','Otros',null,now(),now()),
-        (505,2347,'9','Otros',null,now(),now()),
-        (506,775,'9','Otros',null,now(),now()),
-        (507,895,'9','Otros',null,now(),now()),
-        (508,2348,'9','Otros',null,now(),now()),
-        (509,2349,'4','Ciencia y Tecnología',null,now(),now()),
-        (510,2350,'9','Otros',null,now(),now()),
-        (511,2351,'9','Otros',null,now(),now()),
-        (512,2352,'9','Otros',null,now(),now()),
-        (513,2353,'9','Otros',null,now(),now()),
-        (514,2354,'9','Otros',null,now(),now()),
-        (515,2355,'4','Ciencia y Tecnología',null,now(),now()),
-        (516,872,'4','Ciencia y Tecnología',null,now(),now()),
-        (517,2356,'3','Grupos Vulnerables',null,now(),now()),
-        (518,2357,'3','Grupos Vulnerables',null,now(),now()),
-        (519,2358,'3','Grupos Vulnerables',null,now(),now()),
-        (520,894,'3','Grupos Vulnerables',null,now(),now()),
-        (521,2359,'7','Desarrollo Rural',null,now(),now()),
-        (522,2360,'7','Desarrollo Rural',null,now(),now()),
-        (523,864,'9','Otros',null,now(),now()),
-        (524,865,'7','Desarrollo Rural',null,now(),now()),
-        (525,2361,'9','Otros',null,now(),now()),
-        (526,892,'9','Otros',null,now(),now()),
-        (527,2362,'9','Otros',null,now(),now()),
-        (528,2363,'8','Cambio Climático',null,now(),now()),
-        (529,890,'8','Cambio Climático',null,now(),now()),
-        (530,868,'9','Otros',null,now(),now()),
-        (531,869,'9','Otros',null,now(),now()),
-        (532,891,'9','Otros',null,now(),now()),
-        (533,2364,'9','Otros',null,now(),now()),
-        (534,2365,'9','Otros',null,now(),now()),
-        (535,2366,'9','Otros',null,now(),now()),
-        (536,896,'9','Otros',null,now(),now());");
+        DB::unprepared("INSERT INTO `sector_linea_accion` VALUES
+        (1, 621, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.1', 'AA'),
+        (2, 782, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.2', 'AB'),
+        (3, 790, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.3', 'AC'),
+        (4, 657, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.4', 'AD'),
+        (5, 777, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.5', 'AE'),
+        (6, 692, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.6', 'AF'),
+        (7, 783, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.7', 'AG'),
+        (8, 2107, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.1.8', 'AH'),
+        (9, 794, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.2.1', 'AI'),
+        (10, 740, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '1.1.2.2', 'AJ'),
+        (11, 660, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.2.3', 'AK'),
+        (12, 787, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.2.4', 'AL'),
+        (13, 646, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.2.5', 'AM'),
+        (14, 791, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.2.6', 'AN'),
+        (15, 715, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.1.2.7', 'AO'),
+        (16, 816, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.1.2.8', 'AP'),
+        (17, 674, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.2.1.1', 'AQ'),
+        (18, 795, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.2.1.2', 'AR'),
+        (19, 739, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '1.2.1.3', 'AS'),
+        (20, 684, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.2.1.4', 'AT'),
+        (21, 2108, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.2.1.5', 'AU'),
+        (22, 874, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '1.2.1.6', 'AV'),
+        (23, 681, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.2.1.7', 'AW'),
+        (24, 682, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.2.2.1', 'AX'),
+        (25, 683, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.2.2.2', 'AY'),
+        (26, 2109, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.3', 'AZ'),
+        (27, 685, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.2.2.4', 'BA'),
+        (28, 796, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.2.2.5', 'BB'),
+        (29, 2110, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.2.2.6', 'BC'),
+        (30, 792, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.7', 'BD'),
+        (31, 785, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.8', 'BE'),
+        (32, 875, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.9', 'BF'),
+        (33, 781, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.10', 'BG'),
+        (34, 641, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.11', 'BH'),
+        (35, 877, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.12', 'BI'),
+        (36, 2111, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.13', 'BJ'),
+        (37, 876, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.14', 'BK'),
+        (38, 2112, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.15', 'BL'),
+        (39, 2113, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '1.2.2.16', 'BM'),
+        (40, 835, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.1', 'BN'),
+        (41, 838, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.2', 'BO'),
+        (42, 2114, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.3', 'BP'),
+        (43, 2115, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.4', 'BQ'),
+        (44, 688, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.5', 'BR'),
+        (45, 675, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.6', 'BS'),
+        (46, 2116, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.7', 'BT'),
+        (47, 841, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.8', 'BU'),
+        (48, 2117, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.9', 'BV'),
+        (49, 2118, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.10', 'BW'),
+        (50, 840, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '1.3.1.11', 'BX'),
+        (51, 2119, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.1.12', 'BY'),
+        (52, 645, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.1', 'BZ'),
+        (53, 836, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.2', 'CA'),
+        (54, 2120, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.3', 'CB'),
+        (55, 643, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.4', 'CC'),
+        (56, 644, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.5', 'CD'),
+        (57, 842, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.6', 'CE'),
+        (58, 2121, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.7', 'CF'),
+        (59, 844, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.8', 'CG'),
+        (60, 843, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.9', 'CH'),
+        (61, 2122, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.10', 'CI'),
+        (62, 656, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.11', 'CJ'),
+        (63, 839, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.12', 'CK'),
+        (64, 2123, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.2.13', 'CL'),
+        (65, 784, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.3.1', 'CM'),
+        (66, 2124, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.3.2', 'CN'),
+        (67, 780, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '1.3.3.3', 'CO'),
+        (68, 837, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '1.3.3.4', 'CP'),
+        (69, 788, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.3.5', 'CQ'),
+        (70, 2125, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.3.3.6', 'CR'),
+        (71, 642, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.3.7', 'CS'),
+        (72, 640, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.3.8', 'CT'),
+        (73, 789, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.3.9', 'CU'),
+        (74, 797, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.4.1', 'CV'),
+        (75, 2126, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.4.2', 'CW'),
+        (76, 2127, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.4.3', 'CX'),
+        (77, 2128, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.4.4', 'CY'),
+        (78, 2129, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.4.5', 'CZ'),
+        (79, 776, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.4.6', 'DA'),
+        (80, 2130, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.4.7', 'DB'),
+        (81, 2131, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.3.4.8', 'DC'),
+        (82, 2132, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.3.4.9', 'DD'),
+        (83, 2133, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.4.1.1', 'DE'),
+        (84, 2134, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.4.1.2', 'DF'),
+        (85, 714, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.4.1.3', 'DG'),
+        (86, 2135, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.4.1.4', 'DH'),
+        (87, 793, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.4.1.5', 'DI'),
+        (88, 2136, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.4.1.6', 'DJ'),
+        (89, 2137, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.4.1.7', 'DK'),
+        (90, 2138, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.4.1.8', 'DL'),
+        (91, 2139, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.4.1.9', 'DM'),
+        (92, 2140, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '1.4.1.10', 'DN'),
+        (93, 716, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.1', 'DO'),
+        (94, 779, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.2', 'DP'),
+        (95, 718, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.3', 'DQ'),
+        (96, 786, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.4', 'DR'),
+        (97, 2141, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.5', 'DS'),
+        (98, 2142, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.6', 'DT'),
+        (99, 2143, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.7', 'DU'),
+        (100, 778, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.8', 'DV'),
+        (101, 2144, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.9', 'DW'),
+        (102, 2145, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.10', 'DX'),
+        (103, 2146, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.11', 'DY'),
+        (104, 2147, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.12', 'DZ'),
+        (105, 2148, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.1.13', 'EA'),
+        (106, 2149, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.1', 'EB'),
+        (107, 719, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.2', 'EC'),
+        (108, 2150, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.3', 'ED'),
+        (109, 2151, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.4', 'EE'),
+        (110, 2152, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.5', 'EF'),
+        (111, 887, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.6', 'EG'),
+        (112, 2153, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.7', 'EH'),
+        (113, 2154, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.8', 'EI'),
+        (114, 717, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.9', 'EJ'),
+        (115, 730, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.10', 'EK'),
+        (116, 813, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.11', 'EL'),
+        (117, 2155, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.12', 'EM'),
+        (118, 814, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.13', 'EN'),
+        (119, 673, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '1.5.2.14', 'EO'),
+        (120, 623, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.1.1', 'FA'),
+        (121, 2156, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.1.2', 'FB'),
+        (122, 2157, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.1.1.3', 'FC'),
+        (123, 625, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.1.1.4', 'FD'),
+        (124, 626, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '2.1.1.5', 'FE'),
+        (125, 659, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.1.6', 'FF'),
+        (126, 2158, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.1.1.7', 'FG'),
+        (127, 2159, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '2.1.1.8', 'FH'),
+        (128, 2160, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '2.1.1.9', 'FI'),
+        (129, 737, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '2.1.2.1', 'FJ'),
+        (130, 736, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '2.1.2.2', 'FK'),
+        (131, 2161, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '2.1.2.3', 'FL'),
+        (132, 2162, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '2.1.2.4', 'FM'),
+        (133, 861, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '2.1.2.5', 'FN'),
+        (134, 863, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '2.1.2.6', 'FO'),
+        (135, 2163, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '2.1.2.7', 'FP'),
+        (136, 627, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.3.1', 'FQ'),
+        (137, 687, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.3.2', 'FR'),
+        (138, 2164, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.3.3', 'FS'),
+        (139, 2165, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.3.4', 'FT'),
+        (140, 2166, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.3.5', 'FU'),
+        (141, 2167, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.3.6', 'FV'),
+        (142, 2168, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.3.7', 'FW'),
+        (143, 2169, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.4.1', 'FX'),
+        (144, 2170, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.4.2', 'FY'),
+        (145, 691, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.4.3', 'FZ'),
+        (146, 2171, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.4.4', 'GA'),
+        (147, 2172, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.4.5', 'GB'),
+        (148, 878, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.1', 'GC'),
+        (149, 738, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.2', 'GD'),
+        (150, 2173, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.3', 'GE'),
+        (151, 2174, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.4', 'GF'),
+        (152, 2175, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.5', 'GG'),
+        (153, 879, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.6', 'GH'),
+        (154, 2176, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.7', 'GI'),
+        (155, 2177, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.8', 'GJ'),
+        (156, 2178, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.9', 'GK'),
+        (157, 2179, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.10', 'GL'),
+        (158, 880, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.5.11', 'GM'),
+        (159, 2180, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.6.1', 'GN'),
+        (160, 2181, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.6.2', 'GO'),
+        (161, 2182, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.6.3', 'GP'),
+        (162, 628, '2', 'Género', NULL, '', NULL, NULL, now(), now(), '2.1.6.4', 'GQ'),
+        (163, 720, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.7.1', 'GR'),
+        (164, 2183, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.7.2', 'GS'),
+        (165, 723, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.7.3', 'GT'),
+        (166, 722, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.7.4', 'GU'),
+        (167, 2184, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.7.5', 'GV'),
+        (168, 721, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.1.7.6', 'GW'),
+        (169, 724, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.7.7', 'GX'),
+        (170, 725, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.7.8', 'GY'),
+        (171, 2185, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.1.7.9', 'GZ'),
+        (172, 680, '1', 'Junventud', NULL, '', NULL, NULL, now(), now(), '2.1.8.1', 'HA'),
+        (173, 2186, '1', 'Junventud', NULL, '', NULL, NULL, now(), now(), '2.1.8.2', 'HB'),
+        (174, 2187, '1', 'Junventud', NULL, '', NULL, NULL, now(), now(), '2.1.8.3', 'HC'),
+        (175, 2188, '1', 'Junventud', NULL, '', NULL, NULL, now(), now(), '2.1.8.4', 'HD'),
+        (176, 696, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.1.1', 'HE'),
+        (177, 690, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '2.2.1.2', 'HF'),
+        (178, 705, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.1.3', 'HG'),
+        (179, 2189, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.1.4', 'HH'),
+        (180, 2190, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.2.1.5', 'HI'),
+        (181, 695, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '2.2.1.6', 'HJ'),
+        (182, 655, '1', 'Junventud', NULL, '', NULL, NULL, now(), now(), '2.2.1.7', 'HK'),
+        (183, 648, '1', 'Junventud', NULL, '', NULL, NULL, now(), now(), '2.2.1.8', 'HL'),
+        (184, 2191, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.1.9', 'HM'),
+        (185, 2192, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.1.10', 'HN'),
+        (186, 2193, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.1.11', 'HO'),
+        (187, 2194, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.1.12', 'HP'),
+        (188, 700, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.2.1.13', 'HQ'),
+        (189, 694, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.2.2.1', 'HR'),
+        (190, 881, '1', 'Junventud', NULL, '', NULL, NULL, now(), now(), '2.2.2.2', 'HS'),
+        (191, 2195, '6', 'Niños, Niñas y Adolecentes', NULL, '', NULL, NULL, now(), now(), '2.2.2.3', 'HT'),
+        (192, 697, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.2.4', 'HU'),
+        (193, 699, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.2.5', 'HV'),
+        (194, 2196, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.2.6', 'HW'),
+        (195, 2197, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.2.7', 'HX'),
+        (196, 882, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.2.8', 'HY'),
+        (197, 2198, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.2.9', 'HZ'),
+        (198, 701, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.3.1', 'IA'),
+        (199, 710, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.3.2', 'IB'),
+        (200, 698, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.3.3', 'IC'),
+        (201, 2199, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.3.4', 'ID'),
+        (202, 2200, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.3.5', 'IE'),
+        (203, 709, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.3.6', 'IF'),
+        (204, 711, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.4.1', 'IG'),
+        (205, 2201, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.4.2', 'IH'),
+        (206, 704, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.4.3', 'II'),
+        (207, 2202, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.4.4', 'IJ'),
+        (208, 818, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.2.4.5', 'IK'),
+        (209, 706, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.4.6', 'IL'),
+        (210, 708, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.4.7', 'IM'),
+        (211, 883, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '2.2.4.8', 'IN'),
+        (212, 703, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '2.2.4.9', 'IO'),
+        (213, 707, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '2.2.4.10', 'IP'),
+        (214, 2203, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.5.1', 'IQ'),
+        (215, 693, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.5.2', 'IR'),
+        (216, 713, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.5.3', 'IS'),
+        (217, 689, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.5.4', 'IT'),
+        (218, 702, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.5.5', 'IU'),
+        (219, 884, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.5.6', 'IV'),
+        (220, 712, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.5.7', 'IW'),
+        (221, 2204, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.2.5.8', 'IX'),
+        (222, 2205, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.3.1.1', 'IY'),
+        (223, 834, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.3.1.2', 'IZ'),
+        (224, 2206, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.3.1.3', 'JA'),
+        (225, 2207, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.3.1.4', 'JB'),
+        (226, 2208, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.3.1.5', 'JC'),
+        (227, 2209, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '2.3.1.6', 'JD'),
+        (228, 2210, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.3.2.1', 'JE'),
+        (229, 2211, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '2.3.2.2', 'JF'),
+        (230, 2212, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '2.3.2.3', 'JG'),
+        (231, 2213, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '2.3.2.4', 'JH'),
+        (232, 2214, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.3.2.5', 'JI'),
+        (233, 2215, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.3.2.6', 'JJ'),
+        (234, 2216, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.3.2.7', 'JK'),
+        (235, 2217, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.3.2.8', 'JL'),
+        (236, 860, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.3.3.1', 'JM'),
+        (237, 2218, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '2.3.3.2', 'JN'),
+        (238, 2219, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '2.3.3.3', 'JO'),
+        (239, 2220, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '2.3.3.4', 'JP'),
+        (240, 2221, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.1.1', 'JQ'),
+        (241, 849, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.1.2', 'JR'),
+        (242, 847, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.4.1.3', 'JS'),
+        (243, 852, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.4.1.4', 'JT'),
+        (244, 624, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.4.2.1', 'JU'),
+        (245, 853, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.2.2', 'JV'),
+        (246, 2222, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.2.3', 'JW'),
+        (247, 851, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.2.4', 'JX'),
+        (248, 848, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.2.5', 'JY'),
+        (249, 850, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.2.6', 'JZ'),
+        (250, 855, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.2.7', 'KA'),
+        (251, 2223, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.3.1', 'KB'),
+        (252, 2224, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.3.2', 'KC'),
+        (253, 2225, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.3.3', 'KD'),
+        (254, 2226, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.3.4', 'KE'),
+        (255, 658, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.3.5', 'KF'),
+        (256, 846, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.4.1', 'KG'),
+        (257, 845, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.4.2', 'KH'),
+        (258, 798, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.4.3', 'KI'),
+        (259, 854, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.4.4', 'KJ'),
+        (260, 2227, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.4.5', 'KK'),
+        (261, 2228, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.4.5.1', 'KL'),
+        (262, 862, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.4.5.2', 'KM'),
+        (263, 817, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.5.1.1', 'KN'),
+        (264, 2229, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.5.1.2', 'KO'),
+        (265, 867, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.5.2.1', 'KP'),
+        (266, 866, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.5.2.2', 'KQ'),
+        (267, 2230, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '2.5.2.3', 'KR'),
+        (268, 755, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.1', 'KS'),
+        (269, 2231, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.2', 'KT'),
+        (270, 2232, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.3', 'KU'),
+        (271, 757, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.4', 'KV'),
+        (272, 2233, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.5', 'KW'),
+        (273, 2234, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.6', 'KX'),
+        (274, 635, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.7', 'KY'),
+        (275, 2235, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.8', 'KZ'),
+        (276, 799, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.9', 'LA'),
+        (277, 2236, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.10', 'LB'),
+        (278, 2237, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.11', 'LC'),
+        (279, 752, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.1.12', 'LD'),
+        (280, 2238, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.2.1', 'LE'),
+        (281, 2239, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.2.2', 'LF'),
+        (282, 754, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.2.3', 'LG'),
+        (283, 2240, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.2.4', 'LH'),
+        (284, 2241, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.2.5', 'LI'),
+        (285, 2242, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.6.2.6', 'LJ'),
+        (286, 2243, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.2.7', 'LK'),
+        (287, 2244, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), ' 2.6.2.8', 'LL'),
+        (288, 2245, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.2.9', 'LM'),
+        (289, 2246, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.2.10', 'LN'),
+        (290, 753, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.2.11', 'LO'),
+        (291, 2247, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.3.1', 'LP'),
+        (292, 756, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.3.2', 'LQ'),
+        (293, 2248, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.3.3', 'LR'),
+        (294, 751, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.4.1', 'LS'),
+        (295, 2249, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.4.2', 'LT'),
+        (296, 800, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.4.3', 'LU'),
+        (297, 2250, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.6.4.4', 'LV'),
+        (298, 2251, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.4.5', 'LW'),
+        (299, 2252, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.4.6', 'LX'),
+        (300, 2253, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.6.4.7', 'LY'),
+        (301, 801, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.1.1', 'LZ'),
+        (302, 2254, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.1.2', 'MA'),
+        (303, 2255, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '2.7.1.3', 'MB'),
+        (304, 2256, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.1.4', 'MC'),
+        (305, 2257, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.2.1', 'MD'),
+        (306, 2258, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.2.2', 'ME'),
+        (307, 2259, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.2.3', 'MF'),
+        (308, 2260, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '2.7.2.4', 'MG'),
+        (309, 859, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.3.1', 'MH'),
+        (310, 2261, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.3.2', 'MI'),
+        (311, 858, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.3.3', 'MJ'),
+        (312, 2262, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.4.1', 'MK'),
+        (313, 857, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.4.2', 'ML'),
+        (314, 856, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '2.7.4.3', 'MM'),
+        (315, 622, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.1.1.1', 'NA'),
+        (316, 885, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.1.1.2', 'NB'),
+        (317, 886, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.1.2.1', 'NC'),
+        (318, 2263, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.1.2.2', 'ND'),
+        (319, 632, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.1.3.1', 'NE'),
+        (320, 871, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.1.3.2', 'NF'),
+        (321, 870, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.1.3.3', 'NG'),
+        (322, 802, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.1', 'NH'),
+        (323, 807, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.2', 'NI'),
+        (324, 808, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.3', 'NJ'),
+        (325, 812, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.4', 'NK'),
+        (326, 809, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.5', 'NL'),
+        (327, 819, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.6', 'NM'),
+        (328, 822, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.7', 'NN'),
+        (329, 820, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.8', 'NO'),
+        (330, 810, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.9', 'NP'),
+        (331, 2264, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.10', 'NQ'),
+        (332, 2265, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.11', 'NR'),
+        (333, 821, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.12', 'NS'),
+        (334, 803, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.13', 'NT'),
+        (335, 811, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.14', 'NU'),
+        (336, 2266, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.15', 'NV'),
+        (337, 2267, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.1.16', 'NW'),
+        (338, 806, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.2.1', 'NX'),
+        (339, 2268, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.2.2', 'NY'),
+        (340, 2269, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.2.3', 'NZ'),
+        (341, 2270, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.2.4', 'OA'),
+        (342, 2271, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.3.1', 'OB'),
+        (343, 815, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.3.2', 'OC'),
+        (344, 631, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.3.3', 'OD'),
+        (345, 2272, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.2.3.4', 'OE'),
+        (346, 2273, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.2.3.5', 'OF'),
+        (347, 804, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.2.3.6', 'OG'),
+        (348, 2274, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.4.1', 'OH'),
+        (349, 2275, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.4.2', 'OI'),
+        (350, 825, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.4.3', 'OJ'),
+        (351, 2276, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.2.4.4', 'OK'),
+        (352, 2277, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.2.4.5', 'OL'),
+        (353, 726, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.3.1.1', 'OM'),
+        (354, 2278, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.3.1.2', 'ON'),
+        (355, 2279, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.3.1.3', 'OO'),
+        (356, 727, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.3.1.4', 'OP'),
+        (357, 2280, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.3.1.5', 'OQ'),
+        (358, 677, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.3.2.1', 'OR'),
+        (359, 893, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.3.2.2', 'OS'),
+        (360, 678, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.3.2.3', 'OT'),
+        (361, 679, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '3.3.2.4', 'OU'),
+        (362, 732, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.4.1.1', 'OV'),
+        (363, 889, '1', 'Junventud', NULL, '', NULL, NULL, now(), now(), '3.4.1.2', 'OW'),
+        (364, 734, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.4.1.3', 'OX'),
+        (365, 2281, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.4.1.4', 'OY'),
+        (366, 735, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.4.1.5', 'OZ'),
+        (367, 2282, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.4.2.1', 'PA'),
+        (368, 759, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.4.2.2', 'PB'),
+        (369, 2283, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.4.2.3', 'PC'),
+        (370, 731, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.4.3.1', 'PD'),
+        (371, 686, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.4.3.2', 'PE'),
+        (372, 2284, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.4.3.3', 'PF'),
+        (373, 729, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.1.1', 'PG'),
+        (374, 888, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '3.5.1.2', 'PH'),
+        (375, 2285, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '3.5.1.3', 'PI'),
+        (376, 873, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.1.4', 'PJ'),
+        (377, 2286, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.5.1.5', 'PK'),
+        (378, 2287, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.2.1', 'PL'),
+        (379, 728, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.2.2', 'PM'),
+        (380, 2288, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.2.3', 'PN'),
+        (381, 2289, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.2.4', 'PO'),
+        (382, 2290, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.2.5', 'PP'),
+        (383, 733, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.3.1', 'PQ'),
+        (384, 2291, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.3.2', 'PR'),
+        (385, 2292, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.3.3', 'PS'),
+        (386, 2293, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.3.4', 'PT'),
+        (387, 2294, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.3.5', 'PU'),
+        (388, 2295, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.3.6', 'PV'),
+        (389, 2296, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.5.3.7', 'PW'),
+        (390, 2297, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.1.1', 'PX'),
+        (391, 2298, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.6.1.2', 'PY'),
+        (392, 2299, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.1.3', 'PZ'),
+        (393, 2300, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.6.1.4', 'QA'),
+        (394, 2301, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.2.1', 'QB'),
+        (395, 2302, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.2.2', 'QC'),
+        (396, 2303, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.2.3', 'QD'),
+        (397, 629, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '3.6.2.4', 'QE'),
+        (398, 2304, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.3.1', 'QF'),
+        (399, 636, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.3.2', 'QG'),
+        (400, 639, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.3.3', 'QH'),
+        (401, 633, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.3.4', 'QI'),
+        (402, 638, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.3.5', 'QJ'),
+        (403, 2305, '1', 'Junventud', NULL, '', NULL, NULL, now(), now(), '3.6.3.6', 'QK'),
+        (404, 2306, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.6.3.7', 'QL'),
+        (405, 637, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '3.6.3.8', 'QM'),
+        (406, 2307, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '3.6.3.9', 'QN'),
+        (407, 827, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.1.1', 'QO'),
+        (408, 2308, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.1.2', 'QP'),
+        (409, 654, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.1.3', 'QQ'),
+        (410, 826, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.1.4', 'QR'),
+        (411, 828, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.1.5', 'QS'),
+        (412, 829, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.1.6', 'QT'),
+        (413, 832, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.1.7', 'QU'),
+        (414, 824, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.1.8', 'QV'),
+        (415, 2309, '5', 'Equidad de Género', NULL, '', NULL, NULL, now(), now(), '3.7.1.9', 'QW'),
+        (416, 830, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.2.1', 'QX'),
+        (417, 676, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.2.2', 'QY'),
+        (418, 831, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.2.3', 'QZ'),
+        (419, 2310, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.2.4', 'RA'),
+        (420, 2311, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.3.1', 'RB'),
+        (421, 833, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.3.2', 'RC'),
+        (422, 2312, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.3.3', 'RD'),
+        (423, 2313, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.3.4', 'RE'),
+        (424, 2314, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.3.5', 'RF'),
+        (425, 823, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.3.6', 'RG'),
+        (426, 2315, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '3.7.3.7', 'RH'),
+        (427, 741, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.1.1', 'RI'),
+        (428, 744, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.1.2', 'RJ'),
+        (429, 743, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.1.3', 'RK'),
+        (430, 742, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.2.1', 'RL'),
+        (431, 746, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.2.2', 'RM'),
+        (432, 749, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.2.3', 'RN'),
+        (433, 745, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.3.1', 'RO'),
+        (434, 634, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.3.2', 'RP'),
+        (435, 747, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.3.3', 'RQ'),
+        (436, 748, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.3.4', 'RR'),
+        (437, 750, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '3.8.3.5', 'RS'),
+        (438, 760, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.1.1.1', 'SA'),
+        (439, 2316, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.1.2', 'SB'),
+        (440, 2317, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.1.1.3', 'SC'),
+        (441, 762, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.1.4', 'SD'),
+        (442, 758, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.1.5', 'SE'),
+        (443, 2318, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.1.6', 'SF'),
+        (444, 763, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.1.7', 'SG'),
+        (445, 2319, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.1.1.8', 'SH'),
+        (446, 2320, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.1.1.9', 'SI'),
+        (447, 647, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.1.10', 'SJ'),
+        (448, 2321, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.1.11', 'SK'),
+        (449, 653, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.2.1', 'SL'),
+        (450, 652, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.2.2', 'SM'),
+        (451, 651, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.2.3', 'SN'),
+        (452, 650, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.2.4', 'SO'),
+        (453, 2322, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.2.5', 'SP'),
+        (454, 764, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '4.1.2.6', 'SQ'),
+        (455, 649, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.2.7', 'SR'),
+        (456, 2323, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.1.2.8', 'SS'),
+        (457, 2324, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '4.1.2.9', 'ST'),
+        (458, 2325, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.1.1', 'SU'),
+        (459, 2326, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.1.2', 'SV'),
+        (460, 665, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.1.3', 'SW'),
+        (461, 666, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.2.1.4', 'SX'),
+        (462, 2327, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.1.5', 'SY'),
+        (463, 672, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.1.6', 'SZ'),
+        (464, 670, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.1.7', 'TA'),
+        (465, 805, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.1.8', 'TB'),
+        (466, 663, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.1.9', 'TC'),
+        (467, 2328, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.2.1', 'TD'),
+        (468, 671, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.2.2', 'TE'),
+        (469, 667, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.2.3', 'TF'),
+        (470, 661, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.2.4', 'TG'),
+        (471, 662, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.3.1', 'TH'),
+        (472, 669, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '4.2.3.2', 'TI'),
+        (473, 765, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.3.3', 'TJ'),
+        (474, 2329, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.3.4', 'TK'),
+        (475, 664, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.3.5', 'TL'),
+        (476, 2330, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.3.6', 'TM'),
+        (477, 668, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '4.2.3.7', 'TN'),
+        (478, 2331, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.2.3.8', 'TO'),
+        (479, 766, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.3.1.1', 'TP'),
+        (480, 2332, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.3.1.2', 'TQ'),
+        (481, 2333, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.3.1.3', 'TR'),
+        (482, 2334, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.3.1.4', 'TS'),
+        (483, 2335, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.3.1.5', 'TT'),
+        (484, 2336, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.3.1.6', 'TU'),
+        (485, 2337, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.3.1.7', 'TV'),
+        (486, 767, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.3.2.1', 'TW'),
+        (487, 2338, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.3.2.2', 'TX'),
+        (488, 768, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.3.2.3', 'TY'),
+        (489, 2339, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.3.2.4', 'TZ'),
+        (490, 771, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.3.2.5', 'UA'),
+        (491, 2340, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.1.1', 'UB'),
+        (492, 774, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.1.2', 'UC'),
+        (493, 2341, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.4.1.3', 'UD'),
+        (494, 2342, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.1.4', 'UE'),
+        (495, 772, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.1.5', 'UF'),
+        (496, 761, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.2.1', 'UG'),
+        (497, 770, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.2.2', 'UH'),
+        (498, 2343, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.2.3', 'UI'),
+        (499, 630, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.2.4', 'UJ'),
+        (500, 2344, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.2.5', 'UK'),
+        (501, 769, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.2.6', 'UL'),
+        (502, 2345, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '4.4.2.7', 'UM'),
+        (503, 773, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.2.8', 'UN'),
+        (504, 2346, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.2.9', 'UO'),
+        (505, 2347, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.4.2.10', 'UP'),
+        (506, 775, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.5.1.1', 'UQ'),
+        (507, 895, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.5.1.2', 'UR'),
+        (508, 2348, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.5.1.3', 'US'),
+        (509, 2349, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '4.5.1.4', 'UT'),
+        (510, 2350, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.5.1.5', 'UU'),
+        (511, 2351, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.5.2.1', 'UV'),
+        (512, 2352, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.5.2.2', 'UW'),
+        (513, 2353, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.5.2.3', 'UX'),
+        (514, 2354, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.5.2.4', 'UY'),
+        (515, 2355, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '4.5.2.5', 'UZ'),
+        (516, 872, '4', 'Ciencia y Tecnología', NULL, '', NULL, NULL, now(), now(), '4.5.2.6', 'VA'),
+        (517, 2356, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '4.5.3.1', 'VB'),
+        (518, 2357, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '4.5.3.2', 'VC'),
+        (519, 2358, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '4.5.3.3', 'VD'),
+        (520, 894, '3', 'Grupos Vulnerables', NULL, '', NULL, NULL, now(), now(), '4.5.3.4', 'VE'),
+        (521, 2359, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '4.6.1.1', 'VF'),
+        (522, 2360, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '4.6.1.2', 'VG'),
+        (523, 864, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.1.3', 'VH'),
+        (524, 865, '7', 'Desarrollo Rural', NULL, '', NULL, NULL, now(), now(), '4.6.1.4', 'VI'),
+        (525, 2361, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.2.1', 'VJ'),
+        (526, 892, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.2.2', 'VK'),
+        (527, 2362, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.2.3', 'VL'),
+        (528, 2363, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.6.2.4', 'VM'),
+        (529, 890, '8', 'Cambio Climático', NULL, '', NULL, NULL, now(), now(), '4.6.3.1', 'VN'),
+        (530, 868, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.3.2', 'VO'),
+        (531, 869, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.3.3', 'VP'),
+        (532, 891, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.3.4', 'VQ'),
+        (533, 2364, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.3.5', 'VR'),
+        (534, 2365, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.3.6', 'VS'),
+        (535, 2366, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.3.7', 'VT'),
+        (536, 896, '9', 'Otros', NULL, '', NULL, NULL, now(), now(), '4.6.3.8', 'VU');");
 
         DB::unprepared("INSERT into rel_economica_administrativa values
         (1,'21111','111011',now(),now(),null),

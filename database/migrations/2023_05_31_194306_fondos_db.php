@@ -112,6 +112,7 @@ return new class extends Migration
         });
 
         Schema::create('mml_observaciones_pp', function (Blueprint $table){
+            $table->unique(['clv_upp', 'clv_pp', 'ejercicio', 'problema_id', 'etapa'], 'clave');
             $table->increments('id');
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
@@ -169,14 +170,14 @@ return new class extends Migration
             $table->string('lb_valor_absoluto',255)->nullable(false);
             $table->string('lb_valor_relativo',255)->nullable(false);
             $table->integer('lb_anio')->nullable(false);
-            $table->enum('lb_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
-            $table->enum('lb_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
+            $table->enum('lb_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'])->nullable(true);
+            $table->enum('lb_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'])->nullable(true);
             $table->string('mp_valor_absoluto',255)->nullable(false);
             $table->string('mp_valor_relativo',255)->nullable(false);
             $table->integer('mp_anio')->nullable(false);
             $table->integer('mp_anio_meta')->nullable(true);
-            $table->enum('mp_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
-            $table->enum('mp_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Novimebre','Diciembre'])->nullable(true);
+            $table->enum('mp_periodo_i',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'])->nullable(true);
+            $table->enum('mp_periodo_f',['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'])->nullable(true);
             $table->text('supuestos')->nullable(false);
             $table->text('estrategias')->nullable(false);
             $table->integer('ejercicio')->nullable(false);
@@ -252,6 +253,7 @@ return new class extends Migration
             $table->increments('id')->unsigned();
             $table->string('clv_upp',30)->nullable(false);
             $table->enum('estatus', ['Cerrado', 'Abierto'])->nullable(false);
+            $table->tinyInteger('statusm')->default(0)->nullable(false);
             $table->integer('ejercicio')->nullable(false);
             $table->string('capturista',150)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -461,6 +463,7 @@ return new class extends Migration
 /**/    Schema::create('tipologia_conac',function (Blueprint $table){
             $table->increments('id');
             $table->integer('tipo')->unsigned()->nullable(false);
+            $table->string('clave',1)->nullable(true);
             $table->string('descripcion',255)->nullable(false);
             $table->string('clave_conac',1)->nullable(true);
             $table->string('descripcion_conac',255)->nullable(true);
@@ -561,6 +564,8 @@ return new class extends Migration
             $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->string('linea_accion_num',8)->nullable(false);
+            $table->string('clv_linea_accion',2)->nullable(false);
 
             $table->foreign('linea_accion_id')->references('id')->on('catalogo');
         });

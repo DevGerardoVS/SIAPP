@@ -1,5 +1,18 @@
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
-
+let mesesV = {
+    enero:false,
+    febrero:false,
+    marzo:false,
+    abril:false,
+    mayo:false,
+    junio:false,
+    julio:false,
+    agosto:false,
+    septiembre:false,
+    octubre:false,
+    noviembre:false,
+    diciembre:false
+};
 var dao = {
     getUpps: function () {
         $.ajax({
@@ -39,6 +52,32 @@ var dao = {
              
             }
         });
+    },
+    nCont: function () {
+        if ($('#nContinua').val()!='') {
+            contValue = $('#nContinua').val();
+            for (let i = 1; i <= 12; i++) {
+                $('#' + i).val(contValue);
+                $('#' + i).attr('disabled', 'disabled');
+            }
+            $('#sumMetas').val(contValue);
+            $('#sumMetas').attr('disabled', 'disabled');
+            dao.clearCont('aceptar');
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Este campo es requerido',
+              })
+        }
+      
+    },
+    clearCont: function (tipo) {
+        if (tipo!='aceptar') {
+            $("#tipo_Ac option[value='']").attr("selected", true);
+        }
+        $('#nContinua').val("");
+        $('#continua').modal('hide');
     },
     exportJasper: function () {
         let tipo = 0;
@@ -187,18 +226,28 @@ var dao = {
             });
         });
     },
-    getActiv: function (upp) {
+    getActiv: function (upp,sub) {
         $("#tipo_Ac").empty();
         $.ajax({
             type: "GET",
             url: '/calendarizacion/tcalendario/'+upp,
             dataType: "JSON"
-        }).done(function (data) {        
-            $.each(data, function (i, val) {
-                if (val == 1) {
-                    $('#tipo_Ac').append("<option value='" + i + "'>" +i+"</option>");
-                }
-            });
+        }).done(function (data) {       
+            if (Object.keys(data).length >= 2&& sub!='UUU') {
+                $("#tipo_Ac").append(new Option("--Tipo Actividad--", ""));
+                document.getElementById("tipo_Ac").options[0].disabled = true;
+
+            }
+            if (sub=='UUU') {
+                $("#tipo_Ac").append(new Option('Acumulativa', 'Acumulativa'));
+            } else {
+                $.each(data, function (i, val) {
+                    if (val == 1) {
+                        $('#tipo_Ac').append("<option value='" + i + "'>" +i+"</option>");
+                    }
+                });
+            }
+
         });
     },
     cierreMetas: function (upp) {
@@ -242,7 +291,7 @@ var dao = {
                 dao.getUpps();
                 dao.getData($('#upp_filter').val(),$('#anio_filter').val());
             } else {
-                dao.getData($('#upp_filter').val(),$('#anio_filter').val());
+                dao.getData($('#upp').val(),$('#anio_filter').val());
             }
         });
     },
@@ -253,7 +302,7 @@ var dao = {
             url: "/calendarizacion/update/" + id,
             dataType : "json"
         }).done(function (data) {
-            dao.getActiv(data.clv_upp);
+            dao.getActiv(data.clv_upp,data.subprograma);
             $('#proyectoMD').empty();
             $('#proyectoMD').append("<thead><tr class='colorRosa'>"
                 + "<th class= 'vertical' > UPP</th >"
@@ -276,7 +325,8 @@ var dao = {
             $('#Nfondo').text(data.clv_fondo);
             $('#beneficiario').val(data.cantidad_beneficiarios);
             $("#tipo_Be option[value='" + data.beneficiario_id + "']").attr("selected", true);
-            $("#medida option[value='"+ data.unidad_medida_id +"']").attr("selected",true);
+            $("#medida option[value='" + data.unidad_medida_id + "']").attr("selected", true);
+            $("#tipo_Ac option[value='"+ data.tipo +"']").attr("selected",true);
             $('#1').val(data.enero);
             $('#2').val(data.febrero);
             $('#3').val(data.marzo);
@@ -290,169 +340,471 @@ var dao = {
             $('#11').val(data.noviembre);
             $('#12').val(data.diciembre);
             $('#sumMetas').val(data.total);
+            $('#ar').val(data.ar);
+            $('#fondo').val(data.clv_fondo);
             let edit = false;
             const mese = data.meses;
-            for (const key in mese) {
-                if (Object.hasOwnProperty.call(mese, key)) {
-                    const e = mese[key];
-                    switch (key) {
-                        case 'enero':
-                            if (e != 0.0 || e != 0) {
-                                $("#1").prop('disabled', false);
-                                $("#1").prop('required',true);
-                            } else {
-                                $("#1").prop('disabled', 'disabled');
-                                if (data.enero >= 1) {
-                                    edit = true;
-                                    $('#1').val(0);
-                                }
-                            }
-                            break;
-                        case 'febrero':
-                            if (e != 0.0 || e != 0) {
-                                $("#2").prop('disabled', false);
-                                $("#2").prop('required',true);
-                            } else {
-                                $("#2").prop('disabled', 'disabled');
-                                if (data.febrero >= 1) {
-                                    edit = true;
-                                    $('#2').val(0);
-                                }
-                            }
-                                break;
-                        case 'marzo':
-                            if (e != 0.0 || e != 0) {
-                                $("#3").prop('disabled', false);
-                                $("#3").prop('required',true);
-                            } else {
-                                $("#3").prop('disabled', 'disabled');
-                                if (data.marzo >= 1) {
-                                    edit = true;
-                                    $('#3').val(0);
-                                }
-
-                            }
-                                break;
-                        case 'abril':
-                            if (e != 0.0 || e != 0) {
-                                $("#4").prop('disabled', false);
-                                $("#4").prop('required',true);
-                            } else {
-                                $("#4").prop('disabled', 'disabled');
-                                if (data.abril >= 1) {
-                                    edit = true;
-                                    $('#4').val(0);
-                                }
-                            }
-                            break;
-                        case 'mayo':
-                            if (e != 0.0 || e != 0) {
-                                $("#5").prop('disabled', false);
-                                $("#5").prop('required',true);
-                            } else {
-                                $("#5").prop('disabled', 'disabled');
-                                if (data.mayo >= 1) {
-                                    edit = true;
-                                    $('#5').val(0);
-                                }
-                            }
-                            break;
-                        case 'junio':
-                            if (e != 0.0 || e != 0) {
-                                $("#6").prop('disabled', false);
-                                $("#6").prop('required',true);
-                            } else {
-                                $("#6").prop('disabled', 'disabled');
-                                if (data.junio >= 1) {
-                                    edit = true;
-                                    $('#6').val(0);
-                                }
-                            }
-                               break;
-                        case 'julio':
-                            if (e != 0.0 || e != 0) {
-                                $("#7").prop('disabled', false);
-                                $("#7").prop('required',true);
-                            } else {
-                                $("#7").prop('disabled', 'disabled');
-                                if (data.julio >= 1) {
-                                    edit = true;
-                                    $('#7').val(0);
-                                }
-                            }
-                            break;
-                        case 'agosto':
-                            if (e != 0.0 || e != 0) {
-                                $("#8").prop('disabled', false);
-                                $("#8").prop('required',true);
-                            } else {
-                                $("#8").prop('disabled', 'disabled');
-                                if (data.agosto >= 1) {
-                                    edit = true;
-                                    $('#8').val(0);
-                                }
-                            }
-                            break;
-                        case 'septiembre':
-                            if (e != 0.0 || e != 0) {
-                                $("#9").prop('disabled', false);
-                                $("#9").prop('required',true);
-                            } else {
-                                $("#9").prop('disabled', 'disabled');
-                                if (data.septiembre >= 1) {
-                                    edit = true;
-                                    $('#9').val(0);
-                                }
-                            }
-                            break;
-                        case 'octubre':
-                            if (e != 0.0 || e != 0) {
-                                $("#10").prop('disabled', false);
-                                $("#10").prop('required',true);
-                            } else {
-                                $("#10").prop('disabled', 'disabled');
-                                if (data.octubre >= 1) {
-                                    edit = true;
-                                    $('#10').val(0);
-                                }
-                            }
-                            break;
-                        case 'noviembre':
-                            if (e != 0.0 || e != 0) {
-                                $("#11").prop('disabled', false);
-                                $("#11").prop('required',true);
-                            } else {
-                                $("#11").prop('disabled', 'disabled');
-                                if (data.noviembre >= 1) {
-                                    edit = true;
-                                    $('#11').val(0);
-                                }
-                            }
-                            break;
-                        case 'diciembre':
-                            if (e != 0.0 || e != 0) {
-                                $("#12").prop('disabled', false);
-                                $("#12").prop('required',true);
-                            } else {
-                                $("#12").prop('disabled', 'disabled');
-                                if (data.diciembre >= 1) {
-                                    edit = true;
-                                    $('#12').val(0);
-                                }
-                            }
-                            break;
-                    
-                        default:
-                            break;
-                    }
-                    
+            for (const key in mesesV) {
+                if (Object.hasOwnProperty.call(mesesV, key)) {
+                    mesesV[key]=false;
                 }
+            }
+            if ( data.subprograma!='UUU') {
+                for (const key in mese) {
+               
+                    if (Object.hasOwnProperty.call(mese, key)) {
+                        const e = mese[key];
+                        switch (key) {
+                            case 'enero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.enero = true;
+                                    $("#1").prop('disabled', false);
+                                    $("#1").prop('required', true);
+                                } else {
+                                    $("#1").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'febrero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.febrero = true;
+                                    $("#2").prop('disabled', false);
+                                    $("#2").prop('required', true);
+                                } else {
+                                    $("#2").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'marzo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.marzo = true;
+                                    $("#3").prop('disabled', false);
+                                    $("#3").prop('required', true);
+                                } else {
+                                    $("#3").prop('disabled', 'disabled');
+
+                                }
+                                break;
+                            case 'abril':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.abril = true;
+                                    $("#4").prop('disabled', false);
+                                    $("#4").prop('required', true);
+                                } else {
+                                    $("#4").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'mayo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.mayo = true;
+                                    $("#5").prop('disabled', false);
+                                    $("#5").prop('required', true);
+                                } else {
+                                    $("#5").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'junio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.junio = true;
+                                    $("#6").prop('disabled', false);
+                                    $("#6").prop('required', true);
+                                } else {
+                                    $("#6").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'julio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.julio = true;
+                                    $("#7").prop('disabled', false);
+                                    $("#7").prop('required', true);
+                                } else {
+                                    $("#7").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'agosto':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.agosto = true;
+                                    $("#8").prop('disabled', false);
+                                    $("#8").prop('required', true);
+                                } else {
+                                    $("#8").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'septiembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.septiembre = true;
+                                    $("#9").prop('disabled', false);
+                                    $("#9").prop('required', true);
+                                } else {
+                                    $("#9").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'octubre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.octubre = true;
+                                    $("#10").prop('disabled', false);
+                                    $("#10").prop('required', true);
+                                } else {
+                                    $("#10").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'noviembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.noviembre = true;
+                                    $("#11").prop('disabled', false);
+                                    $("#11").prop('required', true);
+                                } else {
+                                    $("#11").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'diciembre':
+                            
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.diciembre = true;
+                                    $("#12").prop('disabled', false);
+                                    $("#12").prop('required', true);
+                                } else {
+                                    $("#12").prop('disabled', 'disabled');
+                                }
+                                break;
+                    
+                            default:
+                                break;
+                        }
+                    
+                    }
+                }
+            } else {
+                
+                $("#sumMetas").prop('disabled', 'disabled');
+                for (let i = 1; i <= 12; i++) {
+                    $("#" + i).prop('disabled', 'disabled');
+
+                }
+                
             }
 
             if (edit) {
                 $('#editMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#editMetas').text("Las claves presupuestarias fueron modificadas y es posible que un mes no tenga presupuesto lo cual fue modificado a CERO");
             }
+        });
+    },
+    validMeses: function () {
+        let mesesfs = 0;
+        for (const key in mesesV) {
+            if (Object.hasOwnProperty.call(mesesV, key)) {
+                const e = mesesV[key];
+                switch (key) {
+                    case 'enero':
+                        if (e) {
+                           
+                            if ($("#1").val() == 0) {
+                                $('#1-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#1-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'febrero':
+                        if (e) {
+                           
+                            if ($("#2").val() == 0) {
+                                $('#2-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#2-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'marzo':
+                        if (e) {
+                           
+                            if ($("#3").val() == 0) {
+                                $('#3-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#3-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'abril':
+                        if (e) {
+                           
+                            if ($("#4").val() == 0) {
+                                $('#4-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#4-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'mayo':
+                        if (e) {
+                           
+                            if ($("#5").val() == 0) {
+                                $('#5-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#5-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'junio':
+                        if (e) {
+                                if ($("#6").val() == 0 || $("#6").val() == '0') {
+                                $('#6-error').text("Este campo es requerido").addClass('has-error').show();
+                                mesesfs++;
+                            } else {
+                                
+                                $('#6-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'julio':
+                        if (e) {
+                           
+                            if ($("#7").val() == 0) {
+                                $('#7-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#7-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'agosto':
+                        if (e) {
+                           
+                            if ($("#8").val() == 0) {
+                                $('#8-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#8-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'septiembre':
+                        if (e) {
+                           
+                            if ($("#9").val() == 0) {
+                                $('#9-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#9-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'octubre':
+                        if (e) {
+                           
+                            if ($("#10").val() == 0) {
+                                $('#10-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#10-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'noviembre':
+                        if (e) {
+                           
+                            if ($("#11").val() == 0) {
+                                $('#11-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#11-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+                    case 'diciembre':
+
+                        if (e) {
+                           
+                            if ($("#12").val() == 0) {
+                                $('#12-error').text("Este campo es requerido").addClass('has-error').css({'display':''});
+                                mesesfs++;
+                            } else {
+                                
+                                $('#1-error').text("").removeClass('has-error');
+                            }
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+
+            }
+        }
+        console.log("meses sin llenar:",mesesfs);
+        if (mesesfs >= 1) {
+            $("#meses-error").text("Debes de llenar los meses desbloqueados").addClass('has-error');
+            return false;
+           
+        } else {
+            $("#meses-error").text("").removeClass('has-error');
+            return true;
+       }
+    },
+    getMeses: function (idA, idF) {
+        let arr = idA.split('-');
+        for (const key in mesesV) {
+            if (Object.hasOwnProperty.call(mesesV, key)) {
+                mesesV[key] = false;
+            }
+        }
+        $.ajax({
+            type: "GET",
+            url: '/actividades/meses-activos/' + idA + "/" + idF,
+            dataType: "JSON"
+        }).done(function (data) {
+            let { mese } = data;
+            if (arr[8] != 'UUU') {
+                for (const key in mese) {
+                    if (Object.hasOwnProperty.call(mese, key)) {
+                        const e = mese[key];
+                        switch (key) {
+                            case 'enero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.enero = true;
+                                    $("#1").prop('disabled', false);
+                                    $("#1").prop('required', true);
+                                } else {
+                                    $("#1").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'febrero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.febrero = true;
+                                    $("#2").prop('disabled', false);
+                                    $("#2").prop('required', true);
+                                } else {
+                                    $("#2").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'marzo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.marzo = true;
+                                    $("#3").prop('disabled', false);
+                                    $("#3").prop('required', true);
+                                } else {
+                                    $("#3").prop('disabled', 'disabled');
+
+                                }
+                                break;
+                            case 'abril':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.abril = true;
+                                    $("#4").prop('disabled', false);
+                                    $("#4").prop('required', true);
+                                } else {
+                                    $("#4").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'mayo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.mayo = true;
+                                    $("#5").prop('disabled', false);
+                                    $("#5").prop('required', true);
+                                } else {
+                                    $("#5").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'junio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.junio = true;
+                                    $("#6").prop('disabled', false);
+                                    $("#6").prop('required', true);
+                                } else {
+                                    $("#6").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'julio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.julio = true;
+                                    $("#7").prop('disabled', false);
+                                    $("#7").prop('required', true);
+                                } else {
+                                    $("#7").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'agosto':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.agosto = true;
+                                    $("#8").prop('disabled', false);
+                                    $("#8").prop('required', true);
+                                } else {
+                                    $("#8").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'septiembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.septiembre = true;
+                                    $("#9").prop('disabled', false);
+                                    $("#9").prop('required', true);
+                                } else {
+                                    $("#9").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'octubre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.octubre = true;
+                                    $("#10").prop('disabled', false);
+                                    $("#10").prop('required', true);
+                                } else {
+                                    $("#10").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'noviembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.noviembre = true;
+                                    $("#11").prop('disabled', false);
+                                    $("#11").prop('required', true);
+                                } else {
+                                    $("#11").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'diciembre':
+
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.diciembre = true;
+                                    $("#12").prop('disabled', false);
+                                    $("#12").prop('required', true);
+                                } else {
+                                    $("#12").prop('disabled', 'disabled');
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    }
+                }
+            } else {
+                for (let i = 1; i <= 11; i++) {
+                    $("#" + i).val(2);
+                    $("#" + i).prop('disabled', 'disabled');
+                }
+                $("#12").val(3);
+                $("#12").prop('disabled', 'disabled');
+                $("#sumMetas").val(25);
+                $("#sumMetas").prop('disabled', 'disabled')
+
+
+            }
+
+
+
         });
     },
     eliminar: function (id) {
@@ -493,6 +845,7 @@ var dao = {
         });
     },
     limpiar: function () {
+        $("#meses-error").text("").removeClass('has-error');
         inputs.forEach(e => {
             $('#' + e + '-error').text("").removeClass('#' + e + '-error');
             if (e != 'beneficiario') {
@@ -546,12 +899,13 @@ var dao = {
     validatCont: function () {
         let e = [];
         for (let i = 1; i <= 12; i++) { 
-            if($('#' + i).val() != ""){
+            if($('#' + i).val() != "" && $('#' + i).val() != 0){
                 let suma = parseInt($('#' + i).val());
                 e.push(suma);
             }
         }
         if (dao.arrEquals(e)) {
+            $('#sumMetas').val(e[0]);
             return e[0];
         } else {
             $('#sumMetas').val("");
@@ -570,9 +924,6 @@ var dao = {
         switch (actividad) {
             case 'Acumulativa':
                 $('#sumMetas').val(dao.validateAcu()!=0?dao.validateAcu():'');
-                break;
-            case 'Continua':
-                $('#sumMetas').val(dao.validatCont()!=0?dao.validatCont():'');
                 break;
             case 'Especial':
                 $('#sumMetas').val(dao.validatEspe()!=0?dao.validatEspe():'');
@@ -724,6 +1075,45 @@ var dao = {
           })
        
     },
+    DesconfirmarMetas: function () {
+        let anio = $('#anio_filter').val();
+        let upp = "";
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+            
+        } else {
+            upp = $('#upp').val();
+        }
+        Swal.fire({
+            icon: 'question',
+            title: '¿Estás de quieres desconfirmar las metas?',
+            showDenyButton: true,
+            confirmButtonText: 'Confirmar',
+            denyButtonText: `Cancelar`,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "GET",
+                    url: '/actividades/desconfirmar-metas/'+upp+"/"+anio,
+                    dataType: "JSON"
+                }).done(function (data) {
+                    const { mensaje } = data;
+                    Swal.fire({
+                        icon: mensaje.icon,
+                        title: mensaje.title,
+                        text: mensaje.text,
+                    });
+                    dao.getData(upp, anio);
+                    dao.revConfirmarMetas(upp, anio);
+                    dao.rCMetasUpp(upp,anio);
+                });
+            } /* else if (result.isDenied) {
+              Swal.fire('Changes are not saved', '', 'info')
+            } */
+          })
+       
+    },
     
 };
 
@@ -762,6 +1152,16 @@ var init = {
         _gen.validate(form, rm);
 
     },
+    validateCont: function (form) {
+        _gen.validate(form, {
+            rules: {
+                nContinua: { required: true }
+            },
+            messages: {
+                nContinua: { required: "Este campo es requerido" }
+            }
+        });
+    },
 };
 
 $(document).ready(function () {
@@ -777,8 +1177,17 @@ $(document).ready(function () {
       });
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        if ($('#actividad').valid()) {
-            dao.editarPutMeta();
+        let flag = dao.validMeses();
+        if ($('#tipo_Ac').val() != 'Continua') {
+            if ($('#actividad').valid() && flag) {
+                dao.editarPutMeta();
+            }
+        } else {
+            if (dao.validatCont() != 0) {
+                if ($('#actividad').valid() && flag) {
+                    dao.editarPutMeta();
+                }
+            }
         }
     });
     dao.getSelect();
@@ -830,9 +1239,24 @@ $(document).ready(function () {
 
     $('#btnSaveFirma').click(function (e) {
         init.validateFirmaE($('#frm_eFirma'));
+
         if ($('#frm_eFirma').valid()) {
             dao.firmarReporte();
         }
 
+    });
+    $('#tipo_Ac').change(() => {
+        for (let i = 1; i <= 12; i++) {
+              $('#' + i).val(0);
+        }
+        dao.getMeses($('#ar').val(), $('#fondo').val());
+        $('#sumMetas').val("");
+        if ($('#tipo_Ac').val() == 'Continua') {
+            $('#continua').modal('show')
+        }
+    });
+    $('#continua').modal({
+        backdrop: 'static',
+        keyboard: false
     });
 });

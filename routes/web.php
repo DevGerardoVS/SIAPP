@@ -58,6 +58,8 @@ Route::get('', function () {
 Route::get('/login', function () {
     if ((!Auth::check())) {
         return view('auth.login');
+    }else{
+        return view('home');
     }
 })->name('login');
 
@@ -79,6 +81,7 @@ Route::get('/home', function () {
 
 Route::get('/Inicio', [App\Http\Controllers\HomeController::class, 'index',])->name('Inicio');
 Route::get('/get-links', [App\Http\Controllers\Administracion\InicioController::class, 'getLinks'])->name('links');
+Route::get('/download-file', [App\Http\Controllers\Administracion\InicioController::class, 'getManual'])->name('manual');
 // Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::controller(RestablecerPass::class)->group(function (){
