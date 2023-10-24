@@ -122,6 +122,7 @@ class ClavePreController extends Controller
             $join->on('v_entidad_ejecutora.clv_upp', '=', 'programacion_presupuesto.upp');
             $join->on('v_entidad_ejecutora.clv_subsecretaria','=','programacion_presupuesto.subsecretaria');
             $join->on('v_entidad_ejecutora.clv_ur','=','programacion_presupuesto.ur');
+            $join->on('v_entidad_ejecutora.ejercicio','=','programacion_presupuesto.ejercicio');
         })
         ->where(function ($claves) use ($rol,$array_where) {
             $claves->where($array_where);
@@ -131,6 +132,7 @@ class ClavePreController extends Controller
                 foreach ($uppAutorizados as $key => $value) {
                     array_push($arrayClaves, $value->clv_upp);
                 }
+                $claves->where('programacion_presupuesto.tipo','RH');
                 $claves->whereIn('programacion_presupuesto.upp',$arrayClaves);
             }
         })
@@ -804,7 +806,7 @@ class ClavePreController extends Controller
                 0 calendarizado,
                 ejercicio
             from techos_financieros tf
-            where tf.tipo = 'RH' and tf.clv_upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at = null) && ".$arrayTechos."
+            where tf.tipo = 'RH' and tf.clv_upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayTechos."
             group by clv_fondo,ejercicio
             union all 
             select 
@@ -814,7 +816,7 @@ class ClavePreController extends Controller
                 sum(total) calendarizado,
                 ejercicio
             from programacion_presupuesto pp
-            where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at = null) && ".$arrayProgramacion."
+            where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayProgramacion."
             group by clv_fondo,ejercicio
         ) tabla
         join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
@@ -941,20 +943,30 @@ class ClavePreController extends Controller
                 ];
                 return response()->json($response,200);
             }else {
-                ProgramacionPresupuesto::where($array_where)->update([
-                    'estado' => 1,
-                ]);
-                cierreEjercicio::where('clv_upp','=',$request->upp ? $request->upp : $uppUsuario)->where('ejercicio','=',$request->ejercicio)
-                ->update([
-                    'estatus'=>'Cerrado',
-                    'updated_user'=>Auth::user()->username
-                ]);
-                $b = array(
-                    "username"=>Auth::user()->username,
-                    "accion"=>'Confirmar',
-                    "modulo"=>'Claves'
-                 );
-                 Controller::bitacora($b);
+                $esConfirmable = ClavesHelper::esConfirmable($upp,$request->ejercicio);
+                if ($esConfirmable) {
+                    ProgramacionPresupuesto::where($array_where)->update([
+                        'estado' => 1,
+                    ]);
+                    cierreEjercicio::where('clv_upp','=',$request->upp ? $request->upp : $uppUsuario)->where('ejercicio','=',$request->ejercicio)
+                    ->update([
+                        'estatus'=>'Cerrado',
+                        'updated_user'=>Auth::user()->username
+                    ]);
+                    $b = array(
+                        "username"=>Auth::user()->username,
+                        "accion"=>'Confirmar',
+                        "modulo"=>'Claves'
+                     );
+                     Controller::bitacora($b);
+                }else {
+                    $response = [
+                        'response'=>'errorAutorizacion',
+                        'rol'=>$rol
+                    ];
+                    return response()->json($response,200);
+                }
+                
             }
         } catch (\Exception $exp) {
             DB::rollBack();
