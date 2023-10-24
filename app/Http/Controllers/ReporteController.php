@@ -41,13 +41,13 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function indexMML()
+    public function indexAnalisisMML()
     {
-        Controller::check_permission('getAdmon');
+        Controller::check_permission('getAnalisis');
         $anios = DB::select('SELECT ejercicio FROM mml_avance_etapas_pp GROUP BY ejercicio ORDER BY ejercicio DESC');
         $anios = $anios == null ? Date("Y") : $anios;
         $dataSet = array();
-        return view('reportes.avanceMIR', [
+        return view('reportes.analisisInformativoMML', [
             'dataSet' => json_encode($dataSet),
             'anios' => $anios,
         ]);
@@ -290,7 +290,7 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function getComprobacion(Request $request)
+    public function getProyectoPresupuestal(Request $request)
     {
         $anio = $request->anio;
         $upp = $request->upp;
@@ -317,7 +317,8 @@ class ReporteController extends Controller
         ->where($array_where)
         ->whereNull("mm.deleted_at")
         ->orderBy("ve.clv_upp", "asc")
-        ->orderBy("ve.clv_ur", "asc");
+        ->orderBy("ve.clv_ur", "asc")
+        ->orderBy("ve.clv_programa", "asc");
 
         if($mir == "0") $data->whereRaw('mm.area_funcional IS NULL'); // Comprobar si el valor en la variable MIR corresponde a los datos sin MIR
         $data = $data->get();
@@ -326,7 +327,7 @@ class ReporteController extends Controller
             $conMir = "-";
             if ($d->area_funcional != null) $conMir = '<p><i class="fa fa-check"></i></p>';
             
-            $ds = array($d->clv_upp, $d->clv_programa, $d->clv_ur, $d->area_funcional_epp, $d->proyecto, $conMir);
+            $ds = array($d->clv_upp, $d->clv_ur, $d->clv_programa, $d->area_funcional_epp, $d->proyecto, $conMir);
             $dataSet[] = $ds;
         }
 

@@ -214,7 +214,7 @@ class CalendarizacionCargaMasivaController extends Controller
                                 $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus', 'Abierto')->where('ejercicio', $ejercicio[$helperejercicio])->count();
 
 
-                                $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio', $ejercicio[$helperejercicio])->where('tipo', $tipoFondo)->where('deleted_at',NULL)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
+                                $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio', $ejercicio[$helperejercicio])->where('tipo', $tipoFondo)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
 
                                 $valueExist = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio', $ejercicio[$helperejercicio])->where('tipo', $tipoFondo)->where('clv_fondo', $arraysplit[2])->count();
 
@@ -311,7 +311,7 @@ class CalendarizacionCargaMasivaController extends Controller
 
                         switch ($k['16']) {
                             case 'UUU':
-                                if ($uppsautorizadas) {
+                                if ($tipousuario == 5 || $uppsautorizadas) {
                                     $countR++;
                                     //buscar en el array de totales 
                                     if (array_key_exists($k['5'] . 'CRH' . $k['24'], $arraypresupuesto) && $k['27'] != '' && $k['5'] . $k['24'] != '') {
@@ -390,7 +390,7 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
                         $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus', 'Abierto')->where('ejercicio', $ejercicio[$helperejercicio])->count();
-
+                    
                         $valueExist = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio', $ejercicio[$helperejercicio])->where('tipo', $tipoFondo)->where('clv_fondo', $arraysplit[2])->count();
 
                         if ($valueExist < 1) {
@@ -399,7 +399,7 @@ class CalendarizacionCargaMasivaController extends Controller
                         }
 
 
-                        $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo', $tipoFondo)->where('ejercicio', $ejercicio[$helperejercicio])->where('deleted_at',NULL)->where('clv_fondo', $arraysplit[2])->value('presupuesto');
+                        $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo', $tipoFondo)->where('ejercicio', $ejercicio[$helperejercicio])->where('clv_fondo', $arraysplit[2])->value('presupuesto');
                         if ($valuepresupuesto != $value) {
 
                             return redirect()->back()->withErrors(['error' => 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2]]);
@@ -441,11 +441,11 @@ class CalendarizacionCargaMasivaController extends Controller
                                             $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
 
                                             if ($valupp > 0) {
-                                                $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '!=', 'UUU')->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
+                                                $deleted = ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
                                             }
-                                            $confirmadas = ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
+                                            $confirmadas = ProgramacionPresupuesto::select('estado')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
                                             if ($confirmadas == 1) {
-                                                return redirect()->back()->withErrors(['error' => 'Hay claves  confirmadas para la upp: '.$u]);
+                                                return redirect()->back()->withErrors(['error' => 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: '.$u]);
             
                                             }
                                             
@@ -477,7 +477,7 @@ class CalendarizacionCargaMasivaController extends Controller
                                         }
                                         $confirmadas = ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
                                         if ($confirmadas == 1) {
-                                            return redirect()->back()->withErrors(['error' => 'Hay claves  confirmadas para la upp: '.$u]);
+                                            return redirect()->back()->withErrors(['error' => 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: '.$u]);
         
                                         }
                                     }
@@ -500,14 +500,22 @@ class CalendarizacionCargaMasivaController extends Controller
                             }
                             //validacion para eliminar registros no confirmados 
                             foreach ($arrayupps as $key => $u) {
+
+                                $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $u)->count();
+                                if ($uppsautorizadas == 0) {
+                                    return redirect()->back()->withErrors(['error' => 'La upp: '.$u.' no esta en la lista de upps autorizadas para carga masiva RH']);
+
+                                }
+
+
                                 $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
 
                                 if ($valupp > 0) {
-                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '!=', 'UUU')->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
+                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '==', 'UUU')->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
                                 }
-                                $confirmadas = ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
+                                $confirmadas = ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario', '==', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
                                 if ($confirmadas == 1) {
-                                    return redirect()->back()->withErrors(['error' => 'Hay claves  confirmadas para la upp: '.$u]);
+                                    return redirect()->back()->withErrors(['error' => 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: '.$u]);
 
                                 }
                             }
