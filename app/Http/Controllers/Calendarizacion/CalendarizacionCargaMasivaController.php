@@ -236,14 +236,13 @@ class CalendarizacionCargaMasivaController extends Controller
 
                             }
 
-                            //validacion para eliminar registros no confirmados 
+                            //validacion para eliminar registros tipo admin
                             foreach ($arrayupps as $u) {
                                 $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->count();
 
                                 if ($valupp > 0) {
                                     $deleted = ProgramacionPresupuesto::where('upp', $u)->where('ejercicio', $ejercicio[0])->forceDelete();
                                 }
-                                $confirmadas = ProgramacionPresupuesto::select()->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
 
                             }
                             $b = array(
