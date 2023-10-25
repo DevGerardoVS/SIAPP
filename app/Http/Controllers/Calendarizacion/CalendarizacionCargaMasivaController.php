@@ -109,9 +109,9 @@ class CalendarizacionCargaMasivaController extends Controller
             'noviembre',
             'diciembre'
         );
-        $request->validate([
+         $request->validate([
             'file' => 'required|mimes:xlsx'
-        ], $message);
+        ], $message); 
 
         ini_set('max_execution_time', 1200);
 
@@ -236,14 +236,22 @@ class CalendarizacionCargaMasivaController extends Controller
 
                             }
 
-                            //validacion para eliminar registros no confirmados 
+                            //validacion para eliminar registros tipo admin
                             foreach ($arrayupps as $u) {
                                 $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->count();
 
-                                if ($valupp > 0) {
-                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('ejercicio', $ejercicio[0])->forceDelete();
+
+                                $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+
+                                if ($confirmadas>0) {
+                                    return redirect()->back()->withErrors(['error' => 'No se pueden añadir más claves por carga masiva a la upp: '.$u.' porque ya tiene claves confirmadas']);
+
                                 }
-                                $confirmadas = ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
+
+                                if ($valupp > 0) {
+                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('ejercicio', $ejercicio[0])->where('estado', 0)->forceDelete();
+                                }
+
 
                             }
                             $b = array(
@@ -443,8 +451,8 @@ class CalendarizacionCargaMasivaController extends Controller
                                             if ($valupp > 0) {
                                                 $deleted = ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
                                             }
-                                            $confirmadas = ProgramacionPresupuesto::select('estado')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
-                                            if ($confirmadas == 1) {
+                                            $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+                                            if ($confirmadas >0) {
                                                 return redirect()->back()->withErrors(['error' => 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: '.$u]);
             
                                             }
@@ -475,8 +483,8 @@ class CalendarizacionCargaMasivaController extends Controller
                                         if ($valupp > 0) {
                                             $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '!=', 'UUU')->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
                                         }
-                                        $confirmadas = ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
-                                        if ($confirmadas == 1) {
+                                        $confirmadas = ProgramacionPresupuesto::select()->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+                                        if ($confirmadas > 0) {
                                             return redirect()->back()->withErrors(['error' => 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: '.$u]);
         
                                         }
@@ -513,8 +521,8 @@ class CalendarizacionCargaMasivaController extends Controller
                                 if ($valupp > 0) {
                                     $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '==', 'UUU')->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
                                 }
-                                $confirmadas = ProgramacionPresupuesto::select('estado')->where('subprograma_presupuestario', '==', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->value('estado');
-                                if ($confirmadas == 1) {
+                                $confirmadas = ProgramacionPresupuesto::select()->where('subprograma_presupuestario', '==', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+                                if ($confirmadas >0) {
                                     return redirect()->back()->withErrors(['error' => 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: '.$u]);
 
                                 }

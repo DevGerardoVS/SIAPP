@@ -303,6 +303,8 @@ class MetasController extends Controller
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
 			} else {
+				Log::debug('sub'.$areaAux[8]);
+				Log::debug('anio'.$check['anio']);
 				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('ejercicio',  $check['anio'])->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
 			}
 			$tAct = MetasController::getTcalendar($entidadAux[0]);
@@ -807,10 +809,24 @@ class MetasController extends Controller
 	}
 	public function proyExcel()
 	{
+		ini_set('max_execution_time', 5000);
+        ini_set('memory_limit', '1024M');
+		Schema::create('pptemp', function (Blueprint $table) {
+			$table->temporary();
+			$table->increments('id');
+			$table->string('clv_upp', 25)->nullable(false);
+			$table->string('entidad_ejecutora', 55)->nullable(false);
+			$table->string('area_funcional', 55)->nullable(false);
+			$table->string('clv_actadmon', 55)->nullable(false);
+			$table->string('mir_act', 55)->nullable(false);
+			$table->string('actividad', 55)->nullable(false);
+			$table->string('fondo', 55)->nullable(false);
+		});
 		Controller::check_permission('getMetas');
 		/*Si no coloco estas lineas Falla*/
 		ob_end_clean();
 		ob_start();
+
 		/*Si no coloco estas lineas Falla*/
 		$b = array(
 			"username" => Auth::user()->username,
@@ -1516,8 +1532,8 @@ class MetasController extends Controller
 				->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 				->distinct()
 				->get();
-			if ($activs) {
-				$pp[] = json_encode($activs[0]);
+			if (count($activs)) {
+				$pp[] = json_encode($activs);
 			}
 		}
 		$activsPP = DB::table('programacion_presupuesto')
