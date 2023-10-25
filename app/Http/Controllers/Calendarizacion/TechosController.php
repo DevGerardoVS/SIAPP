@@ -147,6 +147,24 @@ class TechosController extends Controller
         
         $request->validate($validaForm);
 
+        //VERIFICAR QUE LA UPP ESTE VALIDA Y PODER AGREGAR UN FONDO RH
+        $verifica_upp_autorizada = DB::table('uppautorizadascpnomina')
+        ->where('clv_upp','=',$upp)
+        ->get();
+
+        if(count($verifica_upp_autorizada) == 0){
+            foreach($data as $d){
+                log::debug($d[0]);
+                if($d[0] == 'RH') {
+                    return [
+                        'status' => 'No autorizado',
+                        'error' => "UPP no autorizada",
+                        'etiqueta' => 'La UPP no puede añadir fondos de tipo RH'
+                    ];
+                }
+            }
+        }
+
         //Verifica que no se dupliquen los fondos en el mismo techo financiero
         // y envia el array con las keys del input duplicado
         $repeticion = $data;
