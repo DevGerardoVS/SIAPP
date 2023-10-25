@@ -334,6 +334,7 @@ var dao = {
             if (id != '' && val.clv_upp == id) {
              par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,true,true));
              document.getElementById('upp').innerHTML = data[i].clv_upp;
+             dao.alertaAvtividades(id,ejercicio);
             }else{
              par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,false,false));
             }
@@ -911,6 +912,21 @@ var dao = {
       });
     });
   },
+  alertaAvtividades : function (upp,ejercicio) {
+    $.ajax({
+      type:'get',
+      url: '/alerta-actividades/'+ upp + '/' + ejercicio,
+    }).done(function (data) {
+      console.log('alerta de actividades', data);
+      if (data.estatus == 1) {
+        Swal.fire(
+          'Advertencia!',
+        "Tienes "+data.metas+ " metas confirmadas para está upp, se van a desconfirmar si agregás o editas las claves.",
+          'warning'
+        );
+      }
+    });
+  }
 
 };
 var init = {
@@ -1015,6 +1031,7 @@ $(document).ready(function(){
     let ejercicio = document.getElementById('anio').value;
 		dao.getUninadResponsableByUpp(val,ejercicio,'');
     dao.getObras(val);
+    dao.alertaAvtividades(val,ejercicio);
 	});
 	$('#sel_unidad_res').change(function(e){
 		e.preventDefault();
