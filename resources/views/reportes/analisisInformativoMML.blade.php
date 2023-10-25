@@ -11,7 +11,8 @@
         </header>
 
         <form action="{{route('get_avance_mir')}}" id="buscarFormA" name="analisis" method="post"></form>
-        <form action="{{route('get_proyecto_presupuestal')}}" id="buscarFormB" name="analisis" method="post"></form>
+        <form action="{{route('get_mir')}}" id="buscarFormB" name="analisis" method="post"></form>
+        <form action="{{route('get_proyecto_presupuestal')}}" id="buscarFormC" name="analisis" method="post"></form>
 
         @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
@@ -73,6 +74,9 @@
                 <button class="nav-link textoMorado active " role="tab" type="button" id="avanceMir_tab" data-bs-toggle="tab" data-bs-target="#avanceMir" aria-controls="avanceMir" aria-selected="true">Avance MIR</button>
             </li>
             <li class="nav-item" >
+                <button class="nav-link textoMorado" role="tab" type="button" id="mir_tab" data-bs-toggle="tab" data-bs-target="#mir" aria-controls="mir" aria-selected="false">MIR</button>
+            </li>
+            <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="proyectoPresupuestal_tab" data-bs-toggle="tab" data-bs-target="#proyectoPresupuestal" aria-controls="proyectoPresupuestal" aria-selected="false">Proyecto presupuestal MIR</button>
             </li>
         </ul>
@@ -100,14 +104,34 @@
                     </div>
                 </div>
             </div>
-            {{-- Comprobación B--}}
+            {{-- MIR B--}}
+            <div class="tab-pane" id="mir" role="tabpanel" aria-labelledby="mir_tab" >    
+                <div class="row justify-content-center">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body table-responsive">
+                                <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle" id="catalogoB" style="width:100%; font-size: 14px;" data-left="1">
+                                    <thead class="colorMorado">
+                                        <tr>
+                                            <th class="exportable align-middle" style="text-align: center !important">Clave UPP</th>
+                                            <th class="exportable align-middle" style="text-align: center !important">UPP</th>
+                                            <th class="exportable align-middle" style="text-align: center !important">estatus</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- Comprobación C--}}
             <div class="tab-pane" id="proyectoPresupuestal" role="tabpanel" aria-labelledby="proyectoPresupuestal_tab" > 
                 <div class="row mx-auto">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body table-responsive">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoB" style="width:100%; font-size: 14px;" data-left="4">
+                                    id="catalogoC" style="width:100%; font-size: 14px;" data-left="4">
                                     <thead  class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important;">UPP</th>
@@ -186,8 +210,27 @@
                         var dt = $('#catalogoA');
                         tabla="#catalogoA";
                         letter="A";     
+                        $('select option:contains("Abierto")').text('Validado');
+                        $('select option:contains("Cerrado")').text('Pendiente');
                         $('.mostrar').addClass('d-none');
                         $('.mostrarEstatus').removeClass('d-none');
+                        $("#estatus_filter").val("");
+                        $("#upp_filter").val("");
+                        $("#programa_filter").val("");
+                        $("#mir_filter").val("");
+                        dt.DataTable().clear().destroy();
+                        getData(tabla,letter);
+                        break;
+                    case "mir_tab":
+                        var dt = $('#catalogoB');
+                        tabla="#catalogoB";
+                        letter="B";     
+                        $('select option:contains("Validado")').text('Abierto');
+                        $('select option:contains("Pendiente")').text('Cerrado');
+                        $('.mostrar').addClass('d-none');
+                        $('.mostrarEstatus').removeClass('d-none');
+                        $('.mostrarEstatus')
+                        $("#estatus_filter").val("");
                         $("#upp_filter").val("");
                         $("#programa_filter").val("");
                         $("#mir_filter").val("");
@@ -195,11 +238,12 @@
                         getData(tabla,letter);
                         break;
                     case "proyectoPresupuestal_tab":
-                        var dt = $('#catalogoB');
-                        tabla="#catalogoB";
-                        letter="B";
+                        var dt = $('#catalogoC');
+                        tabla="#catalogoC";
+                        letter="C";
                         $('.mostrarEstatus').addClass('d-none');
                         $('.mostrar').removeClass('d-none');
+                        $("#estatus_filter").val("");
                         $("#upp_filter").val("")
                         $("#estatus_filter").val("")
                         dt.DataTable().clear().destroy();
