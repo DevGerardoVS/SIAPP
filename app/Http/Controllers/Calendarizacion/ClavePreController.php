@@ -122,6 +122,7 @@ class ClavePreController extends Controller
             $join->on('v_entidad_ejecutora.clv_upp', '=', 'programacion_presupuesto.upp');
             $join->on('v_entidad_ejecutora.clv_subsecretaria','=','programacion_presupuesto.subsecretaria');
             $join->on('v_entidad_ejecutora.clv_ur','=','programacion_presupuesto.ur');
+            $join->on('v_entidad_ejecutora.ejercicio','=','programacion_presupuesto.ejercicio');
         })
         ->where(function ($claves) use ($rol,$array_where) {
             $claves->where($array_where);
@@ -131,6 +132,7 @@ class ClavePreController extends Controller
                 foreach ($uppAutorizados as $key => $value) {
                     array_push($arrayClaves, $value->clv_upp);
                 }
+                $claves->where('programacion_presupuesto.tipo','RH');
                 $claves->whereIn('programacion_presupuesto.upp',$arrayClaves);
             }
         })
@@ -773,8 +775,8 @@ class ClavePreController extends Controller
         $arrayProgramacion = "pp.deleted_at IS NULL && pp.ejercicio = ".$anio;
         
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
-            $arrayTechos = $arrayTechos."&& tf.clv_upp = ".$uppUsuario;
-            $arrayProgramacion = $arrayProgramacion."&& pp.upp = ".$uppUsuario;
+            $arrayTechos = "".$arrayTechos."&& tf.clv_upp = '".strval($uppUsuario)."'";
+            $arrayProgramacion = "".$arrayProgramacion."&& pp.upp = '".strval($uppUsuario)."'";
             $upp =  DB::table('catalogo')
             ->SELECT('clave','descripcion')
             ->where('grupo_id', 6)
@@ -782,8 +784,8 @@ class ClavePreController extends Controller
             ->first();
         }else {
             if ($clvUpp != '') {
-                $arrayTechos = $arrayTechos."&& tf.clv_upp = ".$clvUpp;
-                $arrayProgramacion = $arrayProgramacion."&& pp.upp = ".$clvUpp;
+                $arrayTechos = "".$arrayTechos."&& tf.clv_upp = '".strval($clvUpp)."'";
+                $arrayProgramacion = "".$arrayProgramacion."&& pp.upp = '".strval($clvUpp)."'";
             }
         } 
         if ($rol == 2) {
@@ -804,7 +806,7 @@ class ClavePreController extends Controller
                 0 calendarizado,
                 ejercicio
             from techos_financieros tf
-            where tf.tipo = 'RH' and tf.clv_upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at = null) && ".$arrayTechos."
+            where tf.tipo = 'RH' and tf.clv_upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayTechos."
             group by clv_fondo,ejercicio
             union all 
             select 
@@ -814,7 +816,7 @@ class ClavePreController extends Controller
                 sum(total) calendarizado,
                 ejercicio
             from programacion_presupuesto pp
-            where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at = null) && ".$arrayProgramacion."
+            where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayProgramacion."
             group by clv_fondo,ejercicio
         ) tabla
         join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
@@ -921,7 +923,7 @@ class ClavePreController extends Controller
         $rol = 0;
         $uppUsuario = Auth::user()->clv_upp;
         $grupo =  Auth::user()->id_grupo;
-        if ($grupo == 5) {
+        if ($grupo > 1) {
             $rol =2;
         }
         $array_where = [];
@@ -929,30 +931,42 @@ class ClavePreController extends Controller
         array_push($array_where, ['programacion_presupuesto.deleted_at', '=', null]);
         array_push($array_where, ['programacion_presupuesto.ejercicio', '=', $request->ejercicio]);
         try {
-            $ejer = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE('cierre_ejercicio_claves.estatus','=','Abierto')->where('clv_upp','=' , $request->upp ? $request->upp : $uppUsuario)->first();
-            $ejercicio = $ejer && $ejer != null ? $ejer->ejercicio : '';
+            $upp = $request->upp ? $request->upp : $uppUsuario;
+            $ejer = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio','estatus')->where('clv_upp','=' ,$upp)->where('ejercicio','=' ,$request->ejercicio)->first();
+            $ejercicio = $ejer && $ejer != null ? $ejer->estatus : '';
             $estado = DB::table('programacion_presupuesto')->SELECT('estado')->WHERE($array_where)->first();
-            if ($request->ejercicio != $ejercicio || $estado && $estado->estado != 0) {
+            if ($ejercicio !='Abierto' && $rol != 0 || $estado && $estado->estado != 0 && $rol != 0) {
+
                 $response = [
                     'response'=>'errorAutorizacion',
                     'rol'=>$rol
                 ];
                 return response()->json($response,200);
             }else {
-                ProgramacionPresupuesto::where($array_where)->update([
-                    'estado' => 1,
-                ]);
-                cierreEjercicio::where('clv_upp','=',$request->upp ? $request->upp : $uppUsuario)->where('ejercicio','=',$request->ejercicio)
-                ->update([
-                    'estatus'=>'Cerrado',
-                    'updated_user'=>Auth::user()->username
-                ]);
-                $b = array(
-                    "username"=>Auth::user()->username,
-                    "accion"=>'Confirmar',
-                    "modulo"=>'Claves'
-                 );
-                 Controller::bitacora($b);
+                $esConfirmable = ClavesHelper::esConfirmable($upp,$request->ejercicio);
+                if ($esConfirmable) {
+                    ProgramacionPresupuesto::where($array_where)->update([
+                        'estado' => 1,
+                    ]);
+                    cierreEjercicio::where('clv_upp','=',$request->upp ? $request->upp : $uppUsuario)->where('ejercicio','=',$request->ejercicio)
+                    ->update([
+                        'estatus'=>'Cerrado',
+                        'updated_user'=>Auth::user()->username
+                    ]);
+                    $b = array(
+                        "username"=>Auth::user()->username,
+                        "accion"=>'Confirmar',
+                        "modulo"=>'Claves'
+                     );
+                     Controller::bitacora($b);
+                }else {
+                    $response = [
+                        'response'=>'errorAutorizacion',
+                        'rol'=>$rol
+                    ];
+                    return response()->json($response,200);
+                }
+                
             }
         } catch (\Exception $exp) {
             DB::rollBack();

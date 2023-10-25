@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\ProgramacionPresupuesto;
 use App\Models\PosicionPresupuestaria;
 use App\Models\Fondos;
+use App\Models\uppautorizadascpnomina;
 use App\Models\v_epp;
 use App\Models\Obra;
 use App\Models\RelEconomicaAdministrativa;
@@ -32,6 +33,8 @@ class ClavePresupuestaria implements ToModel, WithHeadingRow, WithValidation, Sk
 
     public function prepareForValidation($row, $index)
     {
+
+
         ///validaciones de catalogo
         $valcat = Catalogo::select()
             ->where('grupo_id', '6')
@@ -109,9 +112,18 @@ class ClavePresupuestaria implements ToModel, WithHeadingRow, WithValidation, Sk
 
 
         $arraypos = str_split($row['idpartida'], 1);
+        
+        $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $row['upp'])->count();
+
         if (count($arraypos) >= 4) {
             if ($row['spr'] == 'UUU') {
-                $row['tipo'] = 'RH';
+                if($uppsautorizadas){
+                    $row['tipo'] = 'RH';
+                }
+                else{
+                    $row['tipo'] = 'Operativo';
+                }
+                
                 $row['obra'] == '000000' ? $row['obra'] : $row['obra'] = NULL;
 
 
@@ -260,8 +272,8 @@ class ClavePresupuestaria implements ToModel, WithHeadingRow, WithValidation, Sk
         }
         //validacion de total
         $suma = $row['enero'] + $row['febrero'] + $row['marzo'] + $row['abril'] + $row['mayo'] + $row['junio'] + $row['julio'] + $row['agosto'] + $row['septiembre'] + $row['octubre'] + $row['noviembre'] + $row['diciembre'];
-        if ($row['total'] != $suma) {
-            $row['total'] = NULL;
+        if ($row['total'] !== $suma) {
+            $row['total'] = 'e';
         }
 
         //validacion de parte clave geografica
@@ -284,11 +296,10 @@ class ClavePresupuestaria implements ToModel, WithHeadingRow, WithValidation, Sk
 
         }
         $row['user'] = 'CargaMasiva' . Auth::user()->username;
-        /*         //validacion si la upp tiene firmados claves presupuestales
-                $valupp= ProgramacionPresupuesto::select('estado')->where('upp', $row['upp'])->where('estado', 1)->where('ejercicio',$row['ano'])->value('estado');
-                $valupp==1 ? $row['upp']='0' : $row['upp'];  */
 
-        return $row;
+/*         Auth::user()->id_grupo == 1? $row['estado'] = 1 : $row['estado']=0;
+ */
+                return $row;
 
 
     }
@@ -344,7 +355,7 @@ class ClavePresupuestaria implements ToModel, WithHeadingRow, WithValidation, Sk
             'noviembre' => $row['noviembre'],
             'diciembre' => $row['diciembre'],
             'total' => $row['total'],
-            'estado' => 1,
+            'estado' => 0,
             'tipo' => $row['tipo'],
             'updated_at' => null,
             'created_user' => $row['user']
@@ -384,7 +395,7 @@ class ClavePresupuestaria implements ToModel, WithHeadingRow, WithValidation, Sk
                     Rule::exists('posicion_presupuestaria', 'clv_tipo_gasto')
                 ],
             '*.ur' => ['required'],
-            '*.total' => ['required', 'integer'],
+            '*.total' => [Rule::notIn(['e'])],
             '*.enero' => ['required', 'integer'],
             '*.febrero' => ['required', 'integer'],
             '*.marzo' => ['required', 'integer'],
@@ -412,7 +423,7 @@ class ClavePresupuestaria implements ToModel, WithHeadingRow, WithValidation, Sk
             '*.ef' => 'La combinacion de las claves de la celda B a E es invalida',
             '*.upp.required' => 'El valor de upp asignado no es valido',
             '*.upp.not_in' => 'No se pueden registrar las claves porque ya tiene claves firmadas ',
-            '*.total' => 'El total no coincide con los meses',
+            '*.total.not_in' => 'El total no coincide con los meses',
             '*.subsecretaria' => 'La clave de subsecretaria introducida no es valida',
             '*.finalidad' => 'La clave de finalidad introducida no es valida',
             '*.funcion' => 'La clave de funcion introducida no es valida',

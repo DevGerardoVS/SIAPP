@@ -118,6 +118,6 @@ class EppController extends Controller
         Controller::bitacora($b);
         $anio = $request->anio;
         $nombre = "Lista de EPP $anio.xlsx";
-        return Excel::download(new EppExport($anio), $nombre, \Maatwebsite\Excel\Excel::XLSX);
+        return Excel::download(new EppExport($request), $nombre, \Maatwebsite\Excel\Excel::XLSX);
     }
 }
