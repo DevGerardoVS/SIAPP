@@ -274,6 +274,7 @@ class ReporteController extends Controller
             })
             ->select("ae.clv_upp", "ve.upp", "ae.clv_pp", "ve.programa", "ae.estatus", "ae.ejercicio")
             ->where("ae.ejercicio", $anio)
+            ->whereNull("ae.deleted_at")
             ->where($array_where)
             ->groupBy("ve.clv_upp", "ve.clv_programa")
             ->orderBy("ae.estatus","desc")
@@ -283,6 +284,39 @@ class ReporteController extends Controller
         foreach ($data as $d) {
             $estado = $d->estatus == 3 ? "Validado" : "Pendiente";
             $ds = array($d->clv_upp, $d->upp, $d->clv_pp, $d->programa, $estado);
+            $dataSet[] = $ds;
+        }
+        return response()->json([
+            "dataSet" => $dataSet,
+        ]);
+    }
+
+    public function getMIR(Request $request)
+    {
+        $anio = $request->anio;
+        $upp = $request->upp;
+        $estatus = $request->estatus == "3" ? "Abierto" : ($request->estatus == "0" ? "Cerrado" : ""); 
+        $array_where = [];
+        
+        if($upp != null && $upp != "null" && $upp != "") array_push($array_where, ['ce.clv_upp', $upp]);
+        if($estatus != null && $estatus != "null" && $estatus != "") array_push($array_where, ['ce.estatus', $estatus]);
+
+        $dataSet = array();
+        $data = DB::table("mml_cierre_ejercicio as ce")
+            ->join("v_epp as ve", function ($join) {
+                $join->on("ce.clv_upp", "=", "ve.clv_upp");
+            })
+            ->select("ce.clv_upp", "ve.upp","ce.estatus", "ce.ejercicio")
+            ->where("ce.ejercicio", $anio)
+            ->whereNull("ce.deleted_at")
+            ->where($array_where)
+            ->groupBy("ve.clv_upp")
+            ->orderBy("ce.estatus","desc")
+            ->orderBy("ve.clv_upp","asc")
+            ->get();
+
+        foreach ($data as $d) {
+            $ds = array($d->clv_upp, $d->upp, $d->estatus);
             $dataSet[] = $ds;
         }
         return response()->json([

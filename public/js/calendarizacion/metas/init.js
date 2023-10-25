@@ -701,9 +701,10 @@ var dao = {
             url: '/calendarizacion/fondos/' + area + '/' + enti,
             dataType: "JSON"
         }).done(function (data) {
-            const { fondos, activids ,tAct} = data;
+            const { fondos, activids, tAct } = data;
+            console.log("activids",activids);
             let flag = false;
-            if (activids[0].id == 'ot' && mir == 1) {
+            if (activids[0]?.id == 'ot' && mir == 1) {
                 flag = true;
             }
             if (mir == 0) {

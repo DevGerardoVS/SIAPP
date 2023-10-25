@@ -303,6 +303,8 @@ class MetasController extends Controller
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
 			} else {
+				Log::debug('sub'.$areaAux[8]);
+				Log::debug('anio'.$check['anio']);
 				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('ejercicio',  $check['anio'])->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
 			}
 			$tAct = MetasController::getTcalendar($entidadAux[0]);
