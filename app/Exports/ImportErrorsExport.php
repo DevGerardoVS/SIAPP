@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -21,7 +22,6 @@ class ImportErrorsExport implements  FromCollection, ShouldAutoSize, WithHeading
         $dataSet = array();
       $arrayErrores= $this->array;
         foreach ($arrayErrores as $err) {
-
 
             $ds =array($err);
             $dataSet[] = $ds;
