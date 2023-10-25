@@ -306,7 +306,7 @@ class ConfiguracionesController extends Controller
     public static function updateUpps(Request $request){
         Controller::check_permission('updateUpps');
         try {
-            $dataSet = "";
+            $response = "";
             $array_data_act = [];
             $data_old_act = [];
 
@@ -314,16 +314,12 @@ class ConfiguracionesController extends Controller
 
             if(!empty($tipo_actividad)){
 
-                //validación de casillas
-                if($tipo_actividad->continua != "" || $tipo_actividad->acumulativa || $tipo_actividad->especial)
-            
-
                 $data_old_act = array(
                     'id' => $tipo_actividad->id,
                     'clv_upp' => $tipo_actividad->clv_upp,
-                    'Continua' => $tipo_actividad->continua,
-                    'Acumulativa' => $tipo_actividad->acumulativa,
-                    'Especial' => $tipo_actividad->especial,
+                    'Continua' => $tipo_actividad->Continua,
+                    'Acumulativa' => $tipo_actividad->Acumulativa,
+                    'Especial' => $tipo_actividad->Especial,
                     'created_at' => $tipo_actividad->usuario_creacion,
                     'updated_user' => $tipo_actividad->usuario_modificacion,
                     'created_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->created_at)),
@@ -335,11 +331,12 @@ class ConfiguracionesController extends Controller
 
                 switch($request->field){
                     case "continua":
-                        if($tipo_actividad->acumulativa == 0 && $tipo_actividad->especial == 0 && $request->value == 0){
-                            $dataSet = "error";
+                        if($tipo_actividad->Acumulativa == 0 && $tipo_actividad->Especial == 0 && $request->value == 0){
+                            $response = "error";
 
                             return response()->json([
-                                "dataSet" => $dataSet,
+                                "response" => "error",
+                                "dataSet" => $tipo_actividad,
                                 "catalogo" => "Configuraciones",
                             ]);
                         }
@@ -347,22 +344,22 @@ class ConfiguracionesController extends Controller
                         $tipo_actividad->Continua = $request->value;
                         break;
                     case "acumulativa":
-                        if($tipo_actividad->continua == 0 && $tipo_actividad->especial == 0 && $request->value == 0){
-                            $dataSet = "error";
+                        if($tipo_actividad->Continua == 0 && $tipo_actividad->Especial == 0 && $request->value == 0){
                             
                             return response()->json([
-                                "dataSet" => $dataSet,
+                                "response" => "error",
+                                "dataSet" => $tipo_actividad,
                                 "catalogo" => "Configuraciones",
                             ]);
                         }
                         $tipo_actividad->Acumulativa = $request->value;
                         break;
                     case "especial":
-                        if($tipo_actividad->acumulativa == 0 && $tipo_actividad->continua == 0 && $request->value == 0){
-                            $dataSet = "error";
+                        if($tipo_actividad->Acumulativa == 0 && $tipo_actividad->Continua == 0 && $request->value == 0){
                             
                             return response()->json([
-                                "dataSet" => $dataSet,
+                                "response" => "error",
+                                "dataSet" => $tipo_actividad,
                                 "catalogo" => "Configuraciones",
                             ]);
                         }
@@ -380,10 +377,10 @@ class ConfiguracionesController extends Controller
 
             $data_new_act = array(
                 'id' => $tipo_actividad->id,
-                'clv_upp' => $tipo_actividad->descripcion,
-                'Continua' => $tipo_actividad,
-                'Acumulativa' => $tipo_actividad,
-                'Especial' => $tipo_actividad->estatus,
+                'clv_upp' => $tipo_actividad->clv_upp,
+                'Continua' => $tipo_actividad->Continua,
+                'Acumulativa' => $tipo_actividad->Acumulativa,
+                'Especial' => $tipo_actividad->Especial,
                 'created_at' => $tipo_actividad->created_at,
                 'updated_user' => $tipo_actividad->updated_user,
                 'created_at'=>date("d/m/Y H:i:s", strtotime($tipo_actividad->created_at)),
@@ -399,7 +396,7 @@ class ConfiguracionesController extends Controller
             BitacoraHelper::saveBitacora(BitacoraHelper::getIp(),"tipo_actividad_upp", "Edicion",json_encode($array_data_act));
             
             return response()->json([
-                "dataSet" => $dataSet,
+                "dataSet" => $response,
                 "catalogo" => "Configuraciones",
             ]);
 
