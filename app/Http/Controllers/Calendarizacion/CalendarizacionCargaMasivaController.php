@@ -590,90 +590,90 @@ class CalendarizacionCargaMasivaController extends Controller
                     ->where('clave', $k['5'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['5'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' El valor de upp asignado no es valido');
+                $valcat >= 1 ? $k['5'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor de upp asignado no es valido');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '7')
                     ->where('clave', $k['6'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['6'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de subsecretaria introducida no es valida');
+                $valcat >= 1 ? $k['6'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de subsecretaria introducida no es valida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '8')
                     ->where('clave', $k['7'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['7'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' El campo ur no existe o la combinacion de ur upp y secretaria es invalida');
+                $valcat >= 1 ? $k['7'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El campo ur no existe o la combinacion de ur upp y secretaria es invalida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '9')
                     ->where('clave', $k['8'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['8'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de finalidad introducida no es valida');
+                $valcat >= 1 ? $k['8'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de finalidad introducida no es valida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '10')
                     ->where('clave', $k['9'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['9'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de funcion introducida no es valida');
+                $valcat >= 1 ? $k['9'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de funcion introducida no es valida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '11')
                     ->where('clave', $k['10'])
                     ->count();
-                $valcat >= 1 ? $k['10'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de subfuncion introducida no es valida');
+                $valcat >= 1 ? $k['10'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de subfuncion introducida no es valida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '12')
                     ->where('clave', $k['11'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['11'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de eje es invalida');
+                $valcat >= 1 ? $k['11'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de eje es invalida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '13')
                     ->where('clave', $k['12'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['12'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de pt es invalida');
+                $valcat >= 1 ? $k['12'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de pt es invalida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '14')
                     ->where('clave', $k['13'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['13'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de ps es invalida');
+                $valcat >= 1 ? $k['13'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de ps es invalida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '15')
                     ->where('clave', $k['14'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['14'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de sprconac es invalida');
+                $valcat >= 1 ? $k['14'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de sprconac es invalida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '16')
                     ->where('clave', $k['15'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['15'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de prg es invalida');
+                $valcat >= 1 ? $k['15'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de prg es invalida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '17')
                     ->where('clave', $k['16'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['16'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de spr es invalida');
+                $valcat >= 1 ? $k['16'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de spr es invalida');
 
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '18')
                     ->where('clave', $k['17'])
                     ->where('ejercicio', $añoclave)
                     ->count();
-                $valcat >= 1 ? $k['17'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de py es invalida');
+                $valcat >= 1 ? $k['17'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de py es invalida');
 
 
 
@@ -690,7 +690,7 @@ class CalendarizacionCargaMasivaController extends Controller
                             $tipoclave = 'Operativo';
                         }
 
-                        $k['26'] == '000000' ? $k['26'] : array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La obra es invalida');
+                        $k['26'] == '000000' ? $k['26'] : array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La obra es invalida');
 
 
 
@@ -703,7 +703,7 @@ class CalendarizacionCargaMasivaController extends Controller
                                 ->where('clv_tipo_gasto', $k['19'])
                                 ->count();
                             if ($valpos < 1) {
-                                array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de posición presupuestaria es invalida');
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de posición presupuestaria es invalida');
                             }
                         }
 
@@ -722,18 +722,18 @@ class CalendarizacionCargaMasivaController extends Controller
                                 ->where('clv_tipo_gasto', $k['19'])
                                 ->count();
                             if ($valpos < 1) {
-                                array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de posición presupuestaria es invalida');
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de posición presupuestaria es invalida');
                             }
 
                         } else {
                             //la obra no existe
-                            array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La obra no existe');
+                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La obra no existe');
                         }
 
 
                     }
                 } else {
-                    array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de posición presupuestaria es invalida');
+                    array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de posición presupuestaria es invalida');
 
                 }
 
@@ -748,7 +748,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     ->where('clasificacion_economica', $k['18'] . $k['19'])
                     ->count();
                 if ($valrelEco < 1) {
-                    array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clasificacion economica introducida es invalida para esta clave administrativa');
+                    array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clasificacion economica introducida es invalida para esta clave administrativa');
                 }
 
                 //validacion de fondos
@@ -760,7 +760,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     ->where('clv_capital', $k['25'])
                     ->count();
                 if ($valfondo < 1) {
-                    array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La combinacion de las claves de la celda V a Z es invalida');
+                    array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La combinacion de las claves de la celda V a Z es invalida');
                 }
 
 
@@ -777,7 +777,7 @@ class CalendarizacionCargaMasivaController extends Controller
                         ->where('ejercicio', $añoclave)
                         ->count();
                     if ($valadm < 1) {
-                        array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La clave de admonac es invalida');
+                        array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de admonac es invalida');
 
                     }
                     //validacion de presupuestable
@@ -804,7 +804,7 @@ class CalendarizacionCargaMasivaController extends Controller
                         ->where('presupuestable', 1)
                         ->count();
                     if ($valpresup < 1) {
-                        array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' El programa seleccionado no es presupuestable, verifica las columnas A, F a R y el año.');
+                        array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El programa seleccionado no es presupuestable, verifica las columnas A, F a R y el año.');
 
                     }
                 }
@@ -824,7 +824,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     ->where('ejercicio', $añoclave)
                     ->get();
                 if (count($valcomb) < 1) {
-                    array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La combinacion de claves de la celda I a la R es invalida');
+                    array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La combinacion de claves de la celda I a la R es invalida');
 
                 }
 
@@ -836,14 +836,14 @@ class CalendarizacionCargaMasivaController extends Controller
                     ->where('ejercicio', $añoclave)
                     ->count();
                 if ($valv_eje < 1) {
-                    array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' la combinacion de ur upp y secretaria es invalida');
+                    array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': la combinacion de ur upp y secretaria es invalida');
 
 
                 }
                 //validacion de total
                 $suma = $k['28'] + $k['29'] + $k['30'] + $k['31'] + $k['32'] + $k['33'] + $k['34'] + $k['35'] + $k['36'] + $k['37'] + $k['38'] + $k['39'];
                 if ($k['27'] != $suma) {
-                    array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' El total no coincide con los meses');
+                    array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El total no coincide con los meses');
 
 
                 }
@@ -854,7 +854,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     ->where('clv_region', $k['2'])
                     ->where('clv_municipio', $k['3'])
                     ->where('clv_localidad', $k['4'])->count();
-                $valgeo < 1 ? array_push($arrayErrores, 'Error en  la fila: ' . $currentrow . ' La combinacion de las claves de la celda B a E es invalida') : null;
+                $valgeo < 1 ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La combinacion de las claves de la celda B a E es invalida') : null;
 
 
 
