@@ -632,6 +632,7 @@ class MetasController extends Controller
 	{
 		Controller::check_permission('deleteMetas');
 		$meta = Metas::where('id', $request->id)->firstOrFail();
+		$meta->estatus = 0;
 		$meta->deleted_user = Auth::user()->username;
 		$meta->save();
 		$mDelete = Metas::where('id', $request->id)->delete();
@@ -1081,7 +1082,7 @@ class MetasController extends Controller
 				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "title" => 'Metas confirmadas', "estado" => false, "url" => '/calendarizacion/proyecto'];
 			}
 		} else {
-			return ["status" => false, "mensaje" => 'La captura de metas esta cerrada', "title" => 'Metas cerradas', "estado" => false, "url" => '/calendarizacion/proyecto'];
+			return ["status" => false, "mensaje" => 'Las metas para la UPP: '.$upp.' ya estan confirmadas', "title" => 'La captura de metas esta cerrada', "estado" => false, "url" => '/calendarizacion/proyecto'];
 		}
 	}
 
