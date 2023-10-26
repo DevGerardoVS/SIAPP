@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Calendarizacion;
 use App\Imports\utils\FunFormats;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -72,6 +71,7 @@ class MetasController extends Controller
 			$area = str_split($key->area);
 			$entidad = str_split($key->entidad);
 			$i = array(
+				$key->id,
 				$area[0],
 				$area[1],
 				$area[2],
@@ -623,7 +623,7 @@ class MetasController extends Controller
 			$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
 			return response()->json($res, 200);
 		} else {
-			$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
+			$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
 			return response()->json($res, 200);
 		}
 
@@ -652,7 +652,7 @@ class MetasController extends Controller
 			Controller::bitacora($b);
 			return response()->json($res, 200);
 		} else {
-			$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
+			$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
 			return response()->json($res, 200);
 		}
 	}
@@ -793,21 +793,16 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return Excel::download(new MetasExport($upp, $anio), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
-	public function exportExcelErr($err)
+	public function exportExcelErr($upp, $anio)	
 	{
 		/*Si no coloco estas lineas Falla*/
 		ob_end_clean();
 		ob_start();
 		/*Si no coloco estas lineas Falla*/
-		$b = array(
-			"username" => Auth::user()->username,
-			"accion" => 'Descargar Metas Excel',
-			"modulo" => 'Metas'
-		);
-		Controller::bitacora($b);
-		return Excel::download(new MetasExportErr($err), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+
+		return Excel::download(new MetasExportErr($upp,$anio), 'Metas con diferencias.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
-	public function proyExcel()
+	public function proyExcel($upp)
 	{
 		ini_set('max_execution_time', 5000);
         ini_set('memory_limit', '1024M');
@@ -834,7 +829,7 @@ class MetasController extends Controller
 			"modulo" => 'Metas'
 		);
 		Controller::bitacora($b);
-		return Excel::download(new MetasCargaM(), 'CargaMasiva.xlsx');
+		return Excel::download(new MetasCargaM($upp), 'CargaMasiva.xlsx');
 	}
 	public function pdfView($upp)
 	{
@@ -1053,7 +1048,7 @@ class MetasController extends Controller
 					$activs = DB::table("programacion_presupuesto")
 						->select(
 							'programa_presupuestario AS programa',
-							DB::raw('CONCAT(upp,subsecretaria,ur) AS area'),
+							DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad'),
 							DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
 						)
 						->where('programacion_presupuesto.upp', '=', $upp)
@@ -1332,6 +1327,13 @@ class MetasController extends Controller
 			$s = MetasController::cmetas($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$user = Auth::user()->username;
+			$check = MetasHelper::validateMesesfinal($upp, $anio);
+			if (!$check["status"]) {
+				$foot = "<a type='button' class='btn btn-success col-md-5 ml-auto ' href=/actividades/meses/error/$upp/$anio > <i class='fa fa-download' aria-hidden='true'></i>Descargar index</a>";
+				$res = ["status" => false, "mensaje" => ["icon" => 'warning', "text" => 'No puedes confirmar las metas, existen diferencias en los meses autorizados por las claves presupuestales', "title" => "Diferencias en las metas" ,"footer"=>$foot]];
+				return response()->json($res, 200);
+
+			}
 			if ($s['status']) {
 				DB::beginTransaction();
 				$metas = MetasHelper::actividades($upp, $anio);
@@ -1367,11 +1369,11 @@ class MetasController extends Controller
 					$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
 					return response()->json($res, 200);
 				} else {
-					$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
+					$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
 					return response()->json($res, 200);
 				}
 			} else {
-				$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'No puedes confirmar las metas', "title" => "Metas incompletas"]];
+				$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'No puedes confirmar las metas', "title" => "Metas incompletas"]];
 				return response()->json($res, 200);
 			}
 		} catch (\Throwable $th) {
@@ -1421,7 +1423,7 @@ class MetasController extends Controller
 				$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
 				return $res;
 			} else {
-				$res = ["status" => false, "mensaje" => ["icon" => 'Error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
+				$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
 				return $res;
 			}
 		} catch (\Throwable $th) {
@@ -1585,41 +1587,22 @@ class MetasController extends Controller
 	public static function cmetasUpp($upp, $anio)
 	{
 		$_upp = $upp = null ? Auth::user()->clv_upp : $upp;
-
-		$metas = DB::table('metas')
-			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
-			->select(
-				'mml_mir.clv_upp'
-			)
-			->where('mml_mir.clv_upp', $_upp)
-			->where('mml_mir.ejercicio', $anio)
-			->where('mml_mir.deleted_at', null)
-			->where('metas.deleted_at', null)
-			->where('metas.estatus', 1)->get();
-		if (count($metas) >= 1) {
-			return ["status" => true];
-		} else {
-			return ["status" => false];
+		$metas = false;
+		$query = MetasHelper::actividades($_upp, $anio);
+		if(count($query)){
+			$metas = $query[0]->estatus == 1 ? true : false;
 		}
+		return ["status" => $metas];
 	}
 	public static function cmetasadd($_upp)
 	{
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
-		$metas = DB::table('metas')
-			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
-			->select(
-				'mml_mir.clv_upp'
-			)
-			->where('mml_mir.clv_upp', $_upp)
-			->where('mml_mir.ejercicio', $anio)
-			->where('mml_mir.deleted_at', null)
-			->where('metas.deleted_at', null)
-			->where('metas.estatus', 1)->get();
-		if (count($metas) >= 1) {
-			return ["status" => true];
-		} else {
-			return ["status" => false];
+		$metas = false;
+		$query = MetasHelper::actividades($_upp, $anio);
+		if(count($query)){
+			$metas = $query[0]->estatus == 1 ? true : false;
 		}
+		return ["status" => $metas];
 	}
 	public static function getMeses($idAc, $idfondo)
 	{
