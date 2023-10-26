@@ -481,3 +481,30 @@ $('#btnSaveCreate').click(function (e) {
     });
     $('#in_celular').mask('00-00-00-00-00');
 });
+
+// Ocultar contraseña crear usuario
+$("#show-password #toggle-password").on('click', function(event) {
+    event.preventDefault();
+    if($('#show-password input').attr("type") == "text"){
+        $('#show-password input').attr('type', 'password');
+        $('#show-password i').addClass( "fa-eye-slash" );
+        $('#show-password i').removeClass( "fa-eye" );
+    }else if($('#show-password input').attr("type") == "password"){
+        $('#show-password input').attr('type', 'text');
+        $('#show-password i').removeClass( "fa-eye-slash" );
+        $('#show-password i').addClass( "fa-eye" );
+    }
+});
+
+$("#show-password-confirm #toggle-password").on('click', function(event) {
+    event.preventDefault();
+    if($('#show-password-confirm input').attr("type") == "text"){
+        $('#show-password-confirm input').attr('type', 'password');
+        $('#show-password-confirm i').addClass( "fa-eye-slash" );
+        $('#show-password-confirm i').removeClass( "fa-eye" );
+    }else if($('#show-password-confirm input').attr("type") == "password"){
+        $('#show-password-confirm input').attr('type', 'text');
+        $('#show-password-confirm i').removeClass( "fa-eye-slash" );
+        $('#show-password-confirm i').addClass( "fa-eye" );
+    }
+});
