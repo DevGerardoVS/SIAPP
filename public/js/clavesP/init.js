@@ -244,22 +244,34 @@ var dao = {
           url: '/calendarizacion-eliminar-clave',
           data: {'id':id,'upp':upp, 'ejercicio':ejercicio}
         }).done(function (response) {
-          if (response != 'done') {
-            Swal.fire(
-              'Error',
-              'A ocurrido un error',
-              'error'
-            );
-          }else{
-            Swal.fire(
-              'Eliminado',
-              'Eliminado correctamente.',
-              'success'
-            );
-            let ejercicio = document.getElementById('filtro_anio').value;
-            let upp = document.getElementById('filtro_upp').value;
-            let ur = document.getElementById('filtro_ur').value;
-            dao.getData(ejercicio,upp,ur);
+          switch (response) {
+            case 'done':
+              Swal.fire(
+                'Eliminado',
+                'Eliminado correctamente.',
+                'success'
+              );
+              let ejercicio = document.getElementById('filtro_anio').value;
+              let upp = document.getElementById('filtro_upp').value;
+              let ur = document.getElementById('filtro_ur').value;
+              dao.getData(ejercicio,upp,ur);
+              break;
+            
+            case 'invalid':
+              Swal.fire(
+                'Aviso',
+                'Se requiere borrar las metas de esta clave presupuestal',
+                'warning'
+              );
+            break;
+          
+            default:
+              Swal.fire(
+                'Error',
+                'A ocurrido un error contacte con el administrador.',
+                'error'
+              );
+              break;
           }
         })
        

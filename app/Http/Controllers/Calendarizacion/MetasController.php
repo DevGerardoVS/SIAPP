@@ -907,12 +907,14 @@ class MetasController extends Controller
 		$report_path = app_path() . "/reportes/" . $report . ".jasper";
 		$format = array('pdf');
 		$output_file = sys_get_temp_dir();
+		$logoLeft = public_path() . "/img/escudoBN.png";
+        $logoRight = public_path() . "/img/logo.png";
 
 		Log::info('reuqest', [json_encode($request)]);
 		$parameters = [
 			"anio" => $request['anio'],
-			"logoLeft" => $request['logoLeft'],
-			"logoRight" => $request['logoRight'],
+			"logoLeft" => $logoLeft,
+            "logoRight" => $logoRight,
 			"upp" => $request['UPP'],
 		];
 
@@ -926,7 +928,8 @@ class MetasController extends Controller
 			$parameters,
 			$database_connection
 		)->execute();
-		//dd($jasper);
+		// dd($jasper);
+		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
 			$archivo2 = file_get_contents($archivo);
@@ -939,7 +942,12 @@ class MetasController extends Controller
 		// ]);
 
 		if ($request['tipo'] == 0) {
-			return response()->download($archivo)->deleteFileAfterSend();
+			if (file_exists($output_file . '/' . $report . '.pdf')) {
+				return response()->download($archivo);
+			}else {
+				return response()->json('error', 200);
+			}
+			
 		}
 		if ($reportePDF != '') {
 			return response()->json('done', 200);
@@ -1256,11 +1264,13 @@ class MetasController extends Controller
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
 		$output_file = sys_get_temp_dir();
+		$logoLeft = public_path() . "/img/escudoBN.png";
+        $logoRight = public_path() . "/img/logo.png";
 
 		$parameters = array(
 			"anio" => $date,
-			"logoLeft" => public_path() . '\img\logo.png',
-			"logoRight" => public_path() . '\img\escudoBN.png',
+			"logoLeft" => $logoLeft,
+            "logoRight" => $logoRight,
 			"upp" => $upp,
 		);
 		if($tipo != 0) $parameters["extension"] = "pdf";
@@ -1276,7 +1286,8 @@ class MetasController extends Controller
 			$parameters,
 			$database_connection
 		)->execute();
-		// dd($jasper);
+		//dd($jasper);
+		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
 			$archivo2 = file_get_contents($archivo);
