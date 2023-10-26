@@ -941,7 +941,12 @@ class MetasController extends Controller
 		// ]);
 
 		if ($request['tipo'] == 0) {
-			return response()->download($archivo)->deleteFileAfterSend();
+			if (file_exists($output_file . '/' . $report . '.pdf')) {
+				return response()->download($archivo);
+			}else {
+				return response()->json('error', 200);
+			}
+			
 		}
 		if ($reportePDF != '') {
 			return response()->json('done', 200);
