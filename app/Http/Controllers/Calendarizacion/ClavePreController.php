@@ -942,7 +942,7 @@ class ClavePreController extends Controller
             $ejercicio = $ejer && $ejer != null ? $ejer->estatus : '';
             $estado = DB::table('programacion_presupuesto')->SELECT('estado')->WHERE($array_where)->first();
             if ($ejercicio !='Abierto' && $rol != 0 || $estado && $estado->estado != 0 && $rol != 0) {
-
+                Log::info('primer validacion', [$ejercicio,$estado]);
                 $response = [
                     'response'=>'errorAutorizacion',
                     'rol'=>$rol
@@ -950,6 +950,7 @@ class ClavePreController extends Controller
                 return response()->json($response,200);
             }else {
                 $esConfirmable = ClavesHelper::esConfirmable($upp,$request->ejercicio);
+                Log::info('esConfirmable', [json_encode($esConfirmable)]);
                 if ($esConfirmable) {
                     ProgramacionPresupuesto::where($array_where)->update([
                         'estado' => 1,
