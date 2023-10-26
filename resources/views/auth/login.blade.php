@@ -56,8 +56,8 @@
 
                         <h5 class="text-center" style="font-size: 24px">Inicio de sesión</h5>
                         <br>
-                        <div class="row mb-3" style="text-align: center; ">
-                            <input id="username" type="username" style="width: 75%"
+                        <div class="input-group mb-3 mx-auto" style="max-width:75%;">
+                            <input id="username" type="username" style="max-width:none;"
                                 class="form-control @error('username') is-invalid @enderror" name="username"
                                 placeholder="{{ __('Usuario') }}" value="{{ old('username') }}" required
                                 autocomplete="username" autofocus>
@@ -69,15 +69,18 @@
                             @enderror
                         </div>
 
-                        <div class="row mb-3" style="text-align: center">
-                            <input id="password" type="password" style="width: 75%"
+                        <div class="input-group mb-3 mx-auto" style="max-width:75%;" id="show-password">
+                            <input id="password" type="password" style="max-width:none;"
                                 class="form-control @error('password') is-invalid @enderror" name="password"
                                 placeholder="{{ __('Password') }}" required autocomplete="current-password">
 
+                            <span class="input-group-text"  id="toggle-password" style="cursor: pointer;">
+                                <i class="fa fa-eye-slash fs-4 text-black" aria-hidden="true"></i>
+                            </span>
                             @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
                             @enderror
                         </div>
 
@@ -131,6 +134,24 @@
     <!--Valida si hay errores por el metodo validate-->
 
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
+
+    {{-- Ocultar contraseña --}}
+<script>
+    $(document).ready(function() {
+        $("#show-password #toggle-password").on('click', function(event) {
+            event.preventDefault();
+            if($('#show-password input').attr("type") == "text"){
+                $('#show-password input').attr('type', 'password');
+                $('#show-password i').addClass( "fa-eye-slash" );
+                $('#show-password i').removeClass( "fa-eye" );
+            }else if($('#show-password input').attr("type") == "password"){
+                $('#show-password input').attr('type', 'text');
+                $('#show-password i').removeClass( "fa-eye-slash" );
+                $('#show-password i').addClass( "fa-eye" );
+            }
+        });
+    });
+</script>
     {{-- <script>
         var estaactivo = "{{ Auth::check() }}";
 
