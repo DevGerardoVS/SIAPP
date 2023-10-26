@@ -361,6 +361,11 @@ var dao = {
                                     $("#1").prop('disabled', false);
                                     $("#1").prop('required', true);
                                 } else {
+                                    if (data.enero !=0) {
+                                        $('#1').val(0);
+                                        $('#sumMetas').val(data.total-data.enero);
+                                    }
+
                                     $("#1").prop('disabled', 'disabled');
                                 }
                                 break;
@@ -370,6 +375,10 @@ var dao = {
                                     $("#2").prop('disabled', false);
                                     $("#2").prop('required', true);
                                 } else {
+                                    if (data.febrero !=0) {
+                                        $('#2').val(0);
+                                        $('#sumMetas').val(data.total-data.febrero);
+                                    }
                                     $("#2").prop('disabled', 'disabled');
                                 }
                                 break;
@@ -379,6 +388,10 @@ var dao = {
                                     $("#3").prop('disabled', false);
                                     $("#3").prop('required', true);
                                 } else {
+                                    if (data.marzo !=0) {
+                                        $('#3').val(0);
+                                        $('#sumMetas').val(data.total-data.marzo);
+                                    }
                                     $("#3").prop('disabled', 'disabled');
 
                                 }
@@ -389,6 +402,10 @@ var dao = {
                                     $("#4").prop('disabled', false);
                                     $("#4").prop('required', true);
                                 } else {
+                                    if (data.abril !=0) {
+                                        $('#4').val(0);
+                                        $('#sumMetas').val(data.total-data.abril);
+                                    }
                                     $("#4").prop('disabled', 'disabled');
                                 }
                                 break;
@@ -398,6 +415,10 @@ var dao = {
                                     $("#5").prop('disabled', false);
                                     $("#5").prop('required', true);
                                 } else {
+                                    if (data.mayo !=0) {
+                                        $('#5').val(0);
+                                        $('#sumMetas').val(data.total-data.mayo);
+                                    }
                                     $("#5").prop('disabled', 'disabled');
                                 }
                                 break;
@@ -407,6 +428,10 @@ var dao = {
                                     $("#6").prop('disabled', false);
                                     $("#6").prop('required', true);
                                 } else {
+                                    if (data.junio !=0) {
+                                        $('#6').val(0);
+                                        $('#sumMetas').val(data.total-data.junio);
+                                    }
                                     $("#6").prop('disabled', 'disabled');
                                 }
                                 break;
@@ -416,6 +441,10 @@ var dao = {
                                     $("#7").prop('disabled', false);
                                     $("#7").prop('required', true);
                                 } else {
+                                    if (data.julio !=0) {
+                                        $('#7').val(0);
+                                        $('#sumMetas').val(data.total-data.julio);
+                                    }
                                     $("#7").prop('disabled', 'disabled');
                                 }
                                 break;
@@ -425,6 +454,10 @@ var dao = {
                                     $("#8").prop('disabled', false);
                                     $("#8").prop('required', true);
                                 } else {
+                                    if (data.agosto !=0) {
+                                        $('#8').val(0);
+                                        $('#sumMetas').val(data.total-data.agosto);
+                                    }
                                     $("#8").prop('disabled', 'disabled');
                                 }
                                 break;
@@ -434,6 +467,10 @@ var dao = {
                                     $("#9").prop('disabled', false);
                                     $("#9").prop('required', true);
                                 } else {
+                                    if (data.septiembre !=0) {
+                                        $('#9').val(0);
+                                        $('#sumMetas').val(data.total-data.septiembre);
+                                    }
                                     $("#9").prop('disabled', 'disabled');
                                 }
                                 break;
@@ -443,6 +480,10 @@ var dao = {
                                     $("#10").prop('disabled', false);
                                     $("#10").prop('required', true);
                                 } else {
+                                    if (data.octubre !=0) {
+                                        $('#10').val(0);
+                                        $('#sumMetas').val(data.total-data.octubre);
+                                    }
                                     $("#10").prop('disabled', 'disabled');
                                 }
                                 break;
@@ -452,16 +493,23 @@ var dao = {
                                     $("#11").prop('disabled', false);
                                     $("#11").prop('required', true);
                                 } else {
+                                    if (data.noviembre !=0) {
+                                        $('#11').val(0);
+                                        $('#sumMetas').val(data.total-data.noviembre);
+                                    }
                                     $("#11").prop('disabled', 'disabled');
                                 }
                                 break;
                             case 'diciembre':
-                            
                                 if (e != 0.0 || e != 0) {
                                     mesesV.diciembre = true;
                                     $("#12").prop('disabled', false);
                                     $("#12").prop('required', true);
                                 } else {
+                                    if (data.diciembre !=0) {
+                                        $('#12').val(0);
+                                        $('#sumMetas').val(data.total-data.diciembre);
+                                    }
                                     $("#12").prop('disabled', 'disabled');
                                 }
                                 break;
