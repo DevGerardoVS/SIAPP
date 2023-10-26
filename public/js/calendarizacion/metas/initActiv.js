@@ -1074,10 +1074,10 @@ var dao = {
                 $('#validMetas').text("Las metas ya fueron confirmadas");
                 if ($('#upp').val() !='') {
                     $(".cierreMetas").hide();
-                }
-                
-                
+                } 
             } else {
+              /*   $('#validMetas').addClass(" alert alert-danger").addClass("text-center"); */
+                $('#validMetas').text("").removeClass().removeClass(" alert alert-danger");
                 $(".cmupp").hide();
             }
             
