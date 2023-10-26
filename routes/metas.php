@@ -6,7 +6,7 @@
 		Route::get('/calendarizacion/pdf/{upp?}/{anio?}', 'pdfView');
 		Route::get('/calendarizacion/data/{upp_filter?}/{ur_filter?}', 'getMetasP');
 		Route::get('/actividades/data/{upp?}/{anio?}', 'getActiv')->name('actividades');
-		Route::get('/actividades/proyecto_calendario', 'proyExcel')->name('ProyExcel');
+		Route::get('/actividades/proyecto_calendario/{upp?}', 'proyExcel')->name('ProyExcel');
 		Route::get('/actividades/exportExcel/{upp?}/{anio?}', 'exportExcel');
 		Route::get('/actividades/exportPdf/{upp?}/{anio?}',  'exportPdf');
 		Route::post('/actividades/import', 'importPlantilla');
@@ -33,6 +33,7 @@
 		Route::get('/actividades/desconfirmar-metas/{upp?}/{anio?}', 'desconfirmar');
 		Route::get('/actividades/anios-metas/', 'getAnios');
 		Route::get('/actividades/meses-activos/{mir?}/{fondo?}', 'getMeses');
+		Route::get('/actividades/meses/error/{upp?}/{anio?}', 'exportExcelErr')->name('exportError');
 
 	});
 ?>

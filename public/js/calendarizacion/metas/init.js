@@ -533,6 +533,11 @@ var dao = {
 
         });
     },
+    getPlantillaCmUpp: function () {
+        let upp = $('#upp').val() != '' ? $('#upp').val() : $('#upp_filter').val();
+        const url = "/actividades/proyecto_calendario/" + upp;
+        window.location.href = url;
+    },
     getProg: function (ur) {
         $.ajax({
             type: "GET",

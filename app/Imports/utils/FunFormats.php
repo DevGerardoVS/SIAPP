@@ -79,7 +79,7 @@ class FunFormats
             $conmir = 0;
             $sinmir = 0;
             foreach ($filearray as $k) {
-
+                Log::debug("foreach");
                 $status = FunFormats::isNULLOrEmpy($k, $index);
 
                 if ($status['status']) {
@@ -91,13 +91,13 @@ class FunFormats
                     return $error;
                 } else {
                     //checar si la mir esta confirmada
-
+                    Log::debug("checar si la mir esta confirmada");
                     $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', strval($k[7]))->where('deleted_at', null)->max('ejercicio');
                     $isMir = DB::table("mml_cierre_ejercicio")
                         ->select('id', 'estatus')
                         ->where('clv_upp', '=', strval($k[7]))
                         ->where('ejercicio', '=',$anio )
-                        ->where('status', 1)->get();
+                        ->where('statusm', 1)->get();
                     if (count($isMir)) {
                         $flg = false;
                         if (strtoupper($k[13]) == 'N/A' && strtoupper($k[14]) == 'N/A') {

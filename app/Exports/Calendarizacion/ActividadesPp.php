@@ -18,7 +18,12 @@ use Log;
 class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths,WithTitle,WithStyles,WithEvents
 {
     protected $filas;
+    protected $upp;
 
+    function __construct($upp) {
+
+        $this->upp= $upp;
+    }
     public function collection(){
         $anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
         $data = DB::table('programacion_presupuesto')
@@ -30,6 +35,7 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
             DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
             DB::raw('programacion_presupuesto.fondo_ramo AS fondo'),
         )
+        ->where("programacion_presupuesto.upp", $this->upp)
         ->where('programacion_presupuesto.estado', 1)
         ->where('programacion_presupuesto.deleted_at', null)
         ->where('programacion_presupuesto.ejercicio', '=', $anio)
@@ -39,10 +45,7 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
         ->distinct();
 
     if (Auth::user()->id_grupo == 4) {
-        $upp = Auth::user()->clv_upp;
-        $data = $data->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'programacion_presupuesto.upp')
-            ->where("programacion_presupuesto.upp", $upp)
-            ->where('cierre_ejercicio_metas.deleted_at', null)
+        $data = $data->where('cierre_ejercicio_metas.deleted_at', null)
             ->where('cierre_ejercicio_metas.ejercicio', $anio)
             ->where('cierre_ejercicio_metas.estatus', 'Abierto');
     }

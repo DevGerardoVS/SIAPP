@@ -1064,6 +1064,7 @@ var dao = {
                         icon: mensaje.icon,
                         title: mensaje.title,
                         text: mensaje.text,
+                        footer: mensaje?.footer,
                     });
                     dao.getData(upp, anio);
                     dao.revConfirmarMetas(upp, anio);
