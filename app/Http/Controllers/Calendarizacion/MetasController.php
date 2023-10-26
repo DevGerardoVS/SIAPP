@@ -893,19 +893,19 @@ class MetasController extends Controller
 		$report = '';
 		if ($request['tipo'] == 0) {
 			$report = "reporte_calendario_upp_autografa";
-			$file = public_path() . "/reportes/reporte_calendario_upp_autografa.pdf";
+			$file = sys_get_temp_dir(). $report;
 		} else {
 			$report = "Reporte_Calendario_UPP";
-			$file = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
+			$file = sys_get_temp_dir(). $report;
 		}
-		$ruta = public_path() . "/reportes";
+		$ruta = sys_get_temp_dir();
 		//Eliminación si ya existe reporte
 		if (File::exists($ruta . "/" . $report . ".pdf")) {
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
 		$report_path = app_path() . "/reportes/" . $report . ".jasper";
 		$format = array('pdf');
-		$output_file = public_path() . "/reportes";
+		$output_file = sys_get_temp_dir();
 
 		Log::info('reuqest', [json_encode($request)]);
 		$parameters = [
@@ -926,14 +926,19 @@ class MetasController extends Controller
 			$database_connection
 		)->execute();
 		//dd($jasper);
-		$reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
-			'Content-Type' => 'application/pdf'
-		]);
+		if (file_exists($output_file . '/' . $report . '.pdf')) {
+			$archivo = $output_file . '/' . $report . '.pdf';
+			$archivo2 = file_get_contents($archivo);
+			$reportePDF = Response::make($archivo2, 200, [
+				'Content-Type' => 'application/pdf'
+			]);
+		}
+		// $reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
+		// 	'Content-Type' => 'application/pdf'
+		// ]);
 
 		if ($request['tipo'] == 0) {
-			return response()->download($file, $report . ".pdf", [
-				'Content-Type' => 'application/pdf'
-			])->deleteFileAfterSend();
+			return response()->download($archivo)->deleteFileAfterSend();
 		}
 		if ($reportePDF != '') {
 			return response()->json('done', 200);
@@ -1123,11 +1128,10 @@ class MetasController extends Controller
 			}
 			$pdf = '';
 			if ($request->tipoReporte == 2) {
-				$ruta = public_path() . "/reportes/proyecto_calendario_actividades.pdf";
+				$ruta = sys_get_temp_dir() . "/proyecto_calendario_actividades.pdf";
 			} else {
-				$ruta = public_path() . "/reportes/Reporte_Calendario_UPP.pdf";
+				$ruta = sys_get_temp_dir() . "/Reporte_Calendario_UPP.pdf";
 			}
-
 			if (File::exists($ruta)) {
 				$pdf = file_get_contents($ruta);
 			}
@@ -1237,20 +1241,20 @@ class MetasController extends Controller
 		$report = '';
 		if ($tipo == 0) {
 			$report = "proyecto_calendario_actividades_autografa";
-			$file = public_path() . "/reportes/proyecto_calendario_actividades_autografa.pdf";
+			$file = sys_get_temp_dir(). $report;
 		} else {
 			$report = "proyecto_calendario_actividades";
-			$file = public_path() . "/reportes/proyecto_calendario_actividades.pdf";
+			$file = sys_get_temp_dir(). $report;
 		}
 
-		$ruta = public_path() . "/reportes";
+		$ruta = sys_get_temp_dir();
 		//Eliminación si ya existe reporte
 		if (File::exists($ruta . "/" . $report . ".pdf")) {
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
-		$output_file = public_path() . "/reportes";
+		$output_file = sys_get_temp_dir();
 
 		$parameters = array(
 			"anio" => $date,
@@ -1271,15 +1275,17 @@ class MetasController extends Controller
 			$parameters,
 			$database_connection
 		)->execute();
-		//dd($jasper);
-		$reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
-			'Content-Type' => 'application/pdf'
-		]);
-
-		if ($tipo == 0) {
-			return response()->download($file, $report . ".pdf", [
+		// dd($jasper);
+		if (file_exists($output_file . '/' . $report . '.pdf')) {
+			$archivo = $output_file . '/' . $report . '.pdf';
+			$archivo2 = file_get_contents($archivo);
+			$reportePDF = Response::make($archivo2, 200, [
 				'Content-Type' => 'application/pdf'
-			])->deleteFileAfterSend();
+			]);
+		}
+		
+		if ($tipo == 0) {
+			return response()->download($archivo)->deleteFileAfterSend();
 		} else {
 			if ($reportePDF != '') {
 				return response()->json('done', 200);

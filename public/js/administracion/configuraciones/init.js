@@ -187,6 +187,15 @@ function updateAutoUpps(id){
         contentType: false,
         success:function(response){
             response = response.dataSet;
+			//colocar codigo de respuesta
+			if(response.length>0){
+				Swal.fire({
+					icon: 'warning',
+					title: 'Advertencia',
+					text: response,
+					confirmButtonText: "Aceptar",
+				});
+			}
         },
         error: function(response) {
             var mensaje="";
@@ -236,9 +245,19 @@ function updateData(id,field){
         processData: false,
         contentType: false,
         success:function(response){
-            response = response.dataSet;
-            console.log(response);
-            
+            if(response.response == "error"){
+				Swal.fire({
+					icon: 'error',
+					title: 'Error',
+					text: "No puedes deshabilitar todas las casillas.",
+					confirmButtonText: "Aceptar",
+				});
+				console.log(response.dataSet.Acumulativa);
+				if(response.dataSet.Continua==1) $("#"+id+"_c").prop( "checked", true );
+				if(response.dataSet.Acumulativa==1) $("#"+id+"_a").prop( "checked", true );
+				if(response.dataSet.Especial==1) $("#"+id+"_e").prop( "checked", true );
+
+			}
         },
         error: function(response) {
             var mensaje="";
