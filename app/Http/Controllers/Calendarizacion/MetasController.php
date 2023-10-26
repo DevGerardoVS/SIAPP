@@ -924,8 +924,9 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->execute();
-		//dd($jasper);
+		)->output();
+		dd($jasper);
+		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
 			$archivo2 = file_get_contents($archivo);
@@ -1274,8 +1275,9 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->execute();
-		// dd($jasper);
+		)->output();
+		 dd($jasper);
+		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
 			$archivo2 = file_get_contents($archivo);
