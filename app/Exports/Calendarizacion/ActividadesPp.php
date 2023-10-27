@@ -57,7 +57,8 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
         ->distinct();
 
     if (Auth::user()->id_grupo == 4) {
-        $data = $data->where('cierre_ejercicio_metas.deleted_at', null)
+        $data = $data->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'programacion_presupuesto.upp')
+        ->where('cierre_ejercicio_metas.deleted_at', null)
             ->where('cierre_ejercicio_metas.ejercicio', $anio)
             ->where('cierre_ejercicio_metas.estatus', 'Abierto');
     }

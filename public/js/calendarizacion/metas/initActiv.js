@@ -56,10 +56,9 @@ var dao = {
     nCont: function () {
         if ($('#nContinua').val()!='') {
             contValue = $('#nContinua').val();
-            for (let i = 1; i <= 12; i++) {
-                $('#' + i).val(contValue);
-                $('#' + i).attr('disabled', 'disabled');
-            }
+            let fondo = $('#fondo').val();
+            let ar=$('#ar').val();
+            dao.getMesesCont(ar,fondo,contValue);
             $('#sumMetas').val(contValue);
             $('#sumMetas').attr('disabled', 'disabled');
             dao.clearCont('aceptar');
@@ -71,6 +70,154 @@ var dao = {
               })
         }
       
+    },
+    getMesesCont: function (idA, idF,value) {
+        for (const key in mesesV) {
+            if (Object.hasOwnProperty.call(mesesV, key)) {
+                mesesV[key] = false;
+            }
+        }
+        $.ajax({
+            type: "GET",
+            url: '/actividades/meses-activos/' + idA + "/" + idF,
+            dataType: "JSON"
+        }).done(function (data) {
+            let { mese } = data;
+                for (const key in mese) {
+                    if (Object.hasOwnProperty.call(mese, key)) {
+                        const e = mese[key];
+                        switch (key) {
+                            case 'enero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.enero = true;
+                                    $("#1").prop('disabled', false);
+                                    $("#1").prop('required', true);
+                                    $("#1").val(value);
+                                } else {
+                                    $("#1").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'febrero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.febrero = true;
+                                    $("#2").prop('disabled', false);
+                                    $("#2").prop('required', true);
+                                    $("#2").val(value);
+                                } else {
+                                    $("#2").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'marzo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.marzo = true;
+                                    $("#3").prop('disabled', false);
+                                    $("#3").prop('required', true);
+                                    $("#3").val(value);
+                                } else {
+                                    $("#3").prop('disabled', 'disabled');
+
+                                }
+                                break;
+                            case 'abril':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.abril = true;
+                                    $("#4").prop('disabled', false);
+                                    $("#4").prop('required', true);
+                                    $("#4").val(value);
+                                } else {
+                                    $("#4").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'mayo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.mayo = true;
+                                    $("#5").prop('disabled', false);
+                                    $("#5").prop('required', true);
+                                    $("#5").val(value);
+                                } else {
+                                    $("#5").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'junio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.junio = true;
+                                    $("#6").prop('disabled', false);
+                                    $("#6").prop('required', true);
+                                    $("#6").val(value);
+                                } else {
+                                    $("#6").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'julio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.julio = true;
+                                    $("#7").prop('disabled', false);
+                                    $("#7").prop('required', true);
+                                    $("#7").val(value);
+                                } else {
+                                    $("#7").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'agosto':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.agosto = true;
+                                    $("#8").prop('disabled', false);
+                                    $("#8").prop('required', true);
+                                    $("#8").val(value);
+                                } else {
+                                    $("#8").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'septiembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.septiembre = true;
+                                    $("#9").prop('disabled', false);
+                                    $("#9").prop('required', true);
+                                    $("#9").val(value);
+                                } else {
+                                    $("#9").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'octubre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.octubre = true;
+                                    $("#10").prop('disabled', false);
+                                    $("#10").prop('required', true);
+                                    $("#10").val(value);
+                                } else {
+                                    $("#10").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'noviembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.noviembre = true;
+                                    $("#11").prop('disabled', false);
+                                    $("#11").prop('required', true);
+                                    $("#11").val(value);
+                                } else {
+                                    $("#11").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'diciembre':
+
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.diciembre = true;
+                                    $("#12").prop('disabled', false);
+                                    $("#12").prop('required', true);
+                                    $("#12").val(value);
+                                } else {
+                                    $("#12").prop('disabled', 'disabled');
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    }
+                }
+
+        });
     },
     clearCont: function (tipo) {
         if (tipo!='aceptar') {
@@ -233,7 +380,7 @@ var dao = {
             url: '/calendarizacion/tcalendario/'+upp,
             dataType: "JSON"
         }).done(function (data) {       
-            if (Object.keys(data).length >= 2&& sub!='UUU') {
+            if (Object.keys(data).length == 2&& sub!='UUU') {
                 $("#tipo_Ac").append(new Option("--Tipo Actividad--", ""));
                 document.getElementById("tipo_Ac").options[0].disabled = true;
 
