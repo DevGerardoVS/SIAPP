@@ -11,6 +11,7 @@ use DataTables;
 use App\Models\ProgramacionPresupuesto;
 use App\Models\cierreEjercicio;
 use App\Helpers\Calendarizacion\ClavesHelper;
+use App\Helpers\Calendarizacion\MetasHelper;
 
 use Illuminate\Validation\ValidationException;
 
@@ -332,6 +333,11 @@ class ClavePreController extends Controller
             if ($esEjercicioCerrado && $perfil != 1) {
                 return response()->json('invalid',200);
             }
+        $tieneMetas = MetasHelper::actividades($request->upp, $request->ejercicio);
+        if (count($tieneMetas)) {
+            return response()->json('invalid',200);
+        }
+            
         ProgramacionPresupuesto::where('id',$request->id)->delete();
         $b = array(
             "username"=>Auth::user()->username,
@@ -936,7 +942,7 @@ class ClavePreController extends Controller
             $ejercicio = $ejer && $ejer != null ? $ejer->estatus : '';
             $estado = DB::table('programacion_presupuesto')->SELECT('estado')->WHERE($array_where)->first();
             if ($ejercicio !='Abierto' && $rol != 0 || $estado && $estado->estado != 0 && $rol != 0) {
-
+                Log::info('primer validacion', [$ejercicio,$estado]);
                 $response = [
                     'response'=>'errorAutorizacion',
                     'rol'=>$rol
@@ -944,6 +950,7 @@ class ClavePreController extends Controller
                 return response()->json($response,200);
             }else {
                 $esConfirmable = ClavesHelper::esConfirmable($upp,$request->ejercicio);
+                Log::info('esConfirmable', [json_encode($esConfirmable)]);
                 if ($esConfirmable) {
                     ProgramacionPresupuesto::where($array_where)->update([
                         'estado' => 1,
@@ -1013,5 +1020,18 @@ class ClavePreController extends Controller
         ->distinct()
         ->get();
         return response()->json($ejercicios,200);
+    }
+    public function alertaAvtividades($upp,$ejercicio){
+        $estatus = 0;
+        $tieneMetas = MetasHelper::actividades($upp, $ejercicio);
+        //revisar el estatus en uno si estan confirmadas si no no mostrar mensaje;
+        if (count($tieneMetas)) {
+            $estatus = $tieneMetas[0]->estatus;
+        }
+        $response = [
+            'estatus'=> $estatus,
+            'metas'=>count($tieneMetas),
+        ];
+        return response()->json($response,200);
     }
 }

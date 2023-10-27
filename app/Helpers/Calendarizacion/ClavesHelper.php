@@ -282,7 +282,9 @@ class ClavesHelper{
             $disponible = $presupuestoAsignado[0]->totalAsignado;
         }
         $estado = DB::table('programacion_presupuesto')
-        ->SELECT('*')->where('upp', $upp)->where('ejercicio', $ejercicio)->where('estado', 1)->get();
+        ->SELECT('*')->where('upp', $upp)->where('ejercicio', $ejercicio)->where('estado', 1)->where('deleted_at','=',null)->get();
+        Log::info('helper', ['ejercicio'=>$ejercicio]);
+        Log::info('estado', [json_encode($estado)]);
         if ($disponible > 0 || count($estado)) {
             return false;
         }else{

@@ -56,6 +56,8 @@ Route::controller(TechosController::class)->group(function () {
 		Route::get('/calendarizacion-get-sector/{clave?}', 'getSector');
 		Route::get('/cat-obras/{val?}', 'getObras');
 		Route::get('/get-ejercicios','getEjercicios');
+		Route::get('/alerta-actividades/{upp?}/{ejercicio?}','alertaAvtividades');
+		
 });
 
 Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {

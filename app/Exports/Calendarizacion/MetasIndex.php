@@ -12,11 +12,17 @@ use App\Helpers\Calendarizacion\MetasHelper;
 class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTitle, WithStyles, WithEvents
 {
     protected $filas;
+    protected $upp;
+
+    function __construct($upp) {
+
+        $this->upp= $upp;
+    }
 
     public function collection()
     {
 
-        $data = MetasHelper::MetasIndex();
+        $data = MetasHelper::MetasIndex($this->upp);
         $dataSet = [];
         foreach ($data as $key) {
             $area = str_split($key->area_funcional);
