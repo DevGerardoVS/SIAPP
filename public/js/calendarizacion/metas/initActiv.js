@@ -1200,9 +1200,7 @@ var dao = {
             url: '/actividades/rev-confirmar-metas/'+upp+"/"+anio,
             dataType: "JSON"
         }).done(function (data) {
-            console.log("revConfirmarMetas",data);
             if (!data.status) {
-                console.log("metas confirmadas");
                 $(".confirmacion").hide();
             } else {
                 $(".confirmacion").show();
