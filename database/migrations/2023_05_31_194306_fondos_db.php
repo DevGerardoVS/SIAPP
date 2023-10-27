@@ -279,7 +279,7 @@ return new class extends Migration
         Schema::create('catalogo', function (Blueprint $table){
             $table->increments('id');
             $table->integer('grupo_id')->unsigned()->nullable(false);
-            $table->integer('ejercicio')->default(null);
+            $table->integer('ejercicio')->default(2024);
             $table->string('clave',6)->nullable(false);
             $table->text('descripcion')->nullable(false);
             $table->softDeletes();
