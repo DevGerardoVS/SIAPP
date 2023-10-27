@@ -337,7 +337,10 @@ class ClavePreController extends Controller
         if (count($tieneMetas)) {
             return response()->json('invalid',200);
         }
-            
+        ProgramacionPresupuesto::where('id', $request->id)->update([
+            'deleted_user' => Auth::user()->username,
+            'estado'=> 0,
+        ]);   
         ProgramacionPresupuesto::where('id',$request->id)->delete();
         $b = array(
             "username"=>Auth::user()->username,
@@ -621,7 +624,7 @@ class ClavePreController extends Controller
         return response()->json($response,200);
     }
     public function getSector($clave){
-        $sector = DB::table('v_sector_linea_accion')
+        $sector = DB::table('sector_linea_accion')
             ->SELECT('sector')
             ->WHERE('clv_linea_accion', '=', $clave)
             ->first();
@@ -942,7 +945,6 @@ class ClavePreController extends Controller
             $ejercicio = $ejer && $ejer != null ? $ejer->estatus : '';
             $estado = DB::table('programacion_presupuesto')->SELECT('estado')->WHERE($array_where)->first();
             if ($ejercicio !='Abierto' && $rol != 0 || $estado && $estado->estado != 0 && $rol != 0) {
-                Log::info('primer validacion', [$ejercicio,$estado]);
                 $response = [
                     'response'=>'errorAutorizacion',
                     'rol'=>$rol
@@ -950,16 +952,15 @@ class ClavePreController extends Controller
                 return response()->json($response,200);
             }else {
                 $esConfirmable = ClavesHelper::esConfirmable($upp,$request->ejercicio);
-                Log::info('esConfirmable', [json_encode($esConfirmable)]);
                 if ($esConfirmable) {
                     ProgramacionPresupuesto::where($array_where)->update([
                         'estado' => 1,
                     ]);
-                    cierreEjercicio::where('clv_upp','=',$request->upp ? $request->upp : $uppUsuario)->where('ejercicio','=',$request->ejercicio)
-                    ->update([
-                        'estatus'=>'Cerrado',
-                        'updated_user'=>Auth::user()->username
-                    ]);
+                    // cierreEjercicio::where('clv_upp','=',$request->upp ? $request->upp : $uppUsuario)->where('ejercicio','=',$request->ejercicio)
+                    // ->update([
+                    //     'estatus'=>'Cerrado',
+                    //     'updated_user'=>Auth::user()->username
+                    // ]);
                     $b = array(
                         "username"=>Auth::user()->username,
                         "accion"=>'Confirmar',

@@ -604,6 +604,7 @@ var dao = {
           }else{
             if (response['presupuestoAsignado'][0].totalAsignado && response['presupuestoAsignado'][0].totalAsignado > 0) {
               $('#btnNuevaClave').show(true);
+              $('#btn_confirmar').hide(true);
             }else{
               $('#btnNuevaClave').hide(true);
             }
@@ -929,7 +930,6 @@ var dao = {
       type:'get',
       url: '/alerta-actividades/'+ upp + '/' + ejercicio,
     }).done(function (data) {
-      console.log('alerta de actividades', data);
       if (data.estatus == 1) {
         Swal.fire(
           'Advertencia!',
@@ -1246,9 +1246,9 @@ $(document).ready(function(){
     document.getElementById('filAnio').value = id;
     let upp = document.getElementById('filUpp').value;
     let ur = document.getElementById('filtro_ur').value;
-    if (upp && upp != '') {
-      dao.filtroUr(upp,id);
-    }
+      if (upp && upp != '') {
+        dao.filtroUr(upp,id);
+      }
     dao.getData(id,upp,ur);
 	});
   $('#filtro_upp').change(function (e) {
