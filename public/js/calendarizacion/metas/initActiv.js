@@ -1004,7 +1004,7 @@ var dao = {
     },
     eliminar: function (id) {
         Swal.fire({
-            title: '¿Seguro que quieres eliminar este usuario?',
+            title: '¿Seguro que quieres eliminar este registro?',
             text: "Esta accion es irreversible",
             icon: 'warning',
             showCancelButton: true,
@@ -1200,7 +1200,9 @@ var dao = {
             url: '/actividades/rev-confirmar-metas/'+upp+"/"+anio,
             dataType: "JSON"
         }).done(function (data) {
+            console.log("revConfirmarMetas",data);
             if (!data.status) {
+                console.log("metas confirmadas");
                 $(".confirmacion").hide();
             } else {
                 $(".confirmacion").show();
@@ -1222,6 +1224,7 @@ var dao = {
                 if ($('#upp').val() !='') {
                     $(".cierreMetas").hide();
                 } 
+                $(".confirmacion").hide();
             } else {
               /*   $('#validMetas').addClass(" alert alert-danger").addClass("text-center"); */
                 $('#validMetas').text("").removeClass().removeClass(" alert alert-danger");
@@ -1242,7 +1245,7 @@ var dao = {
         }
         Swal.fire({
             icon: 'question',
-            title: '¿Estás de quieres confirmar las metas?',
+            title: '¿Estás seguro que quieres confirmar las metas?',
             showDenyButton: true,
             confirmButtonText: 'Confirmar',
             denyButtonText: `Cancelar`,
