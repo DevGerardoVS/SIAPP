@@ -1087,10 +1087,10 @@ class MetasController extends Controller
 				}
 				//ver si esta confirmada la mir
 			} else {
-				return ["status" => false, "mensaje" => 'Las metas ya estan confirmadas', "title" => 'Metas confirmadas', "estado" => false, "url" => '/calendarizacion/proyecto'];
+				return ["status" => false, "mensaje" => 'Las metas para la UPP: '.$upp.' ya estan confirmadas', "title" => 'Metas confirmadas', "estado" => false, "url" => '/calendarizacion/proyecto'];
 			}
 		} else {
-			return ["status" => false, "mensaje" => 'Las metas para la UPP: '.$upp.' ya estan confirmadas', "title" => 'La captura de metas esta cerrada', "estado" => false, "url" => '/calendarizacion/proyecto'];
+			return ["status" => false, "mensaje" => 'Las metas para la UPP: '.$upp.' ya estan cerradas', "title" => 'La captura de metas esta cerrada', "estado" => false, "url" => '/calendarizacion/proyecto'];
 		}
 	}
 
@@ -1359,16 +1359,6 @@ class MetasController extends Controller
 					}
 				}
 				if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
-					$cierre = CierreMetas::where('deleted_at', null)->where('clv_upp', $upp)->where('estatus', 'Abierto')->get();
-					if ($cierre) {
-						foreach ($cierre as $key ) {
-							$key->estatus = 'Cerrado';
-							$key->updated_user = $user;
-							$key->updated_at = $fecha;
-							$key->save();
-						}
-						
-					}
 					DB::commit();
 					$b = array(
 						"username" => $user,
