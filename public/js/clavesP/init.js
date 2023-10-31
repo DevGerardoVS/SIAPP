@@ -781,18 +781,77 @@ var dao = {
         let ejercicio = response.fondos[index].ejercicio
         data.push({'clv_fondo':clv_fondo,'fondo_ramo':fondo_ramo,'Operativo':Operativo,'RH':RH ,'techos_presupuestal':techos_presupuestal,'calendarizado':calendarizado,'disponible':disponible, 'ejercicio':ejercicio});  
       }
+      let tabla = '';
+      let colums = [];
+      switch (response.rol) {
+        case 0:
+          console.log('admin');
+          tabla = $("#tblPresupuestos");
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "Operativo"},
+            {"aTargets" : [3], "mData" : "RH"},
+            {"aTargets" : [4], "mData" : "techos_presupuestal"},
+            {"aTargets" : [5], "mData" : "calendarizado"},
+            {"aTargets" : [6], "mData" : "disponible"},
+            {"aTargets" : [7], "mData" : "ejercicio"},
+          ];
+          $('#tblPresupuestos').show(true);
+          $('#tablaUpps').hide(true);
+          $('#tablaDelegacion').hide(true);
+          break;
+        case 1:
+          console.log('upp');
+          tabla = $('#tablaUpps');
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "Operativo"},
+            {"aTargets" : [3], "mData" : "techos_presupuestal"},
+            {"aTargets" : [4], "mData" : "calendarizado"},
+            {"aTargets" : [5], "mData" : "disponible"},
+            {"aTargets" : [6], "mData" : "ejercicio"},
+          ];
+          $('#tablaUpps').show(true);
+          $('#tablaDelegacion').hide(true);
+          $('#tblPresupuestos').hide(true);
+          break;
+        case 2:
+          console.log('delegacion');
+          tabla = $('#tablaDelegacion');
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "RH"},
+            {"aTargets" : [3], "mData" : "techos_presupuestal"},
+            {"aTargets" : [4], "mData" : "calendarizado"},
+            {"aTargets" : [5], "mData" : "disponible"},
+            {"aTargets" : [6], "mData" : "ejercicio"},
+          ];
+          $('#tablaDelegacion').show(true);
+          $('#tblPresupuestos').hide(true);
+          $('#tablaUpps').hide(true);
+          break;
+        default:
+          console.log('default');
+          tabla = $("#tblPresupuestos");
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "Operativo"},
+            {"aTargets" : [3], "mData" : "RH"},
+            {"aTargets" : [4], "mData" : "techos_presupuestal"},
+            {"aTargets" : [5], "mData" : "calendarizado"},
+            {"aTargets" : [6], "mData" : "disponible"},
+            {"aTargets" : [7], "mData" : "ejercicio"},
+          ];
+          $('#tblPresupuestos').show(true);
+          break;
+      }
       document.getElementById('titleModalpresupuesto').innerText = response.upp['clave'] + ' - ' +response.upp['descripcion']; 
-      _table = $("#tblPresupuestos");
-			_columns = [
-				{"aTargets" : [0], "mData" : 'clv_fondo'},
-				{"aTargets" : [1], "mData" : "fondo_ramo"},
-				{"aTargets" : [2], "mData" : "Operativo"},
-				{"aTargets" : [3], "mData" : "RH"},
-				{"aTargets" : [4], "mData" : "techos_presupuestal"},
-				{"aTargets" : [5], "mData" : "calendarizado"},
-        {"aTargets" : [6], "mData" : "disponible"},
-        {"aTargets" : [7], "mData" : "ejercicio"},
-			];
+      _table = tabla;
+			_columns = colums;
 			_gen.setTableScrollFotter(_table, _columns, data);
       $('modalPresupuesto').show(true);
     });

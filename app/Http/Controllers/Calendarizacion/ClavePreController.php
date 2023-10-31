@@ -758,15 +758,19 @@ class ClavePreController extends Controller
         $perfil = Auth::user()->id_grupo;
         switch ($perfil) {
             case 1:
+                // rol administrador
                 $rol = 0;
                 break;
             case 4:
+                // rol upp
                 $rol = 1;
                 break;
             case 5:
+                // rol delegacion
                 $rol = 2;
                 break;
             default:
+            // rol auditor y gobDigital
                 $rol = 3;
                 break;
         }
@@ -798,122 +802,20 @@ class ClavePreController extends Controller
             }
         } 
         if ($rol == 2) {
-            $fondos = DB::select("select 
-            clv_fondo,
-            f.fondo_ramo,
-            0 RH,
-            sum(Operativo) Operativo,
-            sum(Operativo) techos_presupuestal,
-            sum(calendarizado) calendarizado,
-            sum(Operativo - calendarizado) disponible,
-            ejercicio
-        from (
-            select 
-                clv_fondo,
-                0 RH,
-                sum(presupuesto) Operativo,
-                0 calendarizado,
-                ejercicio
-            from techos_financieros tf
-            where tf.tipo = 'RH' and tf.clv_upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayTechos."
-            group by clv_fondo,ejercicio
-            union all 
-            select 
-                fondo_ramo clv_fondo,
-                0 RH,
-                0 Operativo,
-                sum(total) calendarizado,
-                ejercicio
-            from programacion_presupuesto pp
-            where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayProgramacion."
-            group by clv_fondo,ejercicio
-        ) tabla
-        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
-        group by clv_fondo,f.fondo_ramo,ejercicio;");
+            $fondos = ClavesHelper::detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion);
         }else {
             if ($uppAutorizados) {
-                $fondos = DB::select("
-                select 
-                    clv_fondo,
-                    f.fondo_ramo,
-                    0 RH,
-                    sum(Operativo) Operativo,
-                    sum(Operativo) techos_presupuestal,
-                    sum(calendarizado) calendarizado,
-                    sum(Operativo) - calendarizado disponible,
-                    ejercicio
-                from (
-                    select 
-                        clv_fondo,
-                        0 RH,
-                        sum(presupuesto) Operativo,
-                        0 calendarizado,
-                        ejercicio
-                    from techos_financieros tf
-                    where tf.tipo = 'Operativo' && ".$arrayTechos."
-                    group by clv_fondo
-                    union all 
-                    select 
-                        fondo_ramo clv_fondo,
-                        0 RH,
-                        0 Operativo,
-                        sum(total) calendarizado,
-                        ejercicio
-                    from programacion_presupuesto pp
-                    where pp.tipo = 'Operativo' && ".$arrayProgramacion."
-                    group by clv_fondo
-                ) tabla
-                join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
-                group by clv_fondo,f.fondo_ramo;");
+                $fondos = ClavesHelper::detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion);
+               
             }else {
-                $fondos = DB::select("select 
-                clv_fondo,
-                f.fondo_ramo,
-                sum(RH) RH,
-                sum(Operativo) Operativo,
-                sum(RH+Operativo) techos_presupuestal,
-                sum(calendarizado) calendarizado,
-                sum((RH+Operativo)-calendarizado) disponible,
-                ejercicio
-            from (
-                select 
-                    clv_fondo,
-                    sum(presupuesto) RH,
-                    0 Operativo,
-                    0 calendarizado,
-                    ejercicio
-                from techos_financieros tf
-                where tf.tipo = 'RH' &&".$arrayTechos." 
-                group by clv_fondo
-                union all
-                select 
-                    clv_fondo,
-                    0 RH,
-                    sum(presupuesto) Operativo,
-                    0 calendarizado,
-                    ejercicio
-                from techos_financieros tf
-                where tf.tipo = 'Operativo' &&".$arrayTechos." 
-                group by clv_fondo
-                union all 
-                select 
-                    fondo_ramo clv_fondo,
-                    0 RH,
-                    0 Operativo,
-                    sum(total) calendarizado,
-                    ejercicio
-                from programacion_presupuesto pp
-                where ".$arrayProgramacion."
-                group by clv_fondo
-            ) tabla
-            join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
-            group by clv_fondo,f.fondo_ramo;");
-            }
+                    $fondos = ClavesHelper::detallePresupuestoGeneral($arrayTechos,$arrayProgramacion);
+                }
         }
         
         $response = [
             'fondos' => $fondos,
-            'upp' => $upp
+            'upp' => $upp,
+            'rol' => $rol
         ];
         return response()->json($response,200);
     }
