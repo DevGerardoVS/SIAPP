@@ -14,150 +14,200 @@ return new class extends Migration {
     {
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_III(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @id := 'id';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @id := 'id_original';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
-            set @query := CONCAT(\"
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists parte_0;
+            drop temporary table if exists parte_1;
+            drop temporary table if exists parte_2;
+            drop temporary table if exists parte_3;
+            drop temporary table if exists parte_4;
+        
+            set @query := CONCAT('
+            create temporary table aux_0
             select 
-                case 
-                    when clv_ur != '' then ''
-                    else clv_upp
-                end clv_upp,
-                case 
-                    when clv_ur != '' then ''
-                    else upp
-                end upp,
-                case 
-                    when clv_programa != '' then ''
-                    else clv_ur
-                end clv_ur,
-                case 
-                    when clv_programa != '' then ''
-                    else ur
-                end ur,
-                case 
-                    when clv_subprograma != '' then ''
-                    else clv_programa
-                end clv_programa,
-                case 
-                    when clv_subprograma != '' then ''
-                    else programa
-                end programa,
-                case 
-                    when clv_partida != '' then ''
-                    else clv_subprograma
-                end clv_subprograma,
-                case 
-                    when clv_partida != '' then ''
-                    else subprograma
-                end subprograma,
-                clv_partida,
-                partida_especifica,
-                importe
-            from (
-                select 
-                    va.clv_upp,va.upp,
-                    '' clv_ur,'' ur,
-                    '' clv_programa, ''programa,
-                    '' clv_subprograma,'' subprograma,
-                    '' clv_partida, '' partida_especifica,
-                    sum(va.total) importe
-                from \",@tabla,\" va
-                where va.ejercicio = \",anio,\" and \",@corte,\"
-                group by va.clv_upp,va.upp
-                union all
-                select 
-                    va.clv_upp,va.upp,
-                    va.clv_ur,va.ur,
-                    '' clv_programa, ''programa,
-                    '' clv_subprograma,'' subprograma,
-                    '' clv_partida, '' partida_especifica,
-                    sum(va.total) importe
-                from \",@tabla,\" va
-                where va.ejercicio = \",anio,\" and \",@corte,\"
-                group by va.clv_upp,va.upp,va.clv_ur,va.ur
-                union all
-                select 
-                    va.clv_upp,va.upp,
-                    va.clv_ur,va.ur,
-                    va.clv_programa,va.programa,
-                    '' clv_subprograma,'' subprograma,
-                    '' clv_partida, '' partida_especifica,
-                    sum(va.total) importe
-                from \",@tabla,\" va
-                where va.ejercicio = \",anio,\" and \",@corte,\"
-                group by va.clv_upp,va.upp,va.clv_ur,va.ur,
-                    va.clv_programa,va.programa
-                union all
-                select 
-                    va.clv_upp,va.upp,
-                    va.clv_ur,va.ur,
-                    va.clv_programa,va.programa,
-                    va.clv_subprograma,va.subprograma,
-                    '' clv_partida, 
-                    '' partida_especifica,
-                    sum(va.total) importe
-                from \",@tabla,\" va
-                where va.ejercicio = \",anio,\" and \",@corte,\"
-                group by va.clv_upp,va.upp,va.clv_ur,va.ur,
-                    va.clv_programa,va.programa,va.clv_subprograma,va.subprograma
-                union all
-                select 
-                    va.clv_upp,va.upp,
-                    va.clv_ur,va.ur,
-                    va.clv_programa,va.programa,
-                    va.clv_subprograma,va.subprograma,
-                    concat(
-                        va.clv_capitulo,
-                        va.clv_concepto,
-                        va.clv_partida_generica,
-                        va.clv_partida_especifica
-                    ) as clv_partida, va.partida_especifica,
-                    sum(va.total) importe
-                from \",@tabla,\" va
-                where va.ejercicio = \",anio,\" and \",@corte,\"
-                group by va.clv_upp,va.upp,va.clv_ur,va.ur,
-                    va.clv_programa,va.programa,va.clv_subprograma,va.subprograma,
-                    va.clv_capitulo,va.clv_concepto,va.clv_partida_generica,
-                    va.clv_partida_especifica,va.clv_tipo_gasto,va.partida_especifica
-                order by clv_upp,clv_ur,clv_programa,clv_subprograma,clv_partida
-            )t;
-            \");
-
+                ve.id,ve.clv_upp,ve.upp,ve.clv_ur,
+                ve.ur,ve.clv_programa,ve.programa,
+                ve.clv_subprograma,ve.subprograma,
+                ve.clv_proyecto,ve.proyecto
+            from v_epp ve 
+            where ve.ejercicio = ',anio,' and ve.deleted_at is null;
+            ');
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+            alter table aux_0 add primary key(id);
+        
+            set @query := concat('
+            create temporary table aux_1
+            select 
+                pt.epp_id,
+                pt.pos_pre_id,
+                pp.posicion_presupuestaria,
+                sum(pp.total) importe
+            from ',@tabla,' pp
+            join pp_identificadores pt on pp.',@id,' = pt.id
+            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            group by epp_id,pos_pre_id,posicion_presupuestaria;
+            ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table parte_0
+            select
+                clv_upp,upp,
+                clv_ur,ur,
+                clv_programa,programa,
+                clv_subprograma,subprograma,
+                posicion_presupuestaria clv_partida,
+                pp.partida_especifica partida_especifica,
+                importe
+            from aux_1 a1
+            join aux_0 a0 on a1.epp_id = a0.id
+            join posicion_presupuestaria pp on a1.pos_pre_id = pp.id
+            and pp.deleted_at is null;
+            
+            create temporary table parte_1
+            select
+                clv_upp,upp,
+                clv_ur,ur,
+                clv_programa,programa,
+                clv_subprograma,subprograma,
+                sum(importe) importe
+            from parte_0
+            group by clv_upp,upp,clv_ur,ur,clv_programa,
+            programa,clv_subprograma,subprograma;
+            
+            create temporary table parte_2
+            select
+                clv_upp,upp,
+                clv_ur,ur,
+                clv_programa,programa,
+                sum(importe) importe
+            from parte_1
+            group by clv_upp,upp,clv_ur,ur,clv_programa,programa;
+            
+            create temporary table parte_3
+            select
+                clv_upp,upp,
+                clv_ur,ur,
+                sum(importe) importe
+            from parte_2
+            group by clv_upp,upp,clv_ur,ur;
+            
+            create temporary table parte_4
+            select
+                clv_upp,upp,
+                sum(importe) importe
+            from parte_3
+            group by clv_upp,upp;
+            
+            select 
+                case when clv_ur != '' then '' else clv_upp end clv_upp,
+                case when clv_ur != '' then '' else upp end upp,
+                case when clv_programa != '' then '' else clv_ur end clv_ur,
+                case when clv_programa != '' then '' else ur end ur,
+                case when clv_subprograma != '' then '' else clv_programa end clv_programa,
+                case when clv_subprograma != '' then '' else programa end programa,
+                case when clv_partida != '' then '' else clv_subprograma end clv_subprograma,
+                case when clv_partida != '' then '' else subprograma end subprograma,
+                clv_partida,partida_especifica,importe
+            from (
+                select 
+                    clv_upp,upp,
+                    '' clv_ur,'' ur,
+                    '' clv_programa,'' programa,
+                    '' clv_subprograma,'' subprograma,
+                    '' clv_partida,'' partida_especifica,
+                    importe
+                from parte_4
+                union all
+                select 
+                    clv_upp,upp,
+                    clv_ur,ur,
+                    '' clv_programa,'' programa,
+                    '' clv_subprograma,'' subprograma,
+                    '' clv_partida,'' partida_especifica,
+                    importe
+                from parte_3
+                union all
+                select 
+                    clv_upp,upp,
+                    clv_ur,ur,
+                    clv_programa,programa,
+                    '' clv_subprograma,'' subprograma,
+                    '' clv_partida,'' partida_especifica,
+                    importe
+                from parte_2
+                union all
+                select 
+                    clv_upp,upp,
+                    clv_ur,ur,
+                    clv_programa,programa,
+                    clv_subprograma,subprograma,
+                    '' clv_partida,'' partida_especifica,
+                    importe
+                from parte_1
+                union all
+                select * from parte_0
+                order by clv_upp,clv_ur,clv_programa,
+                clv_subprograma,clv_partida
+            )t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table parte_0;
+            drop temporary table parte_1;
+            drop temporary table parte_2;
+            drop temporary table parte_3;
+            drop temporary table parte_4;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_1(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
-            set @corte := 'vppa.deleted_at is null';
+            set @tabla := 'programacion_presupuesto';
+            set @catalogo := 'catalogo';
+            set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @tabla := 'programacion_presupuesto_hist';
+                set @catalogo := 'catalogo_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
-            set @query := CONCAT(
-                ' select 
-                        upp,
-                        importe
-                    from (
-                        select 
-                            vppa.clv_upp,
-                            vppa.upp,
-                            sum(total) importe
-                        from ',@tabla,' vppa
-                        where ejercicio = ',anio,' and ',@corte,'
-                        group by clv_upp,upp
-                        order by clv_upp
-                    ) t');
-
-            prepare stmt  from @query;
+        
+            set @query := CONCAT('
+                select
+                    upp,
+                    case
+                        when importe is null then 0 
+                        else importe 
+                    end importe
+                from (
+                    select 
+                        c.clave clv_upp,
+                        c.descripcion upp,
+                        sum(total) importe
+                    from ',@catalogo,' c
+                    left join ',@tabla,' pp on c.clave = pp.upp 
+                    and pp.',@corte,' and pp.ejercicio = ',anio,'
+                    where c.ejercicio = ',anio,'
+                    and c.deleted_at is null and c.grupo_id = 6
+                    group by c.clave,c.descripcion
+                    order by clv_upp
+                )t;
+            ');
+        
+            prepare stmt from @query;
             execute stmt;
             deallocate prepare stmt;
         END;");
@@ -170,7 +220,7 @@ return new class extends Migration {
                 set @tabla := 'programacion_presupuesto_hist pp';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
             set @query := CONCAT('
                 select
                     concepto,
@@ -184,32 +234,32 @@ return new class extends Migration {
                         sum(pp.total) importe
                     from ',@tabla,'
                     where pp.clasificacion_administrativa in (\"21111\",\"21120\")
-                        and pp.ejercicio = ',anio,' and ',@corte,'
+                    and pp.ejercicio = ',anio,' and ',@corte,'
                     union all
                     select 
                         \"Poder Legislativo\" concepto,
                         sum(pp.total) importe
                     from ',@tabla,'
                     where pp.clasificacion_administrativa in (\"21112\")
-                        and pp.ejercicio = ',anio,' and ',@corte,'
+                    and pp.ejercicio = ',anio,' and ',@corte,'
                     union all
                     select 
                         \"Poder Judicial\" concepto,
                         sum(pp.total) importe
                     from ',@tabla,'
                     where pp.clasificacion_administrativa in (\"21113\")
-                        and pp.ejercicio = ',anio,' and ',@corte,'
+                    and pp.ejercicio = ',anio,' and ',@corte,'
                     union all
                     select 
                         \"Organos Autónomos\" concepto,
                         sum(pp.total) importe
                     from ',@tabla,'
                     where pp.clasificacion_administrativa in (\"21114\")
-                        and pp.ejercicio = ',anio,' and ',@corte,'
+                    and pp.ejercicio = ',anio,' and ',@corte,'
                     group by concepto
                 )  tabla;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
@@ -223,7 +273,7 @@ return new class extends Migration {
                 set @tabla := 'programacion_presupuesto_hist pp';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
             set @query = CONCAT('
                 select  
                     \"Entidades Paraestatales y Fideicomisos No Empresariales y No Financieros\" concepto,
@@ -238,7 +288,7 @@ return new class extends Migration {
                     0 importe
                 union all
                 select
-                    \"Entidades Paraestatales Empresariales No Financieras con Participaciones Estatal Mayoritaria\" concepto,
+                \"Entidades Paraestatales Empresariales No Financieras con Participaciones Estatal Mayoritaria\" concepto,
                     0 importe
                 union all
                 select
@@ -247,7 +297,7 @@ return new class extends Migration {
                 union all
                 select
                     \"Entidades Pararestatales Empresariales Financieras Monetarias con Participación Estatal Mayoritaria\" concepto,
-                    0 importe
+                       0 importe
                 union all
                 select
                     \"Entidades Pararestatales Empresariales Financieras No Monetarias con Participación Estatal Mayoritaria\" concepto,
@@ -257,7 +307,7 @@ return new class extends Migration {
                     \"Fideicomisos Financieros Públicos con Participación Estatal Mayoritaria\" concepto,
                     0 importe;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
@@ -265,223 +315,300 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_2(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
+            set @catalogo := 'catalogo';
             set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @tabla := 'programacion_presupuesto_hist';
+                set @catalogo := 'catalogo_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
-            set @query := CONCAT(\"
-			select 
-				case 
-					when funcion != '' then ''
-					else finalidad
-				end finalidad,
-				funcion,
-				importe
-			from (
-				select 
-					ff.clv_finalidad,
-					ff.finalidad,
-					'' clv_funcion,
-					'' funcion,
-					sum(pa.total) importe
-				from (
-					select distinct 
-						clv_finalidad,
-						finalidad
-					from v_epp ve where ejercicio = \",anio,\" and deleted_at is null
-				) ff
-				left join \",@tabla,\" pa on ff.clv_finalidad = pa.clv_finalidad 
-				and pa.ejercicio = \",anio,\" and \",@corte,\"
-				group by ff.clv_finalidad,ff.finalidad
-				union all
-				select 
-					ff.clv_finalidad,
-					ff.finalidad,
-					ff.clv_funcion,
-					ff.funcion,
-					sum(pa.total) importe
-				from (
-					select distinct
-						ve.clv_finalidad,
-						ve.finalidad,
-						ve.clv_funcion,
-						ve.funcion
-					from v_epp ve where ejercicio = \",anio,\" and deleted_at is null
-				) ff
-				left join \",@tabla,\" pa on ff.clv_funcion = pa.clv_funcion
-					and ff.funcion = pa.funcion and pa.ejercicio = \",anio,\" and \",@corte,\"
-				group by ff.clv_finalidad,ff.finalidad,ff.clv_funcion,ff.funcion
-				order by clv_finalidad,clv_funcion
-			)t;
-            \");
-
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+            drop temporary table if exists aux_3;
+                    
+            set @query := CONCAT('
+            create temporary table aux_0
+            select distinct
+                c0.clave clv_finalidad,
+                c0.descripcion finalidad,
+                c1.clave clv_funcion,
+                c1.descripcion funcion
+            from epp e
+            join ',@catalogo,' c0 on e.finalidad_id = c0.id
+            join ',@catalogo,' c1 on e.funcion_id = c1.id
+            where e.ejercicio = ',anio,' and e.deleted_at is null;
+            ');
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            set @query := concat('
+            create temporary table aux_1
+            select 
+                a0.clv_finalidad,
+                a0.finalidad,
+                a0.clv_funcion,
+                a0.funcion,
+                sum(pp.total) importe
+            from ',@tabla,' pp
+            join aux_0 a0 on pp.finalidad = a0.clv_finalidad 
+            and pp.funcion = a0.clv_funcion
+            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            group by a0.clv_finalidad,a0.finalidad,a0.clv_funcion,a0.funcion;
+            ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table aux_2
+            select 
+                clv_finalidad,
+                finalidad,
+                sum(importe) importe
+            from aux_1
+            group by clv_finalidad,finalidad;
+            
+            select 
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                funcion,
+                importe
+            from (
+                select 
+                    clv_finalidad,finalidad,
+                    '' clv_funcion,'' funcion,
+                    importe
+                from aux_2
+                union all
+                select * from aux_1
+                order by clv_finalidad,clv_funcion
+            )t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table aux_2;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_3(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado pa';
-            set @corte := 'pa.deleted_at is null';
-            if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist pa';
-                set @corte := CONCAT('pa.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+            set @tabla := 'programacion_presupuesto';
+            set @corte := 'deleted_at is null';
+            if(corte is not null) then
+                set @tabla := 'programacion_presupuesto_hist';
+                set @corte := concat('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
-            set @query := CONCAT(\"
-            select 
-                abuelo,
-                padre,
-                hijo,
+            
+            set @tablaWith := concat(\"
+                with aux as (
+                    select 
+                        min(tc.id) id,
+                        'Programas' abuelo,
+                        tc.descripcion padre,
+                        tc.descripcion_conac hijo,
+                        sum(pp.total) importe
+                    from tipologia_conac tc 
+                    left join \",@tabla,\" pp on tc.clave_conac = pp.tipologia_conac
+                    and pp.ejercicio = \",anio,\" and pp.\",@corte,\"
+                    where tc.deleted_at is null and tc.clave_conac is not null
+                    group by tc.descripcion,tc.descripcion_conac
+                    union all
+                    select 
+                        min(tc.id) id,
+                        tc.descripcion abuelo,
+                        '' padre,
+                        '' hijo,
+                        sum(pp.total) importe
+                    from tipologia_conac tc 
+                    left join \",@tabla,\" pp on tc.clave = pp.tipologia_conac
+                    and pp.ejercicio = \",anio,\" and pp.\",@corte,\"
+                    where tc.deleted_at is null and tc.clave is not null
+                    group by tc.descripcion
+                    order by id
+                )\");
+            
+            set @selectWith := \"select 
                 case 
+                    when padre != '' then ''
+                    else abuelo
+                end abuelo,
+                case 
+                    when hijo != '' then ''
+                    else padre
+                end padre,
+                hijo,
+                case
                     when importe is null then 0
                     else importe
                 end importe
             from (
                 select 
-                    'Programa' abuelo,
+                    min(id) id,
+                    abuelo,
                     '' padre,
                     '' hijo,
-                    sum(total) importe
-                from tipologia_conac tc 
-                left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                    and pa.ejercicio = \",anio,\" and \",@corte,\"
-                where tc.clave_conac is not null and tc.deleted_at is null
+                    sum(importe) importe
+                from aux
+                where abuelo = 'Programas'
+                group by abuelo
                 union all
                 select 
-                    '' abuelo,
-                    case 
-                        when hijo != '' then ''
-                        else padre
-                    end padre,
-                    hijo,
-                    importe
-                from (
-                    select 
-                        min(tc.id) orden,
-                        tc.descripcion padre,
-                        '' hijo,
-                        sum(pa.total) importe
-                    from tipologia_conac tc 
-                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                        and pa.ejercicio = \",anio,\" and \",@corte,\"
-                    where tc.clave_conac is not null and tc.deleted_at is null
-                    group by tc.descripcion
-                    union all
-                    select 
-                        min(tc.id) orden,
-                        tc.descripcion padre,
-                        tc.descripcion_conac hijo,
-                        sum(pa.total) importe
-                    from tipologia_conac tc 
-                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                        and pa.ejercicio = \",anio,\" and \",@corte,\"
-                    where tc.clave_conac is not null and tc.deleted_at is null
-                    group by tc.descripcion,tc.descripcion_conac
-                    order by orden,padre,hijo
-                )t
-                union all 
-                select 
-                    tc.descripcion abuelo,
-                    '' padre,
+                    min(id) id,
+                    abuelo,
+                    padre,
                     '' hijo,
-                    sum(total) importe
-                from tipologia_conac tc
-                left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac
-                    and pa.ejercicio = \",anio,\" and \",@corte,\"
-                where tc.tipo = 1 and tc.deleted_at is null
-                group by tc.descripcion
-            )t2;
-            \");
-
-            prepare stmt  from @query;
+                    sum(importe) importe
+                from aux
+                where padre != ''
+                group by abuelo,padre
+                union all
+                select * from aux
+                order by id,abuelo,padre,hijo
+            )t;\";
+        
+            set @query := concat(@tablaWith,@selectWith);
+            
+            prepare stmt from @query;
             execute stmt;
             deallocate prepare stmt;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_4(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-                
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+                        
             set @query := CONCAT('
+            create temporary table aux_0
+            select 
+                po.clv_capitulo,
+                po.capitulo,
+                po.clv_concepto,
+                po.concepto,
+                sum(pp.total) total,
+                sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
+                sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
+                sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre 
+            from (
+                select distinct 
+                    concat(
+                        clv_capitulo,clv_concepto
+                    ) llave,
+                    po.clv_capitulo,
+                    po.capitulo,
+                    po.clv_concepto,
+                    po.concepto 
+                from posicion_presupuestaria po
+                where deleted_at is null
+            ) po
+            left join ',@tabla,' pp on substring(pp.posicion_presupuestaria,1,2) = po.llave
+            and pp.ejercicio = ',anio,' and pp.',@corte,'
+            group by po.clv_capitulo,po.capitulo,po.clv_concepto,po.concepto
+            order by clv_capitulo,clv_concepto;
+            ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table aux_1
+            select
+                clv_capitulo,
+                capitulo,
+                sum(total) total,
+                sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
+                sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
+                sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
+            from aux_0
+            group by clv_capitulo,capitulo;
+            
+            select 
+                case 
+                    when concepto != '' then ''
+                    else capitulo
+                end capitulo,
+                concepto partida_generica,
+                case when total is null then 0 else total end total,
+                case when enero is null then 0 else enero end enero,
+                case when febrero is null then 0 else febrero end febrero,
+                case when marzo is null then 0 else marzo end marzo,
+                case when abril is null then 0 else abril end abril,
+                case when mayo is null then 0 else mayo end mayo,
+                case when junio is null then 0 else junio end junio,
+                case when julio is null then 0 else julio end julio,
+                case when agosto is null then 0 else agosto end agosto,
+                case when septiembre is null then 0 else septiembre end septiembre,
+                case when octubre is null then 0 else octubre end octubre,
+                case when noviembre is null then 0 else noviembre end noviembre,
+                case when diciembre is null then 0 else diciembre end diciembre
+            from (
+                select *
+                from aux_0
+                union all
                 select 
-                    case 
-                        when partida_generica != \"\" then \"\"
-                        else capitulo
-                    end capitulo,
-                    partida_generica,
+                    clv_capitulo,capitulo,
+                    '' clv_concepto,'' concepto,
                     total,
                     enero,febrero,marzo,abril,mayo,
                     junio,julio,agosto,septiembre,
                     octubre,noviembre,diciembre
-                from (
-                select 
-					vppa.clv_capitulo,
-                    vppa.capitulo,
-					\"\" clv_partida_generica,
-                    \"\" partida_generica,
-                    sum(total) total,
-                    sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
-                    sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
-                    sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
-                from ',@tabla,' vppa
-                where ejercicio = ',anio,' and ',@corte,'
-                group by clv_capitulo,capitulo
-                union all
-                select 
-					vppa.clv_capitulo,
-                    vppa.capitulo,
-					vppa.clv_partida_generica,
-                    vppa.partida_generica,
-                    sum(total) total,
-                    sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
-                    sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
-                    sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
-                from ',@tabla,' vppa
-                where ejercicio = ',anio,' and ejercicio = ',anio,' and ',@corte,'
-                group by clv_capitulo,capitulo,clv_partida_generica,partida_generica
-                order by clv_capitulo,clv_partida_generica
-                ) tabla;
-            ');
-
-            prepare stmt  from @query;
-            execute stmt;
-            deallocate prepare stmt;
+                from aux_1
+                order by clv_capitulo,clv_concepto
+            )t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_5(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
-            if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+             if (corte is not null) then 
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
             set @query := CONCAT('
+            select 
+                capitulo,
+                case
+                    when importe is null then 0 
+                    else importe 
+                end importe
+            from (
                 select 
-                    capitulo,importe
+                    t.clv_capitulo,
+                    t.capitulo,
+                    sum(pa.total) importe
                 from (
-                    select 
-                        vppa.clv_capitulo,
-                        vppa.capitulo,
-                        sum(vppa.total) importe
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_capitulo,capitulo
-                    order by clv_capitulo
-                )t;
+                    select distinct
+                        pp.clv_capitulo,
+                        pp.capitulo
+                    from posicion_presupuestaria pp
+                    where pp.deleted_at is null
+                )t
+                left join ',@tabla,' pa
+                on t.clv_capitulo = substring(pa.posicion_presupuestaria,1,1)
+                and pa.',@corte,' and pa.ejercicio = ',anio,'
+                group by t.clv_capitulo,t.capitulo
+                order by clv_capitulo
+            )t2;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
@@ -489,61 +616,68 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_a_num_6(in anio int, in corte date)
         begin
-            set @tabla := 'programacion_presupuesto pp';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'programacion_presupuesto_hist pp';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
-            set @query := CONCAT('
+        
+            set @consulta := concat('
+            select 
+                pos,
+                sum(total) importe
+            from (
                 select 
-                    conceptos,
-                    importe
-                from (
-                    select 
-						1 orden,
-                        \"Gasto Corriente\" conceptos,
-                        sum(pp.total) importe
-                    from ',@tabla,'
-                    where (substr(pp.posicion_presupuestaria,1,2)*1) between 10 and 49
-                    and (substr(pp.posicion_presupuestaria,1,2)*1) not between 45 and 47
-                    and pp.ejercicio = ',anio,' and ',@corte,'
-                    union all 
-                    select 
-						2 orden,
-                        \"Gasto Capital\" conceptos,
-                        sum(pp.total) importe
-                    from ',@tabla,'
-                    where (substr(pp.posicion_presupuestaria,1,2)*1) between 50 and 79
-                    and pp.ejercicio = ',anio,' and ',@corte,'
-                    union all 
-                    select 
-						3 orden,
-                        \"Amortizacion de la Deuda y Disminucion de Pasivos\" conceptos,
-                        sum(pp.total) importe
-                    from ',@tabla,'
-                    where (substr(pp.posicion_presupuestaria,1,2)*1) between 90 and 99
-                    and pp.ejercicio = ',anio,' and ',@corte,'
-                    union all 
-                    select 
-						4 orden,
-                        \"Pensiones y Jubilaciones\" conceptos,
-                        sum(pp.total) importe
-                    from ',@tabla,'
-                    where (substr(pp.posicion_presupuestaria,1,2)*1) between 80 and 89
-                    and pp.ejercicio = ',anio,' and ',@corte,'
-                    union all 
-					select 
-						5 orden,
-                        \"Participaciones\" conceptos,
-                        sum(pp.total) importe
-                    from ',@tabla,'
-                    where (substr(pp.posicion_presupuestaria,1,2)*1) in (45,47)
-                    and pp.ejercicio = ',anio,' and ',@corte,'
-                ) tabla;
+                    (substring(pp.posicion_presupuestaria,1,2)*1) pos, 
+                    pp.total
+                from ',@tabla,' pp
+                where ejercicio = ',anio,' and pp.',@corte,'
+            )t
+            group by pos order by pos
             ');
-
+        
+            set @query := concat(\"
+            with aux as (\",@consulta,\")
+            select 
+                conceptos,
+                case 
+                    when importe is null then 0
+                    else importe
+                end importe
+            from (
+            select 
+                'Gasto Corriente' conceptos,
+                sum(importe) importe
+            from aux
+            where pos between 10 and 49
+            and pos not in (45)
+            union all
+            select 
+                'Gasto Capital' conceptos,
+                sum(importe) importe
+            from aux
+            where pos between 50 and 79
+            union all
+            select 
+                'Amortizaciones' conceptos,
+                sum(importe) importe
+            from aux
+            where pos between 90 and 99
+            union all
+            select 
+                'Participaciones' conceptos,
+                sum(importe) importe
+            from aux
+            where pos between 80 and 89
+            union all
+            select 
+                'Pensiones y Jubilaciones' conceptos,
+                sum(importe) importe
+            from aux
+            where pos = 45)t;
+            \");
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
@@ -551,237 +685,366 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_1(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @catalogo := 'catalogo';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @catalogo := 'catalogo_hist';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
             set @query := CONCAT('
+            with aux as (
+                select 
+                    pp.etiquetado,
+                    c.clave clv_upp,
+                    c.descripcion upp,
+                    pp.total
+                from ',@catalogo,' c 
+                join ',@tabla,' pp on c.clave = pp.upp
+                and pp.',@corte,' and pp.ejercicio = ',anio,'
+                where c.deleted_at is null and c.ejercicio = ',anio,' and c.grupo_id = 6
+            )
+            select 
+                case 
+                    when upp != \"\" then \"\"
+                    when etiquetado = 1 then \"Gasto No Etiquetado\"
+                    when etiquetado = 2 then \"Gasto Etiquetado\"
+                end etiquetado,
+                upp,
+                importe
+            from (
                 select 
                     etiquetado,
+                    \"\" clv_upp,
+                    \"\" upp,
+                    sum(total) importe
+                from aux
+                group by etiquetado
+                union all
+                select 
+                    etiquetado,
+                    clv_upp,
                     upp,
-                    importe
-                from (
-                    select 
-                        case 
-                            when upp != \"\" then \"\"
-                            when etiquetado = \"Etiquetado\" then \"Gasto Etiquetado\"
-                            else \"Gasto No Etiquetado\"
-                        end etiquetado,
-                        clv_upp,
-                        upp,
-                        importe
-                    from (
-                        select 
-                            vppa.etiquetado,
-                            \"\" clv_upp,
-                            \"\" upp,
-                            sum(total) importe
-                        from ',@tabla,' vppa
-                        where ejercicio = ',anio,' and ',@corte,'
-                        group by etiquetado 
-                        union all
-                        select 
-                            vppa.etiquetado,
-                            vppa.clv_upp,
-                            vppa.upp,
-                            sum(total) importe
-                        from ',@tabla,' vppa
-                        where ejercicio = ',anio,' and ',@corte,'
-                        group by vppa.etiquetado,vppa.clv_upp,vppa.upp
-                        order by etiquetado desc
-                    ) tabla
-                ) t;
+                    sum(total) importe
+                from aux
+                group by etiquetado,clv_upp,upp
+                order by etiquetado,clv_upp,upp
+            )t;
             ');
-
-            prepare stmt from @query;
+        
+            prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_2(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
+            set @catalogo := 'catalogo';
             set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @tabla := 'programacion_presupuesto_hist';
+                set @catalogo := 'catalogo_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-            
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+            drop temporary table if exists aux_3;
+                    
             set @query := CONCAT('
-                select 
-                    case 
-                        when finalidad != \"\" then \"\"
-                        when etiquetado = \"Etiquetado\" then \"Gasto Etiquetado\"
-                        else \"Gasto No Etiquetado\"
-                    end etiquetado,
-                    case 
-                        when funcion != \"\" then \"\"
-                        else finalidad
-                    end finalidad,
-                    funcion,
-                    importe
-                from (
-                    select 
-                        etiquetado,
-						\"\" clv_finalidad,
-                        \"\" finalidad,
-                        \"\" funcion,
-                        sum(total) importe
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by etiquetado
-                    union all
-                    select 
-                        etiquetado,
-						clv_finalidad,
-                        finalidad,
-                        \"\" funcion,
-                        sum(total) importe
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by etiquetado,clv_finalidad,finalidad
-                    union all
-                    select 
-                        etiquetado,
-						clv_finalidad,
-                        finalidad,
-                        funcion,
-                        sum(total) importe
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by etiquetado,clv_finalidad,finalidad,funcion
-    				order by etiquetado desc,clv_finalidad,finalidad,funcion
-                ) tabla;
+            create temporary table aux_0
+            select distinct
+                c0.clave clv_finalidad,
+                c0.descripcion finalidad,
+                c1.clave clv_funcion,
+                c1.descripcion funcion
+            from epp e
+            join ',@catalogo,' c0 on e.finalidad_id = c0.id
+            join ',@catalogo,' c1 on e.funcion_id = c1.id
+            where e.ejercicio = ',anio,' and e.deleted_at is null;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            set @query := concat('
+            create temporary table aux_1
+            select 
+                pp.etiquetado,
+                a0.clv_finalidad,
+                a0.finalidad,
+                a0.clv_funcion,
+                a0.funcion,
+                sum(pp.total) importe
+            from ',@tabla,' pp
+            join aux_0 a0 on pp.finalidad = a0.clv_finalidad 
+            and pp.funcion = a0.clv_funcion
+            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            group by etiquetado,a0.clv_finalidad,a0.finalidad,a0.clv_funcion,a0.funcion;
+            ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table aux_2
+            select 
+                etiquetado,
+                clv_finalidad,
+                finalidad,
+                sum(importe) importe
+            from aux_1
+            group by etiquetado,clv_finalidad,finalidad;
+            
+            create temporary table aux_3
+            select 
+                etiquetado,
+                sum(importe) importe
+            from aux_2
+            group by etiquetado;
+            
+            select 
+                case 
+                    when finalidad != '' then ''
+                    when etiquetado = 1 then 'Gasto No Etiquetado'
+                    when etiquetado = 2 then 'Gasto Etiquetado'
+                end etiquetado,
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                funcion,
+                importe
+            from (
+                select 
+                    etiquetado,
+                    '' clv_finalidad,'' finalidad,
+                    '' clv_funcion,'' funcion,
+                    importe
+                from aux_3
+                union all
+                select 
+                    etiquetado,
+                    clv_finalidad,finalidad,
+                    '' clv_funcion,'' funcion,
+                    importe
+                from aux_2
+                union all
+                select * from aux_1
+                order by etiquetado,clv_finalidad,clv_funcion
+            )t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table aux_2;
+            drop temporary table aux_3;
         END;");
 
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_3(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
+            set @catalogo := 'catalogo';
             set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @tabla := 'programacion_presupuesto_hist';
+                set @catalogo := 'catalogo_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+            drop temporary table if exists aux_3;
+                    
             set @query := CONCAT('
-                select 
-                    case 
-                        when finalidad != \"\" then \"\"
-                        when etiquetado = \"Etiquetado\" then \"Gasto Etiquetado\"
-                        else \"Gasto No Etiquetado\"
-                    end etiquetado,
-                    case 
-                        when funcion != \"\" then \"\"
-                        else finalidad
-                    end finalidad,
-                    funcion,
-                    importe
-                from (
-                    select 
-                        etiquetado,
-						\"\" clv_finalidad,
-                        \"\" finalidad,
-                        \"\" funcion,
-                        sum(total) importe
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by etiquetado
-                    union all
-                    select 
-                        etiquetado,
-						clv_finalidad,
-                        finalidad,
-                        \"\" funcion,
-                        sum(total) importe
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by etiquetado,clv_finalidad,finalidad
-                    union all
-                    select 
-                        etiquetado,
-						clv_finalidad,
-                        finalidad,
-                        funcion,
-                        sum(total) importe
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by etiquetado,clv_finalidad,finalidad,funcion
-                    order by etiquetado desc,clv_finalidad,finalidad,funcion
-                ) tabla;
+            create temporary table aux_0
+            select distinct
+                c0.clave clv_finalidad,
+                c0.descripcion finalidad,
+                c1.clave clv_funcion,
+                c1.descripcion funcion
+            from epp e
+            join ',@catalogo,' c0 on e.finalidad_id = c0.id
+            join ',@catalogo,' c1 on e.funcion_id = c1.id
+            where e.ejercicio = ',anio,' and e.deleted_at is null;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            set @query := concat('
+            create temporary table aux_1
+            select 
+                pp.etiquetado,
+                a0.clv_finalidad,
+                a0.finalidad,
+                a0.clv_funcion,
+                a0.funcion,
+                sum(pp.total) importe
+            from ',@tabla,' pp
+            join aux_0 a0 on pp.finalidad = a0.clv_finalidad 
+            and pp.funcion = a0.clv_funcion
+            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            group by etiquetado,a0.clv_finalidad,a0.finalidad,a0.clv_funcion,a0.funcion;
+            ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table aux_2
+            select 
+                etiquetado,
+                clv_finalidad,
+                finalidad,
+                sum(importe) importe
+            from aux_1
+            group by etiquetado,clv_finalidad,finalidad;
+            
+            create temporary table aux_3
+            select 
+                etiquetado,
+                sum(importe) importe
+            from aux_2
+            group by etiquetado;
+            
+            select 
+                case 
+                    when finalidad != '' then ''
+                    when etiquetado = 1 then 'Gasto No Etiquetado'
+                    when etiquetado = 2 then 'Gasto Etiquetado'
+                end etiquetado,
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                funcion,
+                importe
+            from (
+                select 
+                    etiquetado,
+                    '' clv_finalidad,'' finalidad,
+                    '' clv_funcion,'' funcion,
+                    importe
+                from aux_3
+                union all
+                select 
+                    etiquetado,
+                    clv_finalidad,finalidad,
+                    '' clv_funcion,'' funcion,
+                    importe
+                from aux_2
+                union all
+                select * from aux_1
+                order by etiquetado,clv_finalidad,clv_funcion
+            )t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table aux_2;
+            drop temporary table aux_3;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_4(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
-            set @query := CONCAT('
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+        
+            set @query := CONCAT(\"
+                create temporary table aux_0
                 select 
                     case 
-                        when capitulo != \"\" then \"\"
-                        when etiquetado = \"Etiquetado\" then \"Gasto Etiquetado\"
-                            else \"Gasto No Etiquetado\"
+                        when pa.etiquetado = 1 then 'Gasto No Etiquetado'
+                        else 'Gasto Etiquetado'
                     end etiquetado,
-                    case 
-                        when concepto != \"\" then \"\"
-                        else capitulo
-                    end capitulo,
-                    concepto,
-                    importe
+                    pp.clv_capitulo,
+                    pp.capitulo,
+                    pp.clv_concepto,
+                    pp.concepto,
+                    sum(pa.total) importe
                 from (
-                    select 
-                        etiquetado,
-						\"\" clv_capitulo,
-                        \"\" capitulo,
-                        \"\" concepto,
-                        sum(total) importe
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by etiquetado
-                    union all
-                    select 
-                        etiquetado,
-						clv_capitulo,
-                        capitulo,
-                        \"\" concepto,
-                        sum(total) importe
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by etiquetado,clv_capitulo,capitulo
-                    union all
-                    select 
-                        etiquetado,
-						clv_capitulo,
-                        capitulo,
-                        concepto,
-                        sum(total) importe
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by etiquetado,clv_capitulo,capitulo,concepto
-                    order by etiquetado desc,clv_capitulo,capitulo,concepto
-                ) tabla;
-            ');
-
+                    select distinct 
+                        pp.clv_capitulo,
+                        pp.capitulo,
+                        pp.clv_concepto,
+                        pp.concepto
+                    from posicion_presupuestaria pp
+                    where pp.deleted_at is null
+                ) pp
+                join \",@tabla,\" pa on pp.clv_capitulo = substring(pa.posicion_presupuestaria,1,1)
+                and pp.clv_concepto = substring(pa.posicion_presupuestaria,2,1)
+                and pa.ejercicio = \",anio,\" and pa.\",@corte,\"
+                group by pa.etiquetado,pp.clv_capitulo,pp.capitulo,pp.clv_concepto,pp.concepto;
+            \");
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            create temporary table aux_1
+            select 
+                etiquetado,
+                clv_capitulo,
+                capitulo,
+                sum(importe) importe
+            from aux_0
+            group by etiquetado,clv_capitulo,capitulo;
+            
+            create temporary table aux_2
+            select 
+                etiquetado,
+                sum(importe) importe
+            from aux_1
+            group by etiquetado;
+            
+            select 
+                case 
+                    when capitulo != '' then ''
+                    else etiquetado
+                end etiquetado,
+                case 
+                    when concepto != '' then ''
+                    else capitulo
+                end capitulo,
+                concepto,
+                importe
+            from (
+                select *
+                from aux_0 a0
+                union all 
+                select 
+                    etiquetado,
+                    clv_capitulo,capitulo,
+                    '' clv_concepto,'' concepto,
+                    importe 
+                from aux_1 a1
+                union all
+                select 
+                    etiquetado,
+                    '' clv_capitulo,'' capitulo,
+                    '' clv_concepto,'' concepto,
+                    importe
+                from aux_2
+                order by etiquetado,clv_capitulo,clv_concepto
+            )t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table aux_2;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_10(in anio int, in corte date)
@@ -792,215 +1055,262 @@ return new class extends Migration {
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
             set @query := CONCAT('
                 select 
-                    concepto,
-                    sum(importe) importe
+                    sector concepto,
+                    case
+                        when importe is null then 0 
+                        else importe 
+                    end importe
                 from (
-                    select 
-                        sla.sector concepto,
-                        pp.total importe,
-                        pp.ejercicio,
-                        pp.deleted_at
-                    from ',@tabla,' pp 
-                    join (
-                        select 
-                            c.clave clv_linea_accion,
-                            sla.sector
-                        from sector_linea_accion sla
-                        join catalogo c on sla.linea_accion_id = c.id
-                    ) sla on pp.linea_accion = sla.clv_linea_accion
-                )t
-                where ejercicio = ',anio,' and ',@corte,'
-                group by concepto
+                select 
+                    sl.clv_sector,
+                    sl.sector,
+                    sum(pp.total) importe
+                from sector_linea_accion sl
+                left join ',@tabla,' pp 
+                on sl.clv_linea_accion = pp.linea_accion
+                and pp.ejercicio = ',anio,' and pp.',@corte,'
+                where sl.deleted_at is null
+                group by sl.clv_sector,sl.sector
+                order by clv_sector)t;
             ');	
-
-            prepare stmt  from @query;
+        
+            prepare stmt from @query;
             execute stmt;
             deallocate prepare stmt;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_1(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado vppa';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
-            set @fromW := CONCAT('from ',@tabla,' where ejercicio = ',anio,' and ',@corte);
+            set @catalogo := 'catalogo';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist vppa';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
-                set @fromW := CONCAT('from ',@tabla,' where ejercicio = ',anio,' and ',@corte);
+                set @catalogo := 'catalogo_hist';
             end if;
-            
-            set @query := CONCAT('
-                select
-                    case 
-                        when subsecretaria != \"\" then \"\"
-                        else upp
-                    end upp,
-                    case 
-                        when ur != \"\" then \"\"
-                        else subsecretaria
-                    end subsecretaria,
-                    case 
-                        when fuente_financiamiento != \"\" then \"\"
-                        else ur
-                    end ur,
-                    fuente_financiamiento,
-                    importe
-                from (
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        \"\"subsecretaria,
-                        \"\" ur,
-                        \"\" fuente_financiamiento,
-                        sum(total) importe
-                    ',@fromW,'
-                    group by clv_upp,vppa.upp
-                    union all
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        subsecretaria,
-                        \"\" ur,
-                        \"\" fuente_financiamiento,
-                        sum(total) importe
-                    ',@fromW,'
-                    group by clv_upp,vppa.upp,subsecretaria
-                    union all
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        subsecretaria,
-                        ur,
-                        \"\" fuente_financiamiento,
-                        sum(total) importe
-                    ',@fromW,'
-                    group by clv_upp,vppa.upp,subsecretaria,ur
-                    union all
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        subsecretaria,
-                        ur,
-                        fuente_financiamiento,
-                        sum(total) importe
-                    ',@fromW,'
-                    group by clv_upp,vppa.upp,subsecretaria,ur,fuente_financiamiento
-                    order by upp,subsecretaria,ur,fuente_financiamiento
-                ) tabla;
-            ');
-
-            prepare stmt  from @query;
+        
+            DROP TEMPORARY table if exists aux_0;
+            DROP TEMPORARY TABLE if exists aux_1;
+            DROP TEMPORARY TABLE if exists aux_2;
+            DROP TEMPORARY TABLE if exists aux_3;
+                    
+            set @tablas := CONCAT('
+            create temporary table aux_0 (
+                select 
+                    concat(
+                        c0.clave,\" \",
+                        c0.descripcion
+                    ) upp,
+                    c1.descripcion subsecretaria,
+                    c2.descripcion ur,
+                    f.fuente_financiamiento,
+                    sum(pp.total) importe
+                from pp_identificadores pt
+                join ',@tabla,' pp on pt.id = pp.id
+                    and pp.',@corte,' and pp.ejercicio = ',anio,'
+                join fondo f on pt.fondo_id = f.id
+                join epp e on pt.epp_id = e.id 
+                    and e.ejercicio = ',anio,' and e.deleted_at is null
+                join ',@catalogo,' c0 on e.upp_id = c0.id 
+                join ',@catalogo,' c1 on e.subsecretaria_id = c1.id 
+                join ',@catalogo,' c2 on e.ur_id = c2.id
+                group by c0.clave,c0.descripcion,c1.descripcion,c2.descripcion,f.fuente_financiamiento
+            );');
+        
+            prepare stmt from @tablas;
             execute stmt;
             deallocate prepare stmt;
+        
+            CREATE TEMPORARY TABLE aux_1 AS 
+            (SELECT upp,subsecretaria,ur,sum(importe) importe FROM aux_0 GROUP BY upp,subsecretaria,ur);
+            CREATE TEMPORARY TABLE aux_2 AS 
+            (SELECT upp,subsecretaria,sum(importe) importe FROM aux_1 GROUP BY upp,subsecretaria);
+            CREATE TEMPORARY TABLE aux_3 AS 
+            (SELECT upp,SUM(importe) importe FROM aux_2 GROUP BY upp);
+        
+            select 
+                case 
+                    when subsecretaria != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when ur != '' then ''
+                    else subsecretaria
+                end subsecretaria,
+                case 
+                    when fuente_financiamiento != '' then ''
+                    else ur
+                end ur,
+                fuente_financiamiento,
+                importe
+            from (
+                select 
+                    upp,'' subsecretaria,'' ur,
+                    '' fuente_financiamiento,
+                    importe
+                from aux_3
+                union all
+                select 
+                    upp,subsecretaria,'' ur,
+                    '' fuente_financiamiento,
+                    importe
+                from aux_2
+                union all
+                select 
+                    upp,subsecretaria,ur,
+                    '' fuente_financiamiento,
+                    importe
+                from aux_1
+                union all
+                select 
+                    upp,subsecretaria,ur,
+                    fuente_financiamiento,
+                    importe
+                from aux_0
+                order by upp,subsecretaria,ur,
+                fuente_financiamiento
+            )t;
+        
+            DROP TEMPORARY TABLE aux_0;
+            DROP TEMPORARY TABLE aux_1;
+            DROP TEMPORARY TABLE aux_2;
+            DROP TEMPORARY TABLE aux_3;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_2(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado vppa';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @catalogo := 'catalogo';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist vppa';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+                set @catalogo := 'catalogo_hist';
             end if;
-            
-            set @query := CONCAT('
-                select
-                    case 
-                        when upp != \"\" then \"\"
-                        else region 
-                    end region,
-                    case 
-                        when upp != \"\" then \"\"
-                        else lower(municipio)
-                    end municipio,
-                    case 
-                        when upp != \"\" then \"\"
-                        else lower(localidad)
-                    end localidad,
-                    clv_upp,
-                    upp,
-                    importe
-                from (
-                    select 
-                        concat (
-                            clv_region,\" \",
-                            region
-                        ) as region,
-                        concat (
-                            clv_municipio,\" \",
-                            municipio
-                        ) as municipio,
-                        concat(
-                            clv_localidad,\" \",
-                            localidad
-                        ) as localidad,
-                        \"\" clv_upp,
-                        \"\" upp,
-                        sum(total) importe
-                    from ',@tabla,'
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_region,vppa.region,clv_municipio,vppa.municipio,
-                    clv_localidad,vppa.localidad
-                    union all
-                    select 
-                        concat (
-                            clv_region,\" \",
-                            region
-                        ) as region,
-                        concat (
-                            clv_municipio,\" \",
-                            municipio
-                        ) as municipio,
-                        concat(
-                            clv_localidad,\" \",
-                            localidad
-                        ) as localidad,
-                        clv_upp,
-                        upp,
-                        sum(total) importe
-                    from ',@tabla,'
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_region,vppa.region,clv_municipio,vppa.municipio,
-                    clv_localidad,vppa.localidad,clv_upp,vppa.upp
-                    order by region,municipio,localidad,clv_upp
-                ) tabla;
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+        
+            set @query := concat('
+                create temporary table aux_0
+                select 
+                    concat(
+                        cg.clv_region,\" \",
+                        cg.region
+                    ) region,
+                    concat(
+                        cg.clv_municipio,\" \",
+                        cg.municipio
+                    ) municipio,
+                    concat(
+                        cg.clv_localidad,\" \",
+                        cg.localidad
+                    ) localidad,
+                    pt.epp_id,
+                    pp.total
+                from pp_identificadores pt
+                join ',@tabla,' pp on pt.id = pp.id 
+                and pp.',@corte,' and pp.ejercicio = ',anio,'
+                join clasificacion_geografica cg on pt.clas_geo_id = cg.id;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            set @query := concat('
+                create temporary table aux_1
+                select 
+                    ve.id,
+                    c.clave clv_upp,
+                    c.descripcion upp
+                from epp ve
+                join ',@catalogo,' c on ve.upp_id = c.id
+                and c.ejercicio = ',anio,' and c.deleted_at is null
+                where ve.ejercicio = ',anio,' and ve.deleted_at is null;
+            ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table aux_2
+            select 
+                a0.region,
+                a0.municipio,
+                a0.localidad,
+                a1.clv_upp,
+                a1.upp,
+                sum(a0.total) importe
+            from aux_0 a0
+            join aux_1 a1 on a0.epp_id = a1.id
+            group by region,municipio,
+            localidad,clv_upp,upp;
+        
+            select 
+                case 
+                    when clv_upp != '' then ''
+                    else region
+                end region,
+                case 
+                    when clv_upp != '' then ''
+                    else municipio
+                end municipio,
+                case
+                    when clv_upp != '' then ''
+                    else localidad
+                end localidad,
+                clv_upp,
+                upp,
+                importe
+            from (
+                select 
+                    region,municipio,localidad,
+                    '' clv_upp, '' upp,
+                    sum(total) importe
+                from aux_0
+                group by region,municipio,localidad
+                union all
+                select * from aux_2
+                order by region,municipio,localidad,clv_upp,upp
+            )t;
+        
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table aux_2;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_3(in anio int,in corte date)
         begin
-            set @tabla := 'pp_aplanado vppa';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @catalogo := 'catalogo';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist vppa';
+                set @tabla := 'programacion_presupuesto_hist';
+            set @catalogo := 'catalogo_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
             set @query := CONCAT('
                 select 
-                    clv_eje,
-                    eje,
-                    sum(total) importe
-                from ',@tabla,'
-                where ejercicio = ',anio,' and ',@corte,'
-                group by clv_eje,eje;
+                    c.clave clv_eje,
+                    c.descripcion eje,
+                    case
+                        when sum(pp.total) is null then 0
+                        else sum(pp.total)
+                    end importe
+                from ',@catalogo,' c
+                left join ',@tabla,' pp on c.clave = pp.eje 
+                and pp.ejercicio = ',anio,' and pp.',@corte,'
+                where c.ejercicio = ',anio,' and c.deleted_at is null and c.grupo_id = 12
+                group by c.clave,c.descripcion;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
@@ -1008,23 +1318,34 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_4(in anio int, in corte date)
         begin
-        set @tabla := 'pp_aplanado vppa';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist vppa';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
             set @query := CONCAT('
                 select 
-                    clv_programa,
-                    programa,
-                    sum(total) importe
-                from ',@tabla,'
-                where ejercicio = ',anio,' and ',@corte,'
-                group by clv_programa,programa;
+                    t.clv_programa,
+                    t.programa,
+                    case 
+                        when sum(pp.total) is null then 0
+                        else sum(pp.total)
+                    end importe
+                from (
+                    select distinct
+                        clv_programa,
+                        programa
+                    from v_epp ve
+                    where ejercicio = ',anio,' and deleted_at is null
+                )t
+                left join ',@tabla,' pp on t.clv_programa = pp.programa_presupuestario
+                and pp.ejercicio = ',anio,' and pp.',@corte,'
+                group by clv_programa,programa
+                order by clv_programa;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
@@ -1032,457 +1353,624 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_5(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado vppa';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist vppa';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+            drop temporary table if exists aux_3;
+            drop temporary table if exists aux_4;
+        
             set @query := CONCAT('
-                select
-                    case 
-                        when capitulo != \"\" then \"\"
-                        else upp
-                    end upp,
-                    case 
-                        when programa_presupuestario != \"\" then \"\"
-                        else lower(capitulo)
-                    end capitulo,
-                    programa_presupuestario,
-                    importe
-                from (
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        \"\" capitulo,
-                        \"\" programa_presupuestario,
-                        sum(total) importe
-                    from ',@tabla,'
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_upp,vppa.upp
-                    union all 
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        concat(
-                            clv_capitulo,\"000 \",
-                            capitulo
-                        ) as capitulo,
-                        \"\" programa_presupuestario,
-                        sum(total) importe
-                    from ',@tabla,'
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_upp,vppa.upp,clv_capitulo,vppa.capitulo
-                    union all 
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        concat(
-                            clv_capitulo,\"000 \",
-                            capitulo
-                        ) as capitulo,
-                        concat(
-                            clv_programa,\" \",
-                            programa
-                        ) as programa_presupuestario,
-                        sum(total) importe
-                    from ',@tabla,'
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_upp,vppa.upp,clv_capitulo,vppa.capitulo,clv_programa,vppa.programa
-                    order by upp,capitulo,programa_presupuestario
-                ) tabla;
+            create temporary table aux_0
+            select 
+                pp.upp,
+                po.clv_capitulo,
+                po.capitulo,
+                pp.programa_presupuestario programa,
+                sum(total) importe
+            from ',@tabla,' pp
+            join (
+                select distinct
+                    po.clv_capitulo,
+                    po.capitulo
+                from posicion_presupuestaria po
+                where po.deleted_at is null
+            ) po on po.clv_capitulo = substring(pp.posicion_presupuestaria,1,1)
+            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            group by pp.upp,po.clv_capitulo,po.capitulo,pp.programa_presupuestario;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            set @query := concat('
+            create temporary table aux_1
+            select distinct                               
+                ve.clv_upp,                                
+                ve.upp,                                    
+                ve.clv_programa,                           
+                ve.programa                                
+            from v_epp ve                             
+            where ve.ejercicio = ',anio,' and ve.deleted_at is null;
+            ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table aux_2
+            select 
+                concat(
+                    a1.clv_upp,\" \",
+                    a1.upp
+                ) upp,
+                concat(
+                    a0.clv_capitulo,\"000 \",
+                    a0.capitulo
+                ) capitulo,
+                concat(
+                    a1.clv_programa,\" \",
+                    a1.programa
+                ) programa,
+                importe
+            from aux_0 a0
+            join aux_1 a1 on a0.upp = a1.clv_upp 
+            and a0.programa = a1.clv_programa;
+            
+            create temporary table aux_3
+            select 
+                upp,
+                capitulo,
+                sum(importe) importe
+            from aux_2
+            group by upp,capitulo;
+            
+            create temporary table aux_4
+            select 
+                upp,
+                sum(importe) importe
+            from aux_3
+            group by upp;
+            
+            select 
+                case 
+                    when capitulo != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when programa != '' then ''
+                    else capitulo
+                end capitulo,
+                programa programa_presupuestario,
+                importe
+            from (
+                select  
+                    upp,
+                    '' capitulo,
+                    '' programa,
+                    importe
+                from aux_4
+                union all
+                select
+                    upp,
+                    capitulo,
+                    '' programa,
+                    importe
+                from aux_3
+                union all
+                select * from aux_2
+                order by upp,capitulo,programa
+            )t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table aux_2;
+            drop temporary table aux_3;
+            drop temporary table aux_4;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_6(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado vppa';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @catalogo := 'catalogo';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist vppa';
+                set @catalogo := 'catalogo_hist';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+            drop temporary table if exists aux_3;
+        
             set @query := CONCAT('
-                select 
-                    case 
-                        when funcion != \"\" then \"\"
-                        else finalidad
-                    end finalidad,
-                    case 
-                        when subfuncion != \"\" then \"\"
-                        else funcion
-                    end funcion,
-                    subfuncion,
-                    importe
-                from (
-                    select 
-						clv_finalidad,
-                        finalidad,
-                        \"\" funcion,
-                        \"\" subfuncion,
-                        sum(total) importe
-                    from ',@tabla,'
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_finalidad,vppa.finalidad
-                    union all
-                    select 
-						clv_finalidad,
-                        finalidad,
-                        funcion,
-                        \"\" subfuncion,
-                        sum(total) importe
-                    from ',@tabla,'
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_finalidad,vppa.finalidad,vppa.funcion
-                    union all
-                    select 
-						clv_finalidad,
-                        finalidad,
-                        funcion,
-                        subfuncion,
-                        sum(total) importe
-                    from ',@tabla,'
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_finalidad,vppa.finalidad,vppa.funcion,vppa.subfuncion
-                    order by clv_finalidad,finalidad,funcion,subfuncion
-                ) tabla;
+            create temporary table aux_0
+            select distinct
+                c0.clave clv_finalidad,
+                c0.descripcion finalidad,
+                c1.clave clv_funcion,
+                c1.descripcion funcion,
+                c2.clave clv_subfuncion,
+                c2.descripcion subfuncion
+            from epp e
+            join ',@catalogo,' c0 on e.finalidad_id = c0.id
+            join ',@catalogo,' c1 on e.funcion_id = c1.id
+            join ',@catalogo,' c2 on e.subfuncion_id = c2.id
+            where e.ejercicio = ',anio,' and e.deleted_at is null;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            set @query := concat('
+            create temporary table aux_1
+            select 
+                a0.clv_finalidad,
+                a0.finalidad,
+                a0.clv_funcion,
+                a0.funcion,
+                a0.clv_subfuncion,
+                a0.subfuncion,
+                sum(pp.total) importe
+            from ',@tabla,' pp
+            join aux_0 a0 on pp.finalidad = a0.clv_finalidad 
+            and pp.funcion = a0.clv_funcion and pp.subfuncion = a0.clv_subfuncion
+            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            group by a0.clv_finalidad,a0.finalidad,a0.clv_funcion,
+            a0.funcion,a0.clv_subfuncion,a0.subfuncion;
+            ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table aux_2
+            select 
+                clv_finalidad,
+                finalidad,
+                clv_funcion,
+                funcion,
+                sum(importe) importe
+            from aux_1
+            group by clv_finalidad,finalidad,
+            clv_funcion,funcion;
+            
+            create temporary table aux_3
+            select 
+                clv_finalidad,
+                finalidad,
+                sum(importe) importe
+            from aux_1
+            group by clv_finalidad,finalidad;
+            
+            select 
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                case 
+                    when subfuncion != '' then ''
+                    else funcion
+                end funcion,
+                subfuncion,
+                importe
+            from (
+                select 
+                    clv_finalidad,finalidad,
+                    '' clv_funcion,'' funcion,
+                    '' clv_subfuncion,'' subfuncion,
+                    importe
+                from aux_3
+                union all
+                select 
+                    clv_finalidad,finalidad,
+                    clv_funcion,funcion,
+                    '' clv_subfuncion,'' subfuncion,
+                    importe
+                from aux_2
+                union all
+                select * from aux_1
+                order by clv_finalidad,clv_funcion,clv_subfuncion
+            )t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table aux_2;
+            drop temporary table aux_3;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_7(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado vppa';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @id := 'id';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist vppa';
+                set @id := 'id_original';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists parte_0;
+            drop temporary table if exists parte_1;
+            drop temporary table if exists parte_2;
+            drop temporary table if exists parte_3;
+            drop temporary table if exists parte_4;
+        
             set @query := CONCAT('
-                select 
-                    case 
-                        when ur != \"\" then \"\"
-                        else upp
-                    end upp,
-                    case 
-                        when funcion != \"\" then \"\"
-                        else ur
-                    end ur,
-                    case 
-                        when funcion != \"\" then \"\"
-                        else finalidad
-                    end finalidad,
-                    case 
-                        when subfuncion != \"\" then \"\"
-                        else funcion
-                    end funcion,
-                    case 
-                        when partida != \"\" then \"\"
-                        else subfuncion
-                    end subfuncion,
-                    partida,
-                    importe
-                from (
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        \"\" ur,
-                        \"\" finalidad,
-                        \"\" funcion,
-                        \"\" subfuncion,
-                        \"\" partida,
-                        sum(total) importe
-                    from ',@tabla,' 
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_upp,vppa.upp
-                    union all
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        concat(
-                            clv_ur,\" \",
-                            ur
-                        ) as ur,
-                        finalidad,
-                        \"\" funcion,
-                        \"\" subfuncion,
-                        \"\" partida,
-                        sum(total) importe
-                    from ',@tabla,' 
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_upp,vppa.upp,clv_ur,vppa.ur,finalidad
-                    union all
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        concat(
-                            clv_ur,\" \",
-                            ur
-                        ) as ur,
-                        finalidad,
-                        funcion,
-                        \"\" subfuncion,
-                        \"\" partida,
-                        sum(total) importe
-                    from ',@tabla,' 
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_upp,vppa.upp,clv_ur,vppa.ur,finalidad,
-                    funcion
-                    union all
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        concat(
-                            clv_ur,\" \",
-                            ur
-                        ) as ur,
-                        finalidad,
-                        funcion,
-                        subfuncion,
-                        \"\" partida,
-                        sum(total) importe
-                    from ',@tabla,' 
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_upp,vppa.upp,clv_ur,vppa.ur,finalidad,
-                    funcion,subfuncion
-                    union all
-                    select 
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        concat(
-                            clv_ur,\" \",
-                            ur
-                        ) as ur,
-                        finalidad,
-                        funcion,
-                        subfuncion,
-                        concat(
-                            clv_capitulo,
-                            clv_concepto,
-                            clv_partida_generica,
-                            clv_partida_especifica,\" \",
-                            partida_especifica
-                        ) as partida,
-                        sum(total) importe
-                    from ',@tabla,' 
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_upp,vppa.upp,clv_ur,vppa.ur,finalidad,
-                    funcion,subfuncion,clv_capitulo,clv_concepto,
-                    clv_partida_generica,clv_partida_especifica,partida_especifica
-                    order by upp,ur,finalidad,funcion,subfuncion,partida
-                ) tabla;
+            create temporary table aux_0
+            select 
+                id,clv_upp,upp,clv_ur,ur,clv_finalidad,finalidad,
+                clv_funcion,funcion,clv_subfuncion,subfuncion
+            from v_epp ve
+            where ve.ejercicio = ',anio,' and ve.deleted_at is null;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            alter table aux_0 add primary key(id);
+        
+            set @query := concat('
+            create temporary table aux_1
+            select 
+                pt.epp_id,
+                pt.pos_pre_id,
+                pp.posicion_presupuestaria,
+                sum(pp.total) importe
+            from ',@tabla,' pp
+            join pp_identificadores pt on pp.',@id,' = pt.id
+            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            group by epp_id,pos_pre_id,posicion_presupuestaria;
+            ');
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table parte_0
+            select
+                concat(clv_upp,' ',upp) upp,
+                concat(clv_ur,' ',ur) ur,
+                finalidad,
+                funcion,
+                subfuncion,
+                concat(posicion_presupuestaria,' ',pp.partida_especifica) partida,
+                importe
+            from aux_1 a1
+            join aux_0 a0 on a1.epp_id = a0.id
+            join posicion_presupuestaria pp on a1.pos_pre_id = pp.id
+            and pp.deleted_at is null;
+            
+            create temporary table parte_1
+            select
+                upp,ur,finalidad,funcion,subfuncion,
+                sum(importe) importe
+            from parte_0
+            group by upp,ur,finalidad,funcion,subfuncion;
+            
+            create temporary table parte_2
+            select
+                upp,ur,finalidad,funcion,
+                sum(importe) importe
+            from parte_1
+            group by upp,ur,finalidad,funcion;
+            
+            create temporary table parte_3
+            select
+                upp,ur,finalidad,
+                sum(importe) importe
+            from parte_2
+            group by upp,ur,finalidad;
+            
+            create temporary table parte_4
+            select
+                upp,
+                sum(importe) importe
+            from parte_3
+            group by upp;
+            
+            select 
+                case 
+                    when ur != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when funcion != '' then ''
+                    else ur
+                end ur,
+                case 
+                    when funcion != '' then ''
+                    else finalidad
+                end finalidad,
+                case 
+                    when subfuncion != '' then ''
+                    else funcion
+                end funcion,
+                case 
+                    when partida != '' then ''
+                    else subfuncion
+                end subfuncion,
+                partida,
+                importe
+            from (
+                select 
+                    upp,'' ur,'' finalidad,'' funcion,
+                    '' subfuncion,'' partida, importe
+                from parte_4
+                union all
+                select 
+                    upp,ur,finalidad,'' funcion,'' subfuncion,
+                    '' partida, importe
+                from parte_3
+                union all
+                select 
+                    upp,ur,finalidad,funcion,'' subfuncion,
+                    '' partida, importe
+                from parte_2
+                union all
+                select 
+                    upp,ur,finalidad,funcion,subfuncion,
+                    '' partida, importe
+                from parte_1
+                union all
+                select * from parte_0
+                order by upp,ur,finalidad,funcion,subfuncion,partida
+            )t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table parte_0;
+            drop temporary table parte_1;
+            drop temporary table parte_2;
+            drop temporary table parte_3;
+            drop temporary table parte_4;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_8(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado vppa';
-            set @corte := 'vppa.deleted_at is null';
+            set @tabla := 'programacion_presupuesto';
+            set @corte := 'deleted_at is null';
+            set @id := 'id';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist vppa';
-                set @corte := CONCAT('vppa.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+                set @id := 'id_original';
+                set @tabla := 'programacion_presupuesto_hist';
+                set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+            drop temporary table if exists aux_3;
+        
             set @query := CONCAT('
+                create temporary table aux_0
                 select 
-                    case 
-                        when programa != \"\" then \"\"
-                        else clv_upp
-                    end clv_upp,
-                    case 
-                        when programa != \"\" then \"\"
-                        else upp
-                    end upp,
-                    clv_programa,
-                    programa,
-                    clv_proyecto_obra,
-                    proyecto_obra,
-                    importe
-                from (
-                    select 
-                        clv_upp,
-                        upp,
-                        \"\" clv_programa,
-                        \"\" programa,
-                        \"\" clv_proyecto_obra,
-                        \"\" proyecto_obra,
-                        sum(total) importe
-                    from ',@tabla,' 
-                    left join proyectos_obra po on vppa.proyecto_obra = po.clv_proyecto_obra
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_upp,vppa.upp
-                    union all
-                    select 
-                        clv_upp,
-                        upp,
-                        clv_programa,
-                        programa,
-                        vppa.clv_proyecto_obra,
-                        vppa.proyecto_obra,
-                        sum(total) importe
-                    from  ',@tabla,' 
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_upp,vppa.upp,clv_programa,vppa.programa,
-                    vppa.clv_proyecto_obra,vppa.proyecto_obra
-                    order by clv_upp,upp,programa,proyecto_obra
-                ) tabla;
+                    po.clv_proyecto_obra,
+                    po.proyecto_obra,
+                    pp.total,
+                    pp.upp,
+                    pp.programa_presupuestario programa
+                from pp_identificadores pt
+                join ',@tabla,' pp on pt.id = pp.',@id,'
+                and pp.ejercicio = ',anio,' and pp.',@corte,' 
+                join proyectos_obra po on pt.obra_id = po.id;
             ');
-            
+                    
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            set @query := CONCAT('
+                create temporary table aux_1
+                select distinct
+                    ve.clv_upp,
+                    ve.upp,
+                    ve.clv_programa,
+                    ve.programa
+                from v_epp ve
+                where ejercicio = ',anio,' and deleted_at is null;;
+            ');
+                    
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table aux_2
+            select 
+                a1.clv_upp,
+                a1.upp,
+                a1.clv_programa,
+                a1.programa,
+                a0.clv_proyecto_obra,
+                a0.proyecto_obra,
+                sum(a0.total) importe
+            from aux_0 a0
+            join aux_1 a1 on a0.upp = a1.clv_upp 
+            and a0.programa = a1.clv_programa
+            group by a1.clv_upp,a1.upp,a1.clv_programa,a1.programa,
+            a0.clv_proyecto_obra,a0.proyecto_obra;
+            
+            create temporary table aux_3
+            select 
+                clv_upp,
+                upp,
+                sum(importe) importe
+            from aux_2
+            group by clv_upp,upp;
+            
+            select *
+            from aux_2
+            union all 
+            select 
+                clv_upp,upp,'' clv_programa,'' programa,
+                '' clv_proyecto_obra,'' proyecto_obra,
+                importe
+            from aux_3
+            order by clv_upp,clv_programa,clv_proyecto_obra;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table aux_2;
+            drop temporary table aux_3;
         END;");
         
         DB::unprepared("CREATE PROCEDURE calendario_general(in anio int, in corte date, in uppC varchar(3))
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @catalogo := 'catalogo';
             set @upp := '';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @tabla := 'programacion_presupuesto_hist';
+                set @catalogo := 'catalogo_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-            if (uppC is not null) then set @upp := CONCAT('and clv_upp = \"',uppC,'\"'); end if;
-
-            set @query := CONCAT('         
-                select
-                    orden,
-                    upp,
-                    clave,
-                    monto_anual,
-                    enero,febrero,marzo,abril,mayo,
-                    junio,julio,agosto,septiembre,
-                    octubre,noviembre,diciembre,
-                    cec.capturista
-                from (
-                    select 
-                        clv_upp,
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        1 orden,
-                        concat(clv_upp,\" \",upp) clave,
-                        sum(total) monto_anual,
-                        sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
-                        sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
-                        sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
-                    from ',@tabla,' vppa
-                    where ejercicio = ',anio,' and ',@corte,' ',@upp,'
-                    group by vppa.clv_upp,vppa.upp,orden,vppa.upp
-                    union all
-                    select 
-                        clv_upp,
-                        concat(
-                            clv_upp,\" \",
-                            upp
-                        ) as upp,
-                        2 orden,
-                        concat(
-                            pp.clv_sector_publico,
-                            pp.clv_sector_publico_f,
-                            pp.clv_sector_economia,
-                            pp.clv_subsector_economia,
-                            pp.clv_ente_publico,
-                            \"-\",pp.clv_entidad_federativa,
-                            \"-\",pp.clv_region,
-                            \"-\",pp.clv_municipio,
-                            \"-\",pp.clv_localidad,
-                            \"-\",pp.clv_upp,
-                            \"-\",pp.clv_subsecretaria,
-                            \"-\",pp.clv_ur,
-                            \"-\",pp.clv_finalidad,
-                            \"-\",pp.clv_funcion,
-                            \"-\",pp.clv_subfuncion,
-                            \"-\",pp.clv_eje,
-                            \"-\",pp.clv_linea_accion,
-                            \"-\",pp.clv_programa_sectorial,
-                            \"-\",pp.clv_tipologia_conac,
-                            \"-\",pp.clv_programa,
-                            \"-\",pp.clv_subprograma,
-                            \"-\",pp.clv_proyecto,
-                            \"-\",pp.periodo_presupuestal,
-                            \"-\",pp.clv_capitulo,
-                            pp.clv_concepto,
-                            pp.clv_partida_generica,
-                            pp.clv_partida_especifica,
-                            \"-\",pp.clv_tipo_gasto,
-                            \"-\",pp.anio,
-                            \"-\",pp.clv_etiquetado,
-                            \"-\",pp.clv_fuente_financiamiento,
-                            \"-\",pp.clv_ramo,
-                            \"-\",pp.clv_fondo_ramo,
-                            \"-\",pp.clv_capital,
-                            \"-\",pp.clv_proyecto_obra
-                        ) clave,
-                        total monto_anual,
-                        enero,febrero,marzo,abril,mayo,
-                        junio,julio,agosto,septiembre,
-                        octubre,noviembre,diciembre
-                    from ',@tabla,' pp
-                    where ejercicio = ',anio,' and ',@corte,' ',@upp,'
-                    order by upp,orden
-                ) tabla
-                left join cierre_ejercicio_claves cec on tabla.clv_upp =  cec.clv_upp and cec.deleted_at is null and cec.ejercicio = ',anio,';
+            if (uppC is not null) then set @upp := CONCAT('and pp.upp = \"',uppC,'\"'); end if;
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+        
+            set @query := CONCAT('      
+            create temporary table aux_0
+            select 
+                2 orden,
+                c.clave clv_upp,
+                concat(
+                    c.clave,\" \",
+                    c.descripcion
+                ) upp,
+                concat(
+                    pp.clasificacion_administrativa,
+                    \"-\",pp.entidad_federativa,
+                    \"-\",pp.region,
+                    \"-\",pp.municipio,
+                    \"-\",pp.localidad,
+                    \"-\",pp.upp,
+                    \"-\",pp.subsecretaria,
+                    \"-\",pp.ur,
+                    \"-\",pp.finalidad,
+                    \"-\",pp.funcion,
+                    \"-\",pp.subfuncion,
+                    \"-\",pp.eje,
+                    \"-\",pp.linea_accion,
+                    \"-\",pp.programa_sectorial,
+                    \"-\",pp.tipologia_conac,
+                    \"-\",pp.programa_presupuestario,
+                    \"-\",pp.subprograma_presupuestario,
+                    \"-\",pp.proyecto_presupuestario,
+                    \"-\",pp.periodo_presupuestal,
+                    \"-\",pp.posicion_presupuestaria,
+                    \"-\",pp.tipo_gasto,
+                    \"-\",pp.anio,
+                    \"-\",pp.etiquetado,
+                    \"-\",pp.fuente_financiamiento,
+                    \"-\",pp.ramo,
+                    \"-\",pp.fondo_ramo,
+                    \"-\",pp.capital,
+                    \"-\",pp.proyecto_obra
+                ) clave,
+                pp.total monto_anual,
+                enero,febrero,marzo,abril,mayo,
+                junio,julio,agosto,septiembre,
+                octubre,noviembre,diciembre
+            from ',@tabla,' pp
+            join ',@catalogo,' c on c.clave = pp.upp
+            and c.deleted_at is null and c.grupo_id = 6
+            where pp.ejercicio = ',anio,' and pp.',@corte,' ',@upp,';
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            create temporary table aux_1
+            select 
+                t.orden,t.upp,t.upp clave,t.monto_anual,
+                enero,febrero,marzo,abril,mayo,
+                junio,julio,agosto,septiembre,
+                octubre,noviembre,diciembre,
+                case 
+                    when cec.capturista is null then ''
+                    else cec.capturista
+                end capturista
+            from (
+                select 
+                    1 orden,
+                    clv_upp,
+                    upp,
+                    sum(monto_anual) monto_anual,
+                    sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
+                    sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
+                    sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre
+                from aux_0
+                group by clv_upp,upp
+            )t
+            left join cierre_ejercicio_claves cec on t.clv_upp = cec.clv_upp 
+            and cec.deleted_at is null and cec.ejercicio = anio;
+            
+            select 
+                orden,upp,clave,monto_anual,
+                enero,febrero,marzo,abril,mayo,
+                junio,julio,agosto,septiembre,octubre,
+                noviembre,diciembre,'' capturista
+            from aux_0
+            union all
+            select * from aux_1
+            order by upp,orden;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
         END;");
         
         DB::unprepared("CREATE PROCEDURE calendario_fondo_mensual(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
-            set @corte := 'vppa.deleted_at is null';
+            set @tabla := 'programacion_presupuesto';
+            set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-                
+                        
             set @query := CONCAT('
+            select 
+                ramo,
+                fondo_ramo,
+                enero,febrero,marzo,abril,mayo,
+                junio,julio,agosto,septiembre,
+                octubre,noviembre,diciembre,
+                importe_total
+            from (
                 select 
-                    ramo,
-                    fondo_ramo,
+                    f.clv_ramo,
+                    f.ramo,
+                    f.clv_fondo_ramo,
+                    f.fondo_ramo,
                     sum(enero) enero,sum(febrero) febrero,sum(marzo) marzo,sum(abril) abril,sum(mayo) mayo,
                     sum(junio) junio,sum(julio) julio,sum(agosto) agosto,sum(septiembre) septiembre,
                     sum(octubre) octubre,sum(noviembre) noviembre,sum(diciembre) diciembre,
                     sum(total) importe_total
-                from ',@tabla,' vppa 
-                where ejercicio = ',anio,' and ',@corte,'
-                group by ramo,fondo_ramo;
+                from ',@tabla,' pp
+                join fondo f on pp.ramo = f.clv_ramo
+                and pp.fondo_ramo = f.clv_fondo_ramo
+                where pp.ejercicio = ',anio,' and pp.',@corte,'
+                group by f.clv_ramo,f.ramo,f.clv_fondo_ramo,f.fondo_ramo
+                order by clv_ramo,clv_fondo_ramo
+            )t;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
@@ -1490,57 +1978,47 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE reporte_resumen_por_capitulo_y_partida(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @id := 'id';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+                set @id := 'id_original';
             end if;
-
+        
             set @query := CONCAT('
-                select 
-                    case 
-                        when partida != \"\" then \"\"
-                        else capitulo
-                    end capitulo,
-                    partida,
-                    importe
-                from (
-                    select 
-                        concat(
-                            clv_capitulo,\"000 \",
-                            capitulo
-                        ) as capitulo,
-                        \"\" partida,
-                        sum(total) importe
-                    from ',@tabla,' vppa 
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_capitulo,vppa.capitulo
-                    union all
-                    select 
-                        concat(
-                            clv_capitulo,\"000 \",
-                            capitulo
-                        ) as capitulo,
-                        concat(
-                            clv_capitulo,
-                            clv_concepto,
-                            clv_partida_generica,
-                            clv_partida_especifica,\" \",
-                            partida_especifica
-                        ) as partida,
-                        sum(total) importe
-                    from ',@tabla,' vppa 
-                    where ejercicio = ',anio,' and ',@corte,'
-                    group by clv_capitulo,vppa.capitulo,clv_concepto,
-                    clv_partida_generica,clv_partida_especifica,partida_especifica
-                    order by capitulo,partida
-                ) tabla;
+            create temporary table aux_0
+            select 
+                pt.pos_pre_id,
+                pa.posicion_presupuestaria,
+                sum(pa.total) importe
+            from pp_identificadores pt 
+            join ',@tabla,' pa on pt.id = pa.',@id,'
+            and pa.ejercicio = ',anio,' and pa.',@corte,'
+            group by pt.pos_pre_id,pa.posicion_presupuestaria;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            select 
+                concat(
+                    pp.clv_capitulo,'000 ',
+                    pp.capitulo
+                ) capitulo,
+                concat(
+                    a0.posicion_presupuestaria,' ',
+                    pp.partida_especifica 
+                ) partida,
+                importe
+            from aux_0 a0
+            join posicion_presupuestaria pp 
+            on a0.pos_pre_id = pp.id
+            order by capitulo,partida;
+            
+            drop temporary table aux_0;
         END;");
         
         DB::unprepared("CREATE PROCEDURE avance_proyectos_actividades_upp(in anio int, in corte date)
@@ -1690,326 +2168,340 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_5(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado pa';
-            set @corte := 'pa.deleted_at is null';
+            set @tabla := 'programacion_presupuesto';
+            set @corte := 'deleted_at is null';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist pa';
-                set @corte := CONCAT('pa.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+                set @tabla := 'programacion_presupuesto_hist';
+                set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+            drop temporary table if exists aux_3;
+        
+            set @from1 := concat('from tipologia_conac tc 
+                left join programacion_presupuesto_hist pp on tc.clave_conac = pp.tipologia_conac and etiquetado = 1
+                and pp.ejercicio = ',anio,' and pp.',@corte,'
+                where tc.deleted_at is null and tc.clave_conac is not null');
+            set @from2 := concat('from tipologia_conac tc 
+                left join programacion_presupuesto_hist pp on tc.clave_conac = pp.tipologia_conac and etiquetado = 2
+                and pp.ejercicio = ',anio,' and pp.',@corte,'
+                where tc.deleted_at is null and tc.clave_conac is not null');
+        
             set @query := CONCAT(\"
+                create temporary table aux_0
+                select 
+                    1 etiquetado,
+                    min(tc.id) id,
+                    'Programas' abuelo,
+                    tc.descripcion padre,
+                    tc.descripcion_conac hijo,
+                    sum(pp.total) importe
+                \",@from1,\"
+                group by tc.descripcion,tc.descripcion_conac
+                union all
+                select 
+                    1 etiquetado,
+                    min(tc.id) id,
+                    tc.descripcion abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(pp.total) importe
+                \",@from1,\"
+                group by tc.descripcion
+                union all 
+                select 
+                    2 etiquetado,
+                    min(tc.id) id,
+                    'Programas' abuelo,
+                    tc.descripcion padre,
+                    tc.descripcion_conac hijo,
+                    sum(pp.total) importe
+                \",@from2,\"
+                group by tc.descripcion,tc.descripcion_conac
+                union all
+                select 
+                    2 etiquetado,
+                    min(tc.id) id,
+                    tc.descripcion abuelo,
+                    '' padre,
+                    '' hijo,
+                    sum(pp.total) importe
+                \",@from2,\"
+                group by tc.descripcion
+                order by etiquetado,id;
+            \");
+        
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            create temporary table aux_1
             select 
                 etiquetado,
+                min(id) id,
                 abuelo,
                 padre,
+                sum(importe) importe
+            from aux_0
+            where padre != ''
+            group by etiquetado,abuelo,padre;
+            
+            create temporary table aux_2
+            select 
+                etiquetado,
+                min(id) id,
+                abuelo,
+                sum(importe) importe
+            from aux_1
+            group by etiquetado,abuelo;
+            
+            create temporary table aux_3
+            select 
+                etiquetado,
+                sum(importe) importe
+            from aux_2
+            group by etiquetado;
+            
+            select 
+                case 
+                    when abuelo != '' then ''
+                    when etiquetado = 1 then 'Gasto No Etiquetado'
+                    when etiquetado = 2 then 'Gasto Etiquetado'
+                end etiquetado,
+                case 
+                    when padre != '' then ''
+                    else abuelo
+                end abuelo,
+                case 
+                    when hijo != '' then ''
+                    else padre
+                end padre,
                 hijo,
                 case 
                     when importe is null then 0
                     else importe
                 end importe
             from (
-                select 
-                    'Gasto No Etiquetado' etiquetado,
-                    '' abuelo,
-                    '' padre,
-                    '' hijo,
-                    sum(total) importe
-                from \",@tabla,\"
-                where ejercicio = \",anio,\" and deleted_at is null and clv_etiquetado = 1
+                select *
+                from aux_0
                 union all
                 select 
-                    '' etiquetado,
-                    'Programa' abuelo,
-                    '' padre,
-                    '' hijo,
-                    sum(total) importe
-                from tipologia_conac tc 
-                left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                    and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 1
-                where tc.clave_conac is not null and tc.deleted_at is null
-                union all
-                select 
-                    '' etiquetado,
-                    '' abuelo,
-                    case 
-                        when hijo != '' then ''
-                        else padre
-                    end padre,
-                    hijo,
+                    etiquetado,id,abuelo,
+                    padre,'' hijo,
                     importe
-                from (
-                    select 
-                        min(tc.id) orden,
-                        tc.descripcion padre,
-                        '' hijo,
-                        sum(pa.total) importe
-                    from tipologia_conac tc 
-                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                        and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 1
-                    where tc.clave_conac is not null and tc.deleted_at is null
-                    group by tc.descripcion
-                    union all
-                    select 
-                        min(tc.id) orden,
-                        tc.descripcion padre,
-                        tc.descripcion_conac hijo,
-                        sum(pa.total) importe
-                    from tipologia_conac tc 
-                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                        and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 1
-                    where tc.clave_conac is not null and tc.deleted_at is null
-                    group by tc.descripcion,tc.descripcion_conac
-                    order by orden,padre,hijo
-                )t
-                union all 
-                select 
-                    '' etiquetado,
-                    tc.descripcion abuelo,
-                    '' padre,
-                    '' hijo,
-                    sum(total) importe
-                from tipologia_conac tc
-                left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac
-                    and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 1
-                where tc.tipo = 1 and tc.deleted_at is null 
-                group by tc.descripcion
-                union all
-                    select 
-                    'Gasto Etiquetado' etiquetado,
-                    '' abuelo,
-                    '' padre,
-                    '' hijo,
-                    sum(total) importe
-                from \",@tabla,\"
-                where ejercicio = \",anio,\" and deleted_at is null and clv_etiquetado = 2
+                from aux_1
                 union all
                 select 
-                    '' etiquetado,
-                    'Programa' abuelo,
-                    '' padre,
-                    '' hijo,
-                    sum(total) importe
-                from tipologia_conac tc 
-                left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                    and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 2
-                where tc.clave_conac is not null and tc.deleted_at is null
-                union all
-                select 
-                    '' etiquetado,
-                    '' abuelo,
-                    case 
-                        when hijo != '' then ''
-                        else padre
-                    end padre,
-                    hijo,
+                    etiquetado,id,abuelo,
+                    '' padre,'' hijo,
                     importe
-                from (
-                    select 
-                        min(tc.id) orden,
-                        tc.descripcion padre,
-                        '' hijo,
-                        sum(pa.total) importe
-                    from tipologia_conac tc 
-                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                        and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 2
-                    where tc.clave_conac is not null and tc.deleted_at is null
-                    group by tc.descripcion
-                    union all
-                    select 
-                        min(tc.id) orden,
-                        tc.descripcion padre,
-                        tc.descripcion_conac hijo,
-                        sum(pa.total) importe
-                    from tipologia_conac tc 
-                    left join \",@tabla,\" on tc.clave_conac = pa.clv_tipologia_conac
-                        and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 2
-                    where tc.clave_conac is not null and tc.deleted_at is null
-                    group by tc.descripcion,tc.descripcion_conac
-                    order by orden,padre,hijo
-                )t
-                union all 
+                from aux_2
+                union all
                 select 
-                    '' etiquetado,
-                    tc.descripcion abuelo,
-                    '' padre,
-                    '' hijo,
-                    sum(total) importe
-                from tipologia_conac tc
-                left join \",@tabla,\" on tc.descripcion = pa.tipologia_conac
-                    and pa.ejercicio = \",anio,\" and \",@corte,\" and pa.clv_etiquetado = 2
-                where tc.tipo = 1 and tc.deleted_at is null
-                group by tc.descripcion
-            )t2;
-            \");
-
-            prepare stmt  from @query;
-            execute stmt;
-            deallocate prepare stmt;
+                    etiquetado,0 id,'' abuelo,
+                    '' padre,'' hijo,
+                    importe
+                from aux_3
+                order by etiquetado,id,abuelo,
+                padre,hijo,importe
+            )t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table aux_2;
+            drop temporary table aux_3;
         END;");
         
         DB::unprepared("CREATE PROCEDURE proyecto_avance_general(in anio int, in corte date)
         begin
-            set @tabla := 'pp_aplanado';
+            set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @catalogo := 'catalogo';
             if (corte is not null) then 
-                set @tabla := 'pp_aplanado_hist';
+                set @tabla := 'programacion_presupuesto_hist';
+                set @catalogo := 'catalogo_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-            
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+            drop temporary table if exists aux_3;
+            drop temporary table if exists aux_4;
+                    
             set @query := CONCAT('
-                select
-                    case
-                        when clv_fondo_ramo != \"\" then \"\"
-                        else clv_upp 
-                    end clv_upp, 
-                    case
-                        when clv_fondo_ramo != \"\" then \"\"
-                        else upp 
-                    end upp,
-                    case
-                        when clv_capitulo != \"\" then \"\"
-                        else clv_fondo_ramo 
-                    end clv_fondo_ramo,
-                    case
-                        when clv_capitulo != \"\" then \"\"
-                        else fondo_ramo 
-                    end fondo_ramo,
-                    clv_capitulo,
-                    capitulo,
-                    monto_anual,
-                    calendarizado,
-                    disponible,
-                    avance,
-                    estatus
-                from (
-                    select 
-                    t.clv_upp,
-                    ve.upp,
-                    clv_fondo clv_fondo_ramo,
-                    case 
-                        when fondo = \"\" AND clv_fondo_ramo != \"\" then p.fondo_ramo
-                        else fondo
-                    end fondo_ramo,
-                    clv_capitulo,
-                    capitulo,
-                    monto_anual,
-                    calendarizado,
-                    (monto_anual-calendarizado) disponible,
-                    (calendarizado/monto_anual)*100 avance,
-                    case 
-                        when t.clv_upp != \"\" then estatus
-                        else \"\"
-                    end estatus
-                    from (
-                    select 
-                        clv_upp,
-                        GROUP_CONCAT(upp separator \"\") upp,
-                        clv_fondo,
-                        group_concat(fondo separator \"\") fondo,
-                        group_concat(clv_capitulo separator \"\") clv_capitulo,
-                        group_concat(capitulo separator \"\") capitulo,
-                        case 
-                            when sum(monto_anual) = 0 then sum(calendarizado)
-                            else sum(monto_anual)
-                        end monto_anual,
-                        sum(calendarizado) calendarizado,
-                        case 
-                        when sum(estado) > 0 then \"Confirmado\"
-                            else \"Registrado\"
-                        end estatus
-                        from (
-                            select *
-                            from (
-                                select 
-                                    clv_upp,
-                                    upp,
-                                    \"\" clv_fondo,
-                                    \"\" fondo,
-                                    \"\" clv_capitulo,
-                                    \"\" capitulo,
-                                    0 monto_anual,
-                                    sum(total) calendarizado,
-                                    sum(estado) estado
-                                from ',@tabla,' pa
-                                where pa.ejercicio = ',anio,' and pa.',@corte,'
-                                group by clv_upp,upp
-                                union all
-                                select 
-                                    clv_upp,
-                                    upp,
-                                    clv_fondo_ramo clv_fondo,
-                                    fondo_ramo fondo,
-                                    \"\" clv_capitulo,
-                                    \"\" capitulo,
-                                    0 monto_anual,
-                                    sum(total) calendarizado,
-                                    sum(estado) estado
-                                from ',@tabla,' pa
-                                where pa.ejercicio = ',anio,' and pa.',@corte,'
-                                group by clv_upp,upp,clv_fondo_ramo,fondo_ramo
-                                union all
-                                select 
-                                    clv_upp,
-                                    upp,
-                                    clv_fondo_ramo clv_fondo,
-                                    fondo_ramo fondo,
-                                    clv_capitulo,
-                                    capitulo,
-                                    0 monto_anual,
-                                    sum(total) calendarizado,
-                                    sum(estado) estado
-                                from ',@tabla,' pa
-                                where pa.ejercicio = ',anio,' and pa.',@corte,'
-                                group by clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo
-                                order by clv_upp,clv_fondo,clv_capitulo
-                            ) c
-                            union all
-                            select *
-                            from (
-                                select
-                                    tf.clv_upp,
-                                    \"\" upp,
-                                    \"\" clv_fondo,
-                                    \"\" fondo,
-                                    \"\" clv_capitulo,
-                                    \"\" capitulo,
-                                    sum(tf.presupuesto) monto_anual,
-                                    0 calendarizado,
-                                    0 estado
-                                from techos_financieros tf 
-                                where tf.ejercicio = ',anio,' and tf.',@corte,'
-                                group by clv_upp
-                                union all
-                                select
-                                    tf.clv_upp,
-                                    \"\" upp,
-                                    tf.clv_fondo,
-                                    \"\" fondo,
-                                    \"\" clv_capitulo,
-                                    \"\" capitulo,
-                                    sum(tf.presupuesto) monto_anual,
-                                    0 calendarizado,
-                                    0 estado
-                                from techos_financieros tf 
-                                where tf.ejercicio = ',anio,' and tf.',@corte,'
-                                group by clv_upp,clv_fondo
-                                order by clv_upp,clv_fondo
-                            ) ma
-                        )c2
-                        group by c2.clv_upp,c2.clv_fondo,c2.clv_capitulo,c2.capitulo
-                    ) t
-                    left join (select distinct clv_upp,upp from v_epp where ejercicio = ',anio,') ve 
-                        on t.clv_upp = ve.clv_upp
-                    left join (select distinct clv_fondo_ramo,fondo_ramo from fondo where deleted_at is null) as p
-                        on p.clv_fondo_ramo = t.clv_fondo
-                    group by clv_upp,ve.upp,clv_fondo,t.fondo,p.fondo_ramo,clv_capitulo,
-                        t.capitulo,t.monto_anual,t.calendarizado,t.estatus
-                )t2;
+            create temporary table aux_0
+            select 
+                tu.clv_upp,
+                tu.upp,
+                fo.clv_fondo_ramo,
+                fo.fondo_ramo,
+                concat(po.clv_capitulo,\"000\") clv_capitulo,
+                po.capitulo,
+                0 monto_anual,
+                sum(pa.total) calendarizado,
+                sum(pa.estado) status
+            from ',@tabla,' pa
+            join (
+                select distinct
+                    clave clv_upp,descripcion upp
+                from ',@catalogo,' ch 
+                where ch.deleted_at is null and ch.ejercicio = ',anio,' and ch.grupo_id = 6
+            ) tu on pa.upp = tu.clv_upp
+            join (
+                select distinct
+                    f.clv_fondo_ramo,f.fondo_ramo
+                from fondo f
+                where f.deleted_at is null
+            ) fo on pa.fondo_ramo = fo.clv_fondo_ramo 
+            join (
+                select distinct 
+                    pp.clv_capitulo,pp.capitulo 
+                from posicion_presupuestaria pp
+                where pp.deleted_at is null
+            ) po on substring(pa.posicion_presupuestaria,1,1) = po.clv_capitulo
+            where pa.ejercicio = ',anio,' and pa.',@corte,'
+            group by tu.clv_upp,tu.upp,fo.clv_fondo_ramo,
+            fo.fondo_ramo,po.clv_capitulo,po.capitulo;
             ');
-
-            prepare stmt  from @query;
+        
+            prepare stmt from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            create temporary table aux_1
+            select 
+                clv_upp,upp,
+                clv_fondo_ramo,fondo_ramo,
+                0 monto_anual,
+                sum(calendarizado) calendarizado,
+                sum(status) status
+            from aux_0
+            group by clv_upp,upp,
+            clv_fondo_ramo,fondo_ramo;
+        
+            create temporary table aux_2
+            select 
+                clv_upp,
+                c.descripcion upp,
+                clv_fondo clv_fondo_ramo,
+                f.fondo_ramo,
+                sum(presupuesto) monto_anual,
+                0 calendarizado
+            from techos_financieros tf
+            join catalogo_hist c on tf.clv_upp = c.clave 
+            and c.deleted_at is null and c.ejercicio = anio and c.grupo_id = 6
+            join fondo f on tf.clv_fondo = f.clv_fondo_ramo 
+            and f.deleted_at is null
+            where tf.ejercicio = anio and tf.deleted_at is null
+            group by clv_upp,descripcion,clv_fondo,f.fondo_ramo;
+        
+            create temporary table aux_3
+            select 
+                clv_upp,upp,
+                clv_fondo_ramo,fondo_ramo,
+                sum(monto_anual) monto_anual,
+                sum(calendarizado) calendarizado,
+                sum(status) status
+            from (
+                select 
+                    *
+                from aux_1
+                union all
+                select 
+                    clv_upp,upp,
+                    clv_fondo_ramo,fondo_ramo,
+                    monto_anual,
+                    calendarizado,
+                    0 status
+                from aux_2
+            )t
+            group by clv_upp,upp,clv_fondo_ramo,fondo_ramo;
+        
+            create temporary table aux_4
+            select 
+                clv_upp,upp,
+                sum(monto_anual) monto_anual,
+                sum(calendarizado) calendarizado,
+                sum(status) status
+            from aux_3
+            group by clv_upp,upp;
+        
+            with aux as (
+            select 
+                clv_upp,upp,
+                clv_fondo_ramo,fondo_ramo,
+                clv_capitulo,capitulo,
+                case 
+                    when monto_anual = 0 then calendarizado 
+                    else monto_anual
+                end monto_anual,
+                calendarizado,
+                status
+            from (
+                select 
+                    clv_upp,upp,
+                    '' clv_fondo_ramo,'' fondo_ramo,
+                    '' clv_capitulo,'' capitulo,
+                    monto_anual,calendarizado,status
+                from aux_4
+                union all
+                select 
+                    clv_upp,upp,
+                    clv_fondo_ramo,fondo_ramo,
+                    '' clv_capitulo,'' capitulo,
+                    monto_anual,calendarizado,status
+                from aux_3
+                union all
+                select * from aux_0
+                order by clv_upp,clv_fondo_ramo,clv_capitulo
+            )t)
+            select 
+                clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo,
+                monto_anual,calendarizado,disponible,avance,
+                case 
+                    when status is null then 'Guardado'
+                    else status
+                end status
+            from(
+            select 
+                case 
+                    when fondo_ramo != '' then ''
+                    else clv_upp
+                end clv_upp,
+                case 
+                    when fondo_ramo != '' then ''
+                    else upp
+                end upp,
+                case 
+                    when capitulo != '' then ''
+                    else clv_fondo_ramo
+                end clv_fondo_ramo,
+                case 
+                    when capitulo != '' then ''
+                    else fondo_ramo
+                end fondo_ramo,
+                clv_capitulo,
+                capitulo,
+                monto_anual,
+                calendarizado,
+                (monto_anual-calendarizado) disponible,
+                (calendarizado/monto_anual)*100 avance,
+                case 
+                    when fondo_ramo != '' then ''
+                    when status is null then 'Guardado'
+                    when status = 0 then 'Guardado'
+                    when status = 1 then 'Confirmado'
+                end status
+            from aux)t;
+            
+            drop temporary table aux_0;
+            drop temporary table aux_1;
+            drop temporary table aux_2;
+            drop temporary table aux_3;
+            drop temporary table aux_4;
         END;");
 
         DB::unprepared("CREATE PROCEDURE conceptos_clave(in claveT varchar(64), in anio int)

@@ -32,6 +32,23 @@ use App\Models\Catalogo;
 
 class MetasController extends Controller
 {
+	public function getManual(){
+        $file = "";
+        $name = "";
+        if(Auth::user()->id_grupo==1){
+            $name = "CAP_Manual_de_Usuario_Administrador-Carga_masiva.pdf";
+            $file= public_path(). "/manuales/". $name;
+        } 
+        if(Auth::user()->id_grupo==4){
+            $name = "CAP_Manual_de_Usuario_UPP-Carga_masiva.pdf";
+            $file= public_path()."/manuales/". $name;
+        } 
+        
+        //Log::channel('daily')->debug('exp '.public_path());
+        $headers = array('Content-Type: application/pdf',);
+
+        return response()->download($file,$name,$headers);
+    }
 	//Consulta Vista Usuarios
 	public function getIndex()
 	{
