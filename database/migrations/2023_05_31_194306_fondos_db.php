@@ -26,7 +26,7 @@ return new class extends Migration
 
         Schema::create('mml_definicion_problema', function (Blueprint $table){
             $table->increments('id');
-            $table->unique(['clv_upp','clv_pp','ejercicio']);	
+            $table->unique(['clv_upp','clv_pp','ejercicio']);
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
             $table->string('poblacion_objetivo',255)->nullable(false);
@@ -82,7 +82,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
             
-            $table->foreign('problema_id')->references('id')->on('mml_definicion_problema');
+            $table->foreign('problema_id')->references('id')->on('mml_definicion_problema')->onDelete('cascade');
             /* $table->foreign('upp_id')->references('id')->on('catalogo'); */
 
         });
@@ -106,7 +106,7 @@ return new class extends Migration
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
-            $table->foreign('problema_id')->references('id')->on('mml_definicion_problema');
+            $table->foreign('problema_id')->references('id')->on('mml_definicion_problema')->onDelete('cascade');
             /* $table->foreign('upp_id')->references('id')->on('catalogo'); */
 
         });
