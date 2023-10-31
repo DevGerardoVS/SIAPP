@@ -77,6 +77,7 @@
                         <table id="proyectoM" class="table table-hover table-striped">
                             <thead style="visibility: visible !important" >
                                 <tr class="colorMorado">
+                                    <th class="vertical">ID</th>
                                     <th class="vertical">Finalidad</th>
                                     <th class="vertical">Función</th>
                                     <th class="vertical">Subfunción</th>

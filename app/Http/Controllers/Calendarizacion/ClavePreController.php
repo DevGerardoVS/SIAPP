@@ -11,6 +11,7 @@ use DataTables;
 use App\Models\ProgramacionPresupuesto;
 use App\Models\cierreEjercicio;
 use App\Helpers\Calendarizacion\ClavesHelper;
+use App\Helpers\Calendarizacion\MetasHelper;
 
 use Illuminate\Validation\ValidationException;
 
@@ -332,6 +333,14 @@ class ClavePreController extends Controller
             if ($esEjercicioCerrado && $perfil != 1) {
                 return response()->json('invalid',200);
             }
+        $tieneMetas = MetasHelper::actividades($request->upp, $request->ejercicio);
+        if (count($tieneMetas)) {
+            return response()->json('invalid',200);
+        }
+        ProgramacionPresupuesto::where('id', $request->id)->update([
+            'deleted_user' => Auth::user()->username,
+            'estado'=> 0,
+        ]);   
         ProgramacionPresupuesto::where('id',$request->id)->delete();
         $b = array(
             "username"=>Auth::user()->username,
@@ -615,7 +624,7 @@ class ClavePreController extends Controller
         return response()->json($response,200);
     }
     public function getSector($clave){
-        $sector = DB::table('v_sector_linea_accion')
+        $sector = DB::table('sector_linea_accion')
             ->SELECT('sector')
             ->WHERE('clv_linea_accion', '=', $clave)
             ->first();
@@ -923,8 +932,19 @@ class ClavePreController extends Controller
         $rol = 0;
         $uppUsuario = Auth::user()->clv_upp;
         $grupo =  Auth::user()->id_grupo;
-        if ($grupo > 1) {
-            $rol =2;
+        switch ($grupo) {
+            case 1:
+                $rol = 0;
+                break;
+            case 4:
+                $rol = 1;
+                break;
+            case 5:
+                $rol = 2;
+                break;
+            default:
+                $rol = 3;
+                break;
         }
         $array_where = [];
         array_push($array_where, ['programacion_presupuesto.upp', '=', $request->upp ? $request->upp : $uppUsuario]);
@@ -936,7 +956,6 @@ class ClavePreController extends Controller
             $ejercicio = $ejer && $ejer != null ? $ejer->estatus : '';
             $estado = DB::table('programacion_presupuesto')->SELECT('estado')->WHERE($array_where)->first();
             if ($ejercicio !='Abierto' && $rol != 0 || $estado && $estado->estado != 0 && $rol != 0) {
-
                 $response = [
                     'response'=>'errorAutorizacion',
                     'rol'=>$rol
@@ -948,11 +967,11 @@ class ClavePreController extends Controller
                     ProgramacionPresupuesto::where($array_where)->update([
                         'estado' => 1,
                     ]);
-                    cierreEjercicio::where('clv_upp','=',$request->upp ? $request->upp : $uppUsuario)->where('ejercicio','=',$request->ejercicio)
-                    ->update([
-                        'estatus'=>'Cerrado',
-                        'updated_user'=>Auth::user()->username
-                    ]);
+                    // cierreEjercicio::where('clv_upp','=',$request->upp ? $request->upp : $uppUsuario)->where('ejercicio','=',$request->ejercicio)
+                    // ->update([
+                    //     'estatus'=>'Cerrado',
+                    //     'updated_user'=>Auth::user()->username
+                    // ]);
                     $b = array(
                         "username"=>Auth::user()->username,
                         "accion"=>'Confirmar',
@@ -1013,5 +1032,18 @@ class ClavePreController extends Controller
         ->distinct()
         ->get();
         return response()->json($ejercicios,200);
+    }
+    public function alertaAvtividades($upp,$ejercicio){
+        $estatus = 0;
+        $tieneMetas = MetasHelper::actividades($upp, $ejercicio);
+        //revisar el estatus en uno si estan confirmadas si no no mostrar mensaje;
+        if (count($tieneMetas)) {
+            $estatus = $tieneMetas[0]->estatus;
+        }
+        $response = [
+            'estatus'=> $estatus,
+            'metas'=>count($tieneMetas),
+        ];
+        return response()->json($response,200);
     }
 }

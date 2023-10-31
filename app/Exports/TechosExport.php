@@ -35,6 +35,7 @@ class TechosExport implements FromCollection, WithHeadings, WithStyles,WithEvent
             ->where('tf.deleted_at','=',null)
             ->where('tf.ejercicio','=',$this->ejercicio)
             ->where('vee.Ej','=',$this->ejercicio)
+            ->orderBy('vee.clv_upp','asc')
             ->get();
 
         $b = array(

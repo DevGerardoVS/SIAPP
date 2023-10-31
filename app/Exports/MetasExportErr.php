@@ -2,35 +2,34 @@
 
 namespace App\Exports;
 
+use App\Helpers\Calendarizacion\MetasHelper;
+use Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
-use App\Helpers\Calendarizacion\MetasHelper;
-use App\Http\Controllers\Calendarizacion\MetasController;
+
 
 
 class MetasExportErr implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths
 {
     protected $filas;
     protected $err;
+    protected $upp;
+    protected $anio;
 
-    function __construct($err) {
+    function __construct($upp,$anio) {
 
-        $this->err= $err;
-        
-
+        $this->upp= $upp;
+        $this->anio= $anio;
     }
     public function collection()
-    {
-/* 
-        $query = MetasHelper::actividades($this->upp); */
-       
-        $this->filas = count($this->err);
+    {       
         
-		return collect($this->err);
+        $check = MetasHelper::validateMesesfinal($this->upp, $this->anio);
+        $array = $check["ids"];
+		return collect($array);
     }
 
     /**
@@ -39,23 +38,19 @@ class MetasExportErr implements FromCollection, ShouldAutoSize, WithHeadings, Wi
      */
     public function headings(): array
     {
-        return ["FILA","TIPO","DESCRIPCION"];
+        return ["ID"];
     }
 
     public function columnWidths(): array
     {
-        return [
-            'A' => 10,
-            'B' => 10,
-            'C' => 25,
-        ];
+        return ['A' => 25];
     }
     public function registerEvents():array{
         return[
             AfterSheet::class=> function(AfterSheet $event){
                 $sheet = $event -> sheet;
                 $event->sheet->getDelegate()
-                ->getStyle('A1:S'.$this->filas)
+                ->getStyle('A1:A'.$this->filas)
                 ->applyFromArray(['alignment'=>['wrapText'=>true]]);
 
                 $styleArray = [
@@ -67,7 +62,7 @@ class MetasExportErr implements FromCollection, ShouldAutoSize, WithHeadings, Wi
                     ],
                 ];
     
-                $event->sheet->getStyle('A1:C'.$this->filas)->applyFromArray($styleArray);
+                $event->sheet->getStyle('A1:A'.$this->filas)->applyFromArray($styleArray);
                },
              
         ];
