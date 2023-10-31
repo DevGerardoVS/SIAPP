@@ -41,35 +41,43 @@ class MetasController extends Controller
 	public function getProyecto()
 	{
 		Controller::check_permission('getMetas');
+		Log::debug('getProyecto');
 		return view('calendarizacion.metas.proyecto');
 	}
 	public static function getActiv($upp, $anio)
 	{
 		Controller::check_permission('getMetas');
+		MetasHelper::queryRandomFinal($upp,$anio);
 		$query = MetasHelper::actividades($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$dataSet = [];
 		foreach ($query as $key) {
+			$area = str_split($key->area);
+			$entidad = str_split($key->entidad);
 			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
 				'<i class="fa fa-pencil" style="color:green;"></i></button>' .
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
 				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
-
+				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
+				
 			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
 				if ($anio == $anioMax) {
+
 					$button = $accion;
 				} else {
 					$button = '';
 				}
 			} else {
 				if ($key->estatus == 0) {
-					$button = $accion;
+					if ($sub  == 'UUU' && Auth::user()->id_grupo == 4) {
+                        $button = '';
+                    }else{
+                        $button = $accion;
+                    }
 				} else {
 					$button = '';
 				}
 			}
-			$area = str_split($key->area);
-			$entidad = str_split($key->entidad);
 			$i = array(
 				$key->id,
 				$area[0],
@@ -303,8 +311,6 @@ class MetasController extends Controller
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
 			} else {
-				Log::debug('sub'.$areaAux[8]);
-				Log::debug('anio'.$check['anio']);
 				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('ejercicio',  $check['anio'])->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
 			}
 			$tAct = MetasController::getTcalendar($entidadAux[0]);
@@ -550,7 +556,8 @@ class MetasController extends Controller
 
 					if ($meta) {
 						$pp = explode('-', $clv[0]);
-						$meta->clv_actividad = "" . $request->upp . "-" . $pp[7] . "-" . $meta->id . "-" . $anio;
+						/* PROGRAMA:7 SUBPRO:8 PROYECTO:9 */
+						$meta->clv_actividad = "" . $request->upp . "-" . $pp[9] . "-" . $meta->id . "-" . $anio;
 						$meta->save();
 						$b = array(
 							"username" => $username,
@@ -1576,13 +1583,11 @@ class MetasController extends Controller
 	}
 	public static function getAnios()
 	{
-		$anio = DB::table('mml_mir')
-			->select(
-				DB::raw("IFNULL(mml_mir.ejercicio," . date('Y') . ") AS ejercicio")
-			)
-			->groupBy('mml_mir.ejercicio')
+			$ejercicios = DB::table('v_epp')
+			->SELECT('ejercicio')
+			->distinct()
 			->get();
-		return $anio;
+		return $ejercicios;
 	}
 	public static function cmetasUpp($upp, $anio)
 	{
