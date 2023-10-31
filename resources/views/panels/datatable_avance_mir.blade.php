@@ -60,6 +60,14 @@
                     ruta = "#buscarFormB";
                     columns = [
                             { width: "5em"},
+                            { width: "20em"},
+                            { width: "10em"},
+                        ];
+                    break;
+                case "C":
+                    ruta = "#buscarFormC";
+                    columns = [
+                            { width: "5em"},
                             { width: "5em"},
                             { width: "5em"},
                             { width: "10em"},

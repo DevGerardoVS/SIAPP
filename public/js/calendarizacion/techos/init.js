@@ -407,6 +407,15 @@ $('#btnSave').click(function (e) {
                     title: 'El registro ya existe en el ejercicio actual',
                     showConfirmButton: true
                 });
+            }else if(response.status == 'No autorizado'){
+                $("#frm_create_techo").find("#"+response.etiqueta[0]).addClass('is-invalid');
+                $("#frm_create_techo").find("#"+response.etiqueta[1]).addClass('is-invalid');
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'La UPP no puede añadir fondos de tipo RH',
+                    showConfirmButton: true
+                });
             }
             else{
                 Swal.fire({

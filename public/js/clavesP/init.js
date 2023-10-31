@@ -244,22 +244,34 @@ var dao = {
           url: '/calendarizacion-eliminar-clave',
           data: {'id':id,'upp':upp, 'ejercicio':ejercicio}
         }).done(function (response) {
-          if (response != 'done') {
-            Swal.fire(
-              'Error',
-              'A ocurrido un error',
-              'error'
-            );
-          }else{
-            Swal.fire(
-              'Eliminado',
-              'Eliminado correctamente.',
-              'success'
-            );
-            let ejercicio = document.getElementById('filtro_anio').value;
-            let upp = document.getElementById('filtro_upp').value;
-            let ur = document.getElementById('filtro_ur').value;
-            dao.getData(ejercicio,upp,ur);
+          switch (response) {
+            case 'done':
+              Swal.fire(
+                'Eliminado',
+                'Eliminado correctamente.',
+                'success'
+              );
+              let ejercicio = document.getElementById('filtro_anio').value;
+              let upp = document.getElementById('filtro_upp').value;
+              let ur = document.getElementById('filtro_ur').value;
+              dao.getData(ejercicio,upp,ur);
+              break;
+            
+            case 'invalid':
+              Swal.fire(
+                'Aviso',
+                'Se requiere borrar las metas de esta clave presupuestal',
+                'warning'
+              );
+            break;
+          
+            default:
+              Swal.fire(
+                'Error',
+                'A ocurrido un error contacte con el administrador.',
+                'error'
+              );
+              break;
           }
         })
        
@@ -334,6 +346,7 @@ var dao = {
             if (id != '' && val.clv_upp == id) {
              par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,true,true));
              document.getElementById('upp').innerHTML = data[i].clv_upp;
+             dao.alertaAvtividades(id,ejercicio);
             }else{
              par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,false,false));
             }
@@ -591,6 +604,7 @@ var dao = {
           }else{
             if (response['presupuestoAsignado'][0].totalAsignado && response['presupuestoAsignado'][0].totalAsignado > 0) {
               $('#btnNuevaClave').show(true);
+              $('#btn_confirmar').hide(true);
             }else{
               $('#btnNuevaClave').hide(true);
             }
@@ -911,6 +925,20 @@ var dao = {
       });
     });
   },
+  alertaAvtividades : function (upp,ejercicio) {
+    $.ajax({
+      type:'get',
+      url: '/alerta-actividades/'+ upp + '/' + ejercicio,
+    }).done(function (data) {
+      if (data.estatus == 1) {
+        Swal.fire(
+          'Advertencia!',
+        "Tienes "+data.metas+ " metas confirmadas para está upp, se van a desconfirmar si agregás o editas las claves.",
+          'warning'
+        );
+      }
+    });
+  }
 
 };
 var init = {
@@ -1015,6 +1043,7 @@ $(document).ready(function(){
     let ejercicio = document.getElementById('anio').value;
 		dao.getUninadResponsableByUpp(val,ejercicio,'');
     dao.getObras(val);
+    dao.alertaAvtividades(val,ejercicio);
 	});
 	$('#sel_unidad_res').change(function(e){
 		e.preventDefault();
@@ -1217,9 +1246,9 @@ $(document).ready(function(){
     document.getElementById('filAnio').value = id;
     let upp = document.getElementById('filUpp').value;
     let ur = document.getElementById('filtro_ur').value;
-    if (upp && upp != '') {
-      dao.filtroUr(upp,id);
-    }
+      if (upp && upp != '') {
+        dao.filtroUr(upp,id);
+      }
     dao.getData(id,upp,ur);
 	});
   $('#filtro_upp').change(function (e) {

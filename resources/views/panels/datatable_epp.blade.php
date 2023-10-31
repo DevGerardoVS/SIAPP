@@ -94,8 +94,22 @@
                                     action: function(e){
                                         var e = document.getElementById("filters_anio");
                                         var anio = e.value;
+                                        var upp = '000';
+                                        var ur = '00';
 
-                                        _url = "/epp-exportExcel/"+anio;
+                                        var e = document.getElementById("filters_upp");
+                                        if(typeof(e) != 'undefined' && e != null){
+                                            var e = document.getElementById("filters_upp");
+                                            var upp = e.value;
+                                        }
+
+                                        var e = document.getElementById("filters_ur");
+                                        if(typeof(e) != 'undefined' && e != null){
+                                            var e = document.getElementById("filters_ur");
+                                            var ur = e.value;
+                                        }
+
+                                        _url = "/epp-exportExcel/"+anio+"/"+upp+"/"+ur;
                                         window.open(_url, '_blank');
                                         $('#cabecera').css("visibility","visible");
                                     },
