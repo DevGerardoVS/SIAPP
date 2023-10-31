@@ -39,9 +39,10 @@ var dao = {
             url: '/actividades/anios-metas/',
             dataType: "JSON"
         }).done(function (data) {
+            console.log(data);
             var par = $('#anio_filter');
             par.html('');
-            if (data.length == 1) {
+            if (data.length >= 1) {
                 $.each(data, function (i, val) {
                     par.append(new Option(val.ejercicio, val.ejercicio, true, false));
                 });

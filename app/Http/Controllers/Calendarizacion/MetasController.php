@@ -41,13 +41,12 @@ class MetasController extends Controller
 	public function getProyecto()
 	{
 		Controller::check_permission('getMetas');
-		Log::debug('getProyecto');
 		return view('calendarizacion.metas.proyecto');
 	}
 	public static function getActiv($upp, $anio)
 	{
 		Controller::check_permission('getMetas');
-		MetasHelper::queryRandomFinal($upp,$anio);
+
 		$query = MetasHelper::actividades($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$dataSet = [];
@@ -1583,11 +1582,12 @@ class MetasController extends Controller
 	}
 	public static function getAnios()
 	{
-			$ejercicios = DB::table('v_epp')
-			->SELECT('ejercicio')
-			->distinct()
+			
+		$anio = DB::table('cierre_ejercicio_metas')
+			->select('ejercicio')
+			->groupByRaw('ejercicio')
 			->get();
-		return $ejercicios;
+		return $anio;
 	}
 	public static function cmetasUpp($upp, $anio)
 	{
