@@ -17,7 +17,7 @@ var dao = {
     getUpps: function () {
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/upps/',
+            url: '/calendarizacion/upps',
             dataType: "JSON"
         }).done(function (data) {
             const { upp } = data;
