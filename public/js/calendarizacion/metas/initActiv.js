@@ -39,7 +39,6 @@ var dao = {
             url: '/actividades/anios-metas/',
             dataType: "JSON"
         }).done(function (data) {
-            console.log(data);
             var par = $('#anio_filter');
             par.html('');
             if (data.length >= 1) {
@@ -48,8 +47,11 @@ var dao = {
                 });
             }else {
                 var  d = new  Date();
-                var  n = d.getFullYear();
-                par.append(new Option(n,n, true, false));
+                var n = d.getFullYear();
+                var nn = n + 1;
+                par.append(new Option(nn,nn, true, false));
+                par.append(new Option(n, n, true, false));
+               
              
             }
         });

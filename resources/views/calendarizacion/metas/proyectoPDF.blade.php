@@ -1,11 +1,5 @@
 <div class="container d-flex justify-content-center">
     <div class="row">
-      {{--   <style>
-            @page {
-                margin-left: 0.5cm;
-                margin-right: 0.5cm;
-            }
-        </style> --}}
         <div class="d-flex justify-content-center"> 
             <header  style=" border-bottom: 5px solid #17a2b8;">
                 <h2 class="text-justify" style="text-align:center;">Proyectos con actividades</h2>
@@ -16,6 +10,7 @@
                         <table id="catalogo"  style="border: 1px solid #000; ">
                             <thead>
                                 <tr style="background-color: #6A0F49 !important;color: white !important; border: 1px solid #000;">
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">ID</h3></th>
                                     <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">Finalidad</h3></th>
                                     <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">Función</h3></th>
                                     <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 20px;">Subfunción</h3></th>
@@ -33,8 +28,8 @@
                                     <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 80px;">Tipo Actividad</h3></th>
                                     <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 40px;">Meta anual</h3></th>
                                     <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 70px;">Numero de beneficiarios</h3></th>
-                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 150px;">Beneficiarios</h3></th>
-                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 130px;">Unidad de medida</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 100px;">Beneficiarios</h3></th>
+                                    <th>&nbsp;<h3 style="transform: rotate(-90deg); width: 120px;">Unidad de medida</h3></th>
                                 </tr>
                             </thead>
                             <tbody>

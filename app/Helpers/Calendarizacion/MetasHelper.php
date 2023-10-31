@@ -266,7 +266,7 @@ class MetasHelper
 			->where('mml_mir.clv_upp', $upp)
 			->where('pp.upp', $upp)
 			->groupByRaw('mml_mir.indicador')
-			->orderByRaw('mml_mir.entidad_ejecutora,mml_mir.clv_upp,mml_mir.clv_ur,mml_mir.clv_pp')
+			->orderByRaw('mml_mir.entidad_ejecutora,mml_mir.area_funcional')
 			->distinct();
 		if (Auth::user()->id_grupo == 4) {
 			$data3 = $data3->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'mml_mir.clv_upp')
@@ -349,7 +349,7 @@ class MetasHelper
 			->where('mml_cierre_ejercicio.ejercicio', $anio)
 			->where('mml_cierre_ejercicio.statusm', 1)
 			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-			->orderBy('ur')
+			->orderByRaw('upp,ur,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 			->unionAll($data3)
 			->unionAll($newdata2)
 			->distinct();
