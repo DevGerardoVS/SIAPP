@@ -197,5 +197,99 @@ class ClavesHelper{
             return false;
         }
     }
+    public static function esConfirmable($upp,$ejercicio){
+        $Totcalendarizado = 0;
+        $disponible = 0;
+        $rol = '';
+        $perfil = Auth::user()->id_grupo;
+        switch ($perfil) {
+            case 1:
+                // rol administrador
+                $rol = 0;
+                break;
+            case 4:
+                // rol upp
+                $rol = 1;
+                break;
+            case 5:
+                // rol delegacion
+                $rol = 2;
+                break;
+            default:
+                // rol auditor y gobDigital
+                $rol = 3;
+                break;
+        }
+        $array_where = [];
+        $array_where2 = [];
+        $array_whereCierre = [];
+        $autorizado = ClavesHelper::esAutorizada($upp);
+            if ($autorizado) {
+                array_push($array_where, ['techos_financieros.tipo', '=', 'Operativo']);
+                array_push($array_where2, ['programacion_presupuesto.tipo', '=', 'Operativo']);
+            }
+            array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
+            array_push($array_where, ['techos_financieros.ejercicio', '=', $ejercicio]);
+            array_push($array_where2, ['programacion_presupuesto.deleted_at', '=', null]);
+            array_push($array_where2, ['programacion_presupuesto.ejercicio', '=', $ejercicio]);
+            array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $ejercicio]);
+            if ($upp != '') {
+                array_push($array_where, ['techos_financieros.clv_upp', '=', $upp]);
+                array_push($array_where2, ['programacion_presupuesto.upp', '=', $upp]);
+                array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $upp]);
+            }
+        $estatusCierre = DB::table('cierre_ejercicio_claves')
+        ->SELECT('ejercicio','estatus')
+        ->WHERE($array_whereCierre)
+        ->first();
+
+        $presupuestoAsignado = DB::table('techos_financieros')
+        ->SELECT(DB::raw('SUM(presupuesto) as totalAsignado'))
+        ->where(function ($presupuestoAsignado) use ($rol,$array_where) {
+            $presupuestoAsignado->where($array_where);
+            if ($rol == 2) {
+                $arrayClaves = [];
+                $uppAutorizados = DB::table('uppautorizadascpnomina')->select('clv_upp')->where('deleted_at','=',null)->get()->toArray();
+                foreach ($uppAutorizados as $key => $value) {
+                    array_push($arrayClaves, $value->clv_upp);
+                }
+                $presupuestoAsignado->whereIn('techos_financieros.clv_upp',$arrayClaves);
+                $presupuestoAsignado->where('techos_financieros.tipo', '=', 'RH');
+            }
+        })
+        ->get();
+        $calendarizados = DB::table('programacion_presupuesto')
+        ->SELECT(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre as calendarizados'),'estado')
+        ->where(function ($calendarizados) use ($rol,$array_where2) {
+            $calendarizados->where($array_where2);
+            if ($rol == 2) {
+                $arrayClaves = [];
+                $uppAutorizados = DB::table('uppautorizadascpnomina')->select('clv_upp')->where('deleted_at','=',null)->get()->toArray();
+                foreach ($uppAutorizados as $key => $value) {
+                    array_push($arrayClaves, $value->clv_upp);
+                }
+                $calendarizados->whereIn('programacion_presupuesto.upp',$arrayClaves);
+                $calendarizados->where('programacion_presupuesto.tipo', '=', 'RH');
+            }
+        })
+        ->get();
+        foreach ($calendarizados as $key => $value) {
+            $Totcalendarizado = $Totcalendarizado + $value->calendarizados;
+        }
+        if ($Totcalendarizado != 0 ) {
+            $disponible = $presupuestoAsignado[0]->totalAsignado - $Totcalendarizado;
+        }else {
+            $disponible = $presupuestoAsignado[0]->totalAsignado;
+        }
+        $estado = DB::table('programacion_presupuesto')
+        ->SELECT('*')->where('upp', $upp)->where('ejercicio', $ejercicio)->where('estado', 1)->where('deleted_at','=',null)->get();
+        Log::info('helper', ['ejercicio'=>$ejercicio]);
+        Log::info('estado', [json_encode($estado)]);
+        if ($disponible > 0 || count($estado)) {
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 }

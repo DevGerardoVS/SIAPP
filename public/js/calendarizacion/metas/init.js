@@ -173,10 +173,8 @@ var dao = {
     nCont: function () {
         if ($('#nContinua').val()!='') {
             contValue = $('#nContinua').val();
-            for (let i = 1; i <= 12; i++) {
-                $('#' + i).val(contValue);
-                $('#' + i).attr('disabled', 'disabled');
-            }
+            let fondo = $('#sel_fondo').val() != null ? $('#sel_fondo').val() : $('#fondo_id').val();
+            dao.getMesesCont($('#area').val(),fondo,contValue);
             $('#sumMetas').val(contValue);
             $('#sumMetas').attr('disabled', 'disabled');
             dao.clearCont('aceptar');
@@ -345,6 +343,130 @@ var dao = {
             }
 
 
+
+        });
+    },
+    getMesesCont: function (idA, idF,value) {
+        for (const key in mesesV) {
+            if (Object.hasOwnProperty.call(mesesV, key)) {
+                mesesV[key] = false;
+            }
+        }
+        $.ajax({
+            type: "GET",
+            url: '/actividades/meses-activos/' + idA + "/" + idF,
+            dataType: "JSON"
+        }).done(function (data) {
+            let { mese } = data;
+                for (const key in mese) {
+                    if (Object.hasOwnProperty.call(mese, key)) {
+                        const e = mese[key];
+                        switch (key) {
+                            case 'enero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.enero = true;
+                                    $("#1").val(value);
+                                } else {
+                                    $("#1").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'febrero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.febrero = true;
+                                    $("#2").val(value);
+                                } else {
+                                    $("#2").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'marzo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.marzo = true;
+                                    $("#3").val(value);
+                                } else {
+                                    $("#3").prop('disabled', 'disabled');
+
+                                }
+                                break;
+                            case 'abril':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.abril = true;
+                                    $("#4").val(value);
+                                } else {
+                                    $("#4").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'mayo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.mayo = true;
+                                    $("#5").val(value);
+                                } else {
+                                    $("#5").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'junio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.junio = true;
+                                    $("#6").val(value);
+                                } else {
+                                    $("#6").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'julio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.julio = true;
+                                    $("#7").val(value);
+                                } else {
+                                    $("#7").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'agosto':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.agosto = true;
+                                    $("#8").val(value);
+                                } else {
+                                    $("#8").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'septiembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.septiembre = true;
+                                    $("#9").val(value);
+                                } else {
+                                    $("#9").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'octubre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.octubre = true;
+                                    $("#10").val(value);
+                                } else {
+                                    $("#10").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'noviembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.noviembre = true;
+                                    $("#11").val(value);
+                                } else {
+                                    $("#11").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'diciembre':
+
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.diciembre = true;
+                                    $("#12").val(value);
+                                } else {
+                                    $("#12").prop('disabled', 'disabled');
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    }
+                }
 
         });
     },
@@ -533,6 +655,11 @@ var dao = {
 
         });
     },
+    getPlantillaCmUpp: function () {
+        let upp = $('#upp').val() != '' ? $('#upp').val() : $('#upp_filter').val();
+        const url = "/actividades/proyecto_calendario/" + upp;
+        window.location.href = url;
+    },
     getProg: function (ur) {
         $.ajax({
             type: "GET",
@@ -560,10 +687,45 @@ var dao = {
         let aOld = $('#area').val()
         let area = aOld.replace('$', '/')
         data.append('area', area);
+        
         if ($('#tipo_Ac').val() == 'Continua') {
-            for (let i = 0; i <= 12; i++) {
-                data.append(i, contValue); 
+            if (mesesV.enero) {
+                    data.append(1, contValue);
             }
+            if (mesesV.febrero) {
+                data.append(2, contValue);
+            } 
+            if (mesesV.marzo) {
+                data.append(3, contValue);
+            } 
+            if (mesesV.abril) {
+                data.append(4, contValue);
+            } 
+            if (mesesV.mayo) {
+                data.append(5, contValue);
+            } 
+            if (mesesV.junio) {
+                data.append(6, contValue);
+            } 
+            if (mesesV.julio) {
+                data.append(7, contValue);
+            } 
+            if (mesesV.agosto) {
+                data.append(8, contValue);
+            } 
+            if (mesesV.septiembre) {
+                data.append(9, contValue);
+            } 
+            if (mesesV.octubre) {
+                data.append(10, contValue);
+            } 
+            if (mesesV.noviembre) {
+                data.append(12, contValue);
+            } 
+            if (mesesV.diciembre) {
+                data.append(12, contValue);
+            } 
+
             data.append('sumMetas', contValue);
         }
         $.ajax({
@@ -701,9 +863,9 @@ var dao = {
             url: '/calendarizacion/fondos/' + area + '/' + enti,
             dataType: "JSON"
         }).done(function (data) {
-            const { fondos, activids ,tAct} = data;
+            const { fondos, activids, tAct } = data;
             let flag = false;
-            if (activids[0].id == 'ot' && mir == 1) {
+            if (activids[0]?.id == 'ot' && mir == 1) {
                 flag = true;
             }
             if (mir == 0) {
@@ -726,7 +888,7 @@ var dao = {
                 $('#actividad_id').prop('disabled', false);
                 var act = $('#actividad_id');
                 act.html('');
-                if (activids.length >= 2) {
+                if (activids.length == 2) {
                     act.append(new Option("--Actividad--", "true", true, true));
                     document.getElementById("actividad_id").options[0].disabled = true;
                 }
@@ -787,7 +949,8 @@ var dao = {
 
             var tipo_AC = $('#tipo_Ac');
             tipo_AC.html('');
-            if (Object.keys(tAct).length >= 2 && $('#calendar').val()!='UUU') {
+            let tm =Object.keys(tAct).length;
+            if (tAct.Acumulativa == 0 && $('#calendar').val()!='UUU') {
                 tipo_AC.append(new Option("--Tipo Actividad--", ""));
                 document.getElementById("tipo_Ac").options[0].disabled = true;
 
@@ -1147,7 +1310,8 @@ $(document).ready(function () {
         for (let i = 1; i <= 12; i++) {
               $('#' + i).val(0);
         }
-        dao.getMeses($('#area').val(), $('#sel_fondo').val());
+        let fondo = $('#sel_fondo').val() != null ? $('#sel_fondo').val() : $('#fondo_id').val();
+        dao.getMeses($('#area').val(),fondo);
         $("#sumMetas").val("");
         if ($('#tipo_Ac').val() == 'Continua') {
             $('#continua').modal('show')

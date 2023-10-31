@@ -13,12 +13,17 @@ use App\Exports\Calendarizacion\ActividadesPp;
 
 class MetasCargaM implements WithMultipleSheets
 {
+    protected $upp;
+    function __construct($upp) {
+
+        $this->upp= $upp;
+    }
     public function sheets(): array
     {
         $sheets = [];
 
-            $sheets[] = new MetasIndex();
-            $sheets[] = new ActividadesPp();
+            $sheets[] = new MetasIndex($this->upp);
+            $sheets[] = new ActividadesPp($this->upp);
             $sheets[] = new Beneficiarios();
             $sheets[] = new UnidadMedida();
             $sheets[] = new TipoCalendar();

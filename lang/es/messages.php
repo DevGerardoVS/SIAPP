@@ -24,7 +24,7 @@ return [
     'cambio_estatus_poliza' => 'Cambio de estatus de póliza',
     'cancelar' => 'Cancelar',
     'cantidad' => 'Cantidad',
-    'cat_epp' => 'Catálogo de Epp',
+    'cat_epp' => 'Estructura Programática Presupuestal (EPP)',
     'cat_users' => 'Catálogo de Usuarios',
     'carga_masiva' => 'Carga masiva',
     'carga_masiva_title'=> 'Carga masiva',

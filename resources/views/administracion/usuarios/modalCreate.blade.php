@@ -56,12 +56,22 @@
                         <div class="col-md-2"></div>
                         <div id="passchange" class="form-group col-md-4">
                             <label class="control-label">Contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password">
+                            <div class="d-flex" id="show-password">
+                                <input type="password" class="form-control" id="password" name="password">
+                                <span class="input-group-text border-0 bg-transparent"  id="toggle-password" style="cursor: pointer;">
+                                    <i class="fa fa-eye-slash fs-4 text-black" aria-hidden="true"></i>
+                                </span>
+                            </div>
                         </div>
                         <div id="passchange1" class="form-group col-md-4">
                             <label class="control-label">Confirmar
                                 Contraseña</label>
-                            <input type="password" class="form-control" id="in_pass_conf" name="in_pass_conf">
+                            <div class="d-flex" id="show-password-confirm">
+                                <input type="password" class="form-control" id="in_pass_conf" name="in_pass_conf">
+                                <span class="input-group-text border-0 bg-transparent"  id="toggle-password" style="cursor: pointer;">
+                                    <i class="fa fa-eye-slash fs-4 text-black" aria-hidden="true"></i>
+                                </span>
+                            </div>
                         </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>

@@ -18,7 +18,12 @@ use Log;
 class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths,WithTitle,WithStyles,WithEvents
 {
     protected $filas;
+    protected $upp;
 
+    function __construct($upp) {
+
+        $this->upp= $upp;
+    }
     public function collection(){
         $anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
         $data = DB::table('programacion_presupuesto')
@@ -29,7 +34,20 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
             DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
             DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
             DB::raw('programacion_presupuesto.fondo_ramo AS fondo'),
+            DB::raw('IF(enero>=1,"",0) AS enero'),
+            DB::raw('IF(febrero>=1,"",0) AS febrero'),
+            DB::raw('IF(marzo>=1,"",0) AS marzo'),
+            DB::raw('IF(abril>=1,"",0) AS abril'),
+            DB::raw('IF(mayo>=1,"",0) AS mayo '),
+            DB::raw('IF(junio>=1,"",0) AS junio'),
+            DB::raw('IF(julio>=1,"",0) AS julio'),
+            DB::raw('IF(agosto>=1,"",0) AS agosto'),
+            DB::raw('IF(septiembre>=1,"",0) AS septiembre '),
+            DB::raw('IF(octubre>=1,"",0) AS octubre'),
+            DB::raw('IF(noviembre>=1,"",0) AS noviembre'),
+            DB::raw('IF(diciembre>=1,"",0) AS diciembre')
         )
+        ->where("programacion_presupuesto.upp", $this->upp)
         ->where('programacion_presupuesto.estado', 1)
         ->where('programacion_presupuesto.deleted_at', null)
         ->where('programacion_presupuesto.ejercicio', '=', $anio)
@@ -39,10 +57,8 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
         ->distinct();
 
     if (Auth::user()->id_grupo == 4) {
-        $upp = Auth::user()->clv_upp;
         $data = $data->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'programacion_presupuesto.upp')
-            ->where("programacion_presupuesto.upp", $upp)
-            ->where('cierre_ejercicio_metas.deleted_at', null)
+        ->where('cierre_ejercicio_metas.deleted_at', null)
             ->where('cierre_ejercicio_metas.ejercicio', $anio)
             ->where('cierre_ejercicio_metas.estatus', 'Abierto');
     }
@@ -66,6 +82,19 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
                 '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
                 '' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
                 $key->fondo,
+                $key->enero,
+                $key->febrero,
+                $key->marzo,
+                $key->abril,
+                $key->mayo,
+                $key->junio,
+                $key->julio,
+                $key->agosto,
+                $key->septiembre,
+                $key->octubre,
+                $key->noviembre,
+                $key->diciembre,
+
             );
             $newData[] = $i;
         }
@@ -80,7 +109,7 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
     }
     public function headings(): array
     {
-        return ["FINALIDAD", "FUNCION", "SUBFUNCION", "EJE", "L ACCION", "PRG SECTORIAL", "TIPO CONAC", "UPP", "UR", "PRG", "SPR", "PY", "FONDO"];
+        return ["FINALIDAD", "FUNCION", "SUBFUNCION", "EJE", "L ACCION", "PRG SECTORIAL", "TIPO CONAC", "UPP", "UR", "PRG", "SPR", "PY", "FONDO" ,"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE",];
 
     }
     public function styles(Worksheet $sheet)
@@ -101,7 +130,21 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
             'J'  => ['font' => ['size' => 10]],
             'K'  => ['font' => ['size' => 10]],
             'L'  => ['font' => ['size' => 10]],
-            'M'  => ['font' => ['size' => 10]]
+            'M'  => ['font' => ['size' => 10]],
+            'N'  => ['font' => ['size' => 10]],
+            'O'  => ['font' => ['size' => 10]],
+            'P'  => ['font' => ['size' => 10]],
+            'Q'  => ['font' => ['size' => 10]],
+            'R'  => ['font' => ['size' => 10]],
+            'S'  => ['font' => ['size' => 10]],
+            'T'  => ['font' => ['size' => 10]],
+            'U'  => ['font' => ['size' => 10]],
+            'V'  => ['font' => ['size' => 10]],
+            'W'  => ['font' => ['size' => 10]],
+            'X'  => ['font' => ['size' => 10]],
+            'Y'  => ['font' => ['size' => 10]],
+
+            
        ];
     }
 
@@ -118,7 +161,20 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
             'J'  =>8,
             'K'  =>8,
             'L'  =>8,
-            'M'  =>8
+            'M'  =>8,
+            'N'  =>12,
+            'O'  =>12,
+            'P'  =>12,
+            'Q'  =>12,
+            'R'  =>12,
+            'S'  =>12,
+            'T'  =>12,
+            'U'  =>12,
+            'V'  =>12,
+            'W'  =>12,
+            'X'  =>12,
+            'Y'  =>12,
+
         ];
     }
     public function registerEvents():array{
@@ -126,7 +182,7 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
             AfterSheet::class=> function(AfterSheet $event){
                 $sheet = $event -> sheet;
                 $event->sheet->getDelegate()
-                ->getStyle('A1:M'.$this->filas)
+                ->getStyle('A1:Y'.$this->filas)
                 ->applyFromArray(['alignment'=>['wrapText'=>true]]);
 
                 $styleArray = [
@@ -138,7 +194,7 @@ class ActividadesPp implements FromCollection, ShouldAutoSize, WithHeadings, Wit
                     ],
                 ];
     
-                $event->sheet->getStyle('A1:M'.$this->filas)->applyFromArray($styleArray);
+                $event->sheet->getStyle('A1:Y'.$this->filas)->applyFromArray($styleArray);
                },
              
         ];

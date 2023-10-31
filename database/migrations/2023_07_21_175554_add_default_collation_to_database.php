@@ -15,6 +15,6 @@ return new class extends Migration
     {
         Schema::table('database', function (Blueprint $table) {
             Schema::connection(env('DB_CONNECTION'))->getConnection()->statement('ALTER DATABASE `'.env('DB_DATABASE').'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
-        });
+        }); 
     }
 };

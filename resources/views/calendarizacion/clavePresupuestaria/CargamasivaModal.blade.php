@@ -48,17 +48,6 @@
                             <div class="form-group">
                                 <label for="instruccion 2">
                                     <span style="vertical-align: inherit;"><span
-                                            style="vertical-align: inherit;">Modifique única y exclusivamente las
-                                            columnas de <b>año y las propias cantidades de los meses</b></span></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-10">
-                            <div class="form-group">
-                                <label for="instruccion 2">
-                                    <span style="vertical-align: inherit;"><span
                                             style="vertical-align: inherit;">Los datos de claves presupuestarias guardados no confirmados <b>seran borrados</b></span></span>
                                 </label>
                             </div>
