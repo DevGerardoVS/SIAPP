@@ -227,7 +227,12 @@ class CalendarizacionCargaMasivaController extends Controller
                         if ($var === 0) {
                             $var = true;
                         }
-                        $var == false ? array_push($arrayupps, $k['5']) : NULL;
+                        if($var && strlen($var) == 3){
+                            array_push($arrayupps, $k['5']);
+                        }
+                        else{
+                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres');
+                        }
                     }
 
 
@@ -430,7 +435,12 @@ class CalendarizacionCargaMasivaController extends Controller
                         if ($var === 0) {
                             $var = true;
                         }
-                        $var == false ? array_push($arrayupps, $k['5']) : NULL;
+                        if($var && strlen($var) == 3){
+                            array_push($arrayupps, $k['5']);
+                        }
+                        else{
+                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres');
+                        }
 
                     }
                     //validacion de totales
@@ -858,6 +868,48 @@ class CalendarizacionCargaMasivaController extends Controller
 
                 }
 
+                     $k['0']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor admconac no puede ir vacio'): null;
+                     $k['1']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor ef no puede ir vacio'): null;
+                     $k['2']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor reg no puede ir vacio'): null;
+                     $k['3']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor mpio no puede ir vacio'): null;
+                     $k['4']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor loc no puede ir vacio'): null;
+                     $k['5']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor upp no puede ir vacio'): null;
+                     $k['6']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor subsecretaria no puede ir vacio'): null;
+                     $k['7']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor ur no puede ir vacio'): null;
+                     $k['8']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor finalidad no puede ir vacio'): null;
+                     $k['9']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor función no puede ir vacio'): null;
+                     $k['10']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor subfunción no puede ir vacio'): null;
+                     $k['11']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor eje no puede ir vacio'): null;
+                     $k['12']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor pt no puede ir vacio'): null;
+                     $k['13']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor ps no puede ir vacio'): null;
+                     $k['14']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor sprconac no puede ir vacio'): null;
+                     $k['15']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor prg no puede ir vacio'): null;
+                     $k['16']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor spr no puede ir vacio'): null;
+                     $k['17']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor py no puede ir vacio'): null;
+                     $k['18']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor idpartida no puede ir vacio'): null;
+                     $k['19']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor tipo de gasto no puede ir vacio'): null;
+                     $k['20']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor año no puede ir vacio'): null;
+                     $k['21']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor etiquetado y no etiquetado no puede ir vacio'): null;
+                     $k['22']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor fconac no puede ir vacio'): null;
+                     $k['23']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor ramo no puede ir vacio'): null;
+                     $k['24']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor fondo no puede ir vacio'): null;
+                     $k['25']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor ci no puede ir vacio'): null;
+                     $k['26']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El valor obra no puede ir vacio'): null;
+                     $k['27']=='' ? $k['27'] =0: null;
+                     $k['28']=='' ? $k['28'] =0: null;
+                     $k['29']=='' ? $k['29'] =0: null;
+                     $k['30']=='' ? $k['30'] =0: null;
+                     $k['31']=='' ? $k['31'] =0: null;
+                     $k['32']=='' ? $k['32'] =0: null;
+                     $k['33']=='' ? $k['33'] =0: null;
+                     $k['34']=='' ? $k['34'] =0: null;
+                     $k['35']=='' ? $k['35'] =0: null;
+                     $k['36']=='' ? $k['36'] =0: null;
+                     $k['37']=='' ? $k['37'] =0: null;
+                     $k['38']=='' ? $k['38'] =0: null;
+                     $k['39']=='' ? $k['39'] =0: null;
+                    
+
                 //validacion de parte clave geografica
                 $valgeo = clasificacion_geografica::select()
                     ->where('clv_entidad_federativa', $k['1'])
@@ -893,7 +945,6 @@ class CalendarizacionCargaMasivaController extends Controller
                     'posicion_presupuestaria' => $k['18'],
                     'tipo_gasto' => $k['19'],
                     'anio' => $k['20'],
-                    //no detecta la ñ
                     'etiquetado' => $k['21'],
                     'fuente_financiamiento' => $k['22'],
                     'ramo' => $k['23'],
