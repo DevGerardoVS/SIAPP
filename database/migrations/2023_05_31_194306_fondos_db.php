@@ -573,7 +573,6 @@ return new class extends Migration
 
         Schema::create('sector_linea_accion',function (Blueprint $table){
             $table->increments('id');
-            $table->integer('linea_accion_id')->unsigned()->nullable(false);
             $table->string('clv_sector',1)->nullable(false);
             $table->string('sector',255)->nullable(false);
             $table->softDeletes();
@@ -584,8 +583,6 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->string('linea_accion_num',8)->nullable(false);
             $table->string('clv_linea_accion',2)->nullable(false);
-
-            $table->foreign('linea_accion_id')->references('id')->on('catalogo');
         });
 
         Schema::create('epp',function (Blueprint $table){

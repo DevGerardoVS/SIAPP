@@ -464,16 +464,6 @@ return new class extends Migration
             group by clv_fondo,fondo_ramo,ejercicio
         )t group by clv_fondo_ramo,fondo_ramo,ejercicio;");
 
-        DB::unprepared("CREATE VIEW v_sector_linea_accion AS 
-        select 
-            sla.id,
-            c.clave clv_linea_accion,
-            c.descripcion linea_accion,
-              sla.clv_sector,
-            sla.sector
-        from sector_linea_accion sla
-        join catalogo c on sla.linea_accion_id = c.id;");
-
         DB::unprepared("CREATE VIEW v_sector_importe AS 
         select 
             sla.sector concepto,
@@ -481,7 +471,7 @@ return new class extends Migration
             pp.ejercicio,
             pp.deleted_at
         from programacion_presupuesto pp 
-        join v_sector_linea_accion sla on pp.linea_accion = sla.clv_linea_accion;
+        join sector_linea_accion sla on pp.linea_accion = sla.clv_linea_accion;
         ");
     }
 
