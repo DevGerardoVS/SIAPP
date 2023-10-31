@@ -70,6 +70,7 @@ return new class extends Migration
             c2.descripcion subsecretaria,
             c3.clave clv_ur,
             c3.descripcion ur,
+            ee.ejercicio,
             ee.deleted_at,
             ee.updated_at,
             ee.created_at,
