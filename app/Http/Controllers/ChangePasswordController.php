@@ -9,6 +9,7 @@ use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Redirect;
 
 class ChangePasswordController extends Controller
 {
@@ -40,28 +41,36 @@ class ChangePasswordController extends Controller
     public function store(Request $request)
     {
         // bitacora
-        try {
+         try { 
             $request->validate([
                 'contraseña_actual' => ['required', new MatchOldPassword],
                 'nueva_contraseña' => ['required'],
                 'confirmar_nueva_contraseña' => ['same:nueva_contraseña'],           
             ]);
-            $ModelsUser = ModelsUser::where('id', auth()->user()->id)->firstOrFail();
-            $ModelsUser->password = $request->nueva_contraseña;//Hash::make($request->nueva_contraseña);
-            if($ModelsUser->id_grupo !=4){
-                $ModelsUser->clv_upp = NULL;
+            Log::debug('username: '.Auth::user()->username);
+            Log::debug('password: '. $request->password);
+            if (Auth::attempt(['username' => Auth::user()->username, 'password' => $request->contraseña_actual])) {
+                $ModelsUser = ModelsUser::where('id', auth()->user()->id)->firstOrFail();
+                $ModelsUser->password = $request->nueva_contraseña;//Hash::make($request->nueva_contraseña);
+                if($ModelsUser->id_grupo !=4){
+                    $ModelsUser->clv_upp = NULL;
+                }else{
+                    $ModelsUser->clv_upp = Auth::user()->clv_upp;
+                }
+    
+                $ModelsUser->save();
+                      $b = array(
+                    "username"=>Auth::user()->username,
+                    "accion"=>'Cambio de Contraseña',
+                    "modulo"=>'Contraseña'
+                 );
+                Controller::bitacora($b);
+                
             }else{
-                $ModelsUser->clv_upp = Auth::user()->clv_upp;
+                return Redirect::back()->withInput()->withErrors('La contraseña es incorrecta');
             }
-
-            $ModelsUser->save();
-      			$b = array(
-				"username"=>Auth::user()->username,
-				"accion"=>'Cambio de Contraseña',
-				"modulo"=>'Contraseña'
-			 );
-			Controller::bitacora($b);
-        } catch (\Exception $exp) {
+           
+         } catch (\Exception $exp) {
             Log::channel('daily')->debug('exp '.$exp->getMessage());
         }
         return back()->with("status", "¡La contraseña se cambio correctamente!");
