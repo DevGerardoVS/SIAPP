@@ -44,7 +44,7 @@ Route::controller(TechosController::class)->group(function () {
 		Route::get('/calendarizacion/get-calendarizacion-panel', 'getPanelCalendarizacion');
 		Route::get('/cat-subSecretaria/{upp?}/{ur?}/{ejercicio?}', 'getSubSecretaria');
 		Route::get('/cat-area-funcional/{uppId?}/{id?}/{ejercicio?}/{subPrograma?}/{linea?}/{programa?}/{proyecto?}', 'getAreaFuncional');
-		Route::get('/cat-partidas/{clasificacion?}', 'getPartidas');
+		Route::get('/cat-partidas/{clasificacion?}/{upp?}', 'getPartidas');
 		Route::get('/cat-fondos/{id?}/{subP?}/{ejercicio?}', 'getFondos');
 		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
 		Route::get('/presupuesto-upp-asignado/{upp?}/{fonfo?}/{subPrograma?}/{ejercicio?}', 'getPresupuestoPorUpp');

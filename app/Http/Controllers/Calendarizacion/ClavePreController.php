@@ -493,7 +493,15 @@ class ClavePreController extends Controller
         ->first();
         return response()->json($areaFuncional,200);
     }
-    public function getPartidas($clasificacion){
+    public function getPartidas($clasificacion,$upp){
+        $array_where = [];
+        $esAutorizada = ClavesHelper::esAutorizada($upp);
+        array_push($array_where, ['rel_economica_administrativa.clasificacion_administrativa','=',$clasificacion]);
+        array_push($array_where, ['v_posicion_presupuestaria_llaves.deleted_at','=', null]);
+        if ($esAutorizada) {
+            array_push($array_where, ['v_posicion_presupuestaria_llaves.clv_capitulo','!=',1]);
+            array_push($array_where, ['v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave','!=',398011]);
+        }
         $partidas = DB::table('rel_economica_administrativa')
         ->SELECT(
         'v_posicion_presupuestaria_llaves.clv_capitulo',
@@ -503,7 +511,7 @@ class ClavePreController extends Controller
         'v_posicion_presupuestaria_llaves.clv_tipo_gasto',
         'v_posicion_presupuestaria_llaves.partida_especifica')
         ->leftJoin('v_posicion_presupuestaria_llaves','rel_economica_administrativa.clasificacion_economica','=','v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave')
-        ->WHERE('rel_economica_administrativa.clasificacion_administrativa','=',$clasificacion)
+        ->WHERE($array_where)
         ->DISTINCT()
         ->get();
         return response()->json($partidas,200);

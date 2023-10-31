@@ -470,10 +470,10 @@ var dao = {
       document.getElementById('conac').innerHTML = data.clv_tipologia_conac;
     });
   },
-	getPartidaByUpp : function(clasificacion,id){
+	getPartidaByUpp : function(clasificacion,upp,id){
         $.ajax({
           	type : "get",
-          	url: '/cat-partidas/'+clasificacion,
+          	url: '/cat-partidas/'+clasificacion+'/'+ upp,
         }).done(function(data){
           var par = $('#sel_partida');
           par.html('');
@@ -528,7 +528,7 @@ var dao = {
     }).done(function (data) {
       let clasificacion = data.clv_sector_publico + data.clv_sector_publico_f + data.clv_sector_economia + data.clv_subsector_economia + data.clv_ente_publico;
       document.getElementById('clasificacion').innerHTML = clasificacion;
-      dao.getPartidaByUpp(clasificacion,'');
+      dao.getPartidaByUpp(clasificacion,upp,'');
     });
   },
   getPresupuestoPorUpp: function (upp,fondo,subPrograma,ejercicio) {
@@ -802,7 +802,7 @@ var dao = {
           $('#tablaDelegacion').hide(true);
           break;
         case 1:
-          console.log('upp');
+
           tabla = $('#tablaUpps');
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
@@ -818,7 +818,7 @@ var dao = {
           $('#tblPresupuestos').hide(true);
           break;
         case 2:
-          console.log('delegacion');
+
           tabla = $('#tablaDelegacion');
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
@@ -834,7 +834,7 @@ var dao = {
           $('#tablaUpps').hide(true);
           break;
         default:
-          console.log('default');
+
           tabla = $("#tblPresupuestos");
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
@@ -997,7 +997,7 @@ var dao = {
         );
       }
     });
-  }
+  },
 
 };
 var init = {
@@ -1043,7 +1043,7 @@ var init = {
       }
     })
   },
-}
+};
 
 function calucalarCalendario() {
   var total = 0;
@@ -1060,7 +1060,7 @@ function calucalarCalendario() {
 
   });
   document.getElementById('totalCalendarizado').value = total;
-}
+};
 function soloEnteros() {
   var total = 0;
   $(".monto").each(function() {
@@ -1073,7 +1073,7 @@ function soloEnteros() {
         e.preventDefault();
     });
   });
-}
+};
 $(document).ready(function(){
   $("#segundaParte").hide();
   $('.select2').select2({
