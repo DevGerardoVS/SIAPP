@@ -35,13 +35,10 @@ class MetasController extends Controller
 	public function getManual(){
         $file = "";
         $name = "";
-        if(Auth::user()->id_grupo==1){
-            $name = "CAP_Manual_de_Usuario_Administrador-Carga_masiva.pdf";
-            $file= public_path(). "/manuales/". $name;
-        } 
+       
         if(Auth::user()->id_grupo==4){
-            $name = "CAP_Manual_de_Usuario_UPP-Carga_masiva.pdf";
-            $file= public_path()."/manuales/". $name;
+            $name = "CAP_Manual_de_Usuario_UPP-CargaMasivaMetas.pdf";
+            $file= public_path()."/". $name;
         } 
         
         //Log::channel('daily')->debug('exp '.public_path());
@@ -1597,15 +1594,14 @@ class MetasController extends Controller
 			return ["status" => false];
 		}
 	}
-	public static function getAnios()
-	{
+	public static function getAnios(){
 			
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select('ejercicio')
 			->groupByRaw('ejercicio')
 			->orderBy('ejercicio','DESC')
 			->get();
-		return $anio;
+		return response()->json(["anios"=>$anio]);
 	}
 	public static function cmetasUpp($upp, $anio)
 	{

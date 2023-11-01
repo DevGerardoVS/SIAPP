@@ -101,7 +101,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: "/calendarizacion/data/" + upp + "/" + ur,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (_data) {
             _table = $("#entidad");
             _columns = [{
@@ -159,7 +160,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/urs/' + upp,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             const { urs, tAct } = data;
             var par = $('#ur_filter');
@@ -205,7 +207,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             let { mese } = data;
             if (arr[8] != 'UUU') {
@@ -356,7 +359,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             let { mese } = data;
                 for (const key in mese) {

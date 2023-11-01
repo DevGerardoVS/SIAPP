@@ -282,7 +282,8 @@ var dao = {
         $.ajax({
           type : "GET",
           url: '/cat-regiones',
-          dataType : "JSON"
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_region');
           par.html('');
@@ -301,7 +302,9 @@ var dao = {
 	getMunicipiosByRegion : function(id,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-municipios/'+ id,
+          url: '/cat-municipios/' + id,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_municipio');
           par.html('');
@@ -319,7 +322,9 @@ var dao = {
 	getLocalidadByMunicipio : function(id, idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-localidad/'+ id,
+          url: '/cat-localidad/' + id,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_localidad');
           par.html('');
@@ -337,7 +342,9 @@ var dao = {
 	getUpp : function(ejercicio,id){
         $.ajax({
           	type : "get",
-          	url: '/cat-upp/'+ ejercicio,
+          url: '/cat-upp/' + ejercicio,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_upp');
           par.html('');
@@ -356,7 +363,9 @@ var dao = {
 	getUninadResponsableByUpp : function(id,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-unidad-responsable/'+ id+'/'+ejercicio,
+          url: '/cat-unidad-responsable/' + id + '/' + ejercicio,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_unidad_res');
           par.html('');
@@ -376,7 +385,9 @@ var dao = {
   getSubSecretaria :function (upp,ur,ejercicio) {
     $.ajax({
       type: 'get',
-      url: '/cat-subSecretaria/'+ upp + '/' + ur + '/'+ejercicio,
+      url: '/cat-subSecretaria/' + upp + '/' + ur + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       document.getElementById('subsecretaria').innerHTML = data.clv_subsecretaria;
     });
@@ -384,7 +395,9 @@ var dao = {
 	getProgramaPresupuestarioByur : function(uppId,id,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-programa-presupuestario/'+ uppId + '/' + id + '/'+ ejercicio,
+          url: '/cat-programa-presupuestario/' + uppId + '/' + id + '/' + ejercicio,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_programa');
           par.html('');
@@ -403,7 +416,9 @@ var dao = {
 	getSubProgramaByProgramaId : function(ur,id, upp,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-subprograma-presupuesto/'+ ur + '/'+ id + '/'+ upp + '/' + ejercicio,
+          url: '/cat-subprograma-presupuesto/' + ur + '/' + id + '/' + upp + '/' + ejercicio,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_sub_programa');
           par.html('');
@@ -422,7 +437,9 @@ var dao = {
 	getProyectoBySubPrograma : function(programa,id, upp, ur,ejercicio,idSelected){
     $.ajax({
         type : "get",
-        url: '/cat-proyecyo/'+ programa + '/' + id+'/'+ upp + '/' + ur+'/' +ejercicio,
+      url: '/cat-proyecyo/' + programa + '/' + id + '/' + upp + '/' + ur + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function(data){
       var par = $('#sel_proyecto');
       par.html('');
@@ -440,7 +457,9 @@ var dao = {
 	getLineaDeAccionByUpp : function(uppId,id,ejercicio,programa,subPrograma,proyecto,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-linea-accion/'+ uppId + '/' + id+'/'+ejercicio+ '/' + programa+'/'+subPrograma+ '/' + proyecto,
+          url: '/cat-linea-accion/' + uppId + '/' + id + '/' + ejercicio + '/' + programa + '/' + subPrograma + '/' + proyecto,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_linea');
           par.html('');
@@ -460,7 +479,9 @@ var dao = {
   getAreaFuncional: function (uppId,id,ejercicio,subPrograma,linea,programa,proyecto) {
     $.ajax({
       type:'get',
-      url: '/cat-area-funcional/'+uppId +'/'+id+'/'+ejercicio+'/'+subPrograma+'/'+linea+'/'+programa+'/'+proyecto,
+      url: '/cat-area-funcional/' + uppId + '/' + id + '/' + ejercicio + '/' + subPrograma + '/' + linea + '/' + programa + '/' + proyecto,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       document.getElementById('finalidad').innerHTML = data.clv_finalidad;
       document.getElementById('funcion').innerHTML = data.clv_funcion;
@@ -473,7 +494,9 @@ var dao = {
 	getPartidaByUpp : function(clasificacion,id){
         $.ajax({
           	type : "get",
-          	url: '/cat-partidas/'+clasificacion,
+          url: '/cat-partidas/' + clasificacion,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_partida');
           par.html('');
@@ -496,7 +519,9 @@ var dao = {
   getFondosByUpp: function (id,subP, ejercicio,idSelected) {
     $.ajax({
       type:'get',
-      url:'/cat-fondos/'+ id + '/'+ subP +'/'+ejercicio,
+      url: '/cat-fondos/' + id + '/' + subP + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       var par = $('#sel_fondo');
         par.html('');
@@ -524,7 +549,9 @@ var dao = {
   getClasificacionAdmin:function (upp,ur) {
     $.ajax({
       type:'get',
-      url: '/cat-clasificacion-administrativa/'+ upp + '/' + ur,
+      url: '/cat-clasificacion-administrativa/' + upp + '/' + ur,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       let clasificacion = data.clv_sector_publico + data.clv_sector_publico_f + data.clv_sector_economia + data.clv_subsector_economia + data.clv_ente_publico;
       document.getElementById('clasificacion').innerHTML = clasificacion;
@@ -534,7 +561,9 @@ var dao = {
   getPresupuestoPorUpp: function (upp,fondo,subPrograma,ejercicio) {
     $.ajax({
       type:'get',
-      url:'/presupuesto-upp-asignado/'+ upp +'/' + fondo + '/' + subPrograma + '/' + ejercicio,
+      url: '/presupuesto-upp-asignado/' + upp + '/' + fondo + '/' + subPrograma + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       let presupuesto = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.presupuesto);
       document.getElementById('preFondo').value = presupuesto;
@@ -545,7 +574,9 @@ var dao = {
   getPresupuestoPorUppEdit: function (upp,fondo,subPrograma,ejercicio) {
     $.ajax({
       type:'get',
-      url:'/presupuesto-upp-asignado-edit/'+ upp +'/' + fondo + '/' + subPrograma + '/' + ejercicio+ '/' + id,
+      url: '/presupuesto-upp-asignado-edit/' + upp + '/' + fondo + '/' + subPrograma + '/' + ejercicio + '/' + id,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       let presupuesto = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.presupuesto);
       document.getElementById('preFondo').value = presupuesto;
@@ -558,8 +589,11 @@ var dao = {
   getPresupuesAsignado : function(ejercicio, upp){
     $.ajax({
       type: 'get',
-      url: '/get-presupuesto-asignado/'+ ejercicio+'/'+upp,
-    }).done(function(response){
+      url: '/get-presupuesto-asignado/' + ejercicio + '/' + upp,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+    }).done(function (data) {
+      const { response } = data;
       let ejercicioActual = document.getElementById('filAnioAbierto').value;
       let totalAsignado = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response['presupuestoAsignado'][0].totalAsignado);
       let Totcalendarizado = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(response.Totcalendarizado);
@@ -694,7 +728,9 @@ var dao = {
   getSector: function (clave) {
     $.ajax({
       type:'get',
-      url:'/calendarizacion-get-sector/'+ clave,
+      url: '/calendarizacion-get-sector/' + clave,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function(response){
       document.getElementById('lbl_sector').innerText = 'Sector: ' + response.sector;
     });
@@ -767,8 +803,10 @@ var dao = {
     $.ajax({
       type : 'get',
       url: '/calendarizacion-claves-presupuesto-fondo/'+ejercicio+'/'+clvUpp,
-      dataType : "JSON"
-    }).done(function (response) {
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+    }).done(function (rest) {
+      const { response } = rest;
       let data = [];
       for (let index = 0; index < response.fondos.length; index++) {
         const clv_fondo = response.fondos[index].clv_fondo;
@@ -851,7 +889,9 @@ var dao = {
   filtroUpp : function(ejercicio,id){
     $.ajax({
         type : "get",
-        url: '/cat-upp/'+ejercicio,
+      url: '/cat-upp/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function(data){
       var par = $('#filtro_upp');
       par.html('');
@@ -869,7 +909,9 @@ var dao = {
   filtroUr : function(id, ejercicio){
     $.ajax({
       type : "get",
-      url: '/cat-unidad-responsable/'+ id+'/'+ejercicio,
+      url: '/cat-unidad-responsable/' + id + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
   }).done(function(data){
     var par = $('#filtro_ur');
     par.html('');
@@ -886,7 +928,9 @@ var dao = {
   getObras: function(val, idSelected = ''){
     $.ajax({
       type: "get",
-      url: '/cat-obras/'+ val,
+      url: '/cat-obras/' + val,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       if (data.permisoObra == 200) {
         $('#obras').show('');
@@ -911,7 +955,9 @@ var dao = {
   getEjercicios: function (id) {
     $.ajax({
       type:'get',
-      url:'/get-ejercicios'
+      url: '/get-ejercicios',
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       var par = $('#filtro_anio');
       par.html('');
@@ -928,7 +974,9 @@ var dao = {
   alertaAvtividades : function (upp,ejercicio) {
     $.ajax({
       type:'get',
-      url: '/alerta-actividades/'+ upp + '/' + ejercicio,
+      url: '/alerta-actividades/' + upp + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       if (data.estatus == 1) {
         Swal.fire(
