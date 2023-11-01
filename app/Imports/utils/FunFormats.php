@@ -95,7 +95,7 @@ class FunFormats
                             $error = array(
                                 "icon" => 'info',
                                 "title" => 'Cuidado',
-                                "text" => 'Solo puedes registrar metas de la upp ' . Auth::user()->clv_upp
+                                "text" => 'Solo puedes registrar metas de la upp ' . Auth::user()->clv_upp. '. Revisa la fila: '. $index
                             );
                             return $error;
                         }
