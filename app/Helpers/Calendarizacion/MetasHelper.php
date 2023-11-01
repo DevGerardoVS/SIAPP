@@ -266,7 +266,7 @@ class MetasHelper
 			->where('mml_mir.clv_upp', $upp)
 			->where('pp.upp', $upp)
 			->groupByRaw('mml_mir.indicador')
-			->orderByRaw('mml_mir.entidad_ejecutora,mml_mir.area_funcional')
+			->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur,mml_mir.area_funcional')
 			->distinct();
 		if (Auth::user()->id_grupo == 4) {
 			$data3 = $data3->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'mml_mir.clv_upp')
