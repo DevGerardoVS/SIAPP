@@ -26,6 +26,7 @@ Route::controller(TechosController::class)->group(function () {
 
 	Route::controller(ClavePreController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');
+		Route::get('/calendarizacion/get-manual-carga-masiva-claves', 'getManualCMC')->name('getManualCMC');
 		Route::get('/calendarizacion-claves-create/{ejercicio?}', 'getCreate');
 		Route::post('/calendarizacion-claves-get', 'getClaves');
 		Route::get('/cat-regiones', 'getRegiones');
