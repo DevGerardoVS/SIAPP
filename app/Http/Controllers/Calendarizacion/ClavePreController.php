@@ -748,7 +748,7 @@ class ClavePreController extends Controller
             'esAutorizado'=>$autorizado,
             'upp'=>$upp,
         ];
-        return response()->json($response,200);
+        return response()->json(['response'=>$response],200);
     }
     public function getPanelPresupuestoFondo($ejercicio = 0, $clvUpp = ''){
         $disponible = 0;
