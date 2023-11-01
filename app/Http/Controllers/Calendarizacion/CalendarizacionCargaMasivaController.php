@@ -311,7 +311,7 @@ class CalendarizacionCargaMasivaController extends Controller
             //Validaciones para usuarios upps 
             else {
                 $tipousuario = auth::user()->id_grupo;
-
+                $uppsautorizadas=0;
                 if (Auth::user()->id_grupo == 4) {
                     $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $uppUsuario)->count();
                 }
@@ -328,7 +328,6 @@ class CalendarizacionCargaMasivaController extends Controller
                 $arrayupps = array();
                 $arraypresupuesto = array();
                 $countO = 0;
-                $diferentupp = 0;
                 $countR = 0;
                 if ($xlsx = SimpleXLSX::parse($request->file)) {
                     $filearray = $xlsx->rows();
@@ -354,14 +353,17 @@ class CalendarizacionCargaMasivaController extends Controller
                         $currentrow = $indextu + 2;
 
                         $var = array_search($k['5'], $arrayupps);
-                        if ($uppsautorizadas && $k['18'] >= 10000 && $k['18'] < 20000) {
-                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' No tiene permiso para cargar esa idpartida. ');
-
+                        if (Auth::user()->id_grupo == 4) {
+                            if ($uppsautorizadas && $k['18'] >= 10000 && $k['18'] < 20000) {
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' No tiene permiso para cargar esa idpartida. ');
+    
+                            }
+                            if ($uppsautorizadas && $k['18'] == 39801) {
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' No tiene permiso para cargar esa idpartida. ');
+    
+                            }
                         }
-                        if ($uppsautorizadas && $k['18'] == 39801) {
-                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' No tiene permiso para cargar esa idpartida. ');
 
-                        }
 
                         switch ($k['16']) {
                             case 'UUU':
