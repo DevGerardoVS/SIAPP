@@ -805,7 +805,8 @@ var dao = {
       url: '/calendarizacion-claves-presupuesto-fondo/'+ejercicio+'/'+clvUpp,
       dataType: "JSON",
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-    }).done(function (response) {
+    }).done(function (rest) {
+      const { response } = rest;
       let data = [];
       for (let index = 0; index < response.fondos.length; index++) {
         const clv_fondo = response.fondos[index].clv_fondo;
