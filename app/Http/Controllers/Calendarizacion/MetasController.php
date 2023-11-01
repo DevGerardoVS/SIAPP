@@ -1594,15 +1594,14 @@ class MetasController extends Controller
 			return ["status" => false];
 		}
 	}
-	public static function getAnios()
-	{
+	public static function getAnios(){
 			
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select('ejercicio')
 			->groupByRaw('ejercicio')
 			->orderBy('ejercicio','DESC')
 			->get();
-		return $anio;
+		return response()->json(["anios"=>$anio]);
 	}
 	public static function cmetasUpp($upp, $anio)
 	{

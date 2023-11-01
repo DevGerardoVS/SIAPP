@@ -39,10 +39,11 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
+            const { anios } = data;
             var par = $('#anio_filter');
             par.html('');
-            if (data.length >= 1) {
-                $.each(data, function (i, val) {
+            if (anios.length >= 1) {
+                $.each(anios, function (i, val) {
                     par.append(new Option(val.ejercicio, val.ejercicio, true, false));
                 });
             }else {
@@ -51,8 +52,6 @@ var dao = {
                 var nn = n + 1;
                 par.append(new Option(nn,nn, true, false));
                 par.append(new Option(n, n, true, false));
-               
-             
             }
         });
     },

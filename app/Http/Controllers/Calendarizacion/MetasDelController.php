@@ -343,8 +343,17 @@ class MetasDelController extends Controller
 	{
 		try {
 			Controller::check_permission('viewGetMetasDel');
+			$s = MetasController::cmetas($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$user = Auth::user()->username;
+			$check = MetasHelper::validateMesesfinal($upp, $anio);
+			if (!$check["status"]) {
+				$foot = "<a type='button' class='btn btn-success col-md-5 ml-auto ' href=/actividades/meses/error/$upp/$anio > <i class='fa fa-download' aria-hidden='true'></i>Descargar index</a>";
+				$res = ["status" => false, "mensaje" => ["icon" => 'warning', "text" => 'No puedes confirmar las metas, existen diferencias en los meses autorizados por las claves presupuestales', "title" => "Diferencias en las metas" ,"footer"=>$foot]];
+				return response()->json($res, 200);
+
+			}
+			if ($s['status']) {
 				DB::beginTransaction();
 				$metas = MetasHelper::actividades($upp, $anio);
 				$i = 0;
@@ -372,10 +381,86 @@ class MetasDelController extends Controller
 					$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
 					return response()->json($res, 200);
 				}
+			} else {
+				$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'No puedes confirmar las metas', "title" => "Metas incompletas"]];
+				return response()->json($res, 200);
+			}
 		} catch (\Throwable $th) {
 			DB::rollBack();
 			throw $th;
 		}
 
+	}
+	public static function cmetas($upp, $anio)
+	{
+		$upps= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('uppautorizadascpnomina.deleted_at', null)->get();
+		
+		$actv = DB::table('mml_actividades')
+			->leftJoin('mml_catalogos', 'mml_catalogos.id', '=', 'mml_actividades.id_catalogo')
+			->select(
+				'clv_upp as upp',
+				'mml_actividades.id',
+				'entidad_ejecutora AS entidad',
+				'area_funcional AS area',
+				DB::raw("IFNULL(nombre,IFNULL(mml_catalogos.valor,nombre)) AS actividad"),
+				'ejercicio',
+			)
+			->where('mml_catalogos.clave', 'UUU')
+			->where('mml_actividades.deleted_at', '=', null)
+			->where('mml_catalogos.deleted_at', '=', null)
+			->where('mml_actividades.clv_upp', $upp)
+			->where('mml_actividades.ejercicio', $anio);
+		$metas = DB::table('metas')
+			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+			->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+			->leftJoinSub($actv, 'act', function ($join) {
+				$join->on('metas.actividad_id', '=', 'act.id');
+			})
+			->select(
+				'metas.id',
+				'metas.estatus',
+				'act.upp',
+				'act.entidad',
+				'act.area',
+				'metas.ejercicio',
+				'metas.clv_fondo as fondo',
+				'act.actividad AS actividad',
+				'metas.tipo',
+				'metas.total',
+				'metas.cantidad_beneficiarios',
+				'beneficiarios.beneficiario',
+				'unidades_medida.unidad_medida',
+				'metas.clv_fondo'
+			)
+			->where('metas.mir_id', '=', null)
+			->where('metas.deleted_at', '=', null)
+			->where('act.upp', $upp)
+			->where('metas.ejercicio', $anio)->get();
+
+
+		$activsPP = DB::table('programacion_presupuesto')
+			->select(
+				'upp AS clv_upp',
+				'fondo_ramo',
+				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional')
+			)
+			->where('upp', $upp)
+			->where('deleted_at', null)
+			->where('programacion_presupuesto.ejercicio', '=', $anio)
+			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
+			->distinct()
+			->get();
+		if (count($metas) > 1) {
+			if (count($metas) >= count($activsPP)) {
+				return ["status" => true];
+
+			} else {
+				return ["status" => false];
+			}
+		} else {
+			return ["status" => false];
+		}
 	}
 }
