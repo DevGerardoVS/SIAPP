@@ -90,6 +90,16 @@ class FunFormats
                     return $error;
                 } else {
                     //checar si la mir esta confirmada
+                    if(Auth::user()->id_grupo==4){
+                        if (strval($k[7]) != Auth::user()->clv_upp) {
+                            $error = array(
+                                "icon" => 'info',
+                                "title" => 'Cuidado',
+                                "text" => 'Solo puedes registrar metas de la upp ' . Auth::user()->clv_upp. '. Revisa la fila: '. $index
+                            );
+                            return $error;
+                        }
+                    }
                     $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', strval($k[7]))->where('deleted_at', null)->max('ejercicio');
                     $isMir = DB::table("mml_cierre_ejercicio")
                         ->select('id', 'estatus')
