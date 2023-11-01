@@ -33,7 +33,7 @@
 		Route::get('/actividades/rev-confirmar-metas-upp/{upp?}/{anio?}', 'cmetasUpp');
 		Route::get('/actividades/confirmar-metas/{upp?}/{anio?}', 'confirmar');
 		Route::get('/actividades/desconfirmar-metas/{upp?}/{anio?}', 'desconfirmar');
-		Route::get('/actividades/anios-metas/', 'getAnios');
+		Route::get('/actividades/anios-metas', 'getAnios');
 		Route::get('/actividades/meses-activos/{mir?}/{fondo?}', 'getMeses');
 		Route::get('/actividades/meses/error/{upp?}/{anio?}', 'exportExcelErr')->name('exportError');
 		Route::get('/carga-masiva/manual-usuario', 'getManual')->name('Manual_Carga_Masiva_metas');

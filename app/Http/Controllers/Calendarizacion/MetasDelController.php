@@ -339,4 +339,43 @@ class MetasDelController extends Controller
 		}
 
 	}
+	public static function confirmar($upp, $anio)
+	{
+		try {
+			Controller::check_permission('viewGetMetasDel');
+			$fecha = Carbon::now()->toDateTimeString();
+			$user = Auth::user()->username;
+				DB::beginTransaction();
+				$metas = MetasHelper::actividades($upp, $anio);
+				$i = 0;
+				foreach ($metas as $key) {
+					$meta = Metas::where('id', $key->id)->firstOrFail();
+					if ($meta) {
+						$meta->estatus = 1;
+						$meta->updated_user = $user;
+						$meta->updated_at = $fecha;
+						$meta->save();
+						$i++;
+					}
+				}
+				if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
+					DB::commit();
+					$b = array(
+						"username" => $user,
+						"accion" => 'confirmacion de metas',
+						"modulo" => 'Metas'
+					);
+					Controller::bitacora($b);
+					$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
+					return response()->json($res, 200);
+				} else {
+					$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
+					return response()->json($res, 200);
+				}
+		} catch (\Throwable $th) {
+			DB::rollBack();
+			throw $th;
+		}
+
+	}
 }

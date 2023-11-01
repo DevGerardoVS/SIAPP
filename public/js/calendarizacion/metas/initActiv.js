@@ -33,11 +33,11 @@ var dao = {
         });
     },
     getAniosM: function () {
-
         $.ajax({
             type: "GET",
-            url: '/actividades/anios-metas/',
-            dataType: "JSON"
+            url: '/actividades/anios-metas',
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             var par = $('#anio_filter');
             par.html('');
@@ -83,7 +83,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             let { mese } = data;
                 for (const key in mese) {
@@ -252,7 +253,8 @@ var dao = {
                 $.ajax({
                     type: 'get',
                     url: "/actividades/jasper/" + upp + "/" + anio + "/" + tipo,
-                    dataType: "json"
+                    dataType: "JSON",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
                 }).done(function (params) {
                     document.getElementById('tipoReporte').value = 1;
                     $('#firmaModal').modal('show');
@@ -287,7 +289,8 @@ var dao = {
                 $.ajax({
                     type: 'get',
                     url: "/actividades/jasper-metas/" + upp + "/" + anio+ "/" + tipo,
-                    dataType: "json"
+                    dataType: "JSON",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
                 }).done(function (params) {
                     document.getElementById('tipoReporte').value = 2;
                     $('#firmaModal').modal('show');
@@ -363,7 +366,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             const { unidadM, beneficiario } = data;
             document.getElementById("medida").options[0].disabled = true;
@@ -381,7 +385,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/tcalendario/'+upp,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {       
             if (Object.keys(data).length == 2&& sub!='UUU') {
                 $("#tipo_Ac").append(new Option("--Tipo Actividad--", ""));
@@ -404,7 +409,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/actividades/cierre-metas/'+upp,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             if (!data.status) {
                 $(".cierreMetas").hide();
@@ -450,7 +456,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: "/calendarizacion/update/" + id,
-            dataType : "json"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             dao.getActiv(data.clv_upp,data.subprograma);
             $('#proyectoMD').empty();
@@ -863,7 +870,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             let { mese } = data;
             if (arr[8] != 'UUU') {
@@ -1201,7 +1209,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/actividades/rev-confirmar-metas/'+upp+"/"+anio,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             if (!data.status) {
                 $(".confirmacion").hide();
@@ -1216,7 +1225,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/actividades/rev-confirmar-metas-upp/'+upp+"/"+anio,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             if (data.status) {
                 $(".cmupp").show();
@@ -1256,7 +1266,8 @@ var dao = {
                 $.ajax({
                     type: "GET",
                     url: '/actividades/confirmar-metas/'+upp+"/"+anio,
-                    dataType: "JSON"
+                    dataType: "JSON",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
                 }).done(function (data) {
                     const { mensaje } = data;
                     Swal.fire({
@@ -1296,7 +1307,8 @@ var dao = {
                 $.ajax({
                     type: "GET",
                     url: '/actividades/desconfirmar-metas/'+upp+"/"+anio,
-                    dataType: "JSON"
+                    dataType: "JSON",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
                 }).done(function (data) {
                     const { mensaje } = data;
                     Swal.fire({
@@ -1365,7 +1377,11 @@ var init = {
 };
 
 $(document).ready(function () {
-    
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     const moonLanding = new Date();
     $("#anio_filter option[value='" + moonLanding.getFullYear() + "']").attr("selected", true);
    
