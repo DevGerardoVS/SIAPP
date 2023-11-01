@@ -127,6 +127,8 @@ class CalendarizacionCargaMasivaController extends Controller
 
         //verificar que el usuario tenga permiso
         try {
+            DB::beginTransaction();
+
             //Validaciones para administrador
             if ( auth::user()->id_grupo==1) {
 
@@ -227,11 +229,13 @@ class CalendarizacionCargaMasivaController extends Controller
                         if ($var === 0) {
                             $var = true;
                         }
-                        if($var && strlen($var) == 3){
+                        if(!$var && strlen($k['5']) == 3){
                             array_push($arrayupps, $k['5']);
                         }
                         else{
-                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres. ');
+                            if(strlen($k['5']) != 3){
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres. ');
+                            }
                         }
                     }
 
@@ -443,11 +447,13 @@ class CalendarizacionCargaMasivaController extends Controller
                         if ($var === 0) {
                             $var = true;
                         }
-                        if($var && strlen($var) == 3){
+                        if(!$var && strlen($k['5']) == 3){
                             array_push($arrayupps, $k['5']);
                         }
                         else{
-                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres. ');
+                            if(strlen($k['5']) != 3){
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres. ');
+                            }
                         }
 
                     }
@@ -586,12 +592,21 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
                 }
+
             }
         } catch (\Throwable $th) {
             Log::debug($th);
             return redirect()->back()->withErrors(['error' => 'Ocurrio un error intentelo más tarde. ']);
 
         }
+
+        if (count($arrayErrores) > 0) {
+            DB::rollBack();
+            return redirect()->back()->withErrors($arrayErrores);
+         }
+         else{
+            DB::commit();
+         }
         //si todo sale bien procedemos al import
         try {
 
@@ -998,7 +1013,7 @@ class CalendarizacionCargaMasivaController extends Controller
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
                 return redirect()->back()->withErrors($arrayErrores);
-            } else {
+             } else {
                 DB::commit();
 
             }
