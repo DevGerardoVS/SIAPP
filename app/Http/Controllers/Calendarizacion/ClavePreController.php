@@ -748,7 +748,7 @@ class ClavePreController extends Controller
             'esAutorizado'=>$autorizado,
             'upp'=>$upp,
         ];
-        return response()->json($response,200);
+        return response()->json(['response'=>$response],200);
     }
     public function getPanelPresupuestoFondo($ejercicio = 0, $clvUpp = ''){
         $disponible = 0;
@@ -915,7 +915,7 @@ class ClavePreController extends Controller
             'fondos' => $fondos,
             'upp' => $upp
         ];
-        return response()->json($response,200);
+        return response()->json(['response'=>$response],200);
     }
     public function getConceptosClave($clave, $anioFondo){
       $clave = DB::select("CALL conceptos_clave('$clave', 20$anioFondo)");
