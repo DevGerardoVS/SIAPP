@@ -35,7 +35,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/check/' + upp,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             if (data.status) {
                 $("#ur_filter").removeAttr('disabled');
@@ -667,7 +668,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/programas/' + ur,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             var par = $('#pr_filter');
             par.html('');
@@ -762,7 +764,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/agregar-actividades/confirmacion-metas-upp/' + upp,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             if (data.status) {
                 $(".cmupp").show();
@@ -828,7 +831,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             const { unidadM, beneficiario } = data;
             var med = $('#medida');
@@ -1081,7 +1085,8 @@ var dao = {
                 $.ajax({
                     type: "GET",
                     url: '/actividades/desconfirmar-metas/' + upp + "/" + anio,
-                    dataType: "JSON"
+                    dataType: "JSON",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
                 }).done(function (data) {
                     const { mensaje } = data;
                     Swal.fire({
