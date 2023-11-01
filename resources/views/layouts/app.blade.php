@@ -116,7 +116,7 @@ date_default_timezone_set('America/Mexico_City');
                                         <i class=" fa fa-user" aria-hidden="true"></i>&nbsp
                                         <b>{{ Auth::user()->username }}</b>
                                     </h5>
-                                    @if(Auth::user()->id_grupo==1 || Auth::user()->id_grupo==4)
+                                    @if(Auth::user()->id_grupo==1 || Auth::user()->id_grupo==4 || Auth::user()->id_grupo==5)
                                     <a class="dropdown-item text-sm-left" href="{{ route('manual') }}">
                                         <i class="fa fa-download" aria-hidden="true">&nbsp;</i>{{ __('Descargar Manual') }}
                                     </a>
