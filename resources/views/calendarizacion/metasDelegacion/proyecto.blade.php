@@ -4,7 +4,6 @@
 @include('calendarizacion.metas.actividadContinua')
 @section('content')
     <div class="container">
-       
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
         <input id='ar' type="text" style="display: none">
         <input id='fondo' type="text" style="display: none">
@@ -19,7 +18,6 @@
                     <label id="validMetas"  ></label>
                 <div class="row">
 
-                    @if (Auth::user()->id_grupo != 4)
                     <div class="col-md-4">
                         <label class="control-label">UPP</label>
                         <select class="form-control filters select2" id="upp_filter" name="upp_filter"
@@ -33,35 +31,19 @@
                             autocomplete="anio_filter" placeholder="Seleccione un año">
                             <option value="" disabled selected>Seleccione un año</option>
                         </select>
-                    </div>
-                    <div class="col-md-2"></div>
-                    @else
-                    <div class="col-md-2">
-                        <label class="control-label">AÑO</label>
-                        <select class="form-control filters select2" id="anio_filter" name="anio_filter"
-                            autocomplete="anio_filter" placeholder="Seleccione un año">
-                            <option value="" disabled selected>Seleccione un año</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6 "></div>
-                    @endif    
-
+                    </div> 
+                    <div class="col-md-2 "></div>
                     <div class="col-md-4 text-right">
                         <br>
-                        <a type="button" class="btn btn-success col-md-5 ml-auto cierreMetas" href="{{ route('index_metas') }}" style="justify-content: float-right;">
+                        <a type="button" class="btn btn-success col-md-5 ml-auto cierreMetas" href="{{ route('index_metas_del') }}" style="justify-content: float-right;">
                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Agregar Actividad
                         </a>
                     </div>
                 </div>
                 <div class="row">
-                    @if(Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
+                    @if(Auth::user()->id_grupo == 5)
                         <div class="col-md-12">
                             <br>
-                                @if (Auth::user()->id_grupo == 4)
-                                <button  type="button" class="btn btn-outline-primary col-md-2 cmupp" onclick="dao.exportJasperMetas()">Formato Metas</button>&nbsp;
-                                <button  type="button" class="btn btn-outline-primary col-md-2 cmupp" onclick="dao.exportJasper()">Formato claves</button>&nbsp;
-                                @endif
-                                
                                 <button type="button" style="justify-content: flex-end; " onclick="dao.exportPdf()"class="btn btn-outline-danger col-md-2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar PDF</button>&nbsp
                                 <button type="button" style="justify-content: float-right;" onclick="dao.exportExcel()" class="btn btn-outline-success col-md-2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar Excel</button> &nbsp
                                 <button type="button" class="btn btn-outline-primary float-right confirmacion" onclick="dao.ConfirmarMetas()" style="display: none"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Confirmar Metas</button>
@@ -110,7 +92,7 @@
     </div>
     <div id="containerFile">
     </div>
-    <script src="/js/calendarizacion/metas/initActiv.js"></script>
+    <script src="/js/calendarizacion/metas/initDel.js"></script>
     <script src="/js/utilerias.js"></script>
     <script>
         //En las vistas solo se llaman las funciones del archivo init

@@ -875,7 +875,7 @@ class MetasController extends Controller
 		Controller::check_permission('getMetas');
 		$data = $this->getActiv($upp, $year);
 		for ($i = 0; $i < count($data); $i++) {
-			unset($data[$i][19]);
+			unset($data[$i][20]);
 			$data = array_values($data);
 		}
 		view()->share('data', $data);
@@ -1603,6 +1603,7 @@ class MetasController extends Controller
 		$anio = DB::table('cierre_ejercicio_metas')
 			->select('ejercicio')
 			->groupByRaw('ejercicio')
+			->orderBy('ejercicio','DESC')
 			->get();
 		return $anio;
 	}
