@@ -158,7 +158,9 @@ $titleDesc = 'Administración de Captura';
         // Comprobar si hay algún estado encendido en la tabla programación presupuesto
         var uppPP = {!! json_encode((array)$comprobarEstadoPP) !!};
         // Comprobar si hay algún estado encendido en la tabla metas
-        var uppMetas = {!! json_encode((array)$comprobarEstadoMetas) !!};
+        var uppEMM = {!! json_encode((array)$comprobarEMM) !!};
+        // Comprobar si hay algún estado encendido en la tabla metas
+        var uppEMA = {!! json_encode((array)$comprobarEMA) !!};
         // Comprobar la versión de los datos
         var version = {!! json_encode($version) !!};
 
@@ -291,14 +293,29 @@ $titleDesc = 'Administración de Captura';
             }
 
             if($("#modulo_filter").val() == "cierre_ejercicio_metas cem" || $("#modulo_filter").val() == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
-                uppMetas.forEach(upp => {
+                uppEMA.forEach(upp => {
                     if(upp['clv_upp'] == obtenerUPP && upp['estatus'] == 1 ){
                         checarEstado = true;
                         texto2 = "La siguiente UPP en metas de actividades esta activo: " + obtenerUPP;
                     } 
                     if(obtenerUPP == "" && upp['estatus'] == 1 ){
                         checarEstado = true;
-                        arregloMetas.push(upp['clv_upp']);
+                        if (!arregloMetas.includes(upp['clv_upp'])) { // Checar que no se repitan las claves UPP
+                            arregloMetas.push(upp['clv_upp']);
+                        }
+                        texto2 = "Las siguientes UPP en metas de actividades tienen el estado activo: "+ arregloMetas;
+                    } 
+                });
+                uppEMM.forEach(upp => {
+                    if(upp['clv_upp'] == obtenerUPP && upp['estatus'] == 1 ){
+                        checarEstado = true;
+                        texto2 = "La siguiente UPP en metas de actividades esta activo: " + obtenerUPP;
+                    } 
+                    if(obtenerUPP == "" && upp['estatus'] == 1 ){
+                        checarEstado = true;
+                        if (!arregloMetas.includes(upp['clv_upp'])) { // Checar que no se repitan las claves UPP
+                            arregloMetas.push(upp['clv_upp']);
+                        }
                         texto2 = "Las siguientes UPP en metas de actividades tienen el estado activo: "+ arregloMetas;
                     } 
                 });
