@@ -227,7 +227,7 @@ class CalendarizacionCargaMasivaController extends Controller
                         if ($var === 0) {
                             $var = true;
                         }
-                        if($var && strlen($var) == 3){
+                        if(!$var && strlen($k['5']) == 3){
                             array_push($arrayupps, $k['5']);
                         }
                         else{
