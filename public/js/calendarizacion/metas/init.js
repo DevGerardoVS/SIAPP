@@ -35,7 +35,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/check/' + upp,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             if (data.status) {
                 $("#ur_filter").removeAttr('disabled');
@@ -100,7 +101,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: "/calendarizacion/data/" + upp + "/" + ur,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (_data) {
             _table = $("#entidad");
             _columns = [{
@@ -158,7 +160,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/urs/' + upp,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             const { urs, tAct } = data;
             var par = $('#ur_filter');
@@ -204,7 +207,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             let { mese } = data;
             if (arr[8] != 'UUU') {
@@ -355,7 +359,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             let { mese } = data;
                 for (const key in mese) {
@@ -638,10 +643,13 @@ var dao = {
         }
     },
     getUpps: function () {
+        var csrfToken = "{{ csrf_token() }}";
+        console.log(localStorage.getItem('token'));
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/upps/',
-            dataType: "JSON"
+            url: '/calendarizacion/upps',
+            dataType: "JSON",
+            headers: {'X-CSRF-TOKEN': csrfToken },
         }).done(function (data) {
             const { upp } = data;
             var par = $('#upp_filter');
@@ -664,7 +672,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/programas/' + ur,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             var par = $('#pr_filter');
             par.html('');
@@ -759,7 +768,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/agregar-actividades/confirmacion-metas-upp/' + upp,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             if (data.status) {
                 $(".cmupp").show();
@@ -825,7 +835,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             const { unidadM, beneficiario } = data;
             var med = $('#medida');
@@ -1078,7 +1089,8 @@ var dao = {
                 $.ajax({
                     type: "GET",
                     url: '/actividades/desconfirmar-metas/' + upp + "/" + anio,
-                    dataType: "JSON"
+                    dataType: "JSON",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
                 }).done(function (data) {
                     const { mensaje } = data;
                     Swal.fire({
@@ -1265,6 +1277,11 @@ var init = {
     },
 };
 $(document).ready(function () {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     $(".CargaMasiva").hide();
     $(".btnSave").hide();
     $("#beneficiario").on('paste', function (e) {
