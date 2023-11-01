@@ -231,7 +231,9 @@ class CalendarizacionCargaMasivaController extends Controller
                             array_push($arrayupps, $k['5']);
                         }
                         else{
-                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres. ');
+                            if(strlen($k['5']) != 3){
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres. ');
+                            }
                         }
                     }
 
@@ -998,7 +1000,7 @@ class CalendarizacionCargaMasivaController extends Controller
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
                 return redirect()->back()->withErrors($arrayErrores);
-            } else {
+             } else {
                 DB::commit();
 
             }
