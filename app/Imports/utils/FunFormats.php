@@ -79,7 +79,6 @@ class FunFormats
             $conmir = 0;
             $sinmir = 0;
             foreach ($filearray as $k) {
-                Log::debug("foreach");
                 $status = FunFormats::isNULLOrEmpy($k, $index);
 
                 if ($status['status']) {
@@ -91,7 +90,6 @@ class FunFormats
                     return $error;
                 } else {
                     //checar si la mir esta confirmada
-                    Log::debug("checar si la mir esta confirmada");
                     $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', strval($k[7]))->where('deleted_at', null)->max('ejercicio');
                     $isMir = DB::table("mml_cierre_ejercicio")
                         ->select('id', 'estatus')
@@ -148,7 +146,6 @@ class FunFormats
                         }
 
                         if (is_numeric($k[14])) {
-                            log::debug("id_mir:".$k[14]);
                             $actividad = Mir::where('deleted_at', null)->where('id', $k[14])->first();
                             if ($actividad) {
                                 $flg = true;
@@ -352,7 +349,7 @@ class FunFormats
                                                                 'id_catalogo' => $k[13],
                                                                 'nombre' => null,
                                                                 'ejercicio' => $anio,
-                                                                'created_user' => auth::user()->username
+                                                                'created_user' => auth::user()->username.'-'.'CM'
                                                             ]);
                                                         }
                                                         if (strtolower($k[13]) == 'ot') {
@@ -363,7 +360,7 @@ class FunFormats
                                                                 'id_catalogo' => null,
                                                                 'nombre' => $k[15],
                                                                 'ejercicio' => $anio,
-                                                                'created_user' => auth::user()->username
+                                                                'created_user' => auth::user()->username.'-'.'CM'
                                                             ]);
                                                         }
                                                         if(strval($k[10])!='UUU'){
@@ -975,7 +972,7 @@ class FunFormats
             $metaSinMir->total = $key['total'];
             $metaSinMir->estatus = 0;
             $metaSinMir->ejercicio = $key['ejercicio'];
-            $metaSinMir->created_user = $key['created_user'];
+            $metaSinMir->created_user = $key['created_user'].'-'.'CM';
             $metaSinMir->save();
             if ($metaSinMir) {
                 $metaSinMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaSinMir->id . '-' . $key['ejercicio'];
@@ -1007,7 +1004,7 @@ class FunFormats
             $metaConMir->total = $key['total'];
             $metaConMir->estatus = 0;
             $metaConMir->ejercicio = $key['ejercicio'];
-            $metaConMir->created_user = $key['created_user'];
+            $metaConMir->created_user = $key['created_user'].'-'.'CM';
             $metaConMir->save();
             if ($metaConMir) {
                 $metaConMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaConMir->id . '-' . $key['ejercicio'];
@@ -1018,7 +1015,6 @@ class FunFormats
     }
     public static function editarMeta($key)
     {
-        Log::debug("Editando meta");
         $meta = Metas::where('id', $key->meta_id)->firstOrFail();
         $fecha = Carbon::now()->toDateTimeString();
         if ($meta) {
@@ -1033,7 +1029,7 @@ class FunFormats
             $meta->abril = $key->abril;
             $meta->mayo = $key->mayo;
             $meta->junio = $key->junio;
-            $meta->julio = $key->julio;
+            $meta->julio = $key->julio;;
             $meta->agosto = $key->agosto;
             $meta->septiembre = $key->septiembre;
             $meta->octubre = $key->octubre;
@@ -1042,7 +1038,6 @@ class FunFormats
             $meta->updated_at = $fecha;
             $meta->updated_user = auth::user()->username;
             $meta->save();
-            Log::debug($meta);
 
         }
     }

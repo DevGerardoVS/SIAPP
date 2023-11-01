@@ -158,7 +158,9 @@ $titleDesc = 'Administración de Captura';
         // Comprobar si hay algún estado encendido en la tabla programación presupuesto
         var uppPP = {!! json_encode((array)$comprobarEstadoPP) !!};
         // Comprobar si hay algún estado encendido en la tabla metas
-        var uppMetas = {!! json_encode((array)$comprobarEstadoMetas) !!};
+        var uppEMM = {!! json_encode((array)$comprobarEMM) !!};
+        // Comprobar si hay algún estado encendido en la tabla metas
+        var uppEMA = {!! json_encode((array)$comprobarEMA) !!};
         // Comprobar la versión de los datos
         var version = {!! json_encode($version) !!};
 
@@ -280,26 +282,41 @@ $titleDesc = 'Administración de Captura';
                 uppPP.forEach(upp => {
                     if(upp['upp'] == obtenerUPP && upp['estado'] == 1 ){
                         checarEstado = true;
-                        texto1 = "La siguiente UPP en claves presupuestarias esta activo: " + obtenerUPP;
+                        texto1 = "La siguiente UPP tiene claves presupuestales confirmadas: " + obtenerUPP;
                     } 
                     if(obtenerUPP == "" && upp['estado'] == 1 ){
                         checarEstado = true;
                         arregloPP.push(upp['upp']);
-                        texto1 = "Las siguientes UPP en claves presupuestarias tienen el estado activo: "+ arregloPP;
+                        texto1 = "Las siguientes UPP tienen claves presupuestales confirmadas: "+ arregloPP;
                     } 
                 });
             }
 
             if($("#modulo_filter").val() == "cierre_ejercicio_metas cem" || $("#modulo_filter").val() == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
-                uppMetas.forEach(upp => {
+                uppEMA.forEach(upp => {
                     if(upp['clv_upp'] == obtenerUPP && upp['estatus'] == 1 ){
                         checarEstado = true;
-                        texto2 = "La siguiente UPP en metas de actividades esta activo: " + obtenerUPP;
+                        texto2 = "La siguiente UPP tiene metas de actividades confirmadas: " + obtenerUPP;
                     } 
                     if(obtenerUPP == "" && upp['estatus'] == 1 ){
                         checarEstado = true;
-                        arregloMetas.push(upp['clv_upp']);
-                        texto2 = "Las siguientes UPP en metas de actividades tienen el estado activo: "+ arregloMetas;
+                        if (!arregloMetas.includes(upp['clv_upp'])) { // Checar que no se repitan las claves UPP
+                            arregloMetas.push(upp['clv_upp']);
+                        }
+                        texto2 = "Las siguientes UPP tienen metas de actividades confirmadas: "+ arregloMetas;
+                    } 
+                });
+                uppEMM.forEach(upp => {
+                    if(upp['clv_upp'] == obtenerUPP && upp['estatus'] == 1 ){
+                        checarEstado = true;
+                        texto2 = "La siguiente UPP tiene metas de actividades confirmadas: " + obtenerUPP;
+                    } 
+                    if(obtenerUPP == "" && upp['estatus'] == 1 ){
+                        checarEstado = true;
+                        if (!arregloMetas.includes(upp['clv_upp'])) { // Checar que no se repitan las claves UPP
+                            arregloMetas.push(upp['clv_upp']);
+                        }
+                        texto2 = "Las siguientes UPP tienen metas de actividades confirmadas: "+ arregloMetas;
                     } 
                 });
             }

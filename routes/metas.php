@@ -36,6 +36,7 @@
 		Route::get('/actividades/anios-metas/', 'getAnios');
 		Route::get('/actividades/meses-activos/{mir?}/{fondo?}', 'getMeses');
 		Route::get('/actividades/meses/error/{upp?}/{anio?}', 'exportExcelErr')->name('exportError');
+		Route::get('/carga-masiva/manual-usuario', 'getManual')->name('Manual_Carga_Masiva_metas');
 
 	});
 
@@ -45,6 +46,7 @@
 		Route::post('/actividades/import/metas-delegacion', 'importPlantilla');
 		Route::get('/calendarizacion/proyecto/metas-delegacion', 'getProyecto')->name('proyecto');
 		Route::get('/actividades/data/metas-delegacion/{upp?}/{anio?}', 'getActivDelegacion');
+		Route::post('/calendarizacion/put/metas-delegacion', 'putMeta');
 
 
 	});
