@@ -277,6 +277,11 @@ var init = {
     }
 };
 $(document).ready(function () {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     dao.getUpps();
     dao.getAniosM();
     $("#upp_filter").select2({

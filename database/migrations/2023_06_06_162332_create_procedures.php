@@ -3585,230 +3585,146 @@ return new class extends Migration {
             and presupuestable = 1;
         END");
 
-        DB::unprepared("CREATE PROCEDURE llenado_nuevo_anio(in anio int)
+        DB::unprepared("CREATE PROCEDURE llenado_nuevo_anio(in anio int,in usuario varchar(45))
         begin
-            create temporary table rel_faltantes(
-                id int not null auto_increment,
-                clave varchar(30) not null,
-                grupo varchar(100) not null,
-                primary key (id)
-            );
-            
-            insert into rel_faltantes(clave,grupo)
-            select distinct
-                concat(ea.clv_sector_publico,ea.clv_sector_publico_f,
-                ea.clv_sector_economia,ea.clv_subsector_economia,ea.clv_ente_publico) clave,
-                'rel_economica_administrativa' grupo
-            from epp_aux ea
-            where concat(ea.clv_sector_publico,ea.clv_sector_publico_f,
-                ea.clv_sector_economia,ea.clv_subsector_economia,
-                ea.clv_ente_publico) not in (select distinct rea.clasificacion_administrativa 
-                    from rel_economica_administrativa rea
-                    where rea.deleted_at is null);
-                
-            insert into rel_faltantes(clave,grupo)
-            select distinct
-                concat(clv_upp,\" \",clv_subsecretaria,\" \",clv_ur) clave,
-                \"entidad_ejecutora\" grupo
-            from epp_aux ea
-            where concat(ea.clv_upp,ea.clv_subsecretaria,ea.clv_ur
-            ) not in (select distinct 
-                concat(ve.clv_upp,ve.clv_subsecretaria,ve.clv_ur) ee
-                from v_entidad_ejecutora ve
-            where ve.deleted_at is null);
-
-            insert into rel_faltantes(clave,grupo)
-            select distinct
-                ea.clv_linea_accion clave,
-                'sector_linea_accion' grupo
-            from epp_aux ea
-            where ea.clv_linea_accion not in (
-                select distinct
-                    c.clave 
-                from sector_linea_accion sla 
-                join catalogo c on sla.linea_accion_id = c.id
-                where sla.deleted_at is null
-            );
-
-            insert into rel_faltantes(clave,grupo)
+            set @id := (select max(id) from catalogo);
+            set @ejercicio:= (select max(ejercicio) from catalogo);
+        
+            #Pasar catalogo actual a historico
+            insert into catalogo_hist(
+                id_original,grupo_id,ejercicio,clave,descripcion,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at
+            )
             select 
+                id,grupo_id,ejercicio,clave,descripcion,
+                now() deleted_at,created_user,updated_user,deleted_user,created_at,updated_at
+            from catalogo where ejercicio = @ejercicio;
+        
+            delete from catalogo where ejercicio = @ejercicio;
+        
+            #Crear el nuevo catalogo
+            insert into catalogo(id,grupo_id,clave,descripcion,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at,ejercicio)
+            select 
+                (@id:=@id+1) id,
+                grupo,
                 clave,
-                grupo
+                descripcion,
+                null deleted_at,
+                usuario created_user,
+                null updated_user,
+                null deleted_user,
+                now() created_at,
+                now() updated_at,
+                anio ejercicio
             from (
-                select distinct
-                    concat(ea.clv_tipologia_conac,\" \",ea.tipologia_conac) clave,
-                    \"tipologia_conac\" grupo
-                from epp_aux ea
-                where concat(ea.clv_tipologia_conac,\" \",ea.tipologia_conac) not in (
-                    select distinct
-                        concat(tc.clave_conac,\" \",tc.descripcion_conac) tipologia
-                    from tipologia_conac tc
-                    where tc.deleted_at is null and tc.clave_conac is not null)
-            )t where substr(clave,3,200) not in (
-                select distinct
-                    substr(tc.descripcion,1,200) tipologia
-                from tipologia_conac tc
-                where tc.deleted_at is null);
-            
-            insert into rel_faltantes(clave,grupo)
+                select distinct 1 grupo,clv_sector_publico clave,sector_publico descripcion from epp_aux union all
+                select distinct 2 grupo,clv_sector_publico_f clave,sector_publico_f descripcion from epp_aux union all
+                select distinct 3 grupo,clv_sector_economia clave,sector_economia descripcion from epp_aux union all
+                select distinct 4 grupo,clv_subsector_economia clave,subsector_economia descripcion from epp_aux union all
+                select distinct 5 grupo,clv_ente_publico clave,ente_publico descripcion from epp_aux union all
+                select distinct 6 grupo,clv_upp clave,upp descripcion from epp_aux union all
+                select distinct 7 grupo,clv_subsecretaria clave,subsecretaria descripcion from epp_aux union all
+                select distinct 8 grupo,clv_ur clave,ur descripcion from epp_aux union all
+                select distinct 9 grupo,clv_finalidad clave,finalidad descripcion from epp_aux union all
+                select distinct 10 grupo,clv_funcion clave,funcion descripcion from epp_aux union all
+                select distinct 11 grupo,clv_subfuncion clave,subfuncion descripcion from epp_aux union all
+                select distinct 12 grupo,clv_eje clave,eje descripcion from epp_aux union all
+                select distinct 13 grupo,clv_linea_accion clave,linea_accion descripcion from epp_aux union all
+                select distinct 14 grupo,clv_programa_sectorial clave,programa_sectorial descripcion from epp_aux union all
+                select distinct 15 grupo,clv_tipologia_conac clave,tipologia_conac descripcion from epp_aux union all
+                select distinct 16 grupo,clv_programa clave,programa descripcion from epp_aux union all
+                select distinct 17 grupo,clv_subprograma clave,subprograma descripcion from epp_aux union all
+                select distinct 18 grupo,clv_proyecto clave,proyecto descripcion from epp_aux
+            )t;
+        
+            #Buscando ID's de catalogo para epp_aux
+            update epp_aux ea join catalogo c on ea.clv_sector_publico = c.clave 
+            and ea.sector_publico = c.descripcion and c.grupo_id = 1 set ea.id_sector_publico = c.id;
+            update epp_aux ea join catalogo c on ea.clv_sector_publico_f = c.clave 
+            and ea.sector_publico_f = c.descripcion and c.grupo_id = 2 set ea.id_sector_publico_f = c.id;
+            update epp_aux ea join catalogo c on ea.clv_sector_economia = c.clave 
+            and ea.sector_economia = c.descripcion and c.grupo_id = 3 set ea.id_sector_economia = c.id;
+            update epp_aux ea join catalogo c on ea.clv_subsector_economia = c.clave 
+            and ea.subsector_economia = c.descripcion and c.grupo_id = 4 set ea.id_subsector_economia = c.id;
+            update epp_aux ea join catalogo c on ea.clv_ente_publico = c.clave 
+            and ea.ente_publico = c.descripcion and c.grupo_id = 5 set ea.id_ente_publico = c.id;
+            update epp_aux ea join catalogo c on ea.clv_upp = c.clave 
+            and ea.upp = c.descripcion and c.grupo_id = 6 set ea.id_upp = c.id;
+            update epp_aux ea join catalogo c on ea.clv_subsecretaria = c.clave 
+            and ea.subsecretaria = c.descripcion and c.grupo_id = 7 set ea.id_subsecretaria = c.id;
+            update epp_aux ea join catalogo c on ea.clv_ur = c.clave 
+            and ea.ur = c.descripcion and c.grupo_id = 8 set ea.id_ur = c.id;
+            update epp_aux ea join catalogo c on ea.clv_finalidad = c.clave 
+            and ea.finalidad = c.descripcion and c.grupo_id = 9 set ea.id_finalidad = c.id;
+            update epp_aux ea join catalogo c on ea.clv_funcion = c.clave 
+            and ea.funcion = c.descripcion and c.grupo_id = 10 set ea.id_funcion = c.id;
+            update epp_aux ea join catalogo c on ea.clv_subfuncion = c.clave 
+            and ea.subfuncion = c.descripcion and c.grupo_id = 11 set ea.id_subfuncion = c.id;
+            update epp_aux ea join catalogo c on ea.clv_eje = c.clave 
+            and ea.eje = c.descripcion and c.grupo_id = 12 set ea.id_eje = c.id;
+            update epp_aux ea join catalogo c on ea.clv_linea_accion = c.clave 
+            and ea.linea_accion = c.descripcion and c.grupo_id = 13 set ea.id_linea_accion = c.id;
+            update epp_aux ea join catalogo c on ea.clv_programa_sectorial = c.clave 
+            and ea.programa_sectorial = c.descripcion and c.grupo_id = 14 set ea.id_programa_sectorial = c.id;
+            update epp_aux ea join catalogo c on ea.clv_tipologia_conac = c.clave 
+            and ea.tipologia_conac = c.descripcion and c.grupo_id = 15 set ea.id_tipologia_conac = c.id;
+            update epp_aux ea join catalogo c on ea.clv_programa = c.clave 
+            and ea.programa = c.descripcion and c.grupo_id = 16 set ea.id_programa = c.id;
+            update epp_aux ea join catalogo c on ea.clv_subprograma = c.clave 
+            and ea.subprograma = c.descripcion and c.grupo_id = 17 set ea.id_subprograma = c.id;
+            update epp_aux ea join catalogo c on ea.clv_proyecto = c.clave 
+            and ea.proyecto = c.descripcion and c.grupo_id = 18 set ea.id_proyecto = c.id;
+        
+            #Creando el nuevo epp
+            insert into epp(
+                sector_publico_id,sector_publico_f_id,sector_economia_id,subsector_economia_id,ente_publico_id,upp_id,subsecretaria_id,ur_id,finalidad_id,funcion_id,subfuncion_id,eje_id,linea_accion_id,programa_sectorial_id,tipologia_conac_id,programa_id,subprograma_id,proyecto_id,
+                ejercicio,presupuestable,con_mir,confirmado,tipo_presupuesto,
+                created_at,updated_at,deleted_at,deleted_user,updated_user,created_user,tipo_presupuesto
+            )
+            select 
+                id_sector_publico,id_sector_publico_f,id_sector_economia,id_subsector_economia,id_ente_publico,id_upp,id_subsecretaria,id_ur,id_finalidad,id_funcion,id_subfuncion,id_eje,id_linea_accion,id_programa_sectorial,id_tipologia_conac,id_programa,id_subprograma,id_proyecto,
+                anio,1,1,1,null,
+                now(),now(),null,null,null,usuario,0
+            from epp_aux;
+        
+            create temporary table subprogramas_id
             select distinct
-                ea.clv_linea_accion clave,
-                'mml_objetivo_sectorial_estrategia' grupo
+                id_subprograma
             from epp_aux ea
-            where concat(
-                substr(ea.linea_accion,1,7),
-                replace(substr(ea.linea_accion,8,1),'.','')
-            ) not in (
-                select 
-                    clv_cpladem_linea_accion
-                from mml_objetivo_sectorial_estrategia mo
-                where deleted_at is null
-            );
+            where ea.clv_subprograma in ('UUU','21B');
             
-            set @filas := (select count(*) from rel_faltantes);
-            if( @filas > 0) then 
-                select * from rel_faltantes;
-            else
-                update epp_aux a
-                left join catalogo c on a.clv_sector_publico = c.clave and a.sector_publico = c.descripcion and c.grupo_id = 1 
-                and c.deleted_at is null
-                set a.id_sector_publico = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_sector_publico_f = c.clave and a.sector_publico_f = c.descripcion and c.grupo_id = 2 
-                and c.deleted_at is null
-                set a.id_sector_publico_f = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_sector_economia = c.clave and a.sector_economia = c.descripcion and c.grupo_id = 3 
-                and c.deleted_at is null
-                set a.id_sector_economia = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_subsector_economia = c.clave and a.subsector_economia = c.descripcion and c.grupo_id = 4 
-                and c.deleted_at is null
-                set a.id_subsector_economia = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_ente_publico = c.clave and a.ente_publico = c.descripcion and c.grupo_id = 5 
-                and c.deleted_at is null
-                set a.id_ente_publico = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_upp = c.clave and a.upp = c.descripcion and c.grupo_id = 6 
-                and c.deleted_at is null
-                set a.id_upp = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_subsecretaria = c.clave and a.subsecretaria = c.descripcion and c.grupo_id = 7
-                and c.deleted_at is null
-                set a.id_subsecretaria = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_ur = c.clave and a.ur = c.descripcion and c.grupo_id = 8
-                and c.deleted_at is null
-                set a.id_ur = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_finalidad = c.clave and a.finalidad = c.descripcion and c.grupo_id = 9
-                and c.deleted_at is null
-                set a.id_finalidad = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_funcion = c.clave and a.funcion = c.descripcion and c.grupo_id = 10
-                and c.deleted_at is null
-                set a.id_funcion = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_subfuncion = c.clave and a.subfuncion = c.descripcion and c.grupo_id = 11
-                and c.deleted_at is null
-                set a.id_subfuncion = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_eje = c.clave and a.eje = c.descripcion and c.grupo_id = 12
-                and c.deleted_at is null
-                set a.id_eje = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_linea_accion = c.clave and a.linea_accion = c.descripcion and c.grupo_id = 13
-                and c.deleted_at is null
-                set a.id_linea_accion = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_programa_sectorial = c.clave and a.programa_sectorial = c.descripcion and c.grupo_id = 14
-                and c.deleted_at is null
-                set a.id_programa_sectorial = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_tipologia_conac = c.clave and a.tipologia_conac = c.descripcion and c.grupo_id = 15
-                and c.deleted_at is null
-                set a.id_tipologia_conac = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_programa = c.clave and a.programa = c.descripcion and c.grupo_id = 16
-                and c.deleted_at is null
-                set a.id_programa = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_subprograma = c.clave and a.subprograma = c.descripcion and c.grupo_id = 17
-                and c.deleted_at is null
-                set a.id_subprograma = c.id;
-                
-                update epp_aux a
-                left join catalogo c on a.clv_proyecto = c.clave and a.proyecto = c.descripcion and c.grupo_id = 18
-                and c.deleted_at is null
-                set a.id_proyecto = c.id;
-                
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_sector_publico clave,'sector_publico' grupo from epp_aux ea where ea.id_sector_publico is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_sector_publico_f clave,'sector_publico_f' grupo from epp_aux ea where ea.id_sector_publico_f is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_sector_economia clave,'sector_economia' grupo from epp_aux ea where ea.id_sector_economia is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_subsector_economia clave,'subsector_economia' grupo from epp_aux ea where ea.id_subsector_economia is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_ente_publico clave,'ente_publico' grupo from epp_aux ea where ea.id_ente_publico is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_upp clave,'upp' grupo from epp_aux ea where ea.id_upp is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_subsecretaria clave,'subsecretaria' grupo from epp_aux ea where ea.id_subsecretaria is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_ur clave,'ur' grupo from epp_aux ea where ea.id_ur is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_finalidad clave,'finalidad' grupo from epp_aux ea where ea.id_finalidad is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_funcion clave,'funcion' grupo from epp_aux ea where ea.id_funcion is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_subfuncion clave,'subfuncion' grupo from epp_aux ea where ea.id_subfuncion is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_eje clave,'eje' grupo from epp_aux ea where ea.id_eje is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_linea_accion clave,'linea_accion' grupo from epp_aux ea where ea.id_linea_accion is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_programa_sectorial clave,'programa_sectorial' grupo from epp_aux ea where ea.id_programa_sectorial is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_tipologia_conac clave,'tipologia_conac' grupo from epp_aux ea where ea.id_tipologia_conac is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_programa  clave,'programa' grupo from epp_aux ea where ea.id_programa is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_subprograma clave,'subprograma' grupo from epp_aux ea where ea.id_subprograma is null;
-                insert into rel_faltantes(clave,grupo) select distinct ea.clv_proyecto clave,'proyecto' grupo from epp_aux ea where ea.id_proyecto is null;
+            create temporary table programas_id
+            select distinct
+                id_programa
+            from epp_aux ea
+            where ea.clv_programa in ('5H','RM');
             
-                set @filas := (select count(*) from rel_faltantes);
-                if( @filas > 0) then 
-                    select * from rel_faltantes;
-                else
-                    set @id := (select max(id) from epp);
-                	if (@id is null) then set @id := 0; end if;
-                    insert into epp(id,sector_publico_id,sector_publico_f_id,sector_economia_id,subsector_economia_id,ente_publico_id,
-                        upp_id,subsecretaria_id,ur_id,
-                        finalidad_id,funcion_id,subfuncion_id,eje_id,linea_accion_id,programa_sectorial_id,tipologia_conac_id,
-                        programa_id,subprograma_id,proyecto_id,
-                        ejercicio,presupuestable,confirmado,created_at,updated_at,deleted_at,deleted_user,updated_user,created_user)
-                    select 
-                        (@id := @id+1) id,id_sector_publico,id_sector_publico_f,id_sector_economia,id_subsector_economia,id_ente_publico,
-                        id_upp,id_subsecretaria,id_ur,
-                        id_finalidad,id_funcion,id_subfuncion,id_eje,id_linea_accion,id_programa_sectorial,id_tipologia_conac,
-                        id_programa,id_subprograma,id_proyecto,
-                        anio,1,1,now(),now(),null,null,null,'SISTEMA'
-                    from epp_aux ea;
-                
-                update epp set presupuestable = 0 where programa_id in (
-                    select 
-                        id
-                    from catalogo c
-                    where c.clave in ('RM','5H') and deleted_at is null and c.grupo_id = 16
-                );
-                end if;
-            end if;
+            update epp set presupuestable = 0, con_mir = 0
+            where programa_id in (select id_programa from programas_id);
             
-            drop temporary table rel_faltantes;
-            delete from epp_aux;
-        END");
+            update epp e set con_mir = 0
+            where e.subprograma_id in (select id_subprograma from subprogramas_id);
+            
+            drop temporary table subprogramas_id;
+            drop temporary table programas_id;
+        
+            #Agregando los nuevos datos de entidad_ejecutora
+            insert into entidad_ejecutora(
+                upp_id,subsecretaria_id,ur_id,ejercicio,deleted_at,created_user,updated_user,deleted_user,created_at,updated_at
+            )
+            select distinct
+                e.upp_id,
+                e.subsecretaria_id,
+                e.ur_id,
+                anio,
+                null,
+                usuario,
+                null,
+                null,
+                now(),
+                now()
+            from epp e
+            where ejercicio = anio;
+        END;");
 
         DB::unprepared("CREATE PROCEDURE avance_etapas_upp_programa(in anio int)
         begin
