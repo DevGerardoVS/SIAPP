@@ -638,10 +638,13 @@ var dao = {
         }
     },
     getUpps: function () {
+        var csrfToken = "{{ csrf_token() }}";
+        console.log(localStorage.getItem('token'));
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/upps/',
-            dataType: "JSON"
+            url: '/calendarizacion/upps',
+            dataType: "JSON",
+            headers: {'X-CSRF-TOKEN': csrfToken },
         }).done(function (data) {
             const { upp } = data;
             var par = $('#upp_filter');
@@ -1265,6 +1268,11 @@ var init = {
     },
 };
 $(document).ready(function () {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     $(".CargaMasiva").hide();
     $(".btnSave").hide();
     $("#beneficiario").on('paste', function (e) {

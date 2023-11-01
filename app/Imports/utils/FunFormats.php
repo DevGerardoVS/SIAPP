@@ -99,9 +99,7 @@ class FunFormats
                             );
                             return $error;
                         }
-
                     }
-    
                     $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', strval($k[7]))->where('deleted_at', null)->max('ejercicio');
                     $isMir = DB::table("mml_cierre_ejercicio")
                         ->select('id', 'estatus')

@@ -45,10 +45,7 @@
                 <a type="button" class="btn btn-secondary" href="/calendarizacion/proyecto/metas-delegacion">Actividades
                     capturadas</a>
                 &nbsp; &nbsp;
-                <button class="btn-primary"  onclick="dao.save()" style="width:25%;float:right;margin-right:22%;">
-                    <i class="fa fa-save" aria-hidden="true"></i>
-                    Guardar
-                </button>
+                <button type="button" onclick="dao.save()" class="btn btn-primary"><i class="fa fa-save" aria-hidden="true"></i> &nbsp;Guardar</button>
             </div>
         </div>
     </div>

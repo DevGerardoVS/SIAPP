@@ -1365,7 +1365,11 @@ var init = {
 };
 
 $(document).ready(function () {
-    
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     const moonLanding = new Date();
     $("#anio_filter option[value='" + moonLanding.getFullYear() + "']").attr("selected", true);
    
