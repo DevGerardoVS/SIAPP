@@ -127,6 +127,8 @@ class CalendarizacionCargaMasivaController extends Controller
 
         //verificar que el usuario tenga permiso
         try {
+            DB::beginTransaction();
+
             //Validaciones para administrador
             if ( auth::user()->id_grupo==1) {
 
@@ -588,12 +590,21 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
                 }
+
             }
         } catch (\Throwable $th) {
             Log::debug($th);
             return redirect()->back()->withErrors(['error' => 'Ocurrio un error intentelo más tarde. ']);
 
         }
+
+        if (count($arrayErrores) > 0) {
+            DB::rollBack();
+            return redirect()->back()->withErrors($arrayErrores);
+         }
+         else{
+            DB::commit();
+         }
         //si todo sale bien procedemos al import
         try {
 
