@@ -1046,4 +1046,21 @@ class ClavePreController extends Controller
         ];
         return response()->json($response,200);
     }
+
+    public function getManualCMC(){
+        $file = "";
+        $name = "";
+        
+        if(Auth::user()->id_grupo==4){
+            $name = "CAP_Manual_de_Usuario_UPP-CargaMasivaClaves.pdf";
+            $file= public_path()."/". $name;
+        } 
+        
+        //Log::channel('daily')->debug('exp '.public_path());
+        $headers = array('Content-Type: application/pdf',);
+
+        return response()->download($file,$name,$headers);
+    }
+
+    
 }
