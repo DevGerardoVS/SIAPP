@@ -22,7 +22,6 @@ class UnidadMedida implements FromCollection, ShouldAutoSize, WithHeadings, With
         foreach ($data as $key) {
              $a = array(
                  $key->id,
-                 $key->clave,
                  $key->unidad_medida,
                  ""
              );
@@ -40,7 +39,6 @@ class UnidadMedida implements FromCollection, ShouldAutoSize, WithHeadings, With
     public function headings(): array
     {
         return [
-            "ID",
             "CLAVE",
             "UNIDAD MEDIDA",
             ""
@@ -62,8 +60,7 @@ class UnidadMedida implements FromCollection, ShouldAutoSize, WithHeadings, With
     public function columnWidths():array{
         return[
             'A'=>10,
-            'B'=>14,
-            'C'=>25
+            'B'=>25
         ];
     }
     public function registerEvents():array{

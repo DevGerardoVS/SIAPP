@@ -22,7 +22,6 @@ class Beneficiarios implements FromCollection, ShouldAutoSize, WithHeadings, Wit
        foreach ($data as $key) {
             $a = array(
                 $key->id,
-                $key->clave,
                 $key->beneficiario,
                 ""
             );
@@ -40,7 +39,6 @@ class Beneficiarios implements FromCollection, ShouldAutoSize, WithHeadings, Wit
     public function headings(): array
     {
         return [
-            "ID",
             "CLAVE",
             "BENEFICIARIO",
             ""
@@ -62,8 +60,7 @@ class Beneficiarios implements FromCollection, ShouldAutoSize, WithHeadings, Wit
     public function columnWidths():array{
         return[
             'A'=>10,
-            'B'=>10,
-            'C'=>25
+            'B'=>25
         ];
     }
     public function registerEvents():array{

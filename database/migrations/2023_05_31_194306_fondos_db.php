@@ -26,7 +26,7 @@ return new class extends Migration
 
         Schema::create('mml_definicion_problema', function (Blueprint $table){
             $table->increments('id');
-            $table->unique(['clv_upp','clv_pp','ejercicio']);	
+            $table->unique(['clv_upp','clv_pp','ejercicio']);
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
             $table->string('poblacion_objetivo',255)->nullable(false);
@@ -82,7 +82,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
             
-            $table->foreign('problema_id')->references('id')->on('mml_definicion_problema');
+            $table->foreign('problema_id')->references('id')->on('mml_definicion_problema')->onDelete('cascade');
             /* $table->foreign('upp_id')->references('id')->on('catalogo'); */
 
         });
@@ -106,7 +106,7 @@ return new class extends Migration
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();
-            $table->foreign('problema_id')->references('id')->on('mml_definicion_problema');
+            $table->foreign('problema_id')->references('id')->on('mml_definicion_problema')->onDelete('cascade');
             /* $table->foreign('upp_id')->references('id')->on('catalogo'); */
 
         });
@@ -279,7 +279,23 @@ return new class extends Migration
         Schema::create('catalogo', function (Blueprint $table){
             $table->increments('id');
             $table->integer('grupo_id')->unsigned()->nullable(false);
-            $table->integer('ejercicio')->default(2024);
+            $table->integer('ejercicio')->nullable(false);
+            $table->string('clave',6)->nullable(false);
+            $table->text('descripcion')->nullable(false);
+            $table->softDeletes();
+            $table->string('created_user',45)->nullable(false);
+            $table->string('updated_user',45)->nullable(true);
+            $table->string('deleted_user',45)->nullable(true);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->foreign('grupo_id')->references('id')->on('grupos');
+        });
+
+        Schema::create('catalogo_hist', function (Blueprint $table){
+            $table->increments('id');
+            $table->integer('id_original');
+            $table->integer('grupo_id')->unsigned()->nullable(false);
+            $table->integer('ejercicio')->nullable(false)->default(2024);
             $table->string('clave',6)->nullable(false);
             $table->text('descripcion')->nullable(false);
             $table->softDeletes();
@@ -557,7 +573,6 @@ return new class extends Migration
 
         Schema::create('sector_linea_accion',function (Blueprint $table){
             $table->increments('id');
-            $table->integer('linea_accion_id')->unsigned()->nullable(false);
             $table->string('clv_sector',1)->nullable(false);
             $table->string('sector',255)->nullable(false);
             $table->softDeletes();
@@ -568,8 +583,6 @@ return new class extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->string('linea_accion_num',8)->nullable(false);
             $table->string('clv_linea_accion',2)->nullable(false);
-
-            $table->foreign('linea_accion_id')->references('id')->on('catalogo');
         });
 
         Schema::create('epp',function (Blueprint $table){
@@ -599,6 +612,7 @@ return new class extends Migration
             $table->boolean('presupuestable')->default(false);
             $table->tinyInteger('con_mir')->nullable(false);
             $table->boolean('confirmado')->default(false);
+            $table->tinyInteger('tipo_presupuesto')->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->softDeletes();

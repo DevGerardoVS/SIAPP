@@ -21,6 +21,9 @@
                         <li >Para el subprograma <b>UUU</b> se registran automaticamnete en el sistema el total y los meses predeterminados.</li>
                     </ul>
                     <button type="button" class="btn btn-outline-primary text-center" style="float:left;text-decoration:none; width:20%;" onclick="dao.getPlantillaCmUpp()"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Descargar plantilla</button>
+                  <p><br><br></p>
+                    <a type="button" class="btn btn-outline-success text-center" style="float:left;text-decoration:none; width:20%;" href="{{ route('Manual_Carga_Masiva_metas') }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Manual</a>
+
                         <input name="cmFile" type="file" id="cmFile" name="cmFile" accept=".xlsx,.xlsm" class="border border-secondary rounded" placeholder="Archivo" required style="margin-top:5%; width : 100%;">
                     <br>
                 </div>

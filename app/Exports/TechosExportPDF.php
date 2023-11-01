@@ -28,6 +28,7 @@ class TechosExportPDF implements FromView{
             ->where('tf.deleted_at','=',null)
             ->where('tf.ejercicio','=',$this->ejercicio)
             ->where('vee.Ej','=',$this->ejercicio)
+            ->orderBy('vee.clv_upp','asc')
             ->get();
 
         return view('calendarizacion.techos.plantillaPDF', [

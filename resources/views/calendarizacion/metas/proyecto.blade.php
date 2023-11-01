@@ -59,7 +59,7 @@
                             <br>
                                 @if (Auth::user()->id_grupo == 4)
                                 <button  type="button" class="btn btn-outline-primary col-md-2 cmupp" onclick="dao.exportJasperMetas()">Formato Metas</button>&nbsp;
-                                <button  type="button" class="btn btn-outline-primary col-md-2 cmupp" onclick="dao.exportJasper()">Formato</button>&nbsp;
+                                <button  type="button" class="btn btn-outline-primary col-md-2 cmupp" onclick="dao.exportJasper()">Formato claves</button>&nbsp;
                                 @endif
                                 
                                 <button type="button" style="justify-content: flex-end; " onclick="dao.exportPdf()"class="btn btn-outline-danger col-md-2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar PDF</button>&nbsp

@@ -17,7 +17,7 @@ var dao = {
     getUpps: function () {
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/upps/',
+            url: '/calendarizacion/upps',
             dataType: "JSON"
         }).done(function (data) {
             const { upp } = data;
@@ -41,14 +41,17 @@ var dao = {
         }).done(function (data) {
             var par = $('#anio_filter');
             par.html('');
-            if (data.length == 1) {
+            if (data.length >= 1) {
                 $.each(data, function (i, val) {
                     par.append(new Option(val.ejercicio, val.ejercicio, true, false));
                 });
             }else {
                 var  d = new  Date();
-                var  n = d.getFullYear();
-                par.append(new Option(n,n, true, false));
+                var n = d.getFullYear();
+                var nn = n + 1;
+                par.append(new Option(nn,nn, true, false));
+                par.append(new Option(n, n, true, false));
+               
              
             }
         });

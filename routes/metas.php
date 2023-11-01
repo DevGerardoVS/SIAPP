@@ -1,8 +1,10 @@
 <?php 	
 	use App\Http\Controllers\Calendarizacion\MetasController;
+	use App\Http\Controllers\Calendarizacion\MetasDelController;
 
 	Route::controller(MetasController::class)->group(function () {
 		Route::get('/calendarizacion/metas', 'getIndex')->name('index_metas');
+		Route::get('/calendarizacion/metas-delegacion', 'getIndex')->name('index_metas');
 		Route::get('/calendarizacion/pdf/{upp?}/{anio?}', 'pdfView');
 		Route::get('/calendarizacion/data/{upp_filter?}/{ur_filter?}', 'getMetasP');
 		Route::get('/actividades/data/{upp?}/{anio?}', 'getActiv')->name('actividades');
@@ -34,6 +36,18 @@
 		Route::get('/actividades/anios-metas/', 'getAnios');
 		Route::get('/actividades/meses-activos/{mir?}/{fondo?}', 'getMeses');
 		Route::get('/actividades/meses/error/{upp?}/{anio?}', 'exportExcelErr')->name('exportError');
+		Route::get('/carga-masiva/manual-usuario', 'getManual')->name('Manual_Carga_Masiva_metas');
+
+	});
+
+	Route::controller(MetasDelController::class)->group(function () {
+		Route::get('/calendarizacion/metas-delegacion', 'getMetasDelegacion')->name('index_metas_del');
+		Route::get('/actividades/plantilla/metas-delegacion', 'getPlantillaExcel')->name('PlantillaExcel');
+		Route::post('/actividades/import/metas-delegacion', 'importPlantilla');
+		Route::get('/calendarizacion/proyecto/metas-delegacion', 'getProyecto')->name('proyecto');
+		Route::get('/actividades/data/metas-delegacion/{upp?}/{anio?}', 'getActivDelegacion');
+		Route::post('/calendarizacion/put/metas-delegacion', 'putMeta');
+
 
 	});
 ?>
