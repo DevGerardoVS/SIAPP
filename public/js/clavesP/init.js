@@ -1,4 +1,4 @@
-let env = "";
+// let env = "";
 var dao = {
   getData : function(ejercicio, upp, ur){
     let timerInterval
@@ -587,18 +587,19 @@ var dao = {
 
     });
   },
-  getPresupuesAsignado: function (ejercicio, upp) {
-    console.log('env',env);
-    let url = '';
-    if (env !='local') {
-      url = 'https://' + window.location.hostname + '/get-presupuesto-asignado/' + ejercicio + '/' + upp;
-    } else {
-      url='/get-presupuesto-asignado/' + ejercicio + '/' + upp;
-    }
+  getPresupuesAsignado: function (ejercicio, clv_upp) {
+    // console.log('env',env);
+    // let url = '';
+    // if (env !='local') {
+    //   url = 'https://' + window.location.hostname + '/get-presupuesto-asignado/' + ejercicio + '/' + upp;
+    // } else {
+    //   url='/get-presupuesto-asignado/' + ejercicio + '/' + upp;
+    // }
+    let upp = clv_upp != '' ? clv_upp : '';
     $.ajax({
-      type: 'GET',
-      url:url,
-      dataType: "JSON",
+      type: 'POST',
+      url:'/get-presupuesto-asignado',
+      data: {'ejercicio': ejercicio, 'upp': upp},
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       const { response } = data;

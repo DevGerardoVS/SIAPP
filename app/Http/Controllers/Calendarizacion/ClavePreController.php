@@ -638,7 +638,10 @@ class ClavePreController extends Controller
             ->first();
         return response()->json($sector,200);
     }
-    public function getPresupuestoAsignado($ejercicio = 0, $upp = ''){
+    public function getPresupuestoAsignado(Request $request){
+        Log::info('Petición HTTP: ' . request()->fullUrl());
+        $ejercicio = $request->ejrcicio != '' ? $request->ejercicio : 0;
+        $upp = $request->upp != '' ? $request->upp : '';
         $Totcalendarizado = 0;
         $disponible = 0;
         $rol = '';
@@ -759,6 +762,7 @@ class ClavePreController extends Controller
         return response()->json(['response'=>$response],200);
     }
     public function getPanelPresupuestoFondo($ejercicio = 0, $clvUpp = ''){
+        Log::info('Petición HTTP: ' . request()->fullUrl());
         $disponible = 0;
         $totalDisponible = 0;
         $totalAsignado = 0;

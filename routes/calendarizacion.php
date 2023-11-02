@@ -6,6 +6,11 @@ use App\Http\Controllers\Calendarizacion\TechosController;
 use App\Http\Controllers\Calendarizacion\CalendarizacionCargaMasivaController;
 
 include('metas.php');
+Route::group(['middleware' => ['forceScheme:https']], function () {
+    Route::controller(ClavePreController::class);
+    // Otras rutas que también se beneficiarán del middleware
+});
+
 
 Route::controller(TechosController::class)->group(function () {
 	Route::get('/calendarizacion/techos', 'getIndex')->name('index_techos');
@@ -38,7 +43,7 @@ Route::controller(TechosController::class)->group(function () {
 		Route::get('/cat-subprograma-presupuesto/{ur?}/{id?}/{upp?}/{ejercicio?}', 'getSubProgramas');
 		Route::get('/cat-proyecyo/{programa?}/{id?}/{upp?}/{ur?}/{ejercicio?}', 'getProyectos');
 		Route::get('/cat-linea-accion/{uppId?}/{id?}/{ejercicio?}/{programa?}/{subPrograma?}/{proyecto?}', 'getLineaAccion');
-		Route::get('/get-presupuesto-asignado/{ejercicio?}/{upp?}', 'getPresupuestoAsignado');
+		Route::post('/get-presupuesto-asignado', 'getPresupuestoAsignado');
 		Route::get('/calendarizacion-claves-presupuesto-fondo/{ejercicio?}/{clvUpp?}', 'getPanelPresupuestoFondo');
 		Route::post('/calendarizacion-eliminar-clave', 'postEliminarClave');
 		Route::post('/calendarizacion-guardar-clave', 'postGuardarClave');
