@@ -596,7 +596,7 @@ var dao = {
       url='/get-presupuesto-asignado/' + ejercicio + '/' + upp;
     }
     $.ajax({
-      type: 'get',
+      type: 'GET',
       url:url,
       dataType: "JSON",
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}

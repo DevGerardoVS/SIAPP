@@ -256,6 +256,10 @@ class MetasHelper
 				->where('mml_mir.nivel', '=', 11)
 				->where('mml_mir.ejercicio', $anio)
 				->where('mml_mir.clv_upp', $upp);
+				if (Auth::user()->id_grupo == 4) {
+					$proyecto = $proyecto->where('mml_mir.created_user', '!=', 'DELEGACION-CM')
+					->where('mml_mir.created_user', '!=', 'DELEGACION');
+				}
 			$actv = DB::table('mml_actividades')
 				->leftJoin('catalogo', 'catalogo.id', '=', 'mml_actividades.id_catalogo')
 				->select(
@@ -271,6 +275,10 @@ class MetasHelper
 				->where('mml_actividades.clv_upp', $upp)
 				->where('mml_actividades.ejercicio', $anio)
 				->where('catalogo.ejercicio', $anio);
+				if (Auth::user()->id_grupo == 4) {
+					$actv = $actv->where('mml_actividades.created_user', '!=', 'DELEGACION-CM')
+					->where('mml_actividades.created_user', '!=', 'DELEGACION');
+				}
 			$query2 = DB::table('metas')
 				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -296,6 +304,10 @@ class MetasHelper
 				->where('metas.deleted_at', '=', null)
 				->where('act.clv_upp', $upp)
 				->where('metas.ejercicio', $anio);
+				if (Auth::user()->id_grupo == 4) {
+					$query2 = $query2->where('metas.created_user', '!=', 'DELEGACION-CM')
+					->where('metas.created_user', '!=', 'DELEGACION');
+				}
 			$query = DB::table('metas')
 				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -624,11 +636,15 @@ class MetasHelper
 				DB::raw("IF(SUM(noviembre)>=1,1,0) AS noviembre"),
 				DB::raw("IF(SUM(diciembre)>=1,1,0) AS diciembre")
 			)
+			->where('programacion_presupuesto.subprograma_presupuestario', 'UUU')
 			->where('programacion_presupuesto.upp', $upp)
 			->where('ejercicio', $anio)
 			->where('programacion_presupuesto.deleted_at', null)
-			->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-			->get();
+			->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario');
+			if (Auth::user()->id_grupo == 5) {
+			$meses = $meses->where('programacion_presupuesto.subprograma_presupuestario', '!=', 'UUU');
+			}
+			$meses=$meses->get();
 		return $meses;
 	}
 

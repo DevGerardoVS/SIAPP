@@ -1625,7 +1625,8 @@ class MetasController extends Controller
 	{
 		$_upp = $upp = null ? Auth::user()->clv_upp : $upp;
 		$metas = false;
-		$query = MetasHelper::actividades($_upp, $anio);
+		$query = MetasHelper::actividadesConf($_upp, $anio);
+		Log::debug($query);
 		if(count($query)){
 			$metas = $query[0]->estatus == 1 ? true : false;
 		}
