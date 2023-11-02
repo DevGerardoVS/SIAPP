@@ -1,3 +1,4 @@
+let env = "";
 var dao = {
   getData : function(ejercicio, upp, ur){
     let timerInterval
@@ -586,10 +587,17 @@ var dao = {
 
     });
   },
-  getPresupuesAsignado : function(ejercicio, upp){
+  getPresupuesAsignado: function (ejercicio, upp) {
+    console.log('env',env);
+    let url = '';
+    if (env !='local') {
+      url = 'https://' + window.location.hostname + '/get-presupuesto-asignado/' + ejercicio + '/' + upp;
+    } else {
+      url='/get-presupuesto-asignado/' + ejercicio + '/' + upp;
+    }
     $.ajax({
       type: 'get',
-      url: '/get-presupuesto-asignado/' + ejercicio + '/' + upp,
+      url:url,
       dataType: "JSON",
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {

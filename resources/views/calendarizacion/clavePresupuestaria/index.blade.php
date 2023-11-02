@@ -188,6 +188,8 @@
     <script src="/js/clavesP/cargamasiva.js"></script>
 
     <script>
+        env="{{env('APP_ENV')}}";
+        console.log('env',env);
         function hideAletr(params) {
             $('#alertaUppAutorizado').hide(true);
         }
