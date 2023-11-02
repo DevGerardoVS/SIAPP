@@ -53,13 +53,15 @@
                             </div>
                         </div>
                         <div class="col-sm-3">
+                            @if(Auth::user()->id_grupo==4)
                             <div class="form-group">
-                                <a href="{{ route('getManualCMC') }}" type="button" class="btn colorMorado"
+                                <a href="{{ route('getManualCMC') }}" type="button" class="btn btn-success"
                                     id="downloadbtn" name="downloadbtn">
                                     <i class="fa fa-download" style="color: #dfdfdf"></i>
                                     {{ __('messages.descargar_manual') }}</a>
 
                             </div>
+                            @endif
                         </div>
                     </div>
 
