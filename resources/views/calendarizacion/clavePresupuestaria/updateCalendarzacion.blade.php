@@ -231,6 +231,7 @@
         dao.getPresupuestoPorUppEdit(upp,clv_fondo,subprograma_presupuestario, ejercicio,id);
         $(document).ready(function () {
             soloEnteros();
+            formateoDeMonedaUpdate();
         });
         
     </script>
