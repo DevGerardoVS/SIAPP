@@ -775,6 +775,7 @@ var dao = {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#validMetas').text("Las metas ya fueron confirmadas");
+                $(".CargaMasiva").hide();
             } else {
                 $(".cmupp").hide();
             }
