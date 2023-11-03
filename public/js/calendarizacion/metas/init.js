@@ -649,7 +649,7 @@ var dao = {
             type: "GET",
             url: '/calendarizacion/upps',
             dataType: "JSON",
-            headers: {'X-CSRF-TOKEN': csrfToken },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             const { upp } = data;
             var par = $('#upp_filter');
@@ -864,6 +864,7 @@ var dao = {
             $("#" + i).val(0);
             $("#" + i).prop('disabled', true);
         }
+        $("#activiMir").val(`${area}$${enti}`);
         let ar = area.split('-'); 
         $("#calendar").val(ar[8]); 
         let clave = `${area}$${enti}$${anio}`;
@@ -1312,6 +1313,8 @@ $(document).ready(function () {
 
     });
     $('#sel_fondo').change(() => {
+     let acmIR=   $("#activiMir").val(`${area}$${enti}`);
+        acmIR = acmIR + '$'+$('#sel_fondo').val();
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
 
     });
@@ -1321,6 +1324,8 @@ $(document).ready(function () {
         }
     });
     $('#fondo_id').change(() => {
+        let acmIR=   $("#activiMir").val(`${area}$${enti}`);
+        acmIR = acmIR + '$'+ $('#fondo_id').val();
         dao.getMeses($('#area').val(), $('#fondo_id').val());
     });
 
