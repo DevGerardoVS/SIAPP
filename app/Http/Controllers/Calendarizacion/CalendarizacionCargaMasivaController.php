@@ -69,7 +69,7 @@ class CalendarizacionCargaMasivaController extends Controller
     //Obtener datos del excel
     public function loadDataPlantilla(Request $request)
     {
-        if(Auth::user()->id_grupo == 4){
+        if (Auth::user()->id_grupo == 4) {
             $uppUsuario = auth::user()->clv_upp;
         }
         $message = [
@@ -130,7 +130,7 @@ class CalendarizacionCargaMasivaController extends Controller
             DB::beginTransaction();
 
             //Validaciones para administrador
-            if ( auth::user()->id_grupo==1) {
+            if (auth::user()->id_grupo == 1) {
 
                 $arrayupps = array();
                 $arraypresupuesto = array();
@@ -154,13 +154,13 @@ class CalendarizacionCargaMasivaController extends Controller
 
                     //carga masiva de operativas
                     $ejercicio = array();
-                    foreach ($filearray as  $indext=> $k) {
+                    foreach ($filearray as $indext => $k) {
                         $currentrow = $indext + 2;
 
                         //buscar en el array de upps 
                         $var = array_search($k['5'], $arrayupps);
-                           switch ($k['16']) {
-                            
+                        switch ($k['16']) {
+
                             case 'UUU':
                                 //buscar en el array de totales 
                                 $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $k['5'])->count();
@@ -177,7 +177,7 @@ class CalendarizacionCargaMasivaController extends Controller
                                 }
                                 break;
                             case '':
-                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow .  ' El Subprograma no puede ir vacio. Revise que no haya filas vacias con formulas. ');
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' El Subprograma no puede ir vacio. Revise que no haya filas vacias con formulas. ');
 
                             default:
                                 //buscar en el array de totales 
@@ -191,19 +191,20 @@ class CalendarizacionCargaMasivaController extends Controller
                                 }
 
                         }
-                        if (array_key_exists($k['0']. $k['1'].$k['2']. $k['3']. $k['4'].$k['5']. $k['6']. $k['7'].$k['8']. $k['9']
-                        . $k['10'].$k['11']. $k['12']. $k['13'].$k['14']. $k['15']. $k['16'].$k['17']. $k['18']. $k['19']. $k['21']
-                        . $k['22'].$k['23']. $k['24']. $k['25'].$k['26'], $arrayclaves)) {
+                        if (
+                            array_key_exists($k['0'] . $k['1'] . $k['2'] . $k['3'] . $k['4'] . $k['5'] . $k['6'] . $k['7'] . $k['8'] . $k['9']
+                                . $k['10'] . $k['11'] . $k['12'] . $k['13'] . $k['14'] . $k['15'] . $k['16'] . $k['17'] . $k['18'] . $k['19'] . $k['21']
+                                . $k['22'] . $k['23'] . $k['24'] . $k['25'] . $k['26'], $arrayclaves)
+                        ) {
                             array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave esta repetida en el excel Verifique de las columnas A a AA. ');
 
-                        }
-                        else{
-                            $arrayclaves[ $k['0']. $k['1'].$k['2']. $k['3']. $k['4'].$k['5']. $k['6']. $k['7'].$k['8']. $k['9']
-                            . $k['10'].$k['11']. $k['12']. $k['13'].$k['14']. $k['15']. $k['16'].$k['17']. $k['18']. $k['19']. $k['21']
-                            . $k['22'].$k['23']. $k['24']. $k['25'].$k['26']]=$currentrow;
+                        } else {
+                            $arrayclaves[$k['0'] . $k['1'] . $k['2'] . $k['3'] . $k['4'] . $k['5'] . $k['6'] . $k['7'] . $k['8'] . $k['9']
+                                . $k['10'] . $k['11'] . $k['12'] . $k['13'] . $k['14'] . $k['15'] . $k['16'] . $k['17'] . $k['18'] . $k['19'] . $k['21']
+                                . $k['22'] . $k['23'] . $k['24'] . $k['25'] . $k['26']] = $currentrow;
 
                         }
-                        
+
 
                         if (strlen($k['20']) !== 2 && !is_numeric($k['20'])) {
                             array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El año debe ser a dos digitos y debe ser un número. ');
@@ -229,16 +230,22 @@ class CalendarizacionCargaMasivaController extends Controller
                         if ($var === 0) {
                             $var = true;
                         }
-                        if(!$var && strlen($k['5']) == 3){
-                            array_push($arrayupps, $k['5']);
+                        if (strlen($k['24'])  != 2) {
+                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Los fondos no pueden ir vacios y deben ser a 2 caracteres ');
+
                         }
-                        else{
-                            if(strlen($k['5']) != 3){
-                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres. ');
+                        if (!$var && strlen($k['5']) == 3) {
+                            array_push($arrayupps, $k['5']);
+                        } else {
+                            if (strlen($k['5']) != 3) {
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Las upp no pueden ir vacias y deben ser 3 caracteres. ');
                             }
                         }
                     }
 
+                    if (count($arrayErrores) > 0) {
+                        return redirect()->back()->withErrors($arrayErrores);
+                    } 
 
                     //validacion de totales
                     $helperejercicio = 0;
@@ -258,17 +265,17 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
                         if ($valueExist < 1) {
-                            array_push($arrayErrores, 'No existe esa combinacion en techos financieros para la upp: ' . $arraysplit[0] . ' con fondo: ' . $arraysplit[2].' ');
+                            array_push($arrayErrores, 'No existe esa combinacion en techos financieros para la upp: ' . $arraysplit[0] . ' con fondo: ' . $arraysplit[2] . ' ');
                         }
 
 
                         if ($valuepresupuesto != $value) {
-                            array_push($arrayErrores, 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2].' ');
+                            array_push($arrayErrores, 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2] . ' ');
 
                         }
 
                         if ($VerifyEjercicio < 1) {
-                            array_push($arrayErrores, 'El año del ejercicio  seleccionado no esta abierto para captura en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2].' ');
+                            array_push($arrayErrores, 'El año del ejercicio  seleccionado no esta abierto para captura en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2] . ' ');
 
                         }
                         $helperejercicio++;
@@ -311,8 +318,10 @@ class CalendarizacionCargaMasivaController extends Controller
             //Validaciones para usuarios upps 
             else {
                 $tipousuario = auth::user()->id_grupo;
-
-                $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $uppUsuario)->count();
+                $uppsautorizadas=0;
+                if (Auth::user()->id_grupo == 4) {
+                    $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $uppUsuario)->count();
+                }
                 // Checar permiso
                 if (Controller::check_assignFront(1)) {
                 } else {
@@ -320,7 +329,6 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
                 }
-
 
 
                 $arrayupps = array();
@@ -346,19 +354,22 @@ class CalendarizacionCargaMasivaController extends Controller
                     }
 
 
-                    foreach ($filearray as $indextu=> $k ) {
+                    foreach ($filearray as $indextu => $k) {
                         //buscar en el array de upps 
                         $currentrow = $indextu + 2;
 
                         $var = array_search($k['5'], $arrayupps);
-                        if($uppsautorizadas && $k['18']>=10000 && $k['18']<20000 ){
-                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow .  ' No tiene permiso para cargar esa idpartida. ');
-
+                        if (Auth::user()->id_grupo == 4) {
+                            if ($uppsautorizadas && $k['18'] >= 10000 && $k['18'] < 20000) {
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' No tiene permiso para cargar esa idpartida. ');
+    
+                            }
+                            if ($uppsautorizadas && $k['18'] == 39801) {
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' No tiene permiso para cargar esa idpartida. ');
+    
+                            }
                         }
-                        if($uppsautorizadas && $k['18']==39801 ){
-                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow .  ' No tiene permiso para cargar esa idpartida. ');
 
-                        }
 
                         switch ($k['16']) {
                             case 'UUU':
@@ -400,30 +411,35 @@ class CalendarizacionCargaMasivaController extends Controller
                                 }
 
                         }
-                        if (array_key_exists($k['0']. $k['1'].$k['2']. $k['3']. $k['4'].$k['5']. $k['6']. $k['7'].$k['8']. $k['9']
-                        . $k['10'].$k['11']. $k['12']. $k['13'].$k['14']. $k['15']. $k['16'].$k['17']. $k['18']. $k['19']. $k['21']
-                        . $k['22'].$k['23']. $k['24']. $k['25'].$k['26'], $arrayclaves)) {
+                        if (
+                            array_key_exists($k['0'] . $k['1'] . $k['2'] . $k['3'] . $k['4'] . $k['5'] . $k['6'] . $k['7'] . $k['8'] . $k['9']
+                                . $k['10'] . $k['11'] . $k['12'] . $k['13'] . $k['14'] . $k['15'] . $k['16'] . $k['17'] . $k['18'] . $k['19'] . $k['21']
+                                . $k['22'] . $k['23'] . $k['24'] . $k['25'] . $k['26'], $arrayclaves)
+                        ) {
                             array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave esta repetida en el excel Verifique de las columnas A a AA. ');
 
-                        }
-                        else{
-                            $arrayclaves[ $k['0']. $k['1'].$k['2']. $k['3']. $k['4'].$k['5']. $k['6']. $k['7'].$k['8']. $k['9']
-                            . $k['10'].$k['11']. $k['12']. $k['13'].$k['14']. $k['15']. $k['16'].$k['17']. $k['18']. $k['19']. $k['21']
-                            . $k['22'].$k['23']. $k['24']. $k['25'].$k['26']]=$currentrow;
+                        } else {
+                            $arrayclaves[$k['0'] . $k['1'] . $k['2'] . $k['3'] . $k['4'] . $k['5'] . $k['6'] . $k['7'] . $k['8'] . $k['9']
+                                . $k['10'] . $k['11'] . $k['12'] . $k['13'] . $k['14'] . $k['15'] . $k['16'] . $k['17'] . $k['18'] . $k['19'] . $k['21']
+                                . $k['22'] . $k['23'] . $k['24'] . $k['25'] . $k['26']] = $currentrow;
 
                         }
+                        if (Auth::user()->id_grupo == 4) {
 
-                        if ($k['5'] != $uppUsuario) {
-                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': No tiene permiso para registrar de  otras upps. ');
+                            if ($k['5'] != $uppUsuario) {
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': No tiene permiso para registrar de  otras upps. ');
 
 
+                            }
                         }
+
                         if ($k['26'] != '000000') {
                             if (Controller::check_assignFront(2)) {
 
                             } else {
                                 array_push($arrayErrores, 'No tiene permiso para registrar obras. ');
-                            }                        }
+                            }
+                        }
                         if (strlen($k['20']) !== 2 && !is_numeric($k['20'])) {
                             array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El año debe ser a dos digitos y debe ser un número. ');
                         }
@@ -447,16 +463,23 @@ class CalendarizacionCargaMasivaController extends Controller
                         if ($var === 0) {
                             $var = true;
                         }
-                        if(!$var && strlen($k['5']) == 3){
-                            array_push($arrayupps, $k['5']);
+                        if (strlen($k['24'])  != 2) {
+                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Los fondos no pueden ir vacios y deben ser a 2 caracteres ');
+
                         }
-                        else{
-                            if(strlen($k['5']) != 3){
-                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres. ');
+                        if (!$var && strlen($k['5']) == 3) {
+                            array_push($arrayupps, $k['5']);
+                        } else {
+                            if (strlen($k['5']) != 3) {
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Las upp no pueden ir vacias y deben ser 3 caracteres. ');
                             }
                         }
 
                     }
+                    
+                    if (count($arrayErrores) > 0) {
+                        return redirect()->back()->withErrors($arrayErrores);
+                    } 
                     //validacion de totales
                     $helperejercicio = 0;
                     foreach ($arraypresupuesto as $key => $value) {
@@ -472,22 +495,22 @@ class CalendarizacionCargaMasivaController extends Controller
                         $VerifyEjercicio = cierreEjercicio::select()->where('clv_upp', $arraysplit[0])->where('estatus', 'Abierto')->where('ejercicio', $ejercicio[$helperejercicio])->count();
 
                         $valueExist = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('ejercicio', $ejercicio[$helperejercicio])->where('tipo', $tipoFondo)->where('clv_fondo', $arraysplit[2])->count();
-                        
+
                         $valuepresupuesto = TechosFinancieros::select()->where('clv_upp', $arraysplit[0])->where('tipo', $tipoFondo)->where('ejercicio', $ejercicio[$helperejercicio])->where('clv_fondo', $arraysplit[2])->value('presupuesto');
 
                         if ($valueExist < 1) {
-                            array_push($arrayErrores, 'No existe esa combinacion en techos financieros para la upp: ' . $arraysplit[0] . ' con fondo: ' . $arraysplit[2].' ');
+                            array_push($arrayErrores, 'No existe esa combinacion en techos financieros para la upp: ' . $arraysplit[0] . ' con fondo: ' . $arraysplit[2] . ' ');
 
                         }
 
                         if ($valuepresupuesto != $value) {
 
-                            array_push($arrayErrores, 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2].' ');
+                            array_push($arrayErrores, 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2] . ' ');
                         }
 
                         if ($VerifyEjercicio < 1) {
-                            
-                            array_push($arrayErrores, 'El año del ejercicio  seleccionado no esta abierto para captura en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2].' ');
+
+                            array_push($arrayErrores, 'El año del ejercicio  seleccionado no esta abierto para captura en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2] . ' ');
                         }
                         $helperejercicio++;
 
@@ -497,29 +520,29 @@ class CalendarizacionCargaMasivaController extends Controller
                         case 4:
                             switch ($uppsautorizadas) {
                                 case 0:
-                                        //validacion para eliminar registros no confirmados 
-                                        foreach ($arrayupps as $u) {
+                                    //validacion para eliminar registros no confirmados 
+                                    foreach ($arrayupps as $u) {
 
-                                            $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
+                                        $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
 
-                                            if ($valupp > 0) {
-                                                $deleted = ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
-                                            }
-                                            $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
-                                            if ($confirmadas > 0) {
-                                                array_push($arrayErrores, 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: ' . $u.' ');
+                                        if ($valupp > 0) {
+                                            $deleted = ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
+                                        }
+                                        $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+                                        if ($confirmadas > 0) {
+                                            array_push($arrayErrores, 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: ' . $u . ' ');
 
-
-                                            }
 
                                         }
-                                        $b = array(
-                                            "username" => Auth::user()->username,
-                                            "accion" => 'Borrar registros carga masiva',
-                                            "modulo" => 'Claves presupuestales'
-                                        );
-                                        Controller::bitacora($b);
-                                    
+
+                                    }
+                                    $b = array(
+                                        "username" => Auth::user()->username,
+                                        "accion" => 'Borrar registros carga masiva',
+                                        "modulo" => 'Claves presupuestales'
+                                    );
+                                    Controller::bitacora($b);
+
 
                                     break;
 
@@ -537,7 +560,7 @@ class CalendarizacionCargaMasivaController extends Controller
                                         }
                                         $confirmadas = ProgramacionPresupuesto::select()->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
                                         if ($confirmadas > 0) {
-                                            array_push($arrayErrores, 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: ' . $u.' ');
+                                            array_push($arrayErrores, 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: ' . $u . ' ');
 
                                         }
                                     }
@@ -575,7 +598,7 @@ class CalendarizacionCargaMasivaController extends Controller
                                 }
                                 $confirmadas = ProgramacionPresupuesto::select()->where('subprograma_presupuestario', '==', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
                                 if ($confirmadas > 0) {
-                                    array_push($arrayErrores, 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: ' . $u.' ');
+                                    array_push($arrayErrores, 'No se puede realizar carga masiva porque hay claves  confirmadas para la upp: ' . $u . ' ');
 
                                 }
                             }
@@ -603,10 +626,9 @@ class CalendarizacionCargaMasivaController extends Controller
         if (count($arrayErrores) > 0) {
             DB::rollBack();
             return redirect()->back()->withErrors($arrayErrores);
-         }
-         else{
+        } else {
             DB::commit();
-         }
+        }
         //si todo sale bien procedemos al import
         try {
 
@@ -891,61 +913,61 @@ class CalendarizacionCargaMasivaController extends Controller
 
                 }
 
-                     $k['0']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda admconac no puede ir vacio. '): null;
-                     $k['1']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda ef no puede ir vacio. '): null;
-                     $k['2']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda reg no puede ir vacio. '): null;
-                     $k['3']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda mpio no puede ir vacio. '): null;
-                     $k['4']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda loc no puede ir vacio. '): null;
-                     $k['5']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda upp no puede ir vacio. '): null;
-                     $k['6']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda subsecretaria no puede ir vacio. '): null;
-                     $k['7']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda ur no puede ir vacio. '): null;
-                     $k['8']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda finalidad no puede ir vacio. '): null;
-                     $k['9']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda función no puede ir vacio. '): null;
-                     $k['10']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda subfunción no puede ir vacio. '): null;
-                     $k['11']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda eje no puede ir vacio. '): null;
-                     $k['12']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda pt no puede ir vacio. '): null;
-                     $k['13']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda ps no puede ir vacio. '): null;
-                     $k['14']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda sprconac no puede ir vacio. '): null;
-                     $k['15']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda prg no puede ir vacio. '): null;
-                     $k['16']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda spr no puede ir vacio. '): null;
-                     $k['17']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda py no puede ir vacio. '): null;
-                     $k['18']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda idpartida no puede ir vacio. '): null;
-                     $k['19']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda tipo de gasto no puede ir vacio. '): null;
-                     $k['20']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda año no puede ir vacio. '): null;
-                     $k['21']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda etiquetado y no etiquetado no puede ir vacio. '): null;
-                     $k['22']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda fconac no puede ir vacio. '): null;
-                     $k['23']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda ramo no puede ir vacio. '): null;
-                     $k['24']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda fondo no puede ir vacio. '): null;
-                     $k['25']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda ci no puede ir vacio. '): null;
-                     $k['26']=='' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda obra no puede ir vacio. '): null;
-                     $k['27']=='' ? $k['27'] =0: null;
-                     $k['28']=='' ? $k['28'] =0: null;
-                     $k['29']=='' ? $k['29'] =0: null;
-                     $k['30']=='' ? $k['30'] =0: null;
-                     $k['31']=='' ? $k['31'] =0: null;
-                     $k['32']=='' ? $k['32'] =0: null;
-                     $k['33']=='' ? $k['33'] =0: null;
-                     $k['34']=='' ? $k['34'] =0: null;
-                     $k['35']=='' ? $k['35'] =0: null;
-                     $k['36']=='' ? $k['36'] =0: null;
-                     $k['37']=='' ? $k['37'] =0: null;
-                     $k['38']=='' ? $k['38'] =0: null;
-                     $k['39']=='' ? $k['39'] =0: null;
-                    
+                $k['0'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda admconac no puede ir vacio. ') : null;
+                $k['1'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda ef no puede ir vacio. ') : null;
+                $k['2'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda reg no puede ir vacio. ') : null;
+                $k['3'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda mpio no puede ir vacio. ') : null;
+                $k['4'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda loc no puede ir vacio. ') : null;
+                $k['5'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda upp no puede ir vacio. ') : null;
+                $k['6'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda subsecretaria no puede ir vacio. ') : null;
+                $k['7'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda ur no puede ir vacio. ') : null;
+                $k['8'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda finalidad no puede ir vacio. ') : null;
+                $k['9'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda función no puede ir vacio. ') : null;
+                $k['10'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda subfunción no puede ir vacio. ') : null;
+                $k['11'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda eje no puede ir vacio. ') : null;
+                $k['12'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda pt no puede ir vacio. ') : null;
+                $k['13'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda ps no puede ir vacio. ') : null;
+                $k['14'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda sprconac no puede ir vacio. ') : null;
+                $k['15'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda prg no puede ir vacio. ') : null;
+                $k['16'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda spr no puede ir vacio. ') : null;
+                $k['17'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda py no puede ir vacio. ') : null;
+                $k['18'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda idpartida no puede ir vacio. ') : null;
+                $k['19'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda tipo de gasto no puede ir vacio. ') : null;
+                $k['20'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda año no puede ir vacio. ') : null;
+                $k['21'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda etiquetado y no etiquetado no puede ir vacio. ') : null;
+                $k['22'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda fconac no puede ir vacio. ') : null;
+                $k['23'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda ramo no puede ir vacio. ') : null;
+                $k['24'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda fondo no puede ir vacio. ') : null;
+                $k['25'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda ci no puede ir vacio. ') : null;
+                $k['26'] == '' ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La celda obra no puede ir vacio. ') : null;
+                $k['27'] == '' ? $k['27'] = 0 : null;
+                $k['28'] == '' ? $k['28'] = 0 : null;
+                $k['29'] == '' ? $k['29'] = 0 : null;
+                $k['30'] == '' ? $k['30'] = 0 : null;
+                $k['31'] == '' ? $k['31'] = 0 : null;
+                $k['32'] == '' ? $k['32'] = 0 : null;
+                $k['33'] == '' ? $k['33'] = 0 : null;
+                $k['34'] == '' ? $k['34'] = 0 : null;
+                $k['35'] == '' ? $k['35'] = 0 : null;
+                $k['36'] == '' ? $k['36'] = 0 : null;
+                $k['37'] == '' ? $k['37'] = 0 : null;
+                $k['38'] == '' ? $k['38'] = 0 : null;
+                $k['39'] == '' ? $k['39'] = 0 : null;
 
-                     is_numeric($k['27']) ? null: $k['27'] =0;
-                     is_numeric($k['28']) ? null: $k['28'] =0;
-                     is_numeric($k['29']) ? null: $k['29'] =0;
-                     is_numeric($k['30']) ? null: $k['30'] =0;
-                     is_numeric($k['31']) ? null: $k['31'] =0;
-                     is_numeric($k['32']) ? null: $k['32'] =0;
-                     is_numeric($k['33']) ? null: $k['33'] =0;
-                     is_numeric($k['34']) ? null: $k['34'] =0;
-                     is_numeric($k['35']) ? null: $k['35'] =0;
-                     is_numeric($k['36']) ? null: $k['36'] =0;
-                     is_numeric($k['37']) ? null: $k['37'] =0;
-                     is_numeric($k['38']) ? null: $k['38'] =0;
-                     is_numeric($k['39']) ? null: $k['39'] =0;
+
+                is_numeric($k['27']) ? null : $k['27'] = 0;
+                is_numeric($k['28']) ? null : $k['28'] = 0;
+                is_numeric($k['29']) ? null : $k['29'] = 0;
+                is_numeric($k['30']) ? null : $k['30'] = 0;
+                is_numeric($k['31']) ? null : $k['31'] = 0;
+                is_numeric($k['32']) ? null : $k['32'] = 0;
+                is_numeric($k['33']) ? null : $k['33'] = 0;
+                is_numeric($k['34']) ? null : $k['34'] = 0;
+                is_numeric($k['35']) ? null : $k['35'] = 0;
+                is_numeric($k['36']) ? null : $k['36'] = 0;
+                is_numeric($k['37']) ? null : $k['37'] = 0;
+                is_numeric($k['38']) ? null : $k['38'] = 0;
+                is_numeric($k['39']) ? null : $k['39'] = 0;
 
 
                 //validacion de parte clave geografica
@@ -1013,7 +1035,7 @@ class CalendarizacionCargaMasivaController extends Controller
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
                 return redirect()->back()->withErrors($arrayErrores);
-             } else {
+            } else {
                 DB::commit();
 
             }

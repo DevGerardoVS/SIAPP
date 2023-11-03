@@ -245,6 +245,84 @@ var dao = {
             }
         });
     },
+    rCMetasUpp: function (upp,anio) {
+        $.ajax({
+            type: "GET",
+            url: '/actividades/flag-confirmar-metas/'+upp+"/"+anio,
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        }).done(function (data) {
+            console.log(data);
+            if (data.status) {
+                dao.checkCMetasUpp(upp,anio);
+            } else {
+                $(".confirmacion").hide();
+              /*   $('#validMetas').addClass(" alert alert-danger").addClass("text-center"); */
+            /*     $('#validMetas').text("").removeClass().removeClass(" alert alert-danger");
+                $(".cmupp").hide(); */
+            }
+            
+
+        });
+    },
+    checkCMetasUpp: function (upp,anio) {
+        $.ajax({
+            type: "GET",
+            url: '/actividades/check-metas/delegacion/'+upp+"/"+anio,
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        }).done(function (data) {
+            console.log(data);
+            if (data.status) {
+                 $(".cmupp").show();
+                $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
+                $('#validMetas').text("Las metas ya fueron confirmadas");
+                $(".confirmacion").hide();
+            } else {
+                $(".confirmacion").show();
+                $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
+                 $('#validMetas').text("").removeClass().removeClass(" alert alert-danger");
+                $(".cmupp").hide();
+            }
+            
+
+        });
+    },
+    ConfirmarMetas: function () {
+        let anio = $('#anio_filter').val();
+        let upp = $('#upp_filter').val();
+
+        Swal.fire({
+            icon: 'question',
+            title: '¿Estás seguro que quieres confirmar las metas?',
+            showDenyButton: true,
+            confirmButtonText: 'Confirmar',
+            denyButtonText: `Cancelar`,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "GET",
+                    url: '/actividades/confirmar-metas/delegacion/'+upp+"/"+anio,
+                    dataType: "JSON",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+                }).done(function (data) {
+                    const { mensaje } = data;
+                    Swal.fire({
+                        icon: mensaje.icon,
+                        title: mensaje.title,
+                        text: mensaje.text,
+                        footer: mensaje?.footer,
+                    });
+                    dao.getData(upp, anio);
+                    dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
+                });
+            } /* else if (result.isDenied) {
+              Swal.fire('Changes are not saved', '', 'info')
+            } */
+          })
+       
+    },
 };
 var init = {
     validateFile: function (form) {
@@ -284,6 +362,7 @@ $(document).ready(function () {
     });
     dao.getUpps();
     dao.getAniosM();
+    dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
@@ -295,10 +374,12 @@ $(document).ready(function () {
 
     $('#upp_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
+        dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
 
     });
     $('#anio_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
+        dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
 
     });
     $('#btnSave').click(function (e) {

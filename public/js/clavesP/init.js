@@ -1,3 +1,4 @@
+// let env = "";
 var dao = {
   getData : function(ejercicio, upp, ur){
     let timerInterval
@@ -491,10 +492,10 @@ var dao = {
       document.getElementById('conac').innerHTML = data.clv_tipologia_conac;
     });
   },
-	getPartidaByUpp : function(clasificacion,id){
+	getPartidaByUpp : function(clasificacion,upp,id){
         $.ajax({
           	type : "get",
-          url: '/cat-partidas/' + clasificacion,
+          url: '/cat-partidas/' + clasificacion+'/'+ upp,
           dataType: "JSON",
           headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
@@ -555,7 +556,7 @@ var dao = {
     }).done(function (data) {
       let clasificacion = data.clv_sector_publico + data.clv_sector_publico_f + data.clv_sector_economia + data.clv_subsector_economia + data.clv_ente_publico;
       document.getElementById('clasificacion').innerHTML = clasificacion;
-      dao.getPartidaByUpp(clasificacion,'');
+      dao.getPartidaByUpp(clasificacion,upp,'');
     });
   },
   getPresupuestoPorUpp: function (upp,fondo,subPrograma,ejercicio) {
@@ -586,11 +587,19 @@ var dao = {
 
     });
   },
-  getPresupuesAsignado : function(ejercicio, upp){
+  getPresupuesAsignado: function (ejercicio, clv_upp) {
+    // console.log('env',env);
+    // let url = '';
+    // if (env !='local') {
+    //   url = 'https://' + window.location.hostname + '/get-presupuesto-asignado/' + ejercicio + '/' + upp;
+    // } else {
+    //   url='/get-presupuesto-asignado/' + ejercicio + '/' + upp;
+    // }
+    let upp = clv_upp != '' ? clv_upp : '';
     $.ajax({
-      type: 'get',
-      url: '/get-presupuesto-asignado/' + ejercicio + '/' + upp,
-      dataType: "JSON",
+      type: 'POST',
+      url:'/get-presupuesto-asignado',
+      data: {'ejercicio': ejercicio, 'upp': upp},
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       const { response } = data;
@@ -801,9 +810,9 @@ var dao = {
   },
   getDetallePresupuestoByFondo : function (ejercicio,clvUpp) {
     $.ajax({
-      type : 'get',
-      url: '/calendarizacion-claves-presupuesto-fondo/'+ejercicio+'/'+clvUpp,
-      dataType: "JSON",
+      type : 'POST',
+      url: '/calendarizacion-claves-presupuesto-fondo',
+      data:{'ejercicio': ejercicio, 'clvUpp': clvUpp},
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (rest) {
       const { response } = rest;
@@ -819,18 +828,77 @@ var dao = {
         let ejercicio = response.fondos[index].ejercicio
         data.push({'clv_fondo':clv_fondo,'fondo_ramo':fondo_ramo,'Operativo':Operativo,'RH':RH ,'techos_presupuestal':techos_presupuestal,'calendarizado':calendarizado,'disponible':disponible, 'ejercicio':ejercicio});  
       }
+      let tabla = '';
+      let colums = [];
+      switch (response.rol) {
+        case 0:
+          console.log('admin');
+          tabla = $("#tblPresupuestos");
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "Operativo"},
+            {"aTargets" : [3], "mData" : "RH"},
+            {"aTargets" : [4], "mData" : "techos_presupuestal"},
+            {"aTargets" : [5], "mData" : "calendarizado"},
+            {"aTargets" : [6], "mData" : "disponible"},
+            {"aTargets" : [7], "mData" : "ejercicio"},
+          ];
+          $('#tblPresupuestos').show(true);
+          $('#tablaUpps').hide(true);
+          $('#tablaDelegacion').hide(true);
+          break;
+        case 1:
+
+          tabla = $('#tablaUpps');
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "Operativo"},
+            {"aTargets" : [3], "mData" : "techos_presupuestal"},
+            {"aTargets" : [4], "mData" : "calendarizado"},
+            {"aTargets" : [5], "mData" : "disponible"},
+            {"aTargets" : [6], "mData" : "ejercicio"},
+          ];
+          $('#tablaUpps').show(true);
+          $('#tablaDelegacion').hide(true);
+          $('#tblPresupuestos').hide(true);
+          break;
+        case 2:
+
+          tabla = $('#tablaDelegacion');
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "RH"},
+            {"aTargets" : [3], "mData" : "techos_presupuestal"},
+            {"aTargets" : [4], "mData" : "calendarizado"},
+            {"aTargets" : [5], "mData" : "disponible"},
+            {"aTargets" : [6], "mData" : "ejercicio"},
+          ];
+          $('#tablaDelegacion').show(true);
+          $('#tblPresupuestos').hide(true);
+          $('#tablaUpps').hide(true);
+          break;
+        default:
+
+          tabla = $("#tblPresupuestos");
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "Operativo"},
+            {"aTargets" : [3], "mData" : "RH"},
+            {"aTargets" : [4], "mData" : "techos_presupuestal"},
+            {"aTargets" : [5], "mData" : "calendarizado"},
+            {"aTargets" : [6], "mData" : "disponible"},
+            {"aTargets" : [7], "mData" : "ejercicio"},
+          ];
+          $('#tblPresupuestos').show(true);
+          break;
+      }
       document.getElementById('titleModalpresupuesto').innerText = response.upp['clave'] + ' - ' +response.upp['descripcion']; 
-      _table = $("#tblPresupuestos");
-			_columns = [
-				{"aTargets" : [0], "mData" : 'clv_fondo'},
-				{"aTargets" : [1], "mData" : "fondo_ramo"},
-				{"aTargets" : [2], "mData" : "Operativo"},
-				{"aTargets" : [3], "mData" : "RH"},
-				{"aTargets" : [4], "mData" : "techos_presupuestal"},
-				{"aTargets" : [5], "mData" : "calendarizado"},
-        {"aTargets" : [6], "mData" : "disponible"},
-        {"aTargets" : [7], "mData" : "ejercicio"},
-			];
+      _table = tabla;
+			_columns = colums;
 			_gen.setTableScrollFotter(_table, _columns, data);
       $('modalPresupuesto').show(true);
     });
@@ -986,7 +1054,7 @@ var dao = {
         );
       }
     });
-  }
+  },
 
 };
 var init = {
@@ -1032,7 +1100,7 @@ var init = {
       }
     })
   },
-}
+};
 
 function calucalarCalendario() {
   var total = 0;
@@ -1049,7 +1117,7 @@ function calucalarCalendario() {
 
   });
   document.getElementById('totalCalendarizado').value = total;
-}
+};
 function soloEnteros() {
   var total = 0;
   $(".monto").each(function() {

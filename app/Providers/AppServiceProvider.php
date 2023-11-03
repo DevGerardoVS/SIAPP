@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
     {
         if($this->app->environment('production')) {
             \URL::forceScheme('https');
+             // Forzar el uso de HTTPS en entorno de producción
+             $this->app['request']->server->set('HTTPS', true);
         }
     }
 
@@ -32,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
          //
          if($this->app->environment('production')) {
             \URL::forceScheme('https');
+             // Forzar el uso de HTTPS en entorno de producción
+             $this->app['request']->server->set('HTTPS', true);
         }
         Schema::defaultStringLength(191);
 

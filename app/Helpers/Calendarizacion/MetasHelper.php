@@ -90,15 +90,119 @@ class MetasHelper
 				->where('pro.ejercicio', $anio)
 				->where('pro.upp', $upp)
 				->unionAll($query2)
-				->orderBy('id')
-				->get();
+				->orderBy('id');
+				if(Auth::user()->id_grupo == 4 ){
+					$upp= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('uppautorizadascpnomina.deleted_at', null)->get();
+					$upps = [];
+					foreach ($upp as $key) {
+						$upps[]=$key->clv_upp;
+					}
+
+				$query = $query->where('pro.upp', $upps);
+				}
+				$query=$query->get();
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());
 			throw new \Exception($exp->getMessage());
 		}
 	}
+	public static function actividadesUpp($upp, $anio)
+	{
+		try {
+			$proyecto = DB::table('mml_mir')
+				->select(
+					'mml_mir.id',
+					'mml_mir.clv_upp AS upp',
+					'mml_mir.entidad_ejecutora AS entidad',
+					'mml_mir.area_funcional AS area',
+					'mml_mir.ejercicio',
+					'mml_mir.indicador as actividad'
+				)
+				->where('mml_mir.deleted_at', '=', null)
+				->where('mml_mir.nivel', '=', 11)
+				->where('mml_mir.ejercicio', $anio)
+				->where('mml_mir.clv_upp', $upp);
+			$actv = DB::table('mml_actividades')
+				->leftJoin('catalogo', 'catalogo.id', '=', 'mml_actividades.id_catalogo')
+				->select(
+					'clv_upp',
+					'mml_actividades.id',
+					'entidad_ejecutora AS entidad',
+					'area_funcional AS area',
+					DB::raw("IFNULL(mml_actividades.nombre,catalogo.descripcion) AS actividad"),
+					'mml_actividades.ejercicio',
+				)
+				->where('mml_actividades.deleted_at', '=', null)
+				->where('catalogo.deleted_at', '=', null)
+				->where('mml_actividades.clv_upp', $upp)
+				->where('mml_actividades.ejercicio', $anio);
+			$query2 = DB::table('metas')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($actv, 'act', function ($join) {
+					$join->on('metas.actividad_id', '=', 'act.id');
+				})
+				->select(
+					'metas.id',
+					'metas.estatus',
+					'act.entidad',
+					'act.area',
+					'metas.ejercicio',
+					'metas.clv_fondo as fondo',
+					'act.actividad AS actividad',
+					'metas.tipo',
+					'metas.total',
+					'metas.cantidad_beneficiarios',
+					'beneficiarios.beneficiario',
+					'unidades_medida.unidad_medida',
+				)
+				->where('metas.mir_id', '=', null)
+				->where('metas.deleted_at', '=', null)
+				->where('act.clv_upp', $upp)
+				->where('metas.ejercicio', $anio);
+			$query = DB::table('metas')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($proyecto, 'pro', function ($join) {
+					$join->on('metas.mir_id', '=', 'pro.id');
+				})
+				->select(
+					'metas.id',
+					'metas.estatus',
+					'pro.entidad',
+					'pro.area',
+					'metas.ejercicio',
+					'metas.clv_fondo as fondo',
+					'pro.actividad AS actividad',
+					'metas.tipo',
+					'metas.total',
+					'metas.cantidad_beneficiarios',
+					'beneficiarios.beneficiario',
+					'unidades_medida.unidad_medida',
+				)
+				->where('metas.actividad_id', '=', null)
+				->where('metas.deleted_at', '=', null)
+				->where('pro.ejercicio', $anio)
+				->where('pro.upp', $upp)
+				->unionAll($query2)
+				->orderBy('id');
+				if(Auth::user()->id_grupo == 4 ){
+					$upp= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('uppautorizadascpnomina.deleted_at', null)->get();
+					$upps = [];
+					foreach ($upp as $key) {
+						$upps[]=$key->clv_upp;
+					}
 
+				$query = $query->where('pro.upp','!=' ,$upps);
+				}
+				$query=$query->get();
+			return $query;
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
+		}
+	}
 	public static function beneficiarios()
 	{
 		$result = DB::table('beneficiarios')
@@ -167,6 +271,14 @@ class MetasHelper
 				->where('mml_actividades.clv_upp', $upp)
 				->where('mml_actividades.ejercicio', $anio)
 				->where('catalogo.ejercicio', $anio);
+				$upps= DB::table('uppautorizadascpnomina')
+				->select('uppautorizadascpnomina.clv_upp')
+				->where('uppautorizadascpnomina.clv_upp', $upp)
+				->where('uppautorizadascpnomina.deleted_at', null)
+				->get();
+				if(count($upps)) {
+				$actv = $actv->where('mml_actividades.id_catalogo', '!=',2367);
+				}
 			$query2 = DB::table('metas')
 				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -218,7 +330,8 @@ class MetasHelper
 				->where('metas.deleted_at', '=', null)
 				->where('pro.ejercicio', $anio)
 				->where('pro.upp', $upp)
-				->unionAll($query2)->get();
+				->unionAll($query2);
+			$query=$query->get();
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());
@@ -366,6 +479,11 @@ class MetasHelper
 
 	public static function MetasIndexDel()
 	{
+		$upp= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('uppautorizadascpnomina.deleted_at', null)->get();
+        $upps = [];
+        foreach ($upp as $key) {
+            $upps[]=$key->clv_upp;
+        }
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$data = DB::table('programacion_presupuesto')
 			->leftJoin('catalogo', 'catalogo.clave', '=', 'programacion_presupuesto.subprograma_presupuestario')
@@ -379,6 +497,7 @@ class MetasHelper
 				DB::raw('IFNULL(catalogo.descripcion," ") AS actividad'),
 				DB::raw('programacion_presupuesto.fondo_ramo AS fondo'),
 			)
+			->whereIn('programacion_presupuesto.upp',  $upps)
 			->where('programacion_presupuesto.subprograma_presupuestario', "UUU")
 			->where('catalogo.grupo_id', 20)
 			->where('cierre_ejercicio_metas.estatus', 'Abierto')
@@ -422,6 +541,14 @@ class MetasHelper
 				->where('catalogo.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $upp)
 				->where('mml_actividades.ejercicio', $anio);
+				$upps= DB::table('uppautorizadascpnomina')
+				->select('uppautorizadascpnomina.clv_upp')
+				->where('uppautorizadascpnomina.clv_upp', $upp)
+				->where('uppautorizadascpnomina.deleted_at', null)
+				->get();
+				if(count($upps)) {
+				$actv = $actv->where('catalogo.clave', '!=','UUU' );
+				}
 			$query2 = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -508,11 +635,15 @@ class MetasHelper
 				DB::raw("IF(SUM(noviembre)>=1,1,0) AS noviembre"),
 				DB::raw("IF(SUM(diciembre)>=1,1,0) AS diciembre")
 			)
+			->where('programacion_presupuesto.subprograma_presupuestario', 'UUU')
 			->where('programacion_presupuesto.upp', $upp)
 			->where('ejercicio', $anio)
 			->where('programacion_presupuesto.deleted_at', null)
-			->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-			->get();
+			->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario');
+			if (Auth::user()->id_grupo == 5) {
+			$meses = $meses->where('programacion_presupuesto.subprograma_presupuestario', '!=', 'UUU');
+			}
+			$meses=$meses->get();
 		return $meses;
 	}
 
@@ -581,178 +712,6 @@ class MetasHelper
 		}
 		return ["status" => $aux == 0 ? true : false, "ids" => $ids];
 	}
-
-	public static function queryRandom($upp, $anio)
-	{
-
-
-		/* 
-				$rh = DB::table('techos_financieros')
-					->select(
-						'clv_upp',
-						'clv_fondo',
-						DB::raw('IFNULL(SUM(presupuesto),0) AS rh'),
-					)
-					->where('clv_upp', $upp)
-					->where('deleted_at', null)
-					->where('ejercicio', $anio)
-					->where('tipo', 'RH')
-					->groupByRaw('clv_fondo,ejercicio,tipo');
-					$trh=$rh->get();
-					Log::debug($trh); */
-		/* 	$tp = DB::table('techos_financieros')
-				  ->select(
-					  'clv_fondo',
-					  DB::raw('SUM(presupuesto) AS techos_presupuestal'),
-				  )
-				  ->where('clv_upp', $upp)
-				  ->where('deleted_at', null)
-				  ->where('ejercicio', $anio)
-				  ->where('tipo', 'Operativo')
-				  ->groupByRaw('clv_fondo,ejercicio');
-				  $tpo=$tp->get();
-			  Log::debug($tpo); */
-		$op = DB::table('techos_financieros')
-			->select(
-				'clv_upp',
-				'clv_fondo',
-				'tipo',
-				'ejercicio',
-				DB::raw('IFNULL(SUM(presupuesto),0) AS presupuesto'),
-				DB::raw('SUM(presupuesto) AS techos_presupuestal')
-			)
-			->where('clv_upp', $upp)
-			->where('deleted_at', null)
-			->where('ejercicio', $anio)
-			->where('tipo', 'Operativo')
-			->groupByRaw('clv_fondo,ejercicio,tipo');
-		$pp = DB::table('programacion_presupuesto')
-			->select(
-				'upp',
-				'fondo_ramo AS clv_fondo',
-				DB::raw('SUM(total) AS total'),
-			)
-			->where('upp', $upp)
-			->where('deleted_at', null)
-			->where('ejercicio', $anio)
-			->where('tipo', 'Operativo')
-			->groupByRaw('fondo_ramo,ejercicio,tipo');
-		$query = DB::table("uppautorizadascpnomina")
-			->joinSub($op, 'tfop', function (JoinClause $join) {
-				$join->on('uppautorizadascpnomina.clv_upp', '=', 'tfop.clv_upp');
-			})
-			->joinSub($pp, 'pp', function (JoinClause $join) {
-				$join->on('pp.clv_fondo', '=', 'tfop.clv_fondo');
-			})
-			->select(
-				DB::raw('tfop.clv_fondo'),
-				DB::raw('IFNULL(tfop.presupuesto,0) AS Operativo'),
-				DB::raw('tfop.techos_presupuestal'),
-				DB::raw('SUM(pp.total) AS calendarizado'),
-				DB::raw('SUM(pp.total) - sum(tfop.presupuesto) disponible'),
-				DB::raw('tfop.ejercicio'),
-			)->where('uppautorizadascpnomina.deleted_at', null)
-			->groupByRaw('tfop.clv_upp,clv_fondo,tfop.ejercicio,tfop.tipo');
-		if ($upp != '') {
-			$query = $query->where('uppautorizadascpnomina.clv_upp', $upp);
-		}
-
-		/* 	$query=$query->get();
-				  MetasHelper::queryRandom2($upp,$anio);
-				  Log::debug($query); */
-
-		return $query;
-
-	}
-	public static function queryRandom2($upp, $anio)
-	{
-
-		$op = DB::table('techos_financieros')
-			->select(
-				'clv_upp',
-				'clv_fondo',
-				'tipo',
-				'ejercicio',
-				DB::raw('IFNULL(SUM(presupuesto),0) AS presupuesto'),
-				DB::raw('SUM(presupuesto) AS techos_presupuestal')
-			)
-			->where('clv_upp', $upp)
-			->where('deleted_at', null)
-			->where('ejercicio', $anio)
-			->where('tipo', 'RH')
-			->groupByRaw('clv_fondo,ejercicio,tipo');
-		$pp = DB::table('programacion_presupuesto')
-			->select(
-				'upp',
-				'fondo_ramo AS clv_fondo',
-				DB::raw('SUM(total) AS total'),
-			)
-			->where('upp', $upp)
-			->where('deleted_at', null)
-			->where('ejercicio', $anio)
-			->where('tipo', 'RH')
-			->groupByRaw('fondo_ramo,ejercicio,tipo');
-		$query = DB::table("uppautorizadascpnomina")
-			->joinSub($op, 'tfop', function (JoinClause $join) {
-				$join->on('uppautorizadascpnomina.clv_upp', '=', 'tfop.clv_upp');
-			})
-			->joinSub($pp, 'pp', function (JoinClause $join) {
-				$join->on('pp.clv_fondo', '=', 'tfop.clv_fondo');
-			})
-			->select(
-				DB::raw('tfop.clv_fondo'),
-				DB::raw('IFNULL(tfop.presupuesto,0) AS RH'),
-				DB::raw('tfop.techos_presupuestal'),
-				DB::raw('SUM(pp.total) AS calendarizado'),
-				DB::raw('SUM(pp.total) - sum(tfop.presupuesto) disponible'),
-				DB::raw('tfop.ejercicio'),
-			)->where('uppautorizadascpnomina.deleted_at', null)
-			->groupByRaw('tfop.clv_upp,clv_fondo,tfop.ejercicio,tfop.tipo');
-		if ($upp != '') {
-			$query = $query->where('uppautorizadascpnomina.clv_upp', $upp);
-		}
-
-		/* 	$query=$query->get();
-						Log::debug("random2");
-						Log::debug($query); */
-		return $query;
-
-	}
-	public static function queryRandomFinal($upp, $anio)
-	{
-
-		$op = MetasHelper::queryRandom($upp, $anio);
-		$queryop = $op->get();
-		Log::debug($queryop);
-		$rh = MetasHelper::queryRandom2($upp, $anio);
-		$queryrh = $rh->get();
-		Log::debug($queryrh);
-
-		$query = DB::table("techos_financieros")
-			->joinSub($op, 'op', function (JoinClause $join) {
-				$join->on('techos_financieros.clv_fondo', '=', 'op.clv_fondo');
-			})
-			->joinSub($rh, 'rh', function (JoinClause $join) {
-				$join->on('techos_financieros.clv_fondo', '=', 'rh.clv_fondo');
-			})
-			->select(
-				DB::raw('techos_financieros.clv_fondo'),
-				DB::raw('IFNULL(op.Operativo,0) AS Operativo'),
-				DB::raw('IFNULL(rh.RH,0) AS RH'),
-				DB::raw('IFNULL(SUM(op.Operativo) + SUM(rh.RH),0) AS techos_presupuestal'),
-				DB::raw('IFNULL(SUM(op.calendarizado + rh.calendarizado),0) calendarizado'),
-				DB::raw('IFNULL(SUM(op.calendarizado + rh.calendarizado),0) - IFNULL(SUM(op.techos_presupuestal + rh.techos_presupuestal),0) disponible'),
-				DB::raw('techos_financieros.ejercicio'),
-			)->where('techos_financieros.deleted_at', null)
-			->where('techos_financieros.ejercicio', $anio);
-		//->groupByRaw('op.clv_fondo,rh.clv_fondo');
-		if ($upp != '') {
-			$query = $query->where('techos_financieros.clv_upp', $upp);
-		}
-		$queryf = $query->get();
-		Log::debug($queryf);
-
-	}
 	public static function actividadesDel($upp, $anio)
 	{
 		try {
@@ -774,7 +733,6 @@ class MetasHelper
 				->where('mml_actividades.ejercicio', $anio)
 				->where('catalogo.ejercicio', $anio);
 				$p= $actv->get();
-				Log::debug($p);
 			$query = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -799,7 +757,104 @@ class MetasHelper
 				->where('metas.deleted_at', '=', null)
 				->where('act.clv_upp', $upp)
 				->where('metas.ejercicio', $anio)->get();
-				Log::debug($query);
+			return $query;
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
+		}
+	}
+	public static function actividadesFinal($upp, $anio)
+	{
+		try {
+			$proyecto = DB::table('mml_mir')
+				->select(
+					'mml_mir.id',
+					'mml_mir.clv_upp AS upp',
+					'mml_mir.entidad_ejecutora AS entidad',
+					'mml_mir.area_funcional AS area',
+					'mml_mir.ejercicio',
+					'mml_mir.indicador as actividad'
+				)
+				->where('mml_mir.deleted_at', '=', null)
+				->where('mml_mir.nivel', '=', 11)
+				->where('mml_mir.ejercicio', $anio)
+				->where('mml_mir.clv_upp', $upp);
+			$actv = DB::table('mml_actividades')
+				->leftJoin('catalogo', 'catalogo.id', '=', 'mml_actividades.id_catalogo')
+				->select(
+					'clv_upp',
+					'mml_actividades.id',
+					'entidad_ejecutora AS entidad',
+					'area_funcional AS area',
+					DB::raw("IFNULL(nombre,IFNULL(catalogo.descripcion,nombre)) AS actividad"),
+					'catalogo.ejercicio',
+				)
+				->where('mml_actividades.deleted_at', '=', null)
+				->where('catalogo.deleted_at', '=', null)
+				->where('mml_actividades.clv_upp', $upp)
+				->where('mml_actividades.ejercicio', $anio)
+				->where('catalogo.ejercicio', $anio);
+				$upps= DB::table('uppautorizadascpnomina')
+				->select('uppautorizadascpnomina.clv_upp')
+				->where('uppautorizadascpnomina.clv_upp', $upp)
+				->where('uppautorizadascpnomina.deleted_at', null)
+				->get();
+				if(count($upps)) {
+				$actv = $actv->where('catalogo.clave', '!=','UUU' );
+				}
+			$query2 = DB::table('metas')
+				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($actv, 'act', function ($join) {
+					$join->on('metas.actividad_id', '=', 'act.id');
+				})
+				->select(
+					'metas.id',
+					'metas.estatus',
+					'act.entidad',
+					'act.area',
+					'metas.ejercicio',
+					'metas.clv_fondo as fondo',
+					'act.actividad AS actividad',
+					'metas.tipo',
+					'metas.total',
+					'metas.cantidad_beneficiarios',
+					'beneficiarios.beneficiario',
+					'unidades_medida.unidad_medida',
+				)
+				->where('metas.mir_id', '=', null)
+				->where('metas.deleted_at', '=', null)
+				->where('act.clv_upp', $upp)
+				->where('metas.ejercicio', $anio);
+			$query = DB::table('metas')
+				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($proyecto, 'pro', function ($join) {
+					$join->on('metas.mir_id', '=', 'pro.id');
+				})
+				->select(
+					'metas.id',
+					'metas.estatus',
+					'pro.entidad',
+					'pro.area',
+					'metas.ejercicio',
+					'metas.clv_fondo as fondo',
+					'pro.actividad AS actividad',
+					'metas.tipo',
+					'metas.total',
+					'metas.cantidad_beneficiarios',
+					'beneficiarios.beneficiario',
+					'unidades_medida.unidad_medida',
+				)
+				->where('metas.estatus', '=', 1)
+				->where('metas.actividad_id', '=', null)
+				->where('metas.deleted_at', '=', null)
+				->where('pro.ejercicio', $anio)
+				->where('pro.upp', $upp)
+				->unionAll($query2);
+			$query=$query->get();
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());

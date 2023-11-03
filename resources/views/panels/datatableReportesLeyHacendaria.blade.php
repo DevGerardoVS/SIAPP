@@ -16,7 +16,8 @@
                         par.append(new Option("Actuales", ""));
                         $.each(data, function(i, val) {
                             var date = new Date(val.deleted_at);
-                            var formattedDate = ("0" + (date.getDate()+1)).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
+                            var getCorrectDate = new Date(date.valueOf() + date.getTimezoneOffset() * 60000);
+                            var formattedDate = ("0" + getCorrectDate.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
                             par.append(new Option("V"+ data[i].version +" - "+formattedDate , data[i].deleted_at));
                         });
                     }
