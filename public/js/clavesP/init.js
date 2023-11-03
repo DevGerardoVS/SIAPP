@@ -810,9 +810,9 @@ var dao = {
   },
   getDetallePresupuestoByFondo : function (ejercicio,clvUpp) {
     $.ajax({
-      type : 'get',
-      url: '/calendarizacion-claves-presupuesto-fondo/'+ejercicio+'/'+clvUpp,
-      dataType: "JSON",
+      type : 'POST',
+      url: '/calendarizacion-claves-presupuesto-fondo',
+      data:{'ejercicio': ejercicio, 'clvUpp': clvUpp},
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (rest) {
       const { response } = rest;
