@@ -104,6 +104,10 @@ class InicioController extends Controller
             $name = "CAP_Manual_de_Usuario_UPP.pdf";
             $file= public_path()."/". $name;
         } 
+        if(Auth::user()->id_grupo==5){
+            $name = "CAP_Manual_de_Usuario_Delegacion.pdf";
+            $file= public_path()."/". $name;
+        } 
         
         //Log::channel('daily')->debug('exp '.public_path());
         $headers = array('Content-Type: application/pdf',);

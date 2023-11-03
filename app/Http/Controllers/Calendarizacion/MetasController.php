@@ -156,9 +156,12 @@ class MetasController extends Controller
 					->orderBy('programacion_presupuesto.upp')
 					->where('programacion_presupuesto.deleted_at', null)
 					->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-					->distinct()
-					->get();
-
+					->distinct();
+					if(Auth::user()->id_grupo == 4 ){
+						$activs = $activs->where('programacion_presupuesto.subprograma_presupuestario', '!=','UUU');
+						
+					}
+					$activs=$activs->get();
 				foreach ($activs as $key) {
 					$m = DB::table('v_epp')
 						->select(
@@ -236,15 +239,27 @@ class MetasController extends Controller
 	public function getUpps()
 	{
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
-		$upps = DB::table('v_epp')
+		if (auth::user()->id_grupo != 5) {
+			$upps = DB::table('v_epp')
+				->select(
+					'id',
+					'clv_upp',
+					DB::raw('CONCAT(clv_upp, " - ", upp) AS upp')
+				)->distinct()
+				->orderBy('clv_upp')
+				->groupByRaw('clv_upp')
+				->where('ejercicio', $anio)->get();
+		}else{
+			$upps= DB::table('uppautorizadascpnomina')
+			->leftJoin('v_epp', 'v_epp.clv_upp', '=', 'uppautorizadascpnomina.clv_upp')
 			->select(
-				'id',
-				'clv_upp',
-				DB::raw('CONCAT(clv_upp, " - ", upp) AS upp')
-			)->distinct()
-			->orderBy('clv_upp')
-			->groupByRaw('clv_upp')
-			->where('ejercicio', $anio)->get();
+				'uppautorizadascpnomina.clv_upp',
+				DB::raw('CONCAT(uppautorizadascpnomina.clv_upp, " - ", upp) AS upp')
+				)
+				->groupBy('uppautorizadascpnomina.clv_upp')
+			->where('uppautorizadascpnomina.deleted_at', null)
+			->get();
+		}
 		return ["upp" => $upps];
 	}
 	public function getFyA($area, $entidad)
@@ -441,7 +456,7 @@ class MetasController extends Controller
 					->where('mml_actividades.deleted_at', null)
 					->where('metas.deleted_at', null)->get();
 					if (count($meta)) {
-						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'La actvidad ya cuenta con una meta ', "title" => "La meta ya existe"]];
+						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 						return response()->json($res, 200);
 					} else {
 						$act = MmlMir::create([
@@ -469,7 +484,7 @@ class MetasController extends Controller
 					->where('mml_mir.deleted_at', null)
 					->where('metas.deleted_at', null)->get();
 				if (count($metaexist)) {
-					$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'El programa ya cuenta con una meta ', "title" => "La meta ya existe"]];
+					$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 					return response()->json($res, 200);
 				}
 
@@ -1581,8 +1596,11 @@ class MetasController extends Controller
 			->where('deleted_at', null)
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
 			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
-			->distinct()
-			->get();
+			->distinct();
+			if(Auth::user()->id_grupo == 4 ){
+			$activsPP = $activsPP->where('programacion_presupuesto.subprograma_presupuestario', '!=','UUU' );
+			}
+			$activsPP =$activsPP->get();
 		if (count($metas) > 1) {
 			if (count($metas) >= count($activsPP)) {
 				return ["status" => true];
@@ -1607,7 +1625,8 @@ class MetasController extends Controller
 	{
 		$_upp = $upp = null ? Auth::user()->clv_upp : $upp;
 		$metas = false;
-		$query = MetasHelper::actividades($_upp, $anio);
+		$query = MetasHelper::actividadesConf($_upp, $anio);
+		Log::debug($query);
 		if(count($query)){
 			$metas = $query[0]->estatus == 1 ? true : false;
 		}
@@ -1617,7 +1636,7 @@ class MetasController extends Controller
 	{
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$metas = false;
-		$query = MetasHelper::actividades($_upp, $anio);
+		$query = MetasHelper::actividadesConf($_upp, $anio);
 		if(count($query)){
 			$metas = $query[0]->estatus == 1 ? true : false;
 		}

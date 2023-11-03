@@ -47,6 +47,9 @@
 		Route::get('/calendarizacion/proyecto/metas-delegacion', 'getProyecto')->name('proyecto');
 		Route::get('/actividades/data/metas-delegacion/{upp?}/{anio?}', 'getActivDelegacion');
 		Route::post('/calendarizacion/put/metas-delegacion', 'putMeta');
+		Route::get('/actividades/flag-confirmar-metas/{upp?}/{anio?}', 'cmetas');
+		Route::get('/actividades/confirmar-metas/delegacion/{upp?}/{anio?}', 'confirmar');
+		Route::get('/actividades/check-metas/delegacion/{upp?}/{anio?}', 'checkConfirmadas');
 
 
 	});

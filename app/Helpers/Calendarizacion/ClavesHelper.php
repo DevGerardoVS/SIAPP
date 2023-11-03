@@ -283,13 +283,130 @@ class ClavesHelper{
         }
         $estado = DB::table('programacion_presupuesto')
         ->SELECT('*')->where('upp', $upp)->where('ejercicio', $ejercicio)->where('estado', 1)->where('deleted_at','=',null)->get();
-        Log::info('helper', ['ejercicio'=>$ejercicio]);
-        Log::info('estado', [json_encode($estado)]);
         if ($disponible > 0 || count($estado)) {
             return false;
         }else{
             return true;
         }
+    }
+    public static function detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion){
+            $fondos = DB::select("select 
+            clv_fondo,
+            f.fondo_ramo,
+            sum(RH) RH,
+            sum(Operativo) Operativo,
+            sum(Operativo) techos_presupuestal,
+            sum(calendarizado) calendarizado,
+            sum(Operativo - calendarizado) disponible,
+            ejercicio
+        from (
+            select 
+                clv_fondo,
+                sum(presupuesto) RH,
+                0 Operativo,
+                0 calendarizado,
+                ejercicio
+            from techos_financieros tf
+            where tf.tipo = 'RH' and tf.clv_upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayTechos."
+            group by clv_fondo,ejercicio
+            union all 
+            select 
+                fondo_ramo clv_fondo,
+                0 RH,
+                0 Operativo,
+                sum(total) calendarizado,
+                ejercicio
+            from programacion_presupuesto pp
+            where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayProgramacion."
+            group by clv_fondo,ejercicio
+        ) tabla
+        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
+        group by clv_fondo,f.fondo_ramo,ejercicio;");
+
+        return $fondos;
+    }
+    public static function detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion){
+        $fondos = DB::select("
+        select 
+            clv_fondo,
+            f.fondo_ramo,
+            0 RH,
+            sum(Operativo) Operativo,
+            sum(Operativo) techos_presupuestal,
+            sum(calendarizado) calendarizado,
+            sum(Operativo) - calendarizado disponible,
+            ejercicio
+        from (
+            select 
+                clv_fondo,
+                0 RH,
+                sum(presupuesto) Operativo,
+                0 calendarizado,
+                ejercicio
+            from techos_financieros tf
+            where tf.tipo = 'Operativo' && ".$arrayTechos."
+            group by clv_fondo
+            union all 
+            select 
+                fondo_ramo clv_fondo,
+                0 RH,
+                0 Operativo,
+                sum(total) calendarizado,
+                ejercicio
+            from programacion_presupuesto pp
+            where pp.tipo = 'Operativo' && ".$arrayProgramacion."
+            group by clv_fondo
+        ) tabla
+        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
+        group by clv_fondo,f.fondo_ramo;");
+
+        return $fondos;
+    }
+    public static function detallePresupuestoGeneral($arrayTechos,$arrayProgramacion){
+            $fondos = DB::select("select 
+            clv_fondo,
+            f.fondo_ramo,
+            sum(RH) RH,
+            sum(Operativo) Operativo,
+            sum(RH+Operativo) techos_presupuestal,
+            sum(calendarizado) calendarizado,
+            sum((RH+Operativo)-calendarizado) disponible,
+            ejercicio
+        from (
+            select 
+                clv_fondo,
+                sum(presupuesto) RH,
+                0 Operativo,
+                0 calendarizado,
+                ejercicio
+            from techos_financieros tf
+            where tf.tipo = 'RH' &&".$arrayTechos." 
+            group by clv_fondo
+            union all
+            select 
+                clv_fondo,
+                0 RH,
+                sum(presupuesto) Operativo,
+                0 calendarizado,
+                ejercicio
+            from techos_financieros tf
+            where tf.tipo = 'Operativo' &&".$arrayTechos." 
+            group by clv_fondo
+            union all 
+            select 
+                fondo_ramo clv_fondo,
+                0 RH,
+                0 Operativo,
+                sum(total) calendarizado,
+                ejercicio
+            from programacion_presupuesto pp
+            where ".$arrayProgramacion."
+            group by clv_fondo
+        ) tabla
+        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
+        group by clv_fondo,f.fondo_ramo;");
+
+        return $fondos;
     }
 
 }

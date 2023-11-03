@@ -493,7 +493,15 @@ class ClavePreController extends Controller
         ->first();
         return response()->json($areaFuncional,200);
     }
-    public function getPartidas($clasificacion){
+    public function getPartidas($clasificacion,$upp){
+        $array_where = [];
+        $esAutorizada = ClavesHelper::esAutorizada($upp);
+        array_push($array_where, ['rel_economica_administrativa.clasificacion_administrativa','=',$clasificacion]);
+        array_push($array_where, ['v_posicion_presupuestaria_llaves.deleted_at','=', null]);
+        if ($esAutorizada) {
+            array_push($array_where, ['v_posicion_presupuestaria_llaves.clv_capitulo','!=',1]);
+            array_push($array_where, ['v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave','!=',398011]);
+        }
         $partidas = DB::table('rel_economica_administrativa')
         ->SELECT(
         'v_posicion_presupuestaria_llaves.clv_capitulo',
@@ -503,7 +511,7 @@ class ClavePreController extends Controller
         'v_posicion_presupuestaria_llaves.clv_tipo_gasto',
         'v_posicion_presupuestaria_llaves.partida_especifica')
         ->leftJoin('v_posicion_presupuestaria_llaves','rel_economica_administrativa.clasificacion_economica','=','v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave')
-        ->WHERE('rel_economica_administrativa.clasificacion_administrativa','=',$clasificacion)
+        ->WHERE($array_where)
         ->DISTINCT()
         ->get();
         return response()->json($partidas,200);
@@ -630,7 +638,10 @@ class ClavePreController extends Controller
             ->first();
         return response()->json($sector,200);
     }
-    public function getPresupuestoAsignado($ejercicio = 0, $upp = ''){
+    public function getPresupuestoAsignado(Request $request){
+        Log::info('Petición HTTP: ' . request()->fullUrl());
+        $ejercicio = $request->ejrcicio != '' ? $request->ejercicio : 0;
+        $upp = $request->upp != '' ? $request->upp : '';
         $Totcalendarizado = 0;
         $disponible = 0;
         $rol = '';
@@ -750,7 +761,10 @@ class ClavePreController extends Controller
         ];
         return response()->json(['response'=>$response],200);
     }
-    public function getPanelPresupuestoFondo($ejercicio = 0, $clvUpp = ''){
+    public function getPanelPresupuestoFondo(Request $request){
+        $ejercicio =  $request->ejercicio != '' ? $request->ejercicio : 0; 
+        $clvUpp = $request->clvUpp != '' ? $request->clvUpp : '';
+        Log::info('Petición HTTP: ' . request()->fullUrl());
         $disponible = 0;
         $totalDisponible = 0;
         $totalAsignado = 0;
@@ -758,15 +772,19 @@ class ClavePreController extends Controller
         $perfil = Auth::user()->id_grupo;
         switch ($perfil) {
             case 1:
+                // rol administrador
                 $rol = 0;
                 break;
             case 4:
+                // rol upp
                 $rol = 1;
                 break;
             case 5:
+                // rol delegacion
                 $rol = 2;
                 break;
             default:
+            // rol auditor y gobDigital
                 $rol = 3;
                 break;
         }
@@ -798,122 +816,20 @@ class ClavePreController extends Controller
             }
         } 
         if ($rol == 2) {
-            $fondos = DB::select("select 
-            clv_fondo,
-            f.fondo_ramo,
-            0 RH,
-            sum(Operativo) Operativo,
-            sum(Operativo) techos_presupuestal,
-            sum(calendarizado) calendarizado,
-            sum(Operativo - calendarizado) disponible,
-            ejercicio
-        from (
-            select 
-                clv_fondo,
-                0 RH,
-                sum(presupuesto) Operativo,
-                0 calendarizado,
-                ejercicio
-            from techos_financieros tf
-            where tf.tipo = 'RH' and tf.clv_upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayTechos."
-            group by clv_fondo,ejercicio
-            union all 
-            select 
-                fondo_ramo clv_fondo,
-                0 RH,
-                0 Operativo,
-                sum(total) calendarizado,
-                ejercicio
-            from programacion_presupuesto pp
-            where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayProgramacion."
-            group by clv_fondo,ejercicio
-        ) tabla
-        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
-        group by clv_fondo,f.fondo_ramo,ejercicio;");
+            $fondos = ClavesHelper::detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion);
         }else {
             if ($uppAutorizados) {
-                $fondos = DB::select("
-                select 
-                    clv_fondo,
-                    f.fondo_ramo,
-                    0 RH,
-                    sum(Operativo) Operativo,
-                    sum(Operativo) techos_presupuestal,
-                    sum(calendarizado) calendarizado,
-                    sum(Operativo) - calendarizado disponible,
-                    ejercicio
-                from (
-                    select 
-                        clv_fondo,
-                        0 RH,
-                        sum(presupuesto) Operativo,
-                        0 calendarizado,
-                        ejercicio
-                    from techos_financieros tf
-                    where tf.tipo = 'Operativo' && ".$arrayTechos."
-                    group by clv_fondo
-                    union all 
-                    select 
-                        fondo_ramo clv_fondo,
-                        0 RH,
-                        0 Operativo,
-                        sum(total) calendarizado,
-                        ejercicio
-                    from programacion_presupuesto pp
-                    where pp.tipo = 'Operativo' && ".$arrayProgramacion."
-                    group by clv_fondo
-                ) tabla
-                join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
-                group by clv_fondo,f.fondo_ramo;");
+                $fondos = ClavesHelper::detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion);
+               
             }else {
-                $fondos = DB::select("select 
-                clv_fondo,
-                f.fondo_ramo,
-                sum(RH) RH,
-                sum(Operativo) Operativo,
-                sum(RH+Operativo) techos_presupuestal,
-                sum(calendarizado) calendarizado,
-                sum((RH+Operativo)-calendarizado) disponible,
-                ejercicio
-            from (
-                select 
-                    clv_fondo,
-                    sum(presupuesto) RH,
-                    0 Operativo,
-                    0 calendarizado,
-                    ejercicio
-                from techos_financieros tf
-                where tf.tipo = 'RH' &&".$arrayTechos." 
-                group by clv_fondo
-                union all
-                select 
-                    clv_fondo,
-                    0 RH,
-                    sum(presupuesto) Operativo,
-                    0 calendarizado,
-                    ejercicio
-                from techos_financieros tf
-                where tf.tipo = 'Operativo' &&".$arrayTechos." 
-                group by clv_fondo
-                union all 
-                select 
-                    fondo_ramo clv_fondo,
-                    0 RH,
-                    0 Operativo,
-                    sum(total) calendarizado,
-                    ejercicio
-                from programacion_presupuesto pp
-                where ".$arrayProgramacion."
-                group by clv_fondo
-            ) tabla
-            join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
-            group by clv_fondo,f.fondo_ramo;");
-            }
+                    $fondos = ClavesHelper::detallePresupuestoGeneral($arrayTechos,$arrayProgramacion);
+                }
         }
         
         $response = [
             'fondos' => $fondos,
-            'upp' => $upp
+            'upp' => $upp,
+            'rol' => $rol
         ];
         return response()->json(['response'=>$response],200);
     }

@@ -19,8 +19,14 @@ class ActividadesPpDelegacion implements FromCollection, ShouldAutoSize, WithHea
 {
     protected $filas;
     public function collection(){
+        $upp= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('uppautorizadascpnomina.deleted_at', null)->get();
+        $upps = [];
+        foreach ($upp as $key) {
+            $upps[]=$key->clv_upp;
+        }
         $anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
         $data = DB::table('programacion_presupuesto')
+        ->leftJoin('uppautorizadascpnomina', 'uppautorizadascpnomina.clv_upp', '=', 'programacion_presupuesto.upp')
         ->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'programacion_presupuesto.upp')
         ->select(
             'upp AS clv_upp',
@@ -41,6 +47,7 @@ class ActividadesPpDelegacion implements FromCollection, ShouldAutoSize, WithHea
             DB::raw('IF(noviembre>=1,2,"0") AS noviembre'),
             DB::raw('IF(diciembre>=1,3,"0") AS diciembre')
         )
+        ->whereIn('programacion_presupuesto.upp',  $upps)
         ->where('programacion_presupuesto.subprograma_presupuestario', 'UUU')
         ->where('programacion_presupuesto.deleted_at', null)
         ->where('cierre_ejercicio_metas.deleted_at', null)
