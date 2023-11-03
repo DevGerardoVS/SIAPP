@@ -640,7 +640,7 @@ class ClavePreController extends Controller
     }
     public function getPresupuestoAsignado(Request $request){
         Log::info('Petición HTTP: ' . request()->fullUrl());
-        $ejercicio = $request->ejrcicio != '' ? $request->ejercicio : 0;
+        $ejercicio = $request->ejercicio > 0 ? $request->ejercicio : 0;
         $upp = $request->upp != '' ? $request->upp : '';
         $Totcalendarizado = 0;
         $disponible = 0;
