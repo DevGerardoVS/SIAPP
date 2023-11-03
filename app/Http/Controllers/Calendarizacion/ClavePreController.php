@@ -761,7 +761,9 @@ class ClavePreController extends Controller
         ];
         return response()->json(['response'=>$response],200);
     }
-    public function getPanelPresupuestoFondo($ejercicio = 0, $clvUpp = ''){
+    public function getPanelPresupuestoFondo(Request $request){
+        $ejercicio =  $request->ejercicio != '' ? $request->ejercicio : 0; 
+        $clvUpp = $request->clvUpp != '' ? $request->clvUpp : '';
         Log::info('Petición HTTP: ' . request()->fullUrl());
         $disponible = 0;
         $totalDisponible = 0;
