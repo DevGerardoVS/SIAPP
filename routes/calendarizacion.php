@@ -44,7 +44,7 @@ Route::controller(TechosController::class)->group(function () {
 		Route::get('/cat-proyecyo/{programa?}/{id?}/{upp?}/{ur?}/{ejercicio?}', 'getProyectos');
 		Route::get('/cat-linea-accion/{uppId?}/{id?}/{ejercicio?}/{programa?}/{subPrograma?}/{proyecto?}', 'getLineaAccion');
 		Route::post('/get-presupuesto-asignado', 'getPresupuestoAsignado');
-		Route::get('/calendarizacion-claves-presupuesto-fondo/{ejercicio?}/{clvUpp?}', 'getPanelPresupuestoFondo');
+		Route::post('/calendarizacion-claves-presupuesto-fondo', 'getPanelPresupuestoFondo');
 		Route::post('/calendarizacion-eliminar-clave', 'postEliminarClave');
 		Route::post('/calendarizacion-guardar-clave', 'postGuardarClave');
 		Route::get('/calendarizacion/get-calendarizacion-panel', 'getPanelCalendarizacion');
