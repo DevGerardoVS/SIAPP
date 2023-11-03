@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administracion;
 
 use App\Http\Controllers\Controller;
 use App\Models\administracion\PermisosUpp;
+use App\Models\administracion\AdmUsers;
 use App\Models\administracion\UsuarioGrupo;
 use App\Models\catalogos\CatPermisos;
 use App\Models\User;
@@ -35,8 +36,8 @@ class UsuarioController extends Controller
             'id',
             'username',
             DB::raw('CONCAT(username," ","-"," ",adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as fullname'),
-
         )
+        ->where('adm_users.estatus','!=', 2)
         ->where('adm_users.id_grupo', '!=', 2)
         ->where('adm_users.id_grupo', '!=', 3)
         ->where('deleted_at', null)->get();
@@ -50,12 +51,27 @@ class UsuarioController extends Controller
     }
     public function assignPermisson(Request $request)
     {
+        $idCheck = $request->id == null ? $request->id_userP : $request->id;
+        $userIn = AdmUsers::where('deleted_at', null)->where('id', $idCheck)->first();
+        if ($userIn->estatus ==2) {
+            $res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'No se puede asignar permisos a un usuario inhabilitado', "title" => "Usuario inhabilitado"]];
+            return response()->json($res, 200);
+        }
         if ($request->id == null) {
             $user = PermisosUpp::where('deleted_at', null)->where('id_user', $request->id_userP)->where('id_permiso', $request->id_permiso)->first();
             if($user){
                 $res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Este usuario ya cuenta con el permiso', "title" => "Aviso"]];
                 return response()->json($res, 200);
             }else{
+                $user = DB::table('adm_users')->select(
+                    'id',
+                    'username',
+                    DB::raw('CONCAT(username," ","-"," ",adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as fullname'),
+                )
+                ->where('adm_users.estatus','!=', 2)
+                ->where('adm_users.id_grupo', '!=', 2)
+                ->where('adm_users.id_grupo', '!=', 3)
+                ->where('deleted_at', null)->get();
                 $resul = PermisosUpp::create([
                     'id_user' => $request->id_userP,
                     'id_permiso' => $request->id_permiso,
@@ -187,7 +203,7 @@ class UsuarioController extends Controller
             ->leftJoin('adm_grupos', 'adm_grupos.id', '=', 'adm_users.id_grupo')
             ->where('adm_users.deleted_at', '=', null)
             ->where('adm_users.id_grupo', '!=', 2)
-            ->orderby('adm_users.estatus');
+            ->orderByRaw('adm_users.estatus');
 
         if ($id != 0) {
             $query = $query->where('adm_users.id', '=', $id);
@@ -232,6 +248,7 @@ class UsuarioController extends Controller
             'adm_grupos.nombre_grupo AS grupo',
             
         )
+        ->where('adm_users.estatus', '!=', 2)
         ->where('adm_users.id_grupo', '!=', 2)
             ->leftJoin('adm_users', 'adm_users.id', '=', 'permisos_funciones.id_user')
             ->leftJoin('cat_permisos', 'cat_permisos.id', '=', 'permisos_funciones.id_permiso')
