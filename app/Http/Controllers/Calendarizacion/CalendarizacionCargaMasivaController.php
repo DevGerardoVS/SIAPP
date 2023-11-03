@@ -230,15 +230,22 @@ class CalendarizacionCargaMasivaController extends Controller
                         if ($var === 0) {
                             $var = true;
                         }
+                        if (strlen($k['24'])  != 2) {
+                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Los fondos no pueden ir vacios y deben ser a 2 caracteres ');
+
+                        }
                         if (!$var && strlen($k['5']) == 3) {
                             array_push($arrayupps, $k['5']);
                         } else {
                             if (strlen($k['5']) != 3) {
-                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres. ');
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Las upp no pueden ir vacias y deben ser 3 caracteres. ');
                             }
                         }
                     }
 
+                    if (count($arrayErrores) > 0) {
+                        return redirect()->back()->withErrors($arrayErrores);
+                    } 
 
                     //validacion de totales
                     $helperejercicio = 0;
@@ -322,7 +329,6 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
                 }
-
 
 
                 $arrayupps = array();
@@ -457,15 +463,23 @@ class CalendarizacionCargaMasivaController extends Controller
                         if ($var === 0) {
                             $var = true;
                         }
+                        if (strlen($k['24'])  != 2) {
+                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Los fondos no pueden ir vacios y deben ser a 2 caracteres ');
+
+                        }
                         if (!$var && strlen($k['5']) == 3) {
                             array_push($arrayupps, $k['5']);
                         } else {
                             if (strlen($k['5']) != 3) {
-                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp deben ser 3 caracteres. ');
+                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Las upp no pueden ir vacias y deben ser 3 caracteres. ');
                             }
                         }
 
                     }
+                    
+                    if (count($arrayErrores) > 0) {
+                        return redirect()->back()->withErrors($arrayErrores);
+                    } 
                     //validacion de totales
                     $helperejercicio = 0;
                     foreach ($arraypresupuesto as $key => $value) {
