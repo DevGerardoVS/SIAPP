@@ -60,7 +60,8 @@ class MetasController extends Controller
 	public static function getActiv($upp, $anio)
 	{
 		Controller::check_permission('getMetas');
-
+		$u2p= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('clv_upp', $upp)->where('uppautorizadascpnomina.deleted_at', null)->get();
+		$aut = count($u2p) >= 1?true:false;
 		$query = MetasHelper::actividades($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$dataSet = [];
@@ -72,10 +73,10 @@ class MetasController extends Controller
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
 				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
 				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
-				
+			Log::debug($sub);
 			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
 				if ($anio == $anioMax) {
-					if($sub  == 'UUU'){
+					if($sub  == 'UUU' && $aut ){
 						$button = '';
 					}else{
 						$button = $accion;
@@ -86,7 +87,7 @@ class MetasController extends Controller
 				}
 			} else {
 				if ($key->estatus == 0) {
-					if ($sub  == 'UUU' && Auth::user()->id_grupo == 4) {
+					if ($sub  == 'UUU' && Auth::user()->id_grupo == 4 && $aut) {
                         $button = '';
                     }else{
                         $button = $accion;
