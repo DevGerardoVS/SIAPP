@@ -90,17 +90,7 @@ class MetasHelper
 				->where('pro.ejercicio', $anio)
 				->where('pro.upp', $upp)
 				->unionAll($query2)
-				->orderBy('id');
-				if(Auth::user()->id_grupo == 4 ){
-					$upp= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('uppautorizadascpnomina.deleted_at', null)->get();
-					$upps = [];
-					foreach ($upp as $key) {
-						$upps[]=$key->clv_upp;
-					}
-
-				$query = $query->where('pro.upp', $upps);
-				}
-				$query=$query->get();
+				->orderBy('id')->get();
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());
