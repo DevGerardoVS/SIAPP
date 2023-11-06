@@ -270,6 +270,12 @@ class ClavePreController extends Controller
                         
                         try {
                             Log::debug("if count");
+                            $b = array(
+                                "username"=>Auth::user()->username,
+                                "accion"=>'Guardar',
+                                "modulo"=>'Claves'
+                            );
+                            Controller::bitacora($b);
                             DB::commit();
                         } catch (\Throwable $th) {
                             throw new \Exception($th->getMessage());
