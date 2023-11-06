@@ -747,7 +747,7 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            dao.limpiar();
+            console.log(response);
             const { mensaje } = response;
             Swal.fire({
                 icon: mensaje.icon,
@@ -761,7 +761,7 @@ var dao = {
                 dao.checkCombination($('#upp').val())
             }
             dao.getData('upp', 'ur');
-
+            dao.limpiar();
         });
     },
     rCMetasUpp: function (upp) {
