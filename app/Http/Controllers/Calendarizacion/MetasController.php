@@ -519,6 +519,8 @@ class MetasController extends Controller
 						'mml_actividades.area_funcional',
 						'mml_actividades.clv_upp'
 					)
+					->where('metas.clv_upp', $request->upp)
+					->where('metas.entidad_ejecutora', str_replace('-', "", $clv[0]))
 					->where('metas.clv_fondo', $fondo)
 					->where('mml_actividades.id_catalogo', $request->actividad_id)
 					->where('metas.mir_id', null)
