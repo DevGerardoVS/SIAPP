@@ -1433,7 +1433,7 @@ $(document).ready(function () {
 
     });
     $('#sel_fondo').change(() => {
-     let acmIR=   $("#activiMir").val(`${area}$${enti}`);
+     let acmIR=   $("#activiMir").val();
         acmIR = acmIR + '$'+$('#sel_fondo').val();
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
 
@@ -1444,7 +1444,7 @@ $(document).ready(function () {
         }
     });
     $('#fondo_id').change(() => {
-        let acmIR=   $("#activiMir").val(`${area}$${enti}`);
+        let acmIR=   $("#activiMir").val();
         acmIR = acmIR + '$'+ $('#fondo_id').val();
         dao.getMeses($('#area').val(), $('#fondo_id').val());
     });
