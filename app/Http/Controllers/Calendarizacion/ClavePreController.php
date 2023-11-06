@@ -261,8 +261,7 @@ class ClavePreController extends Controller
                 ]);
                 $b = [];
                 Log::info('nueva Clave generada: ', [json_encode($nuevaClave)]);
-                log::debug("count(nuevaClave): ".count($nuevaClave));
-                if (count($nuevaClave)) {
+                if (isset($nuevaClave->id)) {
                         Log::debug("if count");
                     DB::commit();
                     // $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
