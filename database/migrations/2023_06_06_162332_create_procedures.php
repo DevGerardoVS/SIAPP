@@ -354,10 +354,10 @@ return new class extends Migration {
                 a0.clv_funcion,
                 a0.funcion,
                 sum(pp.total) importe
-            from ',@tabla,' pp
-            join aux_0 a0 on pp.finalidad = a0.clv_finalidad 
+            from aux_0 a0 
+            left join ',@tabla,' pp on pp.finalidad = a0.clv_finalidad 
             and pp.funcion = a0.clv_funcion
-            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            and pp.ejercicio = ',anio,' and pp.',@corte,'
             group by a0.clv_finalidad,a0.finalidad,a0.clv_funcion,a0.funcion;
             ');
         
@@ -379,7 +379,10 @@ return new class extends Migration {
                     else finalidad
                 end finalidad,
                 funcion,
-                importe
+                case
+                    when importe is null then 0
+                    else importe
+                end importe
             from (
                 select 
                     clv_finalidad,finalidad,
@@ -685,58 +688,71 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_1(in anio int, in corte date)
         begin
-            set @tabla := 'programacion_presupuesto';
-            set @corte := 'deleted_at is null';
-            set @catalogo := 'catalogo';
-            if (corte is not null) then 
-                set @catalogo := 'catalogo_hist';
-                set @tabla := 'programacion_presupuesto_hist';
-                set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
-            end if;
-        
-            set @query := CONCAT('
-            with aux as (
-                select 
-                    pp.etiquetado,
-                    c.clave clv_upp,
-                    c.descripcion upp,
-                    pp.total
-                from ',@catalogo,' c 
-                join ',@tabla,' pp on c.clave = pp.upp
-                and pp.',@corte,' and pp.ejercicio = ',anio,'
-                where c.deleted_at is null and c.ejercicio = ',anio,' and c.grupo_id = 6
-            )
+        set @tabla := 'programacion_presupuesto';
+        set @corte := 'deleted_at is null';
+        set @catalogo := 'catalogo';
+        if (corte is not null) then 
+            set @catalogo := 'catalogo_hist';
+            set @tabla := 'programacion_presupuesto_hist';
+            set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+        end if;
+
+        set @query := CONCAT('
+        with aux as (
             select 
-                case 
-                    when upp != \"\" then \"\"
-                    when etiquetado = 1 then \"Gasto No Etiquetado\"
-                    when etiquetado = 2 then \"Gasto Etiquetado\"
-                end etiquetado,
+                1 etiquetado,
+                c.clave clv_upp,
+                c.descripcion upp,
+                pp.total
+            from ',@catalogo,' c 
+            left join ',@tabla,' pp on c.clave = pp.upp
+            and pp.',@corte,' and pp.ejercicio = ',anio,' and pp.etiquetado = 1
+            where c.deleted_at is null and c.ejercicio = ',anio,' and c.grupo_id = 6
+            union all
+            select 
+                2 etiquetado,
+                c.clave clv_upp,
+                c.descripcion upp,
+                pp.total
+            from ',@catalogo,' c 
+            left join ',@tabla,' pp on c.clave = pp.upp
+            and pp.',@corte,' and pp.ejercicio = ',anio,' and pp.etiquetado = 2
+            where c.deleted_at is null and c.ejercicio = ',anio,' and c.grupo_id = 6
+        )
+        select 
+            case 
+                when upp != \"\" then \"\"
+                when etiquetado = 1 then \"Gasto No Etiquetado\"
+                when etiquetado = 2 then \"Gasto Etiquetado\"
+            end etiquetado,
+            upp,
+            case
+                when importe is null then 0
+                else importe
+            end importe
+        from (
+            select 
+                etiquetado,
+                \"\" clv_upp,
+                \"\" upp,
+                sum(total) importe
+            from aux
+            group by etiquetado
+            union all
+            select 
+                etiquetado,
+                clv_upp,
                 upp,
-                importe
-            from (
-                select 
-                    etiquetado,
-                    \"\" clv_upp,
-                    \"\" upp,
-                    sum(total) importe
-                from aux
-                group by etiquetado
-                union all
-                select 
-                    etiquetado,
-                    clv_upp,
-                    upp,
-                    sum(total) importe
-                from aux
-                group by etiquetado,clv_upp,upp
-                order by etiquetado,clv_upp,upp
-            )t;
-            ');
-        
-            prepare stmt  from @query;
-            execute stmt;
-            deallocate prepare stmt;
+                sum(total) importe
+            from aux
+            group by etiquetado,clv_upp,upp
+            order by etiquetado,clv_upp,upp
+        )t;
+        ');
+
+        prepare stmt  from @query;
+        execute stmt;
+        deallocate prepare stmt;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_2(in anio int, in corte date)
@@ -775,19 +791,39 @@ return new class extends Migration {
             set @query := concat('
             create temporary table aux_1
             select 
-                pp.etiquetado,
+                1 etiquetado,
                 a0.clv_finalidad,
                 a0.finalidad,
                 a0.clv_funcion,
                 a0.funcion,
                 sum(pp.total) importe
-            from ',@tabla,' pp
-            join aux_0 a0 on pp.finalidad = a0.clv_finalidad 
-            and pp.funcion = a0.clv_funcion
-            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            from aux_0 a0 
+            left join ',@tabla,' pp on pp.finalidad = a0.clv_finalidad 
+            and pp.funcion = a0.clv_funcion and pp.etiquetado = 1
+            and pp.ejercicio = ',anio,' and pp.',@corte,'
             group by etiquetado,a0.clv_finalidad,a0.finalidad,a0.clv_funcion,a0.funcion;
             ');
-        
+
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+
+            set @query := concat('
+            insert into aux_1
+            select 
+                2 etiquetado,
+                a0.clv_finalidad,
+                a0.finalidad,
+                a0.clv_funcion,
+                a0.funcion,
+                sum(pp.total) importe
+            from aux_0 a0 
+            left join ',@tabla,' pp on pp.finalidad = a0.clv_finalidad 
+            and pp.funcion = a0.clv_funcion and pp.etiquetado = 2
+            and pp.ejercicio = ',anio,' and pp.',@corte,'
+            group by etiquetado,a0.clv_finalidad,a0.finalidad,a0.clv_funcion,a0.funcion;
+            ');
+
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
@@ -847,7 +883,7 @@ return new class extends Migration {
 
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_3(in anio int, in corte date)
         begin
-            set @tabla := 'programacion_presupuesto';
+        set @tabla := 'programacion_presupuesto';
             set @catalogo := 'catalogo';
             set @corte := 'deleted_at is null';
             if (corte is not null) then 
@@ -881,19 +917,39 @@ return new class extends Migration {
             set @query := concat('
             create temporary table aux_1
             select 
-                pp.etiquetado,
+                1 etiquetado,
                 a0.clv_finalidad,
                 a0.finalidad,
                 a0.clv_funcion,
                 a0.funcion,
                 sum(pp.total) importe
-            from ',@tabla,' pp
-            join aux_0 a0 on pp.finalidad = a0.clv_finalidad 
-            and pp.funcion = a0.clv_funcion
-            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            from aux_0 a0 
+            left join ',@tabla,' pp on pp.finalidad = a0.clv_finalidad 
+            and pp.funcion = a0.clv_funcion and pp.etiquetado = 1
+            and pp.ejercicio = ',anio,' and pp.',@corte,'
             group by etiquetado,a0.clv_finalidad,a0.finalidad,a0.clv_funcion,a0.funcion;
             ');
-        
+
+            prepare stmt  from @query;
+            execute stmt;
+            deallocate prepare stmt;
+
+            set @query := concat('
+            insert into aux_1
+            select 
+                2 etiquetado,
+                a0.clv_finalidad,
+                a0.finalidad,
+                a0.clv_funcion,
+                a0.funcion,
+                sum(pp.total) importe
+            from aux_0 a0 
+            left join ',@tabla,' pp on pp.finalidad = a0.clv_finalidad 
+            and pp.funcion = a0.clv_funcion and pp.etiquetado = 2
+            and pp.ejercicio = ',anio,' and pp.',@corte,'
+            group by etiquetado,a0.clv_finalidad,a0.finalidad,a0.clv_funcion,a0.funcion;
+            ');
+
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
@@ -1086,52 +1142,58 @@ return new class extends Migration {
         begin
             set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
-            set @catalogo := 'catalogo';
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
-                set @catalogo := 'catalogo_hist';
             end if;
-        
+
             DROP TEMPORARY table if exists aux_0;
             DROP TEMPORARY TABLE if exists aux_1;
             DROP TEMPORARY TABLE if exists aux_2;
             DROP TEMPORARY TABLE if exists aux_3;
                     
             set @tablas := CONCAT('
-            create temporary table aux_0 (
-                select 
-                    concat(
-                        c0.clave,\" \",
-                        c0.descripcion
-                    ) upp,
-                    c1.descripcion subsecretaria,
-                    c2.descripcion ur,
-                    f.fuente_financiamiento,
-                    sum(pp.total) importe
-                from pp_identificadores pt
-                join ',@tabla,' pp on pt.id = pp.id
-                    and pp.',@corte,' and pp.ejercicio = ',anio,'
-                join fondo f on pt.fondo_id = f.id
-                join epp e on pt.epp_id = e.id 
-                    and e.ejercicio = ',anio,' and e.deleted_at is null
-                join ',@catalogo,' c0 on e.upp_id = c0.id 
-                join ',@catalogo,' c1 on e.subsecretaria_id = c1.id 
-                join ',@catalogo,' c2 on e.ur_id = c2.id
-                group by c0.clave,c0.descripcion,c1.descripcion,c2.descripcion,f.fuente_financiamiento
-            );');
-        
+            create temporary table aux_0
+            with aux as (
+                select distinct 
+                    ve.clv_upp,ve.upp,
+                    ve.clv_subsecretaria,ve.subsecretaria,
+                    ve.clv_ur,ve.ur
+                from v_epp ve
+                where ejercicio = ',anio,'
+            )
+            select 
+                concat(
+                    a.clv_upp,\" \",
+                    a.upp
+                ) upp,
+                a.subsecretaria,
+                a.ur,
+                f.fuente_financiamiento,
+                case 
+                    when sum(pp.total) is null then 0
+                    else sum(pp.total)
+                end importe
+            from aux a
+            left join ',@tabla,' pp on pp.ejercicio = ',anio,' and pp.',@corte,' 
+            and pp.upp = a.clv_upp and pp.subsecretaria = a.clv_subsecretaria and pp.ur = a.clv_ur
+            left join techos_financieros tf on a.clv_upp = tf.clv_upp and tf.ejercicio = ',anio,' and tf.deleted_at is null
+            left join fondo f on tf.clv_fondo = f.clv_fondo_ramo and f.deleted_at is null
+            group by a.clv_upp,a.upp,a.clv_subsecretaria,a.subsecretaria,
+            a.clv_ur,a.ur,f.fuente_financiamiento;
+            ');
+
             prepare stmt from @tablas;
             execute stmt;
             deallocate prepare stmt;
-        
+
             CREATE TEMPORARY TABLE aux_1 AS 
             (SELECT upp,subsecretaria,ur,sum(importe) importe FROM aux_0 GROUP BY upp,subsecretaria,ur);
             CREATE TEMPORARY TABLE aux_2 AS 
             (SELECT upp,subsecretaria,sum(importe) importe FROM aux_1 GROUP BY upp,subsecretaria);
             CREATE TEMPORARY TABLE aux_3 AS 
             (SELECT upp,SUM(importe) importe FROM aux_2 GROUP BY upp);
-        
+
             select 
                 case 
                     when subsecretaria != '' then ''
@@ -1174,12 +1236,13 @@ return new class extends Migration {
                 order by upp,subsecretaria,ur,
                 fuente_financiamiento
             )t;
-        
+
             DROP TEMPORARY TABLE aux_0;
             DROP TEMPORARY TABLE aux_1;
             DROP TEMPORARY TABLE aux_2;
             DROP TEMPORARY TABLE aux_3;
-        END;");
+        END;
+        ");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_2(in anio int, in corte date)
         begin
@@ -1522,10 +1585,10 @@ return new class extends Migration {
                 a0.clv_subfuncion,
                 a0.subfuncion,
                 sum(pp.total) importe
-            from ',@tabla,' pp
-            join aux_0 a0 on pp.finalidad = a0.clv_finalidad 
+            from aux_0 a0  
+            left join ',@tabla,' pp on pp.finalidad = a0.clv_finalidad
             and pp.funcion = a0.clv_funcion and pp.subfuncion = a0.clv_subfuncion
-            where pp.ejercicio = ',anio,' and pp.',@corte,'
+            and pp.ejercicio = ',anio,' and pp.',@corte,'
             group by a0.clv_finalidad,a0.finalidad,a0.clv_funcion,
             a0.funcion,a0.clv_subfuncion,a0.subfuncion;
             ');
@@ -1563,7 +1626,10 @@ return new class extends Migration {
                     else funcion
                 end funcion,
                 subfuncion,
-                importe
+                case
+                    when importe is null then 0
+                    else importe
+                end importe
             from (
                 select 
                     clv_finalidad,finalidad,
