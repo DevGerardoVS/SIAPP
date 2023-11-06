@@ -261,7 +261,9 @@ class ClavePreController extends Controller
                 ]);
                 $b = [];
                 Log::info('nueva Clave generada: ', [json_encode($nuevaClave)]);
+
                 if ($nuevaClave) {
+                    DB::commit();
                     // $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
                     // Log::info('aplanado: ', [json_encode($aplanado)]);
                     $b = array(
@@ -278,8 +280,8 @@ class ClavePreController extends Controller
                      );
                     return response()->json('error',200);
                 }
-                 Controller::bitacora($b);
-                 DB::commit();
+                // Controller::bitacora($b);
+               
             }else {
                 Log::info('error cantidad no disponible: ', [json_encode($request->data[0]['total'])]);
                 return response()->json('cantidadNoDisponible',200);
