@@ -160,9 +160,8 @@ class ClavePreController extends Controller
     public function postGuardarClave(Request $request){
         Controller::check_permission('postClaves');
         Controller::check_permission('postClavesManual');
-
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $perfil = Auth::user()->id_grupo;
             $tipo = '';
             $esEjercicioCerrado = ClavesHelper::validaEjercicio( $request->ejercicio,$request->data[0]['upp']);
@@ -268,8 +267,14 @@ class ClavePreController extends Controller
                     $flag = false;
                 }
                     if ($flag) {
-                        Log::debug("if count");
-                        DB::commit();
+                        
+                        try {
+                            Log::debug("if count");
+                            DB::commit();
+                        } catch (\Throwable $th) {
+                            throw new \Exception($th->getMessage());
+                        }
+                       
 
                     }
 
@@ -298,6 +303,7 @@ class ClavePreController extends Controller
                
             }else {
                 Log::info('error cantidad no disponible: ', [json_encode($request->data[0]['total'])]);
+                DB::rollBack();
                 return response()->json('cantidadNoDisponible',200);
                 throw ValidationException::withMessages(['error de cantidades'=>'Las cantidades no coinciden...']);
             }
