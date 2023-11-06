@@ -2145,91 +2145,146 @@ return new class extends Migration {
         
         DB::unprepared("CREATE PROCEDURE proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date)
         begin
-        set @corte := 'mm.deleted_at is null';
             set @upp := '';
-            if (corte is not null) then 
-                set @corte := CONCAT('mm.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+            set @corte := 'deleted_at is null';
+            set @tabla := 'metas';
+            if(upp is not null) then set @upp := concat(\"where clv_upp = '\",upp,\"'\"); end if;
+            if(corte is not null) then
+                set @tabla := 'metas_hist';
+                set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-            if (upp is not null) then 
-                set @upp := CONCAT('and mm.clv_upp = \"',upp,'\"');
-            end if;
-                
-            set @query := CONCAT('
-				select 
-					c.descripcion upp,
-					t.*,
-					cem.capturista
-				from (
-	                select 
-	                    mm.clv_upp,
-	                    substr(mm.entidad_ejecutora,5,2) clv_ur,
-	                    substr(mm.area_funcional,9,2) clv_programa,
-	                    substr(mm.area_funcional,11,3) clv_subprograma,
-	                    substr(mm.area_funcional,14,3) clv_proyecto,
-	                    m.clv_fondo,
-	                    mm.indicador actividad,
-	                    m.cantidad_beneficiarios,
-	                    b.beneficiario,
-	                    um.unidad_medida,
-	                    m.tipo,
-	                    case 
-	                        when m.tipo = \"Acumulativa\" then 
-	                            (m.enero+m.febrero+m.marzo+m.abril+m.mayo+m.junio+m.julio+
-	                            m.agosto+m.septiembre+m.octubre+m.noviembre+m.diciembre)
-	                        when m.tipo = \"Continua\" then m.enero
-	                        when m.tipo = \"Especial\" then greatest
-	                            (m.enero,m.febrero,m.marzo,m.abril,m.mayo,
-	                            m.junio,m.julio,m.agosto,m.septiembre,
-	                            m.octubre,m.noviembre,m.diciembre)
-	                    end meta_anual,
-	                    m.enero,m.febrero,m.marzo,m.abril,m.mayo,
-	                    m.junio,m.julio,m.agosto,m.septiembre,
-	                    m.octubre,m.noviembre,m.diciembre
-	                from mml_mir mm 
-	                join metas m on m.mir_id = mm.id
-	                join unidades_medida um on m.unidad_medida_id = um.id 
-	                join beneficiarios b on m.beneficiario_id = b.id
-	                where mm.nivel = 11 ',@upp,' and mm.ejercicio = ',anio,' and ',@corte,'
-					union all 
-					select 
-					    mm.clv_upp,
-					    substr(mm.entidad_ejecutora,5,2) clv_ur,
-					    substr(mm.area_funcional,9,2) clv_programa,
-					    substr(mm.area_funcional,11,3) clv_subprograma,
-					    substr(mm.area_funcional,14,3) clv_proyecto,
-					    m.clv_fondo,
-					    mm.nombre actividad,
-					    m.cantidad_beneficiarios,
-					    b.beneficiario,
-					    um.unidad_medida,
-					    m.tipo,
-					    case 
-					        when m.tipo = \"Acumulativa\" then 
-					            (m.enero+m.febrero+m.marzo+m.abril+m.mayo+m.junio+m.julio+
-					            m.agosto+m.septiembre+m.octubre+m.noviembre+m.diciembre)
-					        when m.tipo = \"Continua\" then m.enero
-					        when m.tipo = \"Especial\" then greatest
-					            (m.enero,m.febrero,m.marzo,m.abril,m.mayo,
-					            m.junio,m.julio,m.agosto,m.septiembre,
-					            m.octubre,m.noviembre,m.diciembre)
-					    end meta_anual,
-					    m.enero,m.febrero,m.marzo,m.abril,m.mayo,
-					    m.junio,m.julio,m.agosto,m.septiembre,
-					    m.octubre,m.noviembre,m.diciembre
-					from mml_actividades mm
-					join metas m on m.actividad_id = mm.id
-					join unidades_medida um on m.unidad_medida_id = um.id 
-					join beneficiarios b on m.beneficiario_id = b.id
-					where mm.ejercicio = ',anio,' ',@upp,'  and ',@corte,'
-				)t
-				left join catalogo c on clv_upp = c.clave and c.deleted_at is null and c.grupo_id = 6
-				left join cierre_ejercicio_metas cem on t.clv_upp = cem.clv_upp and cem.ejercicio = ',anio,' and cem.deleted_at is null
-				order by clv_upp;
-            ');
-
-            prepare stmt  from @query;
+            
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+        
+            set @query := concat(\"
+            create temporary table aux_0
+            select 
+                ma.clv_upp,
+                substring(ma.entidad_ejecutora,5,2) clv_ur,
+                substring(ma.area_funcional,9,2) clv_programa,
+                substring(ma.area_funcional,11,3) clv_subprograma,
+                substring(ma.area_funcional,14,3) clv_proyecto,
+                m.clv_fondo,
+                ma.nombre actividad,
+                m.cantidad_beneficiarios,
+                b.beneficiario,
+                u2.unidad_medida,
+                m.tipo,
+                case 
+                    when m.tipo = 'Acumulativa' 
+                        then (enero+febrero+marzo+abril+mayo+junio+julio+agosto+septiembre+octubre+noviembre+diciembre)
+                    when m.tipo = 'Continua' then enero 
+                    when m.tipo = 'Especial' 
+                        then greatest(enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre)
+                end meta_anual,
+                enero,febrero,marzo,abril,mayo,
+                junio,julio,agosto,septiembre,
+                octubre,noviembre,diciembre
+            from \",@tabla,\" m
+            join beneficiarios b on m.beneficiario_id = b.id 
+            join unidades_medida um on m.unidad_medida_id = um.id
+            join mml_actividades ma on m.actividad_id = ma.id
+            join unidades_medida u2 on m.unidad_medida_id = u2.id
+            where mir_id is null and m.ejercicio = \",anio,\" and m.\",@corte,\"
+            union all 
+            select 
+                mm.clv_upp,
+                mm.clv_ur,
+                mm.clv_pp clv_programa,
+                substring(mm.area_funcional,11,3) clv_subprograma,
+                substring(mm.area_funcional,14,3) clv_proyecto,
+                m.clv_fondo,
+                mm.indicador actividad,
+                m.cantidad_beneficiarios,
+                b.beneficiario,
+                um.unidad_medida,
+                m.tipo,
+                case 
+                    when m.tipo = 'Acumulativa' 
+                        then (enero+febrero+marzo+abril+mayo+junio+julio+agosto+septiembre+octubre+noviembre+diciembre)
+                    when m.tipo = 'Continua' then enero 
+                    when m.tipo = 'Especial' 
+                        then greatest(enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre)
+                end meta_anual,
+                enero,febrero,marzo,abril,mayo,
+                junio,julio,agosto,septiembre,
+                octubre,noviembre,diciembre
+            from \",@tabla,\" m 
+            join beneficiarios b on m.beneficiario_id = b.id
+            join unidades_medida um on m.unidad_medida_id = um.id
+            join mml_mir mm on m.mir_id = mm.id
+            where m.mir_id is not null and m.ejercicio = \",anio,\" and m.\",@corte,\";
+            \");
+        
+            prepare stmt from @query;
             execute stmt;
             deallocate prepare stmt;
+            
+            create temporary table aux_1
+            select distinct
+                clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto,clv_fondo
+            from aux_0;
+            
+            set @query := concat(\"
+            select 
+                case 
+                    when tipo != '' then ''
+                    else clv_upp
+                end clv_upp,
+                case 
+                    when tipo != '' then ''
+                    else clv_ur
+                end clv_ur,
+                case 
+                    when tipo != '' then ''
+                    else clv_programa
+                end clv_programa,
+                case 
+                    when tipo != '' then ''
+                    else clv_subprograma
+                end clv_subprograma,
+                case 
+                    when tipo != '' then ''
+                    else clv_proyecto
+                end clv_proyecto,
+                case 
+                    when tipo != '' then ''
+                    else clv_fondo
+                end clv_fondo,
+                actividad,
+                cantidad_beneficiarios,
+                beneficiario,
+                unidad_medida,
+                tipo,
+                meta_anual,
+                enero,febrero,marzo,abril,mayo,
+                junio,julio,agosto,septiembre,
+                octubre,noviembre,diciembre
+            from (
+            select *
+                from (
+                    select 
+                        clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto,clv_fondo,
+                        '' actividad,'' cantidad_beneficiarios,'' beneficiario,'' unidad_medida,'' tipo,'' meta_anual,
+                        '' enero,'' febrero,'' marzo,'' abril,'' mayo,'' junio,'' julio,'' agosto,'' septiembre,'' octubre,'' noviembre,''diciembre
+                    from aux_1
+                    union all 
+                    select * from aux_0
+                    order by clv_upp,clv_ur,clv_programa,
+                    clv_subprograma,clv_proyecto,clv_fondo,
+                    actividad,cantidad_beneficiarios,
+                    beneficiario,unidad_medida,tipo
+                )r \",@upp,\"
+            )t;
+            \");
+        
+            prepare stmt from @query;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            drop temporary table aux_0;
+            drop temporary table aux_1;
         END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_5(in anio int, in corte date)

@@ -986,7 +986,7 @@ class ClavePreController extends Controller
         
         if(Auth::user()->id_grupo==4){
             $name = "CAP_Manual_de_Usuario_UPP-CargaMasivaClaves.pdf";
-            $file= public_path()."/". $name;
+            $file= public_path()."/manuales/". $name;
         } 
         
         //Log::channel('daily')->debug('exp '.public_path());
