@@ -262,7 +262,8 @@ class ClavePreController extends Controller
                 $b = [];
                 Log::info('nueva Clave generada: ', [json_encode($nuevaClave)]);
                 if ($nuevaClave) {
-                    $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
+                    // $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
+                    // Log::info('aplanado: ', [json_encode($aplanado)]);
                     $b = array(
                         "username"=>Auth::user()->username,
                         "accion"=>'Guardar',
