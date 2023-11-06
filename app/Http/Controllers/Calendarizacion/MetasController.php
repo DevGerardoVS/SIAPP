@@ -38,7 +38,7 @@ class MetasController extends Controller
        
         if(Auth::user()->id_grupo==4){
             $name = "CAP_Manual_de_Usuario_UPP-CargaMasivaMetas.pdf";
-            $file= public_path()."/". $name;
+            $file= public_path()."manuales/". $name;
         } 
         
         //Log::channel('daily')->debug('exp '.public_path());
@@ -1135,7 +1135,7 @@ class MetasController extends Controller
 
 		$metas = MetasController::cmetasadd($upp);
 		if ($check['status']) {
-			if ( !$metas|| Auth::user()->id_grupo == 1) {
+			if ( $metas || Auth::user()->id_grupo == 1) {
 				//ver si esta confirmada la mir
 				$isMir = DB::table("mml_cierre_ejercicio")
 					->select('id', 'estatus')
@@ -1707,8 +1707,10 @@ class MetasController extends Controller
 				->where('mml_actividades.clv_upp', $upp)
 				->where('mml_actividades.ejercicio', $anio)->get();
 				if(count($actv)){
-					$metas = $actv[0]->estatus == 1 ? true : false;
-				}
+					$metas = $actv[0]->estatus == 1 ? false : true;
+				}else{
+					$metas = true;
+					}
 		}
 		return ["status" => $metas];
 	}
@@ -1727,9 +1729,14 @@ class MetasController extends Controller
 				->where('mml_actividades.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $_upp)
 				->where('mml_actividades.ejercicio', $anio)->get();
+				Log::debug("cmetasadd");
+				Log::debug($actv);
 				if(count($actv)){
-					$metas = $actv[0]->estatus == 1 ? true : false;
+					$metas = $actv[0]->estatus == 1 ? false : true;
+				}else{
+				$metas = true;
 				}
+			Log::debug("status: ".$metas);
 		}
 		return ["status" => $metas];
 	}

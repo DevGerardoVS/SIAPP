@@ -771,7 +771,8 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            if (data.status) {
+            console.log(data);
+            if (!data.status) {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#validMetas').text("Las metas ya fueron confirmadas");
