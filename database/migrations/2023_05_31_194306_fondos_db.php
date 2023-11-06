@@ -531,10 +531,48 @@ return new class extends Migration
             $table->string('deleted_user',45)->nullable(true);
         });
 
-
-
         Schema::create('metas',function (Blueprint $table){
             $table->increments('id');
+            $table->unique(['clv_actividad','clv_fondo','mir_id'],'clave_mir');	
+            $table->unique(['clv_actividad','clv_fondo','actividad_id'],'clave_actividad');	
+            $table->string('clv_actividad',255)->unique()->nullable(true);
+            $table->string('clv_fondo',2)->nullable(false);
+            $table->integer('mir_id')->unsigned()->nullable(true);
+            $table->enum('tipo',['Acumulativa','Continua','Especial'])->nullable(false);
+            $table->integer('beneficiario_id')->unsigned()->nullable(false);
+            $table->integer('unidad_medida_id')->unsigned()->nullable(false);
+            $table->integer('cantidad_beneficiarios');
+            $table->integer('enero')->default(null);
+            $table->integer('febrero')->default(null);
+            $table->integer('marzo')->default(null);
+            $table->integer('abril')->default(null);
+            $table->integer('mayo')->default(null);
+            $table->integer('junio')->default(null);
+            $table->integer('julio')->default(null);
+            $table->integer('agosto')->default(null);
+            $table->integer('septiembre')->default(null);
+            $table->integer('octubre')->default(null);
+            $table->integer('noviembre')->default(null);
+            $table->integer('diciembre')->default(null);
+            $table->integer('total')->default(null);
+            $table->integer('estatus')->nullable(false);
+            $table->integer('ejercicio')->nullable(false);
+            $table->integer('actividad_id')->nullable(true);
+            $table->softDeletes();
+            $table->string('created_user',45)->nullable(false);
+            $table->string('updated_user',45)->nullable(true);
+            $table->string('deleted_user',45)->nullable(true);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->foreign('beneficiario_id')->references('id')->on('beneficiarios');
+            $table->foreign('unidad_medida_id')->references('id')->on('unidades_medida');
+            $table->foreign('mir_id')->references('id')->on('mml_mir');
+        });
+
+        Schema::create('metas_hist',function (Blueprint $table){
+            $table->increments('id');
+            $table->integer('id_original');
+            $table->integer('version');
             $table->unique(['clv_actividad','clv_fondo','mir_id'],'clave_mir');	
             $table->unique(['clv_actividad','clv_fondo','actividad_id'],'clave_actividad');	
             $table->string('clv_actividad',255)->unique()->nullable(true);
