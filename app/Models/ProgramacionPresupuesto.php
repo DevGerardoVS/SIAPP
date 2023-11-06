@@ -57,9 +57,10 @@ class ProgramacionPresupuesto extends Model
         'diciembre',  
         'total',   
         'estado',    
-        'tipo',   
-        'updated_at', 
-        'created_user', 
+        'tipo',
+		'updated_user',
+        'created_user',
+		'deleted_user',
     ];
 
     protected $dates = ['deleted_at'];
