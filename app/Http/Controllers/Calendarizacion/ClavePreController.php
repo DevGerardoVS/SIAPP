@@ -261,11 +261,24 @@ class ClavePreController extends Controller
                 ]);
                 $b = [];
                 Log::info('nueva Clave generada: ', [json_encode($nuevaClave)]);
-                if (isset($nuevaClave->id)) {
+                log::debug("id: ".$nuevaClave->id);
+                if(isset($nuevaClave->id)){
+                        $flag = true;
+                }else{
+                    $flag = false;
+                }
+                    if ($flag) {
+                        Log::debug("if count");
+                        DB::commit();
+
+                    }
+
+
+             /*    if (isset($nuevaClave->id)) {
                         Log::debug("if count");
                     DB::commit();
-                    // $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
-                    // Log::info('aplanado: ', [json_encode($aplanado)]);
+                    $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
+                     Log::info('aplanado: ', [json_encode($aplanado)]);
                     $b = array(
                         "username"=>Auth::user()->username,
                         "accion"=>'Guardar',
@@ -280,7 +293,7 @@ class ClavePreController extends Controller
                         "modulo"=>'Claves'
                      );
                     return response()->json('error',200);
-                }
+                } */
                 // Controller::bitacora($b);
                
             }else {
