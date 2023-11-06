@@ -981,15 +981,15 @@ var dao = {
 
         });
     },
-    getFyA: function (fondo) {
-
+    getActividasdesMir: function (fondo) {
+  
         $('#tipo_Ac').empty();
         for (let i = 1; i <= 12; i++) {
             $("#" + i).val(0);
             $("#" + i).prop('disabled', true);
         }
        let clave= $("#activiMir").val();
-        let mir = clave.split('$')
+        let mir = fondo.split('$')
         console.log("mir",mir);
         $.ajax({
             type: "GET",

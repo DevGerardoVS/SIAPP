@@ -38,9 +38,9 @@ class MetasController extends Controller
        
         if(Auth::user()->id_grupo==4){
             $name = "CAP_Manual_de_Usuario_UPP-CargaMasivaMetas.pdf";
-            $file= public_path()."manuales/". $name;
+            $file= public_path()."/manuales/". $name;
         } 
-        
+		Log::debug($file);
         //Log::channel('daily')->debug('exp '.public_path());
         $headers = array('Content-Type: application/pdf',);
 
