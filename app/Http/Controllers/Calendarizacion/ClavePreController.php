@@ -261,8 +261,9 @@ class ClavePreController extends Controller
                 ]);
                 $b = [];
                 Log::info('nueva Clave generada: ', [json_encode($nuevaClave)]);
-
-                if ($nuevaClave) {
+                log::debug("count(nuevaClave): ".count($nuevaClave));
+                if (count($nuevaClave)) {
+                        Log::debug("if count");
                     DB::commit();
                     // $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
                     // Log::info('aplanado: ', [json_encode($aplanado)]);
@@ -271,6 +272,7 @@ class ClavePreController extends Controller
                         "accion"=>'Guardar',
                         "modulo"=>'Claves'
                     );
+                    Controller::bitacora($b);
                 }
                 else {
                     $b = array(
