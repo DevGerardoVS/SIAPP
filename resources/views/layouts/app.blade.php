@@ -8,6 +8,7 @@ date_default_timezone_set('America/Mexico_City');
 ?>
 
 <head>
+    <meta id="meta" name="csrf-token" content="{{{ csrf_token() }}}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -23,7 +24,7 @@ date_default_timezone_set('America/Mexico_City');
         
     @endphp
     <!-- CSRF Token -->
-    <meta id="meta" name="csrf-token" content="{{ csrf_token() }}">
+   
 
 
     {!! htmlScriptTagJsApi([

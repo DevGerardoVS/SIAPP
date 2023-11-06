@@ -60,7 +60,8 @@ class MetasController extends Controller
 	public static function getActiv($upp, $anio)
 	{
 		Controller::check_permission('getMetas');
-
+		$u2p= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('clv_upp', $upp)->where('uppautorizadascpnomina.deleted_at', null)->get();
+		$aut = count($u2p) >= 1?true:false;
 		$query = MetasHelper::actividades($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$dataSet = [];
@@ -72,10 +73,10 @@ class MetasController extends Controller
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
 				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
 				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
-				
+			Log::debug($sub);
 			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
 				if ($anio == $anioMax) {
-					if($sub  == 'UUU'){
+					if($sub  == 'UUU' && $aut ){
 						$button = '';
 					}else{
 						$button = $accion;
@@ -86,7 +87,7 @@ class MetasController extends Controller
 				}
 			} else {
 				if ($key->estatus == 0) {
-					if ($sub  == 'UUU' && Auth::user()->id_grupo == 4) {
+					if ($sub  == 'UUU' && Auth::user()->id_grupo == 4 && $aut) {
                         $button = '';
                     }else{
                         $button = $accion;
@@ -353,6 +354,66 @@ class MetasController extends Controller
 		}
 
 		return ['fondos' => $fondos, "activids" => $activ ,"tAct"=> $tAct];
+	}
+	public function getActividMir($area, $entidad,$fondo)
+	{
+		$areaAux = explode('-', $area);
+		$entidadAux = explode('-', $entidad);
+		$check = $this->checkClosing($entidadAux[0]);
+		if ($check['status']) {
+			$m = DB::table('v_epp')
+				->select(
+					'v_epp.con_mir'
+				)
+				->where('v_epp.deleted_at', null)
+				->where('clv_finalidad', $areaAux[0])
+				->where('clv_funcion', $areaAux[1])
+				->where('clv_subfuncion', $areaAux[2])
+				->where('clv_eje', $areaAux[3])
+				->where('clv_linea_accion', $areaAux[4])
+				->where('clv_programa_sectorial', $areaAux[5])
+				->where('clv_tipologia_conac', $areaAux[6])
+				->where('clv_upp', $entidadAux[0])
+				->where('clv_ur', $entidadAux[2])
+				->where('clv_programa', $areaAux[7])
+				->where('clv_subprograma', $areaAux[8])
+				->where('clv_proyecto', $areaAux[9])
+				->where('presupuestable', '=', 1)
+				->groupByRaw('con_mir')
+				->where('ejercicio', $check['anio'])
+				->get();
+
+			$activ = [];
+			if ($m[0]->con_mir == 1) {
+				$activ = DB::table('mml_mir')
+					->select(
+						'mml_mir.id',
+						'mml_mir.id as clave',
+						DB::raw('CONCAT(mml_mir.id, " - ",indicador) AS actividad')
+					)
+					->where('mml_mir.deleted_at', null)
+					->where('mml_mir.nivel', 11)
+					->where('mml_mir.area_funcional', str_replace("-", '', $area))
+					->where('mml_mir.entidad_ejecutora', str_replace("-", '', $entidad))
+					->where('mml_mir.clv_upp', $entidadAux[0])
+					->where('mml_mir.clv_ur', $entidadAux[2])
+					->where('mml_mir.clv_pp', $areaAux[7])
+					->where('mml_mir.ejercicio', $check['anio'])
+					->groupByRaw('clave');
+				if ($fondo='federal') {
+					$activ = $activ->where('mml_mir.status', 2);
+				}
+					$activ =$activ->get();
+
+				if (count($activ) == 0) {
+					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
+				}
+			} else {
+				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('ejercicio',  $check['anio'])->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
+			}
+		}
+
+		return ["activids" => $activ];
 	}
 	public static function meses($area, $entidad, $anio, $fondo)
 	{
