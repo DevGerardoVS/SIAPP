@@ -61,7 +61,7 @@ var dao = {
         {"aTargets" : [4], "mData" : "posicionPre"},
         {"aTargets" : [5], "mData" : "fondo"},
         {"aTargets" : [6], "mData" : "proyectoObra"},
-        {"aTargets" : [7], "mData" : "totalByClave"},
+        {"aTargets" : [7], "mData" : "totalByClave", sClass: "montosR"},
         {"aTargets" : [8], "mData" : function(o){
           if (o.rol == 1) {
             if (o.estatus != 'Cerrado' && o.estatus != '') {
@@ -835,11 +835,11 @@ var dao = {
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
             {"aTargets" : [1], "mData" : "fondo_ramo"},
-            {"aTargets" : [2], "mData" : "Operativo"},
-            {"aTargets" : [3], "mData" : "RH"},
-            {"aTargets" : [4], "mData" : "techos_presupuestal"},
-            {"aTargets" : [5], "mData" : "calendarizado"},
-            {"aTargets" : [6], "mData" : "disponible"},
+            {"aTargets" : [2], "mData" : "Operativo", sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "RH", sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "techos_presupuestal", sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "calendarizado", sClass: "montosR"},
+            {"aTargets" : [6], "mData" : "disponible", sClass: "montosR"},
             {"aTargets" : [7], "mData" : "ejercicio"},
           ];
           $('#tblPresupuestos').show(true);
@@ -852,10 +852,10 @@ var dao = {
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
             {"aTargets" : [1], "mData" : "fondo_ramo"},
-            {"aTargets" : [2], "mData" : "Operativo"},
-            {"aTargets" : [3], "mData" : "techos_presupuestal"},
-            {"aTargets" : [4], "mData" : "calendarizado"},
-            {"aTargets" : [5], "mData" : "disponible"},
+            {"aTargets" : [2], "mData" : "Operativo",sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "techos_presupuestal",sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "calendarizado",sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "disponible",sClass: "montosR"},
             {"aTargets" : [6], "mData" : "ejercicio"},
           ];
           $('#tablaUpps').show(true);
@@ -868,10 +868,10 @@ var dao = {
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
             {"aTargets" : [1], "mData" : "fondo_ramo"},
-            {"aTargets" : [2], "mData" : "RH"},
-            {"aTargets" : [3], "mData" : "techos_presupuestal"},
-            {"aTargets" : [4], "mData" : "calendarizado"},
-            {"aTargets" : [5], "mData" : "disponible"},
+            {"aTargets" : [2], "mData" : "RH",sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "techos_presupuestal",sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "calendarizado",sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "disponible",sClass: "montosR"},
             {"aTargets" : [6], "mData" : "ejercicio"},
           ];
           $('#tablaDelegacion').show(true);
@@ -884,11 +884,11 @@ var dao = {
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
             {"aTargets" : [1], "mData" : "fondo_ramo"},
-            {"aTargets" : [2], "mData" : "Operativo"},
-            {"aTargets" : [3], "mData" : "RH"},
-            {"aTargets" : [4], "mData" : "techos_presupuestal"},
-            {"aTargets" : [5], "mData" : "calendarizado"},
-            {"aTargets" : [6], "mData" : "disponible"},
+            {"aTargets" : [2], "mData" : "Operativo",sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "RH",sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "techos_presupuestal",sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "calendarizado",sClass: "montosR"},
+            {"aTargets" : [6], "mData" : "disponible",sClass: "montosR"},
             {"aTargets" : [7], "mData" : "ejercicio"},
           ];
           $('#tblPresupuestos').show(true);
@@ -1149,7 +1149,7 @@ function soloEnteros() {
         e.preventDefault();
     });
   });
-}
+};
 $(".monto").change(function () {
   let value =  document.getElementById(this.id).value.replaceAll(",","").replaceAll("$","");
   let valueFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value); 
