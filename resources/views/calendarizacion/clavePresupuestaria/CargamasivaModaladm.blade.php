@@ -124,7 +124,7 @@
             title: '{{ __('messages.msg_cargando_datos') }}',
             html: ' <b></b>',
             allowOutsideClick: false,
-            timer: 2000000,
+            timer: 3000000,
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading();
