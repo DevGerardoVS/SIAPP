@@ -1065,7 +1065,7 @@ class MetasController extends Controller
 		if (File::exists($ruta . "/" . $report . ".pdf")) {
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
-		$report_path = app_path() . "/reportes/" . $report . ".jasper";
+		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
 		$output_file = sys_get_temp_dir();
 		$logoLeft = public_path() . "/img/escudoBN.png";
@@ -1087,8 +1087,8 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->output();
-		dd($jasper);
+		)->execute();
+		// dd($jasper);
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
@@ -1097,7 +1097,7 @@ class MetasController extends Controller
 				'Content-Type' => 'application/pdf'
 			]);
 		}
-		Log::info('archivo:', [json_encode($archivo)]);
+		
 		// $reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
 		// 	'Content-Type' => 'application/pdf'
 		// ]);

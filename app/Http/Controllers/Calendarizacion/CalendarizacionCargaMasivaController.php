@@ -69,6 +69,8 @@ class CalendarizacionCargaMasivaController extends Controller
     //Obtener datos del excel
     public function loadDataPlantilla(Request $request)
     {
+        ini_set('max_execution_time', 900);
+		ini_set('memory_limit', '1024M');
         if (Auth::user()->id_grupo == 4) {
             $uppUsuario = auth::user()->clv_upp;
         }
