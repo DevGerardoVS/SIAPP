@@ -368,8 +368,8 @@ class MetasHelper
 			->where('pp.ejercicio', $anio)
 			->where('mml_mir.clv_upp', $upp)
 			->where('pp.upp', $upp)
-			->groupByRaw('mml_mir.indicador')
-			->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur,mml_mir.area_funcional')
+			->groupByRaw('mml_mir.id')
+			->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur')
 			->distinct();
 		if (Auth::user()->id_grupo == 4) {
 			$data3 = $data3->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'mml_mir.clv_upp')

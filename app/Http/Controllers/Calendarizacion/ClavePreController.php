@@ -160,9 +160,8 @@ class ClavePreController extends Controller
     public function postGuardarClave(Request $request){
         Controller::check_permission('postClaves');
         Controller::check_permission('postClavesManual');
-
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $perfil = Auth::user()->id_grupo;
             $tipo = '';
             $esEjercicioCerrado = ClavesHelper::validaEjercicio( $request->ejercicio,$request->data[0]['upp']);
@@ -261,13 +260,42 @@ class ClavePreController extends Controller
                 ]);
                 $b = [];
                 Log::info('nueva Clave generada: ', [json_encode($nuevaClave)]);
-                if ($nuevaClave) {
+                log::debug("id: ".$nuevaClave->id);
+                if(isset($nuevaClave->id)){
+                        $flag = true;
+                }else{
+                    $flag = false;
+                }
+                    if ($flag) {
+                        
+                        try {
+                            Log::debug("if count");
+                            $b = array(
+                                "username"=>Auth::user()->username,
+                                "accion"=>'Guardar',
+                                "modulo"=>'Claves'
+                            );
+                            Controller::bitacora($b);
+                            DB::commit();
+                        } catch (\Throwable $th) {
+                            throw new \Exception($th->getMessage());
+                        }
+                       
+
+                    }
+
+
+             /*    if (isset($nuevaClave->id)) {
+                        Log::debug("if count");
+                    DB::commit();
                     $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
+                     Log::info('aplanado: ', [json_encode($aplanado)]);
                     $b = array(
                         "username"=>Auth::user()->username,
                         "accion"=>'Guardar',
                         "modulo"=>'Claves'
                     );
+                    Controller::bitacora($b);
                 }
                 else {
                     $b = array(
@@ -276,11 +304,12 @@ class ClavePreController extends Controller
                         "modulo"=>'Claves'
                      );
                     return response()->json('error',200);
-                }
-                 Controller::bitacora($b);
-                 DB::commit();
+                } */
+                // Controller::bitacora($b);
+               
             }else {
                 Log::info('error cantidad no disponible: ', [json_encode($request->data[0]['total'])]);
+                DB::rollBack();
                 return response()->json('cantidadNoDisponible',200);
                 throw ValidationException::withMessages(['error de cantidades'=>'Las cantidades no coinciden...']);
             }

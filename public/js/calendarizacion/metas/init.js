@@ -747,7 +747,7 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            dao.limpiar();
+            console.log(response);
             const { mensaje } = response;
             Swal.fire({
                 icon: mensaje.icon,
@@ -761,7 +761,7 @@ var dao = {
                 dao.checkCombination($('#upp').val())
             }
             dao.getData('upp', 'ur');
-
+            dao.limpiar();
         });
     },
     rCMetasUpp: function (upp) {
@@ -853,7 +853,7 @@ var dao = {
             tipo_be.append(new Option("--U. Beneficiarios--", ""));
             document.getElementById("tipo_Be").options[0].disabled = true;
             $.each(beneficiario, function (i, val) {
-                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
+                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
             });
         });
     },
@@ -1433,7 +1433,7 @@ $(document).ready(function () {
 
     });
     $('#sel_fondo').change(() => {
-     let acmIR=   $("#activiMir").val(`${area}$${enti}`);
+     let acmIR=   $("#activiMir").val();
         acmIR = acmIR + '$'+$('#sel_fondo').val();
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
 
@@ -1444,7 +1444,7 @@ $(document).ready(function () {
         }
     });
     $('#fondo_id').change(() => {
-        let acmIR=   $("#activiMir").val(`${area}$${enti}`);
+        let acmIR=   $("#activiMir").val();
         acmIR = acmIR + '$'+ $('#fondo_id').val();
         dao.getMeses($('#area').val(), $('#fondo_id').val());
     });

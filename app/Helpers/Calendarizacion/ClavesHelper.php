@@ -59,7 +59,7 @@ class ClavesHelper{
     }
     public static function tieneMetas($request,$tipo){
         $metas = MetasController::cmetasUpp($tipo == 1 ? $request->data[0]['upp'] : $request->data[0]['clvUpp'],$tipo == 1 ? $request->ejercicio : $request->data[0]['ejercicio'] );
-        if ($metas['status']) {
+        if (!$metas['status']) {
             if ($tipo == 1) {
     
                 $clave = ProgramacionPresupuesto::where([
