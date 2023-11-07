@@ -73,15 +73,17 @@ class MetasController extends Controller
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
 				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
 				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
+			$button = '';
 			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
 				if ($anio == $anioMax) {
 						$button = $accion;
 				} else {
 					$button = '';
 				}
-			} else {
-				if ($key->estatus == 0 && Auth::user()->id_grupo == 4) {
-					if ($sub = 'UUU') {
+			} 
+			if ($key->estatus == 0 && Auth::user()->id_grupo == 4) {
+					if ($sub == 'UUU') {
+						Log::debug("UUU");
 						if ($aut) {
 							$button = $accion;
 						} else {
@@ -89,31 +91,25 @@ class MetasController extends Controller
 						}
 
 					} else {
+						Log::debug("no es UUU");
 						$button = $accion;
 					}
 
-				} else {
-					$button = '';
-				}
-				if ($key->estatus == 0  && Auth::user()->id_grupo == 5 ) {
-					if($sub ='UUU' && !$aut){
+			}
+			if ($key->estatus == 0  && Auth::user()->id_grupo == 5 ) {
+					if($sub =='UUU' && !$aut){
 						$button = $accion;
 					}else{
 						$button = '';
 					}
-				} else {
-					$button = '';
 				}
-				if ($key->estatus == 0  && Auth::user()->id_grupo == 1 ) {
+			if ($key->estatus == 0  && Auth::user()->id_grupo == 1 ) {
 					if ($anio == $anioMax) {
 						$button = $accion;
 				} else {
 					$button = '';
 				}
-				} else {
-					$button = '';
 				}
-			}
 			$i = array(
 				$key->id,
 				$area[0],
@@ -648,7 +644,7 @@ class MetasController extends Controller
 							'ejercicio' => $anio,
 							'created_user' => $username
 						]);
-						if(!$confirm & Auth::user()->id_grupo ==1){
+						if(!$confirm["status"] & Auth::user()->id_grupo ==1){
 							$meta->estatus = 1;
 	
 							}
@@ -679,9 +675,8 @@ class MetasController extends Controller
 							'created_user' => $username
 						]);
 
-						if(!$confirm & Auth::user()->id_grupo ==1){
+						if(!$confirm["status"] & Auth::user()->id_grupo ==1){
 						$meta->estatus = 1;
-
 						}
 					}
 
