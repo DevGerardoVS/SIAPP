@@ -2139,6 +2139,7 @@ return new class extends Migration {
                 clv_proyecto,clv_fondo
             from aux_0;
             
+            set @query := concat(\"
             select 
                 case 
                     when actividad != '' then ''
@@ -2176,7 +2177,12 @@ return new class extends Migration {
                     0 enero,0 febrero,0 marzo,0 abril,0 mayo,0 junio,0 julio,0 agosto,0 septiembre,0 octubre,0 noviembre,0 diciembre
                 from aux_1
                 order by clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto,clv_fondo,actividad
-            )t;
+            )t \",@upp,\";
+            \");
+        
+            prepare stmt from @query;
+            execute stmt;
+            deallocate prepare stmt;
         
             drop temporary table aux_0;
             drop temporary table aux_1;
