@@ -1,10 +1,13 @@
 @extends('layouts.app')
 @include('calendarizacion.metas.addActividad')
 @include('calendarizacion.metas.modalFirmaElectronica')
+@include('calendarizacion.metas.actividadContinua')
 @section('content')
     <div class="container">
-        
+       
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
+        <input id='ar' type="text" style="display: none">
+        <input id='fondo' type="text" style="display: none">
         <section id="widget-grid" class="conteiner">
             <div class="row">
                 <div>
@@ -15,6 +18,7 @@
                 </div>
                     <label id="validMetas"  ></label>
                 <div class="row">
+
                     @if (Auth::user()->id_grupo != 4)
                     <div class="col-md-4">
                         <label class="control-label">UPP</label>
@@ -55,12 +59,13 @@
                             <br>
                                 @if (Auth::user()->id_grupo == 4)
                                 <button  type="button" class="btn btn-outline-primary col-md-2 cmupp" onclick="dao.exportJasperMetas()">Formato Metas</button>&nbsp;
-                                <button  type="button" class="btn btn-outline-primary col-md-2 cmupp" onclick="dao.exportJasper()">Formato</button>&nbsp;
+                                <button  type="button" class="btn btn-outline-primary col-md-2 cmupp" onclick="dao.exportJasper()">Formato claves</button>&nbsp;
                                 @endif
                                 
                                 <button type="button" style="justify-content: flex-end; " onclick="dao.exportPdf()"class="btn btn-outline-danger col-md-2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar PDF</button>&nbsp
                                 <button type="button" style="justify-content: float-right;" onclick="dao.exportExcel()" class="btn btn-outline-success col-md-2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar Excel</button> &nbsp
                                 <button type="button" class="btn btn-outline-primary float-right confirmacion" onclick="dao.ConfirmarMetas()" style="display: none"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Confirmar Metas</button>
+                               {{--  <button type="button" class="btn btn-outline-primary float-right" onclick="dao.DesconfirmarMetas()" ><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Confirmar Metas</button>  --}}
 
                             </div>   
                     @endif
@@ -72,6 +77,7 @@
                         <table id="proyectoM" class="table table-hover table-striped">
                             <thead style="visibility: visible !important" >
                                 <tr class="colorMorado">
+                                    <th class="vertical">ID</th>
                                     <th class="vertical">Finalidad</th>
                                     <th class="vertical">Función</th>
                                     <th class="vertical">Subfunción</th>

@@ -1,3 +1,4 @@
+// let env = "";
 var dao = {
   getData : function(ejercicio, upp, ur){
     let timerInterval
@@ -37,7 +38,7 @@ var dao = {
         const centroGestor = _data['claves'][index].entidad_federativa + _data['claves'][index].region + _data['claves'][index].municipio + _data['claves'][index].localidad + _data['claves'][index].upp + _data['claves'][index].subsecretaria + _data['claves'][index].ur;
         const areaFuncional = _data['claves'][index].finalidad + _data['claves'][index].funcion + _data['claves'][index].subfuncion + _data['claves'][index].eje + _data['claves'][index].linea_accion + _data['claves'][index].programa_sectorial + _data['claves'][index].tipologia_conac + _data['claves'][index].programa_presupuestario + _data['claves'][index].subprograma_presupuestario + _data['claves'][index].proyecto_presupuestario;
         const periodoPre = _data['claves'][index].periodo_presupuestal;
-        const posicionPre = _data['claves'][index].posicion_presupuestaria;
+        const posicionPre = _data['claves'][index].posicion_presupuestaria + _data['claves'][index].tipo_gasto;
         let upp = _data['claves'][index].claveUpp;
         let status = _data['claves'][index].estado;
         status == 1 ? estatusVista = 'Confirmadas' : estatusVista = 'Registradas';
@@ -60,13 +61,14 @@ var dao = {
         {"aTargets" : [4], "mData" : "posicionPre"},
         {"aTargets" : [5], "mData" : "fondo"},
         {"aTargets" : [6], "mData" : "proyectoObra"},
-        {"aTargets" : [7], "mData" : "totalByClave"},
+        {"aTargets" : [7], "mData" : "totalByClave", sClass: "montosR"},
         {"aTargets" : [8], "mData" : function(o){
           if (o.rol == 1) {
             if (o.estatus != 'Cerrado' && o.estatus != '') {
               if (o.estado == 0) {
+                let upp = "'"+o.upp+"'";
                 return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+o.upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
+              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
               }else{
                 return '<p><i class="fa fa-check">&nbsp;Confirmado</i></p>';
               }
@@ -75,8 +77,9 @@ var dao = {
             }
           }if (o.rol == 0) {
             if (o.filtroEjercicio == o.ejercicioCheck) {
+              let upp = "'"+o.upp+"'";
               return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+o.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
-              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+o.upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
+              +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + o.id + ','+upp+','+o.filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
             }else{
               return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
             }
@@ -125,19 +128,19 @@ var dao = {
     let fondoRamo = document.getElementById('fondoRamo').innerHTML;
     let capital = document.getElementById('capital').innerHTML;
     let proyectoObra = document.getElementById('proyectoObra').innerHTML;
-    let enero = document.getElementById('enero').value;
-    let febrero = document.getElementById('febrero').value;
-    let marzo = document.getElementById('marzo').value;
-    let abril = document.getElementById('abril').value;
-    let mayo = document.getElementById('mayo').value;
-    let junio = document.getElementById('junio').value;
-    let julio = document.getElementById('julio').value;
-    let agosto = document.getElementById('agosto').value;
-    let septiembre = document.getElementById('septiembre').value;
-    let octubre = document.getElementById('octubre').value;
-    let noviembre = document.getElementById('noviembre').value;
-    let diciembre = document.getElementById('diciembre').value;
-    let total = document.getElementById('totalCalendarizado').value;
+    let enero = parseInt(document.getElementById('enero').value.replaceAll(',','').replaceAll('$',''));
+    let febrero = parseInt(document.getElementById('febrero').value.replaceAll(',','').replaceAll('$',''));
+    let marzo = parseInt(document.getElementById('marzo').value.replaceAll(',','').replaceAll('$',''));
+    let abril = parseInt(document.getElementById('abril').value.replaceAll(',','').replaceAll('$',''));
+    let mayo = parseInt(document.getElementById('mayo').value.replaceAll(',','').replaceAll('$',''));
+    let junio = parseInt(document.getElementById('junio').value.replaceAll(',','').replaceAll('$',''));
+    let julio = parseInt(document.getElementById('julio').value.replaceAll(',','').replaceAll('$',''));
+    let agosto = parseInt(document.getElementById('agosto').value.replaceAll(',','').replaceAll('$',''));
+    let septiembre = parseInt(document.getElementById('septiembre').value.replaceAll(',','').replaceAll('$',''));
+    let octubre = parseInt(document.getElementById('octubre').value.replaceAll(',','').replaceAll('$',''));
+    let noviembre = parseInt(document.getElementById('noviembre').value.replaceAll(',','').replaceAll('$',''));
+    let diciembre = parseInt(document.getElementById('diciembre').value.replaceAll(',','').replaceAll('$',''));
+    let total = parseInt(document.getElementById('totalCalendarizado').value.replaceAll(',','').replaceAll('$',''));
     let tipo = document.getElementById('tipo').value;
     let ejercicio = document.getElementById('anio').value;
     let datos = [{'clasificacionAdministrativa':clasificacionAdministrativa,'entidadFederativa':entidadFederativa,'region':region, 'municipio':municipio,'localidad':localidad,'upp':upp,'subsecretaria':subsecretaria,
@@ -195,19 +198,19 @@ var dao = {
   },
   postUpdate : function () {
     let idClave = document.getElementById('idClave').value;
-    let enero = document.getElementById('enero').value;
-    let febrero = document.getElementById('febrero').value;
-    let marzo = document.getElementById('marzo').value;
-    let abril = document.getElementById('abril').value;
-    let mayo = document.getElementById('mayo').value;
-    let junio = document.getElementById('junio').value;
-    let julio = document.getElementById('julio').value;
-    let agosto = document.getElementById('agosto').value;
-    let septiembre = document.getElementById('septiembre').value;
-    let octubre = document.getElementById('octubre').value;
-    let noviembre = document.getElementById('noviembre').value;
-    let diciembre = document.getElementById('diciembre').value;
-    let total = document.getElementById('totalCalendarizado').value;
+    let enero = document.getElementById('enero').value.replaceAll(',','').replaceAll('$','');
+    let febrero = document.getElementById('febrero').value.replaceAll(',','').replaceAll('$','');
+    let marzo = document.getElementById('marzo').value.replaceAll(',','').replaceAll('$','');
+    let abril = document.getElementById('abril').value.replaceAll(',','').replaceAll('$','');
+    let mayo = document.getElementById('mayo').value.replaceAll(',','').replaceAll('$','');
+    let junio = document.getElementById('junio').value.replaceAll(',','').replaceAll('$','');
+    let julio = document.getElementById('julio').value.replaceAll(',','').replaceAll('$','');
+    let agosto = document.getElementById('agosto').value.replaceAll(',','').replaceAll('$','');
+    let septiembre = document.getElementById('septiembre').value.replaceAll(',','').replaceAll('$','');
+    let octubre = document.getElementById('octubre').value.replaceAll(',','').replaceAll('$','');
+    let noviembre = document.getElementById('noviembre').value.replaceAll(',','').replaceAll('$','');
+    let diciembre = document.getElementById('diciembre').value.replaceAll(',','').replaceAll('$','');
+    let total = document.getElementById('totalCalendarizado').value.replaceAll(',','').replaceAll('$','');
     let ejercicio = document.getElementById('ejercicio'). value;
     let clvUpp = document.getElementById('clvUpp'). value;
     let datos = [{'idClave':idClave,'enero':enero,'febrero':febrero,'marzo':marzo,'abril':abril,'mayo':mayo,'junio':junio,'julio':julio,'agosto':agosto,'septiembre':septiembre,'octubre':octubre,'noviembre':noviembre,'diciembre':diciembre,'total':total, 'ejercicio': ejercicio, 'clvUpp':clvUpp}];
@@ -242,22 +245,34 @@ var dao = {
           url: '/calendarizacion-eliminar-clave',
           data: {'id':id,'upp':upp, 'ejercicio':ejercicio}
         }).done(function (response) {
-          if (response != 'done') {
-            Swal.fire(
-              'Error',
-              'A ocurrido un error',
-              'error'
-            );
-          }else{
-            Swal.fire(
-              'Eliminado',
-              'Eliminado correctamente.',
-              'success'
-            );
-            let ejercicio = document.getElementById('filtro_anio').value;
-            let upp = document.getElementById('filtro_upp').value;
-            let ur = document.getElementById('filtro_ur').value;
-            dao.getData(ejercicio,upp,ur);
+          switch (response) {
+            case 'done':
+              Swal.fire(
+                'Eliminado',
+                'Eliminado correctamente.',
+                'success'
+              );
+              let ejercicio = document.getElementById('filtro_anio').value;
+              let upp = document.getElementById('filtro_upp').value;
+              let ur = document.getElementById('filtro_ur').value;
+              dao.getData(ejercicio,upp,ur);
+              break;
+            
+            case 'invalid':
+              Swal.fire(
+                'Aviso',
+                'Se requiere borrar las metas de esta clave presupuestal',
+                'warning'
+              );
+            break;
+          
+            default:
+              Swal.fire(
+                'Error',
+                'A ocurrido un error contacte con el administrador.',
+                'error'
+              );
+              break;
           }
         })
        
@@ -268,7 +283,8 @@ var dao = {
         $.ajax({
           type : "GET",
           url: '/cat-regiones',
-          dataType : "JSON"
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_region');
           par.html('');
@@ -287,7 +303,9 @@ var dao = {
 	getMunicipiosByRegion : function(id,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-municipios/'+ id,
+          url: '/cat-municipios/' + id,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_municipio');
           par.html('');
@@ -305,7 +323,9 @@ var dao = {
 	getLocalidadByMunicipio : function(id, idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-localidad/'+ id,
+          url: '/cat-localidad/' + id,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_localidad');
           par.html('');
@@ -323,7 +343,9 @@ var dao = {
 	getUpp : function(ejercicio,id){
         $.ajax({
           	type : "get",
-          	url: '/cat-upp/'+ ejercicio,
+          url: '/cat-upp/' + ejercicio,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_upp');
           par.html('');
@@ -332,6 +354,7 @@ var dao = {
             if (id != '' && val.clv_upp == id) {
              par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,true,true));
              document.getElementById('upp').innerHTML = data[i].clv_upp;
+             dao.alertaAvtividades(id,ejercicio);
             }else{
              par.append(new Option(data[i].clv_upp+ ' - '+ data[i].upp , data[i].clv_upp,false,false));
             }
@@ -341,7 +364,9 @@ var dao = {
 	getUninadResponsableByUpp : function(id,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-unidad-responsable/'+ id+'/'+ejercicio,
+          url: '/cat-unidad-responsable/' + id + '/' + ejercicio,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_unidad_res');
           par.html('');
@@ -350,7 +375,7 @@ var dao = {
             if (idSelected != '' && val.clv_ur == idSelected) {
               par.append(new Option(data[i].clv_ur+ ' - '+ data[i].ur, data[i].clv_ur,true,true));
               document.getElementById('ur').innerHTML = data[i].clv_ur;
-              document.getElementById('lbl_ur').innerText ='Ur: ' + data[i].ur;
+              document.getElementById('lbl_ur').innerText ='Ur: '+ data[i].clv_ur+ ' - ' + data[i].ur;
              }else{
               par.append(new Option(data[i].clv_ur+ ' - '+ data[i].ur, data[i].clv_ur,false,false));
              }
@@ -361,7 +386,9 @@ var dao = {
   getSubSecretaria :function (upp,ur,ejercicio) {
     $.ajax({
       type: 'get',
-      url: '/cat-subSecretaria/'+ upp + '/' + ur + '/'+ejercicio,
+      url: '/cat-subSecretaria/' + upp + '/' + ur + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       document.getElementById('subsecretaria').innerHTML = data.clv_subsecretaria;
     });
@@ -369,7 +396,9 @@ var dao = {
 	getProgramaPresupuestarioByur : function(uppId,id,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-programa-presupuestario/'+ uppId + '/' + id + '/'+ ejercicio,
+          url: '/cat-programa-presupuestario/' + uppId + '/' + id + '/' + ejercicio,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_programa');
           par.html('');
@@ -388,7 +417,9 @@ var dao = {
 	getSubProgramaByProgramaId : function(ur,id, upp,ejercicio,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-subprograma-presupuesto/'+ ur + '/'+ id + '/'+ upp + '/' + ejercicio,
+          url: '/cat-subprograma-presupuesto/' + ur + '/' + id + '/' + upp + '/' + ejercicio,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_sub_programa');
           par.html('');
@@ -407,7 +438,9 @@ var dao = {
 	getProyectoBySubPrograma : function(programa,id, upp, ur,ejercicio,idSelected){
     $.ajax({
         type : "get",
-        url: '/cat-proyecyo/'+ programa + '/' + id+'/'+ upp + '/' + ur+'/' +ejercicio,
+      url: '/cat-proyecyo/' + programa + '/' + id + '/' + upp + '/' + ur + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function(data){
       var par = $('#sel_proyecto');
       par.html('');
@@ -425,7 +458,9 @@ var dao = {
 	getLineaDeAccionByUpp : function(uppId,id,ejercicio,programa,subPrograma,proyecto,idSelected){
         $.ajax({
           	type : "get",
-          	url: '/cat-linea-accion/'+ uppId + '/' + id+'/'+ejercicio+ '/' + programa+'/'+subPrograma+ '/' + proyecto,
+          url: '/cat-linea-accion/' + uppId + '/' + id + '/' + ejercicio + '/' + programa + '/' + subPrograma + '/' + proyecto,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_linea');
           par.html('');
@@ -445,7 +480,9 @@ var dao = {
   getAreaFuncional: function (uppId,id,ejercicio,subPrograma,linea,programa,proyecto) {
     $.ajax({
       type:'get',
-      url: '/cat-area-funcional/'+uppId +'/'+id+'/'+ejercicio+'/'+subPrograma+'/'+linea+'/'+programa+'/'+proyecto,
+      url: '/cat-area-funcional/' + uppId + '/' + id + '/' + ejercicio + '/' + subPrograma + '/' + linea + '/' + programa + '/' + proyecto,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       document.getElementById('finalidad').innerHTML = data.clv_finalidad;
       document.getElementById('funcion').innerHTML = data.clv_funcion;
@@ -455,10 +492,12 @@ var dao = {
       document.getElementById('conac').innerHTML = data.clv_tipologia_conac;
     });
   },
-	getPartidaByUpp : function(clasificacion,id){
+	getPartidaByUpp : function(clasificacion,upp,id){
         $.ajax({
           	type : "get",
-          	url: '/cat-partidas/'+clasificacion,
+          url: '/cat-partidas/' + clasificacion+'/'+ upp,
+          dataType: "JSON",
+          headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function(data){
           var par = $('#sel_partida');
           par.html('');
@@ -481,7 +520,9 @@ var dao = {
   getFondosByUpp: function (id,subP, ejercicio,idSelected) {
     $.ajax({
       type:'get',
-      url:'/cat-fondos/'+ id + '/'+ subP +'/'+ejercicio,
+      url: '/cat-fondos/' + id + '/' + subP + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       var par = $('#sel_fondo');
         par.html('');
@@ -499,7 +540,7 @@ var dao = {
             document.getElementById('ramo').innerHTML = data[i].clv_ramo;
             document.getElementById('fondoRamo').innerHTML = data[i].clv_fondo;
             document.getElementById('capital').innerHTML = data[i].clv_capital;
-            document.getElementById('lbl_fondo').innerText ='Fondo: ' + data[i].fondo_ramo;
+            document.getElementById('lbl_fondo').innerText ='Fondo: '+ data[i].clv_fondo+ ' - ' + data[i].fondo_ramo;
             }else{
             par.append(new Option(data[i].clv_fondo+ '-'+  data[i].fondo_ramo, data[i].ejercicio + data[i].clv_etiquetado + data[i].clv_fuente_financiamiento + data[i].clv_ramo + data[i].clv_fondo + data[i].clv_capital,false,false));
             }
@@ -509,17 +550,21 @@ var dao = {
   getClasificacionAdmin:function (upp,ur) {
     $.ajax({
       type:'get',
-      url: '/cat-clasificacion-administrativa/'+ upp + '/' + ur,
+      url: '/cat-clasificacion-administrativa/' + upp + '/' + ur,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       let clasificacion = data.clv_sector_publico + data.clv_sector_publico_f + data.clv_sector_economia + data.clv_subsector_economia + data.clv_ente_publico;
       document.getElementById('clasificacion').innerHTML = clasificacion;
-      dao.getPartidaByUpp(clasificacion,'');
+      dao.getPartidaByUpp(clasificacion,upp,'');
     });
   },
   getPresupuestoPorUpp: function (upp,fondo,subPrograma,ejercicio) {
     $.ajax({
       type:'get',
-      url:'/presupuesto-upp-asignado/'+ upp +'/' + fondo + '/' + subPrograma + '/' + ejercicio,
+      url: '/presupuesto-upp-asignado/' + upp + '/' + fondo + '/' + subPrograma + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       let presupuesto = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.presupuesto);
       document.getElementById('preFondo').value = presupuesto;
@@ -530,7 +575,9 @@ var dao = {
   getPresupuestoPorUppEdit: function (upp,fondo,subPrograma,ejercicio) {
     $.ajax({
       type:'get',
-      url:'/presupuesto-upp-asignado-edit/'+ upp +'/' + fondo + '/' + subPrograma + '/' + ejercicio+ '/' + id,
+      url: '/presupuesto-upp-asignado-edit/' + upp + '/' + fondo + '/' + subPrograma + '/' + ejercicio + '/' + id,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       let presupuesto = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(data.presupuesto);
       document.getElementById('preFondo').value = presupuesto;
@@ -540,11 +587,21 @@ var dao = {
 
     });
   },
-  getPresupuesAsignado : function(ejercicio, upp){
+  getPresupuesAsignado: function (ejercicio, clv_upp) {
+    // let url = '';
+    // if (env !='local') {
+    //   url = 'https://' + window.location.hostname + '/get-presupuesto-asignado/' + ejercicio + '/' + upp;
+    // } else {
+    //   url='/get-presupuesto-asignado/' + ejercicio + '/' + upp;
+    // }
+    let upp = clv_upp != '' ? clv_upp : '';
     $.ajax({
-      type: 'get',
-      url: '/get-presupuesto-asignado/'+ ejercicio+'/'+upp,
-    }).done(function(response){
+      type: 'POST',
+      url:'/get-presupuesto-asignado',
+      data: {'ejercicio': ejercicio, 'upp': upp},
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+    }).done(function (data) {
+      const { response } = data;
       let ejercicioActual = document.getElementById('filAnioAbierto').value;
       let totalAsignado = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(response['presupuestoAsignado'][0].totalAsignado);
       let Totcalendarizado = new Intl.NumberFormat('en-US',{style:'currency', currency:'USD'}).format(response.Totcalendarizado);
@@ -552,6 +609,8 @@ var dao = {
       $('#asignadoUpp').val(totalAsignado);
       $('#calendarizado').val(Totcalendarizado);
       $('#disponibleUpp').val(disponible);
+
+      // Asignacion de valores Operativos...
       if (response.recursosOperativos ) {
         let operativos = response.recursosOperativos;
         let presupuestoOperativo = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(operativos.presupuestoOperativo);
@@ -561,6 +620,8 @@ var dao = {
         $('#calendarizadoOperativo').val(operativoCalendarizado);
         $('#disponibleOperativo').val(operativoDisponible);
       }
+
+      // Asignacion de valores RH...
       if (response.recursosRH) {
         let RH = response.recursosRH;
         let presupuestoRH = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(RH.presupuestoRH);
@@ -570,11 +631,12 @@ var dao = {
         $('#calendarizadoRH').val(RHCalendarizado);
         $('#disponibleRH').val(RHDisponible);
       }
-
+      //Tipo de rol Upp...
       if (response.rol == 1) {
-        if (response.esAutorizado) {
-          $('#presupuestoDeRh').hide(true);
-        }
+        // ocultamos el dic contenedor del preuspuesto de RH para las upps
+        $('#presupuestoDeRh').hide(true);
+      
+        // Validaciones para la upp...
         if (response.estatus != null && response.estatus.estatus && response.estatus.estatus == 'Abierto') {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
@@ -584,6 +646,7 @@ var dao = {
           }else{
             if (response['presupuestoAsignado'][0].totalAsignado && response['presupuestoAsignado'][0].totalAsignado > 0) {
               $('#btnNuevaClave').show(true);
+              $('#btn_confirmar').hide(true);
             }else{
               $('#btnNuevaClave').hide(true);
             }
@@ -594,8 +657,22 @@ var dao = {
             $('#btn_confirmar').hide(true);
             $('#button_modal_carga').hide(true);
         }
-      }if(response.rol == 0){
-        $('#presupuestoDeRh').show(true);
+      }
+      // Tipo de rol administrador...
+      if(response.rol == 0){
+        // Si la upp seleccionada en el filtro de upp es autorizada se muestran los recursos RH, de lo contrario se ocultaran...
+        $('#presupuestoDeRh').show(true); 
+        if (response.esAutorizado) {
+          $('#presupuestoDeRh').show(true);
+        }else{
+          if (response.upp != '') {
+            $('#presupuestoDeRh').hide(true);  
+          }else{
+            $('#presupuestoDeRh').show(true);
+          }
+          
+        }
+        // Validaciones para administrador...
         if (response.estatus != null && response.estatus.ejercicio && response.estatus.ejercicio == ejercicioActual) {
           if (response.Totcalendarizado == response['presupuestoAsignado'][0].totalAsignado && response.disponible == 0  && response['presupuestoAsignado'][0].totalAsignado > 0) {
             $('#btnNuevaClave').hide(true);
@@ -616,6 +693,7 @@ var dao = {
         }
         
       }
+      // Tipo de rol Delegacion...
       if (response.rol == 2) {
         $('#presupuestoDeRh').hide(true);
         $('#asignadoOperativo').val($('#asignadoRH').val());
@@ -644,8 +722,9 @@ var dao = {
         }
         
       }
+      // Tipo de rol auditor y gobDigital
       if (response.rol >= 3 ) {
-        $('#btnNuevaClave').hide(true);
+        $('#btnNuevaClave').hide(true); 
         $('#btn_confirmar').hide(true);
         $('#button_modal_carga_adm').hide(true);
         $('#button_modal_carga').hide(true);
@@ -657,7 +736,9 @@ var dao = {
   getSector: function (clave) {
     $.ajax({
       type:'get',
-      url:'/calendarizacion-get-sector/'+ clave,
+      url: '/calendarizacion-get-sector/' + clave,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function(response){
       document.getElementById('lbl_sector').innerText = 'Sector: ' + response.sector;
     });
@@ -728,10 +809,12 @@ var dao = {
   },
   getDetallePresupuestoByFondo : function (ejercicio,clvUpp) {
     $.ajax({
-      type : 'get',
-      url: '/calendarizacion-claves-presupuesto-fondo/'+ejercicio+'/'+clvUpp,
-      dataType : "JSON"
-    }).done(function (response) {
+      type : 'POST',
+      url: '/calendarizacion-claves-presupuesto-fondo',
+      data:{'ejercicio': ejercicio, 'clvUpp': clvUpp},
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+    }).done(function (rest) {
+      const { response } = rest;
       let data = [];
       for (let index = 0; index < response.fondos.length; index++) {
         const clv_fondo = response.fondos[index].clv_fondo;
@@ -744,18 +827,76 @@ var dao = {
         let ejercicio = response.fondos[index].ejercicio
         data.push({'clv_fondo':clv_fondo,'fondo_ramo':fondo_ramo,'Operativo':Operativo,'RH':RH ,'techos_presupuestal':techos_presupuestal,'calendarizado':calendarizado,'disponible':disponible, 'ejercicio':ejercicio});  
       }
+      let tabla = '';
+      let colums = [];
+      switch (response.rol) {
+        case 0:
+          tabla = $("#tblPresupuestos");
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "Operativo", sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "RH", sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "techos_presupuestal", sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "calendarizado", sClass: "montosR"},
+            {"aTargets" : [6], "mData" : "disponible", sClass: "montosR"},
+            {"aTargets" : [7], "mData" : "ejercicio"},
+          ];
+          $('#tblPresupuestos').show(true);
+          $('#tablaUpps').hide(true);
+          $('#tablaDelegacion').hide(true);
+          break;
+        case 1:
+
+          tabla = $('#tablaUpps');
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "Operativo",sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "techos_presupuestal",sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "calendarizado",sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "disponible",sClass: "montosR"},
+            {"aTargets" : [6], "mData" : "ejercicio"},
+          ];
+          $('#tablaUpps').show(true);
+          $('#tablaDelegacion').hide(true);
+          $('#tblPresupuestos').hide(true);
+          break;
+        case 2:
+
+          tabla = $('#tablaDelegacion');
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "RH",sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "techos_presupuestal",sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "calendarizado",sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "disponible",sClass: "montosR"},
+            {"aTargets" : [6], "mData" : "ejercicio"},
+          ];
+          $('#tablaDelegacion').show(true);
+          $('#tblPresupuestos').hide(true);
+          $('#tablaUpps').hide(true);
+          break;
+        default:
+
+          tabla = $("#tblPresupuestos");
+          colums = [
+            {"aTargets" : [0], "mData" : 'clv_fondo'},
+            {"aTargets" : [1], "mData" : "fondo_ramo"},
+            {"aTargets" : [2], "mData" : "Operativo",sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "RH",sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "techos_presupuestal",sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "calendarizado",sClass: "montosR"},
+            {"aTargets" : [6], "mData" : "disponible",sClass: "montosR"},
+            {"aTargets" : [7], "mData" : "ejercicio"},
+          ];
+          $('#tblPresupuestos').show(true);
+          break;
+      }
       document.getElementById('titleModalpresupuesto').innerText = response.upp['clave'] + ' - ' +response.upp['descripcion']; 
-      _table = $("#tblPresupuestos");
-			_columns = [
-				{"aTargets" : [0], "mData" : 'clv_fondo'},
-				{"aTargets" : [1], "mData" : "fondo_ramo"},
-				{"aTargets" : [2], "mData" : "Operativo"},
-				{"aTargets" : [3], "mData" : "RH"},
-				{"aTargets" : [4], "mData" : "techos_presupuestal"},
-				{"aTargets" : [5], "mData" : "calendarizado"},
-        {"aTargets" : [6], "mData" : "disponible"},
-        {"aTargets" : [7], "mData" : "ejercicio"},
-			];
+      _table = tabla;
+			_columns = colums;
 			_gen.setTableScrollFotter(_table, _columns, data);
       $('modalPresupuesto').show(true);
     });
@@ -814,7 +955,9 @@ var dao = {
   filtroUpp : function(ejercicio,id){
     $.ajax({
         type : "get",
-        url: '/cat-upp/'+ejercicio,
+      url: '/cat-upp/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function(data){
       var par = $('#filtro_upp');
       par.html('');
@@ -832,7 +975,9 @@ var dao = {
   filtroUr : function(id, ejercicio){
     $.ajax({
       type : "get",
-      url: '/cat-unidad-responsable/'+ id+'/'+ejercicio,
+      url: '/cat-unidad-responsable/' + id + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
   }).done(function(data){
     var par = $('#filtro_ur');
     par.html('');
@@ -849,7 +994,9 @@ var dao = {
   getObras: function(val, idSelected = ''){
     $.ajax({
       type: "get",
-      url: '/cat-obras/'+ val,
+      url: '/cat-obras/' + val,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       if (data.permisoObra == 200) {
         $('#obras').show('');
@@ -874,7 +1021,9 @@ var dao = {
   getEjercicios: function (id) {
     $.ajax({
       type:'get',
-      url:'/get-ejercicios'
+      url: '/get-ejercicios',
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
       var par = $('#filtro_anio');
       par.html('');
@@ -886,6 +1035,22 @@ var dao = {
          par.append(new Option(data[i].ejercicio , data[i].ejercicio,false,false));
         }
       });
+    });
+  },
+  alertaAvtividades : function (upp,ejercicio) {
+    $.ajax({
+      type:'get',
+      url: '/alerta-actividades/' + upp + '/' + ejercicio,
+      dataType: "JSON",
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+    }).done(function (data) {
+      if (data.estatus == 1) {
+        Swal.fire(
+          'Advertencia!',
+        "Tienes "+data.metas+ " metas confirmadas para está upp, se van a desconfirmar si agregás o editas las claves.",
+          'warning'
+        );
+      }
     });
   },
 
@@ -933,38 +1098,70 @@ var init = {
       }
     })
   },
-}
+};
 
 function calucalarCalendario() {
   var total = 0;
   $(".monto").each(function() {
-    if (isNaN(parseInt($(this).val()))) {
+    let val = parseInt($(this).val().replaceAll(",","").replaceAll("$",""));
+    if (isNaN(val)) {
 
       total += 0;
 
     } else {
 
-      total +=   parseInt($(this).val());
+      total +=   parseInt($(this).val().replaceAll(",","").replaceAll("$",""));
 
     }
 
   });
-  document.getElementById('totalCalendarizado').value = total;
-}
+  let valueFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(total); 
+  document.getElementById('totalCalendarizado').value = valueFormated;
+};
+function formateoDeMonedaUpdate() {
+  $(".monto").each(function() {
+    let val = parseInt($(this).val().replaceAll(",","").replaceAll("$",""));
+    if (isNaN(val)) {
+
+      document.getElementById(this.id).value = 0;
+
+    } else {
+      let valueFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val); 
+      document.getElementById(this.id).value = valueFormated;
+    }
+    
+  });
+  let total = document.getElementById('totalCalendarizado').value;
+    if (total > 0) {
+      let totalFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(total);
+      document.getElementById('totalCalendarizado').value = totalFormated; 
+    }  
+};
 function soloEnteros() {
   var total = 0;
   $(".monto").each(function() {
-    if (isNaN(parseInt($(this).val()))) {
+    if (isNaN(parseInt($(this).val().replaceAll(",","").replaceAll("$","")))) {
       total += 0;
     } else {
-      $(this).val(parseInt($(this).val()));
+      $(this).val(parseInt($(this).val().replaceAll(",","").replaceAll("$","")));
     }
     $("#" + $(this)[0].id).on('paste', function (e) {
         e.preventDefault();
     });
   });
-}
-$(document).ready(function(){
+};
+$(".monto").change(function () {
+  let value =  document.getElementById(this.id).value.replaceAll(",","").replaceAll("$","");
+  let valueFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value); 
+  document.getElementById(this.id).value = valueFormated;
+  
+});
+$(document).ready(function () {
+  $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
   $("#segundaParte").hide();
   $('.select2').select2({
     theme: "classic"
@@ -992,6 +1189,7 @@ $(document).ready(function(){
     let ejercicio = document.getElementById('anio').value;
 		dao.getUninadResponsableByUpp(val,ejercicio,'');
     dao.getObras(val);
+    dao.alertaAvtividades(val,ejercicio);
 	});
 	$('#sel_unidad_res').change(function(e){
 		e.preventDefault();
@@ -1112,7 +1310,7 @@ $(document).ready(function(){
   });
   $('#btnSaveAll').click(function (params) {
     params.preventDefault();
-    let total = document.getElementById('totalCalendarizado').value;
+    let total = parseInt(document.getElementById('totalCalendarizado').value.replaceAll(',','').replaceAll('$',''));
     let disponible = document.getElementById('preDisFondo').value;
     let disp = parseInt(disponible.replaceAll(',', '').replaceAll('$', ''));
     if (total > 0 && total <= parseInt(disp)) {
@@ -1151,7 +1349,7 @@ $(document).ready(function(){
     params.preventDefault();
     let calendarizado = document.getElementById('calendarizado').value;
    calendarizado = parseInt(calendarizado);
-    let total = document.getElementById('totalCalendarizado').value;
+    let total = document.getElementById('totalCalendarizado').value.replaceAll(',', '').replaceAll('$', '');
     let disponible = document.getElementById('preDisFondo').value;
     let disp = parseInt(disponible.replaceAll(',', '').replaceAll('$', ''));
     disp = disp + calendarizado;
@@ -1194,9 +1392,9 @@ $(document).ready(function(){
     document.getElementById('filAnio').value = id;
     let upp = document.getElementById('filUpp').value;
     let ur = document.getElementById('filtro_ur').value;
-    if (upp && upp != '') {
-      dao.filtroUr(upp,id);
-    }
+      if (upp && upp != '') {
+        dao.filtroUr(upp,id);
+      }
     dao.getData(id,upp,ur);
 	});
   $('#filtro_upp').change(function (e) {
@@ -1222,5 +1420,4 @@ $(document).ready(function(){
     window.location.href = '/calendarizacion-claves-create/'+ejercicio;
   });
   soloEnteros();
-
 });

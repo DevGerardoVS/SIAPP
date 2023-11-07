@@ -6,6 +6,11 @@ use App\Http\Controllers\Calendarizacion\TechosController;
 use App\Http\Controllers\Calendarizacion\CalendarizacionCargaMasivaController;
 
 include('metas.php');
+Route::group(['middleware' => ['forceScheme:https']], function () {
+    Route::controller(ClavePreController::class);
+    // Otras rutas que también se beneficiarán del middleware
+});
+
 
 Route::controller(TechosController::class)->group(function () {
 	Route::get('/calendarizacion/techos', 'getIndex')->name('index_techos');
@@ -26,6 +31,7 @@ Route::controller(TechosController::class)->group(function () {
 
 	Route::controller(ClavePreController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');
+		Route::get('/calendarizacion/get-manual-carga-masiva-claves', 'getManualCMC')->name('getManualCMC');
 		Route::get('/calendarizacion-claves-create/{ejercicio?}', 'getCreate');
 		Route::post('/calendarizacion-claves-get', 'getClaves');
 		Route::get('/cat-regiones', 'getRegiones');
@@ -37,14 +43,14 @@ Route::controller(TechosController::class)->group(function () {
 		Route::get('/cat-subprograma-presupuesto/{ur?}/{id?}/{upp?}/{ejercicio?}', 'getSubProgramas');
 		Route::get('/cat-proyecyo/{programa?}/{id?}/{upp?}/{ur?}/{ejercicio?}', 'getProyectos');
 		Route::get('/cat-linea-accion/{uppId?}/{id?}/{ejercicio?}/{programa?}/{subPrograma?}/{proyecto?}', 'getLineaAccion');
-		Route::get('/get-presupuesto-asignado/{ejercicio?}/{upp?}', 'getPresupuestoAsignado');
-		Route::get('/calendarizacion-claves-presupuesto-fondo/{ejercicio?}/{clvUpp?}', 'getPanelPresupuestoFondo');
+		Route::post('/get-presupuesto-asignado', 'getPresupuestoAsignado');
+		Route::post('/calendarizacion-claves-presupuesto-fondo', 'getPanelPresupuestoFondo');
 		Route::post('/calendarizacion-eliminar-clave', 'postEliminarClave');
 		Route::post('/calendarizacion-guardar-clave', 'postGuardarClave');
 		Route::get('/calendarizacion/get-calendarizacion-panel', 'getPanelCalendarizacion');
 		Route::get('/cat-subSecretaria/{upp?}/{ur?}/{ejercicio?}', 'getSubSecretaria');
 		Route::get('/cat-area-funcional/{uppId?}/{id?}/{ejercicio?}/{subPrograma?}/{linea?}/{programa?}/{proyecto?}', 'getAreaFuncional');
-		Route::get('/cat-partidas/{clasificacion?}', 'getPartidas');
+		Route::get('/cat-partidas/{clasificacion?}/{upp?}', 'getPartidas');
 		Route::get('/cat-fondos/{id?}/{subP?}/{ejercicio?}', 'getFondos');
 		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
 		Route::get('/presupuesto-upp-asignado/{upp?}/{fonfo?}/{subPrograma?}/{ejercicio?}', 'getPresupuestoPorUpp');
@@ -56,11 +62,13 @@ Route::controller(TechosController::class)->group(function () {
 		Route::get('/calendarizacion-get-sector/{clave?}', 'getSector');
 		Route::get('/cat-obras/{val?}', 'getObras');
 		Route::get('/get-ejercicios','getEjercicios');
+		Route::get('/alerta-actividades/{upp?}/{ejercicio?}','alertaAvtividades');
+		
 });
 
 Route::controller(CalendarizacionCargaMasivaController::class)->group(function () {
 	Route::get('/calendarizacion/get-plantilla', 'getExcel')->name('getplantilla');
-	Route::post('/calendarizacion/download-errors-excel', 'DownloadErrors')->name('SaveErrors');
+	Route::get('/calendarizacion/download-errors-excel/{fails?}', 'DownloadErrors')->name('SaveErrors');
 	Route::post('/calendarizacion/load-Data-Plantilla', 'loadDataPlantilla')->name('load_data_plantilla');
 });
 ?>

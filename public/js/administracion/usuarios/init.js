@@ -231,7 +231,8 @@ var dao = {
                 nombre,
                 p_apellido,
                 s_apellido,
-                nombre_grupo
+                nombre_grupo,
+                id_grupo
             } = response;
             $('#id_user').val(id);
             $('#username').val(username);
@@ -240,7 +241,12 @@ var dao = {
             $('#s_apellido').val(s_apellido);
             $('#email').val(email);
             $('#in_celular').val(celular);
-            $('#label_idGrupo').text(nombre_grupo).show();
+            var par = $('#id_grupo');
+            par.html('');
+            par.append(new Option(nombre_grupo, id_grupo));
+           // document.getElementById("id_permiso").options[0].disabled = true;
+           // $("#id_grupo option[value='"+id_grupo+"']").attr("selected", true);
+           // $('#label_idGrupo').text(nombre_grupo).show();
             $("#id_grupo").hide();
             $("#labelGrupo").hide();
             $("#passchange").hide();
@@ -480,4 +486,31 @@ $('#btnSaveCreate').click(function (e) {
         }
     });
     $('#in_celular').mask('00-00-00-00-00');
+});
+
+// Ocultar contraseña crear usuario
+$("#show-password #toggle-password").on('click', function(event) {
+    event.preventDefault();
+    if($('#show-password input').attr("type") == "text"){
+        $('#show-password input').attr('type', 'password');
+        $('#show-password i').addClass( "fa-eye-slash" );
+        $('#show-password i').removeClass( "fa-eye" );
+    }else if($('#show-password input').attr("type") == "password"){
+        $('#show-password input').attr('type', 'text');
+        $('#show-password i').removeClass( "fa-eye-slash" );
+        $('#show-password i').addClass( "fa-eye" );
+    }
+});
+
+$("#show-password-confirm #toggle-password").on('click', function(event) {
+    event.preventDefault();
+    if($('#show-password-confirm input').attr("type") == "text"){
+        $('#show-password-confirm input').attr('type', 'password');
+        $('#show-password-confirm i').addClass( "fa-eye-slash" );
+        $('#show-password-confirm i').removeClass( "fa-eye" );
+    }else if($('#show-password-confirm input').attr("type") == "password"){
+        $('#show-password-confirm input').attr('type', 'text');
+        $('#show-password-confirm i').removeClass( "fa-eye-slash" );
+        $('#show-password-confirm i').addClass( "fa-eye" );
+    }
 });

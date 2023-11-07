@@ -18,24 +18,20 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
     protected $upp;
     protected $anio;
 
-    function __construct($upp,$anio) {
-
+    function __construct($upp, $anio)
+    {
         $this->upp = $upp;
         $this->anio = $anio;
-        
-
     }
     public function collection()
     {
-/* 
-        $query = MetasHelper::actividades($this->upp); */
-        $dataSet = MetasController::getActiv($this->upp,$this->anio);
+        $dataSet = MetasController::getActiv($this->upp, $this->anio);
         $this->filas = count($dataSet);
-        for ($i=0; $i <count($dataSet); $i++) { 
-			unset($dataSet[$i][19]);
-			$dataSet=array_values($dataSet);
-		}
-		return collect($dataSet);
+        for ($i = 0; $i < count($dataSet); $i++) {
+            unset($dataSet[$i][20]);
+            $dataSet = array_values($dataSet);
+        }
+        return collect($dataSet);
     }
 
     /**
@@ -44,7 +40,7 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
      */
     public function headings(): array
     {
-        return ["FINALIDAD","FUNCION","SUBFUNCION","EJE","L ACCION","PRG SECTORIAL","TIPO CONAC","UPP","UR", "Programa", "Subprograma", "proyecto",'Fondo', "Actividad","Tipo Actividad","Meta anual", "# Beneficiarios", "beneficiarios","U de medida"];
+        return ["ID", "FINALIDAD","FUNCION","SUBFUNCION","EJE","L ACCION","PRG SECTORIAL","TIPO CONAC","UPP","UR", "Programa", "Subprograma", "proyecto",'Fondo', "Actividad","Tipo Actividad","Meta anual", "# Beneficiarios", "beneficiarios","U de medida"];
     }
 
     public function columnWidths(): array
@@ -59,7 +55,17 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
             'G' => 20,
             'H' => 10,
             'I' => 10,
-            'J' => 10
+            'J' => 10,
+            'K' => 10,
+            'L' => 10,
+            'M' => 10,
+            'N' => 10,
+            'O' => 10,
+            'P' => 10,
+            'Q' => 10,
+            'R' => 10,
+            'S' => 10,
+            'T' => 10,
         ];
     }
     public function registerEvents():array{

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+
+use Illuminate\Support\Facades\Storage;
 use PDF;
 use App\Exports\InicioExport;
 
@@ -91,6 +93,27 @@ class InicioController extends Controller
         }
     }
 
+    public function getManual(){
+        $file = "";
+        $name = "";
+        if(Auth::user()->id_grupo==1){
+            $name = "CAP_Manual_de_Usuario_Administrador.pdf";
+            $file= public_path(). "/manuales/". $name;
+        } 
+        if(Auth::user()->id_grupo==4){
+            $name = "CAP_Manual_de_Usuario_UPP.pdf";
+            $file= public_path()."/manuales/". $name;
+        } 
+        if(Auth::user()->id_grupo==5){
+            $name = "CAP_Manual_de_Usuario_Delegacion.pdf";
+            $file= public_path()."/manuales/". $name;
+        } 
+        
+        //Log::channel('daily')->debug('exp '.public_path());
+        $headers = array('Content-Type: application/pdf',);
+
+        return response()->download($file,$name,$headers);
+    }
     
     public function getFondos(){
         $fondos = DB::table("techos_financieros as tf")

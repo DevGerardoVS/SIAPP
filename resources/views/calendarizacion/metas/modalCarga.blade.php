@@ -18,11 +18,15 @@
                         <li >El numero de beneficiarios debe ser <b>mayor a cero</b>.</li>
                         <li ><b>Agregar las filas necesarias</b>.</li>
                         <li >Solo se pueden llenar los meses que estan registrados en <b>calendarización de claves</b>.</li>
+                        <li >Para el subprograma <b>UUU</b> se registran automaticamnete en el sistema el total y los meses predeterminados.</li>
                     </ul>
-                    <a  class="btn-primary text-center" style="float:left; text-decoration:none; width:20%;"  href="{{route('ProyExcel')}}">
-                        <i class="fa fa-download" aria-hidden="true"></i>
-                        Descargar plantilla
-                    </a>
+                    <button type="button" class="btn btn-outline-primary text-center" style="float:left;text-decoration:none; width:20%;" onclick="dao.getPlantillaCmUpp()"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Descargar plantilla</button>
+                  <p><br><br></p>
+                  @if (Auth::user()->id_grupo==4)
+                  <a type="button" class="btn btn-outline-success text-center" style="float:left;text-decoration:none; width:20%;" href="{{ route('Manual_Carga_Masiva_metas') }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Manual</a>
+
+                  @endif
+
                         <input name="cmFile" type="file" id="cmFile" name="cmFile" accept=".xlsx,.xlsm" class="border border-secondary rounded" placeholder="Archivo" required style="margin-top:5%; width : 100%;">
                     <br>
                 </div>

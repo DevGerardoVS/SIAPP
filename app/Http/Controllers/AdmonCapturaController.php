@@ -28,14 +28,17 @@ class AdmonCapturaController extends Controller
         }
 
         $comprobarEstadoPP = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = $anio GROUP BY upp");
-        $comprobarEstadoMetas = DB::select("SELECT m.estatus, am.clv_upp, am.ejercicio FROM metas m JOIN mml_mir am ON m.mir_id = am.id WHERE am.ejercicio = $anio GROUP BY am.clv_upp");        
-        $upps = DB::select("SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND ejercicio = $anio AND c.deleted_at is null ORDER BY clave ASC");
+        $comprobarEMM = DB::select("SELECT m.estatus, am.clv_upp, am.ejercicio FROM metas m JOIN mml_mir am ON m.mir_id = am.id WHERE am.ejercicio = $anio GROUP BY am.clv_upp"); // Variable para comprobar el estado de metas por mir
+        $comprobarEMA = DB::select("SELECT m.estatus, act.clv_upp, act.ejercicio FROM metas m JOIN mml_actividades act ON m.actividad_id = act.id WHERE act.ejercicio = $anio GROUP BY act.clv_upp"); // Variable para comprobar el estado de metas por actividad  
+        $upps = DB::select("SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND c.ejercicio = $anio AND cec.ejercicio = $anio AND c.deleted_at is null ORDER BY clave ASC");
+
         return view("captura.admonCaptura", [
             'dataSet' => json_encode($dataSet),
             'anio' => $anio,
             'upps' => $upps,
             'comprobarEstadoPP' => $comprobarEstadoPP,
-            'comprobarEstadoMetas' => $comprobarEstadoMetas,
+            'comprobarEMM' => $comprobarEMM,
+            'comprobarEMA' => $comprobarEMA,
             'comprobarAnioPP' => $comprobarAnioPP,
             'version' => $version,
         ]);
@@ -119,6 +122,7 @@ class AdmonCapturaController extends Controller
         $usuario = Auth::user()->username;
         $checar_upp_PP = '';
         $checar_upp_metas = '';
+        $checar_upp_metasA = '';
         $checar_clave = '';
         $checar_ambos = '';
 
@@ -127,19 +131,23 @@ class AdmonCapturaController extends Controller
             $checar_clave = "AND clv_upp = '$upp'";
             $checar_upp_PP = "AND upp = '$upp'";
             $checar_upp_metas = "AND am.clv_upp = '$upp'";
+            $checar_upp_metasA = "AND act.clv_upp = '$upp'";
         }  
 
         try {
             DB::beginTransaction();
             
+            // Update a las tablas de cierre ejercicio
             str_contains($modulo,',') ? DB::update("UPDATE $modulo SET cec.estatus = '$habilitar', cec.updated_user = '$usuario', cem.estatus = '$habilitar', cem.updated_user = '$usuario' WHERE cec.ejercicio = $anio AND cem.ejercicio= $anio $checar_ambos") : DB::update("UPDATE $modulo SET estatus = '$habilitar', updated_user = '$usuario' WHERE ejercicio = $anio $checar_clave");
             
+            // Update a las tablas de programación presupuesto (claves) y metas
             if($estado == "activo"){
                 if($modulo == "cierre_ejercicio_claves cec" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
                     DB::update("UPDATE programacion_presupuesto SET estado = 0 WHERE ejercicio = $anio  $checar_upp_PP");
                 }
                 if($modulo == "cierre_ejercicio_metas cem" || $modulo == "cierre_ejercicio_claves cec, cierre_ejercicio_metas cem"){
                     DB::update("UPDATE metas m JOIN mml_mir am ON m.mir_id = am.id SET m.estatus = 0 WHERE am.ejercicio = $anio AND m.estatus = 1 $checar_upp_metas");
+                    DB::update("UPDATE metas m JOIN mml_actividades act ON m.actividad_id = act.id SET m.estatus = 0 WHERE act.ejercicio = $anio AND m.estatus = 1 $checar_upp_metasA");
                 }
             }
 
@@ -151,9 +159,11 @@ class AdmonCapturaController extends Controller
             );
             Controller::bitacora($b);
             DB::commit();
+        // try{
             return redirect()->route("index")->withSuccess('Los datos fueron modificados');
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::channel('daily')->debug('exp ' . $e->getMessage());
             return back()->withErrors(['msg'=>'¡Ocurrió un error al modificar los datos!']);
         }
     }
@@ -183,6 +193,7 @@ class AdmonCapturaController extends Controller
             return redirect()->route("index")->withSuccess('¡Corte hecho!');
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::channel('daily')->debug('exp ' . $e->getMessage());
             return back()->withErrors(['msg'=>'¡Ocurrió un error al hacer el corte!']);
         }
     }

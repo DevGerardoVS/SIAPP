@@ -44,24 +44,24 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-10">
-                            <div class="form-group">
-                                <label for="instruccion 2">
-                                    <span style="vertical-align: inherit;"><span
-                                            style="vertical-align: inherit;">Modifique única y exclusivamente las
-                                            columnas de <b>año y las propias cantidades de los meses</b></span></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-10">
+                        <div class="col-sm-9">
                             <div class="form-group">
                                 <label for="instruccion 2">
                                     <span style="vertical-align: inherit;"><span
                                             style="vertical-align: inherit;">Los datos de claves presupuestarias guardados no confirmados <b>seran borrados</b></span></span>
                                 </label>
                             </div>
+                        </div>
+                        <div class="col-sm-3">
+                            @if(Auth::user()->id_grupo==4)
+                            <div class="form-group">
+                                <a href="{{ route('getManualCMC') }}" type="button" class="btn btn-success"
+                                    id="downloadbtn" name="downloadbtn">
+                                    <i class="fa fa-download" style="color: #dfdfdf"></i>
+                                    {{ __('messages.descargar_manual') }}</a>
+
+                            </div>
+                            @endif
                         </div>
                     </div>
 
@@ -87,7 +87,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row d-flex justify-content-center">Atención se borraran los registros no confirmados</div>
+                <div class="row d-flex justify-content-center" style="font-weight: bold;">Atención se borraran los registros no confirmados</div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">

@@ -28,16 +28,25 @@
                             <div class="form-group row">
                                 <label for="password" class="col-md-4 col-form-label text-md-right">{{__('Contraseña actual')}}</label>
     
-                                <div class="col-md-6">
+                                <div class="col-md-6 d-flex" id="show-password-actual">
                                     <input id="password" type="password" class="form-control" name="contraseña_actual" autocomplete="contraseña_actual">
+                                    <span class="input-group-text border-0 bg-transparent"  id="toggle-password" style="cursor: pointer;">
+                                        <i class="fa fa-eye-slash fs-4 text-black" aria-hidden="true"></i>
+                                    </span>
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label for="password" class="col-md-4 col-form-label text-md-right">{{('Nueva contraseña')}}</label>
     
-                                <div class="col-md-6">
-                                    <input id="nueva_contraseña" type="password" class="form-control  @error('nueva_contraseña')  is-invalid @enderror"  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required minlength="8" name="nueva_contraseña" autocomplete="contraseña_actual">
+                                <div class="col-md-6" id="show-password-new">
+                                    <div class="d-flex">
+                                        <input id="nueva_contraseña" type="password" class="form-control  @error('nueva_contraseña')  is-invalid @enderror"  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required minlength="8" name="nueva_contraseña" autocomplete="contraseña_actual">
+                                        <span class="input-group-text border-0 bg-transparent"  id="toggle-password" style="cursor: pointer;">
+                                            <i class="fa fa-eye-slash fs-4 text-black" aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+                                    
                                     <div id="message">
                                         <p>La Contraseña debe concidir con lo siguiente:</p>
                                         <p id="letter" class="invalid">Una letra <b>minuscula</b> </p>
@@ -56,8 +65,11 @@
                             <div class="form-group row">
                                 <label for="password" class="col-md-4 col-form-label text-md-right">{{('Confirmar contraseña')}}</label>
         
-                                <div class="col-md-6">
+                                <div class="col-md-6 d-flex" id="show-password-confirm">
                                     <input id="confirmar_nueva_contraseña" type="password" class="form-control" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required minlength="8" name="confirmar_nueva_contraseña" autocomplete="contrasenia_actual">
+                                    <span class="input-group-text border-0 bg-transparent"  id="toggle-password" style="cursor: pointer;">
+                                        <i class="fa fa-eye-slash fs-4 text-black" aria-hidden="true"></i>
+                                    </span>
                                 </div>
                                 <div id="message1">
                                     <p id="coincide" class="valid">Las contraseñas coinciden</p>
@@ -160,6 +172,46 @@
             passwordInput.onblur = function() {
                 document.getElementById("message").style.display = "none";
             }
+
+            // Ocultar contraseñas
+            $("#show-password-actual #toggle-password").on('click', function(event) { 
+                event.preventDefault();
+                if($('#show-password-actual input').attr("type") == "text"){
+                    $('#show-password-actual input').attr('type', 'password');
+                    $('#show-password-actual i').addClass( "fa-eye-slash" );
+                    $('#show-password-actual i').removeClass( "fa-eye" );
+                }else if($('#show-password-actual input').attr("type") == "password"){
+                    $('#show-password-actual input').attr('type', 'text');
+                    $('#show-password-actual i').removeClass( "fa-eye-slash" );
+                    $('#show-password-actual i').addClass( "fa-eye" );
+                }
+            });
+
+            $("#show-password-new #toggle-password").on('click', function(event) {
+                event.preventDefault();
+                if($('#show-password-new input').attr("type") == "text"){
+                    $('#show-password-new input').attr('type', 'password');
+                    $('#show-password-new i').addClass( "fa-eye-slash" );
+                    $('#show-password-new i').removeClass( "fa-eye" );
+                }else if($('#show-password-new input').attr("type") == "password"){
+                    $('#show-password-new input').attr('type', 'text');
+                    $('#show-password-new i').removeClass( "fa-eye-slash" );
+                    $('#show-password-new i').addClass( "fa-eye" );
+                }
+            });
+
+            $("#show-password-confirm #toggle-password").on('click', function(event) {
+                event.preventDefault();
+                if($('#show-password-confirm input').attr("type") == "text"){
+                    $('#show-password-confirm input').attr('type', 'password');
+                    $('#show-password-confirm i').addClass( "fa-eye-slash" );
+                    $('#show-password-confirm i').removeClass( "fa-eye" );
+                }else if($('#show-password-confirm input').attr("type") == "password"){
+                    $('#show-password-confirm input').attr('type', 'text');
+                    $('#show-password-confirm i').removeClass( "fa-eye-slash" );
+                    $('#show-password-confirm i').addClass( "fa-eye" );
+                }
+            });
     </script>
 
     @endsection

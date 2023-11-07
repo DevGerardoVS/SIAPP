@@ -1,10 +1,13 @@
 @extends('layouts.app')
 @include('calendarizacion.metas.modalCarga')
+@include('calendarizacion.metas.actividadContinua')
 @section('content')
     <div class="container">
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
         <input id='area' type="text" style="display: none">
         <input id='conmir' type="text" style="display: none">
+        <input id='calendar' type="text" style="display: none">
+        <input id='activiMir' type="text" style="display: none">
             <div class="row">
                         <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
                             <h2>Agregar Actividad</h2>
@@ -41,11 +44,11 @@
                                         @if (check_assignFront(1))
                                             <div  id="CargaMasiva" class="col-md-4 d-flex CargaMasiva " style="justify-content: flex-end" >
                                                 <div >
-                                                    <button  type="button" class="btn btn-primary CargaMasiva" data-toggle="modal"
-                                                        data-target="#carga" data-backdrop="static"
-                                                        data-keyboard="false" style="display: none">Carga-Masiva</button>&nbsp;
-{{--                                                         <button type="button" class="btn btn-outline-primary float-right desconfirmacion" onclick="dao.DesConfirmarMetas()"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Desconfirmar Metas</button>
- --}}
+                                                <button type="button" class="btn btn-outline-primary float-right CargaMasiva" data-toggle="modal"
+                                                data-target="#carga" data-backdrop="static" style="display: none">Carga-Masiva</button>
+                                                    {{--<button type="button" class="btn btn-outline-primary float-right desconfirmacion" 
+                                                    onclick="dao.DesConfirmarMetas()"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Desconfirmar Metas</button>
+                                                     --}}
                                                 </div>
                                             </div>
                                         @endif
@@ -103,5 +106,7 @@
     <script src="/js/utilerias.js"></script>
     <script>
         init.validateFile($('#formFile'));
+        init.validateCont($('#formContinua'));
+
     </script>
 @endsection

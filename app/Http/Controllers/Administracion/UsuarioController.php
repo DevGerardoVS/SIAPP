@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administracion;
 
 use App\Http\Controllers\Controller;
 use App\Models\administracion\PermisosUpp;
+use App\Models\administracion\AdmUsers;
 use App\Models\administracion\UsuarioGrupo;
 use App\Models\catalogos\CatPermisos;
 use App\Models\User;
@@ -35,8 +36,8 @@ class UsuarioController extends Controller
             'id',
             'username',
             DB::raw('CONCAT(username," ","-"," ",adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as fullname'),
-
         )
+        ->where('adm_users.estatus','!=', 2)
         ->where('adm_users.id_grupo', '!=', 2)
         ->where('adm_users.id_grupo', '!=', 3)
         ->where('deleted_at', null)->get();
@@ -50,12 +51,27 @@ class UsuarioController extends Controller
     }
     public function assignPermisson(Request $request)
     {
+        $idCheck = $request->id == null ? $request->id_userP : $request->id;
+        $userIn = AdmUsers::where('deleted_at', null)->where('id', $idCheck)->first();
+        if ($userIn->estatus ==2) {
+            $res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'No se puede asignar permisos a un usuario inhabilitado', "title" => "Usuario inhabilitado"]];
+            return response()->json($res, 200);
+        }
         if ($request->id == null) {
             $user = PermisosUpp::where('deleted_at', null)->where('id_user', $request->id_userP)->where('id_permiso', $request->id_permiso)->first();
             if($user){
                 $res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Este usuario ya cuenta con el permiso', "title" => "Aviso"]];
                 return response()->json($res, 200);
             }else{
+                $user = DB::table('adm_users')->select(
+                    'id',
+                    'username',
+                    DB::raw('CONCAT(username," ","-"," ",adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as fullname'),
+                )
+                ->where('adm_users.estatus','!=', 2)
+                ->where('adm_users.id_grupo', '!=', 2)
+                ->where('adm_users.id_grupo', '!=', 3)
+                ->where('deleted_at', null)->get();
                 $resul = PermisosUpp::create([
                     'id_user' => $request->id_userP,
                     'id_permiso' => $request->id_permiso,
@@ -109,6 +125,12 @@ class UsuarioController extends Controller
             
         }
         if ($resul || $resul->wasChanged()) {
+            $b = array(
+                "username" => Auth::user()->username,
+                "accion" => 'Asingando permiso al usuario con id:'.$request->id_userP,
+                "modulo" => 'permisos'
+            );
+            Controller::bitacora($b);
             $res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
             return response()->json($res, 200);
         } else {
@@ -120,6 +142,12 @@ class UsuarioController extends Controller
     {
         $resul = CatPermisos::create($request->all());
         if ($resul) {
+            $b = array(
+                "username" => Auth::user()->username,
+                "accion" => 'Crear permiso',
+                "modulo" => 'permisos'
+            );
+            Controller::bitacora($b);
             $res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
             return response()->json($res, 200);
         } else {
@@ -175,7 +203,7 @@ class UsuarioController extends Controller
             ->leftJoin('adm_grupos', 'adm_grupos.id', '=', 'adm_users.id_grupo')
             ->where('adm_users.deleted_at', '=', null)
             ->where('adm_users.id_grupo', '!=', 2)
-            ->orderby('adm_users.estatus');
+            ->orderByRaw('adm_users.estatus');
 
         if ($id != 0) {
             $query = $query->where('adm_users.id', '=', $id);
@@ -213,12 +241,14 @@ class UsuarioController extends Controller
             'permisos_funciones.id_user',
             'permisos_funciones.id_permiso',
             'adm_users.username',
+            'adm_users.clv_upp',
             DB::raw('CONCAT(adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as nombre_completo'),
             DB::raw('GROUP_CONCAT(cat_permisos.nombre SEPARATOR " / ") AS permiso'),
             DB::raw('GROUP_CONCAT(permisos_funciones.id_permiso SEPARATOR "/") AS permisos'),
             'adm_grupos.nombre_grupo AS grupo',
             
         )
+        ->where('adm_users.estatus', '!=', 2)
         ->where('adm_users.id_grupo', '!=', 2)
             ->leftJoin('adm_users', 'adm_users.id', '=', 'permisos_funciones.id_user')
             ->leftJoin('cat_permisos', 'cat_permisos.id', '=', 'permisos_funciones.id_permiso')
@@ -232,6 +262,7 @@ class UsuarioController extends Controller
             $accion = Auth::user()->id_grupo != 3 ? '<a  data-toggle="modal" data-target=".permisosModalE" data-backdrop="static"
 			data-keyboard="false" onclick="dao.editarUp(' . $key->id . ',' . $key->id_user . ',' .$p  . ')"><i class="fa fa-pencil" style="color:green;"></i></a>&nbsp;' : '';
             $i = array(
+                $key->clv_upp,
                 $key->username,
                 $key->nombre_completo,
                 $key->grupo,
@@ -281,6 +312,18 @@ class UsuarioController extends Controller
                 'id_grupo' => $request->id_grupo,
                 'id_usuario' => $user->id,
             ]);
+            if($request->id_grupo==5 ||$request->id_grupo==1){
+                PermisosUpp::create([
+                    'id_user'=>$user->id,
+                    'id_permiso'=>1
+                ]);
+            }
+            $b = array(
+                "username" => Auth::user()->username,
+                "accion" => 'Crear Usuario:'.$request->username,
+                "modulo" => 'Usuarios'
+            );
+            Controller::bitacora($b);
 
             return response()->json(["success" => 'info', "title" => "Éxito!", "text" => "Usuario guardado"], 200);
         }
@@ -292,6 +335,12 @@ class UsuarioController extends Controller
         $user->password = $request->password;
         $user->updated_user = Auth::user()->username;
         $user->save();
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Restablecer contraseña',
+            "modulo" => 'Usuarios'
+        );
+        Controller::bitacora($b);
         return response(200);
     }
     //Actualiza Usuario
@@ -313,6 +362,12 @@ class UsuarioController extends Controller
         $userEdit->updated_user = Auth::user()->username;
         $userEdit->save();
         if($userEdit->wasChanged()){
+            $b = array(
+                "username" => Auth::user()->username,
+                "accion" => 'Modificar Usuario:'. $request->id_user,
+                "modulo" => 'Usuarios'
+            );
+            Controller::bitacora($b);
             return response()->json(["success" => 'success', "title" => "Éxito!", "text" => "Usuario modificado"], 200);
         }else{
             return response()->json(["success" => 'error', "title" => "Error!", "text" => "No se modificado"], 200);
@@ -325,9 +380,16 @@ class UsuarioController extends Controller
     {
         Controller::check_permission('deleteUsuarios');
         $userEdit = User::where('id', $request->id)->firstOrFail();
+        $userEdit->email = $userEdit->email . "1";
         $userEdit->deleted_user = Auth::user()->username;
         $userEdit->save();
         User::where('id', $request->id)->delete();
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Eliminacion de Usuario:'.$request->id,
+            "modulo" => 'Usuarios'
+        );
+        Controller::bitacora($b);
         return response()->json("done", 200);
     }
     //Consulta Grupos para Usuarios
@@ -363,6 +425,12 @@ class UsuarioController extends Controller
                 $user_role->id_grupo = $grupo;
                 $user_role->save();
             }
+            $b = array(
+                "username" => Auth::user()->username,
+                "accion" => 'Usuario Grupos',
+                "modulo" => 'Grupos'
+            );
+            Controller::bitacora($b);
             return response()->json("done", 200);
         endif;
         return response()->json("nada", 200);
@@ -391,6 +459,12 @@ class UsuarioController extends Controller
             $user->estatus = 1;
         }
         $user->save();
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'inhabilitar o deshabilitar usuario: '.$request->id,
+            "modulo" => 'Grupos'
+        );
+        Controller::bitacora($b);
         return response()->json("done", 200);
     }
     //Actualiza Contraseña
@@ -401,6 +475,12 @@ class UsuarioController extends Controller
             $usuario->password = $request->new_password;
             $usuario->updated_user = Auth::user()->username;
             $usuario->save();
+            $b = array(
+                "username" => Auth::user()->username,
+                "accion" => 'Cambio de contraseña usuario: '.$usuario->usermane,
+                "modulo" => 'Usuarios'
+            );
+            Controller::bitacora($b);
             return "success";
         }
         return "error";
@@ -410,6 +490,12 @@ class UsuarioController extends Controller
         $user = User::find($request->id);
         $user->password = $request->password;
         $user->save();
+        $b = array(
+            "username" => Auth::user()->username,
+            "accion" => 'Cambio de contraseña',
+            "modulo" => 'Usuarios'
+        );
+        Controller::bitacora($b);
         return response(200);
     }
     public function exportExecel()

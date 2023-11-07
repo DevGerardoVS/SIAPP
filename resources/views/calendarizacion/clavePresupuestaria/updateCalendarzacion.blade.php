@@ -106,12 +106,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <td><input id="enero" name="enero" type="text" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->enero}}></td>
-                                            <td><input id="febrero" name="febrero" type="text" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->febrero}}></td>
-                                            <td><input id="marzo" name="marzo" type="text" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->marzo}}></td>
-                                            <td><input id="abril" name="abril" type="text" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->abril}}></td>
-                                            <td><input id="mayo" name="mayo" type="text" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->mayo}}></td>
-                                            <td><input id="junio" name="junio" type="text" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->junio}}></td>
+                                            <td><input id="enero" name="enero" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->enero}}></td>
+                                            <td><input id="febrero" name="febrero" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->febrero}}></td>
+                                            <td><input id="marzo" name="marzo" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->marzo}}></td>
+                                            <td><input id="abril" name="abril" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->abril}}></td>
+                                            <td><input id="mayo" name="mayo" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->mayo}}></td>
+                                            <td><input id="junio" name="junio" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->junio}}></td>
                                         </tbody>
                                     </table>
                                 </div>
@@ -129,17 +129,17 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <td><input id="julio" name="julio" type="text"
+                                            <td><input id="julio" name="julio" type="text" maxlength ="20"
                                                     class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->julio}}></td>
-                                            <td><input id="agosto" name="agosto" type="text"
+                                            <td><input id="agosto" name="agosto" type="text" maxlength ="20"
                                                     class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->agosto}}></td>
-                                            <td><input id="septiembre" name="septiembre" type="text"
+                                            <td><input id="septiembre" name="septiembre" type="text" maxlength ="20"
                                                     class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->septiembre}}></td>
-                                            <td><input id="octubre" name="octubre" type="text"
+                                            <td><input id="octubre" name="octubre" type="text" maxlength ="20"
                                                     class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->octubre}}></td>
-                                            <td><input id="noviembre" name="noviembre" type="text"
+                                            <td><input id="noviembre" name="noviembre" type="text" maxlength ="20"
                                                     class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();"value={{$clave->noviembre}}></td>
-                                            <td><input id="diciembre" name="diciembre" type="text"
+                                            <td><input id="diciembre" name="diciembre" type="text" maxlength ="20"
                                                     class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value={{$clave->diciembre}}></td>
                                             <tr style="border-style: none;">
                                                 <td><input type="hidden" name="ejercicio" id="ejercicio" value={{$clave->ejercicio}}></td>
@@ -223,7 +223,7 @@
         }
         if (linea_accion != '') {
             dao.getLineaDeAccionByUpp(upp,ur,ejercicio,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,linea_accion);
-            dao.getPartidaByUpp(clasificacion,partida);
+            dao.getPartidaByUpp(clasificacion,upp,partida);
             dao.getSector(linea_accion);
             dao.getAreaFuncional(upp,ur,ejercicio,subprograma_presupuestario,linea_accion,programa_presupuestario,proyecto_presupuestario);
         }
@@ -231,6 +231,7 @@
         dao.getPresupuestoPorUppEdit(upp,clv_fondo,subprograma_presupuestario, ejercicio,id);
         $(document).ready(function () {
             soloEnteros();
+            formateoDeMonedaUpdate();
         });
         
     </script>

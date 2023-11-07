@@ -44,10 +44,10 @@
             <div class="col-md-10 col-sm-12 d-md-flex">
         @endif
                 <div class="col-sm-12 col-md-3 col-lg-2">
-                    <select onchange="actualizarTabla(false)" class="form-control filters filters_anio" id="filters_anio" name="estatus_filter" autocomplete="upp_filter">
+                    <select onchange="actualizarTabla(true)" class="form-control filters filters_anio" id="filters_anio" name="estatus_filter" autocomplete="upp_filter">
                         <?php $i = 0; $len = count($anios); ?>
                         @foreach ($anios as $anio)
-                            <option value={{$anio->ejercicio}} <?php $i++; if($i == $len){echo("selected");} ?>>{{$anio->ejercicio}}</option>
+                            <option value={{$anio->ejercicio}} <?php $i++; if($i == 1){echo("selected");} ?>>{{$anio->ejercicio}}</option>
                         @endforeach
                     </select>
                 </div>
