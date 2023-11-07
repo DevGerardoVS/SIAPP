@@ -1193,10 +1193,14 @@ class MetasController extends Controller
 	public function checkCombination($upp)
 	{
 		$check = $this->checkClosing($upp);
-
-		$metas = MetasController::cmetasadd($upp);
+		if (Auth::user()->id_grupo == 4) {
+			$metas = MetasController::cmetasadd($upp);
+			if(!$metas["status"]){
+				return ["status" => false, "mensaje" => 'Las metas para la UPP: '.$upp.' ya estan confirmadas', "title" => 'Metas confirmadas', "estado" => false, "url" => '/calendarizacion/proyecto'];
+			}
+		}
+		
 		if ($check['status']) {
-			if ( !$metas || Auth::user()->id_grupo == 1) {
 				//ver si esta confirmada la mir
 				$isMir = DB::table("mml_cierre_ejercicio")
 					->select('id', 'estatus')
@@ -1239,9 +1243,7 @@ class MetasController extends Controller
 					return ["status" => false, "mensaje" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM', "estado" => true];
 				}
 				//ver si esta confirmada la mir
-			} else {
-				return ["status" => false, "mensaje" => 'Las metas para la UPP: '.$upp.' ya estan confirmadas', "title" => 'Metas confirmadas', "estado" => false, "url" => '/calendarizacion/proyecto'];
-			}
+			
 		} else {
 			return ["status" => false, "mensaje" => 'Las metas para la UPP: '.$upp.' ya estan cerradas', "title" => 'La captura de metas esta cerrada', "estado" => false, "url" => '/calendarizacion/proyecto'];
 		}
