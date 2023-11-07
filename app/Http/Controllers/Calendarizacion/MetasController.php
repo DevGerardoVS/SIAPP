@@ -356,7 +356,7 @@ class MetasController extends Controller
 					->where('mml_mir.clv_pp', $areaAux[7])
 					->where('mml_mir.ejercicio', $check['anio'])
 					->groupByRaw('clave')->get();
-
+				Log::debug($activ );
 				if (count($activ) == 0) {
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
@@ -523,7 +523,6 @@ class MetasController extends Controller
 						'created_user' => $username
 					]);
 				} else {
-					Log::debug($area_funcional);
 					$meta = DB::table('metas')
 					->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
 					->select(
@@ -539,7 +538,6 @@ class MetasController extends Controller
 					->where('metas.mir_id', null)
 					->where('mml_actividades.deleted_at', null)
 					->where('metas.deleted_at', null)->get();
-					Log::debug("else existe".count($meta));
 					if (count($meta)) {
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 						return response()->json($res, 200);
@@ -617,8 +615,8 @@ class MetasController extends Controller
 
 				}
 				$area = str_replace('$', "/", $request->area);
-				$m = FunFormats::validateMonth($area, json_encode($meses), $anio, $fondo);
-				if ($m['status']) {
+			/* 	$m = FunFormats::validateMonth($area, json_encode($meses), $anio, $fondo);
+				if ($m['status']) { */
 					if ($subpp[8] != 'UUU') {
 						$meta = Metas::create([
 							'mir_id' => isset($request->sel_actividad) ? intval($request->sel_actividad) : NULL,
@@ -702,7 +700,7 @@ class MetasController extends Controller
 						return response()->json($res, 200);
 					}
 
-				} else {
+			/* 	} else {
 					$mesaje = '';
 					$err = implode(", ", $m["errorM"]);
 					$meses = implode(", ", $m["mV"]);
@@ -713,7 +711,7 @@ class MetasController extends Controller
 					}
 					$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Los meses: ' . $err . ' no coinciden en las claves presupuestales' . $mesaje, "title" => "Error"]];
 					return response()->json($res, 200);
-				}
+				} */
 
 		} catch (\Exception $e) {
 			DB::rollback();
@@ -1486,13 +1484,13 @@ class MetasController extends Controller
 			$s = MetasController::cmetas($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$user = Auth::user()->username;
-			$check = MetasHelper::validateMesesfinal($upp, $anio);
+		/* 	$check = MetasHelper::validateMesesfinal($upp, $anio);
 			if (!$check["status"]) {
 				$foot = "<a type='button' class='btn btn-success col-md-5 ml-auto ' href=/actividades/meses/error/$upp/$anio > <i class='fa fa-download' aria-hidden='true'></i>Descargar index</a>";
 				$res = ["status" => false, "mensaje" => ["icon" => 'warning', "text" => 'No puedes confirmar las metas, existen diferencias en los meses autorizados por las claves presupuestales', "title" => "Diferencias en las metas" ,"footer"=>$foot]];
 				return response()->json($res, 200);
 
-			}
+			} */
 			if ($s['status']) {
 				DB::beginTransaction();
 				$metas = MetasHelper::actividades($upp, $anio);

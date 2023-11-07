@@ -878,6 +878,7 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             const { fondos, activids, tAct } = data;
+            console.log(activids);
             let flag = false;
             if (activids[0]?.id == 'ot' && mir == 1) {
                 flag = true;
@@ -1512,15 +1513,15 @@ $(document).ready(function () {
     })
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        let flag = dao.validMeses();
-        if ($('#conmir').val() && flag) {
+        //let flag = dao.validMeses();
+        if ($('#conmir').val()) {
             init.validateCreate($('#actividad'));
-            if ($('#actividad').valid() && flag) {
+            if ($('#actividad').valid()) {
                 dao.crearMeta();
             }
         } else {
             init.validateCreateN($('#actividad'));
-            if ($('#actividad').valid() && flag) {
+            if ($('#actividad').valid()) {
                 dao.crearMeta();
             }
 
