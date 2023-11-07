@@ -199,7 +199,7 @@ class MetasDelController extends Controller
 			$metas = DB::table('metas')
 				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
 				->select(
-					DB::raw('CONCAT(mml_mir.id, " - ", mml_mir.indicador) AS actividad'),
+					DB::raw('CONCAT(mml_mir.id, " - ", mml_mir.objetivo) AS actividad'),
 					'mml_mir.area_funcional',
 					'mml_mir.entidad_ejecutora',
 					'mml_mir.clv_upp',
