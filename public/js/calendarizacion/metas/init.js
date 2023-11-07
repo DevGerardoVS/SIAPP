@@ -853,7 +853,7 @@ var dao = {
             tipo_be.append(new Option("--U. Beneficiarios--", ""));
             document.getElementById("tipo_Be").options[0].disabled = true;
             $.each(beneficiario, function (i, val) {
-                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
+                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
             });
         });
     },
