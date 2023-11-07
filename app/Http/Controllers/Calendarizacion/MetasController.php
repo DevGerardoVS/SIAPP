@@ -80,13 +80,18 @@ class MetasController extends Controller
 					$button = '';
 				}
 			} else {
-				if ($key->estatus == 0  && Auth::user()->id_grupo == 4 ) {
-					if($sub ='UUU' && $aut){
+				if ($key->estatus == 0 && Auth::user()->id_grupo == 4) {
+					if ($sub = 'UUU') {
+						if ($aut) {
+							$button = $accion;
+						} else {
+							$button = '';
+						}
+
+					} else {
 						$button = $accion;
-					}else{
-						$button = '';
 					}
-					
+
 				} else {
 					$button = '';
 				}
