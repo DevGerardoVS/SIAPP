@@ -233,6 +233,7 @@
                 location.reload();
             });
         @endif
+
     </script>
 @endsection
 
