@@ -21,7 +21,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.indicador as actividad'
+					'mml_mir.objetivo as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
@@ -107,7 +107,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.indicador as actividad'
+					'mml_mir.objetivo as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
@@ -240,7 +240,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.indicador as actividad'
+					'mml_mir.objetivo as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
@@ -350,7 +350,7 @@ class MetasHelper
 				'mml_mir.area_funcional',
 				DB::raw('"N/A" AS clv_actadmon'),
 				DB::raw('mml_mir.id AS mir_act'),
-				DB::raw('indicador AS actividad'),
+				DB::raw('objetivo AS actividad'),
 				DB::raw('"" AS fondo'),
 			)
 			->where(function ($query) use ($c) {
@@ -368,8 +368,8 @@ class MetasHelper
 			->where('pp.ejercicio', $anio)
 			->where('mml_mir.clv_upp', $upp)
 			->where('pp.upp', $upp)
-			->groupByRaw('mml_mir.indicador')
-			->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur,mml_mir.area_funcional')
+			->groupByRaw('mml_mir.id')
+			->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur')
 			->distinct();
 		if (Auth::user()->id_grupo == 4) {
 			$data3 = $data3->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'mml_mir.clv_upp')
@@ -763,7 +763,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.indicador as actividad'
+					'mml_mir.objetivo as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)

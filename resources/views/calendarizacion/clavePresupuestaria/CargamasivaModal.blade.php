@@ -4,8 +4,7 @@
         <div class="modal-content">
             <div class="modal-header colorMorado">
                 <h5 class="modal-title" id="staticBackdropLabel">{{ __('messages.carga_masiva_title') }}</h5>
-                <button type="button" class="btn-close" onclick="limpiarCampos()" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <button type="button" class="btn-close" id="close" name="close"></button>
             </div>
             <form action="{{ route('load_data_plantilla') }}" id="Formmodal" method="POST"
                 enctype="multipart/form-data">
@@ -104,7 +103,7 @@
                     </div>
                 </div>
                 <div class="modal-footer-carga">
-                    <button type="button" {{-- onclick="limpiarCampos()" --}} class="btn btn-secondary "
+                    <button type="button" onclick="document.getElementById('close').click()" class="btn btn-secondary "
                         data-bs-dismiss="modal">{{ __('messages.cancelar') }}</button>
                     <button type="submit" name="aceptar" id="aceptar" class="btn colorMorado">
                         <i class="fa fa-upload" style="color: #dfdfdf"></i>
@@ -134,7 +133,7 @@
             title: '{{ __('messages.msg_cargando_datos') }}',
             html: ' <b></b>',
             allowOutsideClick: false,
-            timer: 2000000,
+            timer: 3000000,
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading();
@@ -145,4 +144,14 @@
         form.submit();
 
     })
+
+    $(document).delegate("#close", "click", function(event){
+            $("#ModalCargaMasiva").find("#file_label").val('Seleccionar archivo');
+            $("#ModalCargaMasiva").find("#file_").val(null);
+            $('#ModalCargaMasiva').modal('hide');
+});
+
+
+
+        
 </script>

@@ -69,6 +69,8 @@ class CalendarizacionCargaMasivaController extends Controller
     //Obtener datos del excel
     public function loadDataPlantilla(Request $request)
     {
+        ini_set('max_execution_time', 1800);
+		ini_set('memory_limit', '1024M');
         if (Auth::user()->id_grupo == 4) {
             $uppUsuario = auth::user()->clv_upp;
         }
@@ -619,7 +621,7 @@ class CalendarizacionCargaMasivaController extends Controller
             }
         } catch (\Throwable $th) {
             Log::debug($th);
-            return redirect()->back()->withErrors(['error' => 'Ocurrio un error intentelo más tarde. ']);
+            return redirect()->back()->withErrors(['error' => 'Ah ocurrido un error de conexion verifique su conexion e intente nuevamente ']);
 
         }
 
@@ -1040,11 +1042,10 @@ class CalendarizacionCargaMasivaController extends Controller
 
             }
 
-            /*             (new ClavePresupuestaria)->import($request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
-             */
+
 
             //mandamos llamar procedimiento de jeff
-            $datos = DB::select("CALL insert_pp_aplanado(" . $ejercicio[0] . ")");
+           /*  $datos = DB::select("CALL insert_pp_aplanado(" . $ejercicio[0] . ")"); */
             $b = array(
                 "username" => Auth::user()->username,
                 "accion" => 'Carga masiva',
@@ -1057,15 +1058,6 @@ class CalendarizacionCargaMasivaController extends Controller
             Log::debug($e->getMessage());
             return redirect()->back()->withErrors(['error' => 'Ocurrrio un error en el sistema intentelo más tarde']);
 
-            /*             $failures = $e->failures();
-
-                        foreach ($failures as $key => $failure) {
-                            $valuesar = $failure->values();
-                            if (!$valuesar['total']) {
-                                unset($failures[$key]);
-                            }
-                        }
-                         */
 
 
 
