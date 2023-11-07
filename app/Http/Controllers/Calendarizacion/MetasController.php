@@ -61,7 +61,7 @@ class MetasController extends Controller
 	{
 		Controller::check_permission('getMetas');
 		$u2p= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('clv_upp', $upp)->where('uppautorizadascpnomina.deleted_at', null)->get();
-		$aut = count($u2p) >= 1?true:false;
+		$aut = count($u2p) == 0?true:false;
 		$query = MetasHelper::actividades($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$dataSet = [];
@@ -73,7 +73,6 @@ class MetasController extends Controller
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
 				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
 				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
-			Log::debug($sub);
 			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
 				if ($anio == $anioMax) {
 					if($sub  == 'UUU' && $aut ){
@@ -498,6 +497,7 @@ class MetasController extends Controller
 			Controller::check_permission('postMetas');
 			$anio = DB::table('cierre_ejercicio_metas')->where('deleted_at', null)->max('ejercicio');
 			$clv = explode('/', $request->area);
+			$area_funcional = str_replace('-', "", $clv[0]);
 			$fondo = $request->sel_fondo != '' && $request->sel_fondo != null ? $request->sel_fondo : $request->fondo_id;
 			if (isset($request->actividad_id) && $request->actividad_id != null && $request->actividad_id != '') {
 				if ($request->actividad_id == 'ot') {
@@ -511,6 +511,7 @@ class MetasController extends Controller
 						'created_user' => $username
 					]);
 				} else {
+					Log::debug($area_funcional);
 					$meta = DB::table('metas')
 					->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
 					->select(
@@ -519,15 +520,19 @@ class MetasController extends Controller
 						'mml_actividades.area_funcional',
 						'mml_actividades.clv_upp'
 					)
+					->where('mml_actividades.area_funcional', $area_funcional)
+					->where('mml_actividades.clv_upp', $request->upp)
 					->where('metas.clv_fondo', $fondo)
 					->where('mml_actividades.id_catalogo', $request->actividad_id)
 					->where('metas.mir_id', null)
 					->where('mml_actividades.deleted_at', null)
 					->where('metas.deleted_at', null)->get();
+					Log::debug("else existe".count($meta));
 					if (count($meta)) {
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 						return response()->json($res, 200);
 					} else {
+						Log::debug("else no existe".count($meta));
 						$act = MmlMir::create([
 							'clv_upp' => $request->upp,
 							'entidad_ejecutora' => str_replace('-', "", $clv[1]),
@@ -537,6 +542,8 @@ class MetasController extends Controller
 							'ejercicio' => $anio,
 							'created_user' => $username
 						]);
+
+						Log::debug($act);
 					}
 				}
 			} else {
@@ -548,6 +555,8 @@ class MetasController extends Controller
 						'mml_mir.clv_upp',
 
 					)
+					->where('mml_mir.area_funcional', $area_funcional)
+					->where('mml_mir.clv_upp', $request->upp)
 					->where('metas.clv_fondo', $request->sel_fondo)
 					->where('metas.mir_id', intval($request->sel_actividad))
 					->where('mml_mir.deleted_at', null)
@@ -630,7 +639,7 @@ class MetasController extends Controller
 							'clv_fondo' => isset($act->id) ? $request->fondo_id : $request->sel_fondo,
 							'estatus' => $confirm['status'] ? 0 : 1,
 							'tipo' => $request->tipo_Ac,
-							'beneficiario_id' => $request->tipo_Be,
+							'beneficiario_id' => 12,
 							'unidad_medida_id' => intval($request->medida),
 							'cantidad_beneficiarios' => $request->beneficiario,
 							'total' => 25,
@@ -1695,10 +1704,10 @@ class MetasController extends Controller
 	public static function cmetasUpp($upp, $anio)
 	{
 		$_upp = $upp = null ? Auth::user()->clv_upp : $upp;
-		$metas = false;
+		$metas = true;
 		$query = MetasHelper::actividadesConf($_upp, $anio);
 		if(count($query)){
-			$metas = $query[0]->estatus == 1 ? true : false;
+			$metas = $query[0]->estatus == 1 ? false : true;
 		}else{
 			$actv = DB::table('metas')
 				->leftJoin('mml_actividades','mml_actividades.id','=','metas.actividad_id')
@@ -1711,17 +1720,17 @@ class MetasController extends Controller
 					$metas = $actv[0]->estatus == 1 ? false : true;
 				}else{
 					$metas = true;
-					}
+				}
 		}
 		return ["status" => $metas];
 	}
 	public static function cmetasadd($_upp)
 	{
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
-		$metas = false;
+		$metas = true;
 		$query = MetasHelper::actividadesConf($_upp, $anio);
 		if(count($query)){
-			$metas = $query[0]->estatus == 1 ? true : false;
+			$metas = $query[0]->estatus == 1 ? false : true;
 		}else{
 			$actv = DB::table('metas')
 				->leftJoin('mml_actividades','mml_actividades.id','=','metas.actividad_id')
