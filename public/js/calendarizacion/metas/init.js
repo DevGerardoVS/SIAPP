@@ -699,7 +699,7 @@ var dao = {
         
         if ($('#tipo_Ac').val() == 'Continua') {
             if (mesesV.enero) {
-                    data.append(1, contValue);
+                data.append(1, contValue);
             }
             if (mesesV.febrero) {
                 data.append(2, contValue);
@@ -899,7 +899,7 @@ var dao = {
                 $('.conmir').hide();
                 $('.sinmir').show();
                 $('#sel_fondo').prop('disabled', false);
-                $('#actividad_id').prop('disabled', false);
+           /*      $('#actividad_id').prop('disabled', false);
                 var act = $('#actividad_id');
                 act.html('');
                 if (activids.length == 2) {
@@ -908,7 +908,7 @@ var dao = {
                 }
                 $.each(activids, function (i, val) {
                     act.append(new Option(val.actividad, val.id));
-                });
+                }); */
 
                 var fond = $('#sel_fondo');
                 fond.html('');
@@ -935,13 +935,13 @@ var dao = {
                 var act = $('#sel_actividad');
                 act.html('');
 
-                if (activids.length >= 2) {
+       /*          if (activids.length >= 2) {
                     act.append(new Option("--Actividad--", "true", true, true));
                     document.getElementById("sel_actividad").options[0].disabled = true;
                 }
                 $.each(activids, function (i, val) {
                     act.append(new Option(val.actividad, val.id));
-                });
+                }); */
             }
             if ($('#actividad_id').val() == 'ot') {
 
@@ -951,7 +951,7 @@ var dao = {
                 $("#idAct").addClass("col-md-4").removeClass("col-md-6");
                 $("#idFond").addClass("col-md-4").removeClass("col-md-6");
             }
-            if (fondos.length == 1 && activids.length == 1) {
+            if (fondos.length == 1) {
                 let fondo = '';
                 if ($('#sel_fondo').val() != '' || $('#sel_fondo').val() != null) {
                     fondo = $('#sel_fondo').val();
@@ -959,6 +959,7 @@ var dao = {
                     fondo = $('#fondo_id').val();
                 }
                 dao.getMeses(clave, fondo);
+                dao.getActividasdesMir(fondo);
             }
 
             var tipo_AC = $('#tipo_Ac');
@@ -978,6 +979,7 @@ var dao = {
                     }
                 });
             }
+           
 
         });
     },
@@ -989,14 +991,16 @@ var dao = {
             $("#" + i).prop('disabled', true);
         }
        let clave= $("#activiMir").val();
-        let mir = fondo.split('$')
-        console.log("mir",mir);
+        let mir = clave.split('$')
+        console.log("mir", mir);
+        let url = '/actividades/metas/actividades-mir/' + mir[0] + '/' + mir[1] + '/' + fondo;
+        console.log("url",url)
         $.ajax({
             type: "GET",
-            url: '/actividades/metas/actividades-mir/' + mir[0] + '/' + mir[1]+'/'+mir[3],
+            url: url,
             dataType: "JSON"
         }).done(function (data) {
-            const { fondos, activids } = data;
+            const { activids } = data;
             let flag = false;
             if (activids[0]?.id == 'ot' && mir == 1) {
                 flag = true;
@@ -1006,15 +1010,6 @@ var dao = {
             }
             if (flag) {
                 $("#conmir").val(false);
-                var fond = $('#fondo_id');
-                fond.html('');
-                if (fondos.length >= 2) {
-                    fond.append("<option value='' class='text-center' ><b>-- Fondos--</b></option>");
-                    document.getElementById("fondo_id").options[0].disabled = true;
-                }
-                $.each(fondos, function (i, val) {
-                    fond.append(new Option(val.ramo, val.clave));
-                });
                 $('.conmir').hide();
                 $('.sinmir').show();
                 $('#sel_fondo').prop('disabled', false);
@@ -1028,27 +1023,8 @@ var dao = {
                 $.each(activids, function (i, val) {
                     act.append(new Option(val.actividad, val.id));
                 });
-
-                var fond = $('#sel_fondo');
-                fond.html('');
-                if (fondos.length >= 2) {
-                    fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
-                    document.getElementById("sel_fondo").options[0].disabled = true;
-                }
-                $.each(fondos, function (i, val) {
-                    fond.append(new Option(val.ramo, val.clave));
-                });
             } else {
                 $("#conmir").val(true);
-                var fond = $('#sel_fondo');
-                fond.html('');
-                if (fondos.length >= 2) {
-                    fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
-                    document.getElementById("sel_fondo").options[0].disabled = true;
-                }
-                $.each(fondos, function (i, val) {
-                    fond.append(new Option(val.ramo, val.clave));
-                });
                 $('.sinmir').hide();
                 $('.conmir').show();
                 var act = $('#sel_actividad');
@@ -1070,32 +1046,13 @@ var dao = {
                 $("#idAct").addClass("col-md-4").removeClass("col-md-6");
                 $("#idFond").addClass("col-md-4").removeClass("col-md-6");
             }
-            if (fondos.length == 1 && activids.length == 1) {
+            if (activids.length == 1) {
                 let fondo = '';
                 if ($('#sel_fondo').val() != '' || $('#sel_fondo').val() != null) {
                     fondo = $('#sel_fondo').val();
                 } else {
                     fondo = $('#fondo_id').val();
                 }
-                dao.getMeses(clave, fondo);
-            }
-
-            var tipo_AC = $('#tipo_Ac');
-            tipo_AC.html('');
-            let tm =Object.keys(tAct).length;
-            if (tAct.Acumulativa == 0 && $('#calendar').val()!='UUU') {
-                tipo_AC.append(new Option("--Tipo Actividad--", ""));
-                document.getElementById("tipo_Ac").options[0].disabled = true;
-
-            }
-            if ($('#calendar').val()=='UUU') {
-                tipo_AC.append(new Option('Acumulativa','Acumulativa'));
-            } else {
-                $.each(tAct, function (i, val) {
-                    if (val == 1) {
-                        tipo_AC.append(new Option(i, i));
-                    }
-                });
             }
 
         });
