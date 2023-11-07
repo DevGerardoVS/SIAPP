@@ -998,8 +998,9 @@ class MetasController extends Controller
 	}
 	public function jasper($request)
 	{
+		ob_end_clean();
+		ob_start();
 		date_default_timezone_set('America/Mexico_City');
-
 		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
 		$fecha = date('d-m-Y');
 		$marca = strtotime($fecha);
@@ -1022,7 +1023,6 @@ class MetasController extends Controller
 		$output_file = sys_get_temp_dir();
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
-
 		Log::info('reuqest', [json_encode($request)]);
 		$parameters = [
 			"anio" => $request['anio'],
@@ -1040,8 +1040,8 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->execute();
-		// dd($jasper);
+		)->output();
+		dd($jasper);
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
@@ -1050,12 +1050,13 @@ class MetasController extends Controller
 				'Content-Type' => 'application/pdf'
 			]);
 		}
+		Log::info('archivo:', [json_encode($archivo)]);
 		// $reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
 		// 	'Content-Type' => 'application/pdf'
 		// ]);
 
 		if ($request['tipo'] == 0) {
-			if (file_exists($output_file . '/' . $report . '.pdf')) {
+			if (file_exists($archivo)) {
 				return response()->download($archivo);
 			}else {
 				return response()->json('error', 200);
