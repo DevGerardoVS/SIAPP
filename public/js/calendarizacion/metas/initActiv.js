@@ -423,6 +423,9 @@ var dao = {
     editarPutMeta: function () {
         var form = $('#actividad')[0];
         var data = new FormData(form);
+        if ($('#subp').val() == 'UUU') {
+            data.append('subp', 'UUU');
+        }
         data.append('sumMetas', $('#sumMetas').val());
         $.ajax({
             type: "POST",
@@ -458,7 +461,8 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            dao.getActiv(data.clv_upp,data.subprograma);
+            dao.getActiv(data.clv_upp, data.subprograma); 
+            $('#subp').val(data.subprograma);
             $('#proyectoMD').empty();
             $('#proyectoMD').append("<thead><tr class='colorRosa'>"
                 + "<th class= 'vertical' > UPP</th >"
