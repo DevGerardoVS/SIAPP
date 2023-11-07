@@ -1065,7 +1065,7 @@ class MetasController extends Controller
 		if (File::exists($ruta . "/" . $report . ".pdf")) {
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
-		$report_path = app_path() . "/reportes/" . $report . ".jasper";
+		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
 		$output_file = sys_get_temp_dir();
 		$logoLeft = public_path() . "/img/escudoBN.png";
