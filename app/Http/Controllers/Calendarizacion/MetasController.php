@@ -345,7 +345,7 @@ class MetasController extends Controller
 					->select(
 						'mml_mir.id',
 						'mml_mir.id as clave',
-						DB::raw('CONCAT(mml_mir.id, " - ",indicador) AS actividad')
+						DB::raw('CONCAT(mml_mir.id, " - ",objetivo) AS actividad')
 					)
 					->where('mml_mir.deleted_at', null)
 					->where('mml_mir.nivel', 11)
@@ -404,7 +404,7 @@ class MetasController extends Controller
 					->select(
 						'mml_mir.id',
 						'mml_mir.id as clave',
-						DB::raw('CONCAT(mml_mir.id, " - ",indicador) AS actividad')
+						DB::raw('CONCAT(mml_mir.id, " - ",objetivo) AS actividad')
 					)
 					->where('mml_mir.deleted_at', null)
 					->where('mml_mir.nivel', 11)
@@ -825,7 +825,7 @@ class MetasController extends Controller
 			$metas = DB::table('metas')
 				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
 				->select(
-					DB::raw('CONCAT(mml_mir.id, " - ", mml_mir.indicador) AS actividad'),
+					DB::raw('CONCAT(mml_mir.id, " - ", mml_mir.objetivo) AS actividad'),
 					'mml_mir.area_funcional',
 					'mml_mir.entidad_ejecutora',
 					'mml_mir.clv_upp',
@@ -1590,7 +1590,7 @@ class MetasController extends Controller
 				'mml_mir.entidad_ejecutora AS entidad',
 				'mml_mir.area_funcional AS area',
 				'mml_mir.ejercicio',
-				'mml_mir.indicador as actividad'
+				'mml_mir.objetivo as actividad'
 			)
 			->where('mml_mir.deleted_at', '=', null)
 			->where('mml_mir.nivel', '=', 11)
