@@ -508,7 +508,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             } else {
                 DB::commit();
                 \Log::debug('Trabajo de validaciones con exito');
-                CargaMasivaClaves::dispatch($this->filearray, $this->user);
+                CargaMasivaClaves::dispatch($this->filearray, $this->user)->onQueue('high');
                 
             }
 

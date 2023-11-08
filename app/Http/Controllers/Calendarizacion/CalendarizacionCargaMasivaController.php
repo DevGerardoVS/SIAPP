@@ -135,7 +135,7 @@ class CalendarizacionCargaMasivaController extends Controller
             }
         }
 
-        ValidacionesCargaMasivaClaves::dispatch($filearray,$user);
+        ValidacionesCargaMasivaClaves::dispatch($filearray,$user)->onQueue('high');
         return redirect()->back()->withSuccess('Carga masiva en proceso.');
 
     }
