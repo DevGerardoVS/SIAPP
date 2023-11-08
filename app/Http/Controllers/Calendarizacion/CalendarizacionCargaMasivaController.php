@@ -148,7 +148,9 @@ class CalendarizacionCargaMasivaController extends Controller
                     
                 }
                 DB::beginTransaction();
-                
+                $year = '20' . $filearray[0][20];
+                $deleted = ProgramacionPresupuesto::where('upp', $filearray[0][5])->where('ejercicio', $year)->where('estado', 0)->forceDelete();
+ 
                 foreach ($filearray as $index => $k) {
                     $currentrow = $index + 2;
                     $tipoclave = '';
