@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\BitacoraHelper;
-
+use Illuminate\Support\Facades\Session;
 class HomeController extends Controller
 {
     /**
@@ -30,4 +30,41 @@ class HomeController extends Controller
         BitacoraHelper::saveBitacora(BitacoraHelper::getIp(),"Login","Acceso sistema","Acceso exitoso, usuario activo ".Auth::user()->username);
         return view('home');
     }
+
+    public function actualizarcarga()
+    {
+        log::channel('daily')->debug('ya puso la variable de session'.Auth::user()->username);
+        Session::put('cargaMasClav',1);
+        Session::put('cargapayload','El excel cargo con exito');
+     
+        return view('home');
+    }
+    public function actualizarcargfalla()
+    {
+        log::channel('daily')->debug('ya puso la variable de session'.Auth::user()->username);
+        Session::put('cargaMasClav',2);
+        Session::put('cargapayload',array (
+            0 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 09 ',
+            1 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 02 ',
+            2 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 0L ',
+            3 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 0K ',
+          ));
+      
+        return view('home');
+    }
+    public function borrarsesionexcel()
+    {
+        log::channel('daily')->debug('borro la variable de session'.Auth::user()->username);
+        session()->forget(['cargapayload', 'cargaMasClav']);
+        return [200,'hola'];
+    }
+    public function actualizarcargafin()
+    {
+        log::channel('daily')->debug('ya quite la variable '.Auth::user()->username);
+        Session::put('cargaMasClav','bye');
+      
+        return view('home');
+    }
+
+    
 }
