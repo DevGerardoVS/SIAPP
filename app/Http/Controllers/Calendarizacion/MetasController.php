@@ -511,6 +511,7 @@ class MetasController extends Controller
 			$anio = DB::table('cierre_ejercicio_metas')->where('deleted_at', null)->max('ejercicio');
 			$clv = explode('/', $request->area);
 			$area_funcional = str_replace('-', "", $clv[0]);
+			$entidad_ejecutora = str_replace('-', "", $clv[1]);
 			$fondo = $request->sel_fondo != '' && $request->sel_fondo != null ? $request->sel_fondo : $request->fondo_id;
 			if (isset($request->actividad_id) && $request->actividad_id != null && $request->actividad_id != '') {
 				if ($request->actividad_id == 'ot') {
@@ -532,6 +533,7 @@ class MetasController extends Controller
 						'mml_actividades.area_funcional',
 						'mml_actividades.clv_upp'
 					)
+					->where('mml_actividades.entidad_ejecutora', $entidad_ejecutora)
 					->where('mml_actividades.area_funcional', $area_funcional)
 					->where('mml_actividades.clv_upp', $request->upp)
 					->where('metas.clv_fondo', $fondo)
@@ -566,6 +568,7 @@ class MetasController extends Controller
 						'mml_mir.clv_upp',
 
 					)
+					->where('mml_mir.entidad_ejecutora', $entidad_ejecutora)
 					->where('mml_mir.area_funcional', $area_funcional)
 					->where('mml_mir.clv_upp', $request->upp)
 					->where('metas.clv_fondo', $request->sel_fondo)
