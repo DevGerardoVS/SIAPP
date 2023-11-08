@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use App\Exports\PlantillaExport;
 use Log;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Illuminate\Support\Facades\Session;
 use Auth;
 use Shuchkin\SimpleXLSX;
 
@@ -38,11 +38,13 @@ class CalendarizacionCargaMasivaController extends Controller
     }
 
 
-    public function DownloadErrors($request)
-    {
-
-        if ($request->session()->has('cargapayload')) {
-            $fails = session('cargapayload');
+    public function DownloadErrors()
+    {   
+       
+        $fails=0;
+      
+        if (session()->has('cargapayload')) {
+            $fails = session::get('cargapayload');
 
         }
         $b = array(
@@ -50,12 +52,16 @@ class CalendarizacionCargaMasivaController extends Controller
             "accion" => 'Descarga',
             "modulo" => 'Errores carga masiva'
         );
+        // session::flush();
+        $fr=session::pull('cargaMasClav');
+    session()->forget(['cargapayload', 'cargaMasClav']);
+     
+
         Controller::bitacora($b);
         /*Si no coloco estas lineas Falla*/
         ob_end_clean();
         ob_start();
 
-        $request->session()->forget(['cargapayload', 'cargaMasClav']);
 
         return Excel::download(new ImportErrorsExport($fails), 'Errores.xlsx');
     }
