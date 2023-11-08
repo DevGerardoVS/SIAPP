@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\carga_masiva_estatus;
 use App\Models\ProgramacionPresupuesto;
 use App\Models\uppautorizadascpnomina;
 use Auth;
@@ -456,8 +457,12 @@ class CargaMasivaClaves implements ShouldQueue
             }
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
-                session::put('cargaMasClav',2);
-                session::put('cargapayload', $arrayErrores);
+                carga_masiva_estatus::create([
+                    'id_usuario' => $this->user->id,
+                    'cargapayload' => ''.$arrayErrores,
+                    'cargaMasClav' => 2,
+                    'created_user' =>$this->user->username
+                ]);
 
             }
 
@@ -471,18 +476,20 @@ class CargaMasivaClaves implements ShouldQueue
             );
             Controller::bitacora($b);
             DB::commit();
-            //estatus carga masiva 0 en proceso 1 exito 2 error
-            session::put('cargaMasClav',1);
-            //el mensaje cuando termina el job puede ser un array o un string
-            session::put('cargapayload', 'Datos registrados con exito');
+            carga_masiva_estatus::create([
+                'id_usuario' => $this->user->id,
+                'cargapayload' => 'Exito en la carga masiva',
+                'cargaMasClav' => 1,
+            ]);
             \Log::debug('Trabajo  exitoso');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::debug($e->getMessage());
-            session::put('cargaMasClav',2);
-            session::put('cargapayload', 'error: '.$e->getMessage());
+            carga_masiva_estatus::create([
+                'id_usuario' => $this->user->id,
+                'cargapayload' => $e->getMessage(),
+                'cargaMasClav' => 1,
+            ]);
 
-            \Log::debug($e->getMessage());
 
 
 
