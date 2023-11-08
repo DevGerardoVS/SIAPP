@@ -423,6 +423,9 @@ var dao = {
     editarPutMeta: function () {
         var form = $('#actividad')[0];
         var data = new FormData(form);
+        if ($('#subp').val() == 'UUU') {
+            data.append('subp', 'UUU');
+        }
         data.append('sumMetas', $('#sumMetas').val());
         $.ajax({
             type: "POST",
@@ -458,7 +461,8 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            dao.getActiv(data.clv_upp,data.subprograma);
+            dao.getActiv(data.clv_upp, data.subprograma); 
+            $('#subp').val(data.subprograma);
             $('#proyectoMD').empty();
             $('#proyectoMD').append("<thead><tr class='colorRosa'>"
                 + "<th class= 'vertical' > UPP</th >"
@@ -1227,7 +1231,7 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            if (data.status) {
+            if (!data.status) {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#validMetas').text("Las metas ya fueron confirmadas");
@@ -1392,14 +1396,14 @@ $(document).ready(function () {
       });
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        let flag = dao.validMeses();
+       // let flag = dao.validMeses();
         if ($('#tipo_Ac').val() != 'Continua') {
-            if ($('#actividad').valid() && flag) {
+            if ($('#actividad').valid()) {
                 dao.editarPutMeta();
             }
         } else {
             if (dao.validatCont() != 0) {
-                if ($('#actividad').valid() && flag) {
+                if ($('#actividad').valid()) {
                     dao.editarPutMeta();
                 }
             }

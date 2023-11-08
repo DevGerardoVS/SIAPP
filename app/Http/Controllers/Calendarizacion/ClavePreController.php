@@ -160,16 +160,20 @@ class ClavePreController extends Controller
     public function postGuardarClave(Request $request){
         Controller::check_permission('postClaves');
         Controller::check_permission('postClavesManual');
-
+        DB::beginTransaction();
         try {
             $perfil = Auth::user()->id_grupo;
             $tipo = '';
             $esEjercicioCerrado = ClavesHelper::validaEjercicio( $request->ejercicio,$request->data[0]['upp']);
+            Log::info('esEjercicioCerrado', [json_encode($esEjercicioCerrado)]);
             if ($esEjercicioCerrado && $perfil != 1) {
+                Log::info('ejercicio Cerrado retoran mensaje invalid');
                 return response()->json('invalid',200);
             }
             $claveExist = ClavesHelper::claveExist($request);
+            Log::info('claveExist', [json_encode($claveExist)]);
          if ($claveExist) {
+            Log::info('retorna mensaje de duplicado de clave', [json_encode($claveExist)]);
             return response()->json('duplicado',200);
             throw ValidationException::withMessages(['duplicado'=>'Esta clave ya existe']);
            
@@ -254,14 +258,58 @@ class ClavePreController extends Controller
                     'tipo' => $tipo,   
                     'created_user' => Auth::user()->username, 
                 ]);
-                $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
-                $b = array(
-                    "username"=>Auth::user()->username,
-                    "accion"=>'Guardar',
-                    "modulo"=>'Claves'
-                 );
-                 Controller::bitacora($b);
+                $b = [];
+                Log::info('nueva Clave generada: ', [json_encode($nuevaClave)]);
+                log::debug("id: ".$nuevaClave->id);
+                if(isset($nuevaClave->id)){
+                        $flag = true;
+                }else{
+                    $flag = false;
+                }
+                    if ($flag) {
+                        
+                        try {
+                            Log::debug("if count");
+                            $b = array(
+                                "username"=>Auth::user()->username,
+                                "accion"=>'Guardar',
+                                "modulo"=>'Claves'
+                            );
+                            Controller::bitacora($b);
+                            DB::commit();
+                        } catch (\Throwable $th) {
+                            throw new \Exception($th->getMessage());
+                        }
+                       
+
+                    }
+
+
+             /*    if (isset($nuevaClave->id)) {
+                        Log::debug("if count");
+                    DB::commit();
+                    $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
+                     Log::info('aplanado: ', [json_encode($aplanado)]);
+                    $b = array(
+                        "username"=>Auth::user()->username,
+                        "accion"=>'Guardar',
+                        "modulo"=>'Claves'
+                    );
+                    Controller::bitacora($b);
+                }
+                else {
+                    $b = array(
+                        "username"=>Auth::user()->username,
+                        "accion"=>'Error en guardado',
+                        "modulo"=>'Claves'
+                     );
+                    return response()->json('error',200);
+                } */
+                // Controller::bitacora($b);
+               
             }else {
+                Log::info('error cantidad no disponible: ', [json_encode($request->data[0]['total'])]);
+                DB::rollBack();
                 return response()->json('cantidadNoDisponible',200);
                 throw ValidationException::withMessages(['error de cantidades'=>'Las cantidades no coinciden...']);
             }
@@ -639,7 +687,6 @@ class ClavePreController extends Controller
         return response()->json($sector,200);
     }
     public function getPresupuestoAsignado(Request $request){
-        Log::info('Petición HTTP: ' . request()->fullUrl());
         $ejercicio = $request->ejercicio > 0 ? $request->ejercicio : 0;
         $upp = $request->upp != '' ? $request->upp : '';
         $Totcalendarizado = 0;
@@ -764,7 +811,6 @@ class ClavePreController extends Controller
     public function getPanelPresupuestoFondo(Request $request){
         $ejercicio =  $request->ejercicio != '' ? $request->ejercicio : 0; 
         $clvUpp = $request->clvUpp != '' ? $request->clvUpp : '';
-        Log::info('Petición HTTP: ' . request()->fullUrl());
         $disponible = 0;
         $totalDisponible = 0;
         $totalAsignado = 0;
@@ -969,7 +1015,7 @@ class ClavePreController extends Controller
         
         if(Auth::user()->id_grupo==4){
             $name = "CAP_Manual_de_Usuario_UPP-CargaMasivaClaves.pdf";
-            $file= public_path()."/". $name;
+            $file= public_path()."/manuales/". $name;
         } 
         
         //Log::channel('daily')->debug('exp '.public_path());

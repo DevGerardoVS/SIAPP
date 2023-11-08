@@ -747,7 +747,7 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            dao.limpiar();
+            console.log(response);
             const { mensaje } = response;
             Swal.fire({
                 icon: mensaje.icon,
@@ -761,7 +761,7 @@ var dao = {
                 dao.checkCombination($('#upp').val())
             }
             dao.getData('upp', 'ur');
-
+            dao.limpiar();
         });
     },
     rCMetasUpp: function (upp) {
@@ -771,7 +771,8 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            if (data.status) {
+            console.log(data);
+            if (!data.status) {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#validMetas').text("Las metas ya fueron confirmadas");
@@ -852,7 +853,7 @@ var dao = {
             tipo_be.append(new Option("--U. Beneficiarios--", ""));
             document.getElementById("tipo_Be").options[0].disabled = true;
             $.each(beneficiario, function (i, val) {
-                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
+                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
             });
         });
     },
@@ -877,6 +878,7 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             const { fondos, activids, tAct } = data;
+            console.log(activids);
             let flag = false;
             if (activids[0]?.id == 'ot' && mir == 1) {
                 flag = true;
@@ -980,15 +982,15 @@ var dao = {
 
         });
     },
-    getFyA: function (fondo) {
-
+    getActividasdesMir: function (fondo) {
+  
         $('#tipo_Ac').empty();
         for (let i = 1; i <= 12; i++) {
             $("#" + i).val(0);
             $("#" + i).prop('disabled', true);
         }
        let clave= $("#activiMir").val();
-        let mir = clave.split('$')
+        let mir = fondo.split('$')
         console.log("mir",mir);
         $.ajax({
             type: "GET",
@@ -1432,7 +1434,7 @@ $(document).ready(function () {
 
     });
     $('#sel_fondo').change(() => {
-     let acmIR=   $("#activiMir").val(`${area}$${enti}`);
+     let acmIR=   $("#activiMir").val();
         acmIR = acmIR + '$'+$('#sel_fondo').val();
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
 
@@ -1443,7 +1445,7 @@ $(document).ready(function () {
         }
     });
     $('#fondo_id').change(() => {
-        let acmIR=   $("#activiMir").val(`${area}$${enti}`);
+        let acmIR=   $("#activiMir").val();
         acmIR = acmIR + '$'+ $('#fondo_id').val();
         dao.getMeses($('#area').val(), $('#fondo_id').val());
     });
@@ -1511,15 +1513,15 @@ $(document).ready(function () {
     })
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        let flag = dao.validMeses();
-        if ($('#conmir').val() && flag) {
+        //let flag = dao.validMeses();
+        if ($('#conmir').val()) {
             init.validateCreate($('#actividad'));
-            if ($('#actividad').valid() && flag) {
+            if ($('#actividad').valid()) {
                 dao.crearMeta();
             }
         } else {
             init.validateCreateN($('#actividad'));
-            if ($('#actividad').valid() && flag) {
+            if ($('#actividad').valid()) {
                 dao.crearMeta();
             }
 

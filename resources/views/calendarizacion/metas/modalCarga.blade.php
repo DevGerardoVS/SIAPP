@@ -22,7 +22,10 @@
                     </ul>
                     <button type="button" class="btn btn-outline-primary text-center" style="float:left;text-decoration:none; width:20%;" onclick="dao.getPlantillaCmUpp()"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp; Descargar plantilla</button>
                   <p><br><br></p>
-                    <a type="button" class="btn btn-outline-success text-center" style="float:left;text-decoration:none; width:20%;" href="{{ route('Manual_Carga_Masiva_metas') }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Manual</a>
+                  @if (Auth::user()->id_grupo==4)
+                  <a type="button" class="btn btn-outline-success text-center" style="float:left;text-decoration:none; width:20%;" href="{{ route('Manual_Carga_Masiva_metas') }}"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Manual</a>
+
+                  @endif
 
                         <input name="cmFile" type="file" id="cmFile" name="cmFile" accept=".xlsx,.xlsm" class="border border-secondary rounded" placeholder="Archivo" required style="margin-top:5%; width : 100%;">
                     <br>

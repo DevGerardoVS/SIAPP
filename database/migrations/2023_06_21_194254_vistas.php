@@ -85,6 +85,7 @@ return new class extends Migration
             e.presupuestable,
             e.con_mir,
             e.confirmado,
+            e.tipo_presupuesto,
             e.ejercicio,
             e.deleted_at,
             e.updated_at,
