@@ -48,23 +48,43 @@ class CargaMasivaClaves implements ShouldQueue
 
             //por si el de arriba no funciona session(['key' => 'value']);
             $arrayErrores = array();
-            DB::beginTransaction();
-            foreach ($this->filearray as $index => $k) {
-                $currentrow = $index + 2;
-                $tipoclave = '';
-                $añoclave = 0;
-                $usuarioclave = '';
+            $tipoclave = '';
+            $añoclave = 0;
+            $usuarioclave = '';
+            $currentrow=1;
+            $usuarioclave = 'CargaMasiva' . $this->user->username;
 
-                //validacion de año 
-                if (strlen($k['20']) == 2 && is_numeric($k['20'])) {
-                    $year = '20' . $k['20'];
+            DB::beginTransaction();
+                            //validacion de año 
+                if (strlen($this->filearray['0']['20']) == 2 && is_numeric($this->filearray['0']['20'])) {
+                    $year = '20' . $this->filearray['0']['20'];
                     $añoclave = $year;
                 } else {
-                    if ($k['20'] != 2) {
+                    if ($this->filearray['0']['20'] != 2) {
                         $añoclave = 2024;
                     }
 
                 }
+                $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$this->filearray['0']['5'])->count();
+
+                $arrayadmconac = str_split($this->filearray['0']['0'], 1);
+
+                $valadm = v_epp::select()
+                    ->where('clv_sector_publico', $arrayadmconac[0])
+                    ->where('clv_sector_publico_f', $arrayadmconac[1])
+                    ->where('clv_sector_economia', $arrayadmconac[2])
+                    ->where('clv_subsector_economia', $arrayadmconac[3])
+                    ->where('clv_ente_publico', $arrayadmconac[4])
+                    ->where('ejercicio', $añoclave)
+                    ->count();
+                if ($valadm < 1) {
+                    array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de admonac es invalida. ');
+
+                }
+            foreach ($this->filearray as  $k) {
+
+
+
                 ///validaciones de catalogo
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '6')
@@ -161,7 +181,6 @@ class CargaMasivaClaves implements ShouldQueue
 
                 $arraypos = str_split($k['18'], 1);
 
-                $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $k['5'])->count();
 
                 if (count($arraypos) >= 4) {
                     if ($k['16'] == 'UUU') {
@@ -247,20 +266,7 @@ class CargaMasivaClaves implements ShouldQueue
 
                 //validacion de codigo admconac
                 if (isset($k['0']) && $k['0'] !== '0') {
-                    $arrayadmconac = str_split($k['0'], 1);
 
-                    $valadm = v_epp::select()
-                        ->where('clv_sector_publico', $arrayadmconac[0])
-                        ->where('clv_sector_publico_f', $arrayadmconac[1])
-                        ->where('clv_sector_economia', $arrayadmconac[2])
-                        ->where('clv_subsector_economia', $arrayadmconac[3])
-                        ->where('clv_ente_publico', $arrayadmconac[4])
-                        ->where('ejercicio', $añoclave)
-                        ->count();
-                    if ($valadm < 1) {
-                        array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de admonac es invalida. ');
-
-                    }
                     //validacion de presupuestable
                     $valpresup = v_epp::select()
                         ->where('clv_sector_publico', $arrayadmconac[0])
@@ -396,9 +402,7 @@ class CargaMasivaClaves implements ShouldQueue
 
 
 
-                $usuarioclave = 'CargaMasiva' . $this->user->username;
-
-                $clave = ProgramacionPresupuesto::insert([
+                $clave = ProgramacionPresupuesto::create([
                     'clasificacion_administrativa' => $k['0'],
                     'entidad_federativa' => $k['1'],
                     'region' => $k['2'],
@@ -445,10 +449,11 @@ class CargaMasivaClaves implements ShouldQueue
                     'tipo' => $tipoclave,
                     'updated_at' => null,
                     'created_user' => $usuarioclave
-                ]);
+                ]) ;
                 \Log::debug($currentrow);
-            }
+                $currentrow++;
 
+            }
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
                 session::put('cargaMasClav',2);
@@ -459,7 +464,6 @@ class CargaMasivaClaves implements ShouldQueue
 
 
             //mandamos llamar procedimiento de jeff
-           /*  $datos = DB::select("CALL insert_pp_aplanado(" . $ejercicio[0] . ")"); */
             $b = array(
                 "username" => $this->user->username,
                 "accion" => 'Carga masiva',
@@ -471,7 +475,7 @@ class CargaMasivaClaves implements ShouldQueue
             session::put('cargaMasClav',1);
             //el mensaje cuando termina el job puede ser un array o un string
             session::put('cargapayload', 'Datos registrados con exito');
-            \Log::debug('Trabajo con exito');
+            \Log::debug('Trabajo  exitoso');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::debug($e->getMessage());
