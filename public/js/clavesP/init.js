@@ -61,7 +61,7 @@ var dao = {
         {"aTargets" : [4], "mData" : "posicionPre"},
         {"aTargets" : [5], "mData" : "fondo"},
         {"aTargets" : [6], "mData" : "proyectoObra"},
-        {"aTargets" : [7], "mData" : "totalByClave"},
+        {"aTargets" : [7], "mData" : "totalByClave", sClass: "montosR"},
         {"aTargets" : [8], "mData" : function(o){
           if (o.rol == 1) {
             if (o.estatus != 'Cerrado' && o.estatus != '') {
@@ -128,19 +128,19 @@ var dao = {
     let fondoRamo = document.getElementById('fondoRamo').innerHTML;
     let capital = document.getElementById('capital').innerHTML;
     let proyectoObra = document.getElementById('proyectoObra').innerHTML;
-    let enero = document.getElementById('enero').value;
-    let febrero = document.getElementById('febrero').value;
-    let marzo = document.getElementById('marzo').value;
-    let abril = document.getElementById('abril').value;
-    let mayo = document.getElementById('mayo').value;
-    let junio = document.getElementById('junio').value;
-    let julio = document.getElementById('julio').value;
-    let agosto = document.getElementById('agosto').value;
-    let septiembre = document.getElementById('septiembre').value;
-    let octubre = document.getElementById('octubre').value;
-    let noviembre = document.getElementById('noviembre').value;
-    let diciembre = document.getElementById('diciembre').value;
-    let total = document.getElementById('totalCalendarizado').value;
+    let enero = parseInt(document.getElementById('enero').value.replaceAll(',','').replaceAll('$',''));
+    let febrero = parseInt(document.getElementById('febrero').value.replaceAll(',','').replaceAll('$',''));
+    let marzo = parseInt(document.getElementById('marzo').value.replaceAll(',','').replaceAll('$',''));
+    let abril = parseInt(document.getElementById('abril').value.replaceAll(',','').replaceAll('$',''));
+    let mayo = parseInt(document.getElementById('mayo').value.replaceAll(',','').replaceAll('$',''));
+    let junio = parseInt(document.getElementById('junio').value.replaceAll(',','').replaceAll('$',''));
+    let julio = parseInt(document.getElementById('julio').value.replaceAll(',','').replaceAll('$',''));
+    let agosto = parseInt(document.getElementById('agosto').value.replaceAll(',','').replaceAll('$',''));
+    let septiembre = parseInt(document.getElementById('septiembre').value.replaceAll(',','').replaceAll('$',''));
+    let octubre = parseInt(document.getElementById('octubre').value.replaceAll(',','').replaceAll('$',''));
+    let noviembre = parseInt(document.getElementById('noviembre').value.replaceAll(',','').replaceAll('$',''));
+    let diciembre = parseInt(document.getElementById('diciembre').value.replaceAll(',','').replaceAll('$',''));
+    let total = parseInt(document.getElementById('totalCalendarizado').value.replaceAll(',','').replaceAll('$',''));
     let tipo = document.getElementById('tipo').value;
     let ejercicio = document.getElementById('anio').value;
     let datos = [{'clasificacionAdministrativa':clasificacionAdministrativa,'entidadFederativa':entidadFederativa,'region':region, 'municipio':municipio,'localidad':localidad,'upp':upp,'subsecretaria':subsecretaria,
@@ -198,19 +198,19 @@ var dao = {
   },
   postUpdate : function () {
     let idClave = document.getElementById('idClave').value;
-    let enero = document.getElementById('enero').value;
-    let febrero = document.getElementById('febrero').value;
-    let marzo = document.getElementById('marzo').value;
-    let abril = document.getElementById('abril').value;
-    let mayo = document.getElementById('mayo').value;
-    let junio = document.getElementById('junio').value;
-    let julio = document.getElementById('julio').value;
-    let agosto = document.getElementById('agosto').value;
-    let septiembre = document.getElementById('septiembre').value;
-    let octubre = document.getElementById('octubre').value;
-    let noviembre = document.getElementById('noviembre').value;
-    let diciembre = document.getElementById('diciembre').value;
-    let total = document.getElementById('totalCalendarizado').value;
+    let enero = document.getElementById('enero').value.replaceAll(',','').replaceAll('$','');
+    let febrero = document.getElementById('febrero').value.replaceAll(',','').replaceAll('$','');
+    let marzo = document.getElementById('marzo').value.replaceAll(',','').replaceAll('$','');
+    let abril = document.getElementById('abril').value.replaceAll(',','').replaceAll('$','');
+    let mayo = document.getElementById('mayo').value.replaceAll(',','').replaceAll('$','');
+    let junio = document.getElementById('junio').value.replaceAll(',','').replaceAll('$','');
+    let julio = document.getElementById('julio').value.replaceAll(',','').replaceAll('$','');
+    let agosto = document.getElementById('agosto').value.replaceAll(',','').replaceAll('$','');
+    let septiembre = document.getElementById('septiembre').value.replaceAll(',','').replaceAll('$','');
+    let octubre = document.getElementById('octubre').value.replaceAll(',','').replaceAll('$','');
+    let noviembre = document.getElementById('noviembre').value.replaceAll(',','').replaceAll('$','');
+    let diciembre = document.getElementById('diciembre').value.replaceAll(',','').replaceAll('$','');
+    let total = document.getElementById('totalCalendarizado').value.replaceAll(',','').replaceAll('$','');
     let ejercicio = document.getElementById('ejercicio'). value;
     let clvUpp = document.getElementById('clvUpp'). value;
     let datos = [{'idClave':idClave,'enero':enero,'febrero':febrero,'marzo':marzo,'abril':abril,'mayo':mayo,'junio':junio,'julio':julio,'agosto':agosto,'septiembre':septiembre,'octubre':octubre,'noviembre':noviembre,'diciembre':diciembre,'total':total, 'ejercicio': ejercicio, 'clvUpp':clvUpp}];
@@ -588,7 +588,6 @@ var dao = {
     });
   },
   getPresupuesAsignado: function (ejercicio, clv_upp) {
-    // console.log('env',env);
     // let url = '';
     // if (env !='local') {
     //   url = 'https://' + window.location.hostname + '/get-presupuesto-asignado/' + ejercicio + '/' + upp;
@@ -832,16 +831,15 @@ var dao = {
       let colums = [];
       switch (response.rol) {
         case 0:
-          console.log('admin');
           tabla = $("#tblPresupuestos");
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
             {"aTargets" : [1], "mData" : "fondo_ramo"},
-            {"aTargets" : [2], "mData" : "Operativo"},
-            {"aTargets" : [3], "mData" : "RH"},
-            {"aTargets" : [4], "mData" : "techos_presupuestal"},
-            {"aTargets" : [5], "mData" : "calendarizado"},
-            {"aTargets" : [6], "mData" : "disponible"},
+            {"aTargets" : [2], "mData" : "Operativo", sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "RH", sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "techos_presupuestal", sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "calendarizado", sClass: "montosR"},
+            {"aTargets" : [6], "mData" : "disponible", sClass: "montosR"},
             {"aTargets" : [7], "mData" : "ejercicio"},
           ];
           $('#tblPresupuestos').show(true);
@@ -854,10 +852,10 @@ var dao = {
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
             {"aTargets" : [1], "mData" : "fondo_ramo"},
-            {"aTargets" : [2], "mData" : "Operativo"},
-            {"aTargets" : [3], "mData" : "techos_presupuestal"},
-            {"aTargets" : [4], "mData" : "calendarizado"},
-            {"aTargets" : [5], "mData" : "disponible"},
+            {"aTargets" : [2], "mData" : "Operativo",sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "techos_presupuestal",sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "calendarizado",sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "disponible",sClass: "montosR"},
             {"aTargets" : [6], "mData" : "ejercicio"},
           ];
           $('#tablaUpps').show(true);
@@ -870,10 +868,10 @@ var dao = {
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
             {"aTargets" : [1], "mData" : "fondo_ramo"},
-            {"aTargets" : [2], "mData" : "RH"},
-            {"aTargets" : [3], "mData" : "techos_presupuestal"},
-            {"aTargets" : [4], "mData" : "calendarizado"},
-            {"aTargets" : [5], "mData" : "disponible"},
+            {"aTargets" : [2], "mData" : "RH",sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "techos_presupuestal",sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "calendarizado",sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "disponible",sClass: "montosR"},
             {"aTargets" : [6], "mData" : "ejercicio"},
           ];
           $('#tablaDelegacion').show(true);
@@ -886,11 +884,11 @@ var dao = {
           colums = [
             {"aTargets" : [0], "mData" : 'clv_fondo'},
             {"aTargets" : [1], "mData" : "fondo_ramo"},
-            {"aTargets" : [2], "mData" : "Operativo"},
-            {"aTargets" : [3], "mData" : "RH"},
-            {"aTargets" : [4], "mData" : "techos_presupuestal"},
-            {"aTargets" : [5], "mData" : "calendarizado"},
-            {"aTargets" : [6], "mData" : "disponible"},
+            {"aTargets" : [2], "mData" : "Operativo",sClass: "montosR"},
+            {"aTargets" : [3], "mData" : "RH",sClass: "montosR"},
+            {"aTargets" : [4], "mData" : "techos_presupuestal",sClass: "montosR"},
+            {"aTargets" : [5], "mData" : "calendarizado",sClass: "montosR"},
+            {"aTargets" : [6], "mData" : "disponible",sClass: "montosR"},
             {"aTargets" : [7], "mData" : "ejercicio"},
           ];
           $('#tblPresupuestos').show(true);
@@ -1105,32 +1103,59 @@ var init = {
 function calucalarCalendario() {
   var total = 0;
   $(".monto").each(function() {
-    if (isNaN(parseInt($(this).val()))) {
+    let val = parseInt($(this).val().replaceAll(",","").replaceAll("$",""));
+    if (isNaN(val)) {
 
       total += 0;
 
     } else {
 
-      total +=   parseInt($(this).val());
+      total +=   parseInt($(this).val().replaceAll(",","").replaceAll("$",""));
 
     }
 
   });
-  document.getElementById('totalCalendarizado').value = total;
+  let valueFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(total); 
+  document.getElementById('totalCalendarizado').value = valueFormated;
+};
+function formateoDeMonedaUpdate() {
+  $(".monto").each(function() {
+    let val = parseInt($(this).val().replaceAll(",","").replaceAll("$",""));
+    if (isNaN(val)) {
+
+      document.getElementById(this.id).value = 0;
+
+    } else {
+      let valueFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val); 
+      document.getElementById(this.id).value = valueFormated;
+    }
+    
+  });
+  let total = document.getElementById('totalCalendarizado').value;
+    if (total > 0) {
+      let totalFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(total);
+      document.getElementById('totalCalendarizado').value = totalFormated; 
+    }  
 };
 function soloEnteros() {
   var total = 0;
   $(".monto").each(function() {
-    if (isNaN(parseInt($(this).val()))) {
+    if (isNaN(parseInt($(this).val().replaceAll(",","").replaceAll("$","")))) {
       total += 0;
     } else {
-      $(this).val(parseInt($(this).val()));
+      $(this).val(parseInt($(this).val().replaceAll(",","").replaceAll("$","")));
     }
     $("#" + $(this)[0].id).on('paste', function (e) {
         e.preventDefault();
     });
   });
-}
+};
+$(".monto").change(function () {
+  let value =  document.getElementById(this.id).value.replaceAll(",","").replaceAll("$","");
+  let valueFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value); 
+  document.getElementById(this.id).value = valueFormated;
+  
+});
 $(document).ready(function () {
   $.ajaxSetup({
     headers: {
@@ -1285,7 +1310,7 @@ $(document).ready(function () {
   });
   $('#btnSaveAll').click(function (params) {
     params.preventDefault();
-    let total = document.getElementById('totalCalendarizado').value;
+    let total = parseInt(document.getElementById('totalCalendarizado').value.replaceAll(',','').replaceAll('$',''));
     let disponible = document.getElementById('preDisFondo').value;
     let disp = parseInt(disponible.replaceAll(',', '').replaceAll('$', ''));
     if (total > 0 && total <= parseInt(disp)) {
@@ -1324,7 +1349,7 @@ $(document).ready(function () {
     params.preventDefault();
     let calendarizado = document.getElementById('calendarizado').value;
    calendarizado = parseInt(calendarizado);
-    let total = document.getElementById('totalCalendarizado').value;
+    let total = document.getElementById('totalCalendarizado').value.replaceAll(',', '').replaceAll('$', '');
     let disponible = document.getElementById('preDisFondo').value;
     let disp = parseInt(disponible.replaceAll(',', '').replaceAll('$', ''));
     disp = disp + calendarizado;

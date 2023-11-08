@@ -210,11 +210,11 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="control-label ">Presupuesto asignado Fondo</label>
-                                        <input type="text" id="preFondo" class="form-control" disabled>
+                                        <input type="text" id="preFondo" class="form-control montosR" disabled>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="control-label">Presupuesto disponible Fondo</label>
-                                        <input type="text" id="preDisFondo" class="form-control" disabled>
+                                        <input type="text" id="preDisFondo" class="form-control montosR" disabled>
                                     </div>
                                 </div>
                                 <div class="table-responsive ">
@@ -230,12 +230,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <td><input id="enero" name="enero" type="text" maxlength ="20" class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
-                                            <td><input id="febrero" name="febrero" type="text" maxlength ="20" class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
-                                            <td><input id="marzo" name="marzo" type="text" maxlength ="20" class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
-                                            <td><input id="abril" name="abril" type="text" maxlength ="20" class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
-                                            <td><input id="mayo" name="mayo" type="text" maxlength ="20" class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
-                                            <td><input id="junio" name="junio" type="text" maxlength ="20" class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                            <td><input id="enero" name="enero" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                            <td><input id="febrero" name="febrero" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                            <td><input id="marzo" name="marzo" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                            <td><input id="abril" name="abril" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                            <td><input id="mayo" name="mayo" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                            <td><input id="junio" name="junio" type="text" maxlength ="20" class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
                                         </tbody>
                                     </table>
                                 </div>
@@ -254,17 +254,17 @@
                                         </thead>
                                         <tbody>
                                             <td><input id="julio" name="julio" type="text" maxlength ="20"
-                                                    class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                                    class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
                                             <td><input id="agosto" name="agosto" type="text" maxlength ="20"
-                                                    class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                                    class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
                                             <td><input id="septiembre" name="septiembre" type="text" maxlength ="20"
-                                                    class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                                    class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
                                             <td><input id="octubre" name="octubre" type="text" maxlength ="20"
-                                                    class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                                    class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
                                             <td><input id="noviembre" name="noviembre" type="text" maxlength ="20"
-                                                    class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();"value=0></td>
+                                                    class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();"value=0></td>
                                             <td><input id="diciembre" name="diciembre" type="text" maxlength ="20"
-                                                    class="form-control monto" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
+                                                    class="form-control monto montosR" onkeypress="return valideKey(event);" onkeyup="calucalarCalendario();" value=0></td>
                                             <tr style="border-style: none;">
                                                 <td></td>
                                                 <td></td>
@@ -273,7 +273,7 @@
                                                 <td>
                                                     <h6><b>Total Calendarizado</b></h6>
                                                 </td>
-                                                <td><input id="totalCalendarizado" name="totalCalendarizado" type="text" class="form-control" readonly>
+                                                <td><input id="totalCalendarizado" name="totalCalendarizado" type="text" class="form-control montosR" readonly>
                                                 </td>
                                             </tr>
                                         </tbody>
