@@ -41,24 +41,7 @@ return [
             'retry_after' => 90,
             'after_commit' => false,
         ],
-        'high' => [
-            'driver' => 'database',
-            'connection' => 'default',
-            'queue' => 'high',
-            'retry_after' => 90,
-        ],
-        'default' => [
-            'driver' => 'database',
-            'connection' => 'default',
-            'queue' => 'default',
-            'retry_after' => 60,
-        ],
-        'low' => [
-            'driver' => 'database',
-            'connection' => 'default',
-            'queue' => 'low',
-            'retry_after' => 30,
-        ],
+        
 
         'beanstalkd' => [
             'driver' => 'beanstalkd',
@@ -87,6 +70,24 @@ return [
             'retry_after' => 90,
             'block_for' => null,
             'after_commit' => false,
+        ],
+        'high' => [
+            'driver' => 'database',
+            'connection' => 'default',
+            'queue' => 'high',
+            'retry_after' => 90,
+        ],
+        'default' => [
+            'driver' => 'database',
+            'connection' => 'default',
+            'queue' => 'default',
+            'retry_after' => 60,
+        ],
+        'low' => [
+            'driver' => 'database',
+            'connection' => 'default',
+            'queue' => 'low',
+            'retry_after' => 30,
         ],
 
     ],
