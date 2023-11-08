@@ -66,6 +66,8 @@ class CargaMasivaClaves implements ShouldQueue
                     }
 
                 }
+                
+            if ($this->user->id_grupo == 1 || $this->user->id_grupo == 5) {
                 $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$this->filearray['0']['5'])->count();
 
                 $arrayadmconac = str_split($this->filearray['0']['0'], 1);
@@ -82,8 +84,27 @@ class CargaMasivaClaves implements ShouldQueue
                     array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de admonac es invalida. ');
 
                 }
-            foreach ($this->filearray as  $k) {
+                 }
 
+            foreach ($this->filearray as  $k) {
+                if ($this->user->id_grupo == 3) {
+                    $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$this->filearray['0']['5'])->count();
+    
+                    $arrayadmconac = str_split($this->filearray['0']['0'], 1);
+    
+                    $valadm = v_epp::select()
+                        ->where('clv_sector_publico', $arrayadmconac[0])
+                        ->where('clv_sector_publico_f', $arrayadmconac[1])
+                        ->where('clv_sector_economia', $arrayadmconac[2])
+                        ->where('clv_subsector_economia', $arrayadmconac[3])
+                        ->where('clv_ente_publico', $arrayadmconac[4])
+                        ->where('ejercicio', $añoclave)
+                        ->count();
+                    if ($valadm < 1) {
+                        array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de admonac es invalida. ');
+    
+                    }
+                     }
 
 
                 ///validaciones de catalogo
@@ -463,12 +484,12 @@ class CargaMasivaClaves implements ShouldQueue
                     'cargaMasClav' => 2,
                     'created_user' =>$this->user->username
                 ]);
-
+                session::put('cargaMasClav',2);
+                session::put('cargapayload', $arrayErrores);
             }
 
 
 
-            //mandamos llamar procedimiento de jeff
             $b = array(
                 "username" => $this->user->username,
                 "accion" => 'Carga masiva',
@@ -476,6 +497,10 @@ class CargaMasivaClaves implements ShouldQueue
             );
             Controller::bitacora($b);
             DB::commit();
+                        //estatus carga masiva 0 en proceso 1 exito 2 error
+                        session::put('cargaMasClav',1);
+                        //el mensaje cuando termina el job puede ser un array o un string
+                        session::put('cargapayload', 'Datos registrados con exito');
             carga_masiva_estatus::create([
                 'id_usuario' => $this->user->id,
                 'cargapayload' => 'Exito en la carga masiva',
@@ -489,7 +514,8 @@ class CargaMasivaClaves implements ShouldQueue
                 'cargapayload' => $e->getMessage(),
                 'cargaMasClav' => 1,
             ]);
-
+            session::put('cargaMasClav',2);
+            session::put('cargapayload', 'error: '.$e->getMessage());
 
 
 

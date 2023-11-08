@@ -507,7 +507,8 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     'cargaMasClav' => 2,
                 ]);
                 \Log::debug($arrayErrores);
-
+                session::put('cargaMasClav',2);
+                session::put('cargapayload', $arrayErrores);
 
             } else {
                 DB::commit();
@@ -524,7 +525,8 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                 'cargapayload' => $th->getMessage(),
                 'cargaMasClav' => 1,
             ]);
-
+            session::put('cargaMasClav',2);
+            session::put('cargapayload', 'error: '.$th->getMessage());
             \Log::debug($th->getMessage());
         }
     }
