@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\BitacoraHelper;
 use Illuminate\Support\Facades\Session;
+use App\Events\ActualizarSesionUsuario;
 class HomeController extends Controller
 {
     /**
@@ -64,6 +65,23 @@ class HomeController extends Controller
         Session::put('cargaMasClav','bye');
       
         return view('home');
+    }
+
+    public function agregarcredenciales()
+    {
+        
+        $usuario=Auth::user();
+        $datos='datosactualizados';
+        $cargapayload=array (
+            0 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 09 ',
+            1 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 02 ',
+            2 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 0L ',
+            3 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 0K ',
+          );
+        $cargaMasClav=2;
+         Log::debug("Datos DEl usuario". $usuario);
+        event(new ActualizarSesionUsuario($usuario, $cargapayload,$cargaMasClav));
+        return "ya cambie";
     }
 
     

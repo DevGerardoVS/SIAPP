@@ -100,6 +100,9 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     Route::get('/actualizarcargafin', [App\Http\Controllers\HomeController::class, 'actualizarcargafin'])->name('actualizarcargafin');
     Route::get('/actualizarcargfalla', [App\Http\Controllers\HomeController::class, 'actualizarcargfalla'])->name('actualizarcargfalla');
     Route::get('/borrar-sesion_excel', [App\Http\Controllers\HomeController::class, 'borrarsesionexcel'])->name('borrar-sesion_excel');
+    Route::get('/agregarcredenciales', [App\Http\Controllers\HomeController::class, 'agregarcredenciales'])->name('agregarcredenciales');
+  
 
+    
 });
 

@@ -42,7 +42,7 @@ class CalendarizacionCargaMasivaController extends Controller
     {   
        
         $fails=0;
-      
+     
         if (session()->has('cargapayload')) {
             $fails = session::get('cargapayload');
 
