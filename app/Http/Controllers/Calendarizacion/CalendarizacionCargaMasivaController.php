@@ -551,8 +551,8 @@ class CalendarizacionCargaMasivaController extends Controller
                     ]);
                 }
 
-              $claves= ProgramacionPresupuesto::select()->where('created_user',$usuarioclave)->where('ejercicio',$añoclave)->get();
-              Log::debug($claves);
+/*               $claves= ProgramacionPresupuesto::select()->where('created_user',$usuarioclave)->where('ejercicio',$añoclave)->get();
+              Log::debug($claves); */
                 /* if (count($equals) > 0) {
                         array_push($arrayErrores, 'Error: No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados. ');
 
@@ -1030,6 +1030,7 @@ class CalendarizacionCargaMasivaController extends Controller
             } */
         } catch (\Throwable $th) {
             Log::debug($th);
+            DB::rollBack();
             return redirect()->back()->withErrors(['error' => 'Ah ocurrido un error de conexion verifique su conexion e intente nuevamente ']);
 
         }
@@ -1041,7 +1042,7 @@ class CalendarizacionCargaMasivaController extends Controller
             DB::commit();
         } */
         //si todo sale bien procedemos al import
-        try {
+      /*  try {
 
             DB::beginTransaction();
             foreach ($filearray as $index => $k) {
@@ -1066,7 +1067,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 } else {
                     $tipoclave = 'Operativo';
                 }
-/*                 ///validaciones de catalogo
+                 ///validaciones de catalogo
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '6')
                     ->where('clave', $k['5'])
@@ -1388,7 +1389,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     ->where('clv_region', $k['2'])
                     ->where('clv_municipio', $k['3'])
                     ->where('clv_localidad', $k['4'])->count();
-                $valgeo < 1 ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La combinacion de las claves de la celda B a E es invalida') : null; */
+                $valgeo < 1 ? array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La combinacion de las claves de la celda B a E es invalida') : null; 
 
 
 
@@ -1455,15 +1456,16 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
             //mandamos llamar procedimiento de jeff
-           /*  $datos = DB::select("CALL insert_pp_aplanado(" . $ejercicio[0] . ")"); */
+            $datos = DB::select("CALL insert_pp_aplanado(" . $ejercicio[0] . ")"); */
             $b = array(
                 "username" => Auth::user()->username,
                 "accion" => 'Carga masiva',
                 "modulo" => 'Claves presupuestales'
             );
             Controller::bitacora($b);
+            DB::commit();
             return redirect()->back()->withSuccess('Se cargaron correctamente los datos');
-        } catch (\Exception $e) {
+/*         } catch (\Exception $e) {
             DB::rollBack();
             Log::debug($e->getMessage());
             return redirect()->back()->withErrors(['error' => 'Ocurrrio un error en el sistema intentelo más tarde']);
@@ -1471,7 +1473,7 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
 
-        }
+        } */
 
 
 
