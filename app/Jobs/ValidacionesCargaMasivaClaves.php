@@ -147,7 +147,14 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                 }
 
                 if (count($arrayErrores) > 0) {
-                    return redirect()->back()->withErrors($arrayErrores);
+                    $payload=  json_encode($arrayErrores);
+                    carga_masiva_estatus::create([
+                        'id_usuario' => $usuario->id,
+                        'cargapayload' =>  $arrayErrores,
+                        'cargaMasClav' => 2,
+                        'created_user' =>$usuario->username
+                    ]);
+                    
                 }
 
                 //validacion de totales
@@ -221,8 +228,14 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                 // Checar permiso
                 if (Controller::check_assignFront(1)) {
                 } else {
-                    return redirect()->back()->withErrors(['error' => 'No tiene permiso para subir carga masiva. ']);
+                    $payload=  json_encode($arrayErrores);
 
+                    carga_masiva_estatus::create([
+                        'id_usuario' => $usuario->id,
+                        'cargapayload' =>  $payload,
+                        'cargaMasClav' => 2,
+                        'created_user' =>$usuario->username
+                    ]);
 
                 }
 
@@ -360,9 +373,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                     }
 
-                    if (count($arrayErrores) > 0) {
-                        return redirect()->back()->withErrors($arrayErrores);
-                    }
+
                     //validacion de totales
                     $helperejercicio = 0;
                     foreach ($arraypresupuesto as $key => $value) {
