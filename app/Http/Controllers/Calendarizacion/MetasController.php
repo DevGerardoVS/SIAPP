@@ -1190,7 +1190,6 @@ class MetasController extends Controller
 		}
 		
 		if ($check['status']) {
-			if ( !$metas || Auth::user()->id_grupo == 1) {
 				//ver si esta confirmada la mir
 				$isMir = DB::table("mml_cierre_ejercicio")
 					->select('id', 'estatus')
