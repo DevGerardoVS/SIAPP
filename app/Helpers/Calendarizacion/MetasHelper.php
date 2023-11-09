@@ -625,7 +625,6 @@ class MetasHelper
 				DB::raw("IF(SUM(noviembre)>=1,1,0) AS noviembre"),
 				DB::raw("IF(SUM(diciembre)>=1,1,0) AS diciembre")
 			)
-			->where('programacion_presupuesto.subprograma_presupuestario', 'UUU')
 			->where('programacion_presupuesto.upp', $upp)
 			->where('ejercicio', $anio)
 			->where('programacion_presupuesto.deleted_at', null)
