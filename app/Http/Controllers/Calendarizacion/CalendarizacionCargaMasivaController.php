@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Calendarizacion;
 
 use App\Exports\ImportErrorsExport;
 use App\Http\Controllers\Controller;
-
+use App\Models\carga_masiva_estatus;
 use App\Jobs\ValidacionesCargaMasivaClaves;
 use Illuminate\Http\Request;
 
@@ -61,7 +61,7 @@ class CalendarizacionCargaMasivaController extends Controller
         /*Si no coloco estas lineas Falla*/
         ob_end_clean();
         ob_start();
-
+        $deleted = carga_masiva_estatus::where('id_usuario','=',Auth::user()->id)->forceDelete();
 
         return Excel::download(new ImportErrorsExport($fails), 'Errores.xlsx');
     }
