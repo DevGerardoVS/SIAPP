@@ -1045,6 +1045,8 @@ class MetasController extends Controller
 	}
 	public function jasper($request)
 	{
+		error_reporting(E_ALL);
+ini_set('display_errors', true);
 		ob_end_clean();
 		ob_start();
 		date_default_timezone_set('America/Mexico_City');
@@ -1067,6 +1069,7 @@ class MetasController extends Controller
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
 		$output_file = sys_get_temp_dir()."/".time()."/";
+		mkdir($output_file, 0777, true);
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
 		Log::info('reuqest', [json_encode($request)]);
