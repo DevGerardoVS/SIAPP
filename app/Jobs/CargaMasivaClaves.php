@@ -478,7 +478,9 @@ class CargaMasivaClaves implements ShouldQueue
             }
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
+                \Log::debug($arrayErrores);
 
+                SendReminderEmail::dispatch($arrayErrores, $this->user->email)->onQueue('high');
                 event(new ActualizarSesionUsuario($this->user, $arrayErrores,2));
             }
 
@@ -493,9 +495,11 @@ class CargaMasivaClaves implements ShouldQueue
             DB::commit();
 
             event(new ActualizarSesionUsuario($this->user, 'Exito',1));
-
-
+        
             \Log::debug('Trabajo  exitoso');
+
+            SendReminderEmail::dispatch('Exito', $this->user->email)->onQueue('high');
+
         } catch (\Exception $e) {
             DB::rollBack();
 

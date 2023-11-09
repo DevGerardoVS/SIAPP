@@ -40,6 +40,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
     {
         try {
             session::put('cargaMasCla', 0);
+            session::put('id_usuario', $this->user->id);
 
             if ($this->user->id_grupo == 4) {
                 $uppUsuario = $this->user->clv_upp;
