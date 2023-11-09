@@ -1064,6 +1064,7 @@ class MetasController extends Controller
 		$ruta = sys_get_temp_dir();
 		//Eliminación si ya existe reporte
 		if (File::exists($ruta . "/" . $report . ".pdf")) {
+			Log::info('si existe el archivo lo elimina', [json_encode($ruta . "/" . $report . ".pdf")]);
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
@@ -1072,6 +1073,7 @@ class MetasController extends Controller
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
 		Log::info('reuqest', [json_encode($request)]);
+		Log::info('reuqest Upp', [json_encode($request['UPP'])]);
 		$parameters = [
 			"anio" => $request['anio'],
 			"logoLeft" => $logoLeft,
@@ -1090,7 +1092,6 @@ class MetasController extends Controller
 			$database_connection
 		)->execute();
 		// dd($jasper);
-		//agrego comentario para revisar version de main...
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
@@ -1100,10 +1101,6 @@ class MetasController extends Controller
 			]);
 		}
 		
-		// $reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
-		// 	'Content-Type' => 'application/pdf'
-		// ]);
-
 		if ($request['tipo'] == 0) {
 			if (file_exists($archivo)) {
 				return response()->download($archivo);
