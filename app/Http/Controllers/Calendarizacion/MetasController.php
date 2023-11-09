@@ -40,8 +40,6 @@ class MetasController extends Controller
             $name = "CAP_Manual_de_Usuario_UPP-CargaMasivaMetas.pdf";
             $file= public_path()."/manuales/". $name;
         } 
-		Log::debug($file);
-        //Log::channel('daily')->debug('exp '.public_path());
         $headers = array('Content-Type: application/pdf',);
 
         return response()->download($file,$name,$headers);
@@ -83,7 +81,6 @@ class MetasController extends Controller
 			} 
 			if ($key->estatus == 0 && Auth::user()->id_grupo == 4) {
 					if ($sub == 'UUU') {
-						Log::debug("UUU");
 						if ($aut) {
 							$button = $accion;
 						} else {
@@ -91,7 +88,6 @@ class MetasController extends Controller
 						}
 
 					} else {
-						Log::debug("no es UUU");
 						$button = $accion;
 					}
 
@@ -357,7 +353,6 @@ class MetasController extends Controller
 					->where('mml_mir.clv_pp', $areaAux[7])
 					->where('mml_mir.ejercicio', $check['anio'])
 					->groupByRaw('clave')->get();
-				Log::debug($activ );
 				if (count($activ) == 0) {
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
@@ -372,9 +367,7 @@ class MetasController extends Controller
 	public function getActividMir($area, $entidad,$fondo)
 	{
 		$areaAux = explode('-', $area);
-		Log::debug($areaAux);
 		$entidadAux = explode('-', $entidad);
-		Log::debug($entidadAux);
 		$check = $this->checkClosing($entidadAux[0]);
 		if ($check['status']) {
 			$m = DB::table('v_epp')
@@ -545,7 +538,6 @@ class MetasController extends Controller
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 						return response()->json($res, 200);
 					} else {
-						Log::debug("else no existe".count($meta));
 						$act = MmlMir::create([
 							'clv_upp' => $request->upp,
 							'entidad_ejecutora' => str_replace('-', "", $clv[1]),
@@ -556,7 +548,6 @@ class MetasController extends Controller
 							'created_user' => $username
 						]);
 
-						Log::debug($act);
 					}
 				}
 			} else {
@@ -727,7 +718,6 @@ class MetasController extends Controller
 		$user = Auth::user()->username;
 		$fecha = Carbon::now()->toDateTimeString();
 		if ($meta) {
-			Log::debug($request->subp);
 			if($request->subp!='UUU'){
 			$meta->tipo = $request->tipo_Ac;
 			$meta->beneficiario_id = $request->tipo_Be;
@@ -1491,13 +1481,13 @@ class MetasController extends Controller
 			$s = MetasController::cmetas($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$user = Auth::user()->username;
-		 /* 	$check = MetasHelper::validateMesesfinal($upp, $anio);
+		 	$check = MetasHelper::validateMesesfinal($upp, $anio);
 			if (!$check["status"]) {
 				$foot = "<a type='button' class='btn btn-success col-md-5 ml-auto ' href=/actividades/meses/error/$upp/$anio > <i class='fa fa-download' aria-hidden='true'></i>Descargar index</a>";
 				$res = ["status" => false, "mensaje" => ["icon" => 'warning', "text" => 'No puedes confirmar las metas, existen diferencias en los meses autorizados por las claves presupuestales', "title" => "Diferencias en las metas" ,"footer"=>$foot]];
 				return response()->json($res, 200);
 
-			}  */
+			} 
 			if ($s['status']) {
 				DB::beginTransaction();
 				$metas = MetasHelper::actividades($upp, $anio);
@@ -1792,14 +1782,11 @@ class MetasController extends Controller
 				->where('mml_actividades.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $_upp)
 				->where('mml_actividades.ejercicio', $anio)->get();
-				Log::debug("cmetasadd");
-				Log::debug($actv);
 				if(count($actv)){
 					$metas = $actv[0]->estatus == 1 ? false : true;
 				}else{
 				$metas = true;
 				}
-			Log::debug("status: ".$metas);
 		}
 		return ["status" => $metas];
 	}
