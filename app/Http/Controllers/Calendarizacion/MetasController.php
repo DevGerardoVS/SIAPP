@@ -1046,19 +1046,19 @@ class MetasController extends Controller
 		$report = '';
 		if ($request['tipo'] == 0) {
 			$report = "reporte_calendario_upp_autografa";
-			$file = sys_get_temp_dir(). $report;
+			// $file = sys_get_temp_dir(). $report;
 		} else {
 			$report = "Reporte_Calendario_UPP";
-			$file = sys_get_temp_dir(). $report;
+			// $file = sys_get_temp_dir(). $report;
 		}
-		$ruta = sys_get_temp_dir();
-		//Eliminación si ya existe reporte
-		if (File::exists($ruta . "/" . $report . ".pdf")) {
-			File::delete($ruta . "/" . $report . ".pdf");
-		}
+		// $ruta = sys_get_temp_dir();
+		// //Eliminación si ya existe reporte
+		// if (File::exists($ruta . "/" . $report .time(). ".pdf")) {
+		// 	File::delete($ruta . "/" . $report .time(). ".pdf");
+		// }
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
-		$output_file = sys_get_temp_dir();
+		$output_file = sys_get_temp_dir() .'/'.time().'/'  ;
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
 		Log::info('reuqest', [json_encode($request)]);
@@ -1081,9 +1081,9 @@ class MetasController extends Controller
 		)->execute();
 		// dd($jasper);
 		//agrego comentario para revisar version de main...
-		$archivo = $output_file . '/' . $report . '.pdf';
-		if (file_exists($output_file . '/' . $report . '.pdf')) {
-			$archivo = $output_file . '/' . $report . '.pdf';
+		$archivo = $output_file .$report.  '.pdf';
+		if (file_exists($output_file . $report.'.pdf')) {
+			$archivo = $output_file . $report.'.pdf';
 			$archivo2 = file_get_contents($archivo);
 			$reportePDF = Response::make($archivo2, 200, [
 				'Content-Type' => 'application/pdf'
