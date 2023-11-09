@@ -97,6 +97,8 @@ class EppController extends Controller
         $listaUR = DB::table('v_epp')
             ->where('clv_upp','=',$request->upp)
             ->where('ejercicio','=',$request->anio)
+            ->orderBy('clv_ur','ASC')
+            ->orderBy('ur','ASC')
             ->distinct()
             ->get(['clv_ur','ur']);
 
