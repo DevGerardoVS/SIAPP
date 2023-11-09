@@ -34,9 +34,7 @@ class SingleSession
          
             ->where('id_usuario','=',$userId)
             ->first();
-            Log::debug('datos de usuario single session');
-            Log::debug(json_encode($data));
-    
+           
     
             if(isset($data->cargapayload)){
                 Log::debug('si entro');
