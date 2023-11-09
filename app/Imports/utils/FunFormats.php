@@ -173,8 +173,6 @@ class FunFormats
                             $anio = isset($actividad->ejercicio) ? $actividad->ejercicio : $anio;
                             if (isset($actividad->area_funcional) && strtoupper($k[14]) != 'N/A') {
                                 if ($actividad->area_funcional != $area) {
-                                    log::debug($actividad->area_funcional);
-                                    log::debug($area);
                                     $error = array(
                                         "icon" => 'error',
                                         "title" => 'Error',

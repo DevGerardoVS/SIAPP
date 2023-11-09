@@ -40,8 +40,6 @@ class MetasController extends Controller
             $name = "CAP_Manual_de_Usuario_UPP-CargaMasivaMetas.pdf";
             $file= public_path()."/manuales/". $name;
         } 
-		Log::debug($file);
-        //Log::channel('daily')->debug('exp '.public_path());
         $headers = array('Content-Type: application/pdf',);
 
         return response()->download($file,$name,$headers);
@@ -73,42 +71,41 @@ class MetasController extends Controller
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
 				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
 				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
+			$button = '';
 			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
 				if ($anio == $anioMax) {
 						$button = $accion;
 				} else {
 					$button = '';
 				}
-			} else {
-				if ($key->estatus == 0  && Auth::user()->id_grupo == 4 ) {
-					if($sub ='UUU' && $aut){
+			} 
+			if ($key->estatus == 0 && Auth::user()->id_grupo == 4) {
+					if ($sub == 'UUU') {
+						if ($aut) {
+							$button = $accion;
+						} else {
+							$button = '';
+						}
+
+					} else {
+						$button = $accion;
+					}
+
+			}
+			if ($key->estatus == 0  && Auth::user()->id_grupo == 5 ) {
+					if($sub =='UUU' && !$aut){
 						$button = $accion;
 					}else{
 						$button = '';
 					}
-					
-				} else {
-					$button = '';
 				}
-				if ($key->estatus == 0  && Auth::user()->id_grupo == 5 ) {
-					if($sub ='UUU' && !$aut){
-						$button = $accion;
-					}else{
-						$button = '';
-					}
-				} else {
-					$button = '';
-				}
-				if ($key->estatus == 0  && Auth::user()->id_grupo == 1 ) {
+			if ($key->estatus == 0  && Auth::user()->id_grupo == 1 ) {
 					if ($anio == $anioMax) {
 						$button = $accion;
 				} else {
 					$button = '';
 				}
-				} else {
-					$button = '';
 				}
-			}
 			$i = array(
 				$key->id,
 				$area[0],
@@ -356,7 +353,6 @@ class MetasController extends Controller
 					->where('mml_mir.clv_pp', $areaAux[7])
 					->where('mml_mir.ejercicio', $check['anio'])
 					->groupByRaw('clave')->get();
-				Log::debug($activ );
 				if (count($activ) == 0) {
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
@@ -371,9 +367,7 @@ class MetasController extends Controller
 	public function getActividMir($area, $entidad,$fondo)
 	{
 		$areaAux = explode('-', $area);
-		Log::debug($areaAux);
 		$entidadAux = explode('-', $entidad);
-		Log::debug($entidadAux);
 		$check = $this->checkClosing($entidadAux[0]);
 		if ($check['status']) {
 			$m = DB::table('v_epp')
@@ -510,6 +504,7 @@ class MetasController extends Controller
 			$anio = DB::table('cierre_ejercicio_metas')->where('deleted_at', null)->max('ejercicio');
 			$clv = explode('/', $request->area);
 			$area_funcional = str_replace('-', "", $clv[0]);
+			$entidad_ejecutora = str_replace('-', "", $clv[1]);
 			$fondo = $request->sel_fondo != '' && $request->sel_fondo != null ? $request->sel_fondo : $request->fondo_id;
 			if (isset($request->actividad_id) && $request->actividad_id != null && $request->actividad_id != '') {
 				if ($request->actividad_id == 'ot') {
@@ -531,6 +526,7 @@ class MetasController extends Controller
 						'mml_actividades.area_funcional',
 						'mml_actividades.clv_upp'
 					)
+					->where('mml_actividades.entidad_ejecutora', $entidad_ejecutora)
 					->where('mml_actividades.area_funcional', $area_funcional)
 					->where('mml_actividades.clv_upp', $request->upp)
 					->where('metas.clv_fondo', $fondo)
@@ -542,7 +538,6 @@ class MetasController extends Controller
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 						return response()->json($res, 200);
 					} else {
-						Log::debug("else no existe".count($meta));
 						$act = MmlMir::create([
 							'clv_upp' => $request->upp,
 							'entidad_ejecutora' => str_replace('-', "", $clv[1]),
@@ -553,7 +548,6 @@ class MetasController extends Controller
 							'created_user' => $username
 						]);
 
-						Log::debug($act);
 					}
 				}
 			} else {
@@ -565,6 +559,7 @@ class MetasController extends Controller
 						'mml_mir.clv_upp',
 
 					)
+					->where('mml_mir.entidad_ejecutora', $entidad_ejecutora)
 					->where('mml_mir.area_funcional', $area_funcional)
 					->where('mml_mir.clv_upp', $request->upp)
 					->where('metas.clv_fondo', $request->sel_fondo)
@@ -643,7 +638,7 @@ class MetasController extends Controller
 							'ejercicio' => $anio,
 							'created_user' => $username
 						]);
-						if(!$confirm & Auth::user()->id_grupo ==1){
+						if(!$confirm["status"] & Auth::user()->id_grupo ==1){
 							$meta->estatus = 1;
 	
 							}
@@ -674,9 +669,8 @@ class MetasController extends Controller
 							'created_user' => $username
 						]);
 
-						if(!$confirm & Auth::user()->id_grupo ==1){
+						if(!$confirm["status"] & Auth::user()->id_grupo ==1){
 						$meta->estatus = 1;
-
 						}
 					}
 
@@ -724,7 +718,6 @@ class MetasController extends Controller
 		$user = Auth::user()->username;
 		$fecha = Carbon::now()->toDateTimeString();
 		if ($meta) {
-			Log::debug($request->subp);
 			if($request->subp!='UUU'){
 			$meta->tipo = $request->tipo_Ac;
 			$meta->beneficiario_id = $request->tipo_Be;
@@ -1188,10 +1181,14 @@ class MetasController extends Controller
 	public function checkCombination($upp)
 	{
 		$check = $this->checkClosing($upp);
-
-		$metas = MetasController::cmetasadd($upp);
+		if (Auth::user()->id_grupo == 4) {
+			$metas = MetasController::cmetasadd($upp);
+			if(!$metas["status"]){
+				return ["status" => false, "mensaje" => 'Las metas para la UPP: '.$upp.' ya estan confirmadas', "title" => 'Metas confirmadas', "estado" => false, "url" => '/calendarizacion/proyecto'];
+			}
+		}
+		
 		if ($check['status']) {
-			if ( !$metas || Auth::user()->id_grupo == 1) {
 				//ver si esta confirmada la mir
 				$isMir = DB::table("mml_cierre_ejercicio")
 					->select('id', 'estatus')
@@ -1234,9 +1231,7 @@ class MetasController extends Controller
 					return ["status" => false, "mensaje" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM', "estado" => true];
 				}
 				//ver si esta confirmada la mir
-			} else {
-				return ["status" => false, "mensaje" => 'Las metas para la UPP: '.$upp.' ya estan confirmadas', "title" => 'Metas confirmadas', "estado" => false, "url" => '/calendarizacion/proyecto'];
-			}
+			
 		} else {
 			return ["status" => false, "mensaje" => 'Las metas para la UPP: '.$upp.' ya estan cerradas', "title" => 'La captura de metas esta cerrada', "estado" => false, "url" => '/calendarizacion/proyecto'];
 		}
@@ -1786,14 +1781,11 @@ class MetasController extends Controller
 				->where('mml_actividades.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $_upp)
 				->where('mml_actividades.ejercicio', $anio)->get();
-				Log::debug("cmetasadd");
-				Log::debug($actv);
 				if(count($actv)){
 					$metas = $actv[0]->estatus == 1 ? false : true;
 				}else{
 				$metas = true;
 				}
-			Log::debug("status: ".$metas);
 		}
 		return ["status" => $metas];
 	}

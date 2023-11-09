@@ -259,8 +259,6 @@ class ClavePreController extends Controller
                     'created_user' => Auth::user()->username, 
                 ]);
                 $b = [];
-                Log::info('nueva Clave generada: ', [json_encode($nuevaClave)]);
-                log::debug("id: ".$nuevaClave->id);
                 if(isset($nuevaClave->id)){
                         $flag = true;
                 }else{
@@ -269,7 +267,6 @@ class ClavePreController extends Controller
                     if ($flag) {
                         
                         try {
-                            Log::debug("if count");
                             $b = array(
                                 "username"=>Auth::user()->username,
                                 "accion"=>'Guardar',
