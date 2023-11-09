@@ -128,6 +128,15 @@ var _gen = {
                         //     }
                         // });
                         
+                 
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
                         Swal.fire({
                             icon: 'success',
                             title: 'Exito',
@@ -138,19 +147,50 @@ var _gen = {
                            }).then(function(result) {
                             if (result.isConfirmed) {
                                 cargamasiva=3;
-                                var token = document.querySelector('meta[name="csrf-token"]').content;
+                                // var token = document.querySelector('meta[name="csrf-token"]').content;
 
-                                var xhr = new XMLHttpRequest();
-                                xhr.open('GET', '/borrar-sesion_excel', true);
-                                xhr.setRequestHeader('X-CSRF-TOKEN', token);
-                                xhr.onload = function() {
-                                    if (xhr.status === 200) {
-                                        // Las variables de sesión se eliminaron con éxito
-                                        location.href = "/home";
-                                    }
-                                };
+                                // var xhr = new XMLHttpRequest();
+                                // xhr.open('GET', '/borrar-sesion_excel', true);
+                                // xhr.setRequestHeader('X-CSRF-TOKEN', token);
+                                // xhr.onload = function() {
+                                //     if (xhr.status === 200) {
+                                //         // Las variables de sesión se eliminaron con éxito
+                                //         location.href = "/home";
+                                //     }
+                                // };
                         
-                                xhr.send();
+                                // xhr.send();
+
+
+                                $.ajax({
+                                    url:'/borrar-sesion_excel',
+                                    type: "GET",
+                                    data: {},
+                                    dataType: 'json',
+                                    beforeSend: function() {
+                                        let timerInterval
+                                        Swal.fire({
+                                            title: '{{__("messages.msg_guardando_datos")}}',
+                                            html: ' <b></b>',
+                                            allowOutsideClick: false,
+                                            timer: 2000000,
+                                            timerProgressBar: true,
+                                            didOpen: () => {
+                                                Swal.showLoading()
+                                            }
+                                        });
+                                    },
+                                    success:function(response){
+                                        console.log(response);
+                                        
+                                        Swal.close();
+                                        
+                                    },
+                                    error: function(response) {
+                                        console.log(response);
+                                    }
+                                });
+
                             }
                         });
                         

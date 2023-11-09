@@ -57,6 +57,7 @@ class HomeController extends Controller
     }
     public function borrarsesionexcel()
     {
+        $deleted = carga_masiva_estatus::where('id_usuario','=',Auth::user()->id)->forceDelete();
         log::channel('daily')->debug('borro la variable de session'.Auth::user()->username);
         session()->forget(['cargapayload', 'cargaMasClav']);
         return [200,'hola'];
@@ -76,6 +77,7 @@ class HomeController extends Controller
          
         
          $deleted = carga_masiva_estatus::where('id_usuario','=',Auth::user()->id)->forceDelete();
+         dd(Auth::user()->id);
           return "ya cambie";
     }
 
