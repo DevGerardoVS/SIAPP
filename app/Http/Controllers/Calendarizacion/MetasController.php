@@ -1056,6 +1056,7 @@ class MetasController extends Controller
 		$ruta = sys_get_temp_dir();
 		//Eliminación si ya existe reporte
 		if (File::exists($ruta . "/" . $report . ".pdf")) {
+			Log::info('si existe el archivo lo elimina', [json_encode($ruta . "/" . $report . ".pdf")]);
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
 		$report_path = app_path() . "/reportes/" . $report . ".jasper";
@@ -1080,8 +1081,8 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->output();
-		dd($jasper);
+		)->execute();
+		// dd($jasper);
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
@@ -1090,10 +1091,6 @@ class MetasController extends Controller
 				'Content-Type' => 'application/pdf'
 			]);
 		}
-		Log::info('archivo:', [json_encode($archivo)]);
-		// $reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
-		// 	'Content-Type' => 'application/pdf'
-		// ]);
 
 		if ($request['tipo'] == 0) {
 			if (file_exists($archivo)) {
