@@ -1045,7 +1045,7 @@ class MetasController extends Controller
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
 		$report = '';
 		if ($request['tipo'] == 0) {
-			$report = "reporte_calendario_upp_autografa111";
+			$report = "reporte_calendario_upp_autografa_a";
 			$file = sys_get_temp_dir(). $report;
 		} else {
 			$report = "Reporte_Calendario_UPP";
