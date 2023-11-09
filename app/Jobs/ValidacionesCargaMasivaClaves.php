@@ -506,7 +506,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                 $payload=  json_encode($arrayErrores);
                 carga_masiva_estatus::create([
                     'id_usuario' => $this->user->id,
-                    'cargapayload' => ''.$payload,
+                    'cargapayload' => $payload,
                     'cargaMasClav' => 2,
                     'created_user' =>$this->user->username
                 ]);
@@ -526,7 +526,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             $payload=  json_encode($arrayErrores);
             carga_masiva_estatus::create([
                 'id_usuario' => $this->user->id,
-                'cargapayload' => ''.$payload,
+                'cargapayload' => $payload,
                 'cargaMasClav' => 2,
                 'created_user' =>$this->user->username
             ]);

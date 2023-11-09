@@ -483,7 +483,7 @@ class CargaMasivaClaves implements ShouldQueue
                 $payload=  json_encode($arrayErrores);
                 carga_masiva_estatus::create([
                     'id_usuario' => $this->user->id,
-                    'cargapayload' => ''.$payload,
+                    'cargapayload' => $payload,
                     'cargaMasClav' => 2,
                     'created_user' =>$this->user->username
                 ]);            
@@ -508,7 +508,7 @@ class CargaMasivaClaves implements ShouldQueue
             $payload=  json_encode($array_exito);
             carga_masiva_estatus::create([
                 'id_usuario' => $this->user->id,
-                'cargapayload' => ''.$array_exito,
+                'cargapayload' => $payload,
                 'cargaMasClav' => 2,
                 'created_user' =>$this->user->username
             ]);
