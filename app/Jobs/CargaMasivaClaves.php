@@ -54,7 +54,7 @@ class CargaMasivaClaves implements ShouldQueue
             $tipoclave = '';
             $añoclave = 0;
             $usuarioclave = '';
-            $currentrow=1;
+            $currentrow=2;
             $usuarioclave = 'CargaMasiva' . $usuario->username;
 
             DB::beginTransaction();
