@@ -295,9 +295,9 @@ class ClavesHelper{
             f.fondo_ramo,
             sum(RH) RH,
             sum(Operativo) Operativo,
-            sum(Operativo) techos_presupuestal,
+            sum(RH) techos_presupuestal,
             sum(calendarizado) calendarizado,
-            sum(Operativo - calendarizado) disponible,
+            sum(RH - calendarizado) disponible,
             ejercicio
         from (
             select 
