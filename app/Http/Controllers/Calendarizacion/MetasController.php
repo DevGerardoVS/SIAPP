@@ -1046,20 +1046,20 @@ class MetasController extends Controller
 		$report = '';
 		if ($request['tipo'] == 0) {
 			$report = "reporte_calendario_upp_autografa111";
-			$file = sys_get_temp_dir(). $report;
+			// $file = sys_get_temp_dir(). $report;
 		} else {
 			$report = "Reporte_Calendario_UPP";
-			$file = sys_get_temp_dir(). $report;
+			// $file = sys_get_temp_dir(). $report;
 		}
-		$ruta = sys_get_temp_dir();
+		
+		$output_file = sys_get_temp_dir();
 
 		//Eliminación si ya existe reporte
-		if (File::exists($ruta . "/" . $report . ".pdf")) {
-			File::delete($ruta . "/" . $report . ".pdf");
+		if (File::exists($output_file . "/" . $report . ".pdf")) {
+			File::delete($output_file . "/" . $report . ".pdf");
 		}
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
-		$output_file = sys_get_temp_dir();
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
 		Log::info('outputfile', [json_encode($output_file)]);
