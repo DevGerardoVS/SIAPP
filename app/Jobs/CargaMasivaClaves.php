@@ -487,8 +487,7 @@ class CargaMasivaClaves implements ShouldQueue
                     'cargaMasClav' => 2,
                     'created_user' =>$this->user->username
                 ]);            
-/*                 event(new ActualizarSesionUsuario($this->user, $arrayErrores,2));
- */            }
+            }
 
 
 
@@ -500,8 +499,7 @@ class CargaMasivaClaves implements ShouldQueue
             Controller::bitacora($b);
             DB::commit();
 
-/*             event(new ActualizarSesionUsuario($this->user, 'Exito',1));
- */        
+      
             \Log::debug('Trabajo  exitoso');
             $array_exito=array();
             array_push($array_exito,'Carga masiva exitosa');
@@ -512,8 +510,7 @@ class CargaMasivaClaves implements ShouldQueue
                 'cargaMasClav' => 1,
                 'created_user' =>$this->user->username
             ]);
-/*             SendReminderEmail::dispatch('Exito', $this->user->email)->onQueue('high');
- */
+
         } catch (\Exception $e) {
             DB::rollBack();
             carga_masiva_estatus::create([
@@ -522,8 +519,7 @@ class CargaMasivaClaves implements ShouldQueue
                 'cargaMasClav' => 2,
                 'created_user' =>$this->user->username
             ]);
-/*             event(new ActualizarSesionUsuario($this->user, $e->getMessage(),2));
- */
+
 
 
         }
