@@ -1045,24 +1045,22 @@ class MetasController extends Controller
 		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
 		$report = '';
 		if ($request['tipo'] == 0) {
-			$report = "reporte_calendario_upp_autografa111";
-			// $file = sys_get_temp_dir(). $report;
+			$report = "reporte_calendario_upp_autografa";
+			$file = sys_get_temp_dir(). $report;
 		} else {
 			$report = "Reporte_Calendario_UPP";
-			// $file = sys_get_temp_dir(). $report;
+			$file = sys_get_temp_dir(). $report;
 		}
-		
-		$output_file = sys_get_temp_dir();
-
+		$ruta = sys_get_temp_dir();
 		//Eliminación si ya existe reporte
-		if (File::exists($output_file . "/" . $report . ".pdf")) {
-			File::delete($output_file . "/" . $report . ".pdf");
+		if (File::exists($ruta . "/" . $report . ".pdf")) {
+			File::delete($ruta . "/" . $report . ".pdf");
 		}
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
+		$output_file = sys_get_temp_dir();
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
-		Log::info('outputfile', [json_encode($output_file)]);
 		Log::info('reuqest', [json_encode($request)]);
 		$parameters = [
 			"anio" => $request['anio'],
@@ -1081,7 +1079,7 @@ class MetasController extends Controller
 			$parameters,
 			$database_connection
 		)->execute();
-		//  dd($jasper);
+		// dd($jasper);
 		//agrego comentario para revisar version de main...
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
