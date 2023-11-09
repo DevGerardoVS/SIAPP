@@ -1064,13 +1064,11 @@ class MetasController extends Controller
         $logoRight = public_path() . "/img/logo.png";
 		Log::info('outputfile', [json_encode($output_file)]);
 		Log::info('reuqest', [json_encode($request)]);
-		// $request['UPP']
-		// $request['anio']
 		$parameters = [
-			"anio" => 2024,
+			"anio" => $request['anio'],
 			"logoLeft" => $logoLeft,
             "logoRight" => $logoRight,
-			"upp" => '037',
+			"upp" => $request['UPP'],
 		];
 
 		$database_connection = \Config::get('database.connections.mysql');
