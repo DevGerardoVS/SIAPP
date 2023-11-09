@@ -513,9 +513,11 @@ class CargaMasivaClaves implements ShouldQueue
 
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::debug($e);
+            
             carga_masiva_estatus::create([
                 'id_usuario' => $this->user->id,
-                'cargapayload' =>  $e,
+                'cargapayload' =>  json_encode($e),
                 'cargaMasClav' => 2,
                 'created_user' =>$this->user->username
             ]);
