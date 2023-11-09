@@ -39,8 +39,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
     public function handle()
     {
         try {
-            session::put('cargaMasCla', 0);
-            session::put('id_usuario', $this->user->id);
+
 
             if ($this->user->id_grupo == 4) {
                 $uppUsuario = $this->user->clv_upp;
@@ -523,10 +522,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
         } catch (\Throwable $th) {
             DB::rollBack();
             // event(new ActualizarSesionUsuario($this->user, $th->getMessage(),2));
-            $payload=  json_encode($arrayErrores);
+            
             carga_masiva_estatus::create([
                 'id_usuario' => $this->user->id,
-                'cargapayload' => $payload,
+                'cargapayload' => $th,
                 'cargaMasClav' => 2,
                 'created_user' =>$this->user->username
             ]);

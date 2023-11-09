@@ -509,14 +509,19 @@ class CargaMasivaClaves implements ShouldQueue
             carga_masiva_estatus::create([
                 'id_usuario' => $this->user->id,
                 'cargapayload' => $payload,
-                'cargaMasClav' => 2,
+                'cargaMasClav' => 1,
                 'created_user' =>$this->user->username
             ]);
 /*             SendReminderEmail::dispatch('Exito', $this->user->email)->onQueue('high');
  */
         } catch (\Exception $e) {
             DB::rollBack();
-
+            carga_masiva_estatus::create([
+                'id_usuario' => $this->user->id,
+                'cargapayload' =>  $e,
+                'cargaMasClav' => 2,
+                'created_user' =>$this->user->username
+            ]);
 /*             event(new ActualizarSesionUsuario($this->user, $e->getMessage(),2));
  */
 
