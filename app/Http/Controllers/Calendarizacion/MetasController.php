@@ -1088,8 +1088,8 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->execute();
-		// dd($jasper);
+		)->output();
+		 dd($jasper);
 		//agrego comentario para revisar version de main...
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
@@ -1490,13 +1490,13 @@ class MetasController extends Controller
 			$s = MetasController::cmetas($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$user = Auth::user()->username;
-		/* 	$check = MetasHelper::validateMesesfinal($upp, $anio);
+		 /* 	$check = MetasHelper::validateMesesfinal($upp, $anio);
 			if (!$check["status"]) {
 				$foot = "<a type='button' class='btn btn-success col-md-5 ml-auto ' href=/actividades/meses/error/$upp/$anio > <i class='fa fa-download' aria-hidden='true'></i>Descargar index</a>";
 				$res = ["status" => false, "mensaje" => ["icon" => 'warning', "text" => 'No puedes confirmar las metas, existen diferencias en los meses autorizados por las claves presupuestales', "title" => "Diferencias en las metas" ,"footer"=>$foot]];
 				return response()->json($res, 200);
 
-			} */
+			}  */
 			if ($s['status']) {
 				DB::beginTransaction();
 				$metas = MetasHelper::actividades($upp, $anio);

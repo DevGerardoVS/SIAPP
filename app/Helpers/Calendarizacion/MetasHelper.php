@@ -696,6 +696,8 @@ class MetasHelper
 					}
 				}
 			}
+			Log::debug('$aux :'.$aux );
+			Log::debug('$cont :'.$cont );
 			if ($aux > $cont) {
 				$ids[] = ["ID" => $k->id];
 			}
