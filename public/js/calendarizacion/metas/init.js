@@ -643,8 +643,6 @@ var dao = {
         }
     },
     getUpps: function () {
-        var csrfToken = "{{ csrf_token() }}";
-        console.log(localStorage.getItem('token'));
         $.ajax({
             type: "GET",
             url: '/calendarizacion/upps',
@@ -747,7 +745,6 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            console.log(response);
             const { mensaje } = response;
             Swal.fire({
                 icon: mensaje.icon,
@@ -771,7 +768,6 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            console.log(data);
             if (!data.status) {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
@@ -992,9 +988,7 @@ var dao = {
         }
        let clave= $("#activiMir").val();
         let mir = clave.split('$')
-        console.log("mir", mir);
         let url = '/actividades/metas/actividades-mir/' + mir[0] + '/' + mir[1] + '/' + fondo;
-        console.log("url",url)
         $.ajax({
             type: "GET",
             url: url,
