@@ -15,7 +15,7 @@ use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
 use Auth;
 use DB;
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\Calendarizacion\MetasHelper;
 use Illuminate\Support\Facades\Schema;
 use PDF;
@@ -1060,15 +1060,13 @@ class MetasController extends Controller
 			$report = "Reporte_Calendario_UPP";
 			$file = sys_get_temp_dir(). $report;
 		}
-		$ruta = sys_get_temp_dir();
-		//Eliminación si ya existe reporte
+		
 		if (File::exists($ruta . "/" . $report . ".pdf")) {
-			Log::info('si existe el archivo lo elimina', [json_encode($ruta . "/" . $report . ".pdf")]);
 			File::delete($ruta . "/" . $report . ".pdf");
 		}
-		$report_path = app_path() . "/reportes/" . $report . ".jasper";
+		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
-		$output_file = sys_get_temp_dir();
+		$output_file = sys_get_temp_dir()."/".time()."/";
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
 		Log::info('reuqest', [json_encode($request)]);
@@ -1088,8 +1086,10 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->execute();
-		// dd($jasper);
+		)->output();
+		log::info($parameters);
+		dd($jasper);
+		
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
