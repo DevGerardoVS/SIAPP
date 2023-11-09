@@ -1062,6 +1062,7 @@ class MetasController extends Controller
 			$file = sys_get_temp_dir(). $report;
 		}
 		$ruta = sys_get_temp_dir();
+
 		//Eliminación si ya existe reporte
 		if (File::exists($ruta . "/" . $report . ".pdf")) {
 			File::delete($ruta . "/" . $report . ".pdf");
@@ -1071,6 +1072,7 @@ class MetasController extends Controller
 		$output_file = sys_get_temp_dir();
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
+		Log::info('outputfile', [json_encode($output_file)]);
 		Log::info('reuqest', [json_encode($request)]);
 		$parameters = [
 			"anio" => $request['anio'],
@@ -1088,9 +1090,8 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->output();
-		log::debug(json_encode($jasper));
-		 dd($jasper);
+		)->execute();
+		//  dd($jasper);
 		//agrego comentario para revisar version de main...
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
