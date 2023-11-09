@@ -1088,8 +1088,8 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->execute();
-		// dd($jasper);
+		)->output();
+		dd($jasper);
 		//agrego comentario para revisar version de main...
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
