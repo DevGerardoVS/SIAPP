@@ -15,7 +15,6 @@ use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
 use Auth;
 use DB;
-use Log;
 use App\Helpers\Calendarizacion\MetasHelper;
 use Illuminate\Support\Facades\Schema;
 use PDF;
@@ -26,6 +25,7 @@ use Illuminate\Support\Facades\Http;
 use Storage;
 use App\Models\calendarizacion\CierreMetas;
 use App\Models\MmlMir;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Catalogo;
 
@@ -1089,6 +1089,7 @@ class MetasController extends Controller
 			$parameters,
 			$database_connection
 		)->output();
+		log::debug(json_encode($jasper));
 		 dd($jasper);
 		//agrego comentario para revisar version de main...
 		$archivo = $output_file . '/' . $report . '.pdf';
