@@ -217,10 +217,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $uppUsuario)->count();
                 }
                 // Checar permiso
-                if (Controller::check_assignFront(1)) {
+/*                 if (Controller::check_assignFront(1)) {
                 } else {
                     array_push($arrayErrores,  ' No tiene permiso para hacer cargas masivas ');
-                }
+                } */
 
 
                 $arrayupps = array();
