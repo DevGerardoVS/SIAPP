@@ -39,7 +39,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
     public function handle()
     {
         try {
-
+            $uppUsuario=0;
 
             if ($this->user->id_grupo == 4) {
                 $uppUsuario = $this->user->clv_upp;
@@ -216,11 +216,6 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                 if ($usuario->id_grupo == 4) {
                     $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $uppUsuario)->count();
                 }
-                // Checar permiso
-/*                 if (Controller::check_assignFront(1)) {
-                } else {
-                    array_push($arrayErrores,  ' No tiene permiso para hacer cargas masivas ');
-                } */
 
 
                 $arrayupps = array();
@@ -312,13 +307,6 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                             }
                         }
 
-                        if ($k['26'] != '000000') {
-                            if (Controller::check_assignFront(2)) {
-
-                            } else {
-                                array_push($arrayErrores, 'No tiene permiso para registrar obras. ');
-                            }
-                        }
                         if (strlen($k['20']) !== 2 && !is_numeric($k['20'])) {
                             array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El año debe ser a dos digitos y debe ser un número. ');
                         }
