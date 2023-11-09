@@ -165,11 +165,15 @@ class ClavePreController extends Controller
             $perfil = Auth::user()->id_grupo;
             $tipo = '';
             $esEjercicioCerrado = ClavesHelper::validaEjercicio( $request->ejercicio,$request->data[0]['upp']);
+            Log::info('esEjercicioCerrado', [json_encode($esEjercicioCerrado)]);
             if ($esEjercicioCerrado && $perfil != 1) {
+                Log::info('ejercicio Cerrado retoran mensaje invalid');
                 return response()->json('invalid',200);
             }
             $claveExist = ClavesHelper::claveExist($request);
+            Log::info('claveExist', [json_encode($claveExist)]);
          if ($claveExist) {
+            Log::info('retorna mensaje de duplicado de clave', [json_encode($claveExist)]);
             return response()->json('duplicado',200);
             throw ValidationException::withMessages(['duplicado'=>'Esta clave ya existe']);
            
@@ -255,13 +259,17 @@ class ClavePreController extends Controller
                     'created_user' => Auth::user()->username, 
                 ]);
                 $b = [];
+                Log::info('nueva Clave generada: ', [json_encode($nuevaClave)]);
+                log::debug("id: ".$nuevaClave->id);
                 if(isset($nuevaClave->id)){
                         $flag = true;
                 }else{
                     $flag = false;
                 }
                     if ($flag) {
+                        
                         try {
+                            Log::debug("if count");
                             $b = array(
                                 "username"=>Auth::user()->username,
                                 "accion"=>'Guardar',
@@ -273,11 +281,37 @@ class ClavePreController extends Controller
                             throw new \Exception($th->getMessage());
                         }
                        
+
                     }
 
+
+             /*    if (isset($nuevaClave->id)) {
+                        Log::debug("if count");
+                    DB::commit();
+                    $aplanado = DB::select("CALL insert_pp_aplanado(".$request->ejercicio.")");
+                     Log::info('aplanado: ', [json_encode($aplanado)]);
+                    $b = array(
+                        "username"=>Auth::user()->username,
+                        "accion"=>'Guardar',
+                        "modulo"=>'Claves'
+                    );
+                    Controller::bitacora($b);
+                }
+                else {
+                    $b = array(
+                        "username"=>Auth::user()->username,
+                        "accion"=>'Error en guardado',
+                        "modulo"=>'Claves'
+                     );
+                    return response()->json('error',200);
+                } */
+                // Controller::bitacora($b);
+               
             }else {
+                Log::info('error cantidad no disponible: ', [json_encode($request->data[0]['total'])]);
                 DB::rollBack();
                 return response()->json('cantidadNoDisponible',200);
+                throw ValidationException::withMessages(['error de cantidades'=>'Las cantidades no coinciden...']);
             }
          }
            
@@ -317,7 +351,6 @@ class ClavePreController extends Controller
                 'noviembre' => $request->data[0]['noviembre'] ? $request->data[0]['noviembre'] : 0,  
                 'diciembre' => $request->data[0]['diciembre'] ? $request->data[0]['diciembre'] : 0,  
                 'total' => $request->data[0]['total'],
-                'updated_user' => Auth::user()->username,
             ]);
             $hasMetas = ClavesHelper::tieneMetas($request,2);
             $b = array(
@@ -689,6 +722,7 @@ class ClavePreController extends Controller
             $anio = date('Y');
         }
         $autorizado = ClavesHelper::esAutorizada($uppUsuario ? $uppUsuario : $upp);
+
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
                 array_push($array_where, ['techos_financieros.clv_upp', '=', $uppUsuario]);
                 array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
@@ -895,6 +929,11 @@ class ClavePreController extends Controller
                     ProgramacionPresupuesto::where($array_where)->update([
                         'estado' => 1,
                     ]);
+                    // cierreEjercicio::where('clv_upp','=',$request->upp ? $request->upp : $uppUsuario)->where('ejercicio','=',$request->ejercicio)
+                    // ->update([
+                    //     'estatus'=>'Cerrado',
+                    //     'updated_user'=>Auth::user()->username
+                    // ]);
                     $b = array(
                         "username"=>Auth::user()->username,
                         "accion"=>'Confirmar',
@@ -979,6 +1018,7 @@ class ClavePreController extends Controller
             $file= public_path()."/manuales/". $name;
         } 
         
+        //Log::channel('daily')->debug('exp '.public_path());
         $headers = array('Content-Type: application/pdf',);
 
         return response()->download($file,$name,$headers);

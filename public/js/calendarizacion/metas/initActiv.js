@@ -1396,14 +1396,14 @@ $(document).ready(function () {
       });
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        let flag = dao.validMeses();
+       // let flag = dao.validMeses();
         if ($('#tipo_Ac').val() != 'Continua') {
-            if ($('#actividad').valid() && flag) {
+            if ($('#actividad').valid()) {
                 dao.editarPutMeta();
             }
         } else {
             if (dao.validatCont() != 0) {
-                if ($('#actividad').valid() && flag) {
+                if ($('#actividad').valid()) {
                     dao.editarPutMeta();
                 }
             }

@@ -74,14 +74,8 @@
         }
      
         var tiemporestante2 = new Date("{{Session::get('last_activity')}}");
-        var cargamasiva="{{Session::get('cargaMasClav')??'3'}}";
- 
-
-
-       
-
         // console.log("🚀 ~ file: appInit.js:54 ~ tiemporestante:", tiemporestante2);
-        _gen.essential(tiemporestante2,cargamasiva);
+        _gen.essential(tiemporestante2);
     </script>
     <script>
         $(document).ready(function() {
