@@ -487,8 +487,8 @@ class CargaMasivaClaves implements ShouldQueue
                     'cargaMasClav' => 2,
                     'created_user' =>$this->user->username
                 ]);            
-                event(new ActualizarSesionUsuario($this->user, $arrayErrores,2));
-            }
+/*                 event(new ActualizarSesionUsuario($this->user, $arrayErrores,2));
+ */            }
 
 
 
@@ -500,8 +500,8 @@ class CargaMasivaClaves implements ShouldQueue
             Controller::bitacora($b);
             DB::commit();
 
-            event(new ActualizarSesionUsuario($this->user, 'Exito',1));
-        
+/*             event(new ActualizarSesionUsuario($this->user, 'Exito',1));
+ */        
             \Log::debug('Trabajo  exitoso');
             $array_exito=array();
             array_push($array_exito,'Carga masiva exitosa');
@@ -517,8 +517,8 @@ class CargaMasivaClaves implements ShouldQueue
         } catch (\Exception $e) {
             DB::rollBack();
 
-            event(new ActualizarSesionUsuario($this->user, $e->getMessage(),2));
-
+/*             event(new ActualizarSesionUsuario($this->user, $e->getMessage(),2));
+ */
 
 
         }
