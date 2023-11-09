@@ -478,6 +478,8 @@ class CargaMasivaClaves implements ShouldQueue
             }
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
+                \Log::debug('Trabajo  no exitoso en claves');
+
                 \Log::debug($arrayErrores);
 
                 $payload=  json_encode($arrayErrores);
@@ -513,6 +515,8 @@ class CargaMasivaClaves implements ShouldQueue
 
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::debug('Error de conexion en claves');
+
             \Log::debug($e);
             
             carga_masiva_estatus::create([
