@@ -219,16 +219,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                 // Checar permiso
                 if (Controller::check_assignFront(1)) {
                 } else {
-                    $payload=  json_encode($arrayErrores);
                     array_push($arrayErrores,  ' No tiene permiso para hacer cargas masivas ');
-
-                    carga_masiva_estatus::create([
-                        'id_usuario' => $usuario->id,
-                        'cargapayload' =>  $payload,
-                        'cargaMasClav' => 2,
-                        'created_user' =>$usuario->username
-                    ]);
-
                 }
 
 
