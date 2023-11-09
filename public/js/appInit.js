@@ -62,7 +62,7 @@ var _gen = {
        
             document.addEventListener("DOMContentLoaded", function (e) {
                 
-                // console.log("🚀 ~ file: appInit.js:65 ~ actualizacion:",cargamasiva)
+               
                 if (cargamasiva==2){
 
                     // var serializada ='hola';
@@ -138,9 +138,11 @@ var _gen = {
                            }).then(function(result) {
                             if (result.isConfirmed) {
                                 cargamasiva=3;
+                                var token = document.querySelector('meta[name="csrf-token"]').content;
+
                                 var xhr = new XMLHttpRequest();
                                 xhr.open('GET', '/borrar-sesion_excel', true);
-                        
+                                xhr.setRequestHeader('X-CSRF-TOKEN', token);
                                 xhr.onload = function() {
                                     if (xhr.status === 200) {
                                         // Las variables de sesión se eliminaron con éxito
@@ -169,7 +171,7 @@ var _gen = {
 
         if(currentPathname!="/login"){
         var reloj = setInterval(function () {
-            console.log("cargamasiva ",this.cargamasiva);
+           
             // var tiemporestante2 ="{{Session::get('last_activity')}";
        
             var tiempoactual = new Date().getTime();

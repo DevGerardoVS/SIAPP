@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\BitacoraHelper;
+
 use App\Models\carga_masiva_estatus;
 use Illuminate\Support\Facades\Session;
 use App\Events\ActualizarSesionUsuario;
@@ -70,11 +71,12 @@ class HomeController extends Controller
 
     public function agregarcredenciales()
     {
+        $fr=session::pull('cargaMasClav');
+        session()->forget(['cargapayload', 'cargaMasClav']);
+         
         
-       
          $deleted = carga_masiva_estatus::where('id_usuario','=',Auth::user()->id)->forceDelete();
-        // event(new ActualizarSesionUsuario($usuario, $cargapayload,$cargaMasClav));
-        return "ya cambie";
+          return "ya cambie";
     }
 
     

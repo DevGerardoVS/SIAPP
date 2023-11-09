@@ -1,7 +1,7 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <!-- Fonts -->
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/charts/chart.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/jquery/jquery.min.js')) }}"></script>
@@ -65,7 +65,7 @@
             // read HTTP status
             // read Promise object
             response.json().then(function(data) {
-                console.log(data.action);
+                // console.log(data.action);
             });
         }
     
@@ -80,7 +80,7 @@
 
        
 
-        // console.log("🚀 ~ file: appInit.js:54 ~ tiemporestante:", tiemporestante2);
+       
         _gen.essential(tiemporestante2,cargamasiva);
     </script>
     <script>
