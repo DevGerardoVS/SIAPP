@@ -503,6 +503,13 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
                 \Log::debug($arrayErrores);
+                $payload=  json_encode($arrayErrores);
+                carga_masiva_estatus::create([
+                    'id_usuario' => $this->user->id,
+                    'cargapayload' => ''.$payload,
+                    'cargaMasClav' => 2,
+                    'created_user' =>$this->user->username
+                ]);
                 event(new ActualizarSesionUsuario($this->user, $arrayErrores,2));
 
             } else {
@@ -516,7 +523,13 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
         } catch (\Throwable $th) {
             DB::rollBack();
             event(new ActualizarSesionUsuario($this->user, $th->getMessage(),2));
-
+            $payload=  json_encode($arrayErrores);
+            carga_masiva_estatus::create([
+                'id_usuario' => $this->user->id,
+                'cargapayload' => ''.$payload,
+                'cargaMasClav' => 2,
+                'created_user' =>$this->user->username
+            ]);
             \Log::debug($th->getMessage());
         }
     }

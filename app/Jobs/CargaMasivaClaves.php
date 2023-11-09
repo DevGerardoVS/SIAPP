@@ -480,7 +480,13 @@ class CargaMasivaClaves implements ShouldQueue
                 DB::rollBack();
                 \Log::debug($arrayErrores);
 
-                SendReminderEmail::dispatch($arrayErrores, $this->user->email)->onQueue('high');
+                $payload=  json_encode($arrayErrores);
+                carga_masiva_estatus::create([
+                    'id_usuario' => $this->user->id,
+                    'cargapayload' => ''.$payload,
+                    'cargaMasClav' => 2,
+                    'created_user' =>$this->user->username
+                ]);            
                 event(new ActualizarSesionUsuario($this->user, $arrayErrores,2));
             }
 
@@ -497,9 +503,17 @@ class CargaMasivaClaves implements ShouldQueue
             event(new ActualizarSesionUsuario($this->user, 'Exito',1));
         
             \Log::debug('Trabajo  exitoso');
-
-            SendReminderEmail::dispatch('Exito', $this->user->email)->onQueue('high');
-
+            $array_exito=array();
+            array_push($array_exito,'Carga masiva exitosa');
+            $payload=  json_encode($array_exito);
+            carga_masiva_estatus::create([
+                'id_usuario' => $this->user->id,
+                'cargapayload' => ''.$array_exito,
+                'cargaMasClav' => 2,
+                'created_user' =>$this->user->username
+            ]);
+/*             SendReminderEmail::dispatch('Exito', $this->user->email)->onQueue('high');
+ */
         } catch (\Exception $e) {
             DB::rollBack();
 
