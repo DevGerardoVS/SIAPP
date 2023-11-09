@@ -488,6 +488,17 @@ class CargaMasivaClaves implements ShouldQueue
                     'cargaMasClav' => 2,
                     'created_user' =>$usuario->username
                 ]);            
+            }else{
+                \Log::debug('Trabajo  exitoso');
+                $array_exito=array();
+                array_push($array_exito,'Carga masiva exitosa');
+                $payload=  json_encode($array_exito);
+                carga_masiva_estatus::create([
+                    'id_usuario' => $usuario->id,
+                    'cargapayload' => $payload,
+                    'cargaMasClav' => 1,
+                    'created_user' =>$usuario->username
+                ]);
             }
 
 
@@ -499,18 +510,6 @@ class CargaMasivaClaves implements ShouldQueue
             );
             Controller::bitacora($b);
             DB::commit();
-
-      
-            \Log::debug('Trabajo  exitoso');
-            $array_exito=array();
-            array_push($array_exito,'Carga masiva exitosa');
-            $payload=  json_encode($array_exito);
-            carga_masiva_estatus::create([
-                'id_usuario' => $usuario->id,
-                'cargapayload' => $payload,
-                'cargaMasClav' => 1,
-                'created_user' =>$usuario->username
-            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
