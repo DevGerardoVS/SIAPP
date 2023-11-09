@@ -62,7 +62,7 @@ var _gen = {
        
             document.addEventListener("DOMContentLoaded", function (e) {
                 
-                console.log("🚀 ~ file: appInit.js:65 ~ actualizacion:",cargamasiva)
+                // console.log("🚀 ~ file: appInit.js:65 ~ actualizacion:",cargamasiva)
                 if (cargamasiva==2){
 
                     // var serializada ='hola';
