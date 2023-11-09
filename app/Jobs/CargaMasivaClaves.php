@@ -89,7 +89,7 @@ class CargaMasivaClaves implements ShouldQueue
                  }
 
             foreach ($this->filearray as  $k) {
-                if ($usuario->id_grupo == 3) {
+                if ($usuario->id_grupo == 4) {
                     $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$this->filearray['0']['5'])->count();
     
                     $arrayadmconac = str_split($this->filearray['0']['0'], 1);
