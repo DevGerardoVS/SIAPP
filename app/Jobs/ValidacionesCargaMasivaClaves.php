@@ -530,7 +530,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                 'cargaMasClav' => 2,
                 'created_user' =>$this->user->username
             ]);
-            \Log::debug($th->getMessage());
+            \Log::debug($th);
         }
     }
 }
