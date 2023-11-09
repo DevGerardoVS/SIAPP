@@ -1055,10 +1055,10 @@ class MetasController extends Controller
 		$report = '';
 		if ($request['tipo'] == 0) {
 			$report = "reporte_calendario_upp_autografa";
-			$file = sys_get_temp_dir(). $report;
+			// $file = sys_get_temp_dir(). $report;
 		} else {
 			$report = "Reporte_Calendario_UPP";
-			$file = sys_get_temp_dir(). $report;
+			// $file = sys_get_temp_dir(). $report;
 		}
 		
 		// if (File::exists($ruta . "/" . $report . ".pdf")) {
@@ -1086,9 +1086,7 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->output();
-		log::info($parameters);
-		dd($jasper);
+		)->execute();
 		
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
