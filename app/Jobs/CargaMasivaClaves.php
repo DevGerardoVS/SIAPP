@@ -46,6 +46,7 @@ class CargaMasivaClaves implements ShouldQueue
     {
         //si todo sale bien procedemos al import
         try {
+            $usuario=$this->user;
 
 
             //por si el de arriba no funciona session(['key' => 'value']);
@@ -54,7 +55,7 @@ class CargaMasivaClaves implements ShouldQueue
             $añoclave = 0;
             $usuarioclave = '';
             $currentrow=1;
-            $usuarioclave = 'CargaMasiva' . $this->user->username;
+            $usuarioclave = 'CargaMasiva' . $usuario->username;
 
             DB::beginTransaction();
                             //validacion de año 
@@ -68,7 +69,7 @@ class CargaMasivaClaves implements ShouldQueue
 
                 }
                 
-            if ($this->user->id_grupo == 1 || $this->user->id_grupo == 5) {
+            if ($usuario->id_grupo == 1 || $usuario->id_grupo == 5) {
                 $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$this->filearray['0']['5'])->count();
 
                 $arrayadmconac = str_split($this->filearray['0']['0'], 1);
@@ -88,7 +89,7 @@ class CargaMasivaClaves implements ShouldQueue
                  }
 
             foreach ($this->filearray as  $k) {
-                if ($this->user->id_grupo == 3) {
+                if ($usuario->id_grupo == 3) {
                     $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$this->filearray['0']['5'])->count();
     
                     $arrayadmconac = str_split($this->filearray['0']['0'], 1);
@@ -480,21 +481,19 @@ class CargaMasivaClaves implements ShouldQueue
                 DB::rollBack();
                 \Log::debug('Trabajo  no exitoso en claves');
 
-                \Log::debug($arrayErrores);
-
                 $payload=  json_encode($arrayErrores);
                 carga_masiva_estatus::create([
-                    'id_usuario' => $this->user->id,
+                    'id_usuario' => $usuario->id,
                     'cargapayload' => $payload,
                     'cargaMasClav' => 2,
-                    'created_user' =>$this->user->username
+                    'created_user' =>$usuario->username
                 ]);            
             }
 
 
 
             $b = array(
-                "username" => $this->user->username,
+                "username" => $usuario->username,
                 "accion" => 'Carga masiva',
                 "modulo" => 'Claves presupuestales'
             );
@@ -507,10 +506,10 @@ class CargaMasivaClaves implements ShouldQueue
             array_push($array_exito,'Carga masiva exitosa');
             $payload=  json_encode($array_exito);
             carga_masiva_estatus::create([
-                'id_usuario' => $this->user->id,
+                'id_usuario' => $usuario->id,
                 'cargapayload' => $payload,
                 'cargaMasClav' => 1,
-                'created_user' =>$this->user->username
+                'created_user' =>$usuario->username
             ]);
 
         } catch (\Exception $e) {
@@ -520,10 +519,10 @@ class CargaMasivaClaves implements ShouldQueue
             \Log::debug($e);
             
             carga_masiva_estatus::create([
-                'id_usuario' => $this->user->id,
+                'id_usuario' => $usuario->id,
                 'cargapayload' =>  json_encode($e),
                 'cargaMasClav' => 2,
-                'created_user' =>$this->user->username
+                'created_user' =>$usuario->username
             ]);
 
 
