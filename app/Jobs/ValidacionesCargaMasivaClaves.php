@@ -44,6 +44,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             if ($this->user->id_grupo == 4) {
                 $uppUsuario = $this->user->clv_upp;
             }
+            $usuario=$this->user;
 
             $arrayErrores = array();
             $arrayclaves = array();
@@ -51,7 +52,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             $arrayupps = array();
             $arraypresupuesto = array();
             //Validaciones para administrador
-            if ($this->user->id_grupo == 1) {
+            if ($usuario->id_grupo == 1) {
                 DB::beginTransaction();
 
                 //carga masiva de operativas
@@ -203,7 +204,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                 }
                 $b = array(
-                    "username" => $this->user->username,
+                    "username" => $usuario->username,
                     "accion" => 'Borrar registros carga masiva',
                     "modulo" => 'Claves presupuestales'
                 );
@@ -212,9 +213,9 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             }
             //Validaciones para usuarios upps 
             else {
-                $tipousuario = $this->user->id_grupo;
+                $tipousuario = $usuario->id_grupo;
                 $uppsautorizadas = 0;
-                if ($this->user->id_grupo == 4) {
+                if ($usuario->id_grupo == 4) {
                     $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $uppUsuario)->count();
                 }
                 // Checar permiso
@@ -241,7 +242,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         $currentrow = $indextu + 2;
 
                         $var = array_search($k['5'], $arrayupps);
-                        if ($this->user->id_grupo == 4) {
+                        if ($usuario->id_grupo == 4) {
                             if ($uppsautorizadas && $k['18'] >= 10000 && $k['18'] < 20000) {
                                 array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' No tiene permiso para cargar esa idpartida. ');
 
@@ -306,7 +307,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                 . $k['22'] . $k['23'] . $k['24'] . $k['25'] . $k['26']] = $currentrow;
 
                         }
-                        if ($this->user->id_grupo == 4) {
+                        if ($usuario->id_grupo == 4) {
 
                             if ($k['5'] != $uppUsuario) {
                                 array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': No tiene permiso para registrar de  otras upps. ');
@@ -419,7 +420,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                                     }
                                     $b = array(
-                                        "username" => $this->user->username,
+                                        "username" => $usuario->username,
                                         "accion" => 'Borrar registros carga masiva',
                                         "modulo" => 'Claves presupuestales'
                                     );
@@ -447,7 +448,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                         }
                                     }
                                     $b = array(
-                                        "username" => $this->user->username,
+                                        "username" => $usuario->username,
                                         "accion" => 'Borrar registros carga masiva',
                                         "modulo" => 'Claves presupuestales'
                                     );
@@ -485,7 +486,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                 }
                             }
                             $b = array(
-                                "username" => $this->user->username,
+                                "username" => $usuario->username,
                                 "accion" => 'Borrar registros carga masiva',
                                 "modulo" => 'Claves presupuestales'
                             );
@@ -501,38 +502,37 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             }
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
-                \Log::debug($arrayErrores);
                 \Log::debug('Trabajo  no exitoso en validaciones');
 
                 $payload=  json_encode($arrayErrores);
                 carga_masiva_estatus::create([
-                    'id_usuario' => $this->user->id,
+                    'id_usuario' => $usuario->id,
                     'cargapayload' => $payload,
                     'cargaMasClav' => 2,
-                    'created_user' =>$this->user->username
+                    'created_user' =>$usuario->username
                 ]);
-                // event(new ActualizarSesionUsuario($this->user, $arrayErrores,2));
+                // event(new ActualizarSesionUsuario($usuario, $arrayErrores,2));
 
             } else {
                 DB::commit();
                 \Log::debug('Trabajo de validaciones con exito');
-                CargaMasivaClaves::dispatch($this->filearray, $this->user)->onQueue('high');
+                CargaMasivaClaves::dispatch($this->filearray, $usuario)->onQueue('high');
                 
             }
 
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            // event(new ActualizarSesionUsuario($this->user, $th->getMessage(),2));
+            // event(new ActualizarSesionUsuario($usuario, $th->getMessage(),2));
             \Log::debug('Error de conexion en validaciones carga masiva');
-
+            \Log::debug($th);
             carga_masiva_estatus::create([
-                'id_usuario' => $this->user->id,
+                'id_usuario' => $usuario->id,
                 'cargapayload' =>  json_encode($th),
                 'cargaMasClav' => 2,
-                'created_user' =>$this->user->username
+                'created_user' =>$usuario->username
             ]);
-            \Log::debug($th);
+            
         }
     }
 }
