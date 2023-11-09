@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\ActualizarSesionUsuario;
 use App\Models\carga_masiva_estatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -500,15 +501,8 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             }
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
-              $payload=  json_encode($arrayErrores);
-                carga_masiva_estatus::create([
-                    'id_usuario' => $this->user->id,
-                    'cargapayload' => $arrayErrores,
-                    'cargaMasClav' => 2,
-                ]);
                 \Log::debug($arrayErrores);
-                session::put('cargaMasClav',2);
-                session::put('cargapayload', $arrayErrores);
+                event(new ActualizarSesionUsuario($this->user, $arrayErrores,2));
 
             } else {
                 DB::commit();
@@ -520,13 +514,8 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            carga_masiva_estatus::create([
-                'id_usuario' => $this->user->id,
-                'cargapayload' => $th->getMessage(),
-                'cargaMasClav' => 1,
-            ]);
-            session::put('cargaMasClav',2);
-            session::put('cargapayload', 'error: '.$th->getMessage());
+            event(new ActualizarSesionUsuario($this->user, $th->getMessage(),2));
+
             \Log::debug($th->getMessage());
         }
     }

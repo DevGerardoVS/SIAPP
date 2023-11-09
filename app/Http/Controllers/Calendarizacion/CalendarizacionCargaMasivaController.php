@@ -123,6 +123,7 @@ class CalendarizacionCargaMasivaController extends Controller
         ini_set('max_execution_time', 1200);
 
         $user=Auth::user();
+        
         if ($xlsx = SimpleXLSX::parse($request->file)) {
             $filearray = $xlsx->rows();
             //tomamos los encabezados

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\ActualizarSesionUsuario;
 use App\Models\carga_masiva_estatus;
 use App\Models\ProgramacionPresupuesto;
 use App\Models\uppautorizadascpnomina;
@@ -472,20 +473,13 @@ class CargaMasivaClaves implements ShouldQueue
                     'updated_at' => null,
                     'created_user' => $usuarioclave
                 ]) ;
-                \Log::debug($currentrow);
                 $currentrow++;
 
             }
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
-                carga_masiva_estatus::create([
-                    'id_usuario' => $this->user->id,
-                    'cargapayload' => ''.$arrayErrores,
-                    'cargaMasClav' => 2,
-                    'created_user' =>$this->user->username
-                ]);
-                session::put('cargaMasClav',2);
-                session::put('cargapayload', $arrayErrores);
+
+                event(new ActualizarSesionUsuario($this->user, $arrayErrores,2));
             }
 
 
@@ -497,25 +491,15 @@ class CargaMasivaClaves implements ShouldQueue
             );
             Controller::bitacora($b);
             DB::commit();
-                        //estatus carga masiva 0 en proceso 1 exito 2 error
-                        session::put('cargaMasClav',1);
-                        //el mensaje cuando termina el job puede ser un array o un string
-                        session::put('cargapayload', 'Datos registrados con exito');
-            carga_masiva_estatus::create([
-                'id_usuario' => $this->user->id,
-                'cargapayload' => 'Exito en la carga masiva',
-                'cargaMasClav' => 1,
-            ]);
+
+            event(new ActualizarSesionUsuario($this->user, 'Exito',1));
+
+
             \Log::debug('Trabajo  exitoso');
         } catch (\Exception $e) {
             DB::rollBack();
-            carga_masiva_estatus::create([
-                'id_usuario' => $this->user->id,
-                'cargapayload' => $e->getMessage(),
-                'cargaMasClav' => 1,
-            ]);
-            session::put('cargaMasClav',2);
-            session::put('cargapayload', 'error: '.$e->getMessage());
+
+            event(new ActualizarSesionUsuario($this->user, $e->getMessage(),2));
 
 
 
