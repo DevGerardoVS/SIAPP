@@ -1061,9 +1061,9 @@ class MetasController extends Controller
 			$file = sys_get_temp_dir(). $report;
 		}
 		
-		if (File::exists($ruta . "/" . $report . ".pdf")) {
-			File::delete($ruta . "/" . $report . ".pdf");
-		}
+		// if (File::exists($ruta . "/" . $report . ".pdf")) {
+		// 	File::delete($ruta . "/" . $report . ".pdf");
+		// }
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
 		$output_file = sys_get_temp_dir()."/".time()."/";
