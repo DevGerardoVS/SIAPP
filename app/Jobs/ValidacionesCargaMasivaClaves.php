@@ -492,7 +492,6 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             }
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
-                \Log::debug('Trabajo  no exitoso en validaciones');
 
                 $payload = json_encode($arrayErrores);
                 carga_masiva_estatus::create([
@@ -505,7 +504,6 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
             } else {
                 DB::commit();
-                \Log::debug('Trabajo de validaciones con exito');
                 CargaMasivaClaves::dispatch($this->filearray, $usuario)->onQueue('high');
 
             }
@@ -514,7 +512,6 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
         } catch (\Throwable $th) {
             DB::rollBack();
             // event(new ActualizarSesionUsuario($usuario, $th->getMessage(),2));
-            \Log::debug('Error de conexion en validaciones carga masiva');
             \Log::debug($th);
             carga_masiva_estatus::create([
                 'id_usuario' => $usuario->id,
