@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('mml_avance_etapas_pp', function($table) {
+        /* Schema::table('mml_avance_etapas_pp', function($table) {
             $table->tinyInteger('ramo33');
-        });
+        }); */
 
         Schema::table('mml_definicion_problema', function($table) {
             $table->tinyInteger('ramo33');

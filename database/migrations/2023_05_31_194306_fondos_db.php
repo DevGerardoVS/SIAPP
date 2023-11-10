@@ -194,7 +194,7 @@ return new class extends Migration
 
         Schema::create('mml_avance_etapas_pp', function (Blueprint $table){
             $table->increments('id');
-            $table->unique(['clv_upp','clv_pp','ejercicio']);
+            $table->unique(['clv_upp','clv_pp','ejercicio','ramo33']);
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',5)->nullable(false);
             $table->tinyInteger('etapa_0')->nullable(false);
@@ -213,6 +213,7 @@ return new class extends Migration
             $table->string('deleted_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->tinyInteger('ramo33');
            
             $table->softDeletes();
     
