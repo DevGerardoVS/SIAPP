@@ -1079,9 +1079,9 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->output();
-log::info($parameters);
-		dd($jasper);
+		)->execute();
+// log::info($parameters);
+// 		dd($jasper);
 
 		//agrego comentario para revisar version de main...
 		$archivo = $output_file . '/' . $report . '.pdf';
