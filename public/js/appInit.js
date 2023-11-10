@@ -58,6 +58,26 @@ var _gen = {
                       });
             
         },
+    carga_masiva_alerts: function(estatus){
+        
+        if(estatus==1){
+            $("#alerts_carga_masiva").on('click', function(e) {
+                const tempLink = document.createElement('a');
+                tempLink.href = `/borrar-sesion_excel`;
+                tempLink.click();
+                $('#alerts_carga_masiva').hide();
+            });
+        }else{
+            $("#alerts_carga_masiva").on('click', function(e) {
+                const tempLink = document.createElement('a');
+                tempLink.href = `/calendarizacion/download-errors-excel`;
+                tempLink.click();
+                $('#alerts_carga_masiva').hide();
+            });
+        }
+
+    },
+
     essential: function (tiemporestante2,cargamasiva) {
         $('#downloadLink').on('click', function(event) {
             location.href = "/home";

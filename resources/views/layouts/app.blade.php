@@ -139,29 +139,33 @@ date_default_timezone_set('America/Mexico_City');
                 </div>
 
             </nav>
-            @if(session('success'))
-            <div class="alert alert-success" role="alert">
-                    {{ session('success') }}
-             </div>                               
-                 @endif
-            @if(session()->has('cargaMasClav')&& session('cargaMasClav')==2)
-         
-            <!-- Otro código aquí -->
-            <div style="text-align: center" class="alert alert-danger" role="alert">
-                Error de carga masiva : &nbsp;
+            <!-- Carga masiva en proceso -->
+                    @if(session('success'))
+                    <div class="alert alert-warning" role="alert">
+                            {{ session('success') }}
+                     </div>                               
+                         @endif
 
-                    <a href="/calendarizacion/download-errors-excel"  target="_blank" id="downloadLink">Descargar Errores</a>
+                    @if(session()->has('cargaMasClav')&& session('cargaMasClav')==2)
+                    <!-- Carga masiva con errores -->
+            <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-danger" role="alert">
+                Error de carga masiva : &nbsp;
+                <button  class="btn btn-success"  onclick="_gen.carga_masiva_alerts(2)" >Descargar Errores</button>
+
              </div>                               
                  @endif
+                <!-- Carga masiva con exito -->
+
                  @if(session()->has('cargaMasClav')&& session('cargaMasClav')==1)
          
-                 <!-- Otro código aquí -->
-                 <div style="text-align: center" class="alert alert-danger" role="alert">
+                 <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-success" role="alert">
                      CARGA MASIVA EXITOSA : &nbsp;
      
-                         <a href="/borrar-sesion_excel"  target="_blank" id="downloadLink">ACEPTAR</a>
+                         <button  class="btn btn-primary"  onclick="_gen.carga_masiva_alerts(1)" >ACEPTAR</button>
+
                   </div>                               
                       @endif
+
 
 
         @endif
