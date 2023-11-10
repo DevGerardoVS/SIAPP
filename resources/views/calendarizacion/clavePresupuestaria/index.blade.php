@@ -218,10 +218,8 @@
          $.each(failures, function (key, value) {
         fails.push(value);
         }); 
-        var serializada= JSON.stringify(fails);
         Swal.fire({
                 icon: 'error',
-                title: 'Error al importar la carga masiva <a type="button" class="btn btn-success" href="/calendarizacion/download-errors-excel/'+encodeURIComponent(serializada) +'"><i class="fa fa-floppy-o" style="color: #ffffff;">Descargar Errores</a>',
                 text: fails,
                 confirmButtonText: "Aceptar",
                 timerProgressBar: false,

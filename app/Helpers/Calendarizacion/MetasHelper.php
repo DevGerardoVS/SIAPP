@@ -21,7 +21,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.objetivo as actividad'
+					'mml_mir.indicador as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
@@ -107,7 +107,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.objetivo as actividad'
+					'mml_mir.indicador as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
@@ -240,7 +240,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.objetivo as actividad'
+					'mml_mir.indicador as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
@@ -350,7 +350,7 @@ class MetasHelper
 				'mml_mir.area_funcional',
 				DB::raw('"N/A" AS clv_actadmon'),
 				DB::raw('mml_mir.id AS mir_act'),
-				DB::raw('objetivo AS actividad'),
+				DB::raw('indicador AS actividad'),
 				DB::raw('"" AS fondo'),
 			)
 			->where(function ($query) use ($c) {
@@ -763,7 +763,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.objetivo as actividad'
+					'mml_mir.indicador as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)

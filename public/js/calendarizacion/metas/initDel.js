@@ -252,7 +252,6 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            console.log(data);
             if (data.status) {
                 dao.checkCMetasUpp(upp,anio);
             } else {
@@ -272,7 +271,6 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            console.log(data);
             if (data.status) {
                  $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
