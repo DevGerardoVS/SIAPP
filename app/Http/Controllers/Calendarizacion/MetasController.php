@@ -1579,6 +1579,7 @@ log::info($parameters);
 	}
 	public static function cmetas($upp, $anio)
 	{
+		Log::debug("confirmar metas -". "upp: ".$upp."año: ".$anio);
 		$proyecto = DB::table('mml_mir')
 			->select(
 				'mml_mir.id',
@@ -1724,7 +1725,7 @@ log::info($parameters);
 			$activsPP = $activsPP->where('programacion_presupuesto.subprograma_presupuestario', '!=','UUU' );
 			}
 			$activsPP =$activsPP->get();
-			
+			Log::debug("metas recuento-". "programacion: ".count($activsPP)."metas: ".count($metas));
 		if (count($metas) >= 1) {
 			if (count($metas) >= count($activsPP)) {
 				return ["status" => true];
