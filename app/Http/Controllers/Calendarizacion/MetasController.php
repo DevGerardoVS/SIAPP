@@ -1078,8 +1078,10 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
-		)->execute();
-		// dd($jasper);
+		)->output();
+log::info($parameters);
+		dd($jasper);
+
 		//agrego comentario para revisar version de main...
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
@@ -1577,6 +1579,7 @@ class MetasController extends Controller
 	}
 	public static function cmetas($upp, $anio)
 	{
+		Log::debug("confirmar metas -". "upp: ".$upp."  año: ".$anio);
 		$proyecto = DB::table('mml_mir')
 			->select(
 				'mml_mir.id',
@@ -1722,7 +1725,7 @@ class MetasController extends Controller
 			$activsPP = $activsPP->where('programacion_presupuesto.subprograma_presupuestario', '!=','UUU' );
 			}
 			$activsPP =$activsPP->get();
-			
+			Log::debug("metas recuento-". "programacion: ".count($activsPP)."  metas: ".count($metas));
 		if (count($metas) >= 1) {
 			if (count($metas) >= count($activsPP)) {
 				return ["status" => true];
