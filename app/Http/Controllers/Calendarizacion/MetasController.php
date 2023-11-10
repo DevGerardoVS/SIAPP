@@ -1608,14 +1608,7 @@ ini_set('display_errors', true);
 			->where('catalogo.deleted_at', '=', null)
 			->where('mml_actividades.clv_upp', $upp)
 			->where('mml_actividades.ejercicio', $anio);
-			$upps= DB::table('uppautorizadascpnomina')
-			->select('uppautorizadascpnomina.clv_upp')
-			->where('uppautorizadascpnomina.clv_upp', $upp)
-			->where('uppautorizadascpnomina.deleted_at', null)
-			->get();
-			if(count($upps)) {
-			$actv = $actv->where('catalogo.clave', '!=','UUU' );
-			}
+
 		$query2 = DB::table('metas')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -1726,6 +1719,23 @@ ini_set('display_errors', true);
 			$activsPP = $activsPP->where('programacion_presupuesto.subprograma_presupuestario', '!=','UUU' );
 			}
 			$activsPP =$activsPP->get();
+			$upps= DB::table('uppautorizadascpnomina')
+			->select('uppautorizadascpnomina.clv_upp')
+			->where('uppautorizadascpnomina.clv_upp', $upp)
+			->where('uppautorizadascpnomina.deleted_at', null)
+			->get();
+			if (count($upps)) {
+				for ($i=0; $i <count($metas); $i++) { 
+					$area = str_split($metas[$i]->area);
+					$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
+					if ($sub == 'UUU') {
+							unset($metas[$i]);
+							$metas = array_values($metas);
+					}
+	
+			}
+
+			}
 			Log::debug("metas recuento-". "programacion: ".count($activsPP)."  metas: ".count($metas));
 		if (count($metas) >= 1) {
 			if (count($metas) >= count($activsPP)) {
