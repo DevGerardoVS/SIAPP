@@ -52,8 +52,10 @@ date_default_timezone_set('America/Mexico_City');
 
 <body>
     <div id="app" style="">
+      
         @if (isset(Auth::user()->id))
-            <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
+       
+        <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
                 <div class="container">
                     <a class="navbar-brand" href="/"
                         title="Sistema Integral de Análisis Programático Presupuestal ">
@@ -133,8 +135,35 @@ date_default_timezone_set('America/Mexico_City');
                         </ul>
                         <!-- Right Side Of Navbar -->
                     </div>
+                   
                 </div>
+
             </nav>
+            @if(session('success'))
+            <div class="alert alert-success" role="alert">
+                    {{ session('success') }}
+             </div>                               
+                 @endif
+            @if(session()->has('cargaMasClav')&& session('cargaMasClav')==2)
+         
+            <!-- Otro código aquí -->
+            <div style="text-align: center" class="alert alert-danger" role="alert">
+                Error de carga masiva : &nbsp;
+
+                    <a href="/calendarizacion/download-errors-excel"  target="_blank" id="downloadLink">Descargar Errores</a>
+             </div>                               
+                 @endif
+                 @if(session()->has('cargaMasClav')&& session('cargaMasClav')==1)
+         
+                 <!-- Otro código aquí -->
+                 <div style="text-align: center" class="alert alert-danger" role="alert">
+                     CARGA MASIVA EXITOSA : &nbsp;
+     
+                         <a href="/borrar-sesion_excel"  target="_blank" id="downloadLink">ACEPTAR</a>
+                  </div>                               
+                      @endif
+
+
         @endif
         @if (Request::is('/', 'login', 'password/reset', 'cambiar-contrasenia'))
             <main style="min-height: auto; min-width:auto;">
