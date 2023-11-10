@@ -1579,7 +1579,6 @@ log::info($parameters);
 	}
 	public static function cmetas($upp, $anio)
 	{
-		Log::debug("confirmar metas -". "upp: ".$upp."  año: ".$anio);
 		$proyecto = DB::table('mml_mir')
 			->select(
 				'mml_mir.id',
@@ -1588,6 +1587,7 @@ log::info($parameters);
 				'mml_mir.area_funcional AS area',
 				'mml_mir.ejercicio',
 				'mml_mir.objetivo as actividad'
+
 			)
 			->where('mml_mir.deleted_at', '=', null)
 			->where('mml_mir.nivel', '=', 11)
@@ -1604,6 +1604,7 @@ log::info($parameters);
 				'mml_actividades.ejercicio',
 			)
 			->where('mml_actividades.deleted_at', '=', null)
+			->where('catalogo.deleted_at', '=', null)
 			->where('mml_actividades.clv_upp', $upp)
 			->where('mml_actividades.ejercicio', $anio);
 
@@ -1628,12 +1629,14 @@ log::info($parameters);
 				'metas.cantidad_beneficiarios',
 				'beneficiarios.beneficiario',
 				'unidades_medida.unidad_medida',
-				'metas.clv_fondo'
+				'metas.clv_fondo',
+				DB::raw('CONCAT(act.area,metas.clv_fondo) AS clave'),
+
 			)
+			->where('metas.mir_id', '=', null)
 			->where('metas.deleted_at', '=', null)
 			->where('act.upp', $upp)
-			->where('metas.ejercicio', $anio);
-	
+			->where('metas.ejercicio', $anio)->groupByRaw('act.area,metas.clv_fondo');
 		$metas = DB::table('metas')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -1655,14 +1658,16 @@ log::info($parameters);
 				'metas.cantidad_beneficiarios',
 				'beneficiarios.beneficiario',
 				'unidades_medida.unidad_medida',
-				'metas.clv_fondo'
+				'metas.clv_fondo',
+				DB::raw('CONCAT(pro.area,metas.clv_fondo) AS clave'),
 			)
+			->where('metas.actividad_id', '=', null)
 			->where('metas.deleted_at', '=', null)
 			->where('metas.estatus', '=', 0)
 			->where('pro.ejercicio', $anio)
 			->where('pro.upp', $upp)
-			->unionAll($query2)
-			->get();
+			->groupByRaw('pro.area,metas.clv_fondo')
+			->unionAll($query2)->get();
 		$pp = [];
 
 		foreach ($metas as $key) {
@@ -1672,7 +1677,8 @@ log::info($parameters);
 				->select(
 					'upp AS clv_upp',
 					DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-					DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional')
+					DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
+					'fondo_ramo AS fondo'
 				)
 				->where('deleted_at', null)
 				->where('finalidad', $area[0])
@@ -1701,44 +1707,42 @@ log::info($parameters);
 				'upp AS clv_upp',
 				'fondo_ramo',
 				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional')
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
+				'fondo_ramo AS fondo'
 			)
 			->where('upp', $upp)
 			->where('deleted_at', null)
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
-			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
+			->groupByRaw('ur,fondo_ramo ,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct();
-			$upps= DB::table('uppautorizadascpnomina')
+		$upps = DB::table('uppautorizadascpnomina')
 			->select('uppautorizadascpnomina.clv_upp')
 			->where('uppautorizadascpnomina.clv_upp', $upp)
 			->where('uppautorizadascpnomina.deleted_at', null)
 			->get();
-			if(count($upps)) {
-			$activsPP = $activsPP->where('programacion_presupuesto.subprograma_presupuestario', '!=','UUU' );
-			}
-			$activsPP =$activsPP->get();
-			$upps= DB::table('uppautorizadascpnomina')
+		if (count($upps)) {
+			$activsPP = $activsPP->where('programacion_presupuesto.subprograma_presupuestario', '!=', 'UUU');
+		}
+		$activsPP = $activsPP->get();
+		$upps = DB::table('uppautorizadascpnomina')
 			->select('uppautorizadascpnomina.clv_upp')
 			->where('uppautorizadascpnomina.clv_upp', $upp)
 			->where('uppautorizadascpnomina.deleted_at', null)
 			->get();
-			if (count($upps)) {
-				for ($i=0; $i <count($metas); $i++) { 
-					$area = str_split($metas[$i]->area);
-					$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
-					if ($sub == 'UUU') {
-							unset($metas[$i]);
-							$metas = array_values($metas);
-					}
-	
-			}
+		if (count($upps)) {
+			for ($i = 0; $i < count($metas); $i++) {
+				$area = str_split($metas[$i]->area);
+				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
+				if ($sub == 'UUU') {
+					unset($metas[$i]);
+					$metas = array_values($metas);
+				}
 
 			}
-			
-	
-			Log::debug("metas recuento-". "programacion: ".count($activsPP)."  metas: ".count($metas));
+
+		}
 		if (count($metas) >= 1) {
-			if (count($metas) >= count($activsPP)) {
+			if (count($metas) >= count($activsPP) && count($activsPP) == count($pp)) {
 				return ["status" => true];
 
 			} else {
