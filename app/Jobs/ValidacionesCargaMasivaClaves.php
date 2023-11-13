@@ -162,7 +162,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
 
                         if ($valuepresupuesto != $value) {
-                            array_push($arrayErrores, 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2] . ' ');
+                            array_push($arrayErrores, 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2] . ' Esperado: '.$valuepresupuesto.' dado: '.$value);
 
                         }
 
