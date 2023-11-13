@@ -150,7 +150,7 @@ date_default_timezone_set('America/Mexico_City');
                     <!-- Carga masiva con errores -->
             <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-danger" role="alert">
                 Error de carga masiva : &nbsp;
-                <button  class="btn btn-success"  onclick="_gen.carga_masiva_alerts(2)" >Descargar Errores</button>
+                <button  class="btn btn-success"  onclick="_notificaciones.carga_masiva_alerts(2)" >Descargar Errores</button>
 
              </div>                               
                  @endif
@@ -161,7 +161,7 @@ date_default_timezone_set('America/Mexico_City');
                  <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-success" role="alert">
                      CARGA MASIVA EXITOSA : &nbsp;
      
-                         <button  class="btn btn-primary"  onclick="_gen.carga_masiva_alerts(1)" >ACEPTAR</button>
+                         <button  class="btn btn-primary"  onclick="_notificaciones.carga_masiva_alerts(1)" >ACEPTAR</button>
 
                   </div>                               
                       @endif
