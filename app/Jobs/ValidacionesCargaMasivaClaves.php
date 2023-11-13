@@ -124,7 +124,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Los campos de enero a diciembre deben ser numeros. ');
                     }
 
-                    $query = MetasHelper::actividadesconf($k['5'], '20' . $k['20']);
+                    $query = MetasHelper::actividades($k['5'], '20' . $k['20']);
                     if (count($query) > 0) {
                         array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': No se pueden añadir claves porque ya hay metas registradas. ');
 
@@ -325,7 +325,14 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Los campos de enero a diciembre deben ser numeros. ');
                     }
 
-                    $query = MetasHelper::actividadesconf($k['5'], '20' . $k['20']);
+                    if($usuario->id_grupo==5){
+                        $query = MetasHelper::actividadesDel($k['5'], '20' . $k['20']);
+                        if (count($query) > 0) {
+                            array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': No se pueden añadir claves porque ya hay metas registradas. ');
+    
+                        }
+                    }
+                    $query = MetasHelper::actividades($k['5'], '20' . $k['20']);
                     if (count($query) > 0) {
                         array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': No se pueden añadir claves porque ya hay metas registradas. ');
 
