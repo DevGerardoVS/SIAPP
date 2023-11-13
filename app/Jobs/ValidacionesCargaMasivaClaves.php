@@ -180,7 +180,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         //buscar en el array de totales 
                         $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $u)->count();
                         if ($uppsautorizadas) {
-                            array_push($arrayErrores, 'Error:  no se puede cargar la upp: '.$u.' en tipo operativo porque esta autorizada para cargar RH. ');
+                            array_push($arrayErrores, 'Error:  no se puede cargar la upp: ' . $u . ' en tipo operativo porque esta autorizada para cargar RH. ');
                         }
                         $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->count();
                         $query = MetasHelper::actividades($u, $ejercicio[0]);
@@ -239,9 +239,6 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     $ejercicio = array();
                 }
 
-                if ($usuario->id_grupo == 4) {
-
-                }
 
                 foreach ($this->filearray as $indextu => $k) {
                     //buscar en el array de upps 
@@ -288,18 +285,18 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                             array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' El Subprograma no puede ir vacio. Revise que no haya filas vacias con formulas. ');
 
                         default:
-                        if($tipousuario==4){
-                            $countO++;
-                            //buscar en el array de totales 
-                            if (array_key_exists($k['5'] . 'COP' . $k['24'], $arraypresupuesto) && $k['27'] != '' && $k['5'] . $k['24'] != '') {
+                            if ($tipousuario == 4) {
+                                $countO++;
+                                //buscar en el array de totales 
+                                if (array_key_exists($k['5'] . 'COP' . $k['24'], $arraypresupuesto) && $k['27'] != '' && $k['5'] . $k['24'] != '') {
 
-                                $arraypresupuesto[$k['5'] . 'COP' . $k['24']] = $arraypresupuesto[$k['5'] . 'COP' . $k['24']] + $k['27'];
+                                    $arraypresupuesto[$k['5'] . 'COP' . $k['24']] = $arraypresupuesto[$k['5'] . 'COP' . $k['24']] + $k['27'];
 
-                            } else {
-                                $arraypresupuesto[$k['5'] . 'COP' . $k['24']] = $k['27'];
-                                array_push($ejercicio, '20' . $k['20']);
+                                } else {
+                                    $arraypresupuesto[$k['5'] . 'COP' . $k['24']] = $k['27'];
+                                    array_push($ejercicio, '20' . $k['20']);
+                                }
                             }
-                        }
 
 
                     }
@@ -404,12 +401,12 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                     switch ($tipousuario) {
                         case 4:
-                            
+
                             switch ($uppsautorizadas) {
                                 case 0:
                                     //validacion para eliminar registros no confirmados 
                                     foreach ($arrayupps as $u) {
-                                        $query = MetasHelper::actividades($u,$ejercicio[0]);
+                                        $query = MetasHelper::actividades($u, $ejercicio[0]);
                                         if (count($query) > 0) {
                                             array_push($arrayErrores, 'Error:  No se pueden añadir claves porque ya hay metas registradas. ');
                                         }
@@ -443,7 +440,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                     }
                                     //validacion para eliminar registros no confirmados 
                                     foreach ($arrayupps as $u) {
-                                        $query = MetasHelper::actividades($u,$ejercicio[0]);
+                                        $query = MetasHelper::actividades($u, $ejercicio[0]);
                                         if (count($query) > 0) {
                                             array_push($arrayErrores, 'Error:  No se pueden añadir claves porque ya hay metas registradas. ');
                                         }
@@ -477,7 +474,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                             }
                             //validacion para eliminar registros no confirmados 
                             foreach ($arrayupps as $key => $u) {
-                                $query = MetasHelper::actividadesDel($u,  $ejercicio[0]);
+                                $query = MetasHelper::actividadesDel($u, $ejercicio[0]);
                                 if (count($query) > 0) {
                                     array_push($arrayErrores, 'Error: No se pueden añadir claves porque ya hay metas registradas. ');
 
