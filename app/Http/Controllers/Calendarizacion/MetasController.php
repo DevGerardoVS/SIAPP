@@ -1534,7 +1534,7 @@ ini_set('display_errors', true);
 			Controller::check_permission('putMetas');
 			DB::beginTransaction();
 			$user = Auth::user()->username;
-			$metas = MetasHelper::actividadesConf($upp, $anio);
+			$metas = MetasHelper::actividades($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$i = 0;
 			foreach ($metas as $key) {
@@ -1709,7 +1709,9 @@ ini_set('display_errors', true);
 				'fondo_ramo',
 				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
 				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
-				'fondo_ramo AS fondo'
+				'fondo_ramo AS fondo',
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo) AS clave'),
+
 			)
 			->where('upp', $upp)
 			->where('deleted_at', null)
@@ -1742,6 +1744,8 @@ ini_set('display_errors', true);
 			}
 
 		}
+		Log::debug(count($metas));
+		Log::debug(count($activsPP));
 		if (count($metas) >= 1) {
 			if (count($metas) >= count($activsPP) && count($activsPP) == count($pp)) {
 				return ["status" => true];
