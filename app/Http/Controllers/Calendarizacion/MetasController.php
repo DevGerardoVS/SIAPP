@@ -1533,7 +1533,7 @@ log::info($parameters);
 			Controller::check_permission('putMetas');
 			DB::beginTransaction();
 			$user = Auth::user()->username;
-			$metas = MetasHelper::actividadesConf($upp, $anio);
+			$metas = MetasHelper::actividades($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$i = 0;
 			foreach ($metas as $key) {
@@ -1636,7 +1636,8 @@ log::info($parameters);
 			->where('metas.mir_id', '=', null)
 			->where('metas.deleted_at', '=', null)
 			->where('act.upp', $upp)
-			->where('metas.ejercicio', $anio)->groupByRaw('act.area,metas.clv_fondo');
+			->where('metas.ejercicio', $anio)
+			->groupByRaw('act.area,metas.clv_fondo');
 		$metas = DB::table('metas')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
