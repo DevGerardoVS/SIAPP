@@ -37,7 +37,7 @@ class SingleSession
            
     
             if(isset($data->cargapayload)){
-                Log::debug('si entro');
+                // Log::debug('si entro');
                 Session::put('cargapayload', $data->cargapayload);
                 Session::put('cargaMasClav',$data->cargaMasClav);
                 session(['cargapayload' => $data->cargapayload]);

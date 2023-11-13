@@ -21,7 +21,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.indicador as actividad'
+					'mml_mir.objetivo as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
@@ -107,7 +107,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.indicador as actividad'
+					'mml_mir.objetivo as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
@@ -240,7 +240,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.indicador as actividad'
+					'mml_mir.objetivo as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
@@ -350,7 +350,7 @@ class MetasHelper
 				'mml_mir.area_funcional',
 				DB::raw('"N/A" AS clv_actadmon'),
 				DB::raw('mml_mir.id AS mir_act'),
-				DB::raw('indicador AS actividad'),
+				DB::raw('objetivo AS actividad'),
 				DB::raw('"" AS fondo'),
 			)
 			->where(function ($query) use ($c) {
@@ -625,7 +625,6 @@ class MetasHelper
 				DB::raw("IF(SUM(noviembre)>=1,1,0) AS noviembre"),
 				DB::raw("IF(SUM(diciembre)>=1,1,0) AS diciembre")
 			)
-			->where('programacion_presupuesto.subprograma_presupuestario', 'UUU')
 			->where('programacion_presupuesto.upp', $upp)
 			->where('ejercicio', $anio)
 			->where('programacion_presupuesto.deleted_at', null)
@@ -649,50 +648,75 @@ class MetasHelper
 			foreach ($claves as $key) {
 				if ($key->entidad == $k->entidad && $key->area == $k->area && $key->fondo == $k->fondo) {
 					if ($key->enero != $k->enero) {
-						$aux++;
+						if($k->enero !=0){
+							$aux++;
+						}
+						
 					}
-					if ($key->febrero != $k->febrero) {
-						$aux++;
+					if ($key->febrero != $k->febrero ) {
+						if($k->febrero !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->marzo != $k->marzo) {
-						$aux++;
+						if($k->marzo !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->abril != $k->abril) {
-						$aux++;
+						if($k->abril !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->mayo != $k->mayo) {
-						$aux++;
+						if($k->mayo !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->junio != $k->junio) {
-						$aux++;
+						if($k->junio !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->julio != $k->julio) {
-						$aux++;
+						if($k->julio !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->agosto != $k->agosto) {
-						$aux++;
+						if($k->agosto !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->septiembre != $k->septiembre) {
-						$aux++;
+						if($k->septiembre !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->octubre != $k->octubre) {
-						$aux++;
+						if($k->octubre !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->noviembre != $k->noviembre) {
-						$aux++;
+						if($k->noviembre !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->diciembre != $k->diciembre) {
-						$aux++;
+						if($k->diciembre !=0){
+							$aux++;
+						}
 					}
 				}
 			}
@@ -763,7 +787,7 @@ class MetasHelper
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
-					'mml_mir.indicador as actividad'
+					'mml_mir.objetivo as actividad'
 				)
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
