@@ -322,23 +322,6 @@ class MetasHelper
 				->where('pro.upp', $upp)
 				->unionAll($query2);
 			$query=$query->get();
-			$upps = DB::table('uppautorizadascpnomina')
-			->select('uppautorizadascpnomina.clv_upp')
-			->where('uppautorizadascpnomina.clv_upp', $upp)
-			->where('uppautorizadascpnomina.deleted_at', null)
-			->get();
-		if (count($upps)) {
-			for ($i = 0; $i < count($query); $i++) {
-				$area = str_split($query[$i]->area);
-				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
-				if ($sub == 'UUU') {
-					unset($query[$i]);
-					$query = array_values($query);
-				}
-
-			}
-
-		}
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());

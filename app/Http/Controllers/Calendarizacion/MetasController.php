@@ -15,6 +15,7 @@ use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
 use Auth;
 use DB;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\Calendarizacion\MetasHelper;
 use Illuminate\Support\Facades\Schema;
 use PDF;
@@ -25,7 +26,6 @@ use Illuminate\Support\Facades\Http;
 use Storage;
 use App\Models\calendarizacion\CierreMetas;
 use App\Models\MmlMir;
-use Illuminate\Support\Facades\Log;
 
 use App\Models\Catalogo;
 
@@ -1082,11 +1082,8 @@ ini_set('display_errors', true);
 			$format,
 			$parameters,
 			$database_connection
-		)->output();
-log::info($parameters);
-		dd($jasper);
-
-		//agrego comentario para revisar version de main...
+		)->execute();
+		// dd($jasper);
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
@@ -1640,8 +1637,7 @@ log::info($parameters);
 			->where('metas.mir_id', '=', null)
 			->where('metas.deleted_at', '=', null)
 			->where('act.upp', $upp)
-			->where('metas.ejercicio', $anio)
-			->groupByRaw('act.area,metas.clv_fondo');
+			->where('metas.ejercicio', $anio)->groupByRaw('act.area,metas.clv_fondo');
 		$metas = DB::table('metas')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -1713,7 +1709,9 @@ log::info($parameters);
 				'fondo_ramo',
 				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
 				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
-				'fondo_ramo AS fondo'
+				'fondo_ramo AS fondo',
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo) AS clave'),
+
 			)
 			->where('upp', $upp)
 			->where('deleted_at', null)
@@ -1746,6 +1744,8 @@ log::info($parameters);
 			}
 
 		}
+		Log::debug(count($metas));
+		Log::debug(count($activsPP));
 		if (count($metas) >= 1) {
 			if (count($metas) >= count($activsPP) && count($activsPP) == count($pp)) {
 				return ["status" => true];
