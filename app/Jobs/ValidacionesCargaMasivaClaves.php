@@ -288,6 +288,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                             array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' El Subprograma no puede ir vacio. Revise que no haya filas vacias con formulas. ');
 
                         default:
+                        if($tipousuario==4){
                             $countO++;
                             //buscar en el array de totales 
                             if (array_key_exists($k['5'] . 'COP' . $k['24'], $arraypresupuesto) && $k['27'] != '' && $k['5'] . $k['24'] != '') {
@@ -298,6 +299,8 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                 $arraypresupuesto[$k['5'] . 'COP' . $k['24']] = $k['27'];
                                 array_push($ejercicio, '20' . $k['20']);
                             }
+                        }
+
 
                     }
                     if (
