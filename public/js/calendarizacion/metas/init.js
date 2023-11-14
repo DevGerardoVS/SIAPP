@@ -685,6 +685,7 @@ var dao = {
         let aOld = $('#area').val()
         let area = aOld.replace('$', '/')
         data.append('area', area);
+        data.append('conmir', $("#nomir").val());
         
         if ($('#tipo_Ac').val() == 'Continua') {
             if (mesesV.enero) {
@@ -932,7 +933,9 @@ var dao = {
             contentType: false,
             cache: false,
         }).done(function (data) {
-            const {activids, conmir } = data;
+            const { activids, conmir } = data;
+            console.log(conmir);
+            $("#nomir").val(conmir)
             let flag = false;
             if (activids[0]?.id == 'ot') {
                 $('.inputAc').show();

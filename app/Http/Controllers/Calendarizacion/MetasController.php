@@ -515,9 +515,10 @@ class MetasController extends Controller
 			$clv = explode('/', $request->area);
 			$area_funcional = str_replace('-', "", $clv[0]);
 			$entidad_ejecutora = str_replace('-', "", $clv[1]);
-			$fondo = $request->sel_fondo != '' && $request->sel_fondo != null ? $request->sel_fondo : $request->fondo_id;
-			if (isset($request->actividad_id) && $request->actividad_id != null && $request->actividad_id != '') {
-				if ($request->actividad_id == 'ot') {
+			$fondo =  $request->fondo_id;
+			$actividad = $request->actividad_id;
+			if ($request->conmir== 0) {
+				if ($actividad== 'ot') {
 					$act = MmlMir::create([
 						'clv_upp' => $request->upp,
 						'entidad_ejecutora' => str_replace('-', "", $clv[1]),
@@ -540,7 +541,7 @@ class MetasController extends Controller
 					->where('mml_actividades.area_funcional', $area_funcional)
 					->where('mml_actividades.clv_upp', $request->upp)
 					->where('metas.clv_fondo', $fondo)
-					->where('mml_actividades.id_catalogo', $request->actividad_id)
+					->where('mml_actividades.id_catalogo', $actividad)
 					->where('metas.mir_id', null)
 					->where('mml_actividades.deleted_at', null)
 					->where('metas.deleted_at', null)->get();
@@ -552,7 +553,7 @@ class MetasController extends Controller
 							'clv_upp' => $request->upp,
 							'entidad_ejecutora' => str_replace('-', "", $clv[1]),
 							'area_funcional' => str_replace('-', "", $clv[0]),
-							'id_catalogo' => $request->actividad_id,
+							'id_catalogo' =>$actividad,
 							'nombre' => null,
 							'ejercicio' => $anio,
 							'created_user' => $username
@@ -572,8 +573,8 @@ class MetasController extends Controller
 					->where('mml_mir.entidad_ejecutora', $entidad_ejecutora)
 					->where('mml_mir.area_funcional', $area_funcional)
 					->where('mml_mir.clv_upp', $request->upp)
-					->where('metas.clv_fondo', $request->sel_fondo)
-					->where('metas.mir_id', intval($request->sel_actividad))
+					->where('metas.clv_fondo', $fondo)
+					->where('metas.mir_id', intval($actividad))
 					->where('mml_mir.deleted_at', null)
 					->where('metas.deleted_at', null)->get();
 				if (count($metaexist)) {
@@ -624,9 +625,9 @@ class MetasController extends Controller
 				if ($m['status']) { */
 					if ($subpp[8] != 'UUU') {
 						$meta = Metas::create([
-							'mir_id' => isset($request->sel_actividad) ? intval($request->sel_actividad) : NULL,
-							'actividad_id' => isset($request->actividad_id) ? intval($act->id) : NULL,
-							'clv_fondo' => isset($act->id) ? $request->fondo_id : $request->sel_fondo,
+							'mir_id' => $request->conmir== 1 ? $actividad: NULL,
+							'actividad_id' => $request->conmir== 0 ? intval($act->id) : NULL,
+							'clv_fondo' => $fondo,
 							'estatus' => 0,
 							'tipo' => $request->tipo_Ac,
 							'beneficiario_id' => $request->tipo_Be,
@@ -654,9 +655,9 @@ class MetasController extends Controller
 							}
 					} else {
 						$meta = Metas::create([
-							'mir_id' => isset($request->sel_actividad) ? intval($request->sel_actividad) : NULL,
-							'actividad_id' => isset($request->actividad_id) ? intval($act->id) : NULL,
-							'clv_fondo' => isset($act->id) ? $request->fondo_id : $request->sel_fondo,
+							'mir_id' =>  NULL,
+							'actividad_id' => intval($act->id),
+							'clv_fondo' => $fondo,
 							'estatus' => 0,
 							'tipo' => $request->tipo_Ac,
 							'beneficiario_id' => 12,
