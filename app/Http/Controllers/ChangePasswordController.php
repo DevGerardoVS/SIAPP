@@ -47,8 +47,6 @@ class ChangePasswordController extends Controller
                 'nueva_contraseña' => ['required'],
                 'confirmar_nueva_contraseña' => ['same:nueva_contraseña'],           
             ]);
-            Log::debug('username: '.Auth::user()->username);
-            Log::debug('password: '. $request->password);
             if (Auth::attempt(['username' => Auth::user()->username, 'password' => $request->contraseña_actual])) {
                 $ModelsUser = ModelsUser::where('id', auth()->user()->id)->firstOrFail();
                 $ModelsUser->password = $request->nueva_contraseña;//Hash::make($request->nueva_contraseña);
