@@ -500,7 +500,6 @@ var dao = {
             $('#11').val(data.noviembre);
             $('#12').val(data.diciembre);
             $('#sumMetas').val(data.total);
-            console.log("sumMetasINICIO",$('#sumMetas').val());
             $('#ar').val(data.ar);
             $('#fondo').val(data.clv_fondo);
             let edit = false;
@@ -692,7 +691,6 @@ var dao = {
                     
                     }
                 }
-                console.log("sumMetasFINAL",$('#sumMetas').val());
             } else {
                 
                 $("#sumMetas").prop('disabled', 'disabled');

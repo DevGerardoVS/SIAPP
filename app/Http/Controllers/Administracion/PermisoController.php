@@ -82,7 +82,6 @@ class PermisoController extends Controller
     }
     //Asigna Menu a Grupo
     public function postMasigna(Request $request) {
-        log::debug("MASIGNA");
         Controller::check_permission('postPermisos', false);
     	$menu = new MenuGrupo();
 		$menu->id_grupo = $request->role;

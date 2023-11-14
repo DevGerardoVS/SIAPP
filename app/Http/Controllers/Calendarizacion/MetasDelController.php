@@ -48,7 +48,6 @@ class MetasDelController extends Controller
 	}
     public static function getActivDelegacion($upp, $anio){
 		Controller::check_permission('viewGetMetasDel');
-		Log::debug('viewGetMetasDel');
 		MetasDelController::cmetas($upp, $anio);
 		$query = MetasHelper::actividadesDel($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
