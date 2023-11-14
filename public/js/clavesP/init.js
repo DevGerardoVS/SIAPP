@@ -896,9 +896,23 @@ var dao = {
       }
       document.getElementById('titleModalpresupuesto').innerText = response.upp['clave'] + ' - ' +response.upp['descripcion']; 
       _table = tabla;
-			_columns = colums;
-			_gen.setTableScrollFotter(_table, _columns, data);
+		  let	_columns = colums;
+      switch (response.rol) {
+        case 0:
+          _gen.setTableScrollFotter(_table, _columns, data);
+          break;
+        case 1:
+          _gen.setTableScrollFotterUpp(_table, _columns, data);
+          break;
+        case 2:
+          _gen.setTableScrollFotterDel(_table, _columns, data);
+          break;
+        default:
+          _gen.setTableScrollFotter(_table, _columns, data);
+          break;
+      }
       $('modalPresupuesto').show(true);
+      
     });
   },
   confirmarClaves: function (upp,ejercicio) {
