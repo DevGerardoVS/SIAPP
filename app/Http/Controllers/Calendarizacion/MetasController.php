@@ -15,7 +15,7 @@ use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
 use Auth;
 use DB;
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\Calendarizacion\MetasHelper;
 use Illuminate\Support\Facades\Schema;
 use PDF;
@@ -1038,6 +1038,8 @@ class MetasController extends Controller
 	}
 	public function jasper($request)
 	{
+		error_reporting(E_ALL);
+ini_set('display_errors', true);
 		ob_end_clean();
 		ob_start();
 		date_default_timezone_set('America/Mexico_City');
@@ -1048,10 +1050,10 @@ class MetasController extends Controller
 		$report = '';
 		if ($request['tipo'] == 0) {
 			$report = "reporte_calendario_upp_autografa";
-			$file = sys_get_temp_dir(). $report;
+			// $file = sys_get_temp_dir(). $report;
 		} else {
 			$report = "Reporte_Calendario_UPP";
-			$file = sys_get_temp_dir(). $report;
+			// $file = sys_get_temp_dir(). $report;
 		}
 		$ruta = sys_get_temp_dir();
 		//Eliminación si ya existe reporte
@@ -1061,7 +1063,8 @@ class MetasController extends Controller
 		}
 		$report_path = app_path() . "/reportes/" . $report . ".jasper";
 		$format = array('pdf');
-		$output_file = sys_get_temp_dir();
+		$output_file = sys_get_temp_dir()."/".time()."/";
+		mkdir($output_file, 0777, true);
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
 		Log::info('reuqest', [json_encode($request)]);
@@ -1139,6 +1142,7 @@ class MetasController extends Controller
 					$table->increments('id');
 					$table->string('clave', 25)->nullable(false);
 					$table->string('upp', 25)->nullable(false);
+					$table->string('ur', 25)->nullable(false);
 					$table->string('fila', 10)->nullable(false);
 				});
 				Schema::create('metas_temp_Nomir', function (Blueprint $table) {
@@ -1146,6 +1150,7 @@ class MetasController extends Controller
 					$table->increments('id');
 					$table->string('clave', 25)->nullable(false);
 					$table->string('upp', 25)->nullable(false);
+					$table->string('ur', 25)->nullable(false);
 					$table->string('fila', 10)->nullable(false);
 				});
 				$assets = $request->file('cmFile');
@@ -1478,13 +1483,13 @@ class MetasController extends Controller
 			$s = MetasController::cmetas($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$user = Auth::user()->username;
-			$check = MetasHelper::validateMesesfinal($upp, $anio);
+		/* 	$check = MetasHelper::validateMesesfinal($upp, $anio);
 			if (!$check["status"]) {
 				$foot = "<a type='button' class='btn btn-success col-md-5 ml-auto ' href=/actividades/meses/error/$upp/$anio > <i class='fa fa-download' aria-hidden='true'></i>Descargar index</a>";
 				$res = ["status" => false, "mensaje" => ["icon" => 'warning', "text" => 'No puedes confirmar las metas, existen diferencias en los meses autorizados por las claves presupuestales', "title" => "Diferencias en las metas" ,"footer"=>$foot]];
 				return response()->json($res, 200);
 
-			}
+			} */
 			if ($s['status']) {
 				DB::beginTransaction();
 				$metas = MetasHelper::actividades($upp, $anio);
@@ -1529,7 +1534,7 @@ class MetasController extends Controller
 			Controller::check_permission('putMetas');
 			DB::beginTransaction();
 			$user = Auth::user()->username;
-			$metas = MetasHelper::actividadesConf($upp, $anio);
+			$metas = MetasHelper::actividades($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$i = 0;
 			foreach ($metas as $key) {
@@ -1582,7 +1587,7 @@ class MetasController extends Controller
 				'mml_mir.entidad_ejecutora AS entidad',
 				'mml_mir.area_funcional AS area',
 				'mml_mir.ejercicio',
-				'mml_mir.indicador as actividad'
+				'mml_mir.objetivo as actividad'
 			)
 			->where('mml_mir.deleted_at', '=', null)
 			->where('mml_mir.nivel', '=', 11)
@@ -1602,14 +1607,7 @@ class MetasController extends Controller
 			->where('catalogo.deleted_at', '=', null)
 			->where('mml_actividades.clv_upp', $upp)
 			->where('mml_actividades.ejercicio', $anio);
-			$upps= DB::table('uppautorizadascpnomina')
-			->select('uppautorizadascpnomina.clv_upp')
-			->where('uppautorizadascpnomina.clv_upp', $upp)
-			->where('uppautorizadascpnomina.deleted_at', null)
-			->get();
-			if(count($upps)) {
-			$actv = $actv->where('catalogo.clave', '!=','UUU' );
-			}
+
 		$query2 = DB::table('metas')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -1631,12 +1629,14 @@ class MetasController extends Controller
 				'metas.cantidad_beneficiarios',
 				'beneficiarios.beneficiario',
 				'unidades_medida.unidad_medida',
-				'metas.clv_fondo'
+				'metas.clv_fondo',
+				DB::raw('CONCAT(act.area,metas.clv_fondo) AS clave'),
+
 			)
 			->where('metas.mir_id', '=', null)
 			->where('metas.deleted_at', '=', null)
 			->where('act.upp', $upp)
-			->where('metas.ejercicio', $anio);
+			->where('metas.ejercicio', $anio)->groupByRaw('act.area,metas.clv_fondo');
 		$metas = DB::table('metas')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -1658,13 +1658,15 @@ class MetasController extends Controller
 				'metas.cantidad_beneficiarios',
 				'beneficiarios.beneficiario',
 				'unidades_medida.unidad_medida',
-				'metas.clv_fondo'
+				'metas.clv_fondo',
+				DB::raw('CONCAT(pro.area,metas.clv_fondo) AS clave'),
 			)
 			->where('metas.actividad_id', '=', null)
 			->where('metas.deleted_at', '=', null)
 			->where('metas.estatus', '=', 0)
 			->where('pro.ejercicio', $anio)
 			->where('pro.upp', $upp)
+			->groupByRaw('pro.area,metas.clv_fondo')
 			->unionAll($query2)->get();
 		$pp = [];
 
@@ -1675,7 +1677,8 @@ class MetasController extends Controller
 				->select(
 					'upp AS clv_upp',
 					DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-					DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional')
+					DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
+					'fondo_ramo AS fondo'
 				)
 				->where('deleted_at', null)
 				->where('finalidad', $area[0])
@@ -1704,25 +1707,44 @@ class MetasController extends Controller
 				'upp AS clv_upp',
 				'fondo_ramo',
 				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional')
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
+				'fondo_ramo AS fondo',
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo) AS clave'),
+
 			)
 			->where('upp', $upp)
 			->where('deleted_at', null)
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
-			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
+			->groupByRaw('ur,fondo_ramo ,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct();
-			$upps= DB::table('uppautorizadascpnomina')
+		$upps = DB::table('uppautorizadascpnomina')
 			->select('uppautorizadascpnomina.clv_upp')
 			->where('uppautorizadascpnomina.clv_upp', $upp)
 			->where('uppautorizadascpnomina.deleted_at', null)
 			->get();
-			if(count($upps)) {
-			$activsPP = $activsPP->where('programacion_presupuesto.subprograma_presupuestario', '!=','UUU' );
+		if (count($upps)) {
+			$activsPP = $activsPP->where('programacion_presupuesto.subprograma_presupuestario', '!=', 'UUU');
+		}
+		$activsPP = $activsPP->get();
+		$upps = DB::table('uppautorizadascpnomina')
+			->select('uppautorizadascpnomina.clv_upp')
+			->where('uppautorizadascpnomina.clv_upp', $upp)
+			->where('uppautorizadascpnomina.deleted_at', null)
+			->get();
+		if (count($upps)) {
+			for ($i = 0; $i < count($metas); $i++) {
+				$area = str_split($metas[$i]->area);
+				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
+				if ($sub == 'UUU') {
+					unset($metas[$i]);
+					$metas = array_values($metas);
+				}
+
 			}
-			$activsPP =$activsPP->get();
-			
+
+		}
 		if (count($metas) >= 1) {
-			if (count($metas) >= count($activsPP)) {
+			if (count($metas) >= count($activsPP) && count($activsPP) == count($pp)) {
 				return ["status" => true];
 
 			} else {
