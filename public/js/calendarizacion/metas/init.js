@@ -1119,7 +1119,13 @@ var dao = {
                 $('#' + e).selectpicker('destroy');
             }
         });
-        dao.getUrs(0);
+        if ($('#upp').val() == '') {
+            dao.getUrs(0);
+        } else {
+            upp = $('#upp').val();
+            dao.getUrs(upp);
+        }
+       
         dao.getSelect();
         $('.form-group').removeClass('has-error');
         for (let i = 1; i <= 12; i++) {
