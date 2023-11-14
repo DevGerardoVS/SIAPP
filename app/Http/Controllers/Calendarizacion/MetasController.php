@@ -1035,7 +1035,7 @@ class MetasController extends Controller
 		return ReportesJasper::claves($request);
 	}
 
-	
+
 	public function importPlantilla(Request $request)
 	{
 		Controller::check_permission('putMetas');
@@ -1600,8 +1600,6 @@ class MetasController extends Controller
 			}
 
 		}
-		Log::debug(count($metas));
-		Log::debug(count($activsPP));
 		if (count($metas) >= 1) {
 			if (count($metas) >= count($activsPP) && count($activsPP) == count($pp)) {
 				return ["status" => true];
