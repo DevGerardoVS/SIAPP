@@ -65,7 +65,7 @@ class HomeController extends Controller
     public function actualizarcargafin()
     {
         // log::channel('daily')->debug('ya quite la variable '.Auth::user()->username);
-        Session::put('cargaMasClav','bye');
+        Session::put('cargaMasClav',3);
       
         return view('home');
     }
