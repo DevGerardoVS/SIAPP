@@ -1037,7 +1037,7 @@ class MetasController extends Controller
 	public function jasper($request)
 	{
 		error_reporting(E_ALL);
-ini_set('display_errors', true);
+		ini_set('display_errors', true);
 		ob_end_clean();
 		ob_start();
 		date_default_timezone_set('America/Mexico_City');
