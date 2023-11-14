@@ -160,7 +160,7 @@ class ReporteController extends Controller
         $dataSet = array();
         $data = DB::select("CALL avance_proyectos_actividades_upp(" . $anio . ", " . $fecha . ")");
         foreach ($data as $d) {
-            $ds = array($d->clv_upp . " " . $d->upp, $d->proyectos, $d->actividades, $d->avance, $d->estatus);
+            $ds = array($d->clv_upp . " " . $d->upp, $d->claves, $d->mir, $d->avance."%", $d->estatus_claves, $d->estatus_mir);
             $dataSet[] = $ds;
         }
         return response()->json([
