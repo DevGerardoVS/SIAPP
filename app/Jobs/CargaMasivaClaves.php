@@ -2,11 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Events\ActualizarSesionUsuario;
 use App\Models\carga_masiva_estatus;
 use App\Models\ProgramacionPresupuesto;
 use App\Models\uppautorizadascpnomina;
-use Auth;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use App\Http\Controllers\Controller;
@@ -23,7 +21,6 @@ use App\Models\PosicionPresupuestaria;
 use App\Models\RelEconomicaAdministrativa;
 use App\Models\v_epp;
 use DB;
-use Illuminate\Support\Facades\Session;
 class CargaMasivaClaves implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -54,7 +51,7 @@ class CargaMasivaClaves implements ShouldQueue
             $tipoclave = '';
             $añoclave = 0;
             $usuarioclave = '';
-            $currentrow=1;
+            $currentrow=2;
             $usuarioclave = 'CargaMasiva' . $usuario->username;
 
             DB::beginTransaction();
@@ -89,7 +86,7 @@ class CargaMasivaClaves implements ShouldQueue
                  }
 
             foreach ($this->filearray as  $k) {
-                if ($usuario->id_grupo == 3) {
+                if ($usuario->id_grupo == 4) {
                     $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$this->filearray['0']['5'])->count();
     
                     $arrayadmconac = str_split($this->filearray['0']['0'], 1);
@@ -479,7 +476,6 @@ class CargaMasivaClaves implements ShouldQueue
             }
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
-                \Log::debug('Trabajo  no exitoso en claves');
 
                 $payload=  json_encode($arrayErrores);
                 carga_masiva_estatus::create([
@@ -489,7 +485,6 @@ class CargaMasivaClaves implements ShouldQueue
                     'created_user' =>$usuario->username
                 ]);            
             }else{
-                \Log::debug('Trabajo  exitoso');
                 $array_exito=array();
                 array_push($array_exito,'Carga masiva exitosa');
                 $payload=  json_encode($array_exito);
@@ -513,7 +508,6 @@ class CargaMasivaClaves implements ShouldQueue
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::debug('Error de conexion en claves');
 
             \Log::debug($e);
             

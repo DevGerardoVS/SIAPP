@@ -270,45 +270,47 @@ return new class extends Migration
 
 
         DB::unprepared("CREATE VIEW inicio_b AS
-        select 
-            clv_fondo_ramo clave,
-            fondo_ramo fondo,
-            sum(asignado) asignado,
-            sum(programado) programado,
-            (sum(programado)/sum(asignado))*100 avance,
+        SELECT 
+            clv_fondo clave,
+            f.fondo_ramo fondo,
+            asignado,
+            programado,
+            (programado/asignado)*100 avance,
             ejercicio
-        from (
-            select 
-                pa.clv_fondo_ramo,
-                fondo_ramo,
-                0 asignado,
-                sum(pa.total) programado,
-                pa.ejercicio
+        FROM (
+            SELECT 
+                asig.clv_fondo,
+                case 
+                    when asignado IS NULL then 0
+                    ELSE asignado
+                END asignado,
+                case 
+                    when programado IS NULL then 0
+                    ELSE programado
+                END programado,
+                asig.ejercicio
             FROM (
                 SELECT 
-                    f.clv_fondo_ramo,
-                    f.fondo_ramo,
-                    pp.ejercicio,
-                    pp.total,
-                    pp.deleted_at
-                FROM pp_identificadores pt
-                JOIN programacion_presupuesto pp ON pt.id = pp.id
-                JOIN fondo f ON pt.fondo_id = f.id
-            ) pa
-            where deleted_at is null
-            group by clv_fondo_ramo,fondo_ramo,ejercicio
-            union all
-            select 
-                tf.clv_fondo,
-                f.fondo_ramo,
-                sum(tf.presupuesto) asignado,
-                0 programado,
-                ejercicio
-            from techos_financieros tf
-            left join fondo f on tf.clv_fondo = f.clv_fondo_ramo
-            where tf.deleted_at is null 
-            group by clv_fondo,fondo_ramo,ejercicio
-        )t group by clv_fondo_ramo,fondo_ramo,ejercicio;");
+                    clv_fondo,
+                    SUM(presupuesto) asignado,
+                    tf.ejercicio
+                FROM techos_financieros tf
+                WHERE deleted_at IS NULL
+                GROUP BY clv_fondo,ejercicio
+            ) asig
+            LEFT JOIN (
+                SELECT 
+                    fondo_ramo clv_fondo,
+                    SUM(total) programado,
+                    ejercicio
+                FROM programacion_presupuesto
+                WHERE deleted_at IS NULL
+                GROUP BY clv_fondo,ejercicio
+            )prog 
+            ON asig.clv_fondo = prog.clv_fondo AND asig.ejercicio = prog.ejercicio
+            ORDER BY ejercicio,clv_fondo
+        )t2 
+        LEFT JOIN fondo f ON t2.clv_fondo = f.clv_fondo_ramo AND f.deleted_at IS NULL;");
 
         DB::unprepared("CREATE VIEW v_sector_importe AS 
         select 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\BitacoraHelper;
+
 use App\Models\carga_masiva_estatus;
 use Illuminate\Support\Facades\Session;
 use App\Events\ActualizarSesionUsuario;
@@ -56,13 +57,14 @@ class HomeController extends Controller
     }
     public function borrarsesionexcel()
     {
-        log::channel('daily')->debug('borro la variable de session'.Auth::user()->username);
+        $deleted = carga_masiva_estatus::where('id_usuario','=',Auth::user()->id)->forceDelete();
+        // log::channel('daily')->debug('borro la variable de session'.Auth::user()->username);
         session()->forget(['cargapayload', 'cargaMasClav']);
-        return [200,'hola'];
+        return back();
     }
     public function actualizarcargafin()
     {
-        log::channel('daily')->debug('ya quite la variable '.Auth::user()->username);
+        // log::channel('daily')->debug('ya quite la variable '.Auth::user()->username);
         Session::put('cargaMasClav','bye');
       
         return view('home');
@@ -70,11 +72,13 @@ class HomeController extends Controller
 
     public function agregarcredenciales()
     {
+        $fr=session::pull('cargaMasClav');
+        session()->forget(['cargapayload', 'cargaMasClav']);
+         
         
-       
          $deleted = carga_masiva_estatus::where('id_usuario','=',Auth::user()->id)->forceDelete();
-        // event(new ActualizarSesionUsuario($usuario, $cargapayload,$cargaMasClav));
-        return "ya cambie";
+         dd(Auth::user()->id);
+          return "ya cambie";
     }
 
     
