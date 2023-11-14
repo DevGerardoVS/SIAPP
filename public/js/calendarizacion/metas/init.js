@@ -843,38 +843,30 @@ var dao = {
             const { unidadM, beneficiario } = data;
             var med = $('#medida');
             med.html('');
- 
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
-   
+            let sub = $('#area').val();
+            console.log("sub",$('#area').val());
+             if (sub.includes('UUU')) {
+                 med.append(new Option("Pago de nómina", 829));
+                 tipo_be.append(new Option("Empleados", 12));
+             } else {
+                med.append(new Option("-- Medida--", ""));
+                document.getElementById("medida").options[0].disabled = true;
+                $.each(unidadM, function (i, val) {
+                    med.append(new Option(val.unidad_medida, val.clave));
+                });
+                 
+                tipo_be.append(new Option("--U. Beneficiarios--", ""));
+                document.getElementById("tipo_Be").options[0].disabled = true;
+                $.each(beneficiario, function (i, val) {
+                    tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
+                });
+            }
         });
-        let sub = $('#area').val();
-        if (sub.includes('UUU')) {
-            $.each(unidadM, function (i, val) {
-                med.append(new Option("Empleados", 12));
-            });
-            $.each(beneficiario, function (i, val) {
-                tipo_be.append(new Option("Pago de nómina",829));
-            });
-            
-        } else {
-            med.append(new Option("-- Medida--", ""));
-            document.getElementById("medida").options[0].disabled = true;
-            $.each(unidadM, function (i, val) {
-                med.append(new Option(val.unidad_medida, val.clave));
-            });
-            tipo_be.append(new Option("--U. Beneficiarios--", ""));
-            document.getElementById("tipo_Be").options[0].disabled = true;
-            $.each(beneficiario, function (i, val) {
-                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
-            });
-            
-        }
-        
     },
     getFyA: function (area, enti, mir, anio) {
         dao.limpiarErrors();
-        dao.getSelect();
         $('#tipo_Ac').empty();
         for (let i = 1; i <= 12; i++) {
             $("#" + i).val(0);
@@ -887,6 +879,7 @@ var dao = {
         $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
         $("#sel_actividad").removeAttr('disabled');
+        dao.getSelect();
         $.ajax({
             type: "GET",
             url: '/calendarizacion/fondos/' + area + '/' + enti,
