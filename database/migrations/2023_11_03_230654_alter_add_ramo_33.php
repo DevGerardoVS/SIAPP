@@ -17,9 +17,9 @@ return new class extends Migration
             $table->tinyInteger('ramo33');
         }); */
 
-        Schema::table('mml_definicion_problema', function($table) {
+        /* Schema::table('mml_definicion_problema', function($table) {
             $table->tinyInteger('ramo33');
-        });
+        }); */
 
         Schema::table('mml_arbol_objetivos', function($table) {
             $table->tinyInteger('ramo33');

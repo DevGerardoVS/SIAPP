@@ -26,7 +26,7 @@ return new class extends Migration
 
         Schema::create('mml_definicion_problema', function (Blueprint $table){
             $table->increments('id');
-            $table->unique(['clv_upp','clv_pp','ejercicio']);
+            $table->unique(['clv_upp','clv_pp','ejercicio','ramo33']);
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
             $table->string('poblacion_objetivo',255)->nullable(false);
@@ -41,6 +41,7 @@ return new class extends Migration
             $table->string('objetivo_central',255)->nullable(false);
             $table->string('comentarios_upp',255)->nullable(false);
             $table->integer('ejercicio')->nullable(false);
+            $table->tinyInteger('ramo33');
             $table->string('created_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
