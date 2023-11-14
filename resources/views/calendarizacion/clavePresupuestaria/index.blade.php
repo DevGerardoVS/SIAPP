@@ -20,11 +20,7 @@
                             <div class="widget-body-toolbar">
                                 <a href="/calendarizacion/download-errors-excel/{!! $errors !!}" type="button" class="btn colorMorado" id="downloadbtn" name="downloadbtn" style="display:none"></a>
                                    
-                                   @if(session('success'))
-                                <div class="alert alert-success" role="alert">
-                                        {{ session('success') }}
-                                 </div>                               
-                                     @endif
+                                  
                                 <div class="row">
                                     <div class="col-md-2">
                                         <label for="lbl_operativo" id="lbl_operativo">Operativo Asignado:</label>
@@ -218,10 +214,8 @@
          $.each(failures, function (key, value) {
         fails.push(value);
         }); 
-        var serializada= JSON.stringify(fails);
         Swal.fire({
                 icon: 'error',
-                title: 'Error al importar la carga masiva <a type="button" class="btn btn-success" href="/calendarizacion/download-errors-excel/'+encodeURIComponent(serializada) +'"><i class="fa fa-floppy-o" style="color: #ffffff;">Descargar Errores</a>',
                 text: fails,
                 confirmButtonText: "Aceptar",
                 timerProgressBar: false,

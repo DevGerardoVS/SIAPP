@@ -140,6 +140,7 @@
     </div>
     <script src="/js/calendarizacion/techos/init.js"></script>
     <script src="/js/utilerias.js"></script>
+    
     <script>
         //En las vistas solo se llaman las funciones del archivo init
         init.validateCreate($('#frm_create_techo'));
