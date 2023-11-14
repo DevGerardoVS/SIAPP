@@ -8,6 +8,7 @@
 
 @section('content')
 <br>
+
 <div class="container">
     <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
         <h2>Inicio</h2>

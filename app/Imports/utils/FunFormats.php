@@ -290,7 +290,7 @@ class FunFormats
                                             $uniqueMir = "";
                                             if (strtoupper($k[13]) == 'N/A' || is_string($k[13]) && is_numeric($k[14])) {
 
-                                                $uniqueMir = $area_funcional . strval($k[12]) . strval($k[14]) . '';
+                                                $uniqueMir = $area_funcional . strval($k[12]) . strval($k[14]) . strval($k[8]) . '';
                                             }
                                             if(strtoupper($k[13]) != 'N/A' && is_numeric($k[14])){
                                                 $error = array(
@@ -302,7 +302,7 @@ class FunFormats
                                             }
                                             if (strtoupper($k[14]) == 'N/A' && is_numeric($k[13])) {
 
-                                                $unique = $area_funcional . strval($k[12]) . strval($k[13]) . '';
+                                                $unique = $area_funcional . strval($k[12]) . strval($k[13]) . strval($k[8]) . '';
                                             }
                                             if(strtoupper($k[14]) != 'N/A'&& is_numeric($k[13])){
                                                 $error = array(
@@ -338,12 +338,12 @@ class FunFormats
                                                             }
                                                         }
                                                     if ($uniqueMir != '') {
-                                                        $conmirData = ['clave' => $uniqueMir, 'fila' => $index, 'upp' => strval($k[7])];
+                                                        $conmirData = ['clave' => $uniqueMir, 'fila' => $index, 'upp' => strval($k[7]),"ur"=> strval($k[8])];
                                                         DB::table('metas_temp')->insert($conmirData);
                                                         $conmir++;
                                                     }
                                                     if ($unique != '') {
-                                                        $sinmirData = ['clave' => $unique, 'fila' => $index, 'upp' => strval($k[7])];
+                                                        $sinmirData = ['clave' => $unique, 'fila' => $index, 'upp' => strval($k[7]),'ur'=> strval($k[8])];
                                                         DB::table('metas_temp_Nomir')->insert($sinmirData);
                                                         $sinmir++;
                                                     }
