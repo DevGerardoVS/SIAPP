@@ -2,11 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Events\ActualizarSesionUsuario;
 use App\Models\carga_masiva_estatus;
 use App\Models\ProgramacionPresupuesto;
 use App\Models\uppautorizadascpnomina;
-use Auth;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use App\Http\Controllers\Controller;
@@ -23,7 +21,6 @@ use App\Models\PosicionPresupuestaria;
 use App\Models\RelEconomicaAdministrativa;
 use App\Models\v_epp;
 use DB;
-use Illuminate\Support\Facades\Session;
 class CargaMasivaClaves implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;

@@ -20,11 +20,7 @@
                             <div class="widget-body-toolbar">
                                 <a href="/calendarizacion/download-errors-excel/{!! $errors !!}" type="button" class="btn colorMorado" id="downloadbtn" name="downloadbtn" style="display:none"></a>
                                    
-                                   @if(session('success'))
-                                <div class="alert alert-success" role="alert">
-                                        {{ session('success') }}
-                                 </div>                               
-                                     @endif
+                                  
                                 <div class="row">
                                     <div class="col-md-2">
                                         <label for="lbl_operativo" id="lbl_operativo">Operativo Asignado:</label>

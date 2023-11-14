@@ -54,7 +54,6 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             //Validaciones para administrador
             if ($usuario->id_grupo == 1) {
                 DB::beginTransaction();
-
                 //carga masiva de operativas
                 $ejercicio = array();
                 foreach ($this->filearray as $indext => $k) {
@@ -65,11 +64,6 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     switch ($k['16']) {
 
                         case 'UUU':
-                            //buscar en el array de totales 
-                            $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $k['5'])->count();
-                            if ($uppsautorizadas) {
-                                array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La upp: ' . $k['5'] . ' no se puede cargar en tipo operativo porque esta autorizada para cargar RH. ');
-                            }
 
                             if (array_key_exists($k['5'] . 'COP' . $k['24'], $arraypresupuesto) && $k['27'] != '' && $k['5'] . $k['24'] != '') {
 
@@ -124,11 +118,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Los campos de enero a diciembre deben ser numeros. ');
                     }
 
-                    $query = MetasHelper::actividades($k['5'], '20' . $k['20']);
-                    if (count($query) > 0) {
-                        array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': No se pueden añadir claves porque ya hay metas registradas. ');
 
-                    }
                     //Se revisa el valor de var si es 0 significa que existe el key 0 en el array se usa el if para cambiar el valor para evitar que la condicion falle
                     if ($var === 0) {
                         $var = true;
@@ -172,7 +162,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
 
                         if ($valuepresupuesto != $value) {
-                            array_push($arrayErrores, 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2] . ' ');
+                            array_push($arrayErrores, 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2] . ' Esperado: '.$valuepresupuesto.' dado: '.$value);
 
                         }
 
@@ -186,8 +176,18 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                     //validacion para eliminar registros tipo admin
                     foreach ($arrayupps as $u) {
-                        $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->count();
 
+                        //buscar en el array de totales 
+                        $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $u)->count();
+                        if ($uppsautorizadas) {
+                            array_push($arrayErrores, 'Error:  no se puede cargar la upp: ' . $u . ' en tipo operativo porque esta autorizada para cargar RH. ');
+                        }
+                        $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->count();
+                        $query = MetasHelper::actividades($u, $ejercicio[0]);
+                        if (count($query) > 0) {
+                            array_push($arrayErrores, 'Error: No se pueden añadir claves porque ya hay metas registradas. ');
+
+                        }
 
                         $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
 
@@ -221,6 +221,14 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $uppUsuario)->count();
                 }
 
+                $permisoObra = DB::table('permisos_funciones')
+                    ->select(
+                        'id_user',
+                        'id_permiso',
+                    )
+                    ->where('id_user', $usuario->id)
+                    ->where('permisos_funciones.deleted_at', null)
+                    ->where('id_permiso', 2)->get();
 
                 $arrayupps = array();
                 $arraypresupuesto = array();
@@ -277,16 +285,19 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                             array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ' El Subprograma no puede ir vacio. Revise que no haya filas vacias con formulas. ');
 
                         default:
-                            $countO++;
-                            //buscar en el array de totales 
-                            if (array_key_exists($k['5'] . 'COP' . $k['24'], $arraypresupuesto) && $k['27'] != '' && $k['5'] . $k['24'] != '') {
+                            if ($tipousuario == 4) {
+                                $countO++;
+                                //buscar en el array de totales 
+                                if (array_key_exists($k['5'] . 'COP' . $k['24'], $arraypresupuesto) && $k['27'] != '' && $k['5'] . $k['24'] != '') {
 
-                                $arraypresupuesto[$k['5'] . 'COP' . $k['24']] = $arraypresupuesto[$k['5'] . 'COP' . $k['24']] + $k['27'];
+                                    $arraypresupuesto[$k['5'] . 'COP' . $k['24']] = $arraypresupuesto[$k['5'] . 'COP' . $k['24']] + $k['27'];
 
-                            } else {
-                                $arraypresupuesto[$k['5'] . 'COP' . $k['24']] = $k['27'];
-                                array_push($ejercicio, '20' . $k['20']);
+                                } else {
+                                    $arraypresupuesto[$k['5'] . 'COP' . $k['24']] = $k['27'];
+                                    array_push($ejercicio, '20' . $k['20']);
+                                }
                             }
+
 
                     }
                     if (
@@ -310,6 +321,13 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                         }
                     }
+                    if ($k['26'] != '000000') {
+                        if (count($permisoObra)) {
+                        } else {
+                            array_push($arrayErrores, 'No tiene permiso para registrar obras. ');
+                        }
+                    }
+
 
                     if (strlen($k['20']) !== 2 && !is_numeric($k['20'])) {
                         array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': El año debe ser a dos digitos y debe ser un número. ');
@@ -325,11 +343,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': Los campos de enero a diciembre deben ser numeros. ');
                     }
 
-                    $query = MetasHelper::actividades($k['5'], '20' . $k['20']);
-                    if (count($query) > 0) {
-                        array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': No se pueden añadir claves porque ya hay metas registradas. ');
 
-                    }
                     //Se revisa el valor de var si es 0 significa que existe el key 0 en el array se usa el if para cambiar el valor para evitar que la condicion falle
                     if ($var === 0) {
                         $var = true;
@@ -374,7 +388,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                         if ($valuepresupuesto != $value) {
 
-                            array_push($arrayErrores, 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2] . ' ');
+                            array_push($arrayErrores, 'El total presupuestado  no es igual al techo financiero en la upp: ' . $arraysplit[0] . ' fondo: ' . $arraysplit[2] . ' Esperado: '.$valuepresupuesto.' dado: '.$value);
                         }
 
                         if ($VerifyEjercicio < 1) {
@@ -387,11 +401,15 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                     switch ($tipousuario) {
                         case 4:
+
                             switch ($uppsautorizadas) {
                                 case 0:
                                     //validacion para eliminar registros no confirmados 
                                     foreach ($arrayupps as $u) {
-
+                                        $query = MetasHelper::actividades($u, $ejercicio[0]);
+                                        if (count($query) > 0) {
+                                            array_push($arrayErrores, 'Error:  No se pueden añadir claves porque ya hay metas registradas. ');
+                                        }
                                         $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
 
                                         if ($valupp > 0) {
@@ -422,6 +440,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                     }
                                     //validacion para eliminar registros no confirmados 
                                     foreach ($arrayupps as $u) {
+                                        $query = MetasHelper::actividades($u, $ejercicio[0]);
+                                        if (count($query) > 0) {
+                                            array_push($arrayErrores, 'Error:  No se pueden añadir claves porque ya hay metas registradas. ');
+                                        }
                                         $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
 
                                         if ($valupp > 0) {
@@ -452,6 +474,11 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                             }
                             //validacion para eliminar registros no confirmados 
                             foreach ($arrayupps as $key => $u) {
+                                $query = MetasHelper::actividadesDel($u, $ejercicio[0]);
+                                if (count($query) > 0) {
+                                    array_push($arrayErrores, 'Error: No se pueden añadir claves porque ya hay metas registradas. ');
+
+                                }
 
                                 $uppsautorizadas = uppautorizadascpnomina::where('clv_upp', $u)->count();
                                 if ($uppsautorizadas == 0) {

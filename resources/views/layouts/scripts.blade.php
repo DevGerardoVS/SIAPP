@@ -61,6 +61,7 @@
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script src="/js/appInit.js"></script>
     <script >
+        
           function callbackThen(response) {
             // read HTTP status
             // read Promise object
