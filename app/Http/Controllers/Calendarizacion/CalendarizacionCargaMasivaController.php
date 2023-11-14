@@ -142,12 +142,26 @@ class CalendarizacionCargaMasivaController extends Controller
             }
         }
 
+
+
+
+
+          $filearray = array_map('self::nestedtrim', $filearray);
+
+
+
+
         ValidacionesCargaMasivaClaves::dispatch($filearray,$user)->onQueue('high');
         return redirect()->back()->withSuccess('Carga masiva en proceso.');
 
     }
 
 
-
+   public static function nestedtrim($value) {
+        if (is_array($value)) {
+            return array_map('self::nestedtrim', $value);
+        }
+        return trim($value);
+    }
 
 }
