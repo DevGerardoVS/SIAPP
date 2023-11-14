@@ -521,13 +521,13 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                 DB::rollBack();
 
                 $payload = json_encode($arrayErrores);
-                carga_masiva_estatus::create([
-                    'id_usuario' => $usuario->id,
+                carga_masiva_estatus::where('id_usuario',$usuario->id)
+                ->update([
                     'cargapayload' => $payload,
                     'cargaMasClav' => 2,
-                    'created_user' => $usuario->username
+                    'updated_user' => $usuario->username
                 ]);
-                // event(new ActualizarSesionUsuario($usuario, $arrayErrores,2));
+
 
             } else {
                 DB::commit();
@@ -538,15 +538,14 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            // event(new ActualizarSesionUsuario($usuario, $th->getMessage(),2));
             \Log::debug($th);
-            carga_masiva_estatus::create([
-                'id_usuario' => $usuario->id,
+
+            carga_masiva_estatus::where('id_usuario',$usuario->id)
+            ->update([
                 'cargapayload' => json_encode($th),
                 'cargaMasClav' => 2,
-                'created_user' => $usuario->username
+                'updated_user' => $usuario->username
             ]);
-
         }
     }
 }

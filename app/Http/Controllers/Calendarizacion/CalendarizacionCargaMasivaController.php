@@ -155,6 +155,11 @@ class CalendarizacionCargaMasivaController extends Controller
 
         ValidacionesCargaMasivaClaves::dispatch($filearray,$user)->onQueue('high');
         Session::put('cargaMasClav',0);
+        carga_masiva_estatus::create([
+            'id_usuario' => $user->id,
+            'cargaMasClav' => 0,
+            'created_user' => $user->username
+        ]);
         return redirect()->back();
 
     }
