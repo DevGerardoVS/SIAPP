@@ -477,23 +477,24 @@ class CargaMasivaClaves implements ShouldQueue
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
 
-                $payload=  json_encode($arrayErrores);
-                carga_masiva_estatus::create([
-                    'id_usuario' => $usuario->id,
-                    'cargapayload' => $payload,
+                $payload=  json_encode($arrayErrores);  
+                carga_masiva_estatus::where('id_usuario',$usuario->id)
+                ->update([
+                    'cargapayload' => json_encode($payload),
                     'cargaMasClav' => 2,
-                    'created_user' =>$usuario->username
-                ]);            
+                    'updated_user' => $usuario->username
+                ]);        
             }else{
                 $array_exito=array();
                 array_push($array_exito,'Carga masiva exitosa');
                 $payload=  json_encode($array_exito);
-                carga_masiva_estatus::create([
-                    'id_usuario' => $usuario->id,
+
+                carga_masiva_estatus::where('id_usuario',$usuario->id)
+                ->update([
                     'cargapayload' => $payload,
                     'cargaMasClav' => 1,
-                    'created_user' =>$usuario->username
-                ]);
+                    'updated_user' => $usuario->username
+                ]);     
             }
 
 
@@ -510,14 +511,12 @@ class CargaMasivaClaves implements ShouldQueue
             DB::rollBack();
 
             \Log::debug($e);
-            
-            carga_masiva_estatus::create([
-                'id_usuario' => $usuario->id,
-                'cargapayload' =>  json_encode($e),
+            carga_masiva_estatus::where('id_usuario',$usuario->id)
+            ->update([
+                'cargapayload' => json_encode($e),
                 'cargaMasClav' => 2,
-                'created_user' =>$usuario->username
+                'updated_user' => $usuario->username
             ]);
-
 
 
         }

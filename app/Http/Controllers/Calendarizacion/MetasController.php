@@ -26,8 +26,9 @@ use Illuminate\Support\Facades\Http;
 use Storage;
 use App\Models\calendarizacion\CierreMetas;
 use App\Models\MmlMir;
-
+use Illuminate\Support\Facades\Log;
 use App\Models\Catalogo;
+use App\Http\Controllers\utils\ReportesJasper;
 
 
 class MetasController extends Controller
@@ -1083,8 +1084,16 @@ class MetasController extends Controller
 			$format,
 			$parameters,
 			$database_connection
+<<<<<<<<< Temporary merge branch 1
+		)->output();
+log::info($parameters);
+		dd($jasper);
+
+		//agrego comentario para revisar version de main...
+=========
 		)->execute();
 		// dd($jasper);
+>>>>>>>>> Temporary merge branch 2
 		$archivo = $output_file . '/' . $report . '.pdf';
 		if (file_exists($output_file . '/' . $report . '.pdf')) {
 			$archivo = $output_file . '/' . $report . '.pdf';
@@ -1387,78 +1396,7 @@ class MetasController extends Controller
 
 	public function jasperMetas($upp, $anio, $tipo)
 	{
-		ob_end_clean();
-		ob_start();
-		date_default_timezone_set('America/Mexico_City');
-		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
-		$fecha = date('d-m-Y');
-		$date = $anio;
-		$marca = strtotime($fecha);
-		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
-
-		$report = '';
-		if ($tipo == 0) {
-			$report = "proyecto_calendario_actividades_autografa";
-			$file = sys_get_temp_dir(). $report;
-		} else {
-			$report = "proyecto_calendario_actividades";
-			$file = sys_get_temp_dir(). $report;
-		}
-
-		$ruta = sys_get_temp_dir();
-		//Eliminación si ya existe reporte
-		if (File::exists($ruta . "/" . $report . ".pdf")) {
-			File::delete($ruta . "/" . $report . ".pdf");
-		}
-		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
-		$format = array('pdf');
-		$output_file = sys_get_temp_dir();
-		$logoLeft = public_path() . "/img/escudoBN.png";
-        $logoRight = public_path() . "/img/logo.png";
-
-		$parameters = array(
-			"anio" => $date,
-			"logoLeft" => $logoLeft,
-            "logoRight" => $logoRight,
-			"upp" => $upp,
-		);
-		if($tipo != 0) $parameters["extension"] = "pdf";
-		
-		$database_connection = \Config::get('database.connections.mysql');
-
-
-		$jasper = new PHPJasper;
-		$jasper->process(
-			$report_path,
-			$output_file,
-			$format,
-			$parameters,
-			$database_connection
-		)->execute();
-		//dd($jasper);
-		$archivo = $output_file . '/' . $report . '.pdf';
-		if (file_exists($output_file . '/' . $report . '.pdf')) {
-			$archivo = $output_file . '/' . $report . '.pdf';
-			$archivo2 = file_get_contents($archivo);
-			$reportePDF = Response::make($archivo2, 200, [
-				'Content-Type' => 'application/pdf'
-			]);
-		}
-		
-		if ($tipo == 0) {
-			if (file_exists($archivo)) {
-				return response()->download($archivo);
-			}else {
-				return response()->json('error', 200);
-			}
-		} else {
-			if ($reportePDF != '') {
-				return response()->json('done', 200);
-			} else {
-				return response()->json('error', 400);
-			}
-		}
-
+		return ReportesJasper::Metas($upp, $anio, $tipo);
 	}
 	public static function keyMonth($n)
 	{
@@ -1749,6 +1687,7 @@ class MetasController extends Controller
 		}
 		Log::debug(count($metas));
 		Log::debug(count($activsPP));
+>>>>>>>>> Temporary merge branch 2
 		if (count($metas) >= 1) {
 			if (count($metas) >= count($activsPP) && count($activsPP) == count($pp)) {
 				return ["status" => true];

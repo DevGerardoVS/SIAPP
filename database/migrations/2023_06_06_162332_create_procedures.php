@@ -3915,19 +3915,19 @@ return new class extends Migration {
             set @programa := '';
             set @ur := '';
             set @ur2 := '';
-           	set @programa2 := '';
+            set @programa2 := '';
             if(upp is not null) then 
-           		set @upp := CONCAT('and mm.clv_upp = \"',upp,'\"'); 
-           		set @upp2 := CONCAT('and clv_upp = \"',upp,'\"'); 
-           	end if;
+                set @upp := CONCAT('and mm.clv_upp = \"',upp,'\"'); 
+                set @upp2 := CONCAT('and clv_upp = \"',upp,'\"'); 
+            end if;
             if(programa is not null) then
-           		set @programa := CONCAT('and mm.clv_pp = \"',programa,'\"'); 
-           		set @programa2 := CONCAT('and clv_programa = \"',programa,'\"'); 
-           	end if;
+                set @programa := CONCAT('and mm.clv_pp = \"',programa,'\"'); 
+                set @programa2 := CONCAT('and clv_programa = \"',programa,'\"'); 
+            end if;
             if(ur is not null) then 
-           		set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); 
-           		set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
-           	end if;
+                set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); 
+                set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
+            end if;
         
             set @query := concat(\"
                 SELECT
@@ -3972,8 +3972,8 @@ return new class extends Migration {
                             mm.objetivo,
                             mm.indicador
                         from mml_mir mm
-                        join v_epp ve on ve.id = mm.id_epp
-                        where mm.ejercicio = \",anio,\" and mm.deleted_at is null
+                        join v_epp ve on ve.id = mm.id_epp and ve.clv_subprograma not in ('UUU','21B')
+                        where mm.ejercicio = \",anio,\" and mm.deleted_at is null and mm.clv_pp not in ('5H','RM')
                         and nivel in (10) \",@upp,\" \",@ur,\" \",@programa,\"
                         UNION ALL 
                         SELECT 
@@ -3987,9 +3987,10 @@ return new class extends Migration {
                             mm.objetivo,
                             mm.indicador
                         from mml_mir mm
-                        join v_epp ve on ve.id = mm.id_epp
-                        where mm.ejercicio = \",anio,\" and mm.deleted_at is null
+                        join v_epp ve on ve.id = mm.id_epp and ve.clv_subprograma not in ('UUU','21B')
+                        where mm.ejercicio = \",anio,\" and mm.deleted_at is NULL
                         and nivel IN (11) \",@upp,\" \",@ur,\" \",@programa,\"
+                        and mm.clv_pp not in ('5H','RM')
                         UNION ALL 
                         select distinct
                             0 id,
@@ -4003,6 +4004,7 @@ return new class extends Migration {
                             '' indicador
                         from v_epp ve
                         where ejercicio = \",anio,\" and deleted_at is NULL \",@upp2,\" \",@ur2,\" \",@programa2,\"
+                        and clv_programa not in ('5H','RM') and clv_subprograma not in ('UUU','21B')
                     )t 
                     GROUP BY clv_upp,clv_pp,clv_ur,id,nivel
                     ORDER BY clv_upp,clv_pp,clv_ur,id,nivel
