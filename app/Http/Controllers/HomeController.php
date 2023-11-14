@@ -58,14 +58,14 @@ class HomeController extends Controller
     public function borrarsesionexcel()
     {
         $deleted = carga_masiva_estatus::where('id_usuario','=',Auth::user()->id)->forceDelete();
-        log::channel('daily')->debug('borro la variable de session'.Auth::user()->username);
+        // log::channel('daily')->debug('borro la variable de session'.Auth::user()->username);
         session()->forget(['cargapayload', 'cargaMasClav']);
-        return [200,'hola'];
+        return back();
     }
     public function actualizarcargafin()
     {
-        log::channel('daily')->debug('ya quite la variable '.Auth::user()->username);
-        Session::put('cargaMasClav','bye');
+        // log::channel('daily')->debug('ya quite la variable '.Auth::user()->username);
+        Session::put('cargaMasClav',3);
       
         return view('home');
     }

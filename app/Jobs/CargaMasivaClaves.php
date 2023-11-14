@@ -2,11 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Events\ActualizarSesionUsuario;
 use App\Models\carga_masiva_estatus;
 use App\Models\ProgramacionPresupuesto;
 use App\Models\uppautorizadascpnomina;
-use Auth;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use App\Http\Controllers\Controller;
@@ -23,7 +21,6 @@ use App\Models\PosicionPresupuestaria;
 use App\Models\RelEconomicaAdministrativa;
 use App\Models\v_epp;
 use DB;
-use Illuminate\Support\Facades\Session;
 class CargaMasivaClaves implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -479,26 +476,25 @@ class CargaMasivaClaves implements ShouldQueue
             }
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
-                \Log::debug('Trabajo  no exitoso en claves');
 
-                $payload=  json_encode($arrayErrores);
-                carga_masiva_estatus::create([
-                    'id_usuario' => $usuario->id,
-                    'cargapayload' => $payload,
+                $payload=  json_encode($arrayErrores);  
+                carga_masiva_estatus::where('id_usuario',$usuario->id)
+                ->update([
+                    'cargapayload' => json_encode($payload),
                     'cargaMasClav' => 2,
-                    'created_user' =>$usuario->username
-                ]);            
+                    'updated_user' => $usuario->username
+                ]);        
             }else{
-                \Log::debug('Trabajo  exitoso');
                 $array_exito=array();
                 array_push($array_exito,'Carga masiva exitosa');
                 $payload=  json_encode($array_exito);
-                carga_masiva_estatus::create([
-                    'id_usuario' => $usuario->id,
+
+                carga_masiva_estatus::where('id_usuario',$usuario->id)
+                ->update([
                     'cargapayload' => $payload,
                     'cargaMasClav' => 1,
-                    'created_user' =>$usuario->username
-                ]);
+                    'updated_user' => $usuario->username
+                ]);     
             }
 
 
@@ -513,17 +509,14 @@ class CargaMasivaClaves implements ShouldQueue
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::debug('Error de conexion en claves');
 
             \Log::debug($e);
-            
-            carga_masiva_estatus::create([
-                'id_usuario' => $usuario->id,
-                'cargapayload' =>  json_encode($e),
+            carga_masiva_estatus::where('id_usuario',$usuario->id)
+            ->update([
+                'cargapayload' => json_encode($e),
                 'cargaMasClav' => 2,
-                'created_user' =>$usuario->username
+                'updated_user' => $usuario->username
             ]);
-
 
 
         }

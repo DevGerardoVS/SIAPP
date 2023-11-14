@@ -52,8 +52,10 @@ date_default_timezone_set('America/Mexico_City');
 
 <body>
     <div id="app" style="">
+      
         @if (isset(Auth::user()->id))
-            <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
+       
+        <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
                 <div class="container">
                     <a class="navbar-brand" href="/"
                         title="Sistema Integral de Análisis Programático Presupuestal ">
@@ -133,8 +135,41 @@ date_default_timezone_set('America/Mexico_City');
                         </ul>
                         <!-- Right Side Of Navbar -->
                     </div>
+                   
                 </div>
+
             </nav>
+            <!-- Carga masiva en proceso -->
+
+                         @if(session()->has('cargaMasClav')&& session('cargaMasClav')==0)
+                         <!-- Carga masiva con errores -->
+                 <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-warning" role="alert">
+                    Carga masiva en proceso. &nbsp;
+                  </div>                               
+                      @endif
+
+                    @if(session()->has('cargaMasClav')&& session('cargaMasClav')==2)
+                    <!-- Carga masiva con errores -->
+            <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-danger" role="alert">
+                Error de carga masiva : &nbsp;
+                <button  class="btn btn-success"  onclick="_notificaciones.carga_masiva_alerts(2)" >Descargar Errores</button>
+
+             </div>                               
+                 @endif
+                <!-- Carga masiva con exito -->
+
+                 @if(session()->has('cargaMasClav')&& session('cargaMasClav')==1)
+         
+                 <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-success" role="alert">
+                     CARGA MASIVA EXITOSA : &nbsp;
+     
+                         <button  class="btn btn-primary"  onclick="_notificaciones.carga_masiva_alerts(1)" >ACEPTAR</button>
+
+                  </div>                               
+                      @endif
+
+
+
         @endif
         @if (Request::is('/', 'login', 'password/reset', 'cambiar-contrasenia'))
             <main style="min-height: auto; min-width:auto;">

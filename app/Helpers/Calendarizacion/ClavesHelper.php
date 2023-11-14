@@ -290,15 +290,15 @@ class ClavesHelper{
         }
     }
     public static function detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion){
-            $fondos = DB::select("select 
-            clv_fondo,
-            f.fondo_ramo,
-            sum(RH) RH,
-            sum(Operativo) Operativo,
-            sum(Operativo) techos_presupuestal,
-            sum(calendarizado) calendarizado,
-            sum(Operativo - calendarizado) disponible,
-            ejercicio
+        $fondos = DB::select("select 
+        clv_fondo,
+        f.fondo_ramo,
+        sum(RH) RH,
+        sum(Operativo) Operativo,
+        sum(RH) techos_presupuestal,
+        sum(calendarizado) calendarizado,
+        sum(RH - calendarizado) disponible,
+        ejercicio
         from (
             select 
                 clv_fondo,
