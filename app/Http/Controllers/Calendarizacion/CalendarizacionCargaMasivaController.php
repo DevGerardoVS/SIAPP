@@ -54,8 +54,10 @@ class CalendarizacionCargaMasivaController extends Controller
         );
         // session::flush();
         $fr=session::pull('cargaMasClav');
-    session()->forget(['cargapayload', 'cargaMasClav']);
+    session()->forget(['cargapayload']);
      
+    Session::put('cargaMasClav',3);
+
 
         Controller::bitacora($b);
         /*Si no coloco estas lineas Falla*/
@@ -152,7 +154,8 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
         ValidacionesCargaMasivaClaves::dispatch($filearray,$user)->onQueue('high');
-        return redirect()->back()->withSuccess('Carga masiva en proceso.');
+        Session::put('cargaMasClav',0);
+        return redirect()->back();
 
     }
 

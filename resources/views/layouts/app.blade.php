@@ -140,11 +140,13 @@ date_default_timezone_set('America/Mexico_City');
 
             </nav>
             <!-- Carga masiva en proceso -->
-                    @if(session('success'))
-                    <div class="alert alert-warning" role="alert">
-                            {{ session('success') }}
-                     </div>                               
-                         @endif
+
+                         @if(session()->has('cargaMasClav')&& session('cargaMasClav')==0)
+                         <!-- Carga masiva con errores -->
+                 <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-warning" role="alert">
+                    Carga masiva en proceso. &nbsp;
+                  </div>                               
+                      @endif
 
                     @if(session()->has('cargaMasClav')&& session('cargaMasClav')==2)
                     <!-- Carga masiva con errores -->
