@@ -197,7 +197,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         }
 
                         if ($valupp > 0) {
-                            $deleted = ProgramacionPresupuesto::where('upp', $u)->where('ejercicio', $ejercicio[0])->where('estado', 0)->forceDelete();
+                            $deleted = ProgramacionPresupuesto::where('upp', $u)->where('ejercicio', $ejercicio[0])->where('estado', 0)->softDeletes();
                         }
 
 
@@ -413,7 +413,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                         $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
 
                                         if ($valupp > 0) {
-                                            $deleted = ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
+                                            $deleted = ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('ejercicio', $ejercicio[0])->softDeletes();
                                         }
                                         $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
                                         if ($confirmadas > 0) {
@@ -447,7 +447,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                         $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
 
                                         if ($valupp > 0) {
-                                            $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '!=', 'UUU')->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
+                                            $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '!=', 'UUU')->where('estado', 0)->where('ejercicio', $ejercicio[0])->softDeletes();
                                         }
                                         $confirmadas = ProgramacionPresupuesto::select()->where('subprograma_presupuestario', '!=', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
                                         if ($confirmadas > 0) {
@@ -490,7 +490,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                 $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->where('estado', 0)->count();
 
                                 if ($valupp > 0) {
-                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '==', 'UUU')->where('estado', 0)->where('ejercicio', $ejercicio[0])->forceDelete();
+                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '==', 'UUU')->where('estado', 0)->where('ejercicio', $ejercicio[0])->softDeletes();
                                 }
                                 $confirmadas = ProgramacionPresupuesto::select()->where('subprograma_presupuestario', '==', 'UUU')->where('upp', $u)->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
                                 if ($confirmadas > 0) {
