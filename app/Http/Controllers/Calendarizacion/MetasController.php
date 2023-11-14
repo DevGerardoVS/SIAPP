@@ -377,7 +377,7 @@ class MetasController extends Controller
 			$m = DB::table('v_epp')
 				->select(
 					'v_epp.con_mir',
-					'tipo_presupuesto'
+					//'tipo_presupuesto'
 				)
 				->where('v_epp.deleted_at', null)
 				->where('clv_finalidad', $areaAux[0])
