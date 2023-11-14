@@ -26,7 +26,6 @@ use Illuminate\Support\Facades\Http;
 use Storage;
 use App\Models\calendarizacion\CierreMetas;
 use App\Models\MmlMir;
-use Illuminate\Support\Facades\Log;
 use App\Models\Catalogo;
 use App\Http\Controllers\utils\ReportesJasper;
 
@@ -1033,94 +1032,10 @@ class MetasController extends Controller
 			"modulo" => 'Metas'
 		);
 		Controller::bitacora($b);
-		return $this->jasper($request);
+		return ReportesJasper::claves($request);
 	}
 
-	public function jasper($request)
-	{
-		error_reporting(E_ALL);
-		ini_set('display_errors', true);
-		ob_end_clean();
-		ob_start();
-		date_default_timezone_set('America/Mexico_City');
-		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
-		$fecha = date('d-m-Y');
-		$marca = strtotime($fecha);
-		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
-		$report = '';
-		if ($request['tipo'] == 0) {
-			$report = "reporte_calendario_upp_autografa";
-			// $file = sys_get_temp_dir(). $report;
-		} else {
-			$report = "Reporte_Calendario_UPP";
-			// $file = sys_get_temp_dir(). $report;
-		}
-		$ruta = sys_get_temp_dir();
-		//Eliminación si ya existe reporte
-		if (File::exists($ruta . "/" . $report . ".pdf")) {
-			Log::info('si existe el archivo lo elimina', [json_encode($ruta . "/" . $report . ".pdf")]);
-			File::delete($ruta . "/" . $report . ".pdf");
-		}
-		$report_path = app_path() . "/reportes/" . $report . ".jasper";
-		$format = array('pdf');
-		$output_file = sys_get_temp_dir()."/".time()."/";
-		mkdir($output_file, 0777, true);
-		$logoLeft = public_path() . "/img/escudoBN.png";
-        $logoRight = public_path() . "/img/logo.png";
-		Log::info('reuqest', [json_encode($request)]);
-		$parameters = [
-			"anio" => $request['anio'],
-			"logoLeft" => $logoLeft,
-            "logoRight" => $logoRight,
-			"upp" => $request['UPP'],
-		];
 
-		$database_connection = \Config::get('database.connections.mysql');
-
-		$jasper = new PHPJasper;
-		$jasper->process(
-			$report_path,
-			$output_file,
-			$format,
-			$parameters,
-			$database_connection
-<<<<<<<<< Temporary merge branch 1
-		)->output();
-log::info($parameters);
-		dd($jasper);
-
-		//agrego comentario para revisar version de main...
-=========
-		)->execute();
-		// dd($jasper);
->>>>>>>>> Temporary merge branch 2
-		$archivo = $output_file . '/' . $report . '.pdf';
-		if (file_exists($output_file . '/' . $report . '.pdf')) {
-			$archivo = $output_file . '/' . $report . '.pdf';
-			$archivo2 = file_get_contents($archivo);
-			$reportePDF = Response::make($archivo2, 200, [
-				'Content-Type' => 'application/pdf'
-			]);
-		}
-		
-		// $reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
-		// 	'Content-Type' => 'application/pdf'
-		// ]);
-
-		if ($request['tipo'] == 0) {
-			if (file_exists($archivo)) {
-				return response()->download($archivo);
-			}else {
-				return response()->json('error', 200);
-			}
-			
-		}
-		if ($reportePDF != '') {
-			return response()->json('done', 200);
-		} else {
-			return response()->json('error', 200);
-		}
-	}
 	public function importPlantilla(Request $request)
 	{
 		Controller::check_permission('putMetas');
@@ -1685,9 +1600,6 @@ log::info($parameters);
 			}
 
 		}
-		Log::debug(count($metas));
-		Log::debug(count($activsPP));
->>>>>>>>> Temporary merge branch 2
 		if (count($metas) >= 1) {
 			if (count($metas) >= count($activsPP) && count($activsPP) == count($pp)) {
 				return ["status" => true];
