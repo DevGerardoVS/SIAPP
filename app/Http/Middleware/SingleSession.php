@@ -35,7 +35,8 @@ class SingleSession
             ->where('id_usuario','=',$userId)
             ->first();
            
-    
+            session(['cargapayload' => '']);
+            session(['cargaMasClav' =>3]);
             if(isset($data->cargapayload)){
                 // Log::debug('si entro');
                 Session::put('cargapayload', $data->cargapayload);
@@ -43,7 +44,7 @@ class SingleSession
                 session(['cargapayload' => $data->cargapayload]);
                 session(['cargaMasClav' => $data->cargaMasClav]);
             }
-    
+            
          
                  
     
