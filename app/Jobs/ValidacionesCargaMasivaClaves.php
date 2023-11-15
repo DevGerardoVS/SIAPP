@@ -184,6 +184,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         }
                         $valupp = ProgramacionPresupuesto::select()->where('upp', $u)->count();
                         $query = MetasHelper::actividades($u, $ejercicio[0]);
+                        //MetasDelController::checkConfirmadas
                         if (count($query) > 0) {
                             array_push($arrayErrores, 'Error: No se pueden añadir claves porque ya hay metas registradas. ');
 
@@ -297,6 +298,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                     array_push($ejercicio, '20' . $k['20']);
                                 }
                             }
+                            if($tipousuario==5){
+                                $countO++;
+
+                            }
 
 
                     }
@@ -362,6 +367,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                 }
 
+                if($tipousuario==5 && $countO>0){
+                    array_push($arrayErrores,  'Hay programas que no son UUU en el archivo.');
+                }
+                
                 if (count($arrayErrores) < 1) {
                     //validacion de totales
                     $helperejercicio = 0;
@@ -474,6 +483,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                             }
                             //validacion para eliminar registros no confirmados 
                             foreach ($arrayupps as $key => $u) {
+                                Log::debug($ejercicio);
                                 $query = MetasHelper::actividadesDel($u, $ejercicio[0]);
                                 if (count($query) > 0) {
                                     array_push($arrayErrores, 'Error: No se pueden añadir claves porque ya hay metas registradas. ');
