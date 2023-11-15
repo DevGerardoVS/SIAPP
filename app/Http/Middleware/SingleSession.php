@@ -43,6 +43,12 @@ class SingleSession
                 session(['cargapayload' => $data->cargapayload]);
                 session(['cargaMasClav' => $data->cargaMasClav]);
             }
+            else{
+                Session::put('cargapayload','');
+                Session::put('cargaMasClav',3);
+                session(['cargapayload' =>'']);
+                session(['cargaMasClav' => 3]);
+            }
             
          
                  
