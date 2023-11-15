@@ -846,7 +846,6 @@ class FunFormatsDel
     }
     public static function editarMeta($key)
     {
-        Log::debug("Editando meta");
         $meta = Metas::where('id', $key->meta_id)->firstOrFail();
         $fecha = Carbon::now()->toDateTimeString();
         if ($meta) {
@@ -870,7 +869,6 @@ class FunFormatsDel
             $meta->updated_at = $fecha;
             $meta->updated_user = auth::user()->username;
             $meta->save();
-            Log::debug($meta);
 
         }
     }

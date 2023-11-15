@@ -643,8 +643,6 @@ var dao = {
         }
     },
     getUpps: function () {
-        var csrfToken = "{{ csrf_token() }}";
-        console.log(localStorage.getItem('token'));
         $.ajax({
             type: "GET",
             url: '/calendarizacion/upps',
@@ -747,7 +745,6 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            console.log(response);
             const { mensaje } = response;
             Swal.fire({
                 icon: mensaje.icon,
@@ -771,7 +768,6 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            console.log(data);
             if (!data.status) {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
@@ -843,38 +839,29 @@ var dao = {
             const { unidadM, beneficiario } = data;
             var med = $('#medida');
             med.html('');
- 
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
-   
+            let sub = $('#area').val();
+             if (sub.includes('UUU')) {
+                 med.append(new Option("Pago de nómina", 829));
+                 tipo_be.append(new Option("Empleados", 12));
+             } else {
+                med.append(new Option("-- Medida--", ""));
+                document.getElementById("medida").options[0].disabled = true;
+                $.each(unidadM, function (i, val) {
+                    med.append(new Option(val.unidad_medida, val.clave));
+                });
+                 
+                tipo_be.append(new Option("--U. Beneficiarios--", ""));
+                document.getElementById("tipo_Be").options[0].disabled = true;
+                $.each(beneficiario, function (i, val) {
+                    tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
+                });
+            }
         });
-        let sub = $('#area').val();
-        if (sub.includes('UUU')) {
-            $.each(unidadM, function (i, val) {
-                med.append(new Option("Empleados", 12));
-            });
-            $.each(beneficiario, function (i, val) {
-                tipo_be.append(new Option("Pago de nómina",829));
-            });
-            
-        } else {
-            med.append(new Option("-- Medida--", ""));
-            document.getElementById("medida").options[0].disabled = true;
-            $.each(unidadM, function (i, val) {
-                med.append(new Option(val.unidad_medida, val.clave));
-            });
-            tipo_be.append(new Option("--U. Beneficiarios--", ""));
-            document.getElementById("tipo_Be").options[0].disabled = true;
-            $.each(beneficiario, function (i, val) {
-                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
-            });
-            
-        }
-        
     },
     getFyA: function (area, enti, mir, anio) {
         dao.limpiarErrors();
-        dao.getSelect();
         $('#tipo_Ac').empty();
         for (let i = 1; i <= 12; i++) {
             $("#" + i).val(0);
@@ -887,13 +874,13 @@ var dao = {
         $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
         $("#sel_actividad").removeAttr('disabled');
+        dao.getSelect();
         $.ajax({
             type: "GET",
             url: '/calendarizacion/fondos/' + area + '/' + enti,
             dataType: "JSON"
         }).done(function (data) {
             const { fondos, activids, tAct } = data;
-            console.log(activids);
             let flag = false;
             if (activids[0]?.id == 'ot' && mir == 1) {
                 flag = true;
@@ -1006,7 +993,6 @@ var dao = {
         }
        let clave= $("#activiMir").val();
         let mir = fondo.split('$')
-        console.log("mir",mir);
         $.ajax({
             type: "GET",
             url: '/actividades/metas/actividades-mir/' + mir[0] + '/' + mir[1]+'/'+mir[3],
@@ -1126,7 +1112,13 @@ var dao = {
                 $('#' + e).selectpicker('destroy');
             }
         });
-        dao.getUrs(0);
+        if ($('#upp').val() == '') {
+            dao.getUrs(0);
+        } else {
+            upp = $('#upp').val();
+            dao.getUrs(upp);
+        }
+       
         dao.getSelect();
         $('.form-group').removeClass('has-error');
         for (let i = 1; i <= 12; i++) {
