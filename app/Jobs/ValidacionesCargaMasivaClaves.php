@@ -69,11 +69,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                     }
 
-
-
-
-
-
+                    array_push($ejercicio, '20' . $k['20']);
 
                     //Se revisa el valor de var si es 0 significa que existe el key 0 en el array se usa el if para cambiar el valor para evitar que la condicion falle
                     if ($var === 0) {
