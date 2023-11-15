@@ -1241,6 +1241,7 @@ return new class extends Migration {
                     fuente_financiamiento,
                     importe
                 from aux_0
+                where fuente_financiamiento != ''
                 order by upp,subsecretaria,ur,
                 fuente_financiamiento
             )t;
