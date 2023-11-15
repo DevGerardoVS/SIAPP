@@ -141,7 +141,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                 if ($tipousuario != 1) {
                     $ejercicio = array();
                 }
-
+                $countO = 0;
 
                 foreach ($this->filearray as $indextu => $k) {
                     //buscar en el array de upps 
@@ -176,6 +176,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                         default:
                             if ($tipousuario == 4) {
+                                $countO++;
                                 //buscar en el array de totales 
                                 if (array_key_exists($k['5'] . 'COP' . $k['24'], $arraypresupuesto) && $k['27'] != '' && $k['5'] . $k['24'] != '') {
 
@@ -186,7 +187,9 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                     array_push($ejercicio, '20' . $k['20']);
                                 }
                             }
-
+                            if($tipousuario==5){
+                                $countO++;
+                            }
 
                     }
                     if (
@@ -272,20 +275,24 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                             //validacion para eliminar registros no confirmados 
                             foreach ($arrayupps as $key => $u) {
                                 //nueva funcion aca
-                                $query = MetasHelper::actividadesDel($u, $ejercicio[0]);
-                                if (count($query) > 0) {
-                                    array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. ');
-
+                                if($countO==0){
+                                    if (count($query) > 0) {
+                                        array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. ');
+    
+                                    }
+    
+                                    $b = array(
+                                        "username" => $usuario->username,
+                                        "accion" => 'Borrar registros carga masiva',
+                                        "modulo" => 'Claves presupuestales'
+                                    );
+                                    Controller::bitacora($b);
+                                    $query = MetasHelper::actividadesDel($u, $ejercicio[0]);
                                 }
 
 
-                            }
-                            $b = array(
-                                "username" => $usuario->username,
-                                "accion" => 'Borrar registros carga masiva',
-                                "modulo" => 'Claves presupuestales'
-                            );
-                            Controller::bitacora($b);
+                                }
+
                             break;
 
 
