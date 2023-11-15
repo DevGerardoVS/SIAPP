@@ -127,7 +127,11 @@ class ClavePreController extends Controller
         })
         ->where(function ($claves) use ($rol,$array_where) {
             $claves->where($array_where);
+            if ($rol == 1) {
+                $claves->where('programacion_presupuesto.tipo','Operativo');
+            }
             if ($rol == 2) {
+                $claves->where('programacion_presupuesto.tipo','RH');
                 $arrayClaves = [];
                 $uppAutorizados = DB::table('uppautorizadascpnomina')->select('clv_upp')->where('deleted_at','=',null)->get()->toArray();
                 foreach ($uppAutorizados as $key => $value) {
@@ -831,7 +835,11 @@ class ClavePreController extends Controller
             $fondos = ClavesHelper::detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion);
         }else {
             if ($uppAutorizados) {
-                $fondos = ClavesHelper::detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion);
+                if ($rol == 0) {
+                    $fondos = ClavesHelper::detallePresupuestoGeneral($arrayTechos,$arrayProgramacion);
+                }else {
+                    $fondos = ClavesHelper::detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion);
+                }
                
             }else {
                     $fondos = ClavesHelper::detallePresupuestoGeneral($arrayTechos,$arrayProgramacion);
