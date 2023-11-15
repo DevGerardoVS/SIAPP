@@ -109,7 +109,6 @@ class CargaMasivaClaves implements ShouldQueue
 
             }
             $arrayErrores = DB::select("CALL validacion_claves(".$usuario->id.", '".$usuario->username."')"); 
-            Log::debug($arrayErrores);
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
 
