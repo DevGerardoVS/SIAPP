@@ -507,6 +507,282 @@ var _gen = {
         otable = tabla.DataTable().columns.adjust().draw();
         otable.$('[data-toggle="popover"]').popover();
     },
+    setTableScrollFotterUpp: function (
+        tabla,
+        columnDefs,
+        datelist,
+        height,
+        pagination,
+        order
+    ) {
+        height = height;
+        pagination = pagination || 50;
+        order = order || [];
+
+        var responsiveHelper_datatable_tabletools = undefined;
+        var breakpointDefinition = {
+            tablet: 640,
+            phone: 480,
+        };
+        if ($.fn.DataTable.isDataTable(tabla)) {
+            tabla.DataTable().clear().rows.add(datelist);
+        } else {
+            tabla.DataTable({
+                //	dom: "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs text-right'T>r>"+
+                dom:
+                    "<'dt-toolbar'<'col-xs-12 col-sm-12'f><'col-sm-6 col-xs-12 hidden-xs text-right'>r>" +
+                    't' +
+                    "<'dt-toolbar-footer'<'col-sm-12 col-xs-12 hidden-xs'i><'col-sm-12 col-xs-12'p>>",
+                tableTools: {
+                    aButtons: [
+                        {
+                            sExtends: 'xls',
+                            sButtonText: 'Descargar a Excel',
+                            sFileName: '*.xls',
+                        },
+                    ],
+                    sSwfPath:
+                        'assets/js/plugin/datatables/swf/copy_csv_xls_pdf.swf',
+                },
+                language: {
+                    info: 'Página _PAGE_ de _PAGES_',
+                    infoEmpty: 'No hay registros disponibles',
+                    zeroRecords: 'No hay registros disponibles',
+                    infoFiltered: '(filtrados de _MAX_ registros)',
+                    search: "Búsqueda:",
+                    infoThousands: ",",
+                    loadingRecords: "Cargando...",
+                    buttonText: "Imprimir",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior",
+                    },
+                },
+                pageLength: pagination,
+                // scrollX : true,
+                order: order,
+                // scrollY: height + 'px',
+                data: datelist,
+                columnDefs: columnDefs,
+                footerCallback: function (row, datelist, start, end, display) {
+                    var api = this.api();
+                    // Remove the formatting to get integer data for summation
+                    var intVal = function (i) {
+                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                    };
+                    // Total calendarizado...
+                    totalOp = api
+                        .column(2)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    //Total asignado...
+                        // totalRh = api
+                        // .column(3)
+                        // .data()
+                        // .reduce(function (a, b) {
+                        //     return intVal(a) + intVal(b);
+                        // }, 0);
+                    //totalDisponible
+                    totalTechos = api
+                        .column(3)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                        totalCal = api
+                        .column(4)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                        totalDis = api
+                        .column(5)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    // Update footer
+                    operativo = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalOp);
+                    // rh = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalRh);
+                    techos = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalTechos);
+                    calendarizado = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalCal);
+                    disponible = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalDis);
+                    $(api.column(2).footer()).html(operativo);
+                    $(api.column(3).footer()).html(techos);
+                    $(api.column(4).footer()).html(calendarizado);
+                    $(api.column(5).footer()).html(disponible);
+                    
+                },
+                preDrawCallback: function () {
+                    if (!responsiveHelper_datatable_tabletools) {
+                        responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper(
+                            tabla,
+                            breakpointDefinition
+                        );
+                    }
+                },
+                rowCallback: function (nRow) {
+                    responsiveHelper_datatable_tabletools.createExpandIcon(
+                        nRow
+                    );
+                },
+                drawCallback: function (oSettings) {
+                    responsiveHelper_datatable_tabletools.respond();
+                    tabla.$('[data-toggle="popover"]').popover();
+                    tabla.$('[data-toggle="tooltip"]').tooltip();
+                },
+                initComplete: function () {
+                    otable = tabla.DataTable().columns.adjust().draw();
+                    $("#tblPresupuestos").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
+                },
+            });
+        }
+        otable = tabla.DataTable().columns.adjust().draw();
+        otable.$('[data-toggle="popover"]').popover();
+    },
+    setTableScrollFotterDel: function (
+        tabla,
+        columnDefs,
+        datelist,
+        height,
+        pagination,
+        order
+    ) {
+        height = height;
+        pagination = pagination || 50;
+        order = order || [];
+
+        var responsiveHelper_datatable_tabletools = undefined;
+        var breakpointDefinition = {
+            tablet: 640,
+            phone: 480,
+        };
+        if ($.fn.DataTable.isDataTable(tabla)) {
+            tabla.DataTable().clear().rows.add(datelist);
+        } else {
+            tabla.DataTable({
+                //	dom: "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs text-right'T>r>"+
+                dom:
+                    "<'dt-toolbar'<'col-xs-12 col-sm-12'f><'col-sm-6 col-xs-12 hidden-xs text-right'>r>" +
+                    't' +
+                    "<'dt-toolbar-footer'<'col-sm-12 col-xs-12 hidden-xs'i><'col-sm-12 col-xs-12'p>>",
+                tableTools: {
+                    aButtons: [
+                        {
+                            sExtends: 'xls',
+                            sButtonText: 'Descargar a Excel',
+                            sFileName: '*.xls',
+                        },
+                    ],
+                    sSwfPath:
+                        'assets/js/plugin/datatables/swf/copy_csv_xls_pdf.swf',
+                },
+                language: {
+                    info: 'Página _PAGE_ de _PAGES_',
+                    infoEmpty: 'No hay registros disponibles',
+                    zeroRecords: 'No hay registros disponibles',
+                    infoFiltered: '(filtrados de _MAX_ registros)',
+                    search: "Búsqueda:",
+                    infoThousands: ",",
+                    loadingRecords: "Cargando...",
+                    buttonText: "Imprimir",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior",
+                    },
+                },
+                pageLength: pagination,
+                // scrollX : true,
+                order: order,
+                // scrollY: height + 'px',
+                data: datelist,
+                columnDefs: columnDefs,
+                footerCallback: function (row, datelist, start, end, display) {
+                    var api = this.api();
+                    // Remove the formatting to get integer data for summation
+                    var intVal = function (i) {
+                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                    };
+                    // Total calendarizado...
+                    // totalOp = api
+                    //     .column(2)
+                    //     .data()
+                    //     .reduce(function (a, b) {
+                    //         return intVal(a) + intVal(b);
+                    //     }, 0);
+                    //Total asignado...
+                        totalRh = api
+                        .column(2)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    //totalDisponible
+                    totalTechos = api
+                        .column(3)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                        totalCal = api
+                        .column(4)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                        totalDis = api
+                        .column(5)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    // Update footer
+                    // operativo = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalOp);
+                    rh = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalRh);
+                    techos = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalTechos);
+                    calendarizado = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalCal);
+                    disponible = Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalDis);
+                    $(api.column(2).footer()).html(rh);
+                    $(api.column(3).footer()).html(techos);
+                    $(api.column(4).footer()).html(calendarizado);
+                    $(api.column(5).footer()).html(disponible);
+                    
+                },
+                preDrawCallback: function () {
+                    if (!responsiveHelper_datatable_tabletools) {
+                        responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper(
+                            tabla,
+                            breakpointDefinition
+                        );
+                    }
+                },
+                rowCallback: function (nRow) {
+                    responsiveHelper_datatable_tabletools.createExpandIcon(
+                        nRow
+                    );
+                },
+                drawCallback: function (oSettings) {
+                    responsiveHelper_datatable_tabletools.respond();
+                    tabla.$('[data-toggle="popover"]').popover();
+                    tabla.$('[data-toggle="tooltip"]').tooltip();
+                },
+                initComplete: function () {
+                    otable = tabla.DataTable().columns.adjust().draw();
+                    $("#tblPresupuestos").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
+                },
+            });
+        }
+        otable = tabla.DataTable().columns.adjust().draw();
+        otable.$('[data-toggle="popover"]').popover();
+    },
     setTableScrollGroupBy: function (
         tabla,
         columnDefs,

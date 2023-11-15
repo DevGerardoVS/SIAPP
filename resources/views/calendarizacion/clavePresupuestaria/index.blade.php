@@ -45,14 +45,14 @@
                                     </div>
                                     <div class="col-md-2 text-right">
                                         <label for="buttonBtnNew">&nbsp;</label>
-                                        @if (Auth::user()->clv_upp==NULL && Auth::user()->id_grupo==1)
+                                        @if (Auth::user()->clv_upp==NULL && Auth::user()->id_grupo==1 && session('cargaMasClav')==3)
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga_adm" id="button_modal_carga_adm">
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
                                         </div>
                                         @else
-                                        @if (check_assignFront(1))
+                                        @if (check_assignFront(1)  && session('cargaMasClav')==3)
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">

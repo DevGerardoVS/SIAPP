@@ -14,7 +14,9 @@ class carga_masiva_estatus extends Model
     protected $fillable = [ 
         'id_usuario',
         'cargapayload',
-        'cargaMasClav'
+        'cargaMasClav',
+        'created_user',
+        'updated_user'
     ];
 
     protected function data(): Attribute
