@@ -142,7 +142,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     $ejercicio = array();
                 }
                 $countO = 0;
-
+                $countR=0;
                 foreach ($this->filearray as $indextu => $k) {
                     //buscar en el array de upps 
                     $currentrow = $indextu + 2;
@@ -151,7 +151,9 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
 
                     switch ($k['16']) {
+                        
                         case 'UUU':
+                            $countR++;
                             if ($tipousuario == 5 || $uppsautorizadas) {
                                 //buscar en el array de totales 
                                 if (array_key_exists($k['5'] . 'CRH' . $k['24'], $arraypresupuesto) && $k['27'] != '' && $k['5'] . $k['24'] != '') {
@@ -232,11 +234,16 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                 case 0:
                                     //validacion para eliminar registros no confirmados 
                                     foreach ($arrayupps as $u) {
+                                        
+                                            if ($u != $uppUsuario) {
+                                                array_push($arrayErrores, ' $ $No tiene permiso para registrar de  la upp: '.$u);
+                                            }
+                                        
+
                                         $query = MetasHelper::actividades($u, $ejercicio[0]);
                                         if (count($query) > 0) {
                                             array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. en la upp: '.$u);
                                         }
-
                                     }
                                     $b = array(
                                         "username" => $usuario->username,
@@ -249,9 +256,14 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                     break;
 
                                 case 1:
-
+                                    if ($countR > 0) {
+                                        array_push($arrayErrores, '$ $Hay claves de RH en el archivo de cargas masivas ');
+                                    }
                                     //validacion para eliminar registros no confirmados 
                                     foreach ($arrayupps as $u) {
+                                        if ($u != $uppUsuario) {
+                                            array_push($arrayErrores, ' $ $: No tiene permiso para registrar de  la upp: '.$u);
+                                        }
                                         $query = MetasHelper::actividades($u, $ejercicio[0]);
                                         if (count($query) > 0) {
                                             array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. ');
@@ -288,6 +300,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                     );
                                     Controller::bitacora($b);
                                     $query = MetasHelper::actividadesDel($u, $ejercicio[0]);
+                                }
+                                else{
+                                    array_push($arrayErrores, ' $ $Hay programas que no son UUU en el archivo.');
+
                                 }
 
 
