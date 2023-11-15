@@ -149,18 +149,24 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
           $filearray = array_map('self::nestedtrim', $filearray);
+         $tienecargapen=carga_masiva_estatus::where('id_usuario',$user->id)->first();
 
 
+        if($tienecargapen){
+            return redirect()->back()->withErrors('Ya tienes una carga masiva en proceso ');
+
+        }else{
+            ValidacionesCargaMasivaClaves::dispatch($filearray,$user)->onQueue('high');
+            Session::put('cargaMasClav',0);
+            carga_masiva_estatus::create([
+                'id_usuario' => $user->id,
+                'cargaMasClav' => 0,
+                'created_user' => $user->username
+            ]);
+            return redirect()->back();
+        }
 
 
-        ValidacionesCargaMasivaClaves::dispatch($filearray,$user)->onQueue('high');
-        Session::put('cargaMasClav',0);
-        carga_masiva_estatus::create([
-            'id_usuario' => $user->id,
-            'cargaMasClav' => 0,
-            'created_user' => $user->username
-        ]);
-        return redirect()->back();
 
     }
 
