@@ -483,7 +483,6 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                             }
                             //validacion para eliminar registros no confirmados 
                             foreach ($arrayupps as $key => $u) {
-                                Log::debug($ejercicio);
                                 $query = MetasHelper::actividadesDel($u, $ejercicio[0]);
                                 if (count($query) > 0) {
                                     array_push($arrayErrores, 'Error: No se pueden añadir claves porque ya hay metas registradas. ');
