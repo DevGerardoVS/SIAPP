@@ -643,6 +643,8 @@ var dao = {
         }
     },
     getUpps: function () {
+        var csrfToken = "{{ csrf_token() }}";
+        console.log(localStorage.getItem('token'));
         $.ajax({
             type: "GET",
             url: '/calendarizacion/upps',
@@ -745,6 +747,7 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
+            console.log(response);
             const { mensaje } = response;
             Swal.fire({
                 icon: mensaje.icon,
@@ -768,6 +771,7 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
+            console.log(data);
             if (!data.status) {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
@@ -842,6 +846,7 @@ var dao = {
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
             let sub = $('#area').val();
+            console.log("sub",$('#area').val());
              if (sub.includes('UUU')) {
                  med.append(new Option("Pago de nómina", 829));
                  tipo_be.append(new Option("Empleados", 12));
@@ -881,6 +886,7 @@ var dao = {
             dataType: "JSON"
         }).done(function (data) {
             const { fondos, activids, tAct } = data;
+            console.log(activids);
             let flag = false;
             if (activids[0]?.id == 'ot' && mir == 1) {
                 flag = true;
@@ -993,6 +999,7 @@ var dao = {
         }
        let clave= $("#activiMir").val();
         let mir = fondo.split('$')
+        console.log("mir",mir);
         $.ajax({
             type: "GET",
             url: '/actividades/metas/actividades-mir/' + mir[0] + '/' + mir[1]+'/'+mir[3],
