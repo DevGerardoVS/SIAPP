@@ -154,7 +154,6 @@ class TechosController extends Controller
 
         if(count($verifica_upp_autorizada) == 0){
             foreach($data as $d){
-                log::debug($d[0]);
                 if($d[0] == 'RH') {
                     return [
                         'status' => 'No autorizado',

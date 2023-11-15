@@ -18,8 +18,6 @@ class QueryHelper
             $soapclient->response_timeout = 10;
 
             $result = $soapclient->call($funcion, $parametros);
-            // \Log::debug($soapclient->request);
-            // \Log::debug($soapclient->response);
             if ($soapclient->fault) {
                 return ["ERROR" => "Error al consumir servicio"];
             }

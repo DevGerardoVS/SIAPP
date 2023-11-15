@@ -1146,54 +1146,62 @@ return new class extends Migration {
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-
+        
             DROP TEMPORARY table if exists aux_0;
             DROP TEMPORARY TABLE if exists aux_1;
             DROP TEMPORARY TABLE if exists aux_2;
             DROP TEMPORARY TABLE if exists aux_3;
-                    
-            set @tablas := CONCAT('
+                            
+            set @tablas := CONCAT(\"
             create temporary table aux_0
             with aux as (
-                select distinct 
-                    ve.clv_upp,ve.upp,
-                    ve.clv_subsecretaria,ve.subsecretaria,
-                    ve.clv_ur,ve.ur
-                from v_epp ve
-                where ejercicio = ',anio,'
+                select 
+                    upp clv_upp,subsecretaria clv_subsecretaria,
+                    ur clv_ur,fondo_ramo clv_fondo,sum(total) importe
+                from \",@tabla,\"
+                where ejercicio = \",anio,\" and \",@corte,\"
+                group by upp,subsecretaria,ur,fondo_ramo
             )
             select 
-                concat(
-                    a.clv_upp,\" \",
-                    a.upp
-                ) upp,
-                a.subsecretaria,
-                a.ur,
-                f.fuente_financiamiento,
+                concat(ve.clv_upp,' ',ve.upp) upp,
+                ve.subsecretaria,
+                ve.ur,
                 case 
-                    when sum(pp.total) is null then 0
-                    else sum(pp.total)
+                    when f.fuente_financiamiento is null then ''
+                    else f.fuente_financiamiento
+                end fuente_financiamiento,
+                case 
+                    when a.importe is null then 0
+                    else a.importe
                 end importe
-            from aux a
-            left join ',@tabla,' pp on pp.ejercicio = ',anio,' and pp.',@corte,' 
-            and pp.upp = a.clv_upp and pp.subsecretaria = a.clv_subsecretaria and pp.ur = a.clv_ur
-            left join techos_financieros tf on a.clv_upp = tf.clv_upp and tf.ejercicio = ',anio,' and tf.deleted_at is null
-            left join fondo f on tf.clv_fondo = f.clv_fondo_ramo and f.deleted_at is null
-            group by a.clv_upp,a.upp,a.clv_subsecretaria,a.subsecretaria,
-            a.clv_ur,a.ur,f.fuente_financiamiento;
-            ');
-
+            from (
+                select distinct
+                    clv_upp,upp,clv_subsecretaria,subsecretaria,clv_ur,ur
+                from v_epp
+                where ejercicio = \",anio,\" and deleted_at is null
+            ) ve
+            left join aux a on ve.clv_upp = a.clv_upp 
+            and ve.clv_subsecretaria = a.clv_subsecretaria and ve.clv_ur = a.clv_ur
+            left join (
+                select distinct 
+                    fuente_financiamiento,
+                    clv_fondo_ramo clv_fondo
+                from fondo f
+                where deleted_at is null
+            ) f on a.clv_fondo = f.clv_fondo;
+            \");
+        
             prepare stmt from @tablas;
             execute stmt;
             deallocate prepare stmt;
-
+        
             CREATE TEMPORARY TABLE aux_1 AS 
             (SELECT upp,subsecretaria,ur,sum(importe) importe FROM aux_0 GROUP BY upp,subsecretaria,ur);
             CREATE TEMPORARY TABLE aux_2 AS 
             (SELECT upp,subsecretaria,sum(importe) importe FROM aux_1 GROUP BY upp,subsecretaria);
             CREATE TEMPORARY TABLE aux_3 AS 
             (SELECT upp,SUM(importe) importe FROM aux_2 GROUP BY upp);
-
+        
             select 
                 case 
                     when subsecretaria != '' then ''
@@ -1233,16 +1241,16 @@ return new class extends Migration {
                     fuente_financiamiento,
                     importe
                 from aux_0
+                where fuente_financiamiento != ''
                 order by upp,subsecretaria,ur,
                 fuente_financiamiento
             )t;
-
+        
             DROP TEMPORARY TABLE aux_0;
             DROP TEMPORARY TABLE aux_1;
             DROP TEMPORARY TABLE aux_2;
             DROP TEMPORARY TABLE aux_3;
-        END;
-        ");
+        END;");
         
         DB::unprepared("CREATE PROCEDURE reporte_art_20_frac_X_b_num_11_2(in anio int, in corte date)
         begin
@@ -2090,57 +2098,101 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE avance_proyectos_actividades_upp(in anio int, in corte date)
         begin
             set @corte := 'deleted_at is null';
+            set @tabla := 'programacion_presupuesto';
             if (corte is not null) then 
+                set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
-                        
+        
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+                                
             set @query := CONCAT('
-                select
-                    clv_upp,
-                    group_concat(upp) upp,
-                    sum(proyectos) proyectos,
-                    sum(proyectos_actividades) actividades,
-                    round((sum(proyectos_actividades)/sum(proyectos))*100) avance,
-                    case
-                        when sum(proyectos) = sum(proyectos_actividades) then \"Confirmado\"
-                        else \"Registrado\"
-                    end estatus
-                from (
-                    select
-                        clv_upp,
-                        upp,
-                        count(*) proyectos,
-                        0 proyectos_actividades
-                    from v_epp ve
-                    where ejercicio = ',anio,' and presupuestable = 1 and ',@corte,'
-                    group by clv_upp,upp
-                    union all 
-                    select 
-                        mm.clv_upp,
-                        \"\" upp,
-                        0 proyectos,
-                        count(distinct mm.area_funcional) proyectos_actividades
-                    from metas m 
-                    left join mml_mir mm on m.mir_id = mm.id
-                    where mm.',@corte,' and mm.ejercicio = ',anio,'
-                    group by clv_upp
-					union all
-					select 
-						mm.clv_upp,
-						\"\" upp,
-						0 proyectos,
-						count(distinct mm.area_funcional) proyectos_actividades
-					from metas m 
-					left join mml_actividades mm on m.actividad_id = mm.id 
-					where mm.',@corte,' and mm.ejercicio = ',anio,'
-					group by clv_upp
-                )t
-                group by clv_upp;
+            create temporary table aux_0
+            select 
+                upp clv_upp,count(area) claves,
+                case
+                    when estado = 1 then \"Confirmado\"
+                    else \"Registrado\"
+                end estatus
+            from (
+                select distinct
+                    upp,
+                    concat(
+                        ur,finalidad,funcion,subfuncion,eje,linea_accion,
+                        programa_sectorial,tipologia_conac,programa_presupuestario,
+                        subprograma_presupuestario,proyecto_presupuestario,fondo_ramo
+                    ) area,
+                    pp.estado
+                from ',@tabla,' pp
+                where ejercicio = ',anio,' and ',@corte,'
+            )t
+            group by upp,estado;
             ');
-
+        
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+        
+            create temporary table aux_1
+            with aux as (
+                select distinct
+                    clv_upp,claves mir,estatus
+                from (
+                    select mm.clv_upp,concat(mm.clv_ur,mm.area_funcional,m.clv_fondo) claves,m.estatus
+                    from metas m
+                    join mml_mir mm on m.mir_id = mm.id
+                    where m.ejercicio = 2024 and m.deleted_at is null
+                    union all 
+                    select ma.clv_upp,concat(substr(ma.entidad_ejecutora,5,2),ma.area_funcional,m.clv_fondo) claves,m.estatus
+                    from metas m
+                    join mml_actividades ma on m.actividad_id = ma.id
+                    where m.ejercicio = 2024 and m.deleted_at is null
+                )t
+            )
+            select
+                clv_upp,COUNT(mir) mir,
+                case
+                    when estatus = 1 then 'Confirmado'
+                    else 'Registrado'
+                end estatus
+            from aux
+            group by clv_upp,estatus;
+            
+            with aux as (
+                select 
+                    ve.clv_upp,ve.upp,
+                    case 
+                        when a0.claves is null then 0
+                        else a0.claves
+                    end claves,
+                    case 
+                        when a1.mir is null then 0 
+                        else a1.mir
+                    end mir,
+                    case 
+                        when a0.estatus is null then 'Sin Registrar'
+                        else a0.estatus
+                    end estatus_claves,
+                    case 
+                        when a1.estatus is null then 'Sin Registrar'
+                        else a1.estatus
+                    end estatus_mir
+                from (select distinct clv_upp,upp from v_epp where ejercicio = 2024 and deleted_at is null) ve
+                left join aux_0 a0 on ve.clv_upp = a0.clv_upp
+                left join aux_1 a1 on ve.clv_upp = a1.clv_upp
+            )
+            select 
+                clv_upp,upp,claves,mir,
+                case 
+                    when claves = 0 then 0
+                    else round((mir/claves)*100)
+                end avance,
+                estatus_claves,estatus_mir
+            from aux a;
+            
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
         END;");
         
         DB::unprepared("CREATE PROCEDURE proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date)

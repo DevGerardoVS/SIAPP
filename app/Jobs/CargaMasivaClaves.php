@@ -480,7 +480,7 @@ class CargaMasivaClaves implements ShouldQueue
                 $payload=  json_encode($arrayErrores);  
                 carga_masiva_estatus::where('id_usuario',$usuario->id)
                 ->update([
-                    'cargapayload' => json_encode($payload),
+                    'cargapayload' => $payload,
                     'cargaMasClav' => 2,
                     'updated_user' => $usuario->username
                 ]);        
