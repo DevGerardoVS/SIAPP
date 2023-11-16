@@ -495,7 +495,7 @@ class MetasDelController extends Controller
 		->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
 		->leftJoin('catalogo', 'catalogo.id', 'mml_actividades.id_catalogo')
 		->select(
-			'metas.id',
+			'metas.id as idm',
 			DB::raw('CONCAT(mml_actividades.id, " - ", IFNULL(mml_actividades.nombre,catalogo.descripcion)) AS actividad'),
 			'mml_actividades.area_funcional AS area',
 			'mml_actividades.entidad_ejecutora AS entidad',
@@ -506,7 +506,6 @@ class MetasDelController extends Controller
 			'metas.estatus'
 
 		)
-		->where('metas.estatus',1)
 		->where('metas.ejercicio',$anio)
 		->where('mml_actividades.clv_upp',$upp)
 		->where('catalogo.clave', 'UUU')

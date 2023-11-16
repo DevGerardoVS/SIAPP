@@ -283,7 +283,6 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         case 5:
                             //validacion para eliminar registros no confirmados 
                             foreach ($arrayupps as $key => $u) {
-                                Log::debug($u);
                                 //nueva funcion aca
                                 if($countO==0){
                                     $b = array(
@@ -293,7 +292,12 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                     );
                                     Controller::bitacora($b);
                                     $query = MetasDelController::actividadesCargaMasDel($u,$usuario->username, $ejercicio[0]);
-                                    \Log::debug($query);
+                                    if(count($query) > 0) {
+
+                                        foreach ($query as $key => $value) {
+                                           DB::table('metas')->where('id','=', $value->idm)->delete();
+                                        }
+                                    }
                                 }
                                 else{
                                     array_push($arrayErrores, ' $ $Hay programas que no son UUU en el archivo.');
