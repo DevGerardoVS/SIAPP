@@ -41,17 +41,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-10">
-                            <div class="form-group">
-                                <label for="instruccion 2">
-                                    <span style="vertical-align: inherit;"><span style="vertical-align: inherit;">Los
-                                            datos de claves presupuestarias guardados no confirmados <b>seran
-                                                borrados</b></span></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="row">
                         <div class="col-sm-8">
                             <div class="form-group">
@@ -89,8 +79,6 @@
                         </div>
                     </div>
                 </div>
-                <div style="font-weight: bold;" class="row d-flex justify-content-center">Atención se borraran todos los registros de las upps en el excel al hacer una carga masiva.
-                   </div>
 
                 <div class="modal-footer-carga">
                     <button type="button"  onclick="document.getElementById('closeadm').click()"  class="btn btn-secondary "
