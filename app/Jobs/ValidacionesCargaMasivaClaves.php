@@ -24,11 +24,13 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
     protected $filearray;
     protected $user;
+    protected $tipocarga;
 
-    public function __construct($filearray, $user)
+    public function __construct($filearray, $user, $tipocarga)
     {
         $this->filearray = $filearray;
         $this->user = $user;
+        $this->tipocarga = $tipocarga;
 
     }
 
@@ -76,10 +78,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     if ($var === 0) {
                         $var = true;
                     }
-  
+
                     if (!$var && strlen($k['5']) == 3) {
                         array_push($arrayupps, $k['5']);
-                    } 
+                    }
                 }
 
 
@@ -95,7 +97,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         if ($uppsautorizadas) {
                             array_push($arrayErrores, ' $ $No se puede cargar la upp: ' . $u . ' en tipo operativo porque esta autorizada para cargar RH. ');
                         }
-                      $query = MetasHelper::actividades($u, $ejercicio[0]);
+                        $query = MetasHelper::actividades($u, $ejercicio[0]);
                         //MetasDelController::checkConfirmadas
                         if (count($query) > 0) {
                             array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. ');
@@ -110,14 +112,19 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         }
 
 
-
+                        if ($this->tipocarga == 1) {
+                            $deleted = ProgramacionPresupuesto::where('upp', $u)->where('tipo','Operativo')->where('ejercicio', $ejercicio[0])->where('estado', 0)->delete();
+                        }
                     }
-                    $b = array(
-                        "username" => $usuario->username,
-                        "accion" => 'Borrar registros carga masiva',
-                        "modulo" => 'Claves presupuestales'
-                    );
-                    Controller::bitacora($b);
+                    if ($this->tipocarga == 1) {
+                        $b = array(
+                            "username" => $usuario->username,
+                            "accion" => 'Borrar registros carga masiva',
+                            "modulo" => 'Claves presupuestales'
+                        );
+                        Controller::bitacora($b);              
+                          }
+
                 }
 
 
@@ -139,7 +146,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     $ejercicio = array();
                 }
                 $countO = 0;
-                $countR=0;
+                $countR = 0;
                 foreach ($this->filearray as $indextu => $k) {
                     //buscar en el array de upps 
                     $currentrow = $indextu + 2;
@@ -148,7 +155,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
 
                     switch ($k['16']) {
-                        
+
                         case 'UUU':
                             $countR++;
                             if ($tipousuario == 5 || $uppsautorizadas) {
@@ -186,8 +193,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                     array_push($ejercicio, '20' . $k['20']);
                                 }
                             }
-                            if($tipousuario==5){
+                            if ($tipousuario == 5) {
                                 $countO++;
+                                array_push($ejercicio, '20' . $k['20']);
+
                             }
 
                     }
@@ -217,101 +226,150 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     }
                     if (!$var && strlen($k['5']) == 3) {
                         array_push($arrayupps, $k['5']);
-                    } 
+                    }
 
                 }
 
-                
 
 
-                    switch ($tipousuario) {
-                        case 4:
 
-                            switch ($uppsautorizadas) {
-                                case 0:
-                                    //validacion para eliminar registros no confirmados 
-                                    foreach ($arrayupps as $u) {
-                                        
-                                            if ($u != $uppUsuario) {
-                                                array_push($arrayErrores, ' $ $No tiene permiso para registrar de  la upp: '.$u);
-                                            }
-                                        
+                switch ($tipousuario) {
+                    case 4:
 
-                                        $query = MetasHelper::actividades($u, $ejercicio[0]);
-                                        if (count($query) > 0) {
-                                            array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. en la upp: '.$u);
-                                        }
+                        switch ($uppsautorizadas) {
+                            case 0:
+                                $confirmadasC=0;
+
+                                //validacion para eliminar registros no confirmados 
+                                foreach ($arrayupps as $u) {
+
+                                    if ($u != $uppUsuario) {
+                                        array_push($arrayErrores, ' $ $No tiene permiso para registrar de  la upp: ' . $u);
                                     }
+
+                                    $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('tipo','Operativo')->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+                                    if ($confirmadas > 0) {
+                                        $confirmadasC++;
+                                    }
+
+                                    $query = MetasHelper::actividades($u, $ejercicio[0]);
+                                    if (count($query) > 0) {
+                                        array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. en la upp: ' . $u);
+                                    }
+
+                                    if ($this->tipocarga == 1) {
+                                        $deleted = ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('tipo','Operativo')->where('ejercicio', $ejercicio[0])->delete();
+                                    }
+                                }
+                                if($confirmadasC>0){
+                                    array_push($arrayErrores, ' $ $No se pueden añadir más claves por carga masiva a la upp: ' . $u . ' porque ya tiene claves confirmadas. ');
+
+                                }
+                                if ($this->tipocarga == 1) {
                                     $b = array(
                                         "username" => $usuario->username,
                                         "accion" => 'Borrar registros carga masiva',
                                         "modulo" => 'Claves presupuestales'
                                     );
                                     Controller::bitacora($b);
+                                }
 
 
-                                    break;
 
-                                case 1:
-                                    if ($countR > 0) {
-                                        array_push($arrayErrores, '$ $Hay claves de RH en el archivo de cargas masivas ');
+                                break;
+
+                            case 1:
+                                if ($countR > 0) {
+                                    array_push($arrayErrores, '$ $Hay claves de RH en el archivo de cargas masivas ');
+                                }
+                                $confirmadasC=0;
+                                //validacion para eliminar registros no confirmados 
+                                foreach ($arrayupps as $u) {
+                                    if ($u != $uppUsuario) {
+                                        array_push($arrayErrores, ' $ $: No tiene permiso para registrar de  la upp: ' . $u);
                                     }
-                                    //validacion para eliminar registros no confirmados 
-                                    foreach ($arrayupps as $u) {
-                                        if ($u != $uppUsuario) {
-                                            array_push($arrayErrores, ' $ $: No tiene permiso para registrar de  la upp: '.$u);
-                                        }
-                                        $query = MetasHelper::actividades($u, $ejercicio[0]);
-                                        if (count($query) > 0) {
-                                            array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. ');
-                                        }
-
-       
+                                    $query = MetasHelper::actividades($u, $ejercicio[0]);
+                                    if (count($query) > 0) {
+                                        array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. ');
                                     }
+
+                                    $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('subprograma_presupuestario','!=', 'UUU')->where('tipo','Operativo')->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+                                    if ($confirmadas > 0) {
+                                        $confirmadasC++;
+                                    }
+
+                                    if ($this->tipocarga == 1) {
+                                        $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=', 'UUU')->where('tipo','Operativo')->where('estado', 0)->where('ejercicio', $ejercicio[0])->delete();
+                                    }
+                                }
+                                if($confirmadasC>0){
+                                    array_push($arrayErrores, ' $ $No se pueden añadir más claves por carga masiva a la upp: ' . $u . ' porque ya tiene claves confirmadas. ');
+
+                                }
+
+                                if ($this->tipocarga == 1) {
                                     $b = array(
                                         "username" => $usuario->username,
                                         "accion" => 'Borrar registros carga masiva',
                                         "modulo" => 'Claves presupuestales'
                                     );
                                     Controller::bitacora($b);
-                                    break;
+                                }
+                                break;
+                        }
+
+
+                        break;
+
+                    case 5:
+                        //validacion para eliminar registros no confirmados 
+                        foreach ($arrayupps as $key => $u) {
+                            //nueva funcion aca
+                            if ($countO == 0) {
+                                $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('subprograma_presupuestario', 'UUU')->where('tipo','RH')->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+                                if ($confirmadas > 0) {
+                                    array_push($arrayErrores, ' $ $No se pueden añadir más claves por carga masiva a la upp: ' . $u . ' porque ya tiene claves confirmadas. ');
+                                }
+
+                                if ($this->tipocarga == 1) {
+                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', 'UUU')->where('tipo','RH')->where('estado', 0)->where('ejercicio', $ejercicio[0])->delete();
+                                }
+
+                                $query = MetasDelController::actividadesCargaMasDel($u, $usuario->username, $ejercicio[0]);
+                                if (count($query) > 0) {
+
+                                    foreach ($query as $key => $value) {
+                                        DB::table('metas')->where('id', '=', $value->idm)->delete();
+                                    }
+
+                                    $b = array(
+                                        "username" => $usuario->username,
+                                        "accion" => 'Borrar registros de metas de usuario delegacion en carga masiva.',
+                                        "modulo" => 'Claves presupuestales'
+                                    );
+                                    Controller::bitacora($b);
+                                }
+                            } else {
+                                array_push($arrayErrores, ' $ $Hay programas que no son UUU en el archivo.');
+
                             }
 
-
-                            break;
-
-                        case 5:
-                            //validacion para eliminar registros no confirmados 
-                            foreach ($arrayupps as $key => $u) {
-                                //nueva funcion aca
-                                if($countO==0){
-                                    $b = array(
-                                        "username" => $usuario->username,
-                                        "accion" => 'Borrar registros carga masiva',
-                                        "modulo" => 'Claves presupuestales'
-                                    );
-                                    Controller::bitacora($b);
-                                    $query = MetasDelController::actividadesCargaMasDel($u,$usuario->username, $ejercicio[0]);
-                                    if(count($query) > 0) {
-
-                                        foreach ($query as $key => $value) {
-                                           DB::table('metas')->where('id','=', $value->idm)->delete();
-                                        }
-                                    }
-                                }
-                                else{
-                                    array_push($arrayErrores, ' $ $Hay programas que no son UUU en el archivo.');
-
-                                }
+                        }
+                        if ($this->tipocarga == 1) {
+                            $bcarga = array(
+                                "username" => $usuario->username,
+                                "accion" => 'Borrar registros carga masiva',
+                                "modulo" => 'Claves presupuestales'
+                            );
+                            Controller::bitacora($bcarga);
+                        }
 
 
-                                }
-
-                            break;
+                        break;
 
 
-                    }
-                
+                }
+
 
 
 
@@ -323,19 +381,19 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
 
-                 json_encode($arrayErrores);
-                 $payload = json_encode($arrayErrores);
-                carga_masiva_estatus::where('id_usuario',$usuario->id)
-                ->update([
-                    'cargapayload' => $payload,
-                    'cargaMasClav' => 2,
-                    'updated_user' => $usuario->username
-                ]);
+                json_encode($arrayErrores);
+                $payload = json_encode($arrayErrores);
+                carga_masiva_estatus::where('id_usuario', $usuario->id)
+                    ->update([
+                        'cargapayload' => $payload,
+                        'cargaMasClav' => 2,
+                        'updated_user' => $usuario->username
+                    ]);
 
 
             } else {
                 DB::commit();
-                CargaMasivaClaves::dispatch($this->filearray, $usuario)->onQueue('high');
+                CargaMasivaClaves::dispatch($this->filearray, $usuario, $this->tipocarga)->onQueue('high');
 
             }
 
@@ -343,15 +401,15 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
         } catch (\Throwable $th) {
             DB::rollBack();
             \Log::debug($th);
-            $error=array();
+            $error = array();
             array_push($error, ' $ $Ocurrio un error interno contacte a soporte.');
             json_encode($error);
-            carga_masiva_estatus::where('id_usuario',$usuario->id)
-            ->update([
-                'cargapayload' => $error,
-                'cargaMasClav' => 2,
-                'updated_user' => $usuario->username
-            ]);
+            carga_masiva_estatus::where('id_usuario', $usuario->id)
+                ->update([
+                    'cargapayload' => $error,
+                    'cargaMasClav' => 2,
+                    'updated_user' => $usuario->username
+                ]);
         }
     }
 }

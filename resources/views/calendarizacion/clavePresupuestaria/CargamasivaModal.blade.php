@@ -55,6 +55,17 @@
                             @endif
 
                         </div>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <div class="form-group">
+                                    <label for="instruccion 2">
+                                        <span style="vertical-align: inherit;"><span style="vertical-align: inherit;">Si selecciona carga completa los registros
+                                            guardados no confirmados <b>seran
+                                                    borrados</b></span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-sm-3">
                             @if(Auth::user()->id_grupo==4)
                             <div class="form-group">
@@ -104,6 +115,25 @@
                                     value="Sin archivos seleccionados">
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group d-flex justify-content-around">
+                        <div  class="form-check form-check-inline">
+                            <input class="form-check-input " value="0" type="radio" name="tipo" id="parcial"
+                                checked>
+                            <label class="form-check-label " for="tipo">
+                                Carga parcial
+                            </label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" value="1" type="radio" name="tipo"
+                                id="completa">
+                            <label class="form-check-label" for="tipo">
+                                Carga completa
+                            </label>
+                        </div> 
                     </div>
                 </div>
                 <div class="modal-footer-carga">

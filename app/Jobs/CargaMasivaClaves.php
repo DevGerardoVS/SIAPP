@@ -19,11 +19,13 @@ class CargaMasivaClaves implements ShouldQueue
 
     protected $filearray;
     protected $user;
+    protected $tipocarga;
 
-    public function __construct($filearray, $user)
+    public function __construct($filearray, $user, $tipocarga)
     {
         $this->filearray = $filearray;
         $this->user = $user;
+        $this->tipocarga = $tipocarga;
 
     }
     /**
@@ -108,7 +110,7 @@ class CargaMasivaClaves implements ShouldQueue
                 $currentrow++;
 
             }
-            $arrayErrores = DB::select("CALL validacion_claves(".$usuario->id.", '".$usuario->username."')"); 
+            $arrayErrores = DB::select("CALL validacion_claves(".$usuario->id.", '".$usuario->username."',".$this->tipocarga.")"); 
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
 
