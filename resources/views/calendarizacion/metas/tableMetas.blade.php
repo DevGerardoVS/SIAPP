@@ -2,13 +2,28 @@
     <form id="actividad">
         <input type="hidden" id="0" name="0" value="00">
         <div class="row">
-
-            
-            <div class="row">
+            <div class="row conmir">
+                <div class="form-group col-md-6">
+                    <label class="control-label ">Fondo &nbsp&nbsp&nbsp&nbsp</label>
+                    <select class="form-control" placeholder="Selecciona una actividad" id="sel_fondo"
+                        data-live-search="true" name="sel_fondo" autocomplete="sel_fondo" disabled>
+                        <option value="">---Fondo---</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="control-label">Nombre de la actividad</label>
+                    <select class="form-control" aria-placeholder="Selecciona una actividad" id="sel_actividad"
+                        data-live-search="true" name="sel_actividad" disabled>
+                        <option value="">---Actividad---</option>
+                    </select>
+                </div>
+      
+            </div>
+            <div class="row sinmir" style="display: none">
                 <div id="idFond" class="form-group col-md-6">
                     <label class="control-label ">Fondo &nbsp&nbsp&nbsp&nbsp</label>
                     <select class="form-control" placeholder="Selecciona una actividad" id="fondo_id"
-                        data-live-search="true" name="fondo_id" autocomplete="fondo_id" disabled>
+                        data-live-search="true" name="fondo_id" autocomplete="fondo_id" >
                         <option value="">---Fondo---</option>
                     </select>
                 </div>
@@ -24,6 +39,7 @@
                     <input type="text" class="form-control" id="inputAc" name="inputAc" disabled>
                     <span id="inputAc-error"></span>
                 </div>
+     
             </div>
             <div class="form-group col-md-3">
                 <label class="control-label">Tipo de calendario</label>
