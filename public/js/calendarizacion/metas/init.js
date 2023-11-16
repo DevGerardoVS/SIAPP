@@ -1519,11 +1519,29 @@ $(document).ready(function () {
     })
     $('#btnSave').click(function (e) {
         e.preventDefault();
+        let flag = false;
         //let flag = dao.validMeses();
-        if ($('#conmir').val()) {
+        console.log($('#actividad_id').val());
+        if ($('#actividad_id').val() == 'ot') {
+            let nombre = $("#inputAc").val();
+            let nuevo = nombre.trim();
+           // let n=nombre.replace(/ /g, "")
+            if (nuevo == "") {
+                Swal.fire({
+                    title: "Campo vacío",
+                    text: "El campo nombre no puede ir vacío",
+                    icon: "info"
+                  });
+                flag = false;
+            } else {
+                flag = true;
+            }
+
+        } 
+        if ($('#conmir').val() ) {
             init.validateCreate($('#actividad'));
-            if ($('#actividad').valid()) {
-                dao.crearMeta();
+            if ($('#actividad').valid() && flag) {
+               dao.crearMeta();
             }
         } else {
             init.validateCreateN($('#actividad'));
