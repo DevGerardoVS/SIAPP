@@ -14,6 +14,7 @@ use App\Helpers\Calendarizacion\MetasHelper;
 use App\Models\ProgramacionPresupuesto;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Calendarizacion\MetasDelController;
 use App\Jobs\CargaMasivaClaves;
 use DB;
 
@@ -282,20 +283,17 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         case 5:
                             //validacion para eliminar registros no confirmados 
                             foreach ($arrayupps as $key => $u) {
+                                Log::debug($u);
                                 //nueva funcion aca
                                 if($countO==0){
-                                    if (count($query) > 0) {
-                                        array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. ');
-    
-                                    }
-    
                                     $b = array(
                                         "username" => $usuario->username,
                                         "accion" => 'Borrar registros carga masiva',
                                         "modulo" => 'Claves presupuestales'
                                     );
                                     Controller::bitacora($b);
-                                    $query = MetasHelper::actividadesDel($u, $ejercicio[0]);
+                                    $query = MetasDelController::actividadesCargaMasDel($u,$usuario->username, $ejercicio[0]);
+                                    \Log::debug($query);
                                 }
                                 else{
                                     array_push($arrayErrores, ' $ $Hay programas que no son UUU en el archivo.');
