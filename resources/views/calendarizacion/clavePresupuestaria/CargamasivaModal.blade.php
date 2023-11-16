@@ -44,12 +44,16 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-9">
+                            @if (Auth::user()->id_grupo==5 )
+
                             <div class="form-group">
                                 <label for="instruccion 2">
                                     <span style="vertical-align: inherit;"><span
-                                            style="vertical-align: inherit;">Los datos de claves presupuestarias guardados no confirmados <b>seran borrados</b></span></span>
+                                            style="vertical-align: inherit;">Las metas que hayas registrado  <b>seran borradas</b></span></span>
                                 </label>
                             </div>
+                            @endif
+
                         </div>
                         <div class="col-sm-3">
                             @if(Auth::user()->id_grupo==4)
