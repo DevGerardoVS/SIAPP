@@ -491,7 +491,6 @@ class FunFormatsDel
                 ->where('metas.deleted_at', null)->get();
 
         }
-        Log::debug($metas);
         if ($noMir == 'ot') {
             $metas = [];
         }
@@ -530,7 +529,7 @@ class FunFormatsDel
             $metaSinMir->total = $key['total'];
             $metaSinMir->estatus = 0;
             $metaSinMir->ejercicio = $key['ejercicio'];
-            $metaSinMir->created_user = $key['created_user'];
+            $metaSinMir->created_user = $key['created_user']."-CM";
             $metaSinMir->tipo_meta =$key['tipo_meta']; 
             $metaSinMir->save();
             if ($metaSinMir) {
@@ -564,7 +563,7 @@ class FunFormatsDel
             $metaConMir->total = $key['total'];
             $metaConMir->estatus = 0;
             $metaConMir->ejercicio = $key['ejercicio'];
-            $metaConMir->created_user = $key['created_user'];
+            $metaSinMir->created_user = $key['created_user']."-CM";
             $metaSinMir->tipo_meta =$key['tipo_meta']; 
 
             if ($metaConMir) {
