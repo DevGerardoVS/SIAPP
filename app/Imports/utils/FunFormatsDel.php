@@ -266,7 +266,7 @@ class FunFormatsDel
                 ->where('fondo_ramo', $fondo)
                 ->where('programacion_presupuesto.ejercicio', '=', $anio)
                 ->where('programacion_presupuesto.estado', '=', 1)
-                ->groupByRaw('finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
+                ->groupByRaw('fondo_ramo,ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
                 ->distinct()
                 ->get();
             return $activs;
