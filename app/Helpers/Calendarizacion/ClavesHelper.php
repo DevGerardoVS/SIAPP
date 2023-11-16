@@ -281,8 +281,15 @@ class ClavesHelper{
         }else {
             $disponible = $presupuestoAsignado[0]->totalAsignado;
         }
+        $where = [];
+        if ($rol == 1 || $rol == 0) {
+            array_push($where, ['tipo','Operativo']);
+        }
+        if ($rol == 2) {
+            array_push($where, ['tipo','RH']);
+        }
         $estado = DB::table('programacion_presupuesto')
-        ->SELECT('*')->where('upp', $upp)->where('ejercicio', $ejercicio)->where('estado', 1)->where('deleted_at','=',null)->get();
+        ->SELECT('*')->where('upp', $upp)->where('ejercicio', $ejercicio)->where('estado', 1)->where('deleted_at','=',null)->where($where)->get();
         if ($disponible > 0 || count($estado)) {
             return false;
         }else{
