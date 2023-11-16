@@ -534,7 +534,6 @@ class FunFormatsDel
             $metaSinMir->save();
             if ($metaSinMir) {
                 $metaSinMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaSinMir->id . '-' . $key['ejercicio'];
-                $metaSinMir->tipo_meta = 'RH';
                 $metaSinMir->save();
             }
         }

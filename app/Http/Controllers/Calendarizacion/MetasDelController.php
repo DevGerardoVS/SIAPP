@@ -403,7 +403,7 @@ class MetasDelController extends Controller
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
 			->where('cierre_ejercicio_metas.ejercicio', $anio)
 			->where('cierre_ejercicio_metas.estatus', 'Abierto')
-			->where('programacion_presupuesto.subprograma_presupuestario', 'UUU')
+			->where('metas.tipo_meta', '=', 'RH')
 			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct()
 			->get();

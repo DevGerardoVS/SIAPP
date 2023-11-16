@@ -172,13 +172,8 @@ class MetasController extends Controller
 					->where('programacion_presupuesto.deleted_at', null)
 					->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 					->distinct();
-					$upps= DB::table('uppautorizadascpnomina')
-					->select('uppautorizadascpnomina.clv_upp')
-					->where('uppautorizadascpnomina.clv_upp', $upp)
-					->where('uppautorizadascpnomina.deleted_at', null)
-					->get();
-					if(count($upps)) {
-					$activs = $activs->where('programacion_presupuesto.subprograma_presupuestario', '!=','UUU' );
+					if(auth::user()->id_grupo == 4) {
+					$activs = $activs->where('programacion_presupuesto.tipo', '=','Operativo');
 					}
 					$activs=$activs->get();
 				foreach ($activs as $key) {
@@ -1498,6 +1493,12 @@ class MetasController extends Controller
 			->where('act.upp', $upp)
 			->where('metas.ejercicio', $anio)
 			->groupByRaw('act.area,act.entidad,metas.clv_fondo');
+		if (Auth::user()->id_grupo == 4) {
+			$query2 = $query2->where('metas.tipo_meta', '=', 'Operativo');
+		}
+		if (Auth::user()->id_grupo == 5) {
+			$query2 = $query2->where('metas.tipo_meta', '=', 'RH');
+		}
 		$metas = DB::table('metas')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -1528,7 +1529,14 @@ class MetasController extends Controller
 			->where('pro.ejercicio', $anio)
 			->where('pro.upp', $upp)
 			->groupByRaw('pro.area,pro.entidad,metas.clv_fondo')
-			->unionAll($query2)->get();
+			->unionAll($query2);
+		if (Auth::user()->id_grupo == 4) {
+			$metas = $metas->where('metas.tipo_meta', '=', 'Operativo');
+		}
+		if (Auth::user()->id_grupo == 5) {
+			$metas = $metas->where('metas.tipo_meta', '=', 'RH');
+		}
+		$metas = $metas->get();
 		$pp = [];
 
 		foreach ($metas as $key) {
@@ -1578,32 +1586,10 @@ class MetasController extends Controller
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
 			->groupByRaw('ur,fondo_ramo ,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct();
-		$upps = DB::table('uppautorizadascpnomina')
-			->select('uppautorizadascpnomina.clv_upp')
-			->where('uppautorizadascpnomina.clv_upp', $upp)
-			->where('uppautorizadascpnomina.deleted_at', null)
-			->get();
-		if (count($upps)) {
-			$activsPP = $activsPP->where('programacion_presupuesto.subprograma_presupuestario', '!=', 'UUU');
+		if (Auth::user()->id_grupo == 4) {
+			$activsPP = $activsPP->where('programacion_presupuesto.tipo', '=', 'Operativo');
 		}
 		$activsPP = $activsPP->get();
-		$upps = DB::table('uppautorizadascpnomina')
-			->select('uppautorizadascpnomina.clv_upp')
-			->where('uppautorizadascpnomina.clv_upp', $upp)
-			->where('uppautorizadascpnomina.deleted_at', null)
-			->get();
-		if (count($upps)) {
-			for ($i = 0; $i < count($metas); $i++) {
-				$area = str_split($metas[$i]->area);
-				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
-				if ($sub == 'UUU') {
-					unset($metas[$i]);
-					$metas = array_values($metas);
-				}
-
-			}
-
-		}
 		if (count($metas) >= 1) {
 			if (count($metas) >= count($activsPP) && count($activsPP) == count($pp)) {
 				return ["status" => true];
