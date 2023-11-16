@@ -37,7 +37,8 @@ class Metas extends Model
         'ejercicio',
         'created_user',
         'updated_user',
-        'clv_actividad'
+        'clv_actividad',
+        'tipo_meta',
     ];
 
     protected $dates = ['deleted_at'];

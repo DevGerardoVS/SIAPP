@@ -41,6 +41,7 @@ class MetasHelper
 				->where('catalogo.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $upp)
 				->where('mml_actividades.ejercicio', $anio);
+				
 			$query2 = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -469,15 +470,9 @@ class MetasHelper
 
 	public static function MetasIndexDel()
 	{
-		$upp= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('uppautorizadascpnomina.deleted_at', null)->get();
-        $upps = [];
-        foreach ($upp as $key) {
-            $upps[]=$key->clv_upp;
-        }
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$data = DB::table('programacion_presupuesto')
 			->leftJoin('catalogo', 'catalogo.clave', '=', 'programacion_presupuesto.subprograma_presupuestario')
-			->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'programacion_presupuesto.upp')
 			->select(
 				'upp AS clv_upp',
 				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
@@ -487,16 +482,11 @@ class MetasHelper
 				DB::raw('IFNULL(catalogo.descripcion," ") AS actividad'),
 				DB::raw('programacion_presupuesto.fondo_ramo AS fondo'),
 			)
-			->whereIn('programacion_presupuesto.upp',  $upps)
-			->where('programacion_presupuesto.subprograma_presupuestario', "UUU")
+			->where('programacion_presupuesto.tipo', 'RH')
 			->where('catalogo.grupo_id', 20)
-			->where('cierre_ejercicio_metas.estatus', 'Abierto')
 			->where('programacion_presupuesto.estado', 1)
-			->where('cierre_ejercicio_metas.deleted_at', null)
 			->where('programacion_presupuesto.deleted_at', null)
 			->where('catalogo.deleted_at', null)
-			->where('programacion_presupuesto.ejercicio', '=', $anio)
-			->where('cierre_ejercicio_metas.ejercicio', $anio)
 			->where('catalogo.ejercicio', $anio)
 			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 			->orderByRaw('upp,ur,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
@@ -630,7 +620,7 @@ class MetasHelper
 			->where('programacion_presupuesto.deleted_at', null)
 			->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario');
 			if (Auth::user()->id_grupo == 5) {
-			$meses = $meses->where('programacion_presupuesto.subprograma_presupuestario', '!=', 'UUU');
+			$meses = $meses->where('programacion_presupuesto.tipo', 'RH');
 			}
 			$meses=$meses->get();
 		return $meses;

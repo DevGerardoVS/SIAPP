@@ -144,22 +144,13 @@ class MetasDelController extends Controller
 		Controller::check_assign(1);
 		DB::beginTransaction();
 		try {
-
-			$flag = false;
 			if (Auth::user()->id_grupo == 5) {
-
-				Schema::create('metas_temp', function (Blueprint $table) {
-					$table->temporary();
-					$table->increments('id');
-					$table->string('clave', 25)->nullable(false);
-					$table->string('upp', 25)->nullable(false);
-					$table->string('fila', 10)->nullable(false);
-				});
 				Schema::create('metas_temp_Nomir', function (Blueprint $table) {
 					$table->temporary();
 					$table->increments('id');
 					$table->string('clave', 25)->nullable(false);
 					$table->string('upp', 25)->nullable(false);
+					$table->string('ur', 25)->nullable(false);
 					$table->string('fila', 10)->nullable(false);
 				});
 				$assets = $request->file('cmFile');

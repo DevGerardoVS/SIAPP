@@ -84,7 +84,24 @@ var dao = {
     crearMetaImp: function () {
         var form = $('#formFile')[0];
         var data = new FormData(form);
-        $.ajax({
+        let timerInterval;
+        Swal.fire({
+          title: "Espere un momento",
+          text: "Registrando datos..",
+          timer: 40000,
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+              timer.textContent = `${Swal.getTimerLeft()}`;
+            }, 100);
+          },
+          willClose: () => {
+            clearInterval(timerInterval);
+          }
+        }).then(() => {
+          $.ajax({
             type: "POST",
             url: '/actividades/import/metas-delegacion',
             data: data,
@@ -94,6 +111,7 @@ var dao = {
             cache: false,
         }).done(function (response) {
             $("#cmFile").val("");
+          
             Swal.fire({
                 icon: response.icon,
                 title: response.title,
@@ -102,6 +120,8 @@ var dao = {
 
 
         });
+        });
+       
     },
     importMeta: function () {
         var form = $('#formFile')[0];

@@ -955,8 +955,7 @@ class FunFormats
 
     public static function guardarMeta($key)
     {
-        if (is_numeric($key['actividad_id']) && $key['mir_id'] == NULL) {
-
+        if (is_numeric($key['actividad_id'])) {
             $metaSinMir = new Metas;
             $metaSinMir->mir_id = NULL;
             $metaSinMir->clv_fondo = $key['clv_fondo'];
@@ -981,6 +980,7 @@ class FunFormats
             $metaSinMir->estatus = 0;
             $metaSinMir->ejercicio = $key['ejercicio'];
             $metaSinMir->created_user = $key['created_user'].'-'.'CM';
+            $metaSinMir->tipo_meta = "Operativo";
             $metaSinMir->save();
             if ($metaSinMir) {
                 $metaSinMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaSinMir->id . '-' . $key['ejercicio'];
@@ -1013,6 +1013,8 @@ class FunFormats
             $metaConMir->estatus = 0;
             $metaConMir->ejercicio = $key['ejercicio'];
             $metaConMir->created_user = $key['created_user'].'-'.'CM';
+            $metaSinMir->tipo_meta = "Operativo";
+
             $metaConMir->save();
             if ($metaConMir) {
                 $metaConMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaConMir->id . '-' . $key['ejercicio'];
