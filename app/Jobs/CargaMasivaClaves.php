@@ -69,43 +69,28 @@ class CargaMasivaClaves implements ShouldQueue
             if ($usuario->id_grupo == 1 || $usuario->id_grupo == 5) {
                 $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$this->filearray['0']['5'])->count();
 
-                $arrayadmconac = str_split($this->filearray['0']['0'], 1);
 
-                $valadm = v_epp::select()
-                    ->where('clv_sector_publico', $arrayadmconac[0])
-                    ->where('clv_sector_publico_f', $arrayadmconac[1])
-                    ->where('clv_sector_economia', $arrayadmconac[2])
-                    ->where('clv_subsector_economia', $arrayadmconac[3])
-                    ->where('clv_ente_publico', $arrayadmconac[4])
-                    ->where('ejercicio', $añoclave)
-                    ->count();
-                if ($valadm < 1) {
-                    array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de admonac es invalida. ');
-
-                }
                  }
 
             foreach ($this->filearray as  $k) {
                 if ($usuario->id_grupo == 4) {
                     $uppsautorizadas = uppautorizadascpnomina::where('clv_upp',$this->filearray['0']['5'])->count();
-    
-                    $arrayadmconac = str_split($this->filearray['0']['0'], 1);
-    
-                    $valadm = v_epp::select()
-                        ->where('clv_sector_publico', $arrayadmconac[0])
-                        ->where('clv_sector_publico_f', $arrayadmconac[1])
-                        ->where('clv_sector_economia', $arrayadmconac[2])
-                        ->where('clv_subsector_economia', $arrayadmconac[3])
-                        ->where('clv_ente_publico', $arrayadmconac[4])
-                        ->where('ejercicio', $añoclave)
-                        ->count();
-                    if ($valadm < 1) {
-                        array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de admonac es invalida. ');
-    
-                    }
                      }
 
-
+                     $arrayadmconac = str_split($this->filearray['0']['0'], 1);
+    
+                     $valadm = v_epp::select()
+                         ->where('clv_sector_publico', $arrayadmconac[0])
+                         ->where('clv_sector_publico_f', $arrayadmconac[1])
+                         ->where('clv_sector_economia', $arrayadmconac[2])
+                         ->where('clv_subsector_economia', $arrayadmconac[3])
+                         ->where('clv_ente_publico', $arrayadmconac[4])
+                         ->where('ejercicio', $añoclave)
+                         ->count();
+                     if ($valadm < 1) {
+                         array_push($arrayErrores, 'Error en  la fila ' . $currentrow . ': La clave de admonac es invalida. ');
+     
+                     }
                 ///validaciones de catalogo
                 $valcat = Catalogo::select()
                     ->where('grupo_id', '6')
