@@ -504,14 +504,16 @@ class MetasController extends Controller
 			$anio = DB::table('cierre_ejercicio_metas')->where('deleted_at', null)->max('ejercicio');
 			$clv = explode('/', $request->area);
 			$area_funcional = str_replace('-', "", $clv[0]);
-			$entidad_ejecutora = str_replace('-', "", $clv[1]);
+			$rj = explode('$', $clv[1]);
+			$entidad_ejecutora = str_replace('-', "", $rj[0]);
+			Log::debug($entidad_ejecutora);
 			$fondo = $request->sel_fondo != '' && $request->sel_fondo != null ? $request->sel_fondo : $request->fondo_id;
 			if (isset($request->actividad_id) && $request->actividad_id != null && $request->actividad_id != '') {
 				if ($request->actividad_id == 'ot') {
 					$act = MmlMir::create([
 						'clv_upp' => $request->upp,
-						'entidad_ejecutora' => str_replace('-', "", $clv[1]),
-						'area_funcional' => str_replace('-', "", $clv[0]),
+						'entidad_ejecutora' => $entidad_ejecutora,
+						'area_funcional' => $area_funcional,
 						'id_catalogo' => null,
 						'nombre' => $request->inputAc,
 						'ejercicio' => $anio,
@@ -540,8 +542,8 @@ class MetasController extends Controller
 					} else {
 						$act = MmlMir::create([
 							'clv_upp' => $request->upp,
-							'entidad_ejecutora' => str_replace('-', "", $clv[1]),
-							'area_funcional' => str_replace('-', "", $clv[0]),
+							'entidad_ejecutora' => $entidad_ejecutora,
+							'area_funcional' => $area_funcional,
 							'id_catalogo' => $request->actividad_id,
 							'nombre' => null,
 							'ejercicio' => $anio,
@@ -1493,7 +1495,8 @@ class MetasController extends Controller
 			->where('metas.mir_id', '=', null)
 			->where('metas.deleted_at', '=', null)
 			->where('act.upp', $upp)
-			->where('metas.ejercicio', $anio)->groupByRaw('act.area,metas.clv_fondo');
+			->where('metas.ejercicio', $anio)
+			->groupByRaw('act.area,act.entidad,metas.clv_fondo');
 		$metas = DB::table('metas')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -1523,7 +1526,7 @@ class MetasController extends Controller
 			->where('metas.estatus', '=', 0)
 			->where('pro.ejercicio', $anio)
 			->where('pro.upp', $upp)
-			->groupByRaw('pro.area,metas.clv_fondo')
+			->groupByRaw('pro.area,pro.entidad,metas.clv_fondo')
 			->unionAll($query2)->get();
 		$pp = [];
 
