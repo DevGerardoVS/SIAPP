@@ -1026,7 +1026,8 @@ class MetasController extends Controller
 			"logoLeft" => public_path() . '\img\logo.png',
 			"logoRight" => public_path() . '\img\escudoBN.png',
 			"UPP" => $upp,
-			"tipo" => $tipo
+			"tipo" => $tipo,
+			"idGrupo" => Auth::user()->id_grupo,
 		);
 		$b = array(
 			"username" => Auth::user()->username,
