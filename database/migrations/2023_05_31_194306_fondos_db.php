@@ -580,7 +580,7 @@ return new class extends Migration
             $table->string('clv_actividad',255)->unique()->nullable(true);
             $table->string('clv_fondo',2)->nullable(false);
             $table->integer('mir_id')->unsigned()->nullable(true);
-            $table->enum('tipo_meta',['Acumulativa','Continua','Especial'])->nullable(false);
+            $table->enum('tipo',['Acumulativa','Continua','Especial'])->nullable(false);
             $table->integer('beneficiario_id')->unsigned()->nullable(false);
             $table->integer('unidad_medida_id')->unsigned()->nullable(false);
             $table->integer('cantidad_beneficiarios');
