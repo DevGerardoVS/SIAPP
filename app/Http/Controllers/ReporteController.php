@@ -214,9 +214,7 @@ class ReporteController extends Controller
                 $format,
                 $parameters,
                 $database_connection
-            )->output();
-            dd($jasper);
-            // )->execute();
+            )->execute();
 
 
             if ($request->action == 'xlsx') { // Verificar el tipo de archivo

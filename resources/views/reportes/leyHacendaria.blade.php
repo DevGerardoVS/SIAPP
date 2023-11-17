@@ -71,7 +71,7 @@
                                                         @csrf
                                                         <input type="text" hidden class="anio" id="anio" name="anio">
                                                         <input type="text" hidden class="fechaCorte" id="fechaCorte" name="fechaCorte">
-                                                        <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-sm-3 align-middle" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
+                                                        <button id="btnPDF" type="submit"  class="btn btn-light btn-sm btn-labeled me-sm-3 align-middle" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
                                                             <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                                                             <span class="d-sm-none d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
                                                         </button>
