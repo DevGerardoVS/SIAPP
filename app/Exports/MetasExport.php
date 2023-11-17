@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use App\Helpers\Calendarizacion\MetasHelper;
 use App\Http\Controllers\Calendarizacion\MetasController;
+use Auth;
 
 
 class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths
@@ -25,12 +26,17 @@ class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithC
     }
     public function collection()
     {
-        $dataSet = MetasController::getActiv($this->upp, $this->anio);
+        if(Auth::user()->id_grupo == 4){
+            $dataSet = MetasController::getActiv($this->upp, $this->anio);
         $this->filas = count($dataSet);
         for ($i = 0; $i < count($dataSet); $i++) {
             unset($dataSet[$i][20]);
             $dataSet = array_values($dataSet);
         }
+        }else{
+            $dataSet = MetasController::getActivAdm($this->anio);
+        }
+        
         return collect($dataSet);
     }
 
