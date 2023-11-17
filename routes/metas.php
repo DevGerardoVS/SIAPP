@@ -51,6 +51,7 @@
 		Route::get('/actividades/flag-confirmar-metas/{upp?}/{anio?}', 'cmetas');
 		Route::get('/actividades/confirmar-metas/delegacion/{upp?}/{anio?}', 'confirmar');
 		Route::get('/actividades/check-metas/delegacion/{upp?}/{anio?}', 'checkConfirmadas');
+		Route::get('/calendarizacion/upps-delegacion', 'getUpps');
 
 
 	});

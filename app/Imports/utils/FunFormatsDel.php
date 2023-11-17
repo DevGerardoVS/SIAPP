@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Mir;
+use App\Models\Catalogo;
 use App\Http\Controllers\Calendarizacion\MetasController;
 
 class FunFormatsDel
@@ -22,6 +23,9 @@ class FunFormatsDel
         if (count($filearray) >= 1) {
             $index = 2;
             $sinmir = 0;
+            $anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
+
+            $idActividad = Catalogo::select('id')->where('clave','UUU')->where('ejercicio', $anioMax)->where('deleted_at', null)->where('grupo_id', 20)->firstOrFail();
             foreach ($filearray as $k) {
                 $status = FunFormatsDel::isNULLOrEmpy($k, $index);
                 if ($status['status']) {
@@ -33,7 +37,6 @@ class FunFormatsDel
                     return $error;
                 } else {
                     
-                    $anio = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', strval($k[7]))->where('deleted_at', null)->max('ejercicio');
                         if (strtoupper($k[13]) == 'N/A' && strtoupper($k[14]) == 'N/A') {
                             $error = array(
                                 "icon" => 'error',
@@ -45,7 +48,7 @@ class FunFormatsDel
                             $clave = '' . strval($k[0]) . '-' . strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]) . '-' . strval($k[4]) . '-' . strval($k[5]) . '-' . strval($k[6]) . '-' . strval($k[7]) . '-' . strval($k[8]) . '-' . strval($k[9]) . '-' . strval($k[10]) . '-' . strval($k[11]) . '';
                             $entidad = '' . strval($k[0]) . '-' . strval($k[1]) . '-' . strval($k[2]) . '-' . strval($k[3]) . '-' . strval($k[4]) . '-' . strval($k[5]) . '-' . strval($k[6]) . '-' . strval($k[9]) . '-' . strval($k[10]) . '-' . strval($k[11]) . '/' . strval($k[7]) . '-' . '0' . '-' . strval($k[8]) . '';
 
-                            $pres = FunFormatsDel::existPP($clave, $anio, $k[12]);
+                            $pres = FunFormatsDel::existPP($clave, $anioMax, $k[12]);
                             if (count($pres)) {
                                
                                         $mir = NULL;
@@ -101,17 +104,16 @@ class FunFormatsDel
                                                         $sinmir++;
                                                     }
                                     
-                                                        if (is_numeric($k[13])) {
+                                                    
                                                             $act = MmlMir::create([
                                                                 'clv_upp' => strval($k[7]),
                                                                 'entidad_ejecutora' => $entidad_ejecutora,
                                                                 'area_funcional' => $area_funcional,
-                                                                'id_catalogo' => $k[13],
+                                                                'id_catalogo' => $idActividad,
                                                                 'nombre' => null,
-                                                                'ejercicio' => $anio,
+                                                                'ejercicio' => $anioMax,
                                                                 'created_user' => auth::user()->username
                                                             ]);
-                                                        }
                                                             $aux[] = [
                                                                 'pp' => strval($k[11]),
                                                                 'upp' => strval($k[7]),
@@ -136,7 +138,7 @@ class FunFormatsDel
                                                                 'noviembre' => 2,
                                                                 'diciembre' => 3,
                                                                 'total' => 25,
-                                                                'ejercicio' => $anio,
+                                                                'ejercicio' => $anioMax,
                                                                 'tipo_meta'=>"RH",
                                                                 'created_user' => auth::user()->username
                                                             ];

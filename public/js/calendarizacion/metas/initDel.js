@@ -4,8 +4,9 @@ var dao = {
     getUpps: function () {
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/upps/',
-            dataType: "JSON"
+            url: '/calendarizacion/upps-delegacion',
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             const { upp } = data;
             var par = $('#upp_filter');
@@ -23,8 +24,9 @@ var dao = {
 
         $.ajax({
             type: "GET",
-            url: '/actividades/anios-metas/',
-            dataType: "JSON"
+            url: '/actividades/anios-metas',
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             var par = $('#anio_filter');
             par.html('');
@@ -46,7 +48,8 @@ var dao = {
 		$.ajax({
 			type : "GET",
 			url : "/actividades/data/metas-delegacion/"+upp+"/"+anio,
-			dataType : "json"
+            dataType: "json",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (_data) {
 			_table = $("#proyectoM");
 			_columns = [

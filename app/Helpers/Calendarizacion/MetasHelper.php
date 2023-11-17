@@ -736,7 +736,6 @@ class MetasHelper
 				->where('catalogo.clave', 'UUU')
 				->where('mml_actividades.ejercicio', $anio)
 				->where('catalogo.ejercicio', $anio);
-				$p= $actv->get();
 			$query = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -758,6 +757,7 @@ class MetasHelper
 					'unidades_medida.unidad_medida',
 				)
 				->where('metas.mir_id', '=', null)
+				->where('metas.tipo_meta', '=', 'RH')
 				->where('metas.deleted_at', '=', null)
 				->where('act.clv_upp', $upp)
 				->where('metas.ejercicio', $anio)->get();
