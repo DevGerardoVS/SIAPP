@@ -45,7 +45,7 @@ class ActividadesPpDelegacion implements FromCollection, ShouldAutoSize, WithHea
         ->where('programacion_presupuesto.deleted_at', null)
         ->where('programacion_presupuesto.ejercicio', '=', $anio)
         ->where('programacion_presupuesto.estado', 1)
-        ->groupByRaw('clv_ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
+        ->groupByRaw('upp,ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
         ->distinct()->get();
         $newData = [];
         foreach ($data as $key) {

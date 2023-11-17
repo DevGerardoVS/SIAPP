@@ -403,7 +403,7 @@ class MetasDelController extends Controller
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
 			->where('cierre_ejercicio_metas.ejercicio', $anio)
 			->where('cierre_ejercicio_metas.estatus', 'Abierto')
-			->where('programacion_presupuesto.subprograma_presupuestario', 'UUU')
+			->where('programacion_presupuesto.tipo', '=', 'RH')
 			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct()
 			->get();
@@ -479,5 +479,30 @@ class MetasDelController extends Controller
 		}
 
 
+	}public function getUpps()
+	{
+		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
+		if (auth::user()->id_grupo != 5) {
+			$upps = DB::table('v_epp')
+				->select(
+					'id',
+					'clv_upp',
+					DB::raw('CONCAT(clv_upp, " - ", upp) AS upp')
+				)->distinct()
+				->orderBy('clv_upp')
+				->groupByRaw('clv_upp')
+				->where('ejercicio', $anio)->get();
+		}else{
+			$upps= DB::table('uppautorizadascpnomina')
+			->leftJoin('v_epp', 'v_epp.clv_upp', '=', 'uppautorizadascpnomina.clv_upp')
+			->select(
+				'uppautorizadascpnomina.clv_upp',
+				DB::raw('CONCAT(uppautorizadascpnomina.clv_upp, " - ", upp) AS upp')
+				)
+				->groupBy('uppautorizadascpnomina.clv_upp')
+			->where('uppautorizadascpnomina.deleted_at', null)
+			->get();
+		}
+		return ["upp" => $upps];
 	}
 }
