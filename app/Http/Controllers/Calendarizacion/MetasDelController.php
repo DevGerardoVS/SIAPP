@@ -47,8 +47,8 @@ class MetasDelController extends Controller
 		return view('calendarizacion.metasDelegacion.proyecto');
 	}
     public static function getActivDelegacion($upp, $anio){
+
 		Controller::check_permission('viewGetMetasDel');
-		MetasDelController::cmetas($upp, $anio);
 		$query = MetasHelper::actividadesDel($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$dataSet = [];
@@ -144,28 +144,20 @@ class MetasDelController extends Controller
 		Controller::check_assign(1);
 		DB::beginTransaction();
 		try {
-
-			$flag = false;
 			if (Auth::user()->id_grupo == 5) {
-
-				Schema::create('metas_temp', function (Blueprint $table) {
-					$table->temporary();
-					$table->increments('id');
-					$table->string('clave', 25)->nullable(false);
-					$table->string('upp', 25)->nullable(false);
-					$table->string('fila', 10)->nullable(false);
-				});
 				Schema::create('metas_temp_Nomir', function (Blueprint $table) {
 					$table->temporary();
 					$table->increments('id');
 					$table->string('clave', 25)->nullable(false);
 					$table->string('upp', 25)->nullable(false);
+					$table->string('ur', 25)->nullable(false);
 					$table->string('fila', 10)->nullable(false);
 				});
 				$assets = $request->file('cmFile');
 				if ($xlsx = SimpleXLSX::parse($assets)) {
 					$filearray = $xlsx->rows();
 					array_shift($filearray);
+
 					$resul = FunFormatsDel::saveImport($filearray);
 					if ($resul['icon'] == 'success') {
 						DB::commit();
@@ -412,7 +404,7 @@ class MetasDelController extends Controller
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
 			->where('cierre_ejercicio_metas.ejercicio', $anio)
 			->where('cierre_ejercicio_metas.estatus', 'Abierto')
-			->where('programacion_presupuesto.subprograma_presupuestario', 'UUU')
+			->where('programacion_presupuesto.tipo', '=', 'RH')
 			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct()
 			->get();
@@ -488,5 +480,30 @@ class MetasDelController extends Controller
 		}
 
 
+	}public function getUpps()
+	{
+		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
+		if (auth::user()->id_grupo != 5) {
+			$upps = DB::table('v_epp')
+				->select(
+					'id',
+					'clv_upp',
+					DB::raw('CONCAT(clv_upp, " - ", upp) AS upp')
+				)->distinct()
+				->orderBy('clv_upp')
+				->groupByRaw('clv_upp')
+				->where('ejercicio', $anio)->get();
+		}else{
+			$upps= DB::table('uppautorizadascpnomina')
+			->leftJoin('v_epp', 'v_epp.clv_upp', '=', 'uppautorizadascpnomina.clv_upp')
+			->select(
+				'uppautorizadascpnomina.clv_upp',
+				DB::raw('CONCAT(uppautorizadascpnomina.clv_upp, " - ", upp) AS upp')
+				)
+				->groupBy('uppautorizadascpnomina.clv_upp')
+			->where('uppautorizadascpnomina.deleted_at', null)
+			->get();
+		}
+		return ["upp" => $upps];
 	}
 }
