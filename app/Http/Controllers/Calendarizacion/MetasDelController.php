@@ -47,8 +47,8 @@ class MetasDelController extends Controller
 		return view('calendarizacion.metasDelegacion.proyecto');
 	}
     public static function getActivDelegacion($upp, $anio){
+
 		Controller::check_permission('viewGetMetasDel');
-		MetasDelController::cmetas($upp, $anio);
 		$query = MetasHelper::actividadesDel($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$dataSet = [];
@@ -157,6 +157,7 @@ class MetasDelController extends Controller
 				if ($xlsx = SimpleXLSX::parse($assets)) {
 					$filearray = $xlsx->rows();
 					array_shift($filearray);
+
 					$resul = FunFormatsDel::saveImport($filearray);
 					if ($resul['icon'] == 'success') {
 						DB::commit();
