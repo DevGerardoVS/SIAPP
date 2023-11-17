@@ -345,6 +345,77 @@ var dao = {
             } */
           })
        
+    },    exportJasper: function () {
+        let tipo = 0;
+        let upp;
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+        } else {
+            upp = $('#upp').val();
+        }
+        let anio = $('#anio_filter').val();
+        Swal.fire({
+            title: 'Eliga que tipo de firma desea.',
+            icon: 'info',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'E-firma',
+            denyButtonText: `Autografa`,
+            denyButtonColor:'#8CD4F5',
+          }).then((result) => {
+            if (result.isConfirmed) {
+                tipo = 1;
+                $.ajax({
+                    type: 'get',
+                    url: "/actividades/jasper/" + upp + "/" + anio + "/" + tipo,
+                    dataType: "JSON",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+                }).done(function (params) {
+                    document.getElementById('tipoReporte').value = 1;
+                    $('#firmaModal').modal('show');
+                });
+            } else if (result.isDenied) {
+                let url = "/actividades/jasper/" + upp + "/" + anio + "/" + tipo;
+                window.location.href = url; 
+            }
+          })
+        
+    },
+    exportJasperMetas: function () {
+        let upp;
+        if ($('#upp').val() == '') {
+            upp = $('#upp_filter').val();
+        } else {
+            upp = $('#upp').val();
+        }
+        let anio = $('#anio_filter').val();
+        let tipo = 0;
+        Swal.fire({
+            title: 'Eliga que tipo de firma desea.',
+            icon: 'info',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'E-firma',
+            denyButtonText: `Autografa`,
+            denyButtonColor:'#8CD4F5',
+          }).then((result) => {
+            if (result.isConfirmed) {
+                tipo = 1;
+                $.ajax({
+                    type: 'get',
+                    url: "/actividades/jasper-metas/" + upp + "/" + anio+ "/" + tipo,
+                    dataType: "JSON",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+                }).done(function (params) {
+                    document.getElementById('tipoReporte').value = 2;
+                    $('#firmaModal').modal('show');
+                });
+            } else if (result.isDenied) {
+                let url =  "/actividades/jasper-metas/" + upp + "/" + anio+ "/" + tipo;
+                window.location.href = url; 
+            }
+          })
+        
     },
 };
 var init = {
