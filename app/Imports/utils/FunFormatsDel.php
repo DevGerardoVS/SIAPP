@@ -109,7 +109,7 @@ class FunFormatsDel
                                                                 'clv_upp' => strval($k[7]),
                                                                 'entidad_ejecutora' => $entidad_ejecutora,
                                                                 'area_funcional' => $area_funcional,
-                                                                'id_catalogo' => $idActividad,
+                                                                'id_catalogo' => $idActividad->id,
                                                                 'nombre' => null,
                                                                 'ejercicio' => $anioMax,
                                                                 'created_user' => auth::user()->username
