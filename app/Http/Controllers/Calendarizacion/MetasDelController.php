@@ -479,5 +479,30 @@ class MetasDelController extends Controller
 		}
 
 
+	}public function getUpps()
+	{
+		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
+		if (auth::user()->id_grupo != 5) {
+			$upps = DB::table('v_epp')
+				->select(
+					'id',
+					'clv_upp',
+					DB::raw('CONCAT(clv_upp, " - ", upp) AS upp')
+				)->distinct()
+				->orderBy('clv_upp')
+				->groupByRaw('clv_upp')
+				->where('ejercicio', $anio)->get();
+		}else{
+			$upps= DB::table('uppautorizadascpnomina')
+			->leftJoin('v_epp', 'v_epp.clv_upp', '=', 'uppautorizadascpnomina.clv_upp')
+			->select(
+				'uppautorizadascpnomina.clv_upp',
+				DB::raw('CONCAT(uppautorizadascpnomina.clv_upp, " - ", upp) AS upp')
+				)
+				->groupBy('uppautorizadascpnomina.clv_upp')
+			->where('uppautorizadascpnomina.deleted_at', null)
+			->get();
+		}
+		return ["upp" => $upps];
 	}
 }
