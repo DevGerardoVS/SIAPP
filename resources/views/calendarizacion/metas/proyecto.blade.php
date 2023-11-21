@@ -65,7 +65,9 @@
                                 
                                 <button type="button" style="justify-content: flex-end; " onclick="dao.exportPdf()"class="btn btn-outline-danger col-md-2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar PDF</button>&nbsp
                                 <button type="button" style="justify-content: float-right;" onclick="dao.exportExcel()" class="btn btn-outline-success col-md-2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar Excel</button> &nbsp
+                                @if ( Auth::user()->id_grupo == 4 || Auth::user()->id_grupo == 5 )
                                 <button type="button" class="btn btn-outline-primary float-right confirmacion" onclick="dao.ConfirmarMetas()" style="display: none"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Confirmar Metas</button>
+                                @endif
                                {{--  <button type="button" class="btn btn-outline-primary float-right" onclick="dao.DesconfirmarMetas()" ><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Confirmar Metas</button>  --}}
 
                             </div>   
