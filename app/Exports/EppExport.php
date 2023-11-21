@@ -64,11 +64,12 @@ class EppExport implements FromCollection, ShouldAutoSize, WithHeadings, WithCol
                 ve.proyecto
             "))
             ->where('ejercicio', $this->anio)
-            ->where('ve.deleted_at')
-            ->orderBy('clv_upp')->orderBy('clv_ur')->orderBy('clv_finalidad')
-            ->orderBy('clv_funcion')->orderBy('clv_subfuncion')->orderBy('clv_eje')
-            ->orderBy('clv_linea_accion')->orderBy('clv_programa_sectorial')
-            ->orderBy('clv_tipologia_conac')->orderBy('clv_programa')
+            ->where('ve.deleted_at')->orderBy('u.clv_upp')
+            ->orderBy('clv_upp')->orderBy('clv_subsecretaria')->orderBy('clv_ur')
+            ->orderBy('clv_finalidad')->orderBy('clv_funcion')->orderBy('clv_subfuncion')
+            ->orderBy('clv_eje')->orderBy('clv_linea_accion')
+            ->orderBy('clv_programa_sectorial')->orderBy('clv_tipologia_conac')
+            ->orderBy('clv_programa')->orderBy('clv_subprograma')->orderBy('clv_proyecto')
             ->get();
         }
         else if($perfil == 4) {
@@ -110,10 +111,11 @@ class EppExport implements FromCollection, ShouldAutoSize, WithHeadings, WithCol
             "))
             ->where('ejercicio', $this->anio)
             ->where('clv_upp',Auth::user()->clv_upp)
-            ->orderBy('clv_upp')->orderBy('clv_ur')->orderBy('clv_finalidad')
-            ->orderBy('clv_funcion')->orderBy('clv_subfuncion')->orderBy('clv_eje')
-            ->orderBy('clv_linea_accion')->orderBy('clv_programa_sectorial')
-            ->orderBy('clv_tipologia_conac')->orderBy('clv_programa')
+            ->orderBy('clv_upp')->orderBy('clv_subsecretaria')->orderBy('clv_ur')
+            ->orderBy('clv_finalidad')->orderBy('clv_funcion')->orderBy('clv_subfuncion')
+            ->orderBy('clv_eje')->orderBy('clv_linea_accion')
+            ->orderBy('clv_programa_sectorial')->orderBy('clv_tipologia_conac')
+            ->orderBy('clv_programa')->orderBy('clv_subprograma')->orderBy('clv_proyecto')
             ->get();
         }
         else {
@@ -161,10 +163,11 @@ class EppExport implements FromCollection, ShouldAutoSize, WithHeadings, WithCol
             ->where('ejercicio', $this->anio)
             ->where('clv_upp',$uppS,$this->upp)
             ->where('clv_ur',$urS,$this->ur)
-            ->orderBy('clv_upp')->orderBy('clv_ur')->orderBy('clv_finalidad')
-            ->orderBy('clv_funcion')->orderBy('clv_subfuncion')->orderBy('clv_eje')
-            ->orderBy('clv_linea_accion')->orderBy('clv_programa_sectorial')
-            ->orderBy('clv_tipologia_conac')->orderBy('clv_programa')
+            ->orderBy('clv_upp')->orderBy('clv_subsecretaria')->orderBy('clv_ur')
+            ->orderBy('clv_finalidad')->orderBy('clv_funcion')->orderBy('clv_subfuncion')
+            ->orderBy('clv_eje')->orderBy('clv_linea_accion')
+            ->orderBy('clv_programa_sectorial')->orderBy('clv_tipologia_conac')
+            ->orderBy('clv_programa')->orderBy('clv_subprograma')->orderBy('clv_proyecto')
             ->get();
         }
         
