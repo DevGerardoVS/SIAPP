@@ -41,6 +41,7 @@ class MetasHelper
 				->where('catalogo.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $upp)
 				->where('mml_actividades.ejercicio', $anio);
+				
 			$query2 = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -469,15 +470,9 @@ class MetasHelper
 
 	public static function MetasIndexDel()
 	{
-		$upp= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('uppautorizadascpnomina.deleted_at', null)->get();
-        $upps = [];
-        foreach ($upp as $key) {
-            $upps[]=$key->clv_upp;
-        }
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		$data = DB::table('programacion_presupuesto')
 			->leftJoin('catalogo', 'catalogo.clave', '=', 'programacion_presupuesto.subprograma_presupuestario')
-			->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'programacion_presupuesto.upp')
 			->select(
 				'upp AS clv_upp',
 				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
@@ -487,16 +482,11 @@ class MetasHelper
 				DB::raw('IFNULL(catalogo.descripcion," ") AS actividad'),
 				DB::raw('programacion_presupuesto.fondo_ramo AS fondo'),
 			)
-			->whereIn('programacion_presupuesto.upp',  $upps)
-			->where('programacion_presupuesto.subprograma_presupuestario', "UUU")
+			->where('programacion_presupuesto.tipo', 'RH')
 			->where('catalogo.grupo_id', 20)
-			->where('cierre_ejercicio_metas.estatus', 'Abierto')
 			->where('programacion_presupuesto.estado', 1)
-			->where('cierre_ejercicio_metas.deleted_at', null)
 			->where('programacion_presupuesto.deleted_at', null)
 			->where('catalogo.deleted_at', null)
-			->where('programacion_presupuesto.ejercicio', '=', $anio)
-			->where('cierre_ejercicio_metas.ejercicio', $anio)
 			->where('catalogo.ejercicio', $anio)
 			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 			->orderByRaw('upp,ur,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
@@ -625,13 +615,12 @@ class MetasHelper
 				DB::raw("IF(SUM(noviembre)>=1,1,0) AS noviembre"),
 				DB::raw("IF(SUM(diciembre)>=1,1,0) AS diciembre")
 			)
-			->where('programacion_presupuesto.subprograma_presupuestario', 'UUU')
 			->where('programacion_presupuesto.upp', $upp)
 			->where('ejercicio', $anio)
 			->where('programacion_presupuesto.deleted_at', null)
 			->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario');
 			if (Auth::user()->id_grupo == 5) {
-			$meses = $meses->where('programacion_presupuesto.subprograma_presupuestario', '!=', 'UUU');
+			$meses = $meses->where('programacion_presupuesto.tipo', 'RH');
 			}
 			$meses=$meses->get();
 		return $meses;
@@ -649,50 +638,75 @@ class MetasHelper
 			foreach ($claves as $key) {
 				if ($key->entidad == $k->entidad && $key->area == $k->area && $key->fondo == $k->fondo) {
 					if ($key->enero != $k->enero) {
-						$aux++;
+						if($k->enero !=0){
+							$aux++;
+						}
+						
 					}
-					if ($key->febrero != $k->febrero) {
-						$aux++;
+					if ($key->febrero != $k->febrero ) {
+						if($k->febrero !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->marzo != $k->marzo) {
-						$aux++;
+						if($k->marzo !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->abril != $k->abril) {
-						$aux++;
+						if($k->abril !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->mayo != $k->mayo) {
-						$aux++;
+						if($k->mayo !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->junio != $k->junio) {
-						$aux++;
+						if($k->junio !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->julio != $k->julio) {
-						$aux++;
+						if($k->julio !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->agosto != $k->agosto) {
-						$aux++;
+						if($k->agosto !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->septiembre != $k->septiembre) {
-						$aux++;
+						if($k->septiembre !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->octubre != $k->octubre) {
-						$aux++;
+						if($k->octubre !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->noviembre != $k->noviembre) {
-						$aux++;
+						if($k->noviembre !=0){
+							$aux++;
+						}
 					}
 
 					if ($key->diciembre != $k->diciembre) {
-						$aux++;
+						if($k->diciembre !=0){
+							$aux++;
+						}
 					}
 				}
 			}
@@ -722,7 +736,6 @@ class MetasHelper
 				->where('catalogo.clave', 'UUU')
 				->where('mml_actividades.ejercicio', $anio)
 				->where('catalogo.ejercicio', $anio);
-				$p= $actv->get();
 			$query = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -744,6 +757,7 @@ class MetasHelper
 					'unidades_medida.unidad_medida',
 				)
 				->where('metas.mir_id', '=', null)
+				->where('metas.tipo_meta', '=', 'RH')
 				->where('metas.deleted_at', '=', null)
 				->where('act.clv_upp', $upp)
 				->where('metas.ejercicio', $anio)->get();
@@ -845,6 +859,89 @@ class MetasHelper
 				->where('pro.upp', $upp)
 				->unionAll($query2);
 			$query=$query->get();
+			return $query;
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
+		}
+	}
+	public static function actividadesAdm($anio)
+	{
+		try {
+			$proyecto = DB::table('mml_mir')
+				->select(
+					'mml_mir.id',
+					'mml_mir.clv_upp AS upp',
+					'mml_mir.entidad_ejecutora AS entidad',
+					'mml_mir.area_funcional AS area',
+					'mml_mir.ejercicio',
+					'mml_mir.objetivo as actividad'
+				)
+				->where('mml_mir.deleted_at', '=', null)
+				->where('mml_mir.nivel', '=', 11)
+				->where('mml_mir.ejercicio', $anio);
+			$actv = DB::table('mml_actividades')
+				->leftJoin('catalogo', 'catalogo.id', '=', 'mml_actividades.id_catalogo')
+				->select(
+					'clv_upp',
+					'mml_actividades.id',
+					'entidad_ejecutora AS entidad',
+					'area_funcional AS area',
+					DB::raw("IFNULL(mml_actividades.nombre,catalogo.descripcion) AS actividad"),
+					'mml_actividades.ejercicio',
+				)
+				->where('mml_actividades.deleted_at', '=', null)
+				->where('catalogo.deleted_at', '=', null)
+				->where('mml_actividades.ejercicio', $anio);
+				
+			$query2 = DB::table('metas')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($actv, 'act', function ($join) {
+					$join->on('metas.actividad_id', '=', 'act.id');
+				})
+				->select(
+					'metas.id',
+					'metas.estatus',
+					'act.entidad',
+					'act.area',
+					'metas.ejercicio',
+					'metas.clv_fondo as fondo',
+					'act.actividad AS actividad',
+					'metas.tipo',
+					'metas.total',
+					'metas.cantidad_beneficiarios',
+					'beneficiarios.beneficiario',
+					'unidades_medida.unidad_medida',
+				)
+				->where('metas.mir_id', '=', null)
+				->where('metas.deleted_at', '=', null)
+				->where('metas.ejercicio', $anio);
+			$query = DB::table('metas')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($proyecto, 'pro', function ($join) {
+					$join->on('metas.mir_id', '=', 'pro.id');
+				})
+				->select(
+					'metas.id',
+					'metas.estatus',
+					'pro.entidad',
+					'pro.area',
+					'metas.ejercicio',
+					'metas.clv_fondo as fondo',
+					'pro.actividad AS actividad',
+					'metas.tipo',
+					'metas.total',
+					'metas.cantidad_beneficiarios',
+					'beneficiarios.beneficiario',
+					'unidades_medida.unidad_medida',
+				)
+				->where('metas.actividad_id', '=', null)
+				->where('metas.deleted_at', '=', null)
+				->where('pro.ejercicio', $anio)
+				->unionAll($query2)
+				->orderBy('id')->get();
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());

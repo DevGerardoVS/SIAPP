@@ -20,11 +20,7 @@
                             <div class="widget-body-toolbar">
                                 <a href="/calendarizacion/download-errors-excel/{!! $errors !!}" type="button" class="btn colorMorado" id="downloadbtn" name="downloadbtn" style="display:none"></a>
                                    
-                                   @if(session('success'))
-                                <div class="alert alert-success" role="alert">
-                                        {{ session('success') }}
-                                 </div>                               
-                                     @endif
+                                  
                                 <div class="row">
                                     <div class="col-md-2">
                                         <label for="lbl_operativo" id="lbl_operativo">Operativo Asignado:</label>
@@ -49,14 +45,14 @@
                                     </div>
                                     <div class="col-md-2 text-right">
                                         <label for="buttonBtnNew">&nbsp;</label>
-                                        @if (Auth::user()->clv_upp==NULL && Auth::user()->id_grupo==1)
+                                        @if (Auth::user()->clv_upp==NULL && Auth::user()->id_grupo==1 && session('cargaMasClav')==3)
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga_adm" id="button_modal_carga_adm">
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
                                         </div>
                                         @else
-                                        @if (check_assignFront(1))
+                                        @if (check_assignFront(1)  && session('cargaMasClav')==3)
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">
@@ -218,10 +214,8 @@
          $.each(failures, function (key, value) {
         fails.push(value);
         }); 
-        var serializada= JSON.stringify(fails);
         Swal.fire({
                 icon: 'error',
-                title: 'Error al importar la carga masiva <a type="button" class="btn btn-success" href="/calendarizacion/download-errors-excel/'+encodeURIComponent(serializada) +'"><i class="fa fa-floppy-o" style="color: #ffffff;">Descargar Errores</a>',
                 text: fails,
                 confirmButtonText: "Aceptar",
                 timerProgressBar: false,

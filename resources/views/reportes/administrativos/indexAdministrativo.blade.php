@@ -320,14 +320,15 @@
                         <div class="card">
                             <div class="card-body table-responsive">
                                 <table class="tableRowStyle table table-hover table-bordered order-table text-center tableSize align-middle"
-                                    id="catalogoF" data-right="1,2,3" data-left="0,4" data-center="0,1,2,3,4" style="width:100%; font-size: 14px;">
+                                    id="catalogoF" data-right="1,2,3" data-left="0,4,5" data-center="0,1,2,3,4,5" style="width:100%; font-size: 14px;">
                                     <thead class="colorMorado">
                                         <tr>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Unidad programática presupuestaría</th>
-                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Cantidad de proyectos</th>
+                                            <th class="exportable align-middle text-light sum" style="text-align: center !important">Cantidad de proyectos con presupuesto</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">Cantidad de proyectos con actividades</th>
                                             <th class="exportable align-middle text-light" style="text-align: center !important">% de avance</th>
-                                            <th class="exportable align-middle text-light" style="text-align: center !important">Estatus</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Estatus claves</th>
+                                            <th class="exportable align-middle text-light" style="text-align: center !important">Estatus metas</th>
                                         </tr>
                                     </thead>
                                 </table>

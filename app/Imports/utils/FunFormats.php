@@ -173,8 +173,6 @@ class FunFormats
                             $anio = isset($actividad->ejercicio) ? $actividad->ejercicio : $anio;
                             if (isset($actividad->area_funcional) && strtoupper($k[14]) != 'N/A') {
                                 if ($actividad->area_funcional != $area) {
-                                    log::debug($actividad->area_funcional);
-                                    log::debug($area);
                                     $error = array(
                                         "icon" => 'error',
                                         "title" => 'Error',
@@ -290,7 +288,7 @@ class FunFormats
                                             $uniqueMir = "";
                                             if (strtoupper($k[13]) == 'N/A' || is_string($k[13]) && is_numeric($k[14])) {
 
-                                                $uniqueMir = $area_funcional . strval($k[12]) . strval($k[14]) . '';
+                                                $uniqueMir = $area_funcional . strval($k[12]) . strval($k[14]) . strval($k[8]) . '';
                                             }
                                             if(strtoupper($k[13]) != 'N/A' && is_numeric($k[14])){
                                                 $error = array(
@@ -302,7 +300,7 @@ class FunFormats
                                             }
                                             if (strtoupper($k[14]) == 'N/A' && is_numeric($k[13])) {
 
-                                                $unique = $area_funcional . strval($k[12]) . strval($k[13]) . '';
+                                                $unique = $area_funcional . strval($k[12]) . strval($k[13]) . strval($k[8]) . '';
                                             }
                                             if(strtoupper($k[14]) != 'N/A'&& is_numeric($k[13])){
                                                 $error = array(
@@ -338,12 +336,12 @@ class FunFormats
                                                             }
                                                         }
                                                     if ($uniqueMir != '') {
-                                                        $conmirData = ['clave' => $uniqueMir, 'fila' => $index, 'upp' => strval($k[7])];
+                                                        $conmirData = ['clave' => $uniqueMir, 'fila' => $index, 'upp' => strval($k[7]),"ur"=> strval($k[8])];
                                                         DB::table('metas_temp')->insert($conmirData);
                                                         $conmir++;
                                                     }
                                                     if ($unique != '') {
-                                                        $sinmirData = ['clave' => $unique, 'fila' => $index, 'upp' => strval($k[7])];
+                                                        $sinmirData = ['clave' => $unique, 'fila' => $index, 'upp' => strval($k[7]),'ur'=> strval($k[8])];
                                                         DB::table('metas_temp_Nomir')->insert($sinmirData);
                                                         $sinmir++;
                                                     }
@@ -957,8 +955,7 @@ class FunFormats
 
     public static function guardarMeta($key)
     {
-        if (is_numeric($key['actividad_id']) && $key['mir_id'] == NULL) {
-
+        if (is_numeric($key['actividad_id'])) {
             $metaSinMir = new Metas;
             $metaSinMir->mir_id = NULL;
             $metaSinMir->clv_fondo = $key['clv_fondo'];
@@ -983,6 +980,7 @@ class FunFormats
             $metaSinMir->estatus = 0;
             $metaSinMir->ejercicio = $key['ejercicio'];
             $metaSinMir->created_user = $key['created_user'].'-'.'CM';
+            $metaSinMir->tipo_meta = "Operativo";
             $metaSinMir->save();
             if ($metaSinMir) {
                 $metaSinMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaSinMir->id . '-' . $key['ejercicio'];
@@ -1015,6 +1013,8 @@ class FunFormats
             $metaConMir->estatus = 0;
             $metaConMir->ejercicio = $key['ejercicio'];
             $metaConMir->created_user = $key['created_user'].'-'.'CM';
+            $metaSinMir->tipo_meta = "Operativo";
+
             $metaConMir->save();
             if ($metaConMir) {
                 $metaConMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaConMir->id . '-' . $key['ejercicio'];

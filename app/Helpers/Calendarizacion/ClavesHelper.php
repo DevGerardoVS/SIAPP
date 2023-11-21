@@ -281,8 +281,15 @@ class ClavesHelper{
         }else {
             $disponible = $presupuestoAsignado[0]->totalAsignado;
         }
+        $where = [];
+        if ($rol == 1 || $rol == 0) {
+            array_push($where, ['tipo','Operativo']);
+        }
+        if ($rol == 2) {
+            array_push($where, ['tipo','RH']);
+        }
         $estado = DB::table('programacion_presupuesto')
-        ->SELECT('*')->where('upp', $upp)->where('ejercicio', $ejercicio)->where('estado', 1)->where('deleted_at','=',null)->get();
+        ->SELECT('*')->where('upp', $upp)->where('ejercicio', $ejercicio)->where('estado', 1)->where('deleted_at','=',null)->where($where)->get();
         if ($disponible > 0 || count($estado)) {
             return false;
         }else{
@@ -290,15 +297,15 @@ class ClavesHelper{
         }
     }
     public static function detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion){
-            $fondos = DB::select("select 
-            clv_fondo,
-            f.fondo_ramo,
-            sum(RH) RH,
-            sum(Operativo) Operativo,
-            sum(Operativo) techos_presupuestal,
-            sum(calendarizado) calendarizado,
-            sum(Operativo - calendarizado) disponible,
-            ejercicio
+        $fondos = DB::select("select 
+        clv_fondo,
+        f.fondo_ramo,
+        sum(RH) RH,
+        sum(Operativo) Operativo,
+        sum(RH) techos_presupuestal,
+        sum(calendarizado) calendarizado,
+        sum(RH - calendarizado) disponible,
+        ejercicio
         from (
             select 
                 clv_fondo,

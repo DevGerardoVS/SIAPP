@@ -15,7 +15,7 @@ use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
 use Auth;
 use DB;
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\Calendarizacion\MetasHelper;
 use Illuminate\Support\Facades\Schema;
 use PDF;
@@ -26,8 +26,8 @@ use Illuminate\Support\Facades\Http;
 use Storage;
 use App\Models\calendarizacion\CierreMetas;
 use App\Models\MmlMir;
-
 use App\Models\Catalogo;
+use App\Http\Controllers\utils\ReportesJasper;
 
 
 class MetasController extends Controller
@@ -40,8 +40,6 @@ class MetasController extends Controller
             $name = "CAP_Manual_de_Usuario_UPP-CargaMasivaMetas.pdf";
             $file= public_path()."/manuales/". $name;
         } 
-		Log::debug($file);
-        //Log::channel('daily')->debug('exp '.public_path());
         $headers = array('Content-Type: application/pdf',);
 
         return response()->download($file,$name,$headers);
@@ -83,7 +81,6 @@ class MetasController extends Controller
 			} 
 			if ($key->estatus == 0 && Auth::user()->id_grupo == 4) {
 					if ($sub == 'UUU') {
-						Log::debug("UUU");
 						if ($aut) {
 							$button = $accion;
 						} else {
@@ -91,7 +88,6 @@ class MetasController extends Controller
 						}
 
 					} else {
-						Log::debug("no es UUU");
 						$button = $accion;
 					}
 
@@ -176,13 +172,8 @@ class MetasController extends Controller
 					->where('programacion_presupuesto.deleted_at', null)
 					->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 					->distinct();
-					$upps= DB::table('uppautorizadascpnomina')
-					->select('uppautorizadascpnomina.clv_upp')
-					->where('uppautorizadascpnomina.clv_upp', $upp)
-					->where('uppautorizadascpnomina.deleted_at', null)
-					->get();
-					if(count($upps)) {
-					$activs = $activs->where('programacion_presupuesto.subprograma_presupuestario', '!=','UUU' );
+					if(auth::user()->id_grupo == 4) {
+					$activs = $activs->where('programacion_presupuesto.tipo', '=','Operativo');
 					}
 					$activs=$activs->get();
 				foreach ($activs as $key) {
@@ -357,7 +348,6 @@ class MetasController extends Controller
 					->where('mml_mir.clv_pp', $areaAux[7])
 					->where('mml_mir.ejercicio', $check['anio'])
 					->groupByRaw('clave')->get();
-				Log::debug($activ );
 				if (count($activ) == 0) {
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 				}
@@ -372,9 +362,7 @@ class MetasController extends Controller
 	public function getActividMir($area, $entidad,$fondo)
 	{
 		$areaAux = explode('-', $area);
-		Log::debug($areaAux);
 		$entidadAux = explode('-', $entidad);
-		Log::debug($entidadAux);
 		$check = $this->checkClosing($entidadAux[0]);
 		if ($check['status']) {
 			$m = DB::table('v_epp')
@@ -511,14 +499,16 @@ class MetasController extends Controller
 			$anio = DB::table('cierre_ejercicio_metas')->where('deleted_at', null)->max('ejercicio');
 			$clv = explode('/', $request->area);
 			$area_funcional = str_replace('-', "", $clv[0]);
-			$entidad_ejecutora = str_replace('-', "", $clv[1]);
+			$rj = explode('$', $clv[1]);
+			$entidad_ejecutora = str_replace('-', "", $rj[0]);
+			Log::debug($entidad_ejecutora);
 			$fondo = $request->sel_fondo != '' && $request->sel_fondo != null ? $request->sel_fondo : $request->fondo_id;
 			if (isset($request->actividad_id) && $request->actividad_id != null && $request->actividad_id != '') {
 				if ($request->actividad_id == 'ot') {
 					$act = MmlMir::create([
 						'clv_upp' => $request->upp,
-						'entidad_ejecutora' => str_replace('-', "", $clv[1]),
-						'area_funcional' => str_replace('-', "", $clv[0]),
+						'entidad_ejecutora' => $entidad_ejecutora,
+						'area_funcional' => $area_funcional,
 						'id_catalogo' => null,
 						'nombre' => $request->inputAc,
 						'ejercicio' => $anio,
@@ -545,18 +535,16 @@ class MetasController extends Controller
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 						return response()->json($res, 200);
 					} else {
-						Log::debug("else no existe".count($meta));
 						$act = MmlMir::create([
 							'clv_upp' => $request->upp,
-							'entidad_ejecutora' => str_replace('-', "", $clv[1]),
-							'area_funcional' => str_replace('-', "", $clv[0]),
+							'entidad_ejecutora' => $entidad_ejecutora,
+							'area_funcional' => $area_funcional,
 							'id_catalogo' => $request->actividad_id,
 							'nombre' => null,
 							'ejercicio' => $anio,
 							'created_user' => $username
 						]);
 
-						Log::debug($act);
 					}
 				}
 			} else {
@@ -727,7 +715,6 @@ class MetasController extends Controller
 		$user = Auth::user()->username;
 		$fecha = Carbon::now()->toDateTimeString();
 		if ($meta) {
-			Log::debug($request->subp);
 			if($request->subp!='UUU'){
 			$meta->tipo = $request->tipo_Ac;
 			$meta->beneficiario_id = $request->tipo_Be;
@@ -1011,11 +998,16 @@ class MetasController extends Controller
 		ini_set('max_execution_time', 5000);
 		ini_set('memory_limit', '1024M');
 		Controller::check_permission('getMetas');
-		$data = $this->getActiv($upp, $year);
+		if(Auth::user()->id_grupo ==4){
+			$data = $this->getActiv($upp, $year);
 		for ($i = 0; $i < count($data); $i++) {
 			unset($data[$i][20]);
 			$data = array_values($data);
 		}
+		}else{
+			$data = MetasController::getActivAdm($year);
+		}
+		
 		view()->share('data', $data);
 		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF')->setPaper('a4', 'landscape');
 		$b = array(
@@ -1034,7 +1026,8 @@ class MetasController extends Controller
 			"logoLeft" => public_path() . '\img\logo.png',
 			"logoRight" => public_path() . '\img\escudoBN.png',
 			"UPP" => $upp,
-			"tipo" => $tipo
+			"tipo" => $tipo,
+			"idGrupo" => Auth::user()->id_grupo,
 		);
 		$b = array(
 			"username" => Auth::user()->username,
@@ -1042,82 +1035,10 @@ class MetasController extends Controller
 			"modulo" => 'Metas'
 		);
 		Controller::bitacora($b);
-		return $this->jasper($request);
+		return ReportesJasper::claves($request);
 	}
-	public function jasper($request)
-	{
-		ob_end_clean();
-		ob_start();
-		date_default_timezone_set('America/Mexico_City');
-		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
-		$fecha = date('d-m-Y');
-		$marca = strtotime($fecha);
-		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
-		$report = '';
-		if ($request['tipo'] == 0) {
-			$report = "reporte_calendario_upp_autografa";
-			$file = sys_get_temp_dir(). $report;
-		} else {
-			$report = "Reporte_Calendario_UPP";
-			$file = sys_get_temp_dir(). $report;
-		}
-		$ruta = sys_get_temp_dir();
-		//Eliminación si ya existe reporte
-		if (File::exists($ruta . "/" . $report . ".pdf")) {
-			File::delete($ruta . "/" . $report . ".pdf");
-		}
-		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
-		$format = array('pdf');
-		$output_file = sys_get_temp_dir();
-		$logoLeft = public_path() . "/img/escudoBN.png";
-        $logoRight = public_path() . "/img/logo.png";
-		Log::info('reuqest', [json_encode($request)]);
-		$parameters = [
-			"anio" => $request['anio'],
-			"logoLeft" => $logoLeft,
-            "logoRight" => $logoRight,
-			"upp" => $request['UPP'],
-		];
 
-		$database_connection = \Config::get('database.connections.mysql');
 
-		$jasper = new PHPJasper;
-		$jasper->process(
-			$report_path,
-			$output_file,
-			$format,
-			$parameters,
-			$database_connection
-		)->execute();
-		// dd($jasper);
-		//agrego comentario para revisar version de main...
-		$archivo = $output_file . '/' . $report . '.pdf';
-		if (file_exists($output_file . '/' . $report . '.pdf')) {
-			$archivo = $output_file . '/' . $report . '.pdf';
-			$archivo2 = file_get_contents($archivo);
-			$reportePDF = Response::make($archivo2, 200, [
-				'Content-Type' => 'application/pdf'
-			]);
-		}
-		
-		// $reportePDF = Response::make(file_get_contents(public_path() . "/reportes/" . $report . ".pdf"), 200, [
-		// 	'Content-Type' => 'application/pdf'
-		// ]);
-
-		if ($request['tipo'] == 0) {
-			if (file_exists($archivo)) {
-				return response()->download($archivo);
-			}else {
-				return response()->json('error', 200);
-			}
-			
-		}
-		if ($reportePDF != '') {
-			return response()->json('done', 200);
-		} else {
-			return response()->json('error', 200);
-		}
-	}
 	public function importPlantilla(Request $request)
 	{
 		Controller::check_permission('putMetas');
@@ -1151,6 +1072,7 @@ class MetasController extends Controller
 					$table->increments('id');
 					$table->string('clave', 25)->nullable(false);
 					$table->string('upp', 25)->nullable(false);
+					$table->string('ur', 25)->nullable(false);
 					$table->string('fila', 10)->nullable(false);
 				});
 				Schema::create('metas_temp_Nomir', function (Blueprint $table) {
@@ -1158,6 +1080,7 @@ class MetasController extends Controller
 					$table->increments('id');
 					$table->string('clave', 25)->nullable(false);
 					$table->string('upp', 25)->nullable(false);
+					$table->string('ur', 25)->nullable(false);
 					$table->string('fila', 10)->nullable(false);
 				});
 				$assets = $request->file('cmFile');
@@ -1391,78 +1314,7 @@ class MetasController extends Controller
 
 	public function jasperMetas($upp, $anio, $tipo)
 	{
-		ob_end_clean();
-		ob_start();
-		date_default_timezone_set('America/Mexico_City');
-		setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
-		$fecha = date('d-m-Y');
-		$date = $anio;
-		$marca = strtotime($fecha);
-		$fechaCompleta = strftime('%A %e de %B de %Y', $marca);
-
-		$report = '';
-		if ($tipo == 0) {
-			$report = "proyecto_calendario_actividades_autografa";
-			$file = sys_get_temp_dir(). $report;
-		} else {
-			$report = "proyecto_calendario_actividades";
-			$file = sys_get_temp_dir(). $report;
-		}
-
-		$ruta = sys_get_temp_dir();
-		//Eliminación si ya existe reporte
-		if (File::exists($ruta . "/" . $report . ".pdf")) {
-			File::delete($ruta . "/" . $report . ".pdf");
-		}
-		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
-		$format = array('pdf');
-		$output_file = sys_get_temp_dir();
-		$logoLeft = public_path() . "/img/escudoBN.png";
-        $logoRight = public_path() . "/img/logo.png";
-
-		$parameters = array(
-			"anio" => $date,
-			"logoLeft" => $logoLeft,
-            "logoRight" => $logoRight,
-			"upp" => $upp,
-		);
-		if($tipo != 0) $parameters["extension"] = "pdf";
-		
-		$database_connection = \Config::get('database.connections.mysql');
-
-
-		$jasper = new PHPJasper;
-		$jasper->process(
-			$report_path,
-			$output_file,
-			$format,
-			$parameters,
-			$database_connection
-		)->execute();
-		//dd($jasper);
-		$archivo = $output_file . '/' . $report . '.pdf';
-		if (file_exists($output_file . '/' . $report . '.pdf')) {
-			$archivo = $output_file . '/' . $report . '.pdf';
-			$archivo2 = file_get_contents($archivo);
-			$reportePDF = Response::make($archivo2, 200, [
-				'Content-Type' => 'application/pdf'
-			]);
-		}
-		
-		if ($tipo == 0) {
-			if (file_exists($archivo)) {
-				return response()->download($archivo);
-			}else {
-				return response()->json('error', 200);
-			}
-		} else {
-			if ($reportePDF != '') {
-				return response()->json('done', 200);
-			} else {
-				return response()->json('error', 400);
-			}
-		}
-
+		return ReportesJasper::Metas($upp, $anio, $tipo);
 	}
 	public static function keyMonth($n)
 	{
@@ -1490,13 +1342,13 @@ class MetasController extends Controller
 			$s = MetasController::cmetas($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$user = Auth::user()->username;
-		/* 	$check = MetasHelper::validateMesesfinal($upp, $anio);
+		 	$check = MetasHelper::validateMesesfinal($upp, $anio);
 			if (!$check["status"]) {
 				$foot = "<a type='button' class='btn btn-success col-md-5 ml-auto ' href=/actividades/meses/error/$upp/$anio > <i class='fa fa-download' aria-hidden='true'></i>Descargar index</a>";
 				$res = ["status" => false, "mensaje" => ["icon" => 'warning', "text" => 'No puedes confirmar las metas, existen diferencias en los meses autorizados por las claves presupuestales', "title" => "Diferencias en las metas" ,"footer"=>$foot]];
 				return response()->json($res, 200);
 
-			} */
+			} 
 			if ($s['status']) {
 				DB::beginTransaction();
 				$metas = MetasHelper::actividades($upp, $anio);
@@ -1541,7 +1393,7 @@ class MetasController extends Controller
 			Controller::check_permission('putMetas');
 			DB::beginTransaction();
 			$user = Auth::user()->username;
-			$metas = MetasHelper::actividadesConf($upp, $anio);
+			$metas = MetasHelper::actividades($upp, $anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$i = 0;
 			foreach ($metas as $key) {
@@ -1595,6 +1447,7 @@ class MetasController extends Controller
 				'mml_mir.area_funcional AS area',
 				'mml_mir.ejercicio',
 				'mml_mir.objetivo as actividad'
+
 			)
 			->where('mml_mir.deleted_at', '=', null)
 			->where('mml_mir.nivel', '=', 11)
@@ -1614,14 +1467,7 @@ class MetasController extends Controller
 			->where('catalogo.deleted_at', '=', null)
 			->where('mml_actividades.clv_upp', $upp)
 			->where('mml_actividades.ejercicio', $anio);
-			$upps= DB::table('uppautorizadascpnomina')
-			->select('uppautorizadascpnomina.clv_upp')
-			->where('uppautorizadascpnomina.clv_upp', $upp)
-			->where('uppautorizadascpnomina.deleted_at', null)
-			->get();
-			if(count($upps)) {
-			$actv = $actv->where('catalogo.clave', '!=','UUU' );
-			}
+
 		$query2 = DB::table('metas')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -1643,12 +1489,21 @@ class MetasController extends Controller
 				'metas.cantidad_beneficiarios',
 				'beneficiarios.beneficiario',
 				'unidades_medida.unidad_medida',
-				'metas.clv_fondo'
+				'metas.clv_fondo',
+				DB::raw('CONCAT(act.area,metas.clv_fondo) AS clave'),
+
 			)
 			->where('metas.mir_id', '=', null)
 			->where('metas.deleted_at', '=', null)
 			->where('act.upp', $upp)
-			->where('metas.ejercicio', $anio);
+			->where('metas.ejercicio', $anio)
+			->groupByRaw('act.area,act.entidad,metas.clv_fondo');
+		if (Auth::user()->id_grupo == 4) {
+			$query2 = $query2->where('metas.tipo_meta', '=', 'Operativo');
+		}
+		if (Auth::user()->id_grupo == 5) {
+			$query2 = $query2->where('metas.tipo_meta', '=', 'RH');
+		}
 		$metas = DB::table('metas')
 			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
 			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -1670,14 +1525,23 @@ class MetasController extends Controller
 				'metas.cantidad_beneficiarios',
 				'beneficiarios.beneficiario',
 				'unidades_medida.unidad_medida',
-				'metas.clv_fondo'
+				'metas.clv_fondo',
+				DB::raw('CONCAT(pro.area,metas.clv_fondo) AS clave'),
 			)
 			->where('metas.actividad_id', '=', null)
 			->where('metas.deleted_at', '=', null)
 			->where('metas.estatus', '=', 0)
 			->where('pro.ejercicio', $anio)
 			->where('pro.upp', $upp)
-			->unionAll($query2)->get();
+			->groupByRaw('pro.area,pro.entidad,metas.clv_fondo')
+			->unionAll($query2);
+		if (Auth::user()->id_grupo == 4) {
+			$metas = $metas->where('metas.tipo_meta', '=', 'Operativo');
+		}
+		if (Auth::user()->id_grupo == 5) {
+			$metas = $metas->where('metas.tipo_meta', '=', 'RH');
+		}
+		$metas = $metas->get();
 		$pp = [];
 
 		foreach ($metas as $key) {
@@ -1687,7 +1551,8 @@ class MetasController extends Controller
 				->select(
 					'upp AS clv_upp',
 					DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-					DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional')
+					DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
+					'fondo_ramo AS fondo'
 				)
 				->where('deleted_at', null)
 				->where('finalidad', $area[0])
@@ -1716,25 +1581,22 @@ class MetasController extends Controller
 				'upp AS clv_upp',
 				'fondo_ramo',
 				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional')
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
+				'fondo_ramo AS fondo',
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo) AS clave'),
+
 			)
 			->where('upp', $upp)
 			->where('deleted_at', null)
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
-			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
+			->groupByRaw('ur,fondo_ramo ,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct();
-			$upps= DB::table('uppautorizadascpnomina')
-			->select('uppautorizadascpnomina.clv_upp')
-			->where('uppautorizadascpnomina.clv_upp', $upp)
-			->where('uppautorizadascpnomina.deleted_at', null)
-			->get();
-			if(count($upps)) {
-			$activsPP = $activsPP->where('programacion_presupuesto.subprograma_presupuestario', '!=','UUU' );
-			}
-			$activsPP =$activsPP->get();
-			
+		if (Auth::user()->id_grupo == 4) {
+			$activsPP = $activsPP->where('programacion_presupuesto.tipo', '=', 'Operativo');
+		}
+		$activsPP = $activsPP->get();
 		if (count($metas) >= 1) {
-			if (count($metas) >= count($activsPP)) {
+			if (count($metas) >= count($activsPP) && count($activsPP) == count($pp)) {
 				return ["status" => true];
 
 			} else {
@@ -1791,14 +1653,11 @@ class MetasController extends Controller
 				->where('mml_actividades.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $_upp)
 				->where('mml_actividades.ejercicio', $anio)->get();
-				Log::debug("cmetasadd");
-				Log::debug($actv);
 				if(count($actv)){
 					$metas = $actv[0]->estatus == 1 ? false : true;
 				}else{
 				$metas = true;
 				}
-			Log::debug("status: ".$metas);
 		}
 		return ["status" => $metas];
 	}
@@ -1813,5 +1672,40 @@ class MetasController extends Controller
 			return ['mese' => []];
 		}
 
+	}
+	public static function getActivAdm($anio)
+	{
+		Controller::check_permission('getMetas');
+		$query = MetasHelper::actividadesAdm($anio);
+		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
+		$dataSet = [];
+		foreach ($query as $key) {
+			$area = str_split($key->area);
+			$entidad = str_split($key->entidad);
+			$i = array(
+				$key->id,
+				$area[0],
+				$area[1],
+				$area[2],
+				$area[3],
+				'' . strval($area[4]) . strval($area[5]) . '',
+				$area[6],
+				$area[7],
+				'' . strval($entidad[0]) . strval($entidad[1]) . strval($entidad[2]) . '',
+				'' . strval($entidad[4]) . strval($entidad[5]) . '',
+				'' . strval($area[8]) . strval($area[9]) . '',
+				'' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
+				'' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
+				$key->fondo,
+				$key->actividad,
+				$key->tipo,
+				$key->total,
+				$key->cantidad_beneficiarios,
+				$key->beneficiario,
+				$key->unidad_medida,
+			);
+			$dataSet[] = $i;
+		}
+		return $dataSet;
 	}
 }

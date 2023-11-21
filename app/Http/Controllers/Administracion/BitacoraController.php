@@ -32,10 +32,6 @@ class BitacoraController extends Controller
 			if($mes !=00||$mes !='00'){
 				$data=$data->whereMonth('created_at', '=',$mes);
 			}
-         /*    ->whereMonth('fecha_presentacion', '=', $mes);
-            if ($year != $anio) {
-                $query = $query->whereYear('fecha_presentacion', '=', $anio);
-            } */
 			
             $data =$data->get();
         $dataSet=array();
@@ -54,14 +50,12 @@ class BitacoraController extends Controller
         ->orderBy('fecha_movimiento')
 		->distinct()
 		->get();
-            Log::debug($data);
         foreach($data as $d){
             $ds = array(
                 $d->anio
             );
             $dataSet[]=$ds;
         }
-        /* $newdata=array_unique($dataSet); */
         return $dataSet;
     }
     public function exportBitacora($anio,$mes) {
