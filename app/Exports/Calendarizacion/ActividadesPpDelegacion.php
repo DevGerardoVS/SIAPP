@@ -41,11 +41,11 @@ class ActividadesPpDelegacion implements FromCollection, ShouldAutoSize, WithHea
             DB::raw('IF(noviembre>=1,2,"0") AS noviembre'),
             DB::raw('IF(diciembre>=1,3,"0") AS diciembre')
         )
-        ->where('programacion_presupuesto.tipo	', 'RH')
+        ->where('programacion_presupuesto.tipo', 'RH')
         ->where('programacion_presupuesto.deleted_at', null)
         ->where('programacion_presupuesto.ejercicio', '=', $anio)
         ->where('programacion_presupuesto.estado', 1)
-        ->groupByRaw('clv_ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
+        ->groupByRaw('upp,ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
         ->distinct()->get();
         $newData = [];
         foreach ($data as $key) {
