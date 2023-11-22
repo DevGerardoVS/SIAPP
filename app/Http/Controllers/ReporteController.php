@@ -136,8 +136,24 @@ class ReporteController extends Controller
         
         $dataSet = array();
         $data = DB::select("CALL proyecto_calendario_actividades(" . $anio . ", " . $upp . ", " . $fecha . ", " . $tipo . ")");
+
         foreach ($data as $d) {
-            $ds = array($d->clv_upp, $d->clv_ur, $d->clv_programa, $d->clv_subprograma, $d->clv_proyecto, $d->clv_fondo, $d->actividad, number_format(floatval($d->cantidad_beneficiarios)), $d->beneficiario, $d->unidad_medida, $d->tipo, number_format(floatval($d->meta_anual)), number_format(floatval($d->enero)), number_format(floatval($d->febrero)), number_format(floatval($d->marzo)), number_format(floatval($d->abril)), number_format(floatval($d->mayo)), number_format(floatval($d->junio)), number_format(floatval($d->julio)), number_format(floatval($d->agosto)), number_format(floatval($d->septiembre)), number_format(floatval($d->octubre)), number_format(floatval($d->noviembre)), number_format(floatval($d->diciembre)));
+            $cantidad_beneficiario = $d->clv_upp != null ? "" : number_format(floatval($d->cantidad_beneficiarios));
+            $meta_anual = $d->clv_upp != null ? "" : number_format(floatval($d->meta_anual));
+            $enero = $d->clv_upp != null ? "" : number_format(floatval($d->enero));
+            $febrero = $d->clv_upp != null ? "" : number_format(floatval($d->febrero));
+            $marzo = $d->clv_upp != null ? "" : number_format(floatval($d->marzo));
+            $abril = $d->clv_upp != null ? "" : number_format(floatval($d->abril));
+            $mayo = $d->clv_upp != null ? "" : number_format(floatval($d->mayo));
+            $junio = $d->clv_upp != null ? "" : number_format(floatval($d->junio));
+            $julio = $d->clv_upp != null ? "" : number_format(floatval($d->julio));
+            $agosto = $d->clv_upp != null ? "" : number_format(floatval($d->agosto));
+            $septiembre = $d->clv_upp != null ? "" : number_format(floatval($d->septiembre));
+            $octubre = $d->clv_upp != null ? "" : number_format(floatval($d->octubre));
+            $noviembre = $d->clv_upp != null ? "" : number_format(floatval($d->noviembre));
+            $diciembre = $d->clv_upp != null ? "" : number_format(floatval($d->diciembre));
+
+            $ds = array($d->clv_upp, $d->clv_ur, $d->clv_programa, $d->clv_subprograma, $d->clv_proyecto, $d->clv_fondo, $d->actividad, $cantidad_beneficiario, $d->beneficiario, $d->unidad_medida, $d->tipo, $meta_anual, $enero, $febrero, $marzo, $abril, $mayo, $junio, $julio, $agosto, $septiembre, $octubre, $noviembre, $diciembre);
             $dataSet[] = $ds;
         }
         return response()->json([
