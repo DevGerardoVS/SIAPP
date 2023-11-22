@@ -342,128 +342,100 @@ class MetasHelper
 		foreach ($claves as $key) {
 			$c[] = $key->sub;
 		}
-		$data3 = DB::table('mml_mir')
-			->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'mml_mir.clv_upp')
-			->leftJoin('programacion_presupuesto AS pp', 'pp.upp', '=', 'mml_mir.clv_upp')
+		MetasHelper::llenadoTemp($upp,$anio);
+		$mirdatos = DB::table('mirtemp')
+			->leftJoin('pptemp', 'pptemp.clave', '=', 'mirtemp.clave')
 			->select(
-				'mml_mir.clv_upp',
-				'mml_mir.entidad_ejecutora',
-				'mml_mir.area_funcional',
+				'mirtemp.clv_upp',
+				'mirtemp.entidad_ejecutora',
+				'mirtemp.area_funcional',
 				DB::raw('"N/A" AS clv_actadmon'),
-				DB::raw('mml_mir.id AS mir_act'),
-				DB::raw('objetivo AS actividad'),
-				DB::raw('"" AS fondo'),
-			)
-			->where(function ($query) use ($c) {
+				DB::raw('mirtemp.mir_id AS mir_act'),
+				DB::raw('mirtemp.objetivo AS actividad'),
+				'pptemp.fondo',
+				'enero',
+				'febrero',
+				'marzo',
+				'abril',
+				'mayo',
+				'junio',
+				'julio',
+				'agosto',
+				'septiembre',
+				'octubre',
+				'noviembre',
+				'diciembre'
+			)->where(function ($query) use ($c) {
 				foreach ($c as $sub) {
-					$query->where('pp.subprograma_presupuestario', '!=', $sub);
+					$query->where('pptemp.sub_pp', '!=', $sub);
 				}
-			})
-			->where('mml_mir.deleted_at', null)
-			->where('pp.deleted_at', null)
-			->where('mml_mir.nivel', 11)
-			->where('mml_cierre_ejercicio.ejercicio', $anio)
-			->where('mml_cierre_ejercicio.statusm', 1)
-			->where('pp.estado', 1)
-			->where('mml_mir.ejercicio', $anio)
-			->where('pp.ejercicio', $anio)
-			->where('mml_mir.clv_upp', $upp)
-			->where('pp.upp', $upp)
-			->groupByRaw('mml_mir.id')
-			->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur')
-			->distinct();
-		if (Auth::user()->id_grupo == 4) {
-			$data3 = $data3->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'mml_mir.clv_upp')
-				->where('cierre_ejercicio_metas.deleted_at', null)
-				->where('cierre_ejercicio_metas.estatus', 'Abierto');
-		}
-		$data2 = DB::table('programacion_presupuesto AS pp')
-			->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'pp.upp')
-			->leftJoin('v_epp', 'v_epp.clv_upp', '=', 'pp.upp')
-			->select(
-				'pp.upp AS clv_upp',
-				DB::raw('CONCAT(pp.upp,pp.subsecretaria,pp.ur) AS entidad_ejecutora'),
-				DB::raw('CONCAT(pp.finalidad,pp.funcion,pp.subfuncion,pp.eje,pp.linea_accion,pp.programa_sectorial,pp.tipologia_conac,pp.programa_presupuestario,pp.subprograma_presupuestario,pp.proyecto_presupuestario) AS area_funcional'),
-				DB::raw('"ot" AS clv_actadmon'),
-				DB::raw('"N/A" AS mir_act'),
-				DB::raw('"" AS actividad'),
-				DB::raw('pp.fondo_ramo AS fondo'),
-			)
-			->where("pp.upp", $upp)
-			->where('pp.estado', 1)
-			->where('pp.deleted_at', null)
-			->where('mml_cierre_ejercicio.deleted_at', null)
-			->where('pp.ejercicio', '=', $anio)
-			->where('mml_cierre_ejercicio.statusm', 1)
-			->where('presupuestable', '=', 1)
-			->where(function ($query) use ($c) {
-				foreach ($c as $sub) {
-					$query->where('pp.subprograma_presupuestario', '!=', $sub);
-				}
-			})
-			->orderBy('pp.ur')
-			->groupByRaw('pp.ur,pp.fondo_ramo,pp.finalidad,pp.funcion,pp.subfuncion,pp.eje,pp.linea_accion,pp.programa_sectorial,pp.tipologia_conac,pp.programa_presupuestario,pp.subprograma_presupuestario,pp.proyecto_presupuestario')
-			->distinct();
-		if (Auth::user()->id_grupo == 4) {
-			$data2 = $data2->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'pp.upp')
-				->where('cierre_ejercicio_metas.ejercicio', $anio)
-				->where('cierre_ejercicio_metas.estatus', 'Abierto');
-		}
-		$data2 = $data2->get();
-		foreach ($data2 as $key) {
-			DB::table('pptemp')->insert(get_object_vars($key));
-		}
-		$mirdatos = $data3->get();
-		$newdata2 = DB::table('pptemp')
+			});
+
+		$dataCat = DB::table('pptemp')
+			->leftJoin('catalogo', 'catalogo.clave', '=', 'pptemp.sub_pp')
 			->select(
 				'pptemp.clv_upp',
 				'pptemp.entidad_ejecutora',
 				'pptemp.area_funcional',
-				'pptemp.clv_actadmon',
-				'pptemp.mir_act',
-				'pptemp.actividad',
-				'pptemp.fondo'
+				DB::raw('IFNULL(catalogo.id,"N/A") AS clv_actadmon'),
+				DB::raw('"N/A" AS mir_act'),
+				DB::raw('IFNULL(catalogo.descripcion," ") AS actividad'),
+				'pptemp.fondo',
+				'enero',
+				'febrero',
+				'marzo',
+				'abril',
+				'mayo',
+				'junio',
+				'julio',
+				'agosto',
+				'septiembre',
+				'octubre',
+				'noviembre',
+				'diciembre'
 
-			)->where('pptemp.clv_actadmon', 'ot')
-			->where(function ($query) use ($mirdatos) {
-				foreach ($mirdatos as $sub) {
+			)
+			->where('catalogo.grupo_id', 20)
+			->where('catalogo.deleted_at', null)
+			->where('catalogo.ejercicio', $anio)
+			->whereIn('pptemp.sub_pp', $c);
+		$data = DB::table('pptemp')
+			->select(
+				'pptemp.clv_upp',
+				'pptemp.entidad_ejecutora',
+				'pptemp.area_funcional',
+				DB::raw('"OT" AS clv_actadmon'),
+				DB::raw('"N/A" AS mir_act'),
+				DB::raw('"" AS actividad'),
+				'pptemp.fondo',
+				'enero',
+				'febrero',
+				'marzo',
+				'abril',
+				'mayo',
+				'junio',
+				'julio',
+				'agosto',
+				'septiembre',
+				'octubre',
+				'noviembre',
+				'diciembre'
+
+			)
+			->where(function ($query) use ($c) {
+				foreach ($c as $sub) {
+					$query->where('pptemp.sub_pp', '!=', $sub);
+				}
+			})
+			->where('pptemp.clv_upp', $upp)
+		/* 	->where(function ($query) use ($dataMir) {
+				foreach ($dataMir as $sub) {
 					$query->where('pptemp.area_funcional', '!=', $sub->area_funcional);
 				}
-			});
-		$data = DB::table('programacion_presupuesto')
-			->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'programacion_presupuesto.upp')
-			->leftJoin('catalogo', 'catalogo.clave', '=', 'programacion_presupuesto.subprograma_presupuestario')
-			->select(
-				'upp AS clv_upp',
-				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
-				DB::raw('IFNULL(catalogo.id,"N/A") AS clv_actadmon'),
-				DB::raw('"N/A"AS mir_act'),
-				DB::raw('IFNULL(catalogo.descripcion," ") AS actividad'),
-				DB::raw('programacion_presupuesto.fondo_ramo AS fondo'),
-			)
-			->where("programacion_presupuesto.upp", $upp)
-			->where('programacion_presupuesto.estado', 1)
-			->where('programacion_presupuesto.deleted_at', null)
-			->where('mml_cierre_ejercicio.deleted_at', null)
-			->where('programacion_presupuesto.ejercicio', '=', $anio)
-			->where('catalogo.deleted_at', null)
-			->where('catalogo.grupo_id', 20)
-			->where('catalogo.ejercicio', $anio)
-			->where('mml_cierre_ejercicio.ejercicio', $anio)
-			->where('mml_cierre_ejercicio.statusm', 1)
-			->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-			->orderByRaw('upp,ur,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-			->unionAll($data3)
-			->unionAll($newdata2)
-			->distinct();
-
-		if (Auth::user()->id_grupo == 4) {
-			$data = $data->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'programacion_presupuesto.upp')
-				->where('cierre_ejercicio_metas.deleted_at', null)
-				->where('cierre_ejercicio_metas.ejercicio', $anio)
-				->where('cierre_ejercicio_metas.estatus', 'Abierto');
-		}
+			}) */
+			->unionAll($dataCat)
+			->unionAll($mirdatos);
+	
 		$data = $data->get();
 		return $data;
 	}
@@ -946,6 +918,83 @@ class MetasHelper
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());
 			throw new \Exception($exp->getMessage());
+		}
+	}
+	public static function llenadoTemp($upp, $anio)
+	{
+		$data2 = DB::table('programacion_presupuesto AS pp')
+			->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'pp.upp')
+			->leftJoin('v_epp', 'v_epp.clv_upp', '=', 'pp.upp')
+			->select(
+				DB::raw('CONCAT(pp.finalidad,pp.funcion,pp.subfuncion,pp.eje,pp.linea_accion,pp.programa_sectorial,pp.tipologia_conac,pp.programa_presupuestario,pp.subprograma_presupuestario,pp.proyecto_presupuestario,pp.upp,pp.subsecretaria,pp.ur) AS clave'),
+				'pp.upp AS clv_upp',
+				'pp.ur AS clv_ur',
+				DB::raw('CONCAT(pp.upp,pp.subsecretaria,pp.ur) AS entidad_ejecutora'),
+				DB::raw('CONCAT(pp.finalidad,pp.funcion,pp.subfuncion,pp.eje,pp.linea_accion,pp.programa_sectorial,pp.tipologia_conac,pp.programa_presupuestario,pp.subprograma_presupuestario,pp.proyecto_presupuestario) AS area_funcional'),
+				DB::raw('pp.fondo_ramo AS fondo'),
+				'subprograma_presupuestario AS sub_pp',
+				DB::raw("IF(SUM(enero)>=1,1,'0') AS enero"),
+				DB::raw("IF(SUM(febrero)>=1,1,'0') AS febrero"),
+				DB::raw("IF(SUM(marzo)>=1,1,'0') AS marzo"),
+				DB::raw("IF(SUM(abril)>=1,1,'0') AS abril"),
+				DB::raw("IF(SUM(mayo)>=1,1,'0') AS mayo"),
+				DB::raw("IF(SUM(junio)>=1,1,'0') AS junio"),
+				DB::raw("IF(SUM(julio)>=1,1,'0') AS julio"),
+				DB::raw("IF(SUM(agosto)>=1,1,'0') AS agosto"),
+				DB::raw("IF(SUM(septiembre)>=1,1,'0') AS septiembre"),
+				DB::raw("IF(SUM(octubre)>=1,1,'0') AS octubre"),
+				DB::raw("IF(SUM(noviembre)>=1,1,'0') AS noviembre"),
+				DB::raw("IF(SUM(diciembre)>=1,1,'0') AS diciembre")
+			)
+			->where("pp.upp", $upp)
+			->where('pp.estado', 1)
+			->where('pp.deleted_at', null)
+			->where('mml_cierre_ejercicio.deleted_at', null)
+			->where('pp.ejercicio', '=', $anio)
+			->where('mml_cierre_ejercicio.statusm', 1)
+			->where('presupuestable', '=', 1)
+			->orderBy('pp.ur')
+			->groupByRaw('pp.ur,pp.fondo_ramo,pp.finalidad,pp.funcion,pp.subfuncion,pp.eje,pp.linea_accion,pp.programa_sectorial,pp.tipologia_conac,pp.programa_presupuestario,pp.subprograma_presupuestario,pp.proyecto_presupuestario')
+			->distinct();
+		if (Auth::user()->id_grupo == 4) {
+			$data2 = $data2->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'pp.upp')
+				->where('pp.tipo', 'Operativo')
+				->where('cierre_ejercicio_metas.ejercicio', $anio)
+				->where('cierre_ejercicio_metas.estatus', 'Abierto');
+		}
+		$data2 = $data2->get();
+		foreach ($data2 as $key) {
+			DB::table('pptemp')->insert(get_object_vars($key));
+		}
+
+		$dataMir = DB::table('mml_mir')
+		->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'mml_mir.clv_upp')
+		->select(
+			DB::raw('CONCAT(mml_mir.area_funcional,mml_mir.entidad_ejecutora) AS clave'),
+			'mml_mir.clv_upp',
+			'mml_mir.clv_ur',
+			'mml_mir.entidad_ejecutora',
+			'mml_mir.area_funcional',
+			DB::raw('mml_mir.id AS mir_id'),
+			'objetivo'
+		)
+		->where('mml_mir.deleted_at', null)
+		->where('mml_mir.nivel', 11)
+		->where('mml_cierre_ejercicio.ejercicio', $anio)
+		->where('mml_cierre_ejercicio.statusm', 1)
+		->where('mml_mir.ejercicio', $anio)
+		->where('mml_mir.clv_upp', $upp)
+		->groupByRaw('mml_mir.id')
+		->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur')
+		->distinct();
+		if (Auth::user()->id_grupo == 4) {
+			$dataMir = $dataMir->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'pp.upp')
+				->where('cierre_ejercicio_metas.ejercicio', $anio)
+				->where('cierre_ejercicio_metas.estatus', 'Abierto');
+		}
+		$dataMir = $dataMir->get();
+		foreach ($dataMir as $key) {
+			DB::table('mirtemp')->insert(get_object_vars($key));
 		}
 	}
 }
