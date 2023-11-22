@@ -104,6 +104,8 @@
        if(!$('.div_upp').hasClass('d-none')){
            var upp = !$("#upp_filter").val() ? "null" : $("#upp_filter").val();
            formData.append("upp",upp);
+           var tipo = !$("#tipo_filter").val() ? "null" : $("#tipo_filter").val();
+           formData.append("tipo",tipo);
         }
 
         $.ajax({
