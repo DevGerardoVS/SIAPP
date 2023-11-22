@@ -205,13 +205,12 @@ class ReporteController extends Controller
                     $parameters["upp"] = $upp;
                     $nameFile = $nameFile . "_UPP_" . $upp;
                 }
-            }
 
-            if($nombre == "calendario_clave_presupuestaria" || $nombre == "proyecto_calendario_actividades"){
-                if(Auth::user()->id_grupo == 1) $parameters["tipo"] = $request->tipo_filter == "RH" ? "'RH'" : ($request->tipo_filter == "Operativo" ? "'Operativo'": "null"); 
+                if(Auth::user()->id_grupo == 1){
+                    if($request->tipo_filter !=null) $parameters["tipo"] = $request->tipo_filter;
+                }
                 else $parameters["tipo"] = Auth::user()->id_grupo == 5 ? "RH" : "Operativo";
             }
-
 
             $database_connection = \Config::get('database.connections.mysql');
 
@@ -223,7 +222,6 @@ class ReporteController extends Controller
                 $parameters,
                 $database_connection
             )->execute();
-
 
             if ($request->action == 'xlsx') { // Verificar el tipo de archivo
                 if (File::exists($output_file . "/" . $report . ".xlsx") && filesize($file . ".xlsx") < 4097) { // Verificar si el archivo generado está vacío y Verificar si existe el archivo guardado en caso de existir lo elimina
