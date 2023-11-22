@@ -988,7 +988,7 @@ class MetasHelper
 		->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur')
 		->distinct();
 		if (Auth::user()->id_grupo == 4) {
-			$dataMir = $dataMir->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'pp.upp')
+			$dataMir = $dataMir->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'mml_mir.clv_upp')
 				->where('cierre_ejercicio_metas.ejercicio', $anio)
 				->where('cierre_ejercicio_metas.estatus', 'Abierto');
 		}
