@@ -47,7 +47,7 @@
                     </select>
                 </div>
                 
-                @if(Auth::user()->id_grupo != 4)
+                @if(Auth::user()->id_grupo != 4 && Auth::user()->id_grupo != 5)
                     <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
                         <label for="fechaCorte_filter" class="form-label fw-bold mt-md-1">Fecha de corte:</label>
                     </div>
@@ -104,7 +104,7 @@
         <br>
 
         <ul class="nav nav-tabs " id="tabs" role="tablist">
-            @if(Auth::user()->id_grupo != 4)
+            @if(Auth::user()->id_grupo != 4 && Auth::user()->id_grupo != 5)
             <li class="nav-item" >
                 <button class="nav-link textoMorado @if(Auth::user()->id_grupo != 4) active @endif" role="tab" type="button" id="fondoMensual_tab" data-bs-toggle="tab" data-bs-target="#fondoMensual" aria-controls="fondoMensual" @if(Auth::user()->id_grupo != 4)aria-selected="true"@endif>Calendario Ramo-Fondo</button>
             </li>
@@ -116,12 +116,12 @@
             </li>
             @endif
             <li class="nav-item" >
-                <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 4) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->id_grupo == 4)aria-selected="true"@endif>Calendario Clave Presupuestaria</button>
+                <button class="nav-link textoMorado @if(Auth::user()->id_grupo == 4 || Auth::user()->id_grupo == 5) active @endif" role="tab" type="button" id="calendarioGeneral_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneral" aria-controls="calendarioGeneral" @if(Auth::user()->id_grupo == 4 || Auth::user()->id_grupo == 5)aria-selected="true"@endif>Calendario Clave Presupuestaria</button>
             </li>
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="calendarioGeneralActividad_tab" data-bs-toggle="tab" data-bs-target="#calendarioGeneralActividad" aria-controls="calendarioGeneralActividad" aria-selected="false">Calendario Actividades</button>
             </li>
-            @if(Auth::user()->id_grupo != 4)
+            @if(Auth::user()->id_grupo != 4 && Auth::user()->id_grupo != 5)
             <li class="nav-item" >
                 <button class="nav-link textoMorado" role="tab" type="button" id="avanceProyectoActividadUPP_tab" data-bs-toggle="tab" data-bs-target="#avanceProyectoActividadUPP" aria-controls="avanceProyectoActividadUPP" aria-selected="false">Proyectos con Metas</button>
             </li>
@@ -130,7 +130,7 @@
 
         <div class="tab-content" style="font-size: 14px;">
             {{-- fondo mensual A--}}
-            @if(Auth::user()->id_grupo != 4)
+            @if(Auth::user()->id_grupo != 4 && Auth::user()->id_grupo != 5)
             <div class="tab-pane @if(Auth::user()->id_grupo != 4) active @endif" id="fondoMensual" role="tabpanel" aria-labelledby="fondoMensual_tab" >    
                 <div class="row mx-auto">
                     <div class="col-md-12">
@@ -234,7 +234,7 @@
             </div>
             @endif
             {{-- Proyecto calendario general D--}}
-            <div class="tab-pane @if(Auth::user()->id_grupo == 4) active @endif" id="calendarioGeneral" role="tabpanel" aria-labelledby="calendarioGeneral_tab" >    
+            <div class="tab-pane @if(Auth::user()->id_grupo == 4 || Auth::user()->id_grupo == 5) active @endif" id="calendarioGeneral" role="tabpanel" aria-labelledby="calendarioGeneral_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
                         <div class="card">
@@ -328,7 +328,7 @@
                 </div>
             </div>
             {{-- Avance de proyectos con actividades por upp F--}}
-            @if(Auth::user()->id_grupo != 4)
+            @if(Auth::user()->id_grupo != 4 && Auth::user()->id_grupo != 5)
             <div class="tab-pane" id="avanceProyectoActividadUPP" role="tabpanel" aria-labelledby="avanceProyectoActividadUPP_tab" >    
                 <div class="row mx-auto" >
                     <div class="col-md-12">
@@ -396,9 +396,11 @@
                 redrawTable(tabla);
             });
 
-            var user = {!! json_encode((array)auth()->user()->clv_upp) !!};
+            var userGroup = {!! json_encode((array)auth()->user()->id_grupo) !!};
+            
+            if(userGroup[0] == 5) $('.div_upp').removeClass('d-none');
 
-            if(user[0] == null){
+            if(userGroup[0] == 1){
                 var dt = $('#catalogoA');
                 tabla="#catalogoA";
                 letter="A";
@@ -407,6 +409,7 @@
                 tabla="#catalogoD";
                 letter="D";
             }
+
             dt.DataTable().clear().destroy();
             getData(tabla,letter);
            
