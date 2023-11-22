@@ -1901,18 +1901,20 @@ return new class extends Migration {
             drop temporary table aux_3;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE calendario_general(in anio int, in corte date, in uppC varchar(3))
+        DB::unprepared("CREATE PROCEDURE calendario_general(in anio int, in corte date, in uppC varchar(3),in tipo varchar(9))
         begin
             set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
             set @catalogo := 'catalogo';
             set @upp := '';
+               set @tipo := '';
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
                 set @catalogo := 'catalogo_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
             if (uppC is not null) then set @upp := CONCAT('and pp.upp = \"',uppC,'\"'); end if;
+               if (tipo is not null) then set @tipo := concat('and pp.tipo = \"',tipo,'\"'); end if;
         
             drop temporary table if exists aux_0;
             drop temporary table if exists aux_1;
@@ -1963,7 +1965,7 @@ return new class extends Migration {
             from ',@tabla,' pp
             join ',@catalogo,' c on c.clave = pp.upp
             and c.deleted_at is null and c.grupo_id = 6
-            where pp.ejercicio = ',anio,' and pp.',@corte,' ',@upp,';
+            where pp.ejercicio = ',anio,' and pp.',@corte,' ',@upp,' ',@tipo,';
             ');
         
             prepare stmt  from @query;
@@ -2195,14 +2197,18 @@ return new class extends Migration {
             drop temporary table if exists aux_1;
         END;");
         
-        DB::unprepared("CREATE PROCEDURE proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date)
+        DB::unprepared("CREATE PROCEDURE proyecto_calendario_actividades(in anio int, in upp varchar(3), in corte date,in tipo varchar(9))
         begin
             set @upp := '';
             set @corte := 'deleted_at is null';
             set @tabla := 'metas';
+            set @catalogo := 'catalogo';
+            set @tipo := '';
             if(upp is not null) then set @upp := concat(\"where clv_upp = '\",upp,\"'\"); end if;
+            if(tipo is not null) then set @tipo := concat('and m.tipo_meta = \"',tipo,'\"'); end if;
             if(corte is not null) then
                 set @tabla := 'metas_hist';
+                set @catalogo := 'catalogo_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
             
@@ -2218,7 +2224,10 @@ return new class extends Migration {
                 substring(ma.area_funcional,11,3) clv_subprograma,
                 substring(ma.area_funcional,14,3) clv_proyecto,
                 m.clv_fondo,
-                ma.nombre actividad,
+                case
+                    when c.descripcion is not null then c.descripcion
+                    else ma.nombre 
+                end actividad,
                 m.cantidad_beneficiarios,
                 b.beneficiario,
                 u2.unidad_medida,
@@ -2238,7 +2247,9 @@ return new class extends Migration {
             join unidades_medida um on m.unidad_medida_id = um.id
             join mml_actividades ma on m.actividad_id = ma.id
             join unidades_medida u2 on m.unidad_medida_id = u2.id
-            where mir_id is null and m.ejercicio = \",anio,\" and m.\",@corte,\"
+            left join \",@catalogo,\" c on c.clave = substring(ma.area_funcional,11,3)
+            and c.ejercicio = \",anio,\" and c.deleted_at is null and c.grupo_id = 20
+            where mir_id is null and m.ejercicio = \",anio,\" and m.deleted_at is null \",@tipo,\"
             union all 
             select 
                 mm.clv_upp,
@@ -2247,7 +2258,7 @@ return new class extends Migration {
                 substring(mm.area_funcional,11,3) clv_subprograma,
                 substring(mm.area_funcional,14,3) clv_proyecto,
                 m.clv_fondo,
-                mm.indicador actividad,
+                mm.objetivo actividad,
                 m.cantidad_beneficiarios,
                 b.beneficiario,
                 um.unidad_medida,
@@ -2266,69 +2277,67 @@ return new class extends Migration {
             join beneficiarios b on m.beneficiario_id = b.id
             join unidades_medida um on m.unidad_medida_id = um.id
             join mml_mir mm on m.mir_id = mm.id
-            where m.mir_id is not null and m.ejercicio = \",anio,\" and m.\",@corte,\";
+            where m.mir_id is not null \",@tipo,\" and m.ejercicio = \",anio,\" and m.deleted_at is NULL;
             \");
         
             prepare stmt from @query;
             execute stmt;
             deallocate prepare stmt;
             
+            set @query := concat('
             create temporary table aux_1
             select distinct
-                clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto,clv_fondo
-            from aux_0;
+                c.descripcion upp,clv_upp,clv_ur,clv_programa,clv_subprograma,
+                clv_proyecto,clv_fondo
+            from aux_0 a0
+            left join ',@catalogo,' c on a0.clv_upp = c.clave
+            and c.ejercicio = ',anio,' and c.grupo_id = 6 and c.deleted_at is null;
+            ');
+        
+            prepare stmt from @query;
+            execute stmt;
+            deallocate prepare stmt;
             
             set @query := concat(\"
             select 
+                upp,
                 case 
-                    when tipo != '' then ''
+                    when actividad != '' then ''
                     else clv_upp
                 end clv_upp,
                 case 
-                    when tipo != '' then ''
+                    when actividad != '' then ''
                     else clv_ur
                 end clv_ur,
                 case 
-                    when tipo != '' then ''
+                    when actividad != '' then ''
                     else clv_programa
                 end clv_programa,
                 case 
-                    when tipo != '' then ''
+                    when actividad != '' then ''
                     else clv_subprograma
                 end clv_subprograma,
                 case 
-                    when tipo != '' then ''
+                    when actividad != '' then ''
                     else clv_proyecto
                 end clv_proyecto,
                 case 
-                    when tipo != '' then ''
+                    when actividad != '' then ''
                     else clv_fondo
                 end clv_fondo,
-                actividad,
-                cantidad_beneficiarios,
-                beneficiario,
-                unidad_medida,
-                tipo,
-                meta_anual,
-                enero,febrero,marzo,abril,mayo,
-                junio,julio,agosto,septiembre,
-                octubre,noviembre,diciembre
+                actividad,cantidad_beneficiarios,beneficiario,unidad_medida,
+                tipo,meta_anual,enero,febrero,marzo,abril,mayo,junio,julio,
+                agosto,septiembre,octubre,noviembre,diciembre,'' capturista
             from (
-            select *
-                from (
-                    select 
-                        clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto,clv_fondo,
-                        '' actividad,'' cantidad_beneficiarios,'' beneficiario,'' unidad_medida,'' tipo,'' meta_anual,
-                        '' enero,'' febrero,'' marzo,'' abril,'' mayo,'' junio,'' julio,'' agosto,'' septiembre,'' octubre,'' noviembre,''diciembre
-                    from aux_1
-                    union all 
-                    select * from aux_0
-                    order by clv_upp,clv_ur,clv_programa,
-                    clv_subprograma,clv_proyecto,clv_fondo,
-                    actividad,cantidad_beneficiarios,
-                    beneficiario,unidad_medida,tipo
-                )r \",@upp,\"
-            )t;
+                select '' upp,a0.* from aux_0 a0
+                union all
+                select 
+                    upp,clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto,clv_fondo,
+                    '' actividad,0 cantidad_beneficiarios,'' beneficiario,'' unidad_medida,'' tipo,0 meta_anual,
+                    0 enero,0 febrero,0 marzo,0 abril,0 mayo,0 junio,0 julio,0 agosto,0 septiembre,0 octubre,0 noviembre,0 diciembre
+                from aux_1
+                order by clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto,clv_fondo,actividad
+            )t \",@upp,\";
             \");
         
             prepare stmt from @query;
@@ -3520,7 +3529,10 @@ return new class extends Migration {
                 where ejercicio = \",anio,\"
 				and e.deleted_at is null
 				\",@upp,\"
-				\",@ur,\"
+				\",@ur,\" order by clv_upp,clv_subsecretaria,clv_ur,
+				clv_finalidad,clv_funcion,clv_subfuncion,
+				clv_eje,clv_linea_accion,clv_programa_sectorial,clv_tipologia_conac,
+				clv_programa,clv_subprograma,clv_proyecto
 			\");
                
 			prepare stmt  from @query;

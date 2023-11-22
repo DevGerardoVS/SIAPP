@@ -1520,7 +1520,6 @@ $(document).ready(function () {
     $('#btnSave').click(function (e) {
         e.preventDefault();
         let flag = false;
-        //let flag = dao.validMeses();
         console.log($('#actividad_id').val());
         if ($('#actividad_id').val() == 'ot') {
             let nombre = $("#inputAc").val();
@@ -1537,8 +1536,10 @@ $(document).ready(function () {
                 flag = true;
             }
 
-        } 
-        if ($('#conmir').val() ) {
+        } else {
+            flag = true;
+        }
+        if ($('#conmir').val()) {
             init.validateCreate($('#actividad'));
             if ($('#actividad').valid() && flag) {
                dao.crearMeta();

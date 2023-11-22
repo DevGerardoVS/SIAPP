@@ -105,6 +105,18 @@ class EppController extends Controller
         ]);
     }
 
+    public function getUPP(Request $request){
+        $listaUPP = DB::table('v_epp')
+            ->where('ejercicio','=',$request->anio)
+            ->distinct()
+            ->orderBy('clv_upp')
+            ->get(['clv_upp','upp']);
+
+        return response()->json([
+            'listaUPP'=> $listaUPP
+        ]);
+    }
+
     public function exportExcelEPP(Request $request){
         /*Si no coloco estas lineas Falla*/
         ob_end_clean();

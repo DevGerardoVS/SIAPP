@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\utils;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Log;
 use JasperPHP\JasperPHP as PHPJasper;
@@ -40,12 +41,13 @@ class ReportesJasper
 		mkdir($output_file, 0777, true);
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
-		Log::info('reuqest', [json_encode($request)]);
+		$tipo = $request['idGrupo'] == 5 ? "RH" : "Operativo"; 
 		$parameters = [
 			"anio" => $request['anio'],
 			"logoLeft" => $logoLeft,
             "logoRight" => $logoRight,
 			"upp" => $request['UPP'],
+			"tipo" => $tipo,
 		];
 
 		$database_connection = \Config::get('database.connections.mysql');
@@ -117,12 +119,14 @@ class ReportesJasper
 		$output_file = sys_get_temp_dir();
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
+		$grupo = Auth::user()->id_grupo == 5 ? "RH" : "Operativo"; 
 
 		$parameters = array(
 			"anio" => $date,
 			"logoLeft" => $logoLeft,
             "logoRight" => $logoRight,
 			"upp" => $upp,
+			"tipo" => $grupo,
 		);
 		if($tipo != 0) $parameters["extension"] = "pdf";
 		
