@@ -170,6 +170,7 @@ class ReporteController extends Controller
     {
         ini_set('max_execution_time', 600); // Tiempo máximo de ejecución 
 
+        log::info($request);
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
         $fechaCorte = !$request->input('fechaCorte') ? $request->fechaCorte_filter : $request->input('fechaCorte');
@@ -206,8 +207,9 @@ class ReporteController extends Controller
                 }
             }
 
-            if($nombre == "calendario_clave_presupuestaria" || $nombre == "proyecto_calendario_actividades" && Auth::user()->id_grupo != 1){
-                $parameters["tipo"] = Auth::user()->id_grupo == 5 ? "RH" : "Operativo";
+            if($nombre == "calendario_clave_presupuestaria" || $nombre == "proyecto_calendario_actividades"){
+                if(Auth::user()->id_grupo == 1) $parameters["tipo"] = $request->tipo_filter == "RH" ? "'RH'" : ($request->tipo_filter == "Operativo" ? "'Operativo'": "null"); 
+                else $parameters["tipo"] = Auth::user()->id_grupo == 5 ? "RH" : "Operativo";
             }
 
 
