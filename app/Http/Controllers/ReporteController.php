@@ -109,6 +109,7 @@ class ReporteController extends Controller
         if (Auth::user()->clv_upp != null) $upp = "'" . Auth::user()->clv_upp . "'";
         else $upp = $request->upp != "null" ? "'" . $request->upp . "'"  : "null";
         $tipo = Auth::user()->id_grupo == 5 ? "'RH'" : (Auth::user()->id_grupo == 4 ? "'Operativo'" : "null");
+        log::info($tipo);
         $dataSet = array();
         $data = DB::select("CALL calendario_general(" . $anio . ", " . $fecha . ", " . $upp . ",". $tipo. ")");
 
@@ -200,8 +201,8 @@ class ReporteController extends Controller
                 }
             }
 
-            if($nombre == "calendario_clave_presupuestaria" || $nombre == "proyecto_calendario_actividades" && Auth::user()->id_grupo != 1){
-                $parameters["tipo"] = Auth::user()->id_grupo == 5 ? "RH" : "Operativo";
+            if($nombre == "calendario_clave_presupuestaria" || $nombre == "proyecto_calendario_actividades"){
+                $parameters["tipo"] = Auth::user()->id_grupo == 5 ? "'RH'" : (Auth::user()->id_grupo == 4 ? "'Operativo'" : "null");
             }
 
 
