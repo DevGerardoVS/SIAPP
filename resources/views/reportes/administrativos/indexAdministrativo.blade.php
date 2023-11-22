@@ -73,6 +73,21 @@
                         
                 </div>
             @endif
+            {{-- Tipo --}}
+            @if(Auth::user()->id_grupo == 1)
+            <div class="col-md-10 col-sm-12 d-md-flex mt-2">
+                <div class="col-sm-3 col-md-3 col-lg-2 text-md-end div_upp d-none">
+                    <label for="tipo_filter" class="form-label fw-bold mt-md-1">Tipo:</label>
+                </div>
+                <div class="col-sm-12 col-md-3 col-lg-2 div_upp d-none">
+                    <select class="form-control filters filters_tipo" id="tipo_filter" name="tipo_filter" autocomplete="tipo_filter">
+                        <option value="">Todos</option>
+                        <option value="Operativo">Operativo</option>
+                        <option value="RH">RH</option>
+                    </select>
+                </div>
+                </div>
+        @endif
             {{-- botones de descarga --}}
             <div class="d-flex flex-wrap justify-content-end mb-5 mt-sm-2 mt-lg-0">
                 <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-3 btn_click" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
@@ -470,6 +485,11 @@
         });
 
         $("#form").on("change",".filters_upp",function(e){
+            dt.DataTable().clear().destroy();
+            getData(tabla,letter);
+        });
+
+        $("#form").on("change",".filters_tipo",function(e){
             dt.DataTable().clear().destroy();
             getData(tabla,letter);
         });
