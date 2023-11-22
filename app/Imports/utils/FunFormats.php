@@ -705,9 +705,6 @@ class FunFormats
                         }
 
                     } else {
-                        if ($meses->enero <= 0) {
-                            $mesCero[] = "ENERO";
-                        }
                         $mesesV++;
                         $arrMV[] = "ENERO";
                     }
@@ -718,10 +715,6 @@ class FunFormats
                             $arrM[] = "febrero";
                         }
                     } else {
-                        if ($meses->febrero <= 0) {
-                            $mesCero[] = "FEBRERO";
-                        }
-
                         $mesesV++;
                         $arrMV[] = "FEBRERO";
                     }
@@ -732,9 +725,6 @@ class FunFormats
                             $arrM[] = "marzo";
                         }
                     } else {
-                        if ($meses->marzo <= 0) {
-                            $mesCero[] = "MARZO";
-                        }
                         $mesesV++;
                         $arrMV[] = "MARZO";
                     }
@@ -747,9 +737,6 @@ class FunFormats
 
 
                     } else {
-                        if ($meses->abril <= 0) {
-                            $mesCero[] = "ABRIL";
-                        }
                         $mesesV++;
                         $arrMV[] = "ABRIL";
                     }
@@ -760,9 +747,6 @@ class FunFormats
                             $arrM[] = "mayo";
                         }
                     } else {
-                        if ($meses->mayo <= 0) {
-                            $mesCero[] = "MAYO";
-                        }
                         $mesesV++;
                         $arrMV[] = "MAYO";
                     }
@@ -773,9 +757,6 @@ class FunFormats
                             $arrM[] = "junio";
                         }
                     } else {
-                        if ($meses->junio <= 0) {
-                            $mesCero[] = "JUNIO";
-                        }
                         $mesesV++;
                         $arrMV[] = "JUNIO";
                     }
@@ -786,9 +767,6 @@ class FunFormats
                             $arrM[] = "julio";
                         }
                     } else {
-                        if ($meses->julio <= 0) {
-                            $mesCero[] = "JULIO";
-                        }
                         $mesesV++;
                         $arrMV[] = "JULIO";
                     }
@@ -800,9 +778,6 @@ class FunFormats
                         }
 
                     } else {
-                        if ($meses->agosto <= 0) {
-                            $mesCero[] = "AGOSTO";
-                        }
                         $mesesV++;
                         $arrMV[] = "AGOSTO";
                     }
@@ -813,10 +788,6 @@ class FunFormats
                             $arrM[] = "septiembre";
                         }
                     } else {
-                        if ($meses->septiembre <= 0) {
-                            $mesCero[] = "SEPTIEMBRE";
-                        }
-
                         $mesesV++;
                         $arrMV[] = "SEPTIEMBRE";
                     }
@@ -827,10 +798,6 @@ class FunFormats
                             $arrM[] = "octubre";
                         }
                     } else {
-                        if ($meses->octubre <= 0) {
-                            $mesCero[] = "OCTUBRE";
-                        }
-
                         $mesesV++;
                         $arrMV[] = "OCTUBRE";
                     }
@@ -842,9 +809,6 @@ class FunFormats
                             $arrM[] = "noviembre";
                         }
                     } else {
-                        if ($meses->noviembre <= 0) {
-                            $mesCero[] = "NOVIEMBRE";
-                        }
                         $mesesV++;
                         $arrMV[] = "NOVIEMBRE";
                     }
@@ -856,9 +820,6 @@ class FunFormats
                             $arrM[] = "diciembre";
                         }
                     } else {
-                        if ($meses->diciembre <= 0) {
-                            $mesCero[] = "DICIEMBRE";
-                        }
                         $mesesV++;
                         $arrMV[] = "DICIEMBRE";
                     }
