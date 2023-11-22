@@ -998,11 +998,16 @@ class MetasController extends Controller
 		ini_set('max_execution_time', 5000);
 		ini_set('memory_limit', '1024M');
 		Controller::check_permission('getMetas');
-		$data = $this->getActiv($upp, $year);
+		if(Auth::user()->id_grupo ==4){
+			$data = $this->getActiv($upp, $year);
 		for ($i = 0; $i < count($data); $i++) {
 			unset($data[$i][20]);
 			$data = array_values($data);
 		}
+		}else{
+			$data = MetasController::getActivAdm($year);
+		}
+		
 		view()->share('data', $data);
 		$pdf = PDF::loadView('calendarizacion.metas.proyectoPDF')->setPaper('a4', 'landscape');
 		$b = array(
@@ -1667,5 +1672,40 @@ class MetasController extends Controller
 			return ['mese' => []];
 		}
 
+	}
+	public static function getActivAdm($anio)
+	{
+		Controller::check_permission('getMetas');
+		$query = MetasHelper::actividadesAdm($anio);
+		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
+		$dataSet = [];
+		foreach ($query as $key) {
+			$area = str_split($key->area);
+			$entidad = str_split($key->entidad);
+			$i = array(
+				$key->id,
+				$area[0],
+				$area[1],
+				$area[2],
+				$area[3],
+				'' . strval($area[4]) . strval($area[5]) . '',
+				$area[6],
+				$area[7],
+				'' . strval($entidad[0]) . strval($entidad[1]) . strval($entidad[2]) . '',
+				'' . strval($entidad[4]) . strval($entidad[5]) . '',
+				'' . strval($area[8]) . strval($area[9]) . '',
+				'' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
+				'' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
+				$key->fondo,
+				$key->actividad,
+				$key->tipo,
+				$key->total,
+				$key->cantidad_beneficiarios,
+				$key->beneficiario,
+				$key->unidad_medida,
+			);
+			$dataSet[] = $i;
+		}
+		return $dataSet;
 	}
 }

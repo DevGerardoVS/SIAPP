@@ -3529,7 +3529,10 @@ return new class extends Migration {
                 where ejercicio = \",anio,\"
 				and e.deleted_at is null
 				\",@upp,\"
-				\",@ur,\"
+				\",@ur,\" order by clv_upp,clv_subsecretaria,clv_ur,
+				clv_finalidad,clv_funcion,clv_subfuncion,
+				clv_eje,clv_linea_accion,clv_programa_sectorial,clv_tipologia_conac,
+				clv_programa,clv_subprograma,clv_proyecto
 			\");
                
 			prepare stmt  from @query;

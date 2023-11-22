@@ -4,9 +4,8 @@ var dao = {
     getUpps: function () {
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/upps-delegacion',
-            dataType: "JSON",
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+            url: '/calendarizacion/upps/',
+            dataType: "JSON"
         }).done(function (data) {
             const { upp } = data;
             var par = $('#upp_filter');
@@ -24,9 +23,8 @@ var dao = {
 
         $.ajax({
             type: "GET",
-            url: '/actividades/anios-metas',
-            dataType: "JSON",
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+            url: '/actividades/anios-metas/',
+            dataType: "JSON"
         }).done(function (data) {
             var par = $('#anio_filter');
             par.html('');
@@ -48,8 +46,7 @@ var dao = {
 		$.ajax({
 			type : "GET",
 			url : "/actividades/data/metas-delegacion/"+upp+"/"+anio,
-            dataType: "json",
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+			dataType : "json"
         }).done(function (_data) {
 			_table = $("#proyectoM");
 			_columns = [
@@ -77,7 +74,8 @@ var dao = {
             _height = '1px';
             _pagination = 15;
 			_gen.setTableScrollFotter(_table, _columns, _data);
-		});
+        });
+        
     },
 
     getPlantillaCmUpp: function () {
@@ -87,24 +85,7 @@ var dao = {
     crearMetaImp: function () {
         var form = $('#formFile')[0];
         var data = new FormData(form);
-        let timerInterval;
-        Swal.fire({
-          title: "Espere un momento",
-          text: "Registrando datos..",
-          timer: 40000,
-          timerProgressBar: true,
-          didOpen: () => {
-            Swal.showLoading();
-            const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-              timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
-          },
-          willClose: () => {
-            clearInterval(timerInterval);
-          }
-        }).then(() => {
-          $.ajax({
+        $.ajax({
             type: "POST",
             url: '/actividades/import/metas-delegacion',
             data: data,
@@ -114,7 +95,6 @@ var dao = {
             cache: false,
         }).done(function (response) {
             $("#cmFile").val("");
-          
             Swal.fire({
                 icon: response.icon,
                 title: response.title,
@@ -123,8 +103,6 @@ var dao = {
 
 
         });
-        });
-       
     },
     importMeta: function () {
         var form = $('#formFile')[0];
@@ -268,34 +246,26 @@ var dao = {
             }
         });
     },
-    rCMetasUpp: function (upp,anio) {
+    rCMetasUpp: function (anio) {
         $.ajax({
             type: "GET",
-            url: '/actividades/flag-confirmar-metas/'+upp+"/"+anio,
+            url: '/actividades/flag-confirmar-metas/'+anio,
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             console.log(data);
-            if (data.status) {
-                dao.checkCMetasUpp(upp,anio);
-            } else {
+            if (!data.status) {
                 $(".confirmacion").hide();
-              /*   $('#validMetas').addClass(" alert alert-danger").addClass("text-center"); */
-            /*     $('#validMetas').text("").removeClass().removeClass(" alert alert-danger");
-                $(".cmupp").hide(); */
-            }
-            
-
+            } 
         });
     },
-    checkCMetasUpp: function (upp,anio) {
+    checkCMetasUpp: function (anio) {
         $.ajax({
             type: "GET",
-            url: '/actividades/check-metas/delegacion/'+upp+"/"+anio,
+            url: '/actividades/check-metas/delegacion/'+anio,
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            console.log(data);
             if (data.status) {
                  $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
@@ -306,6 +276,8 @@ var dao = {
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                  $('#validMetas').text("").removeClass().removeClass(" alert alert-danger");
                 $(".cmupp").hide();
+                dao.rCMetasUpp(anio);
+
             }
             
 
@@ -326,7 +298,7 @@ var dao = {
             if (result.isConfirmed) {
                 $.ajax({
                     type: "GET",
-                    url: '/actividades/confirmar-metas/delegacion/'+upp+"/"+anio,
+                    url: '/actividades/confirmar-metas/delegacion/'+anio,
                     dataType: "JSON",
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
                 }).done(function (data) {
@@ -338,84 +310,13 @@ var dao = {
                         footer: mensaje?.footer,
                     });
                     dao.getData(upp, anio);
-                    dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
+                    dao.checkCMetasUpp($('#anio_filter').val());
                 });
             } /* else if (result.isDenied) {
               Swal.fire('Changes are not saved', '', 'info')
             } */
           })
        
-    },    exportJasper: function () {
-        let tipo = 0;
-        let upp;
-        if ($('#upp').val() == '') {
-            upp = $('#upp_filter').val();
-        } else {
-            upp = $('#upp').val();
-        }
-        let anio = $('#anio_filter').val();
-        Swal.fire({
-            title: 'Eliga que tipo de firma desea.',
-            icon: 'info',
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: 'E-firma',
-            denyButtonText: `Autografa`,
-            denyButtonColor:'#8CD4F5',
-          }).then((result) => {
-            if (result.isConfirmed) {
-                tipo = 1;
-                $.ajax({
-                    type: 'get',
-                    url: "/actividades/jasper/" + upp + "/" + anio + "/" + tipo,
-                    dataType: "JSON",
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-                }).done(function (params) {
-                    document.getElementById('tipoReporte').value = 1;
-                    $('#firmaModal').modal('show');
-                });
-            } else if (result.isDenied) {
-                let url = "/actividades/jasper/" + upp + "/" + anio + "/" + tipo;
-                window.location.href = url; 
-            }
-          })
-        
-    },
-    exportJasperMetas: function () {
-        let upp;
-        if ($('#upp').val() == '') {
-            upp = $('#upp_filter').val();
-        } else {
-            upp = $('#upp').val();
-        }
-        let anio = $('#anio_filter').val();
-        let tipo = 0;
-        Swal.fire({
-            title: 'Eliga que tipo de firma desea.',
-            icon: 'info',
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: 'E-firma',
-            denyButtonText: `Autografa`,
-            denyButtonColor:'#8CD4F5',
-          }).then((result) => {
-            if (result.isConfirmed) {
-                tipo = 1;
-                $.ajax({
-                    type: 'get',
-                    url: "/actividades/jasper-metas/" + upp + "/" + anio+ "/" + tipo,
-                    dataType: "JSON",
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-                }).done(function (params) {
-                    document.getElementById('tipoReporte').value = 2;
-                    $('#firmaModal').modal('show');
-                });
-            } else if (result.isDenied) {
-                let url =  "/actividades/jasper-metas/" + upp + "/" + anio+ "/" + tipo;
-                window.location.href = url; 
-            }
-          })
-        
     },
 };
 var init = {
@@ -456,7 +357,6 @@ $(document).ready(function () {
     });
     dao.getUpps();
     dao.getAniosM();
-    dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
@@ -468,12 +368,11 @@ $(document).ready(function () {
 
     $('#upp_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
-        dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
 
     });
     $('#anio_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
-        dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
+        dao.checkCMetasUpp($('#anio_filter').val());
 
     });
     $('#btnSave').click(function (e) {
@@ -482,4 +381,18 @@ $(document).ready(function () {
                 dao.editarPutMeta();
             }
     });
+    let i = 0;
+    if (window.location.pathname == '/calendarizacion/proyecto/metas-delegacion') {
+        function mousemove(event) {
+            if (i <= 1) {
+                console.log("confirmar");
+             dao.checkCMetasUpp($('#anio_filter').val())
+                i++;
+           }
+          }
+          
+          window.addEventListener('mousemove', mousemove);
+     
+    }
+  
 });

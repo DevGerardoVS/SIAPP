@@ -559,7 +559,7 @@ return new class extends Migration
             $table->integer('total')->default(null);
             $table->integer('estatus')->nullable(false);
             $table->integer('ejercicio')->nullable(false);
-            $table->integer('actividad_id')->nullable(true);
+            $table->integer('actividad_id')->unsigned()->nullable(true);
             $table->softDeletes();
             $table->string('created_user',45)->nullable(false);
             $table->string('updated_user',45)->nullable(true);
@@ -569,6 +569,7 @@ return new class extends Migration
             $table->foreign('beneficiario_id')->references('id')->on('beneficiarios');
             $table->foreign('unidad_medida_id')->references('id')->on('unidades_medida');
             $table->foreign('mir_id')->references('id')->on('mml_mir');
+            $table->foreign('actividad_id')->references('id')->on('mml_actividades');
         });
 
         Schema::create('metas_hist',function (Blueprint $table){
