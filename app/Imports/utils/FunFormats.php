@@ -187,31 +187,26 @@ class FunFormats
 
                             $pres = FunFormats::existPP($clave, $anio, $k[12]);
                             if (count($pres)) {
-                               
-                                if (is_string($k[16])) {
-                                    $error = array(
-                                        "icon" => 'error',
-                                        "title" => 'Datos erróneos',
-                                        "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
-                                    );
-                                    return $error;
-                                    
-                                }else{
-                                    if ($k[16]<0 ) {
+
+
+                                switch ($k[16]) {
+                                    case '0':
+
+                                        break;
+                                    case '1':
+
+                                        break;
+                                    case '2':
+
+                                        break;
+
+                                    default:
                                         $error = array(
                                             "icon" => 'error',
                                             "title" => 'Datos erróneos',
                                             "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
                                         );
                                         return $error;
-                                    }else if($k[16]>=4){
-                                        $error = array(
-                                            "icon" => 'error',
-                                            "title" => 'Datos erróneos',
-                                            "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
-                                        );
-                                        return $error;
-                                    }
                                 }
                                 $s = FunFormats::validatecalendar($k[7], $k[16]);
                                 if ($s["status"]) {

@@ -143,7 +143,6 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             'N' => NumberFormat::FORMAT_TEXT,
             'O' => NumberFormat::FORMAT_TEXT,
             'P' => NumberFormat::FORMAT_TEXT,
-            'Q' => NumberFormat::FORMAT_TEXT,
             'R' => NumberFormat::FORMAT_TEXT,
         ];
     }
