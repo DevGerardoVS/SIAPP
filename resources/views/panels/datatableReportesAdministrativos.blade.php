@@ -21,6 +21,22 @@
         });
     }
 
+    function getUPPDelegacion(anio) { //función para actualizar el select UPP con usuario delegación
+            $.ajax({
+                url: "/Reportes/administrativos/delegacion/"+ anio,
+                type:'POST',
+                dataType: 'json',
+                success: function(data) {
+                    var par = $('#upp_filter');
+                    par.html('');
+                    par.append(new Option("Todos", ""));
+                    $.each(data, function(i, val){
+                        par.append(new Option(data[i].clv_upp+" - "+data[i].descripcion, data[i].clv_upp));
+                    });
+                }
+            });
+        }
+
     function getData(tabla, rt){
        
 

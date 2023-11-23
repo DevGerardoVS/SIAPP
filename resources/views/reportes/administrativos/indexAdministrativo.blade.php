@@ -57,7 +57,7 @@
                     </div>
                 @endif
             </div>
-            @if(Auth::user()->id_grupo != 4)
+            @if(Auth::user()->id_grupo != 4 && Auth::user()->id_grupo != 5)
                 <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
                     <div class="col-sm-3 col-md-3 col-lg-2 text-md-end d-none div_upp">
                         <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
@@ -68,6 +68,19 @@
                             @foreach ($upps as $upp)
                                 <option value={{$upp->clave}} {{$upp->descripcion}}>{{$upp->clave}} {{$upp->descripcion}}</option>
                             @endforeach
+                        </select>
+                    </div>
+                        
+                </div>
+            @endif
+            {{-- Uso solo para el usuario delegación --}}
+            @if(Auth::user()->id_grupo == 5)
+                <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
+                    <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
+                        <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
                         </select>
                     </div>
                         
@@ -398,7 +411,10 @@
 
             var userGroup = {!! json_encode((array)auth()->user()->id_grupo) !!};
             
-            if(userGroup[0] == 5) $('.div_upp').removeClass('d-none');
+            if(userGroup[0] == 5){
+                $('.div_upp').removeClass('d-none');
+                getUPPDelegacion($('#anio_filter').val());
+            }
 
             if(userGroup[0] == 1){
                 var dt = $('#catalogoA');
@@ -480,6 +496,7 @@
             dt.DataTable().clear().destroy();
             getData(tabla,letter);
             getDataFechaCorte($('#anio_filter').val());
+            getUPPDelegacion($('#anio_filter').val());
         });
         
         $("#form").on("change",".filters_fechaCorte",function(e){

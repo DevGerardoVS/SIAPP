@@ -33,6 +33,7 @@ class ReporteController extends Controller
         Controller::check_permission('getAdmon');
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto_hist pph UNION SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
+
         $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 GROUP BY clave ORDER BY clave ASC');
         return view("reportes.administrativos.indexAdministrativo", [
             'dataSet' => json_encode($dataSet),
@@ -382,14 +383,29 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function getUPP($anio){ // Obtener las UPP para llenar el select del mismo
+    public function getUPPDelegacion($anio){ // Obtener las UPP para llenar el select del mismo cuando el usuario delegación ingresa a los reportes administrativos
+        $upp = DB::table("catalogo as c")
+        ->join("uppautorizadascpnomina as aut", function($join){
+            $join->on("c.clave", "=", "aut.clv_upp");
+        })
+        ->select("aut.clv_upp", "c.descripcion")
+        ->where("c.grupo_id", "=", 6)
+        ->where("ejercicio", $anio)
+        ->whereNull("aut.deleted_at")
+        ->groupBy("aut.clv_upp")
+        ->orderBy("aut.clv_upp")
+        ->get();
+        return $upp;
+    }
+
+    public function getUPP($anio){ // Obtener las UPP para llenar el select del mismo en el reporte de analisis informativo MML
         $upp = DB::table("v_epp")->select("clv_upp", "upp")
         ->where("ejercicio", $anio)
         ->groupBy("clv_upp")->get();
         return $upp;
     }
 
-    public function getPrograma($clv_upp){ // Obtener los programas para llenar el select del mismo
+    public function getPrograma($clv_upp){ // Obtener los programas para llenar el select del mismo en el reporte de analisis informativo MML
         $anio = session("anioMIR");
         $array_where=[];
 
