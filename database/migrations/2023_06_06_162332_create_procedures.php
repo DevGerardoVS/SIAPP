@@ -626,60 +626,30 @@ return new class extends Migration {
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
         
-            set @consulta := concat('
-            select 
-                pos,
-                sum(total) importe
-            from (
-                select 
-                    (substring(pp.posicion_presupuestaria,1,2)*1) pos, 
-                    pp.total
-                from ',@tabla,' pp
-                where ejercicio = ',anio,' and pp.',@corte,'
-            )t
-            group by pos order by pos
-            ');
-        
-            set @query := concat(\"
-            with aux as (\",@consulta,\")
+            set @query := concat('
             select 
                 conceptos,
-                case 
-                    when importe is null then 0
-                    else importe
-                end importe
+                importe
             from (
-            select 
-                'Gasto Corriente' conceptos,
-                sum(importe) importe
-            from aux
-            where pos between 10 and 49
-            and pos not in (45)
-            union all
-            select 
-                'Gasto Capital' conceptos,
-                sum(importe) importe
-            from aux
-            where pos between 50 and 79
-            union all
-            select 
-                'Amortizaciones' conceptos,
-                sum(importe) importe
-            from aux
-            where pos between 90 and 99
-            union all
-            select 
-                'Participaciones' conceptos,
-                sum(importe) importe
-            from aux
-            where pos between 80 and 89
-            union all
-            select 
-                'Pensiones y Jubilaciones' conceptos,
-                sum(importe) importe
-            from aux
-            where pos = 45)t;
-            \");
+                select 
+                    pp.tipo_gasto clv_tipo_gasto,
+                    p.tipo_gasto conceptos,
+                    case 
+                        when sum(total) is null then 0
+                        else sum(total)
+                    end importe
+                from programacion_presupuesto pp 
+                join (
+                    select distinct 
+                        clv_tipo_gasto,tipo_gasto
+                    from posicion_presupuestaria pp
+                    where deleted_at is null
+                ) p on pp.tipo_gasto = p.clv_tipo_gasto
+                where pp.ejercicio = ',anio,' and pp.',@corte,'
+                group by pp.tipo_gasto,p.tipo_gasto
+                order by clv_tipo_gasto
+            )t;
+            ');
         
             prepare stmt  from @query;
             execute stmt;
@@ -2675,7 +2645,7 @@ return new class extends Migration {
                     when fondo_ramo != '' then ''
                     when status is null then 'Guardado'
                     when status = 0 then 'Guardado'
-                    when status = 1 then 'Confirmado'
+                    when status >= 1 then 'Confirmado'
                 end status
             from aux)t;
             
