@@ -9,7 +9,7 @@ $(document).ready(function() {
     });
 });
 
-function actualizarTabla(updateUR){
+function actualizarTabla(updateUR,updateUPP){
     var e = document.getElementById("filters_anio");
     var anio = e.value;
     var upp = '000';
@@ -32,11 +32,40 @@ function actualizarTabla(updateUR){
     var largo = opt.action.length - 11;
     var accion = opt.action.substring(0,largo)+anio+"/"+upp;
     if(updateUR) actualizarListaUR(upp);
+    if(updateUPP) actualizarListaUPP(anio);
 
     accion += "/" + ur;
     opt.action = accion;
     //console.log(accion);
     getData();
+}
+
+function actualizarListaUPP(ejercicio){
+    let select = document.getElementById("filters_upp");
+    let ruta = "get-upp/"+ejercicio;
+    let cantidadOpt = select.options.length;
+
+    for(i = cantidadOpt; i > 1; i--){
+        select.remove(i);
+    }
+    
+    $.ajax({
+        url: ruta,
+        data: {anio: ejercicio},
+        type:'POST',
+        dataType: 'json',
+        success: function(response) {
+            listaupp = response.listaUPP;
+            listaupp.forEach((c) => {
+                var upp = c.clv_upp + " - " + c.upp;
+                var newOption = new Option(upp,c.clv_upp);
+                select.add(newOption,undefined);
+            });
+        },
+        error: function(response) {
+            console.log('Error: ' + response);
+        }
+    });
 }
 
 function actualizarListaUR(clv_upp,ruta){

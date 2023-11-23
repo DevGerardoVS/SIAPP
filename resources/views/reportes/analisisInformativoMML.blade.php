@@ -160,7 +160,7 @@
     </div>
 
     @isset($dataSet)
-    @include('panels.datatable_avance_mir')
+    @include('panels.datatable_analisis_informativo')
     @endisset
 
     <script type="text/javascript">
