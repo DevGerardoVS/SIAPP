@@ -14,11 +14,16 @@ use App\Helpers\Calendarizacion\MetasHelper;
 class TipoCalendar implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths,WithTitle,WithStyles,WithEvents
 {
     protected $filas;
+    protected $upp;
+    function __construct($upp) {
+
+        $this->upp= $upp;
+    }
 
     public function collection(){
-      
-        $this->filas = 4;
-        return collect(MetasHelper::tCalendario());
+        $tipo = MetasHelper::tCalendario($this->upp);
+        $this->filas = count($tipo);
+        return collect($tipo);
     }
 
     public function title(): string
