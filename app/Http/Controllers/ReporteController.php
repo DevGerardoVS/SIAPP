@@ -217,11 +217,13 @@ class ReporteController extends Controller
                 }
 
                 if(Auth::user()->id_grupo == 1){
-                    if($request->tipo_filter !=null) $parameters["tipo"] = $request->tipo_filter;
-                    $nameFile = $nameFile . "_tipo_" . $parameters["tipo"];
+                    if($request->tipo_filter !=null){
+                        $parameters["tipo"] = $request->tipo_filter;
+                        $nameFile = $nameFile . "_" . $parameters["tipo"];
+                    } 
                 }else{
                     $parameters["tipo"] = Auth::user()->id_grupo == 5 ? "RH" : "Operativo";
-                    $nameFile = $nameFile . "_tipo_" . $parameters["tipo"];
+                    $nameFile = $nameFile . "_" . $parameters["tipo"];
                 } 
             }
 
@@ -234,6 +236,8 @@ class ReporteController extends Controller
                 $format,
                 $parameters,
                 $database_connection
+            // )->output();
+            // dd($jasper);
             )->execute();
 
             if ($request->action == 'xlsx') { // Verificar el tipo de archivo
