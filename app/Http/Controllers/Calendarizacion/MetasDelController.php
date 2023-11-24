@@ -115,6 +115,18 @@ class MetasDelController extends Controller
 			$table->string('mir_act', 55)->nullable(false);
 			$table->string('actividad', 55)->nullable(false);
 			$table->string('fondo', 55)->nullable(false);
+			$table->integer('enero')->default(null);
+            $table->integer('febrero')->default(null);
+            $table->integer('marzo')->default(null);
+            $table->integer('abril')->default(null);
+            $table->integer('mayo')->default(null);
+            $table->integer('junio')->default(null);
+            $table->integer('julio')->default(null);
+            $table->integer('agosto')->default(null);
+            $table->integer('septiembre')->default(null);
+            $table->integer('octubre')->default(null);
+            $table->integer('noviembre')->default(null);
+            $table->integer('diciembre')->default(null);
 		});
 		//Controller::check_permission('getMetasDelegacion');
 		/*Si no coloco estas lineas Falla*/
@@ -344,8 +356,8 @@ class MetasDelController extends Controller
 				$res = ["status" => false, "mensaje" => ["icon" => 'warning', "text" => 'No puedes confirmar las metas, existen diferencias en los meses autorizados por las claves presupuestales', "title" => "Diferencias en las metas" ,"footer"=>$foot]];
 				return response()->json($res, 200);
 
-			} 
-			if ($s['status']) {*/
+			} */
+			if ($s['status']) {
 				DB::beginTransaction();
 				$m = MetasDelController::metasDelegacionConf($anio);
 				$metas=$m->get();
@@ -375,10 +387,10 @@ class MetasDelController extends Controller
 					$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
 					return response()->json($res, 200);
 				}
-		/* 	} else {
+			} else {
 				$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'No puedes confirmar las metas', "title" => "Metas incompletas"]];
 				return response()->json($res, 200);
-			} */
+			}
 		} catch (\Throwable $th) {
 			DB::rollBack();
 			throw $th;
@@ -563,6 +575,33 @@ class MetasDelController extends Controller
 		->where('catalogo.clave', 'UUU')
 		->where('mml_actividades.deleted_at', null)
 		->where('metas.deleted_at', null);
+		return $metas;
+
+	}
+
+	public static function actividadesCargaMasDel($upp,$username,$anio){
+		$metas = DB::table('metas')
+		->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
+		->leftJoin('catalogo', 'catalogo.id', 'mml_actividades.id_catalogo')
+		->select(
+			'metas.id as idm',
+			DB::raw('CONCAT(mml_actividades.id, " - ", IFNULL(mml_actividades.nombre,catalogo.descripcion)) AS actividad'),
+			'mml_actividades.area_funcional AS area',
+			'mml_actividades.entidad_ejecutora AS entidad',
+			'mml_actividades.clv_upp',
+			DB::raw('"" AS clv_ur'),
+			'mml_actividades.id as actividad_id',
+			'metas.ejercicio',
+			'metas.estatus'
+
+		)
+		->where('metas.ejercicio',$anio)
+		->where('mml_actividades.clv_upp',$upp)
+		->where('catalogo.clave', 'UUU')
+		->where('mml_actividades.deleted_at', null)
+		->where('metas.deleted_at', null)
+		->where ('metas.created_user',$username)->get();
+	
 		return $metas;
 
 	}

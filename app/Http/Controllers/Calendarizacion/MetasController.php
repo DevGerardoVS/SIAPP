@@ -505,6 +505,28 @@ class MetasController extends Controller
 			$fondo = $request->sel_fondo != '' && $request->sel_fondo != null ? $request->sel_fondo : $request->fondo_id;
 			if (isset($request->actividad_id) && $request->actividad_id != null && $request->actividad_id != '') {
 				if ($request->actividad_id == 'ot') {
+					$metaOt = DB::table('metas')
+					->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
+					->select(
+						'metas.id',
+						'mml_actividades.entidad_ejecutora',
+						'mml_actividades.area_funcional',
+						'mml_actividades.clv_upp',
+						'mml_actividades.id'
+						
+					)
+					->where('mml_actividades.entidad_ejecutora', $entidad_ejecutora)
+					->where('mml_actividades.area_funcional', $area_funcional)
+					->where('mml_actividades.clv_upp', $request->upp)
+					->where('metas.clv_fondo', $fondo)
+					->where('mml_actividades.id_catalogo', null)
+					->where('metas.mir_id', null)
+					->where('mml_actividades.deleted_at', null)
+					->where('metas.deleted_at', null)->get();
+					if (count($metaOt)) {
+						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
+						return response()->json($res, 200);
+					}
 					$act = MmlMir::create([
 						'clv_upp' => $request->upp,
 						'entidad_ejecutora' => $entidad_ejecutora,
@@ -958,13 +980,38 @@ class MetasController extends Controller
 		Schema::create('pptemp', function (Blueprint $table) {
 			$table->temporary();
 			$table->increments('id');
+			$table->string('clave', 55)->nullable(false);
 			$table->string('clv_upp', 25)->nullable(false);
+			$table->string('clv_ur', 25)->nullable(false);
 			$table->string('entidad_ejecutora', 55)->nullable(false);
 			$table->string('area_funcional', 55)->nullable(false);
-			$table->string('clv_actadmon', 55)->nullable(false);
-			$table->string('mir_act', 55)->nullable(false);
-			$table->string('actividad', 55)->nullable(false);
 			$table->string('fondo', 55)->nullable(false);
+			$table->string('sub_pp', 55)->nullable(false);
+			$table->integer('enero')->default(null);
+            $table->integer('febrero')->default(null);
+            $table->integer('marzo')->default(null);
+            $table->integer('abril')->default(null);
+            $table->integer('mayo')->default(null);
+            $table->integer('junio')->default(null);
+            $table->integer('julio')->default(null);
+            $table->integer('agosto')->default(null);
+            $table->integer('septiembre')->default(null);
+            $table->integer('octubre')->default(null);
+            $table->integer('noviembre')->default(null);
+            $table->integer('diciembre')->default(null);
+		});
+
+		Schema::create('mirtemp', function (Blueprint $table) {
+			$table->temporary();
+			$table->increments('id');
+			$table->string('mir_id', 55)->nullable(false);
+			$table->string('clave', 55)->nullable(false);
+			$table->string('clv_upp', 25)->nullable(false);
+			$table->string('clv_ur', 25)->nullable(false);
+			$table->string('entidad_ejecutora', 55)->nullable(false);
+			$table->string('area_funcional', 55)->nullable(false);
+			$table->string('objetivo', 55)->nullable(false);
+
 		});
 		Controller::check_permission('getMetas');
 		/*Si no coloco estas lineas Falla*/

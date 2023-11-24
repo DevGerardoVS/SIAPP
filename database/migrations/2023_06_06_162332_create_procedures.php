@@ -626,60 +626,30 @@ return new class extends Migration {
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
             end if;
         
-            set @consulta := concat('
-            select 
-                pos,
-                sum(total) importe
-            from (
-                select 
-                    (substring(pp.posicion_presupuestaria,1,2)*1) pos, 
-                    pp.total
-                from ',@tabla,' pp
-                where ejercicio = ',anio,' and pp.',@corte,'
-            )t
-            group by pos order by pos
-            ');
-        
-            set @query := concat(\"
-            with aux as (\",@consulta,\")
+            set @query := concat('
             select 
                 conceptos,
-                case 
-                    when importe is null then 0
-                    else importe
-                end importe
+                importe
             from (
-            select 
-                'Gasto Corriente' conceptos,
-                sum(importe) importe
-            from aux
-            where pos between 10 and 49
-            and pos not in (45)
-            union all
-            select 
-                'Gasto Capital' conceptos,
-                sum(importe) importe
-            from aux
-            where pos between 50 and 79
-            union all
-            select 
-                'Amortizaciones' conceptos,
-                sum(importe) importe
-            from aux
-            where pos between 90 and 99
-            union all
-            select 
-                'Participaciones' conceptos,
-                sum(importe) importe
-            from aux
-            where pos between 80 and 89
-            union all
-            select 
-                'Pensiones y Jubilaciones' conceptos,
-                sum(importe) importe
-            from aux
-            where pos = 45)t;
-            \");
+                select 
+                    pp.tipo_gasto clv_tipo_gasto,
+                    p.tipo_gasto conceptos,
+                    case 
+                        when sum(total) is null then 0
+                        else sum(total)
+                    end importe
+                from programacion_presupuesto pp 
+                join (
+                    select distinct 
+                        clv_tipo_gasto,tipo_gasto
+                    from posicion_presupuestaria pp
+                    where deleted_at is null
+                ) p on pp.tipo_gasto = p.clv_tipo_gasto
+                where pp.ejercicio = ',anio,' and pp.',@corte,'
+                group by pp.tipo_gasto,p.tipo_gasto
+                order by clv_tipo_gasto
+            )t;
+            ');
         
             prepare stmt  from @query;
             execute stmt;
@@ -2510,180 +2480,160 @@ return new class extends Migration {
             drop temporary table if exists aux_0;
             drop temporary table if exists aux_1;
             drop temporary table if exists aux_2;
-            drop temporary table if exists aux_3;
-            drop temporary table if exists aux_4;
-                    
-            set @query := CONCAT('
+            
+            set @query := concat('
             create temporary table aux_0
             select 
-                tu.clv_upp,
-                tu.upp,
-                fo.clv_fondo_ramo,
-                fo.fondo_ramo,
-                concat(po.clv_capitulo,\"000\") clv_capitulo,
-                po.capitulo,
-                0 monto_anual,
-                sum(pa.total) calendarizado,
-                sum(pa.estado) status
-            from ',@tabla,' pa
-            join (
-                select distinct
-                    clave clv_upp,descripcion upp
-                from ',@catalogo,' ch 
-                where ch.deleted_at is null and ch.ejercicio = ',anio,' and ch.grupo_id = 6
-            ) tu on pa.upp = tu.clv_upp
-            join (
-                select distinct
-                    f.clv_fondo_ramo,f.fondo_ramo
-                from fondo f
-                where f.deleted_at is null
-            ) fo on pa.fondo_ramo = fo.clv_fondo_ramo 
-            join (
-                select distinct 
-                    pp.clv_capitulo,pp.capitulo 
-                from posicion_presupuestaria pp
-                where pp.deleted_at is null
-            ) po on substring(pa.posicion_presupuestaria,1,1) = po.clv_capitulo
-            where pa.ejercicio = ',anio,' and pa.',@corte,'
-            group by tu.clv_upp,tu.upp,fo.clv_fondo_ramo,
-            fo.fondo_ramo,po.clv_capitulo,po.capitulo;
+                t1.clv_upp,
+                t1.clv_fondo,
+                t2.clv_capitulo,
+                t1.presupuesto monto_anual,
+                t2.importe calendarizado
+            from (
+                select 
+                    tf.clv_upp,
+                    tf.clv_fondo,
+                    sum(tf.presupuesto) presupuesto
+                from techos_financieros tf
+                where tf.ejercicio = ',anio,' and tf.deleted_at is null
+                group by clv_upp,clv_fondo
+            )t1
+            left join (
+                select 
+                    clv_upp,clv_fondo,clv_capitulo,
+                    sum(total) importe
+                from (
+                    select 
+                        upp clv_upp,
+                        fondo_ramo clv_fondo,
+                        substr(posicion_presupuestaria,1,1) clv_capitulo,
+                        total
+                    from programacion_presupuesto pa
+                    where pa.ejercicio = ',anio,' and pa.',@corte,'
+                )t
+                group by clv_upp,clv_fondo,clv_capitulo
+            )t2 on t1.clv_upp = t2.clv_upp and t1.clv_fondo = t2.clv_fondo;
             ');
         
             prepare stmt from @query;
             execute stmt;
             deallocate prepare stmt;
-        
+            
+            set @query := concat('
             create temporary table aux_1
-            select 
-                clv_upp,upp,
-                clv_fondo_ramo,fondo_ramo,
-                0 monto_anual,
-                sum(calendarizado) calendarizado,
-                sum(status) status
-            from aux_0
-            group by clv_upp,upp,
-            clv_fondo_ramo,fondo_ramo;
-        
-            create temporary table aux_2
             select 
                 clv_upp,
                 c.descripcion upp,
-                clv_fondo clv_fondo_ramo,
-                f.fondo_ramo,
-                sum(presupuesto) monto_anual,
-                0 calendarizado
-            from techos_financieros tf
-            join catalogo_hist c on tf.clv_upp = c.clave 
-            and c.deleted_at is null and c.ejercicio = anio and c.grupo_id = 6
-            join fondo f on tf.clv_fondo = f.clv_fondo_ramo 
+                clv_fondo,
+                f.fondo_ramo fondo,
+                min(monto_anual) monto_anual,
+                sum(calendarizado) calendarizado
+            from aux_0 a0
+            left join ',@catalogo,' c on a0.clv_upp = c.clave and c.grupo_id = 6
+            and c.ejercicio = ',anio,' and c.deleted_at is null
+            left join fondo f on a0.clv_fondo = f.clv_fondo_ramo
             and f.deleted_at is null
-            where tf.ejercicio = anio and tf.deleted_at is null
-            group by clv_upp,descripcion,clv_fondo,f.fondo_ramo;
+            group by clv_upp,descripcion,clv_fondo,fondo_ramo;
+            ');
         
-            create temporary table aux_3
+            prepare stmt from @query;
+            execute stmt;
+            deallocate prepare stmt;
+            
+            create temporary table aux_2
             select 
                 clv_upp,upp,
-                clv_fondo_ramo,fondo_ramo,
                 sum(monto_anual) monto_anual,
-                sum(calendarizado) calendarizado,
-                sum(status) status
-            from (
+                sum(calendarizado) calendarizado
+            from aux_1
+            group by clv_upp,upp;
+            
+            with aux as (
                 select 
-                    *
-                from aux_1
-                union all
-                select 
-                    clv_upp,upp,
-                    clv_fondo_ramo,fondo_ramo,
+                    case 
+                        when clv_fondo != '' then ''
+                        else clv_upp
+                    end clv_upp,
+                    case 
+                        when clv_fondo != '' then ''
+                        else t.upp
+                    end upp,
+                    case 
+                        when t.clv_capitulo != '' then ''
+                        else clv_fondo
+                    end clv_fondo_ramo,
+                    case 
+                        when t.clv_capitulo != '' then ''
+                        else fondo
+                    end fondo_ramo,
+                 case 
+                       when t.clv_capitulo = '' then ''
+                     else concat(t.clv_capitulo,'000')
+                 end clv_capitulo,
+                    case 
+                        when pp.capitulo is null then ''
+                        else pp.capitulo
+                    end capitulo,
                     monto_anual,
                     calendarizado,
-                    0 status
-                from aux_2
-            )t
-            group by clv_upp,upp,clv_fondo_ramo,fondo_ramo;
-        
-            create temporary table aux_4
+                    es.status
+                from (
+                    select 
+                        clv_upp,upp,
+                        '' clv_fondo,'' fondo,
+                        '' clv_capitulo,
+                        monto_anual,calendarizado
+                    from aux_2
+                    union all
+                    select 
+                        clv_upp,upp,clv_fondo,fondo,
+                        '' clv_capitulo,
+                        monto_anual,calendarizado
+                    from aux_1 a1
+                    union all
+                    select 
+                        clv_upp,'' upp,
+                        clv_fondo,'' fondo,
+                        clv_capitulo,
+                        calendarizado monto_anual,
+                        calendarizado
+                    from aux_0 a0
+                    order by clv_upp,clv_fondo,clv_capitulo
+                )t
+                left join (
+                    select distinct 
+                        clv_capitulo,capitulo
+                    from posicion_presupuestaria
+                    where deleted_at is null
+                ) pp on t.clv_capitulo = pp.clv_capitulo
+                left join (
+                    select 
+                        upp,
+                        case
+                            when max(estado) = 0 then 'guardado'
+                            when max(estado) = 1 then 'confirmado'
+                            when max(estado) is null then 'sin registrar'
+                        end status
+                    from programacion_presupuesto pp
+                    where pp.deleted_at is null and pp.ejercicio = 2024
+                    and pp.tipo = 'operativo'
+                    group by upp
+                ) es on t.clv_upp = es.upp
+            )
             select 
-                clv_upp,upp,
-                sum(monto_anual) monto_anual,
-                sum(calendarizado) calendarizado,
-                sum(status) status
-            from aux_3
-            group by clv_upp,upp;
-        
-            with aux as (
-            select 
-                clv_upp,upp,
-                clv_fondo_ramo,fondo_ramo,
-                clv_capitulo,capitulo,
-                case 
-                    when monto_anual = 0 then calendarizado 
-                    else monto_anual
-                end monto_anual,
-                calendarizado,
-                status
-            from (
-                select 
-                    clv_upp,upp,
-                    '' clv_fondo_ramo,'' fondo_ramo,
-                    '' clv_capitulo,'' capitulo,
-                    monto_anual,calendarizado,status
-                from aux_4
-                union all
-                select 
-                    clv_upp,upp,
-                    clv_fondo_ramo,fondo_ramo,
-                    '' clv_capitulo,'' capitulo,
-                    monto_anual,calendarizado,status
-                from aux_3
-                union all
-                select * from aux_0
-                order by clv_upp,clv_fondo_ramo,clv_capitulo
-            )t)
-            select 
-                clv_upp,upp,clv_fondo_ramo,fondo_ramo,clv_capitulo,capitulo,
-                monto_anual,calendarizado,disponible,avance,
-                case 
-                    when status is null then 'Guardado'
-                    else status
-                end status
-            from(
-            select 
-                case 
-                    when fondo_ramo != '' then ''
-                    else clv_upp
-                end clv_upp,
-                case 
-                    when fondo_ramo != '' then ''
-                    else upp
-                end upp,
-                case 
-                    when capitulo != '' then ''
-                    else clv_fondo_ramo
-                end clv_fondo_ramo,
-                case 
-                    when capitulo != '' then ''
-                    else fondo_ramo
-                end fondo_ramo,
-                clv_capitulo,
-                capitulo,
-                monto_anual,
-                calendarizado,
+                clv_upp,upp,clv_fondo_ramo,fondo_ramo,
+                clv_capitulo,capitulo,monto_anual,calendarizado,
                 (monto_anual-calendarizado) disponible,
                 (calendarizado/monto_anual)*100 avance,
-                case 
-                    when fondo_ramo != '' then ''
-                    when status is null then 'Guardado'
-                    when status = 0 then 'Guardado'
-                    when status = 1 then 'Confirmado'
-                end status
-            from aux)t;
+                case
+                    when clv_upp = '' then ''
+                    else status
+                end estatus
+            from aux;
             
-            drop temporary table aux_0;
-            drop temporary table aux_1;
-            drop temporary table aux_2;
-            drop temporary table aux_3;
-            drop temporary table aux_4;
+            drop temporary table if exists aux_0;
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
         END;");
 
         DB::unprepared("CREATE PROCEDURE conceptos_clave(in claveT varchar(64), in anio int)
