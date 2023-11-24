@@ -198,6 +198,8 @@ class MetasController extends Controller
 						->groupByRaw('con_mir')
 						->where('ejercicio', $check['anio'])
 						->get();
+					log::debug($m);
+					//$mirx = 0;
 					$mirx = $m[0]->con_mir;
 					$area = '"' . strval($key->finalidad) . '-' . strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje) . '-' . strval($key->linea) . '-' . strval($key->programaSec) . '-' . strval($key->tipologia) . '-' . strval($key->programa) . '-' . strval($key->subprograma) . '-' . strval($key->clv_proyecto) . '"';
 					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($ur_filter) . '"';
@@ -361,6 +363,9 @@ class MetasController extends Controller
 	}
 	public function getActividMir($area, $entidad,$fondo)
 	{
+		Log::debug($area);
+		Log::debug($entidad);
+		Log::debug($fondo);
 		$areaAux = explode('-', $area);
 		$entidadAux = explode('-', $entidad);
 		$check = $this->checkClosing($entidadAux[0]);
@@ -413,7 +418,7 @@ class MetasController extends Controller
 			}
 		}
 
-		return ["activids" => $activ];
+		return ["activids" => $activ ,"con_mir"=>$m[0]->con_mir];
 	}
 	public static function meses($area, $entidad, $anio, $fondo)
 	{
@@ -502,9 +507,11 @@ class MetasController extends Controller
 			$rj = explode('$', $clv[1]);
 			$entidad_ejecutora = str_replace('-', "", $rj[0]);
 			Log::debug($entidad_ejecutora);
-			$fondo = $request->sel_fondo != '' && $request->sel_fondo != null ? $request->sel_fondo : $request->fondo_id;
-			if (isset($request->actividad_id) && $request->actividad_id != null && $request->actividad_id != '') {
-				if ($request->actividad_id == 'ot') {
+
+			$fondo = $request->sel_fondo;
+			$actividad = $request->sel_actividad;
+			if ($request->conmir) {
+				if ($actividad == 'ot') {
 					$metaOt = DB::table('metas')
 					->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
 					->select(
@@ -549,7 +556,7 @@ class MetasController extends Controller
 					->where('mml_actividades.area_funcional', $area_funcional)
 					->where('mml_actividades.clv_upp', $request->upp)
 					->where('metas.clv_fondo', $fondo)
-					->where('mml_actividades.id_catalogo', $request->actividad_id)
+					->where('mml_actividades.id_catalogo', $actividad)
 					->where('metas.mir_id', null)
 					->where('mml_actividades.deleted_at', null)
 					->where('metas.deleted_at', null)->get();
@@ -561,7 +568,7 @@ class MetasController extends Controller
 							'clv_upp' => $request->upp,
 							'entidad_ejecutora' => $entidad_ejecutora,
 							'area_funcional' => $area_funcional,
-							'id_catalogo' => $request->actividad_id,
+							'id_catalogo' => $actividad,
 							'nombre' => null,
 							'ejercicio' => $anio,
 							'created_user' => $username
@@ -581,8 +588,8 @@ class MetasController extends Controller
 					->where('mml_mir.entidad_ejecutora', $entidad_ejecutora)
 					->where('mml_mir.area_funcional', $area_funcional)
 					->where('mml_mir.clv_upp', $request->upp)
-					->where('metas.clv_fondo', $request->sel_fondo)
-					->where('metas.mir_id', intval($request->sel_actividad))
+					->where('metas.clv_fondo', $fondo)
+					->where('metas.mir_id', intval($actividad))
 					->where('mml_mir.deleted_at', null)
 					->where('metas.deleted_at', null)->get();
 				if (count($metaexist)) {
@@ -628,14 +635,12 @@ class MetasController extends Controller
 					
 
 				}
-				$area = str_replace('$', "/", $request->area);
-			/* 	$m = FunFormats::validateMonth($area, json_encode($meses), $anio, $fondo);
-				if ($m['status']) { */
+		
 					if ($subpp[8] != 'UUU') {
 						$meta = Metas::create([
-							'mir_id' => isset($request->sel_actividad) ? intval($request->sel_actividad) : NULL,
-							'actividad_id' => isset($request->actividad_id) ? intval($act->id) : NULL,
-							'clv_fondo' => isset($act->id) ? $request->fondo_id : $request->sel_fondo,
+							'mir_id' => isset($actividad),
+							'actividad_id' =>NULL,
+							'clv_fondo' => $fondo,
 							'estatus' => 0,
 							'tipo' => $request->tipo_Ac,
 							'beneficiario_id' => $request->tipo_Be,
@@ -663,9 +668,9 @@ class MetasController extends Controller
 							}
 					} else {
 						$meta = Metas::create([
-							'mir_id' => isset($request->sel_actividad) ? intval($request->sel_actividad) : NULL,
-							'actividad_id' => isset($request->actividad_id) ? intval($act->id) : NULL,
-							'clv_fondo' => isset($act->id) ? $request->fondo_id : $request->sel_fondo,
+							'mir_id' => NULL,
+							'actividad_id' =>intval($act->id),
+							'clv_fondo' => $fondo,
 							'estatus' => 0,
 							'tipo' => $request->tipo_Ac,
 							'beneficiario_id' => 12,
@@ -712,19 +717,6 @@ class MetasController extends Controller
 						$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
 						return response()->json($res, 200);
 					}
-
-			/* 	} else {
-					$mesaje = '';
-					$err = implode(", ", $m["errorM"]);
-					$meses = implode(", ", $m["mV"]);
-					if (count($m["mV"]) == 1) {
-						$mesaje = 'Solo puede registrar en el mes de: ' . $meses;
-					} else {
-						$mesaje = 'Solo puede registrar en los meses: ' . $meses;
-					}
-					$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Los meses: ' . $err . ' no coinciden en las claves presupuestales' . $mesaje, "title" => "Error"]];
-					return response()->json($res, 200);
-				} */
 
 		} catch (\Exception $e) {
 			DB::rollback();
