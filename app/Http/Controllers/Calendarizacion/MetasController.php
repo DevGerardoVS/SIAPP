@@ -501,7 +501,6 @@ class MetasController extends Controller
 			$area_funcional = str_replace('-', "", $clv[0]);
 			$rj = explode('$', $clv[1]);
 			$entidad_ejecutora = str_replace('-', "", $rj[0]);
-			Log::debug($entidad_ejecutora);
 			$fondo = $request->sel_fondo != '' && $request->sel_fondo != null ? $request->sel_fondo : $request->fondo_id;
 			if (isset($request->actividad_id) && $request->actividad_id != null && $request->actividad_id != '') {
 				if ($request->actividad_id == 'ot') {
