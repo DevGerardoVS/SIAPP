@@ -72,7 +72,13 @@ class CalendarizacionCargaMasivaController extends Controller
     public function loadDataPlantilla(Request $request)
     {
 
+        $tipocarga=0;
 
+        if($request->tipo){
+            $tipocarga=$request->tipo;
+        }elseif($request->tipo_adm){
+            $tipocarga=$request->tipo_adm;
+        }
         $message = [
             'file' => 'El archivo debe ser tipo xlsx'
         ];
@@ -156,7 +162,7 @@ class CalendarizacionCargaMasivaController extends Controller
             return redirect()->back()->withErrors('Ya tienes una carga masiva en proceso ');
 
         }else{
-            ValidacionesCargaMasivaClaves::dispatch($filearray,$user)->onQueue('high');
+            ValidacionesCargaMasivaClaves::dispatch($filearray,$user,$tipocarga)->onQueue('high');
             Session::put('cargaMasClav',0);
             carga_masiva_estatus::create([
                 'id_usuario' => $user->id,

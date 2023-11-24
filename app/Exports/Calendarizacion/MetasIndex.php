@@ -25,6 +25,14 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
     {
 
         $data = MetasHelper::MetasIndex($this->upp);
+        $clv_calen = '';
+        $name_calen = '';
+        $tipo = MetasHelper::tCalendario($this->upp);
+        if(count($tipo )==1){
+            $clv_calen =$tipo[0][0];
+            $name_calen = $tipo[0][1];
+        }
+
         $dataSet = [];
         foreach ($data as $key) {
             $area = str_split($key->area_funcional);
@@ -49,8 +57,8 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
                 $key->clv_actadmon,
                 $key->mir_act,
                 $key->actividad,
-                '0',
-                'Acumulativa',
+                $clv_calen,
+                $name_calen,
                 2,
                 2,
                 2,
@@ -88,8 +96,8 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
                 $key->clv_actadmon,
                 $key->mir_act,
                 $key->actividad,
-                '',
-                '',
+                $clv_calen,
+                $name_calen,
                 $key->enero?:'0',
                 $key->febrero?:'0',
                 $key->marzo?:'0',
@@ -143,7 +151,6 @@ class MetasIndex implements FromCollection, ShouldAutoSize, WithHeadings, WithTi
             'N' => NumberFormat::FORMAT_TEXT,
             'O' => NumberFormat::FORMAT_TEXT,
             'P' => NumberFormat::FORMAT_TEXT,
-            'Q' => NumberFormat::FORMAT_TEXT,
             'R' => NumberFormat::FORMAT_TEXT,
         ];
     }

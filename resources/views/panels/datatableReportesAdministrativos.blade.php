@@ -1,7 +1,6 @@
 @section('page_scripts')
 <script type="text/javascript">
 
-
     function getDataFechaCorte(anio) { //función para actualizar el select fechas de corte
         $.ajax({
             url: "/Reportes/data-fecha-corte/"+ anio,
@@ -10,7 +9,8 @@
             success: function(data) {
                 var par = $('#fechaCorte_filter');
                 par.html('');
-                par.append(new Option("Actuales", ""));
+                var getLastYear = {!! json_encode($anios[0]->ejercicio) !!}; // Variable para obtener el último año de la tabla pp y pph
+                if(getLastYear == anio) par.append(new Option("Actuales", "")); // Comprobar si el último año es igual al año del select y eliminar la opción de actuales para los años anteriores
                 $.each(data, function(i, val){
                     var date = new Date(val.deleted_at);
                     var getCorrectDate = new Date(date.valueOf() + date.getTimezoneOffset() * 60000);
@@ -21,21 +21,21 @@
         });
     }
 
-    function getUPPDelegacion(anio) { //función para actualizar el select UPP con usuario delegación
-            $.ajax({
-                url: "/Reportes/administrativos/delegacion/"+ anio,
-                type:'POST',
-                dataType: 'json',
-                success: function(data) {
-                    var par = $('#upp_filter');
-                    par.html('');
-                    par.append(new Option("Todos", ""));
-                    $.each(data, function(i, val){
-                        par.append(new Option(data[i].clv_upp+" - "+data[i].descripcion, data[i].clv_upp));
-                    });
-                }
-            });
-        }
+    function getUPPAdministrativo(anio) { //función para actualizar el select UPP dependiendo el usuario
+        $.ajax({
+            url: "/Reportes/administrativos/data-upp/"+ anio,
+            type:'POST',
+            dataType: 'json',
+            success: function(data) {
+                var par = $('#upp_filter');
+                par.html('');
+                par.append(new Option("Todos", ""));
+                $.each(data, function(i, val){
+                    par.append(new Option(data[i].clv_upp+" - "+data[i].descripcion, data[i].clv_upp));
+                });
+            }
+        });
+    }
 
     function getData(tabla, rt){
        
@@ -113,7 +113,7 @@
        var csrf_tpken = $("input[name='_token']").val();
        var anio = $("#anio_filter").val();
        var fecha = !$("#fechaCorte_filter").val() ? "null" : $("#fechaCorte_filter").val();
-       
+
        formData.append("_token",csrf_tpken);
        formData.append("anio",anio);
        formData.append("fecha",fecha);
