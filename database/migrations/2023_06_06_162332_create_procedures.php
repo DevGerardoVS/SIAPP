@@ -2566,7 +2566,10 @@ return new class extends Migration {
                         when t.clv_capitulo != '' then ''
                         else fondo
                     end fondo_ramo,
-                    t.clv_capitulo,
+                 case 
+                       when t.clv_capitulo = '' then ''
+                     else concat(t.clv_capitulo,'000')
+                 end clv_capitulo,
                     case 
                         when pp.capitulo is null then ''
                         else pp.capitulo
