@@ -177,16 +177,11 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function getFechaCorte($anio)
-    {
-        $fechaCorte = DB::select('SELECT DISTINCT version, MAX(DATE_FORMAT(deleted_at, "%Y-%m-%d")) AS deleted_at FROM programacion_presupuesto_hist pp WHERE ejercicio = ? AND deleted_at IS NOT NULL GROUP BY version', [$anio]);
-        return $fechaCorte;
-    }
-
     public function downloadReport(Request $request, $nombre)
     {
         ini_set('max_execution_time', 600); // Tiempo máximo de ejecución 
 
+        log::info($request);
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
         $fechaCorte = !$request->input('fechaCorte') ? $request->fechaCorte_filter : $request->input('fechaCorte');
@@ -223,9 +218,14 @@ class ReporteController extends Controller
                 }
 
                 if(Auth::user()->id_grupo == 1){
-                    if($request->tipo_filter !=null) $parameters["tipo"] = $request->tipo_filter;
-                }
-                else $parameters["tipo"] = Auth::user()->id_grupo == 5 ? "RH" : "Operativo";
+                    if($request->tipo_filter !=null){
+                        $parameters["tipo"] = $request->tipo_filter;
+                        $nameFile = $nameFile . "_" . $parameters["tipo"];
+                    } 
+                }else{
+                    $parameters["tipo"] = Auth::user()->id_grupo == 5 ? "RH" : "Operativo";
+                    $nameFile = $nameFile . "_" . $parameters["tipo"];
+                } 
             }
 
             $database_connection = \Config::get('database.connections.mysql');
@@ -237,6 +237,8 @@ class ReporteController extends Controller
                 $format,
                 $parameters,
                 $database_connection
+            // )->output();
+            // dd($jasper);
             )->execute();
 
             if ($request->action == 'xlsx') { // Verificar el tipo de archivo
@@ -265,6 +267,37 @@ class ReporteController extends Controller
             Log::channel('daily')->debug('exp ' . $exp->getMessage());
             return back()->withErrors(['msg' => '¡Ocurrió un error al descargar el archivo!']);
         }
+    }
+
+    public function getFechaCorte($anio)
+    {
+        $fechaCorte = DB::select('SELECT DISTINCT version, MAX(DATE_FORMAT(deleted_at, "%Y-%m-%d")) AS deleted_at FROM programacion_presupuesto_hist pp WHERE ejercicio = ? AND deleted_at IS NOT NULL GROUP BY version', [$anio]);
+        return $fechaCorte;
+    }
+    
+    public function getUPPAdministrativo($anio){ // Obtener las UPP para llenar el select del mismo cuando el usuario delegación ingresa a los reportes administrativos
+        if(Auth::user()->id_grupo == 5){
+            $upp = DB::table("catalogo as c")
+            ->join("uppautorizadascpnomina as aut", function($join){
+                $join->on("c.clave", "=", "aut.clv_upp");
+            })
+            ->select("aut.clv_upp", "c.descripcion")
+            ->where("c.grupo_id", "=", 6)
+            ->where("ejercicio", $anio)
+            ->whereNull("aut.deleted_at")
+            ->groupBy("aut.clv_upp")
+            ->orderBy("aut.clv_upp")
+            ->get();
+        }else{
+            $upp = DB::table("catalogo")
+            ->select("clave as clv_upp", "descripcion")
+            ->where("grupo_id", "=", 6)
+            ->where("ejercicio", $anio)
+            ->orderBy("clave","asc")
+            ->groupBy("clave")
+            ->get();
+        }
+        return $upp;
     }
 
     // Reportes MML
@@ -381,21 +414,6 @@ class ReporteController extends Controller
         return response()->json([
             "dataSet" => $dataSet,
         ]);
-    }
-
-    public function getUPPDelegacion($anio){ // Obtener las UPP para llenar el select del mismo cuando el usuario delegación ingresa a los reportes administrativos
-        $upp = DB::table("catalogo as c")
-        ->join("uppautorizadascpnomina as aut", function($join){
-            $join->on("c.clave", "=", "aut.clv_upp");
-        })
-        ->select("aut.clv_upp", "c.descripcion")
-        ->where("c.grupo_id", "=", 6)
-        ->where("ejercicio", $anio)
-        ->whereNull("aut.deleted_at")
-        ->groupBy("aut.clv_upp")
-        ->orderBy("aut.clv_upp")
-        ->get();
-        return $upp;
     }
 
     public function getUPP($anio){ // Obtener las UPP para llenar el select del mismo en el reporte de analisis informativo MML
