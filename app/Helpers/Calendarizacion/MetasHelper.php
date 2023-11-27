@@ -222,13 +222,28 @@ class MetasHelper
 		return $result;
 	}
 
-	public static function tCalendario()
+	public static function tCalendario($upp)
 	{
+		$tpc = DB::table('tipo_actividad_upp')
+			->select(
+				'Acumulativa',
+				'Continua',
+				'Especial'
+			)->where("clv_upp",$upp)
+			->where("deleted_at",null)->get();
 
-		$tipo = [];
-		$tipo[] = ['0', 'Acumulativa'];
-		$tipo[] = ['1', 'Continua'];
-		$tipo[] = ['2', 'Especial'];
+			$tipo = [];
+			foreach ($tpc as $key) {
+				if($key->Acumulativa == 1){
+					$tipo[] = ['0', 'Acumulativa'];
+				}
+				if($key->Continua == 1){
+					$tipo[] = ['1', 'Acumulativa'];
+				}
+				if($key->Especial == 1){
+					$tipo[] = ['2', 'Acumulativa'];
+				}
+			}
 		return $tipo;
 	}
 	public static function actividadesConf($upp, $anio)

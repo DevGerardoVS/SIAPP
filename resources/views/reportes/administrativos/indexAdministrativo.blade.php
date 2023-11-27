@@ -57,24 +57,24 @@
                     </div>
                 @endif
             </div>
-            @if(Auth::user()->id_grupo != 4 && Auth::user()->id_grupo != 5)
+            @if(Auth::user()->id_grupo != 4)
                 <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
                     <div class="col-sm-3 col-md-3 col-lg-2 text-md-end d-none div_upp">
                         <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
                     </div>
                     <div class="col-md-6 col-sm-12 d-none div_upp">
                         <select class="form-control filters filters_upp" id="upp_filter" name="upp_filter" autocomplete="upp_filter">
-                            <option value="">Todos</option>
+                            {{-- <option value="">Todos</option>
                             @foreach ($upps as $upp)
                                 <option value={{$upp->clave}} {{$upp->descripcion}}>{{$upp->clave}} {{$upp->descripcion}}</option>
-                            @endforeach
+                            @endforeach --}}
                         </select>
                     </div>
                         
                 </div>
             @endif
             {{-- Uso solo para el usuario delegación --}}
-            @if(Auth::user()->id_grupo == 5)
+            {{-- @if(Auth::user()->id_grupo == 5)
                 <div class="col-md-10 col-sm-12 d-md-flex mt-2 ">
                     <div class="col-sm-3 col-md-3 col-lg-2 text-md-end">
                         <label for="upp_filter" class="form-label fw-bold mt-md-1">UPP:</label>
@@ -85,7 +85,7 @@
                     </div>
                         
                 </div>
-            @endif
+            @endif --}}
             {{-- Tipo --}}
             @if(Auth::user()->id_grupo == 1)
             <div class="col-md-10 col-sm-12 d-md-flex mt-2">
@@ -399,6 +399,7 @@
             });
             
             getDataFechaCorte($('#anio_filter').val());
+            getUPPAdministrativo($('#anio_filter').val());
     
             $('button[data-bs-toggle="tab"]').on('click', function (e) {
                 var id = e.target.id;
@@ -413,7 +414,6 @@
             
             if(userGroup[0] == 5){
                 $('.div_upp').removeClass('d-none');
-                getUPPDelegacion($('#anio_filter').val());
             }
 
             if(userGroup[0] == 1){
@@ -494,9 +494,11 @@
         $("#form").on("change",".filters_anio",function(e){
             $("#fechaCorte_filter").val("");
             dt.DataTable().clear().destroy();
-            getData(tabla,letter);
+            setTimeout(() => {
+                getData(tabla,letter);
+            }, 200); 
             getDataFechaCorte($('#anio_filter').val());
-            getUPPDelegacion($('#anio_filter').val());
+            getUPPAdministrativo($('#anio_filter').val());
         });
         
         $("#form").on("change",".filters_fechaCorte",function(e){
