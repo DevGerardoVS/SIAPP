@@ -36,7 +36,7 @@ class HomeController extends Controller
 
     public function actualizarcarga()
     {
-        log::channel('daily')->debug('ya puso la variable de session'.Auth::user()->username);
+        // log::channel('daily')->debug('ya puso la variable de session'.Auth::user()->username);
         Session::put('cargaMasClav',1);
         Session::put('cargapayload','El excel cargo con exito');
      
@@ -44,22 +44,21 @@ class HomeController extends Controller
     }
     public function actualizarcargfalla()
     {
-        log::channel('daily')->debug('ya puso la variable de session'.Auth::user()->username);
-        Session::put('cargaMasClav',2);
-        Session::put('cargapayload',array (
-            0 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 09 ',
-            1 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 02 ',
-            2 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 0L ',
-            3 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 0K ',
-          ));
+        // log::channel('daily')->debug('ya puso la variable de session'.Auth::user()->username);
+        // Session::put('cargaMasClav',2);
+        // Session::put('cargapayload',array (
+        //     0 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 09 ',
+        //     1 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 02 ',
+        //     2 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 0L ',
+        //     3 => 'El total presupuestado  no es igual al techo financiero en la upp: 012 fondo: 0K ',
+        //   ));
       
         return view('home');
     }
     public function borrarsesionexcel()
     {
         $deleted = carga_masiva_estatus::where('id_usuario','=',Auth::user()->id)->forceDelete();
-        // log::channel('daily')->debug('borro la variable de session'.Auth::user()->username);
-        session()->forget(['cargapayload', 'cargaMasClav']);
+         session()->forget(['cargapayload', 'cargaMasClav']);
         return back();
     }
     public function actualizarcargafin()

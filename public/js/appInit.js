@@ -61,11 +61,6 @@ var _gen = {
 
 
     essential: function (tiemporestante2,cargamasiva) {
-       
-            document.addEventListener("DOMContentLoaded", function (e) {
-            
-         
-            }, false);
     
             // Tu código de SweetAlert2 aquí
       

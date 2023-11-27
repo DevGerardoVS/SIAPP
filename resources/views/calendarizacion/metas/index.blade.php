@@ -6,6 +6,7 @@
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
         <input id='area' type="text" style="display: none">
         <input id='conmir' type="text" style="display: none">
+        <input id='nomir' type="text" style="display: none">
         <input id='calendar' type="text" style="display: none">
         <input id='activiMir' type="text" style="display: none">
             <div class="row">

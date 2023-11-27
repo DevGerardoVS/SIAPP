@@ -127,7 +127,11 @@ class ClavePreController extends Controller
         })
         ->where(function ($claves) use ($rol,$array_where) {
             $claves->where($array_where);
+            if ($rol == 1) {
+                $claves->where('programacion_presupuesto.tipo','Operativo');
+            }
             if ($rol == 2) {
+                $claves->where('programacion_presupuesto.tipo','RH');
                 $arrayClaves = [];
                 $uppAutorizados = DB::table('uppautorizadascpnomina')->select('clv_upp')->where('deleted_at','=',null)->get()->toArray();
                 foreach ($uppAutorizados as $key => $value) {
@@ -174,13 +178,36 @@ class ClavePreController extends Controller
             throw ValidationException::withMessages(['duplicado'=>'Esta clave ya existe']);
            
          }else {
+            switch ($perfil) {
+                case 1:
+                    $rol = 0;
+                    break;
+                case 4:
+                    $rol = 1;
+                    break;
+                case 5:
+                    $rol = 2;
+                    break;
+                default:
+                    $rol = 3;
+                    break;
+            }
             $disponible = 0;
             $presupuestoUpp = DB::table('techos_financieros')
             ->SELECT('presupuesto','tipo')
             ->WHERE('clv_upp', '=', $request->data[0]['upp'])
             ->WHERE('clv_fondo', '=', $request->data[0]['fondoRamo'])
             ->WHERE('ejercicio', '=', $request->ejercicio)
-            // ->WHERE('tipo', '=', $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH' )
+            ->where(function ($presupuestoUpp) use ($rol) {
+                //para que solo tome los recursos operativos en perfil upp
+                if ($rol == 1) {
+                    $presupuestoUpp->where('tipo', '=', 'Operativo' );
+                }
+                //para que solo tome los recursos RH en perfil delegacion
+                if ($rol == 2) {
+                    $presupuestoUpp->where('tipo', '=', 'RH' );
+                }
+            })
             ->WHERE('deleted_at', '=', null)
             ->first();
             $presupuestoAsignado = DB::table('programacion_presupuesto')
@@ -188,7 +215,16 @@ class ClavePreController extends Controller
             ->WHERE ('upp', '=', $request->data[0]['upp'])
             ->WHERE('fondo_ramo', '=', $request->data[0]['fondoRamo'])
             ->WHERE('ejercicio', '=', $request->ejercicio)
-            // ->WHERE('tipo', '=', $request->data[0]['subPrograma'] != 'UUU' ? 'Operativo' : 'RH' )
+            ->where(function ($presupuestoAsignado) use ($rol) {
+                //para que solo tome los recursos operativos en perfil upp
+                if ($rol == 1 || $rol == 0) {
+                    $presupuestoAsignado->where('tipo', '=', 'Operativo' );
+                }
+                //para que solo tome los recursos RH en perfil delegacion
+                if ($rol == 2) {
+                    $presupuestoAsignado->where('tipo', '=', 'RH' );
+                }
+            })
             ->WHERE('deleted_at', '=', null)
             ->first();
             if ($presupuestoUpp && $presupuestoUpp != '') {
@@ -571,13 +607,41 @@ class ClavePreController extends Controller
         return response()->json($clasificacion,200);
     }
     public function getPresupuestoPorUpp($upp,$fondo,$subPrograma,$ejercicio){
+        $perfil = Auth::user()->id_grupo;
+        switch ($perfil) {
+            case 1:
+                // rol administrador
+                $rol = 0;
+                break;
+            case 4:
+                // rol upp
+                $rol = 1;
+                break;
+            case 5:
+                // rol delegacion
+                $rol = 2;
+                break;
+            default:
+                // rol auditor y gobDigital
+                $rol = 3;
+                break;
+        }
         $disponible = 0;
         $presupuestoUpp = DB::table('techos_financieros')
         ->SELECT('presupuesto','tipo')
         ->WHERE('clv_upp', '=', $upp)
         ->WHERE('clv_fondo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
-        // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
+        ->where(function ($presupuestoUpp) use ($rol) {
+            //para que solo tome los recursos operativos en perfil upp
+            if ($rol == 1) {
+                $presupuestoUpp->where('tipo', '=', 'Operativo' );
+            }
+            //para que solo tome los recursos RH en perfil delegacion
+            if ($rol == 2) {
+                $presupuestoUpp->where('tipo', '=', 'RH' );
+            }
+        })
         ->WHERE('deleted_at', '=', null)
         ->first();
         $presupuestoAsignado = DB::table('programacion_presupuesto')
@@ -585,6 +649,16 @@ class ClavePreController extends Controller
         ->WHERE ('upp', '=', $upp)
         ->WHERE('fondo_ramo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
+        ->where(function ($presupuestoAsignado) use ($rol) {
+            //para que solo tome los recursos operativos en perfil upp
+            if ($rol == 1 || $rol == 0) {
+                $presupuestoAsignado->where('tipo', '=', 'Operativo' );
+            }
+            //para que solo tome los recursos RH en perfil delegacion
+            if ($rol == 2) {
+                $presupuestoAsignado->where('tipo', '=', 'RH' );
+            }
+        })
         // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
@@ -831,7 +905,11 @@ class ClavePreController extends Controller
             $fondos = ClavesHelper::detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion);
         }else {
             if ($uppAutorizados) {
-                $fondos = ClavesHelper::detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion);
+                if ($rol == 0) {
+                    $fondos = ClavesHelper::detallePresupuestoGeneral($arrayTechos,$arrayProgramacion);
+                }else {
+                    $fondos = ClavesHelper::detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion);
+                }
                
             }else {
                     $fondos = ClavesHelper::detallePresupuestoGeneral($arrayTechos,$arrayProgramacion);
