@@ -92,6 +92,16 @@ class ClavesHelper{
         $OpCalendarizado = 0;
         $disponible = 0;
         $clv_upp = $uppUsuario ? $uppUsuario : $upp;
+        $whereCierre = [];
+        $tabla = 'programacion_presupuesto';
+        if ($uppUsuario != '') {
+            array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
+        }
+            array_push($whereCierre, ['cierre_ejercicio_claves.estatus', '=', 'Abierto']);
+        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE($whereCierre)->first();
+            if ($anio < $ejercicioActual->ejercicio) {
+                $tabla = 'programacion_presupuesto_hist';
+            }
         $presupuestoOperativo = DB::table('techos_financieros')
         ->SELECT(DB::raw('SUM(presupuesto) as totalAsignado'))
         ->where(function ($presupuestoOperativo) use ($clv_upp,$anio) {
@@ -101,12 +111,17 @@ class ClavesHelper{
             }
         })
         ->get();
-        $calendarizadoOperativo = DB::table('programacion_presupuesto')
+        $calendarizadoOperativo = DB::table($tabla)
         ->SELECT(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre as calendarizado'))
-        ->where(function ($calendarizadoOperativo) use ($clv_upp,$anio) {
-            $calendarizadoOperativo->where('tipo','=','Operativo')->where('ejercicio','=',$anio)->where('deleted_at','=',null);
+        ->where(function ($calendarizadoOperativo) use ($clv_upp,$anio, $tabla) {
+            $deleted = [];
+            if ($tabla == 'programacion_presupuesto') {
+                array_push($deleted, ['deleted_at','=',null]);
+            }
+            array_push($deleted, ['ejercicio','=',$anio]);
+            $calendarizadoOperativo->where('tipo','=','Operativo')->where($deleted);
             if ($clv_upp && $clv_upp != '') {
-                $calendarizadoOperativo->where('programacion_presupuesto.upp', '=', $clv_upp); 
+                $calendarizadoOperativo->where($tabla.'.upp', '=', $clv_upp); 
             }
         })
         ->get();
@@ -131,6 +146,16 @@ class ClavesHelper{
         $RHCalendarizado = 0;
         $disponible = 0;
         $clv_upp = $uppUsuario ? $uppUsuario : $upp;
+        $whereCierre = [];
+        $tabla = 'programacion_presupuesto';
+        if ($uppUsuario != '') {
+            array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
+        }
+            array_push($whereCierre, ['cierre_ejercicio_claves.estatus', '=', 'Abierto']);
+        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE($whereCierre)->first();
+            if ($anio < $ejercicioActual->ejercicio) {
+                $tabla = 'programacion_presupuesto_hist';
+            }
         $presupuestoRH = DB::table('techos_financieros')
         ->SELECT(DB::raw('SUM(presupuesto) as totalAsignado'))
         ->where(function ($presupuestoRH) use ($clv_upp,$anio,$rol) {
@@ -149,12 +174,17 @@ class ClavesHelper{
             }
         })
         ->get();
-        $calendarizadoRH = DB::table('programacion_presupuesto')
+        $calendarizadoRH = DB::table($tabla)
         ->SELECT(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre as calendarizado'))
-        ->where(function ($calendarizadoRH) use ($clv_upp,$anio,$rol) {
-            $calendarizadoRH->where('tipo','=','RH')->where('ejercicio','=',$anio)->where('deleted_at','=',null);
+        ->where(function ($calendarizadoRH) use ($clv_upp,$anio,$rol,$tabla) {
+            $deleted = [];
+            if ($tabla == 'programacion_presupuesto') {
+                array_push($deleted, ['deleted_at','=',null]);
+            }
+            array_push($deleted, ['ejercicio','=',$anio]);
+            $calendarizadoRH->where('tipo','=','RH')->where($deleted);
             if ($clv_upp && $clv_upp != '') {
-                $calendarizadoRH->where('programacion_presupuesto.upp', '=', $clv_upp); 
+                $calendarizadoRH->where($tabla.'.upp', '=', $clv_upp); 
             }
             if ($rol == 2) {
                 $arrayClaves = [];
@@ -162,8 +192,8 @@ class ClavesHelper{
                 foreach ($uppAutorizados as $key => $value) {
                     array_push($arrayClaves, $value->clv_upp);
                 }
-                $calendarizadoRH->whereIn('programacion_presupuesto.upp',$arrayClaves);
-                $calendarizadoRH->where('programacion_presupuesto.tipo', '=', 'RH');
+                $calendarizadoRH->whereIn($tabla.'.upp',$arrayClaves);
+                $calendarizadoRH->where($tabla.'.tipo', '=', 'RH');
             }
         })
         ->get();
@@ -296,7 +326,7 @@ class ClavesHelper{
             return true;
         }
     }
-    public static function detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion){
+    public static function detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion,$tabla){
         $fondos = DB::select("select 
         clv_fondo,
         f.fondo_ramo,
@@ -323,7 +353,7 @@ class ClavesHelper{
                 0 Operativo,
                 sum(total) calendarizado,
                 ejercicio
-            from programacion_presupuesto pp
+            from ".$tabla." pp
             where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayProgramacion."
             group by clv_fondo,ejercicio
         ) tabla
@@ -332,7 +362,7 @@ class ClavesHelper{
 
         return $fondos;
     }
-    public static function detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion){
+    public static function detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion,$tabla){
         $fondos = DB::select("
         select 
             clv_fondo,
@@ -360,7 +390,7 @@ class ClavesHelper{
                 0 Operativo,
                 sum(total) calendarizado,
                 ejercicio
-            from programacion_presupuesto pp
+            from ".$tabla." pp
             where pp.tipo = 'Operativo' && ".$arrayProgramacion."
             group by clv_fondo
         ) tabla
@@ -369,7 +399,7 @@ class ClavesHelper{
 
         return $fondos;
     }
-    public static function detallePresupuestoGeneral($arrayTechos,$arrayProgramacion){
+    public static function detallePresupuestoGeneral($arrayTechos,$arrayProgramacion,$tabla){
             $fondos = DB::select("select 
             clv_fondo,
             f.fondo_ramo,
@@ -406,7 +436,7 @@ class ClavesHelper{
                 0 Operativo,
                 sum(total) calendarizado,
                 ejercicio
-            from programacion_presupuesto pp
+            from ".$tabla." pp
             where ".$arrayProgramacion."
             group by clv_fondo
         ) tabla
