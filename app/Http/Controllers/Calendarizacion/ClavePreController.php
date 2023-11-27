@@ -86,7 +86,6 @@ class ClavePreController extends Controller
             array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
         }
         $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT(DB::raw('MAX( ejercicio )AS ejercicio'))->WHERE($whereCierre)->first();
-        Log::info('ejercicioActual', [json_encode($ejercicioActual)]);
         if ($request->ejercicio && $request->ejercicio != '') {
             $anio = $request->ejercicio;
             if ($anio < $ejercicioActual->ejercicio) {
