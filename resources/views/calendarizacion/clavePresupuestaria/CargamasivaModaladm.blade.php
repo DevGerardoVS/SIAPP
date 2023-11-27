@@ -4,8 +4,7 @@
         <div class="modal-content">
             <div class="modal-header colorMorado">
                 <h5 class="modal-title" id="staticBackdropLabel">{{ __('messages.carga_masiva_title') }}</h5>
-                <button type="button" class="btn-close" onclick="limpiarCampos()" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <button type="button" class="btn-close" id="closeadm" name="closeadm" ></button>
             </div>
             <form action="{{ route('load_data_plantilla') }}" id="Form_Modal_Carga_Masiva"
                 name="Form_Modal_Carga_Masiva" method="POST" enctype="multipart/form-data">
@@ -46,8 +45,8 @@
                         <div class="col-sm-10">
                             <div class="form-group">
                                 <label for="instruccion 2">
-                                    <span style="vertical-align: inherit;"><span style="vertical-align: inherit;">Los
-                                            datos de claves presupuestarias guardados no confirmados <b>seran
+                                    <span style="vertical-align: inherit;"><span style="vertical-align: inherit;">Si selecciona carga completa los registros
+                                        guardados no confirmados <b>seran
                                                 borrados</b></span></span>
                                 </label>
                             </div>
@@ -90,11 +89,27 @@
                         </div>
                     </div>
                 </div>
-                <div style="font-weight: bold;" class="row d-flex justify-content-center">Atención se borraran todos los registros de las upps en el excel al hacer una carga masiva.
-                   </div>
+                <div class="row">
+                    <div class="form-group d-flex justify-content-around">
+                        <div  class="form-check form-check-inline">
+                            <input class="form-check-input " value="0" type="radio" name="tipo_adm" id="parcial_adm"
+                                checked>
+                            <label class="form-check-label " for="tipo_adm">
+                                Carga parcial
+                            </label>
+                        </div>
 
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" value="1" type="radio" name="tipo_adm"
+                            id="completa_adm">
+                            <label class="form-check-label" for="tipo_adm">
+                                Carga completa
+                            </label>
+                        </div> 
+                    </div>
+                </div>
                 <div class="modal-footer-carga">
-                    <button type="button" {{-- onclick="limpiarCampos()" --}} class="btn btn-secondary "
+                    <button type="button"  onclick="document.getElementById('closeadm').click()"  class="btn btn-secondary "
                         data-bs-dismiss="modal">{{ __('messages.cancelar') }}</button>
                     <button type="submit" name="aceptar_adm" id="aceptar_Adm" class="btn colorMorado">
                         <i class="fa fa-upload" style="color: #dfdfdf"></i>
@@ -124,7 +139,7 @@
             title: '{{ __('messages.msg_cargando_datos') }}',
             html: ' <b></b>',
             allowOutsideClick: false,
-            timer: 2000000,
+            timer: 3000000,
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading();
@@ -135,4 +150,14 @@
         form.submit();
 
     })
+
+
+
+    $(document).delegate("#closeadm", "click", function(event){
+            $("#Modal_admin").find("#file_adm").val(null);
+            $("#Modal_admin").find("#fileadm_label").val('Seleccionar archivo');
+            $('#Modal_admin').modal('hide');
+});
+
+
 </script>

@@ -33,6 +33,7 @@ class ReporteController extends Controller
         Controller::check_permission('getAdmon');
         $dataSet = array();
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto_hist pph UNION SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC');
+
         $upps = DB::select('SELECT clave,descripcion FROM catalogo WHERE grupo_id = 6 GROUP BY clave ORDER BY clave ASC');
         return view("reportes.administrativos.indexAdministrativo", [
             'dataSet' => json_encode($dataSet),
@@ -104,27 +105,16 @@ class ReporteController extends Controller
 
     public function proyectoCalendarioGeneral(Request $request)
     {
-        // $draw = $request->get('draw');
-        // $drawin = $request->get('filtros');
-        // $search_arr = $request->get('search');
-        // $searchValue = $search_arr && array_key_exists('value', $search_arr) ? $search_arr['value'] : ''; 
-        // $start = $request->get("start");
-        // $rowperpage = $request->get("length"); 
-
-        // Log::info("resultado de array");
-        // log::debug($start);
-        // Log::info("fin resultado de array");
-
         $anio = $request->anio;
         $fecha = $request->fecha != "null" ? "'" . $request->fecha . "'"  : "null";
         if (Auth::user()->clv_upp != null) $upp = "'" . Auth::user()->clv_upp . "'";
         else $upp = $request->upp != "null" ? "'" . $request->upp . "'"  : "null";
-        $dataSet = array();
-        // $countData = count(DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.",0,1000000)"));
-        // $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.",0,1000000)");
 
-        // $data = DB::select("CALL calendario_general(".$anio.", ".$fecha.", ".$upp.",".$start.",".$rowperpage.")");
-        $data = DB::select("CALL calendario_general(" . $anio . ", " . $fecha . ", " . $upp . ")");
+        if(Auth::user()->id_grupo == 1) $tipo = $request->tipo == "RH" ? "'RH'" : ($request->tipo == "Operativo" ? "'Operativo'": "null"); 
+        else $tipo = Auth::user()->id_grupo == 5 ? "'RH'" : "'Operativo'";
+
+        $dataSet = array();
+        $data = DB::select("CALL calendario_general(" . $anio . ", " . $fecha . ", " . $upp . ",". $tipo. ")");
 
         foreach ($data as $d) {
             $ds = array($d->upp, $d->clave, number_format($d->monto_anual), number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre));
@@ -132,7 +122,6 @@ class ReporteController extends Controller
         }
         return response()->json([
             "dataSet" => $dataSet,
-            // "totalRecords" => $countData,
         ]);
     }
 
@@ -142,10 +131,30 @@ class ReporteController extends Controller
         $fecha = $request->fecha != "null" ? "'" . $request->fecha . "'"  : "null";
         if (Auth::user()->clv_upp != null) $upp = "'" . Auth::user()->clv_upp . "'";
         else $upp = $request->upp != "null" ? "'" . $request->upp . "'"  : "null";
+       
+        if(Auth::user()->id_grupo == 1) $tipo = $request->tipo == "RH" ? "'RH'" : ($request->tipo == "Operativo" ? "'Operativo'": "null"); 
+        else $tipo = Auth::user()->id_grupo == 5 ? "'RH'" : "'Operativo'";
+        
         $dataSet = array();
-        $data = DB::select("CALL proyecto_calendario_actividades(" . $anio . ", " . $upp . ", " . $fecha . ")");
+        $data = DB::select("CALL proyecto_calendario_actividades(" . $anio . ", " . $upp . ", " . $fecha . ", " . $tipo . ")");
+
         foreach ($data as $d) {
-            $ds = array($d->clv_upp, $d->clv_ur, $d->clv_programa, $d->clv_subprograma, $d->clv_proyecto, $d->clv_fondo, $d->actividad, $d->cantidad_beneficiarios, $d->beneficiario, $d->unidad_medida, $d->tipo, number_format($d->meta_anual), number_format($d->enero), number_format($d->febrero), number_format($d->marzo), number_format($d->abril), number_format($d->mayo), number_format($d->junio), number_format($d->julio), number_format($d->agosto), number_format($d->septiembre), number_format($d->octubre), number_format($d->noviembre), number_format($d->diciembre));
+            $cantidad_beneficiario = $d->clv_upp != null ? "" : number_format(floatval($d->cantidad_beneficiarios));
+            $meta_anual = $d->clv_upp != null ? "" : number_format(floatval($d->meta_anual));
+            $enero = $d->clv_upp != null ? "" : number_format(floatval($d->enero));
+            $febrero = $d->clv_upp != null ? "" : number_format(floatval($d->febrero));
+            $marzo = $d->clv_upp != null ? "" : number_format(floatval($d->marzo));
+            $abril = $d->clv_upp != null ? "" : number_format(floatval($d->abril));
+            $mayo = $d->clv_upp != null ? "" : number_format(floatval($d->mayo));
+            $junio = $d->clv_upp != null ? "" : number_format(floatval($d->junio));
+            $julio = $d->clv_upp != null ? "" : number_format(floatval($d->julio));
+            $agosto = $d->clv_upp != null ? "" : number_format(floatval($d->agosto));
+            $septiembre = $d->clv_upp != null ? "" : number_format(floatval($d->septiembre));
+            $octubre = $d->clv_upp != null ? "" : number_format(floatval($d->octubre));
+            $noviembre = $d->clv_upp != null ? "" : number_format(floatval($d->noviembre));
+            $diciembre = $d->clv_upp != null ? "" : number_format(floatval($d->diciembre));
+
+            $ds = array($d->clv_upp, $d->clv_ur, $d->clv_programa, $d->clv_subprograma, $d->clv_proyecto, $d->clv_fondo, $d->actividad, $cantidad_beneficiario, $d->beneficiario, $d->unidad_medida, $d->tipo, $meta_anual, $enero, $febrero, $marzo, $abril, $mayo, $junio, $julio, $agosto, $septiembre, $octubre, $noviembre, $diciembre);
             $dataSet[] = $ds;
         }
         return response()->json([
@@ -160,7 +169,7 @@ class ReporteController extends Controller
         $dataSet = array();
         $data = DB::select("CALL avance_proyectos_actividades_upp(" . $anio . ", " . $fecha . ")");
         foreach ($data as $d) {
-            $ds = array($d->clv_upp . " " . $d->upp, $d->proyectos, $d->actividades, $d->avance, $d->estatus);
+            $ds = array($d->clv_upp . " " . $d->upp, $d->claves, $d->mir, $d->avance."%", $d->estatus_claves, $d->estatus_mir);
             $dataSet[] = $ds;
         }
         return response()->json([
@@ -168,16 +177,11 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function getFechaCorte($anio)
-    {
-        $fechaCorte = DB::select('SELECT DISTINCT version, MAX(DATE_FORMAT(deleted_at, "%Y-%m-%d")) AS deleted_at FROM programacion_presupuesto_hist pp WHERE ejercicio = ? AND deleted_at IS NOT NULL GROUP BY version', [$anio]);
-        return $fechaCorte;
-    }
-
     public function downloadReport(Request $request, $nombre)
     {
         ini_set('max_execution_time', 600); // Tiempo máximo de ejecución 
 
+        log::info($request);
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
         $fechaCorte = !$request->input('fechaCorte') ? $request->fechaCorte_filter : $request->input('fechaCorte');
@@ -206,13 +210,23 @@ class ReporteController extends Controller
                 $parameters["fecha"] = $fechaCorte;
                 $nameFile = $nameFile . "_" . $fechaCorte;
             }
+
             if ($nombre == "calendario_clave_presupuestaria" || $nombre == "proyecto_calendario_actividades") {
                 if (Auth::user()->clv_upp != null || $upp != null) {
                     $parameters["upp"] = $upp;
                     $nameFile = $nameFile . "_UPP_" . $upp;
                 }
-            }
 
+                if(Auth::user()->id_grupo == 1){
+                    if($request->tipo_filter !=null){
+                        $parameters["tipo"] = $request->tipo_filter;
+                        $nameFile = $nameFile . "_" . $parameters["tipo"];
+                    } 
+                }else{
+                    $parameters["tipo"] = Auth::user()->id_grupo == 5 ? "RH" : "Operativo";
+                    $nameFile = $nameFile . "_" . $parameters["tipo"];
+                } 
+            }
 
             $database_connection = \Config::get('database.connections.mysql');
 
@@ -223,8 +237,9 @@ class ReporteController extends Controller
                 $format,
                 $parameters,
                 $database_connection
+            // )->output();
+            // dd($jasper);
             )->execute();
-
 
             if ($request->action == 'xlsx') { // Verificar el tipo de archivo
                 if (File::exists($output_file . "/" . $report . ".xlsx") && filesize($file . ".xlsx") < 4097) { // Verificar si el archivo generado está vacío y Verificar si existe el archivo guardado en caso de existir lo elimina
@@ -252,6 +267,37 @@ class ReporteController extends Controller
             Log::channel('daily')->debug('exp ' . $exp->getMessage());
             return back()->withErrors(['msg' => '¡Ocurrió un error al descargar el archivo!']);
         }
+    }
+
+    public function getFechaCorte($anio)
+    {
+        $fechaCorte = DB::select('SELECT DISTINCT version, MAX(DATE_FORMAT(deleted_at, "%Y-%m-%d")) AS deleted_at FROM programacion_presupuesto_hist pp WHERE ejercicio = ? AND deleted_at IS NOT NULL GROUP BY version', [$anio]);
+        return $fechaCorte;
+    }
+    
+    public function getUPPAdministrativo($anio){ // Obtener las UPP para llenar el select del mismo cuando el usuario delegación ingresa a los reportes administrativos
+        if(Auth::user()->id_grupo == 5){
+            $upp = DB::table("catalogo as c")
+            ->join("uppautorizadascpnomina as aut", function($join){
+                $join->on("c.clave", "=", "aut.clv_upp");
+            })
+            ->select("aut.clv_upp", "c.descripcion")
+            ->where("c.grupo_id", "=", 6)
+            ->where("ejercicio", $anio)
+            ->whereNull("aut.deleted_at")
+            ->groupBy("aut.clv_upp")
+            ->orderBy("aut.clv_upp")
+            ->get();
+        }else{
+            $upp = DB::table("catalogo")
+            ->select("clave as clv_upp", "descripcion")
+            ->where("grupo_id", "=", 6)
+            ->where("ejercicio", $anio)
+            ->orderBy("clave","asc")
+            ->groupBy("clave")
+            ->get();
+        }
+        return $upp;
     }
 
     // Reportes MML
@@ -370,14 +416,14 @@ class ReporteController extends Controller
         ]);
     }
 
-    public function getUPP($anio){ // Obtener las UPP para llenar el select del mismo
+    public function getUPP($anio){ // Obtener las UPP para llenar el select del mismo en el reporte de analisis informativo MML
         $upp = DB::table("v_epp")->select("clv_upp", "upp")
         ->where("ejercicio", $anio)
         ->groupBy("clv_upp")->get();
         return $upp;
     }
 
-    public function getPrograma($clv_upp){ // Obtener los programas para llenar el select del mismo
+    public function getPrograma($clv_upp){ // Obtener los programas para llenar el select del mismo en el reporte de analisis informativo MML
         $anio = session("anioMIR");
         $array_where=[];
 

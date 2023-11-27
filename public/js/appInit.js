@@ -58,7 +58,12 @@ var _gen = {
                       });
             
         },
-    essential: function (tiemporestante2) {
+
+
+    essential: function (tiemporestante2,cargamasiva) {
+    
+            // Tu código de SweetAlert2 aquí
+      
         const currentPathname = window.location.pathname;
      
 
@@ -70,6 +75,7 @@ var _gen = {
 
         if(currentPathname!="/login"){
         var reloj = setInterval(function () {
+           
             // var tiemporestante2 ="{{Session::get('last_activity')}";
        
             var tiempoactual = new Date().getTime();
@@ -112,25 +118,31 @@ var _gen = {
 
 
                 }
-                //     Swal.fire({
-                //         title: 'Su sesión ha expirado',
-                //         text: '¿Desea iniciar sesión nuevamente?',
-                //         icon: 'warning',
-                //         showCancelButton: false,
-                //         confirmButtonColor: '#3085d6',
-                //         cancelButtonColor: '#d33',
-                //         confirmButtonText: 'Sí, iniciar sesión',
-                //         cancelButtonText: 'No, cerrar pestaña',
-                //     }).then((result) => {
-                //         if (result.isConfirmed) {
-                //             _gen.logOut();
-                //         } else {
-                //             _gen.logOutpestaña();
-                //         }
-                //     });
-                // }
+              
             }
         }, 1000);
     }}
 
 };
+
+var _notificaciones = {
+    carga_masiva_alerts: function(estatus){
+        
+        if(estatus==1){
+            $("#alerts_carga_masiva").on('click', function(e) {
+                const tempLink = document.createElement('a');
+                tempLink.href = `/borrar-sesion_excel`;
+                tempLink.click();
+                $('#alerts_carga_masiva').hide();
+            });
+        }else{
+            $("#alerts_carga_masiva").on('click', function(e) {
+                const tempLink = document.createElement('a');
+                tempLink.href = `/calendarizacion/download-errors-excel`;
+                tempLink.click();
+                $('#alerts_carga_masiva').hide();
+            });
+        }
+
+    },
+}

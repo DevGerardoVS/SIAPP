@@ -423,6 +423,9 @@ var dao = {
     editarPutMeta: function () {
         var form = $('#actividad')[0];
         var data = new FormData(form);
+        if ($('#subp').val() == 'UUU') {
+            data.append('subp', 'UUU');
+        }
         data.append('sumMetas', $('#sumMetas').val());
         $.ajax({
             type: "POST",
@@ -458,7 +461,8 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            dao.getActiv(data.clv_upp,data.subprograma);
+            dao.getActiv(data.clv_upp, data.subprograma); 
+            $('#subp').val(data.subprograma);
             $('#proyectoMD').empty();
             $('#proyectoMD').append("<thead><tr class='colorRosa'>"
                 + "<th class= 'vertical' > UPP</th >"
@@ -519,9 +523,9 @@ var dao = {
                                 } else {
                                     if (data.enero !=0) {
                                         $('#1').val(0);
-                                        $('#sumMetas').val(data.total-data.enero);
+                                        let sumE = parseInt($('#sumMetas').val());
+                                        $('#sumMetas').val(sumE -data.enero);
                                     }
-
                                     $("#1").prop('disabled', 'disabled');
                                 }
                                 break;
@@ -533,7 +537,8 @@ var dao = {
                                 } else {
                                     if (data.febrero !=0) {
                                         $('#2').val(0);
-                                        $('#sumMetas').val(data.total-data.febrero);
+                                        let sumF = parseInt($('#sumMetas').val());
+                                        $('#sumMetas').val(sumF -data.febrero);
                                     }
                                     $("#2").prop('disabled', 'disabled');
                                 }
@@ -546,7 +551,8 @@ var dao = {
                                 } else {
                                     if (data.marzo !=0) {
                                         $('#3').val(0);
-                                        $('#sumMetas').val(data.total-data.marzo);
+                                        let sumM = parseInt($('#sumMetas').val());
+                                $('#sumMetas').val(sumM-data.marzo);
                                     }
                                     $("#3").prop('disabled', 'disabled');
 
@@ -560,7 +566,8 @@ var dao = {
                                 } else {
                                     if (data.abril !=0) {
                                         $('#4').val(0);
-                                        $('#sumMetas').val(data.total-data.abril);
+                                        let sumA = parseInt($('#sumMetas').val());
+                                        $('#sumMetas').val(sumA -data.abril);
                                     }
                                     $("#4").prop('disabled', 'disabled');
                                 }
@@ -573,7 +580,8 @@ var dao = {
                                 } else {
                                     if (data.mayo !=0) {
                                         $('#5').val(0);
-                                        $('#sumMetas').val(data.total-data.mayo);
+                                        let sumMY = parseInt($('#sumMetas').val());
+                                        $('#sumMetas').val(sumMY-data.mayo);
                                     }
                                     $("#5").prop('disabled', 'disabled');
                                 }
@@ -586,7 +594,8 @@ var dao = {
                                 } else {
                                     if (data.junio !=0) {
                                         $('#6').val(0);
-                                        $('#sumMetas').val(data.total-data.junio);
+                                        let sumJ = parseInt($('#sumMetas').val());
+                                        $('#sumMetas').val(sumJ-data.junio);
                                     }
                                     $("#6").prop('disabled', 'disabled');
                                 }
@@ -599,7 +608,8 @@ var dao = {
                                 } else {
                                     if (data.julio !=0) {
                                         $('#7').val(0);
-                                        $('#sumMetas').val(data.total-data.julio);
+                                        let sumJJ = parseInt($('#sumMetas').val());
+                                        $('#sumMetas').val(sumJJ-data.julio);
                                     }
                                     $("#7").prop('disabled', 'disabled');
                                 }
@@ -612,7 +622,8 @@ var dao = {
                                 } else {
                                     if (data.agosto !=0) {
                                         $('#8').val(0);
-                                        $('#sumMetas').val(data.total-data.agosto);
+                                        let sumAG = parseInt($('#sumMetas').val());
+                                        $('#sumMetas').val(sumAG-data.agosto);
                                     }
                                     $("#8").prop('disabled', 'disabled');
                                 }
@@ -625,7 +636,8 @@ var dao = {
                                 } else {
                                     if (data.septiembre !=0) {
                                         $('#9').val(0);
-                                        $('#sumMetas').val(data.total-data.septiembre);
+                                        let sumS = parseInt($('#sumMetas').val());
+                                        $('#sumMetas').val(sumS-data.septiembre);
                                     }
                                     $("#9").prop('disabled', 'disabled');
                                 }
@@ -638,7 +650,8 @@ var dao = {
                                 } else {
                                     if (data.octubre !=0) {
                                         $('#10').val(0);
-                                        $('#sumMetas').val(data.total-data.octubre);
+                                        let sumO = parseInt($('#sumMetas').val());
+                                        $('#sumMetas').val(sumO-data.octubre);
                                     }
                                     $("#10").prop('disabled', 'disabled');
                                 }
@@ -651,7 +664,8 @@ var dao = {
                                 } else {
                                     if (data.noviembre !=0) {
                                         $('#11').val(0);
-                                        $('#sumMetas').val(data.total-data.noviembre);
+                                        let sumN = parseInt($('#sumMetas').val());
+                                        $('#sumMetas').val(sumN-data.noviembre);
                                     }
                                     $("#11").prop('disabled', 'disabled');
                                 }
@@ -664,7 +678,8 @@ var dao = {
                                 } else {
                                     if (data.diciembre !=0) {
                                         $('#12').val(0);
-                                        $('#sumMetas').val(data.total-data.diciembre);
+                                        let sumD = parseInt($('#sumMetas').val());
+                                       $('#sumMetas').val(sumD-data.diciembre);
                                     }
                                     $("#12").prop('disabled', 'disabled');
                                 }
@@ -1392,14 +1407,14 @@ $(document).ready(function () {
       });
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        let flag = dao.validMeses();
+       // let flag = dao.validMeses();
         if ($('#tipo_Ac').val() != 'Continua') {
-            if ($('#actividad').valid() && flag) {
+            if ($('#actividad').valid()) {
                 dao.editarPutMeta();
             }
         } else {
             if (dao.validatCont() != 0) {
-                if ($('#actividad').valid() && flag) {
+                if ($('#actividad').valid()) {
                     dao.editarPutMeta();
                 }
             }

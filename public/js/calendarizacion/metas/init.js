@@ -643,8 +643,6 @@ var dao = {
         }
     },
     getUpps: function () {
-        var csrfToken = "{{ csrf_token() }}";
-        console.log(localStorage.getItem('token'));
         $.ajax({
             type: "GET",
             url: '/calendarizacion/upps',
@@ -747,7 +745,6 @@ var dao = {
             cache: false,
             timeout: 600000
         }).done(function (response) {
-            dao.limpiar();
             const { mensaje } = response;
             Swal.fire({
                 icon: mensaje.icon,
@@ -761,7 +758,7 @@ var dao = {
                 dao.checkCombination($('#upp').val())
             }
             dao.getData('upp', 'ur');
-
+            dao.limpiar();
         });
     },
     rCMetasUpp: function (upp) {
@@ -771,7 +768,6 @@ var dao = {
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            console.log(data);
             if (!data.status) {
                 $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
@@ -830,7 +826,6 @@ var dao = {
             });
             $('#cerrar').trigger('click');
         }).fail(function (error, status, err) {
-            console.log("error-", error);
         });
     },
     getSelect: function () {
@@ -843,23 +838,29 @@ var dao = {
             const { unidadM, beneficiario } = data;
             var med = $('#medida');
             med.html('');
-            med.append(new Option("-- Medida--", ""));
-            document.getElementById("medida").options[0].disabled = true;
-            $.each(unidadM, function (i, val) {
-                med.append(new Option(val.unidad_medida, val.clave));
-            });
             var tipo_be = $('#tipo_Be');
             tipo_be.html('');
-            tipo_be.append(new Option("--U. Beneficiarios--", ""));
-            document.getElementById("tipo_Be").options[0].disabled = true;
-            $.each(beneficiario, function (i, val) {
-                tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].clave));
-            });
+            let sub = $('#area').val();
+             if (sub.includes('UUU')) {
+                 med.append(new Option("Pago de nómina", 829));
+                 tipo_be.append(new Option("Empleados", 12));
+             } else {
+                med.append(new Option("-- Medida--", ""));
+                document.getElementById("medida").options[0].disabled = true;
+                $.each(unidadM, function (i, val) {
+                    med.append(new Option(val.unidad_medida, val.clave));
+                });
+                 
+                tipo_be.append(new Option("--U. Beneficiarios--", ""));
+                document.getElementById("tipo_Be").options[0].disabled = true;
+                $.each(beneficiario, function (i, val) {
+                    tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
+                });
+            }
         });
     },
     getFyA: function (area, enti, mir, anio) {
         dao.limpiarErrors();
-        dao.getSelect();
         $('#tipo_Ac').empty();
         for (let i = 1; i <= 12; i++) {
             $("#" + i).val(0);
@@ -872,6 +873,7 @@ var dao = {
         $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
         $("#sel_actividad").removeAttr('disabled');
+        dao.getSelect();
         $.ajax({
             type: "GET",
             url: '/calendarizacion/fondos/' + area + '/' + enti,
@@ -990,7 +992,6 @@ var dao = {
         }
        let clave= $("#activiMir").val();
         let mir = fondo.split('$')
-        console.log("mir",mir);
         $.ajax({
             type: "GET",
             url: '/actividades/metas/actividades-mir/' + mir[0] + '/' + mir[1]+'/'+mir[3],
@@ -1110,7 +1111,13 @@ var dao = {
                 $('#' + e).selectpicker('destroy');
             }
         });
-        dao.getUrs(0);
+        if ($('#upp').val() == '') {
+            dao.getUrs(0);
+        } else {
+            upp = $('#upp').val();
+            dao.getUrs(upp);
+        }
+       
         dao.getSelect();
         $('.form-group').removeClass('has-error');
         for (let i = 1; i <= 12; i++) {
@@ -1433,7 +1440,7 @@ $(document).ready(function () {
 
     });
     $('#sel_fondo').change(() => {
-     let acmIR=   $("#activiMir").val(`${area}$${enti}`);
+     let acmIR=   $("#activiMir").val();
         acmIR = acmIR + '$'+$('#sel_fondo').val();
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
 
@@ -1444,7 +1451,7 @@ $(document).ready(function () {
         }
     });
     $('#fondo_id').change(() => {
-        let acmIR=   $("#activiMir").val(`${area}$${enti}`);
+        let acmIR=   $("#activiMir").val();
         acmIR = acmIR + '$'+ $('#fondo_id').val();
         dao.getMeses($('#area').val(), $('#fondo_id').val());
     });
@@ -1512,15 +1519,34 @@ $(document).ready(function () {
     })
     $('#btnSave').click(function (e) {
         e.preventDefault();
-        let flag = dao.validMeses();
-        if ($('#conmir').val() && flag) {
+        let flag = false;
+        console.log($('#actividad_id').val());
+        if ($('#actividad_id').val() == 'ot') {
+            let nombre = $("#inputAc").val();
+            let nuevo = nombre.trim();
+           // let n=nombre.replace(/ /g, "")
+            if (nuevo == "") {
+                Swal.fire({
+                    title: "Campo vacío",
+                    text: "El campo nombre no puede ir vacío",
+                    icon: "info"
+                  });
+                flag = false;
+            } else {
+                flag = true;
+            }
+
+        } else {
+            flag = true;
+        }
+        if ($('#conmir').val()) {
             init.validateCreate($('#actividad'));
             if ($('#actividad').valid() && flag) {
-                dao.crearMeta();
+               dao.crearMeta();
             }
         } else {
             init.validateCreateN($('#actividad'));
-            if ($('#actividad').valid() && flag) {
+            if ($('#actividad').valid()) {
                 dao.crearMeta();
             }
 

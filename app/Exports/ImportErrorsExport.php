@@ -23,7 +23,9 @@ class ImportErrorsExport implements  FromCollection, ShouldAutoSize, WithHeading
       $arrayErrores= $this->array;
         foreach ($arrayErrores as $err) {
 
-            $ds =array($err);
+           $stringprocess= explode("$", $err);
+
+            $ds =array($stringprocess[0],$stringprocess[2]);
             $dataSet[] = $ds;
 
 
@@ -39,13 +41,14 @@ class ImportErrorsExport implements  FromCollection, ShouldAutoSize, WithHeading
      */
     public function headings(): array {
         
-        return ['Lista errores',];
+        return ['Filas en que fallo','Errores'];
     }
 
     public function columnWidths(): array {
         return [
-            'A' => 200,
- 
+            'A' => 30,
+            'B' => 100,
+
         ];
     }
 }

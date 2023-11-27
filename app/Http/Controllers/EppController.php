@@ -16,14 +16,23 @@ class EppController extends Controller
         Controller::check_permission('viewGetEpp');
         $perfil = Auth::user()->id_grupo;
         $dataSet = array();
-        $listaUpp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->orderBy('clv_upp')->get();
+        $max_anio = DB::table('epp')->max('ejercicio');
+        $listaUpp = DB::table('v_epp')
+            ->select('clv_upp','upp')
+            ->distinct()
+            ->where('ejercicio', $max_anio)
+            ->orderBy('clv_upp')
+            ->get();
+
         if($perfil == 5){
             $listaUpp = DB::table('uppautorizadascpnomina as u')
                 ->leftjoin('v_epp as ve', 'u.clv_upp', '=', 've.clv_upp')
                 ->select('u.clv_upp','ve.upp')->distinct()
                 ->where('ve.deleted_at')->orderBy('u.clv_upp')->get();
         }
-        $listaAnio = DB::table('v_epp')->distinct()->where('deleted_at')->get(['ejercicio']);
+        $listaAnio = DB::table('v_epp')->distinct()->where('deleted_at')
+            ->orderBy('ejercicio','DESC')
+            ->get(['ejercicio']);
         $perfil = Auth::user()->id_grupo;
         return view('epp/epp', 
             [
@@ -102,6 +111,18 @@ class EppController extends Controller
 
         return response()->json([
             'listaUR'=> $listaUR
+        ]);
+    }
+
+    public function getUPP(Request $request){
+        $listaUPP = DB::table('v_epp')
+            ->where('ejercicio','=',$request->anio)
+            ->distinct()
+            ->orderBy('clv_upp')
+            ->get(['clv_upp','upp']);
+
+        return response()->json([
+            'listaUPP'=> $listaUPP
         ]);
     }
 

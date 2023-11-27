@@ -46,7 +46,5 @@ class MetasSheetImport implements ToCollection, WithHeadingRow
         ]
         )->validate();
 
-        Log::debug($validator);
-
     }
 }

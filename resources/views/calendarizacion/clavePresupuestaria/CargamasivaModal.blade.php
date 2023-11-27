@@ -4,8 +4,7 @@
         <div class="modal-content">
             <div class="modal-header colorMorado">
                 <h5 class="modal-title" id="staticBackdropLabel">{{ __('messages.carga_masiva_title') }}</h5>
-                <button type="button" class="btn-close" onclick="limpiarCampos()" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <button type="button" class="btn-close" id="close" name="close"></button>
             </div>
             <form action="{{ route('load_data_plantilla') }}" id="Formmodal" method="POST"
                 enctype="multipart/form-data">
@@ -45,11 +44,26 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-9">
+                            @if (Auth::user()->id_grupo==5 )
+
                             <div class="form-group">
                                 <label for="instruccion 2">
                                     <span style="vertical-align: inherit;"><span
-                                            style="vertical-align: inherit;">Los datos de claves presupuestarias guardados no confirmados <b>seran borrados</b></span></span>
+                                            style="vertical-align: inherit;">Las metas que hayas registrado  <b>seran borradas</b></span></span>
                                 </label>
+                            </div>
+                            @endif
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <div class="form-group">
+                                    <label for="instruccion 2">
+                                        <span style="vertical-align: inherit;"><span style="vertical-align: inherit;">Si selecciona carga completa los registros
+                                            guardados no confirmados <b>seran
+                                                    borrados</b></span></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-3">
@@ -103,8 +117,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="form-group d-flex justify-content-around">
+                        <div  class="form-check form-check-inline">
+                            <input class="form-check-input " value="0" type="radio" name="tipo" id="parcial"
+                                checked>
+                            <label class="form-check-label " for="tipo">
+                                Carga parcial
+                            </label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" value="1" type="radio" name="tipo"
+                                id="completa">
+                            <label class="form-check-label" for="tipo">
+                                Carga completa
+                            </label>
+                        </div> 
+                    </div>
+                </div>
                 <div class="modal-footer-carga">
-                    <button type="button" {{-- onclick="limpiarCampos()" --}} class="btn btn-secondary "
+                    <button type="button" onclick="document.getElementById('close').click()" class="btn btn-secondary "
                         data-bs-dismiss="modal">{{ __('messages.cancelar') }}</button>
                     <button type="submit" name="aceptar" id="aceptar" class="btn colorMorado">
                         <i class="fa fa-upload" style="color: #dfdfdf"></i>
@@ -134,7 +167,7 @@
             title: '{{ __('messages.msg_cargando_datos') }}',
             html: ' <b></b>',
             allowOutsideClick: false,
-            timer: 2000000,
+            timer: 3000000,
             timerProgressBar: true,
             didOpen: () => {
                 Swal.showLoading();
@@ -145,4 +178,14 @@
         form.submit();
 
     })
+
+    $(document).delegate("#close", "click", function(event){
+            $("#ModalCargaMasiva").find("#file_label").val('Seleccionar archivo');
+            $("#ModalCargaMasiva").find("#file_").val(null);
+            $('#ModalCargaMasiva').modal('hide');
+});
+
+
+
+        
 </script>
