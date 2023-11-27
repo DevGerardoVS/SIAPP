@@ -181,7 +181,6 @@ class ReporteController extends Controller
     {
         ini_set('max_execution_time', 600); // Tiempo máximo de ejecución 
 
-        log::info($request);
         $report =  $nombre;
         $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
         $fechaCorte = !$request->input('fechaCorte') ? $request->fechaCorte_filter : $request->input('fechaCorte');
