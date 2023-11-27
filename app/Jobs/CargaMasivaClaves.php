@@ -164,13 +164,13 @@ class CargaMasivaClaves implements ShouldQueue
 
         } catch (\Exception $e) {
             DB::rollBack();
-
+            $arrayfail = array();
+            array_push($arrayErrores, ' $ $Ocurrio un error interno contacte a soporte.');
+            $payload = json_encode($arrayfail);
             \Log::debug($e);
-            array_push($e, ' $Ocurrio un error interno contacte a soporte.');
-            json_encode($e);
             carga_masiva_estatus::where('id_usuario', $usuario->id)
                 ->update([
-                    'cargapayload' => $e,
+                    'cargapayload' => $arrayfail,
                     'cargaMasClav' => 2,
                     'updated_user' => $usuario->username
                 ]);
