@@ -85,8 +85,7 @@ class ClavePreController extends Controller
         if ($uppUsuario != '') {
             array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
         }
-            array_push($whereCierre, ['cierre_ejercicio_claves.estatus', '=', 'Abierto']);
-        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE($whereCierre)->first();
+        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT(DB::raw('MAX( ejercicio )AS ejercicio'))->WHERE($whereCierre)->first();
         if ($request->ejercicio && $request->ejercicio != '') {
             $anio = $request->ejercicio;
             if ($anio < $ejercicioActual->ejercicio) {
@@ -777,8 +776,8 @@ class ClavePreController extends Controller
         if ($uppUsuario != '') {
             array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
         }
-            array_push($whereCierre, ['cierre_ejercicio_claves.estatus', '=', 'Abierto']);
-        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE($whereCierre)->first();
+            
+        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT(DB::raw('MAX( ejercicio )AS ejercicio'))->WHERE($whereCierre)->first();
         if ($ejercicio && $ejercicio > 0) {
             $anio = $ejercicio;
             if ($anio < $ejercicioActual->ejercicio) {
@@ -914,8 +913,7 @@ class ClavePreController extends Controller
         if ($uppUsuario != '') {
             array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
         }
-            array_push($whereCierre, ['cierre_ejercicio_claves.estatus', '=', 'Abierto']);
-        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT('ejercicio')->WHERE($whereCierre)->first();
+        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT(DB::raw('MAX( ejercicio )AS ejercicio'))->WHERE($whereCierre)->first();
 
         $upp = ['clave'=>'000','descripcion'=>'Detalle General'];
         if ($ejercicio && $ejercicio > 0) {
