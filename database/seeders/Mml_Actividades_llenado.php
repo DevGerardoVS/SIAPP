@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 use App\Models\MmlMir;
 
-class TipoActividadUppSeeder extends Seeder
+class Mml_Actividades_llenado extends Seeder
 {
     /**
      * Run the database seeds.
