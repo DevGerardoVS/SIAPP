@@ -322,10 +322,23 @@ class MetasController extends Controller
 		$entidadAux = explode('-', $entidad);
 		$check = $this->checkClosing($entidadAux[0]);
 		$tipo='';
+		$framo33 = false;
 		if ($check['status']) {
+			
+			$ramo33 = DB::table('v_ramo_33')
+				->select('id')
+				->where('clv_programa', $areaAux[7])
+				->where('clv_fondo_ramo', $areaAux[8])
+				->where('ejercicio', $check['anio'])
+				->get();
+				if($ramo33){
+					$framo33 = true;
+				}
+
 			$m = DB::table('v_epp')
 				->select(
-					'v_epp.con_mir'
+					'con_mir',
+					'tipo_presupuesto'
 				)
 				->where('v_epp.deleted_at', null)
 				->where('clv_finalidad', $areaAux[0])
@@ -344,9 +357,6 @@ class MetasController extends Controller
 				->groupByRaw('con_mir')
 				->where('ejercicio', $check['anio'])
 				->get();
-
-				/* v_ramo_33 */
-
 			$activ = [];
 			if ($m[0]->con_mir == 1) {
 				$activ = DB::table('mml_mir')
@@ -363,11 +373,18 @@ class MetasController extends Controller
 					->where('mml_mir.clv_ur', $entidadAux[2])
 					->where('mml_mir.clv_pp', $areaAux[7])
 					->where('mml_mir.ejercicio', $check['anio'])
-					->groupByRaw('clave')->get();
+					->groupByRaw('clave');
+					if($m[0]->tipo_presupuesto==1){
+						$activ =$activ->where('mml_mir.ramo33', 1);
+					}
+					if($m[0]->tipo_presupuesto==0){
+					$activ = $activ->where('mml_mir.ramo33', 0);
+					}
+					$activ =$activ->get();
 				$tipo='M';
 				if (count($activ) == 0) {
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
-					$tipo='C';
+					$tipo='O';
 				}
 			} else {
 				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('ejercicio',  $check['anio'])->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
@@ -468,20 +485,16 @@ class MetasController extends Controller
 			$act = '';
 			switch ($request->tipoAct) {
 				case 'M':
-					Log::debug("MIR");
 					$metaMir = MetasHelper::isExistMmir($entidad_ejecutora, $area_funcional, $fondo, intval($actividad), $anio);
 					if ($metaMir) {
-						Log::debug("EXISTE MIR");
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 						return response()->json($res, 200);
 					}
 					$act = NULL;
 					break;
 				case 'O':
-					Log::debug("ACT OT");
 					$metaOt = MetasHelper::isExistMoT($entidad_ejecutora, $area_funcional, $fondo, $anio);
 					if ($metaOt) {
-						Log::debug("EXISTE OT");
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 						return response()->json($res, 200);
 					} else {
@@ -491,11 +504,8 @@ class MetasController extends Controller
 
 					break;
 				case 'C':
-					Log::debug("ACT CAT");
 					$metaCat = MetasHelper::isExistCat($entidad_ejecutora, $area_funcional, $fondo, intval($actividad), $anio);
 					if ($metaCat) {
-						Log::debug("EXISTE CAT");
-
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 						return response()->json($res, 200);
 					} else {
@@ -530,7 +540,6 @@ class MetasController extends Controller
 						
 				$meta = MetasHelper::createMeta($request,$actividad,$fondo,$act,$meses,$anio,$flagSubPp);			
 			if ($meta) {
-				Log::debug("Registro meta bityacora");
 				$b = array(
 					"username" => $username,
 					"accion" => 'Crear Meta',
@@ -538,7 +547,6 @@ class MetasController extends Controller
 				);
 				Controller::bitacora($b);
 				DB::commit();
-				Log::debug("COMMIT");
 				$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
 				return response()->json($res, 200);
 			} else {

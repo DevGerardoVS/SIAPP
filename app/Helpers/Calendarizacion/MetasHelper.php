@@ -1082,7 +1082,6 @@ class MetasHelper
 	}
 	public static function createMml_Ac($upp,$entidad_ejecutora, $area_funcional,$actividad, $nombre, $anio)
 	{
-		Log::debug("CREANDO MMLACT");
 		$ur = str_split($entidad_ejecutora);
 		$pp = str_split($area_funcional);
 		$mml_act = new MmlMir();
@@ -1096,38 +1095,25 @@ class MetasHelper
 		$mml_act->ejercicio = $anio;
 		$mml_act->created_user = Auth::user()->username;
 		$mml_act->save();
-		Log::debug(json_encode($mml_act));
 		return $mml_act->id;
 	}
 	public static function createMeta($request,$actividad,$fondo,$act,$meses,$anio,$flagSubPp)
 	{
 		try {
 
-			Log::debug("CREANDO meta");
-			//$confirm = MetasController::cmetasUpp($request->upp, $anio);
+			$confirm = MetasController::cmetasUpp($request->upp, $anio);
 			$clv = explode('/', $request->area);
 			$pp = explode('-', $clv[0]);
-			Log::debug($pp);
 			$meta = new Metas();
-			Log::debug("CREANDO OBJ meta");
 			$meta->mir_id = $request->tipoAct == 'M'?$actividad:null;
-			Log::debug("CREANDO mir_id meta");
 			$meta->actividad_id = $request->tipoAct !='M'?$act:null;
-			Log::debug("CREANDO actividad_id meta: ".$meta->actividad_id);
 			$meta->clv_fondo = $fondo;
-			Log::debug("CREANDO clv_fondo meta");
 			$meta->tipo = $request->tipo_Ac;
-			Log::debug("CREANDO tipo meta");
 			$meta->beneficiario_id =  intval($request->tipo_Be);
-			Log::debug("CREANDO beneficiario_id meta");
 			$meta->unidad_medida_id = intval($request->medida);
-			Log::debug("CREANDO unidad_medida_id meta");
 			$meta->cantidad_beneficiarios =  intval($request->beneficiario);
-			Log::debug("CREANDO cantidad_beneficiarios meta");
 			$meta->ejercicio = $anio;
-			Log::debug("CREANDO ejercicio meta");
 			$meta->created_user =Auth::user()->username;
-			Log::debug("CREANDO created_user meta");
 			$meta->enero = $flagSubPp ==1 ? $meses["enero"] : "2";
 			$meta->febrero = $flagSubPp ==1 ? $meses["febrero"] : "2";
 			$meta->marzo = $flagSubPp ==1 ? $meses["marzo"] : "2";
@@ -1142,20 +1128,13 @@ class MetasHelper
 			$meta->diciembre = $flagSubPp ==1 ? $meses["diciembre"] : "3";
 			$meta->total = $flagSubPp ==1 ? $request->sumMetas : "25";
 			$meta->tipo_meta = 'Operativo';
-			Log::debug("CREANDO tipo_meta: ".$meta->tipo_meta );
 			/* PROGRAMA:7 SUBPRO:8 PROYECTO:9 */
-			Log::debug(json_encode($meta));
 			$meta->save();
-			Log::debug(json_encode($meta));
-			Log::debug("save 1");
 			$meta->clv_actividad = "" . $request->upp . "-" . $pp[9] . "-" . $meta->id . "-" . $anio;
-			Log::debug("CREANDO clv_actividad meta: ".$meta->clv_actividad);
-			/* if (!$confirm["status"] & Auth::user()->id_grupo == 1) {
+			if (!$confirm["status"] & Auth::user()->id_grupo == 1) {
 				$meta->estatus = 1;
-			} */
-			$meta->save();
-			Log::debug("save");
-		
+			}
+			$meta->save();		
 			return $meta;
 		} catch (\Throwable $th) {
 			throw $th;
