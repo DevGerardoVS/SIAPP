@@ -24,16 +24,13 @@ class Mml_Actividades_llenado extends Seeder
 			"entidad_ejecutora"
 			)->get();
 		foreach ($mml_ac as $key) {
-			$mmlac=MmlMir::where("id",$key->id)->first();
 			$area = str_split($key->area_funcional);
 			$entidad = str_split($key->entidad_ejecutora);
 			$ur='' . strval($entidad[4]) . strval($entidad[5]) . '';
 			$pp='' . strval($area[8]) . strval($area[9]) . '';
-			if($mmlac){
-			$mmlac->clv_ur = $ur;
-			$mmlac->clv_pp = $pp;
-			$mmlac->save();
-			}
+            DB::table('mml_actividades')
+              ->where('id', $key->id)
+              ->update(['clv_ur' => $ur,'clv_pp'=>$pp]);
 		}
     }
 }
