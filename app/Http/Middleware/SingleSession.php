@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use App\Models\carga_masiva_estatus;
+use Illuminate\Support\Facades\Redirect;
 class SingleSession
 {
     /**
