@@ -55,8 +55,8 @@ class SingleSession
     
     
         }else{
-            Auth::logout();
-            session()->invalidate();
+            // Auth::logout();
+            // session()->invalidate();
         }
 
 
