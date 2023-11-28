@@ -55,7 +55,10 @@ class SingleSession
     
     
         }else{
-            // Auth::logout();
+           
+            Auth::logout();
+            return Redirect::route('login')->with('error', 'Tu sesión ha caducado. Por favor, inicia sesión de nuevo.');
+       
             // session()->invalidate();
         }
 
