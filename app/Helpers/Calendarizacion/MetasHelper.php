@@ -7,6 +7,10 @@ use Config;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\MmlMir;
+use App\Models\calendarizacion\Metas;
+use App\Http\Controllers\Calendarizacion\MetasController;
+
 
 class MetasHelper
 {
@@ -41,7 +45,7 @@ class MetasHelper
 				->where('catalogo.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $upp)
 				->where('mml_actividades.ejercicio', $anio);
-				
+
 			$query2 = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -65,7 +69,8 @@ class MetasHelper
 				->where('metas.mir_id', '=', null)
 				->where('metas.deleted_at', '=', null)
 				->where('act.clv_upp', $upp)
-				->where('metas.ejercicio', $anio);
+				->where('metas.ejercicio', $anio)
+				->orderByRaw('act.entidad,act.area,metas.clv_fondo');
 			$query = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -90,8 +95,8 @@ class MetasHelper
 				->where('metas.deleted_at', '=', null)
 				->where('pro.ejercicio', $anio)
 				->where('pro.upp', $upp)
-				->unionAll($query2)
-				->orderBy('id')->get();
+				->orderByRaw('pro.entidad,pro.area,metas.clv_fondo')
+				->unionAll($query2)->get();
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());
@@ -1012,4 +1017,130 @@ class MetasHelper
 			DB::table('mirtemp')->insert(get_object_vars($key));
 		}
 	}
+	public static function isExistMmir($entidad_ejecutora, $area_funcional, $fondo, $actividad, $anio)
+	{
+		$metaexist = DB::table('metas')
+			->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
+			->select(
+				'mml_mir.entidad_ejecutora',
+				'mml_mir.area_funcional',
+				'mml_mir.clv_upp',
+
+			)
+			->where('mml_mir.entidad_ejecutora', $entidad_ejecutora)
+			->where('mml_mir.area_funcional', $area_funcional)
+			->where('metas.clv_fondo', $fondo)
+			->where('metas.mir_id', intval($actividad))
+			->where('metas.ejercicio', $anio)
+			->where('metas.deleted_at', null)->get();
+		$res = count($metaexist) ? true : false;
+		return $res;
+	}
+	public static function isExistMoT($entidad_ejecutora, $area_funcional, $fondo, $anio)
+	{
+		$metaOt = DB::table('metas')
+			->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
+			->select(
+				'metas.id',
+				'mml_actividades.entidad_ejecutora',
+				'mml_actividades.area_funcional',
+				'mml_actividades.clv_upp',
+				'mml_actividades.id'
+
+			)
+			->where('mml_actividades.entidad_ejecutora', $entidad_ejecutora)
+			->where('mml_actividades.area_funcional', $area_funcional)
+			->where('metas.ejercicio', $anio)
+			->where('metas.clv_fondo', $fondo)
+			->where('mml_actividades.id_catalogo', null)
+			->where('metas.mir_id', null)
+			->where('mml_actividades.deleted_at', null)
+			->where('metas.deleted_at', null)->get();
+		$res = count($metaOt) ? true : false;
+		return $res;
+	}
+	public static function isExistCat($entidad_ejecutora, $area_funcional, $fondo, $actividad, $anio)
+	{
+		$metaCat = DB::table('metas')
+			->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
+			->select(
+				'metas.id',
+				'mml_actividades.entidad_ejecutora',
+				'mml_actividades.area_funcional',
+				'mml_actividades.clv_upp'
+			)
+			->where('mml_actividades.entidad_ejecutora', $entidad_ejecutora)
+			->where('mml_actividades.area_funcional', $area_funcional)
+			->where('metas.clv_fondo', $fondo)
+			->where('mml_actividades.id_catalogo', $actividad)
+			->where('metas.ejercicio', $anio)
+			->where('metas.mir_id', null)
+			->where('mml_actividades.deleted_at', null)
+			->where('metas.deleted_at', null)->get();
+		$res = count($metaCat) ? true : false;
+		return $res;
+	}
+	public static function createMml_Ac($upp,$entidad_ejecutora, $area_funcional,$actividad, $nombre, $anio)
+	{
+		$ur = str_split($entidad_ejecutora);
+		$pp = str_split($area_funcional);
+		$mml_act = new MmlMir();
+		$mml_act->clv_upp =$upp;
+		$mml_act->clv_ur =''.$ur[4].$ur[5].'';
+		$mml_act->clv_pp =''.$pp[8].$pp[9].'';
+		$mml_act->entidad_ejecutora = $entidad_ejecutora;
+		$mml_act->area_funcional = $area_funcional;
+		$mml_act->id_catalogo = $actividad=='ot'? null:$actividad;
+		$mml_act->nombre =$actividad=='ot'? $nombre:null;
+		$mml_act->ejercicio = $anio;
+		$mml_act->created_user = Auth::user()->username;
+		$mml_act->save();
+		return $mml_act->id;
+	}
+	public static function createMeta($request,$actividad,$fondo,$act,$meses,$anio,$flagSubPp)
+	{
+		try {
+
+			$confirm = MetasController::cmetasUpp($request->upp, $anio);
+			$clv = explode('/', $request->area);
+			$pp = explode('-', $clv[0]);
+			$meta = new Metas();
+			$meta->mir_id = $request->tipoAct == 'M'?$actividad:null;
+			$meta->actividad_id = $request->tipoAct !='M'?$act:null;
+			$meta->clv_fondo = $fondo;
+			$meta->tipo = $request->tipo_Ac;
+			$meta->beneficiario_id =  intval($request->tipo_Be);
+			$meta->unidad_medida_id = intval($request->medida);
+			$meta->cantidad_beneficiarios =  intval($request->beneficiario);
+			$meta->ejercicio = $anio;
+			$meta->created_user =Auth::user()->username;
+			$meta->enero = $flagSubPp ==1 ? $meses["enero"] : "2";
+			$meta->febrero = $flagSubPp ==1 ? $meses["febrero"] : "2";
+			$meta->marzo = $flagSubPp ==1 ? $meses["marzo"] : "2";
+			$meta->abril = $flagSubPp ==1 ? $meses["abril"] : "2";
+			$meta->mayo = $flagSubPp ==1 ? $meses["mayo"] : "2";
+			$meta->junio = $flagSubPp ==1 ? $meses["junio"] : "2";
+			$meta->julio = $flagSubPp ==1 ? $meses["julio"] : "2";
+			$meta->agosto = $flagSubPp ==1 ? $meses["agosto"] : "2";
+			$meta->septiembre = $flagSubPp ==1 ? $meses["septiembre"] : "2";
+			$meta->octubre = $flagSubPp ==1 ? $meses["octubre"] : "2";
+			$meta->noviembre = $flagSubPp ==1 ? $meses["noviembre"] : "2";
+			$meta->diciembre = $flagSubPp ==1 ? $meses["diciembre"] : "3";
+			$meta->total = $flagSubPp ==1 ? $request->sumMetas : "25";
+			$meta->tipo_meta = 'Operativo';
+			/* PROGRAMA:7 SUBPRO:8 PROYECTO:9 */
+			$meta->save();
+			$meta->clv_actividad = "" . $request->upp . "-" . $pp[9] . "-" . $meta->id . "-" . $anio;
+			if (!$confirm["status"] & Auth::user()->id_grupo == 1) {
+				$meta->estatus = 1;
+			}
+			$meta->save();		
+			return $meta;
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+	
+	}
+
+
 }
