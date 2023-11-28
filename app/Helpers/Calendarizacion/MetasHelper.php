@@ -22,6 +22,8 @@ class MetasHelper
 				->select(
 					'mml_mir.id',
 					'mml_mir.clv_upp AS upp',
+					'mml_mir.clv_ur',
+					'mml_mir.clv_pp',
 					'mml_mir.entidad_ejecutora AS entidad',
 					'mml_mir.area_funcional AS area',
 					'mml_mir.ejercicio',
@@ -30,11 +32,14 @@ class MetasHelper
 				->where('mml_mir.deleted_at', '=', null)
 				->where('mml_mir.nivel', '=', 11)
 				->where('mml_mir.ejercicio', $anio)
-				->where('mml_mir.clv_upp', $upp);
+				->where('mml_mir.clv_upp', $upp)
+				->orderByRaw('upp,clv_ur,clv_pp');
 			$actv = DB::table('mml_actividades')
 				->leftJoin('catalogo', 'catalogo.id', '=', 'mml_actividades.id_catalogo')
 				->select(
-					'clv_upp',
+					'clv_upp AS upp',
+					'clv_ur',
+					'clv_pp',
 					'mml_actividades.id',
 					'entidad_ejecutora AS entidad',
 					'area_funcional AS area',
@@ -44,7 +49,8 @@ class MetasHelper
 				->where('mml_actividades.deleted_at', '=', null)
 				->where('catalogo.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $upp)
-				->where('mml_actividades.ejercicio', $anio);
+				->where('mml_actividades.ejercicio', $anio)
+				->orderByRaw('upp,clv_ur,clv_pp');
 
 			$query2 = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -54,6 +60,9 @@ class MetasHelper
 				})
 				->select(
 					'metas.id',
+					'act.upp',
+					'act.clv_ur',
+					'act.clv_pp',
 					'metas.estatus',
 					'act.entidad',
 					'act.area',
@@ -68,9 +77,8 @@ class MetasHelper
 				)
 				->where('metas.mir_id', '=', null)
 				->where('metas.deleted_at', '=', null)
-				->where('act.clv_upp', $upp)
-				->where('metas.ejercicio', $anio)
-				->orderByRaw('act.entidad,act.area,metas.clv_fondo');
+				->where('act.upp', $upp)
+				->where('metas.ejercicio', $anio);
 			$query = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -79,6 +87,9 @@ class MetasHelper
 				})
 				->select(
 					'metas.id',
+					'pro.upp',
+					'pro.clv_ur',
+					'pro.clv_pp',
 					'metas.estatus',
 					'pro.entidad',
 					'pro.area',
@@ -95,8 +106,9 @@ class MetasHelper
 				->where('metas.deleted_at', '=', null)
 				->where('pro.ejercicio', $anio)
 				->where('pro.upp', $upp)
-				->orderByRaw('pro.entidad,pro.area,metas.clv_fondo')
-				->unionAll($query2)->get();
+				->unionAll($query2)
+				->orderByRaw('upp,clv_ur,clv_pp')
+				->get();
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());
