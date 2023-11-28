@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Console\Commands;
-use App\Imports\PresupuestosImport;
+use App\Imports\ProgramacionPresupuestosImport;
 
 use Illuminate\Console\Command;
 
@@ -14,7 +14,7 @@ class import extends Command
     public function handle()
     {
         $this->output->title('Starting import');
-        (new PresupuestosImport)->withOutput($this->output)->import('Usuarios SIAPP.xlsx');
+        (new ProgramacionPresupuestosImport)->withOutput($this->output)->import('CALENDARIZACION GENERAL DE PRESUPUESTO 2023 05-01-2023-1.xlsx');
         $this->output->success('Import successful');
     }
 }
