@@ -48,6 +48,7 @@ class ClavePreController extends Controller
             $uppDescripcion =  DB::table('catalogo')
             ->SELECT('descripcion')
             ->where('grupo_id', 6)
+            ->where('ejercicio',$ejercicio)
             ->where('clave', '=', $upp)
             ->first();
             $descripcion = $uppDescripcion->descripcion;
@@ -937,7 +938,9 @@ class ClavePreController extends Controller
             $arrayProgramacion = "".$arrayProgramacion."&& pp.upp = '".strval($uppUsuario)."'";
             $upp =  DB::table('catalogo')
             ->SELECT('clave','descripcion')
+            ->where('ejercicio',$anio)
             ->where('grupo_id', 6)
+            
             ->where('clave', '=', $uppUsuario)
             ->first();
         }else {

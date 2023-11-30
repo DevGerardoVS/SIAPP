@@ -360,26 +360,14 @@ class FunFormats
                                                     $type = FunFormats::typeTotal($k, $m["validos"]);
                                                     if ($type != false) {
                                                         if (is_numeric($k[13])) {
-                                                            $act = MmlMir::create([
-                                                                'clv_upp' => strval($k[7]),
-                                                                'entidad_ejecutora' => $entidad_ejecutora,
-                                                                'area_funcional' => $area_funcional,
-                                                                'id_catalogo' => $k[13],
-                                                                'nombre' => null,
-                                                                'ejercicio' => $anio,
-                                                                'created_user' => auth::user()->username.'-'.'CM'
-                                                            ]);
+                                                            $id_catalogo=$k[13];
+                                                            $nombre=null;
+                                                            $act = FunFormats::createMml_Ac($k,$entidad_ejecutora,$area_funcional,$id_catalogo, $nombre, $anio);
                                                         }
                                                         if (strtolower($k[13]) == 'ot') {
-                                                            $act = MmlMir::create([
-                                                                'clv_upp' => strval($k[7]),
-                                                                'entidad_ejecutora' => $entidad_ejecutora,
-                                                                'area_funcional' => $area_funcional,
-                                                                'id_catalogo' => null,
-                                                                'nombre' => $k[15],
-                                                                'ejercicio' => $anio,
-                                                                'created_user' => auth::user()->username.'-'.'CM'
-                                                            ]);
+                                                            $id_catalogo=null;
+                                                            $nombre=$k[15];
+                                                            $act = FunFormats::createMml_Ac($k,$entidad,$area,$id_catalogo, $nombre, $anio);
                                                         }
                                                         if(strval($k[10])!='UUU'){
                                                             $aux[] = [
@@ -387,7 +375,7 @@ class FunFormats
                                                                 'upp' => strval($k[7]),
                                                                 'meta_id' => $e["id"],
                                                                 'clv_fondo' => $k[12],
-                                                                'actividad_id' => is_numeric($k[14]) ? NULL : $act->id,
+                                                                'actividad_id' => is_numeric($k[14]) ? NULL : $act,
                                                                 'mir_id' => is_numeric($k[13]) || strtolower($k[13]) == 'ot' ? NULL : $k[14],
                                                                 'tipo' => $s['a'],
                                                                 'beneficiario_id' => $k[30],
@@ -416,7 +404,7 @@ class FunFormats
                                                                 'upp' => strval($k[7]),
                                                                 'meta_id' => $e["id"],
                                                                 'clv_fondo' => $k[12],
-                                                                'actividad_id' => is_numeric($k[14]) ? NULL : $act->id,
+                                                                'actividad_id' => is_numeric($k[14]) ? NULL : $act,
                                                                 'mir_id' => is_numeric($k[13]) || strtolower($k[13]) == 'ot' ? NULL : $k[14],
                                                                 'tipo' => $s['a'],
                                                                 'beneficiario_id' => $k[30],
@@ -1021,5 +1009,21 @@ class FunFormats
 
         }
     }
+    public static function createMml_Ac($k,$entidad_ejecutora, $area_funcional,$id_catalogo, $nombre, $anio)
+	{
+		$mml_act = new MmlMir();
+		$mml_act->clv_upp = strval($k[7]);
+		$mml_act->clv_ur =strval($k[8]);
+		$mml_act->clv_pp =strval($k[9]);
+		$mml_act->entidad_ejecutora = $entidad_ejecutora;
+		$mml_act->area_funcional = $area_funcional;
+		$mml_act->id_catalogo =$id_catalogo;
+        $mml_act->nombre = $nombre;
+		$mml_act->ejercicio = $anio;
+        $mml_act->created_user = Auth::user()->username . '- CM';
+		$mml_act->save();
+	
+		return $mml_act->id;
+	}
 
 }
