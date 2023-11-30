@@ -19,18 +19,18 @@ class AdmonCapturaController extends Controller
         session(["anio"=>$anio]); //variable de sesión para usar en las demás funciones
         $comprobarAnioPP = DB::select("SELECT ejercicio FROM programacion_presupuesto WHERE ejercicio = $anio AND deleted_at IS NULL"); // Comprobar si existen datos en PP con el año dado y el campo deleted_at nulo
 
-        $countData = count(DB::select("SELECT id FROM programacion_presupuesto_hist WHERE ejercicio = $anio")); //Comprobar si hay datos en PPH
+        $countData = count(DB::select("SELECT id FROM programacion_presupuesto_hist WHERE ejercicio = $anio AND deleted_at IS NULL")); //Comprobar si hay datos en PPH
         $version = 0;
         if($countData > 0){ // Comprobar si hay datos en la tabla
-            $getVersion = DB::select("SELECT distinct(version) FROM programacion_presupuesto_hist where ejercicio = $anio ORDER BY version DESC LIMIT 1");
+            $getVersion = DB::select("SELECT distinct(version) FROM programacion_presupuesto_hist where ejercicio = $anio AND deleted_at IS NULL ORDER BY version DESC LIMIT 1");
             $version = $getVersion[0]->version;
             session(["version"=>$version]);
         }
 
-        $comprobarEstadoPP = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = $anio GROUP BY upp");
-        $comprobarEMM = DB::select("SELECT m.estatus, am.clv_upp, am.ejercicio FROM metas m JOIN mml_mir am ON m.mir_id = am.id WHERE am.ejercicio = $anio GROUP BY am.clv_upp"); // Variable para comprobar el estado de metas por mir
-        $comprobarEMA = DB::select("SELECT m.estatus, act.clv_upp, act.ejercicio FROM metas m JOIN mml_actividades act ON m.actividad_id = act.id WHERE act.ejercicio = $anio GROUP BY act.clv_upp"); // Variable para comprobar el estado de metas por actividad  
-        $upps = DB::select("SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND c.ejercicio = $anio AND cec.ejercicio = $anio AND c.deleted_at is null ORDER BY clave ASC");
+        $comprobarEstadoPP = DB::select("SELECT upp, ejercicio, estado FROM programacion_presupuesto WHERE ejercicio = $anio AND deleted_at IS NULL GROUP BY upp");
+        $comprobarEMM = DB::select("SELECT m.estatus, am.clv_upp, am.ejercicio FROM metas m JOIN mml_mir am ON m.mir_id = am.id WHERE am.ejercicio = $anio AND m.deleted_at IS NULL GROUP BY am.clv_upp"); // Variable para comprobar el estado de metas por mir
+        $comprobarEMA = DB::select("SELECT m.estatus, act.clv_upp, act.ejercicio FROM metas m JOIN mml_actividades act ON m.actividad_id = act.id WHERE act.ejercicio = $anio AND m.deleted_at IS NULL GROUP BY act.clv_upp"); // Variable para comprobar el estado de metas por actividad  
+        $upps = DB::select("SELECT c.clave, c.descripcion FROM catalogo c join cierre_ejercicio_claves cec on c.clave = cec.clv_upp WHERE grupo_id = 6 AND c.ejercicio = $anio AND cec.ejercicio = $anio AND c.deleted_at IS NULL ORDER BY clave ASC");
 
         return view("captura.admonCaptura", [
             'dataSet' => json_encode($dataSet),
@@ -62,6 +62,7 @@ class AdmonCapturaController extends Controller
         ->where("c.grupo_id", "=", 6)
         ->whereNull("c.deleted_at")
         ->where("cec.ejercicio", "=", $anio)
+        ->where("c.ejercicio", "=", $anio)
         ->where($array_where)
         ->orderBy("cec.estatus","desc")
         ->orderBy("cec.clv_upp","asc")
@@ -96,6 +97,7 @@ class AdmonCapturaController extends Controller
         ->where("c.grupo_id", "=", 6)
         ->whereNull("c.deleted_at")
         ->where("cem.ejercicio", "=", $anio)
+        ->where("c.ejercicio", "=", $anio)
         ->where($array_where)
         ->orderBy("cem.estatus","desc")
         ->orderBy("cem.clv_upp","asc")

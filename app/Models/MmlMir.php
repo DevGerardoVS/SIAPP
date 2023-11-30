@@ -14,6 +14,8 @@ class MmlMir extends Model
 
     protected $fillable = [ 
         'clv_upp',
+        'clv_ur',
+        'clv_pp',
         'entidad_ejecutora',    
         'area_funcional',
         'id_catalogo',
