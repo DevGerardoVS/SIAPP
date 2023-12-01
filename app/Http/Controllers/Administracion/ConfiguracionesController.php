@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use App\Models\administracion\TipoActividadUpp;
 use App\Models\administracion\UppAutorizadascpNomina;
 use App\Models\calendarizacion\TechosFinancieros;
 use App\Helpers\BitacoraHelper;
+use App\Exports\ArchivosCarga\AreasFuncionales;
 
 class ConfiguracionesController extends Controller
 {
@@ -404,5 +406,18 @@ class ConfiguracionesController extends Controller
             Log::channel('daily')->debug('exp '.$exp->getMessage());
             throw new \Exception($exp->getMessage());
         }
+    }
+    public function getArchivoAreasFun(){
+        /*Si no coloco estas lineas Falla*/
+		ob_end_clean();
+		ob_start();
+		/*Si no coloco estas lineas Falla*/
+		$b = array(
+			"username" => Auth::user()->username,
+			"accion" => 'Descargar Metas Excel',
+			"modulo" => 'Metas'
+		);
+		Controller::bitacora($b);
+		return Excel::download(new AreasFuncionales(), 'Áreas funcionales.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }
