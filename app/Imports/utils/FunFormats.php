@@ -367,7 +367,7 @@ class FunFormats
                                                         if (strtolower($k[13]) == 'ot') {
                                                             $id_catalogo=null;
                                                             $nombre=$k[15];
-                                                            $act = FunFormats::createMml_Ac($k,$entidad,$area,$id_catalogo, $nombre, $anio);
+                                                            $act = FunFormats::createMml_Ac($k,$entidad_ejecutora,$area_funcional,$id_catalogo, $nombre, $anio);
                                                         }
                                                         if(strval($k[10])!='UUU'){
                                                             $aux[] = [

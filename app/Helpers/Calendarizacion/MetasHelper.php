@@ -1112,7 +1112,7 @@ class MetasHelper
 	public static function createMeta($request,$actividad,$fondo,$act,$meses,$anio,$flagSubPp)
 	{
 		try {
-
+			Log::debug('crear meta');
 			$confirm = MetasController::cmetasUpp($request->upp, $anio);
 			$clv = explode('/', $request->area);
 			$pp = explode('-', $clv[0]);
@@ -1141,12 +1141,16 @@ class MetasHelper
 			$meta->total = $flagSubPp ==1 ? $request->sumMetas : "25";
 			$meta->tipo_meta = 'Operativo';
 			/* PROGRAMA:7 SUBPRO:8 PROYECTO:9 */
+			Log::debug($meta);
 			$meta->save();
+			Log::debug('SAVE 1');
 			$meta->clv_actividad = "" . $request->upp . "-" . $pp[9] . "-" . $meta->id . "-" . $anio;
 			if (!$confirm["status"] & Auth::user()->id_grupo == 1) {
 				$meta->estatus = 1;
 			}
-			$meta->save();		
+			Log::debug($meta);
+			$meta->save();
+			Log::debug('SAVE 2');
 			return $meta;
 		} catch (\Throwable $th) {
 			throw $th;

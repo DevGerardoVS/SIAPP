@@ -892,7 +892,6 @@ var dao = {
                 });
             
             if (fondos.length == 1) {
-                $("#tipo_Ac").removeAttr('disabled');
                 let fondo = '';
                 if ($('#sel_fondo').val() != '' || $('#sel_fondo').val() != null) {
                     fondo = $('#sel_fondo').val();
@@ -912,6 +911,7 @@ var dao = {
                 document.getElementById("tipo_Ac").options[0].disabled = true;
 
             }
+            $("#tipo_Ac").removeAttr('disabled');
             if ($('#calendar').val()=='UUU') {
                 tipo_AC.append(new Option('Acumulativa','Acumulativa'));
             } else {
@@ -949,14 +949,16 @@ var dao = {
                 });
             
             if ($("#actividad_id").val() == 'ot') {
-                    $("#conmir").val(false);
+                $("#conmir").val(false);
+                $("#tipo_Ac").removeAttr('disabled');
                         $("#inputAc").removeAttr('disabled');
                         $('#actividad_id').prop('disabled', false);
                         $(".inputAc").show(); 
                         $(".fondodiv").removeClass("col-md-6").addClass("col-md-4"); 
                         $(".actividaddiv").removeClass("col-md-6").addClass("col-md-4"); 
                         $(".acOt").show();
-                    } else {
+            } else {
+                $("#tipo_Ac").removeAttr('disabled');
                         $(".acOt").hide();
                         $(".inputAc").val('');
                         $("#inputAc").attr('disabled', 'disabled');
