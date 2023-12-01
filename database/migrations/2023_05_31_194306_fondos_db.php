@@ -53,6 +53,8 @@ return new class extends Migration
         Schema::create('mml_actividades', function (Blueprint $table){
             $table->increments('id');
             $table->string('clv_upp',50)->nullable(false);
+            $table->string('clv_ur',50)->nullable(false);
+            $table->string('clv_pp',50)->nullable(false);
             $table->string('entidad_ejecutora',6)->nullable(false);
             $table->string('area_funcional',16)->nullable(false);
             $table->string('id_catalogo',255)->nullable(true);

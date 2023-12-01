@@ -40,7 +40,7 @@ var dao = {
         }).done(function (data) {
             if (data.status) {
                 $("#ur_filter").removeAttr('disabled');
-                $("#tipo_Ac").removeAttr('disabled');
+                
                 dao.getSelect();
                 $('#incomplete').hide();
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
@@ -694,7 +694,8 @@ var dao = {
         let aOld = $('#area').val()
         let area = aOld.replace('$', '/')
         data.append('area', area);
-        
+        data.append('conmir', $("#conmir").val());
+        data.append('tipoAct', $("#tipoAct").val());
         if ($('#tipo_Ac').val() == 'Continua') {
             if (mesesV.enero) {
                     data.append(1, contValue);
@@ -872,46 +873,14 @@ var dao = {
         let clave = `${area}$${enti}$${anio}`;
         $("#area").val(clave);
         $("#sel_fondo").removeAttr('disabled');
-        $("#sel_actividad").removeAttr('disabled');
         dao.getSelect();
         $.ajax({
             type: "GET",
             url: '/calendarizacion/fondos/' + area + '/' + enti,
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            const { fondos, activids, tAct } = data;
-            let flag = false;
-            if (activids[0]?.id == 'ot' && mir == 1) {
-                flag = true;
-            }
-            if (mir == 0) {
-                flag = true;
-            }
-            if (flag) {
-                $("#conmir").val(false);
-                var fond = $('#fondo_id');
-                fond.html('');
-                if (fondos.length >= 2) {
-                    fond.append("<option value='' class='text-center' ><b>-- Fondos--</b></option>");
-                    document.getElementById("fondo_id").options[0].disabled = true;
-                }
-                $.each(fondos, function (i, val) {
-                    fond.append(new Option(val.ramo, val.clave));
-                });
-                $('.conmir').hide();
-                $('.sinmir').show();
-                $('#sel_fondo').prop('disabled', false);
-                $('#actividad_id').prop('disabled', false);
-                var act = $('#actividad_id');
-                act.html('');
-                if (activids.length == 2) {
-                    act.append(new Option("--Actividad--", "true", true, true));
-                    document.getElementById("actividad_id").options[0].disabled = true;
-                }
-                $.each(activids, function (i, val) {
-                    act.append(new Option(val.actividad, val.id));
-                });
-
+            const { fondos, tAct } = data;
                 var fond = $('#sel_fondo');
                 fond.html('');
                 if (fondos.length >= 2) {
@@ -921,46 +890,17 @@ var dao = {
                 $.each(fondos, function (i, val) {
                     fond.append(new Option(val.ramo, val.clave));
                 });
-            } else {
-                $("#conmir").val(true);
-                var fond = $('#sel_fondo');
-                fond.html('');
-                if (fondos.length >= 2) {
-                    fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
-                    document.getElementById("sel_fondo").options[0].disabled = true;
-                }
-                $.each(fondos, function (i, val) {
-                    fond.append(new Option(val.ramo, val.clave));
-                });
-                $('.sinmir').hide();
-                $('.conmir').show();
-                var act = $('#sel_actividad');
-                act.html('');
-
-                if (activids.length >= 2) {
-                    act.append(new Option("--Actividad--", "true", true, true));
-                    document.getElementById("sel_actividad").options[0].disabled = true;
-                }
-                $.each(activids, function (i, val) {
-                    act.append(new Option(val.actividad, val.id));
-                });
-            }
-            if ($('#actividad_id').val() == 'ot') {
-
-                $("#inputAc").removeAttr('disabled');
-                $(".inputAc").show();
-
-                $("#idAct").addClass("col-md-4").removeClass("col-md-6");
-                $("#idFond").addClass("col-md-4").removeClass("col-md-6");
-            }
-            if (fondos.length == 1 && activids.length == 1) {
+            
+            if (fondos.length == 1) {
                 let fondo = '';
                 if ($('#sel_fondo').val() != '' || $('#sel_fondo').val() != null) {
                     fondo = $('#sel_fondo').val();
                 } else {
                     fondo = $('#fondo_id').val();
                 }
+                $('#actividad_id').prop('disabled', false);
                 dao.getMeses(clave, fondo);
+                dao.getActividasdesMir(fondo)
             }
 
             var tipo_AC = $('#tipo_Ac');
@@ -971,6 +911,7 @@ var dao = {
                 document.getElementById("tipo_Ac").options[0].disabled = true;
 
             }
+            $("#tipo_Ac").removeAttr('disabled');
             if ($('#calendar').val()=='UUU') {
                 tipo_AC.append(new Option('Acumulativa','Acumulativa'));
             } else {
@@ -984,42 +925,19 @@ var dao = {
         });
     },
     getActividasdesMir: function (fondo) {
-  
-        $('#tipo_Ac').empty();
-        for (let i = 1; i <= 12; i++) {
-            $("#" + i).val(0);
-            $("#" + i).prop('disabled', true);
-        }
        let clave= $("#activiMir").val();
-        let mir = fondo.split('$')
+        let mir = clave.split('$');
         $.ajax({
             type: "GET",
-            url: '/actividades/metas/actividades-mir/' + mir[0] + '/' + mir[1]+'/'+mir[3],
-            dataType: "JSON"
+            url: '/actividades/metas/actividades-mir/' + mir[0] + '/' + mir[1]+'/'+fondo,
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            const { fondos, activids } = data;
-            let flag = false;
-            if (activids[0]?.id == 'ot' && mir == 1) {
-                flag = true;
-            }
-            if (mir == 0) {
-                flag = true;
-            }
-            if (flag) {
-                $("#conmir").val(false);
-                var fond = $('#fondo_id');
-                fond.html('');
-                if (fondos.length >= 2) {
-                    fond.append("<option value='' class='text-center' ><b>-- Fondos--</b></option>");
-                    document.getElementById("fondo_id").options[0].disabled = true;
-                }
-                $.each(fondos, function (i, val) {
-                    fond.append(new Option(val.ramo, val.clave));
-                });
-                $('.conmir').hide();
-                $('.sinmir').show();
-                $('#sel_fondo').prop('disabled', false);
-                $('#actividad_id').prop('disabled', false);
+            const { con_mir, activids,tipoAc } = data;
+            let conmir = con_mir == 1 ? true : false
+            
+            $("#conmir").val(conmir);
+                $("#tipoAct").val(tipoAc);
                 var act = $('#actividad_id');
                 act.html('');
                 if (activids.length == 2) {
@@ -1029,75 +947,29 @@ var dao = {
                 $.each(activids, function (i, val) {
                     act.append(new Option(val.actividad, val.id));
                 });
-
-                var fond = $('#sel_fondo');
-                fond.html('');
-                if (fondos.length >= 2) {
-                    fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
-                    document.getElementById("sel_fondo").options[0].disabled = true;
-                }
-                $.each(fondos, function (i, val) {
-                    fond.append(new Option(val.ramo, val.clave));
-                });
+            
+            if ($("#actividad_id").val() == 'ot') {
+                $("#conmir").val(false);
+                $("#tipo_Ac").removeAttr('disabled');
+                        $("#inputAc").removeAttr('disabled');
+                        $('#actividad_id').prop('disabled', false);
+                        $(".inputAc").show(); 
+                        $(".fondodiv").removeClass("col-md-6").addClass("col-md-4"); 
+                        $(".actividaddiv").removeClass("col-md-6").addClass("col-md-4"); 
+                        $(".acOt").show();
             } else {
-                $("#conmir").val(true);
-                var fond = $('#sel_fondo');
-                fond.html('');
-                if (fondos.length >= 2) {
-                    fond.append("<option value=''class='text-center' ><b>-- Fondos--</b></option>");
-                    document.getElementById("sel_fondo").options[0].disabled = true;
-                }
-                $.each(fondos, function (i, val) {
-                    fond.append(new Option(val.ramo, val.clave));
-                });
-                $('.sinmir').hide();
-                $('.conmir').show();
-                var act = $('#sel_actividad');
-                act.html('');
+                $("#tipo_Ac").removeAttr('disabled');
+                        $(".acOt").hide();
+                        $(".inputAc").val('');
+                        $("#inputAc").attr('disabled', 'disabled');
+                        $(".inputAc").hide();
+                        $(".fondodiv").removeClass("col-md-4").addClass("col-md-6");
+                        $(".actividaddiv").removeClass("col-md-4").addClass("col-md-6"); 
 
-                if (activids.length >= 2) {
-                    act.append(new Option("--Actividad--", "true", true, true));
-                    document.getElementById("sel_actividad").options[0].disabled = true;
-                }
-                $.each(activids, function (i, val) {
-                    act.append(new Option(val.actividad, val.id));
-                });
-            }
-            if ($('#actividad_id').val() == 'ot') {
-
-                $("#inputAc").removeAttr('disabled');
-                $(".inputAc").show();
-
-                $("#idAct").addClass("col-md-4").removeClass("col-md-6");
-                $("#idFond").addClass("col-md-4").removeClass("col-md-6");
-            }
-            if (fondos.length == 1 && activids.length == 1) {
-                let fondo = '';
-                if ($('#sel_fondo').val() != '' || $('#sel_fondo').val() != null) {
-                    fondo = $('#sel_fondo').val();
-                } else {
-                    fondo = $('#fondo_id').val();
-                }
-                dao.getMeses(clave, fondo);
-            }
-
-            var tipo_AC = $('#tipo_Ac');
-            tipo_AC.html('');
-            let tm =Object.keys(tAct).length;
-            if (tAct.Acumulativa == 0 && $('#calendar').val()!='UUU') {
-                tipo_AC.append(new Option("--Tipo Actividad--", ""));
-                document.getElementById("tipo_Ac").options[0].disabled = true;
-
-            }
-            if ($('#calendar').val()=='UUU') {
-                tipo_AC.append(new Option('Acumulativa','Acumulativa'));
-            } else {
-                $.each(tAct, function (i, val) {
-                    if (val == 1) {
-                        tipo_AC.append(new Option(i, i));
                     }
-                });
-            }
+    
+                
+     
 
         });
     },
@@ -1440,8 +1312,7 @@ $(document).ready(function () {
 
     });
     $('#sel_fondo').change(() => {
-     let acmIR=   $("#activiMir").val();
-        acmIR = acmIR + '$'+$('#sel_fondo').val();
+        dao.getActividasdesMir($('#sel_fondo').val())
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
 
     });
@@ -1451,8 +1322,7 @@ $(document).ready(function () {
         }
     });
     $('#fondo_id').change(() => {
-        let acmIR=   $("#activiMir").val();
-        acmIR = acmIR + '$'+ $('#fondo_id').val();
+        dao.getActividasdesMir($('#fondo_id').val())
         dao.getMeses($('#area').val(), $('#fondo_id').val());
     });
 
@@ -1500,12 +1370,6 @@ $(document).ready(function () {
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
-    $("#sel_fondo").select2({
-        maximumSelectionLength: 10
-    });
-    $("#sel_actividad").select2({
-        maximumSelectionLength: 10
-    });
     for (let i = 1; i <= 12; i++) {
         $("#" + i).val(0);
         $("#" + i).on('paste', function (e) {
@@ -1520,7 +1384,6 @@ $(document).ready(function () {
     $('#btnSave').click(function (e) {
         e.preventDefault();
         let flag = false;
-        console.log($('#actividad_id').val());
         if ($('#actividad_id').val() == 'ot') {
             let nombre = $("#inputAc").val();
             let nuevo = nombre.trim();

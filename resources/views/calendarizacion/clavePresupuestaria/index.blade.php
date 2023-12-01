@@ -186,26 +186,30 @@
     <script>
         // env="{{env('APP_ENV')}}";
         // console.log('env',env);
-        function hideAletr(params) {
-            $('#alertaUppAutorizado').hide(true);
-        }
-        let upp = "{{$uppUsuario}}";
-        let ejercicio = "{{$ejercicio}}";
-        dao.getEjercicios(ejercicio);
-        if (upp && upp != '' && ejercicio && ejercicio != '') {
-            document.getElementById('filtro_upp').value = upp;
-            document.getElementById('filUpp').value = upp;
-            document.getElementById('filAnio').value = ejercicio;
-            dao.filtroUr(upp,ejercicio);
-        }else{
-            $('#divFiltroUpp').show();
-        }if (ejercicio && ejercicio != '') {
-            document.getElementById('filUpp').value = upp;
-            document.getElementById('filAnio').value = ejercicio;
-            document.getElementById('filAnioAbierto').value = ejercicio;
-            dao.filtroUpp(ejercicio,'');
-            dao.getData(ejercicio,'','');
-        }
+        
+        $(document).ready(function () {
+            function hideAletr(params) {
+                $('#alertaUppAutorizado').hide(true);
+            }
+            let upp = "{{$uppUsuario}}";
+            let ejercicio = "{{$ejercicio}}";
+            dao.getEjercicios(ejercicio);
+            if (upp && upp != '' && ejercicio && ejercicio != '') {
+                document.getElementById('filtro_upp').value = upp;
+                document.getElementById('filUpp').value = upp;
+                document.getElementById('filAnio').value = ejercicio;
+                dao.filtroUr(upp,ejercicio);
+            }else{
+                $('#divFiltroUpp').show();
+            }if (ejercicio && ejercicio != '') {
+                document.getElementById('filUpp').value = upp;
+                document.getElementById('filAnio').value = ejercicio;
+                document.getElementById('filAnioAbierto').value = ejercicio;
+                dao.filtroUpp(ejercicio,'');
+                dao.getData(ejercicio,'','');
+            }
+        });
+       
         
         @if($errors->any())
        
