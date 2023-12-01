@@ -971,13 +971,11 @@ class FunFormats
             $metaConMir->estatus = 0;
             $metaConMir->ejercicio = $key['ejercicio'];
             $metaConMir->created_user = $key['created_user'].'-'.'CM';
-            $metaSinMir->tipo_meta = "Operativo";
-
+            $metaConMir->tipo_meta = "Operativo";
             $metaConMir->save();
-            if ($metaConMir) {
-                $metaConMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaConMir->id . '-' . $key['ejercicio'];
-                $metaConMir->save();
-            }
+            $metaConMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaConMir->id . '-' . $key['ejercicio'];
+            $metaConMir->save();
+         
         }
 
     }
