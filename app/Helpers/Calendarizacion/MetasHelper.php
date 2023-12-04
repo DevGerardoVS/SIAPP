@@ -997,7 +997,8 @@ class MetasHelper
 			->groupByRaw('pp.ur,pp.fondo_ramo,pp.finalidad,pp.funcion,pp.subfuncion,pp.eje,pp.linea_accion,pp.programa_sectorial,pp.tipologia_conac,pp.programa_presupuestario,pp.subprograma_presupuestario,pp.proyecto_presupuestario')
 			->distinct();
 		if (Auth::user()->id_grupo == 4) {
-			$data2 = $data2->where('pp.tipo', 'Operativo')
+			$data2 = $data2->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'pp.upp')
+				->where('pp.tipo', 'Operativo')
 				->where('cierre_ejercicio_metas.ejercicio', $anio)
 				->where('cierre_ejercicio_metas.estatus', 'Abierto');
 		}
@@ -1028,7 +1029,8 @@ class MetasHelper
 		->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur')
 		->distinct();
 		if (Auth::user()->id_grupo == 4) {
-			$dataMir = $dataMir->where('cierre_ejercicio_metas.ejercicio', $anio)
+			$dataMir = $dataMir->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'mml_mir.clv_upp')
+				->where('cierre_ejercicio_metas.ejercicio', $anio)
 				->where('cierre_ejercicio_metas.estatus', 'Abierto');
 		}
 		$dataMir = $dataMir->get();
