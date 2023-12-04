@@ -816,6 +816,7 @@ class MetasController extends Controller
 			$table->string('clave', 55)->nullable(false);
 			$table->string('clv_upp', 25)->nullable(false);
 			$table->string('clv_ur', 25)->nullable(false);
+			$table->string('clv_pp', 25)->nullable(false);
 			$table->string('entidad_ejecutora', 55)->nullable(false);
 			$table->string('area_funcional', 55)->nullable(false);
 			$table->string('fondo', 55)->nullable(false);
@@ -841,6 +842,7 @@ class MetasController extends Controller
 			$table->string('clave', 55)->nullable(false);
 			$table->string('clv_upp', 25)->nullable(false);
 			$table->string('clv_ur', 25)->nullable(false);
+			$table->string('clv_pp', 25)->nullable(false);
 			$table->string('entidad_ejecutora', 55)->nullable(false);
 			$table->string('area_funcional', 55)->nullable(false);
 			$table->string('objetivo', 55)->nullable(false);
