@@ -1008,26 +1008,25 @@ class MetasHelper
 		}
 
 		$dataMir = DB::table('mml_mir')
-		->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'mml_mir.clv_upp')
-		->select(
-			DB::raw('CONCAT(mml_mir.area_funcional,mml_mir.entidad_ejecutora) AS clave'),
-			'mml_mir.clv_upp',
-			'mml_mir.clv_ur',
-			'mml_mir.clv_pp',
-			'mml_mir.entidad_ejecutora',
-			'mml_mir.area_funcional',
-			DB::raw('mml_mir.id AS mir_id'),
-			'objetivo'
-		)
-		->where('mml_mir.deleted_at', null)
-		->where('mml_mir.nivel', 11)
-		->where('mml_cierre_ejercicio.ejercicio', $anio)
-		->where('mml_cierre_ejercicio.statusm', 1)
-		->where('mml_mir.ejercicio', $anio)
-		->where('mml_mir.clv_upp', $upp)
-		->groupByRaw('mml_mir.id')
-		->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur')
-		->distinct();
+			->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'mml_mir.clv_upp')
+			->select(
+				DB::raw('CONCAT(mml_mir.area_funcional,mml_mir.entidad_ejecutora) AS clave'),
+				'mml_mir.clv_upp',
+				'mml_mir.clv_ur',
+				'mml_mir.clv_pp',
+				'mml_mir.entidad_ejecutora',
+				'mml_mir.area_funcional',
+				DB::raw('mml_mir.id AS mir_id'),
+				'objetivo'
+			)
+			->where('mml_mir.deleted_at', null)
+			->where('mml_mir.nivel', 11)
+			->where('mml_cierre_ejercicio.ejercicio', $anio)
+			->where('mml_cierre_ejercicio.statusm', 1)
+			->where('mml_mir.ejercicio', $anio)
+			->where('mml_mir.clv_upp', $upp)
+			->groupByRaw('mml_mir.id')
+			->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur');
 		if (Auth::user()->id_grupo == 4) {
 			$dataMir = $dataMir->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'mml_mir.clv_upp')
 				->where('cierre_ejercicio_metas.ejercicio', $anio)

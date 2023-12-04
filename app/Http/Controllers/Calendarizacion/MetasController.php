@@ -845,7 +845,7 @@ class MetasController extends Controller
 			$table->string('clv_pp', 25)->nullable(false);
 			$table->string('entidad_ejecutora', 55)->nullable(false);
 			$table->string('area_funcional', 55)->nullable(false);
-			$table->string('objetivo', 55)->nullable(false);
+			$table->string('objetivo', 255)->nullable(false);
 
 		});
 		Controller::check_permission('getMetas');
@@ -860,7 +860,7 @@ class MetasController extends Controller
 			"modulo" => 'Metas'
 		);
 		Controller::bitacora($b);
-		return Excel::download(new MetasCargaM($upp), 'CargaMasiva.xlsx');
+		return Excel::download(new MetasCargaM($upp), 'CargaMasiva_'.$upp.'.xlsx');
 	}
 	public function pdfView($upp)
 	{
