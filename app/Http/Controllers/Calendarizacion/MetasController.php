@@ -372,8 +372,7 @@ class MetasController extends Controller
 					->where('mml_mir.clv_upp', $entidadAux[0])
 					->where('mml_mir.clv_ur', $entidadAux[2])
 					->where('mml_mir.clv_pp', $areaAux[7])
-					->where('mml_mir.ejercicio', $check['anio'])
-					->groupByRaw('clave');
+					->where('mml_mir.ejercicio', $check['anio']);
 					if($m[0]->tipo_presupuesto==1){
 					$activ = $activ->whereIn('mml_mir.ramo33',[1,0]);
 					}
@@ -471,7 +470,6 @@ class MetasController extends Controller
 	}
 	public function createMeta(Request $request)
 	{
-		Log::debug($request);
 		DB::beginTransaction();
 		try {
 			$username = Auth::user()->username;
@@ -494,16 +492,12 @@ class MetasController extends Controller
 					$act = NULL;
 					break;
 				case 'O':
-					Log::debug('ot');
 					$metaOt = MetasHelper::isExistMoT($entidad_ejecutora, $area_funcional, $fondo, $anio);
-
-					Log::debug($metaOt);
 					if ($metaOt) {
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
 						return response()->json($res, 200);
 					} else {
 						$act = MetasHelper::createMml_Ac($request->upp, $entidad_ejecutora, $area_funcional, $actividad, $request->inputAc, $anio);
-						Log::debug($act);
 						$actividad = NULL;
 					}
 

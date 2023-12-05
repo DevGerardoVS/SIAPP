@@ -898,7 +898,6 @@ var dao = {
                 } else {
                     fondo = $('#fondo_id').val();
                 }
-                $('#actividad_id').prop('disabled', false);
                 dao.getMeses(clave, fondo);
                 dao.getActividasdesMir(fondo)
             }
@@ -958,6 +957,7 @@ var dao = {
                         $(".actividaddiv").removeClass("col-md-6").addClass("col-md-4"); 
                         $(".acOt").show();
             } else {
+                $("#actividad_id").removeAttr('disabled');
                 $("#tipo_Ac").removeAttr('disabled');
                         $(".acOt").hide();
                         $(".inputAc").val('');
