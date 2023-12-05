@@ -1325,6 +1325,7 @@ class MetasController extends Controller
 			->select(
 				'mml_mir.id',
 				'mml_mir.clv_upp AS upp',
+				'mml_mir.clv_ur AS ur',
 				'mml_mir.entidad_ejecutora AS entidad',
 				'mml_mir.area_funcional AS area',
 				'mml_mir.ejercicio',
@@ -1339,6 +1340,7 @@ class MetasController extends Controller
 			->leftJoin('catalogo', 'catalogo.id', '=', 'mml_actividades.id_catalogo')
 			->select(
 				'clv_upp as upp',
+				'clv_ur as ur',
 				'mml_actividades.id',
 				'entidad_ejecutora AS entidad',
 				'area_funcional AS area',
@@ -1351,136 +1353,70 @@ class MetasController extends Controller
 			->where('mml_actividades.ejercicio', $anio);
 
 		$query2 = DB::table('metas')
-			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
-			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
-			->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 			->leftJoinSub($actv, 'act', function ($join) {
 				$join->on('metas.actividad_id', '=', 'act.id');
 			})
 			->select(
-				'metas.id',
-				'metas.estatus',
-				'act.upp',
-				'act.entidad',
-				'act.area',
-				'metas.ejercicio',
-				'metas.clv_fondo as fondo',
-				'act.actividad AS actividad',
-				'metas.tipo',
-				'metas.total',
-				'metas.cantidad_beneficiarios',
-				'beneficiarios.beneficiario',
-				'unidades_medida.unidad_medida',
-				'metas.clv_fondo',
-				DB::raw('CONCAT(act.area,metas.clv_fondo) AS clave'),
-
+				DB::raw('CONCAT(act.area,act.entidad,metas.clv_fondo) AS clave'),
 			)
-			->where('metas.mir_id', '=', null)
+			->where('metas.tipo_meta', '=', 'Operativo')
 			->where('metas.deleted_at', '=', null)
+			->where('metas.estatus', '=', 0)
 			->where('act.upp', $upp)
 			->where('metas.ejercicio', $anio)
-			->groupByRaw('act.area,act.entidad,metas.clv_fondo');
-		if (Auth::user()->id_grupo == 4) {
-			$query2 = $query2->where('metas.tipo_meta', '=', 'Operativo');
-		}
-		if (Auth::user()->id_grupo == 5) {
-			$query2 = $query2->where('metas.tipo_meta', '=', 'RH');
-		}
+			->groupByRaw('entidad,area,metas.clv_fondo')
+			->distinct();
 		$metas = DB::table('metas')
-			->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
-			->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
-			->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 			->leftJoinSub($proyecto, 'pro', function ($join) {
 				$join->on('metas.mir_id', '=', 'pro.id');
 			})
 			->select(
-				'metas.id',
-				'metas.estatus',
-				'pro.upp',
-				'pro.entidad',
-				'pro.area',
-				'metas.ejercicio',
-				'metas.clv_fondo as fondo',
-				'pro.actividad AS actividad',
-				'metas.tipo',
-				'metas.total',
-				'metas.cantidad_beneficiarios',
-				'beneficiarios.beneficiario',
-				'unidades_medida.unidad_medida',
-				'metas.clv_fondo',
-				DB::raw('CONCAT(pro.area,metas.clv_fondo) AS clave'),
+				DB::raw('CONCAT(pro.area,pro.entidad,metas.clv_fondo) AS clave'),
 			)
-			->where('metas.actividad_id', '=', null)
+			->where('metas.tipo_meta', '=', 'Operativo')
 			->where('metas.deleted_at', '=', null)
 			->where('metas.estatus', '=', 0)
 			->where('pro.ejercicio', $anio)
 			->where('pro.upp', $upp)
-			->groupByRaw('pro.area,pro.entidad,metas.clv_fondo')
-			->unionAll($query2);
-		if (Auth::user()->id_grupo == 4) {
-			$metas = $metas->where('metas.tipo_meta', '=', 'Operativo');
-		}
-		if (Auth::user()->id_grupo == 5) {
-			$metas = $metas->where('metas.tipo_meta', '=', 'RH');
-		}
+			->unionAll($query2)
+			->groupByRaw('entidad,area,metas.clv_fondo')
+			->distinct();
+
 		$metas = $metas->get();
 		$pp = [];
 
-		foreach ($metas as $key) {
-			$area = str_split($key->area);
-			$entidad = str_split($key->entidad);
-			$activs = DB::table('programacion_presupuesto')
-				->select(
-					'upp AS clv_upp',
-					DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-					DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
-					'fondo_ramo AS fondo'
-				)
-				->where('deleted_at', null)
-				->where('finalidad', $area[0])
-				->where('funcion', $area[1])
-				->where('subfuncion', $area[2])
-				->where('eje', $area[3])
-				->where('linea_accion', '' . strval($area[4]) . strval($area[5]) . '')
-				->where('programa_sectorial', $area[6])
-				->where('tipologia_conac', $area[7])
-				->where('upp', $key->upp)
-				->where('ur', '' . strval($entidad[4]) . strval($entidad[5]) . '', )
-				->where('programa_presupuestario', '' . strval($area[8]) . strval($area[9]) . '', )
-				->where('subprograma_presupuestario', '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '')
-				->where('proyecto_presupuestario', '' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '')
-				->where('programacion_presupuesto.fondo_ramo', '=', $key->clv_fondo)
-				->where('programacion_presupuesto.ejercicio', '=', $anio)
-				->groupByRaw('ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-				->distinct()
-				->get();
-			if (count($activs)) {
-				$pp[] = json_encode($activs);
-			}
-		}
+ 
 		$activsPP = DB::table('programacion_presupuesto')
 			->select(
-				'upp AS clv_upp',
-				'fondo_ramo',
-				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad_ejecutora'),
-				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area_funcional'),
-				'fondo_ramo AS fondo',
-				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo) AS clave'),
-
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,upp,subsecretaria,ur,fondo_ramo) AS clave'),
 			)
+			->where('programacion_presupuesto.tipo', '=', 'Operativo')
+			->where('programacion_presupuesto.estado', '=', 1)
 			->where('upp', $upp)
 			->where('deleted_at', null)
 			->where('programacion_presupuesto.ejercicio', '=', $anio)
-			->groupByRaw('ur,fondo_ramo ,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
+			->groupByRaw('upp,ur,fondo_ramo,finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario,fondo_ramo')
 			->distinct();
-		if (Auth::user()->id_grupo == 4) {
-			$activsPP = $activsPP->where('programacion_presupuesto.tipo', '=', 'Operativo');
-		}
+		
 		$activsPP = $activsPP->get();
-		if (count($metas) >= 1) {
-			if (count($metas) >= count($activsPP) && count($activsPP) == count($pp)) {
-				return ["status" => true];
 
+		foreach ($activsPP as $key) {
+			foreach ($metas as $k) {
+				if($key->clave==$k->clave){
+					$pp[] = $key->clave;
+				}
+				
+			}
+			
+		}
+		$pp = array_unique($pp);
+
+		if (count($metas) >= 1) {
+			if (count($metas) >= count($activsPP) ) {
+				if(count($activsPP) == count($pp)){
+					return ["status" => true];
+				}
+			
 			} else {
 				return ["status" => false];
 			}
