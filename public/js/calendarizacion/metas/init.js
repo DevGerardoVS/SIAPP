@@ -846,13 +846,13 @@ var dao = {
                  med.append(new Option("Pago de nómina", 829));
                  tipo_be.append(new Option("Empleados", 12));
              } else {
-                med.append(new Option("-- Medida--", ""));
+                med.append(new Option("-- U. Medida--", ""));
                 document.getElementById("medida").options[0].disabled = true;
                 $.each(unidadM, function (i, val) {
                     med.append(new Option(val.unidad_medida, val.clave));
                 });
                  
-                tipo_be.append(new Option("--U. Beneficiarios--", ""));
+                tipo_be.append(new Option("-- Beneficiarios--", ""));
                 document.getElementById("tipo_Be").options[0].disabled = true;
                 $.each(beneficiario, function (i, val) {
                     tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
