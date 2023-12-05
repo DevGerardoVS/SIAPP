@@ -375,7 +375,7 @@ class MetasController extends Controller
 					->where('mml_mir.ejercicio', $check['anio'])
 					->groupByRaw('clave');
 					if($m[0]->tipo_presupuesto==1){
-						$activ =$activ->where('mml_mir.ramo33', 1);
+					$activ = $activ->whereIn('mml_mir.ramo33',[1,0]);
 					}
 					if($m[0]->tipo_presupuesto==0){
 					$activ = $activ->where('mml_mir.ramo33', 0);
