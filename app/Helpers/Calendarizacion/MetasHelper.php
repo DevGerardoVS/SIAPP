@@ -255,10 +255,10 @@ class MetasHelper
 					$tipo[] = ['0', 'Acumulativa'];
 				}
 				if($key->Continua == 1){
-					$tipo[] = ['1', 'Acumulativa'];
+					$tipo[] = ['1', 'Continua'];
 				}
 				if($key->Especial == 1){
-					$tipo[] = ['2', 'Acumulativa'];
+					$tipo[] = ['2', 'Especial'];
 				}
 			}
 		return $tipo;
@@ -379,6 +379,8 @@ class MetasHelper
 			->leftJoin('pptemp', 'pptemp.clave', '=', 'mirtemp.clave')
 			->select(
 				'mirtemp.clv_upp',
+				'mirtemp.clv_ur',
+				'mirtemp.clv_pp',
 				'mirtemp.entidad_ejecutora',
 				'mirtemp.area_funcional',
 				DB::raw('"N/A" AS clv_actadmon'),
@@ -407,6 +409,8 @@ class MetasHelper
 			->leftJoin('catalogo', 'catalogo.clave', '=', 'pptemp.sub_pp')
 			->select(
 				'pptemp.clv_upp',
+				'pptemp.clv_ur',
+				'pptemp.clv_pp',
 				'pptemp.entidad_ejecutora',
 				'pptemp.area_funcional',
 				DB::raw('IFNULL(catalogo.id,"N/A") AS clv_actadmon'),
@@ -434,6 +438,8 @@ class MetasHelper
 		$data = DB::table('pptemp')
 			->select(
 				'pptemp.clv_upp',
+				'pptemp.clv_ur',
+				'pptemp.clv_pp',
 				'pptemp.entidad_ejecutora',
 				'pptemp.area_funcional',
 				DB::raw('"OT" AS clv_actadmon'),
@@ -466,7 +472,8 @@ class MetasHelper
 				}
 			}) */
 			->unionAll($dataCat)
-			->unionAll($mirdatos);
+			->unionAll($mirdatos)
+			->orderByRaw('clv_upp,clv_ur,clv_pp');
 	
 		$data = $data->get();
 		return $data;
@@ -961,6 +968,7 @@ class MetasHelper
 				DB::raw('CONCAT(pp.finalidad,pp.funcion,pp.subfuncion,pp.eje,pp.linea_accion,pp.programa_sectorial,pp.tipologia_conac,pp.programa_presupuestario,pp.subprograma_presupuestario,pp.proyecto_presupuestario,pp.upp,pp.subsecretaria,pp.ur) AS clave'),
 				'pp.upp AS clv_upp',
 				'pp.ur AS clv_ur',
+				'pp.programa_presupuestario AS clv_pp',
 				DB::raw('CONCAT(pp.upp,pp.subsecretaria,pp.ur) AS entidad_ejecutora'),
 				DB::raw('CONCAT(pp.finalidad,pp.funcion,pp.subfuncion,pp.eje,pp.linea_accion,pp.programa_sectorial,pp.tipologia_conac,pp.programa_presupuestario,pp.subprograma_presupuestario,pp.proyecto_presupuestario) AS area_funcional'),
 				DB::raw('pp.fondo_ramo AS fondo'),
@@ -1000,27 +1008,27 @@ class MetasHelper
 		}
 
 		$dataMir = DB::table('mml_mir')
-		->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'mml_mir.clv_upp')
-		->select(
-			DB::raw('CONCAT(mml_mir.area_funcional,mml_mir.entidad_ejecutora) AS clave'),
-			'mml_mir.clv_upp',
-			'mml_mir.clv_ur',
-			'mml_mir.entidad_ejecutora',
-			'mml_mir.area_funcional',
-			DB::raw('mml_mir.id AS mir_id'),
-			'objetivo'
-		)
-		->where('mml_mir.deleted_at', null)
-		->where('mml_mir.nivel', 11)
-		->where('mml_cierre_ejercicio.ejercicio', $anio)
-		->where('mml_cierre_ejercicio.statusm', 1)
-		->where('mml_mir.ejercicio', $anio)
-		->where('mml_mir.clv_upp', $upp)
-		->groupByRaw('mml_mir.id')
-		->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur')
-		->distinct();
+			->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'mml_mir.clv_upp')
+			->select(
+				DB::raw('CONCAT(mml_mir.area_funcional,mml_mir.entidad_ejecutora) AS clave'),
+				'mml_mir.clv_upp',
+				'mml_mir.clv_ur',
+				'mml_mir.clv_pp',
+				'mml_mir.entidad_ejecutora',
+				'mml_mir.area_funcional',
+				DB::raw('mml_mir.id AS mir_id'),
+				'objetivo'
+			)
+			->where('mml_mir.deleted_at', null)
+			->where('mml_mir.nivel', 11)
+			->where('mml_cierre_ejercicio.ejercicio', $anio)
+			->where('mml_cierre_ejercicio.statusm', 1)
+			->where('mml_mir.ejercicio', $anio)
+			->where('mml_mir.clv_upp', $upp)
+			->groupByRaw('mml_mir.id')
+			->orderByRaw('mml_mir.clv_upp,mml_mir.clv_ur');
 		if (Auth::user()->id_grupo == 4) {
-			$dataMir = $dataMir->leftJoin('mml_cierre_ejercicio', 'mml_cierre_ejercicio.clv_upp', '=', 'mml_mir.clv_upp')
+			$dataMir = $dataMir->leftJoin('cierre_ejercicio_metas', 'cierre_ejercicio_metas.clv_upp', '=', 'mml_mir.clv_upp')
 				->where('cierre_ejercicio_metas.ejercicio', $anio)
 				->where('cierre_ejercicio_metas.estatus', 'Abierto');
 		}
@@ -1112,7 +1120,6 @@ class MetasHelper
 	public static function createMeta($request,$actividad,$fondo,$act,$meses,$anio,$flagSubPp)
 	{
 		try {
-
 			$confirm = MetasController::cmetasUpp($request->upp, $anio);
 			$clv = explode('/', $request->area);
 			$pp = explode('-', $clv[0]);
@@ -1146,7 +1153,7 @@ class MetasHelper
 			if (!$confirm["status"] & Auth::user()->id_grupo == 1) {
 				$meta->estatus = 1;
 			}
-			$meta->save();		
+			$meta->save();
 			return $meta;
 		} catch (\Throwable $th) {
 			throw $th;

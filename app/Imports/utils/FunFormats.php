@@ -367,7 +367,7 @@ class FunFormats
                                                         if (strtolower($k[13]) == 'ot') {
                                                             $id_catalogo=null;
                                                             $nombre=$k[15];
-                                                            $act = FunFormats::createMml_Ac($k,$entidad,$area,$id_catalogo, $nombre, $anio);
+                                                            $act = FunFormats::createMml_Ac($k,$entidad_ejecutora,$area_funcional,$id_catalogo, $nombre, $anio);
                                                         }
                                                         if(strval($k[10])!='UUU'){
                                                             $aux[] = [
@@ -971,13 +971,11 @@ class FunFormats
             $metaConMir->estatus = 0;
             $metaConMir->ejercicio = $key['ejercicio'];
             $metaConMir->created_user = $key['created_user'].'-'.'CM';
-            $metaSinMir->tipo_meta = "Operativo";
-
+            $metaConMir->tipo_meta = "Operativo";
             $metaConMir->save();
-            if ($metaConMir) {
-                $metaConMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaConMir->id . '-' . $key['ejercicio'];
-                $metaConMir->save();
-            }
+            $metaConMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaConMir->id . '-' . $key['ejercicio'];
+            $metaConMir->save();
+         
         }
 
     }
