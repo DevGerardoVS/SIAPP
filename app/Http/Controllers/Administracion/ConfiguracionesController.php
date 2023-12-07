@@ -13,6 +13,7 @@ use App\Models\administracion\UppAutorizadascpNomina;
 use App\Models\calendarizacion\TechosFinancieros;
 use App\Helpers\BitacoraHelper;
 use App\Exports\ArchivosCarga\AreasFuncionales;
+use App\Exports\ArchivosCarga\ArchivosCarga;
 
 class ConfiguracionesController extends Controller
 {
@@ -407,17 +408,39 @@ class ConfiguracionesController extends Controller
             throw new \Exception($exp->getMessage());
         }
     }
-    public function getArchivoAreasFun(){
-        /*Si no coloco estas lineas Falla*/
-		ob_end_clean();
-		ob_start();
-		/*Si no coloco estas lineas Falla*/
-		$b = array(
-			"username" => Auth::user()->username,
-			"accion" => 'Descargar Metas Excel',
-			"modulo" => 'Metas'
-		);
-		Controller::bitacora($b);
-		return Excel::download(new AreasFuncionales(), 'Áreas funcionales.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    public function getArchivosDeCarga2024($id){
+        ob_end_clean();
+        ob_start();
+        $nombreArchivo = '';
+        switch ($id) {
+            case 1:
+                $nombreArchivo = 'Áreas funcionales';
+            break;
+            case 2:
+                $nombreArchivo = 'Fondos';
+            break;
+            case 3:
+                $nombreArchivo = 'CeCo-Be y CeGe-Descripcion';
+            break;
+            case 4:
+                $nombreArchivo = 'Centro gestor 2024';          
+            break;
+            case 5:
+                $nombreArchivo = 'Pospre';        
+            break;
+            case 6:
+                $nombreArchivo = 'LAYOUT PRESUPUESTO 2024';                
+            break;
+            default:
+                
+            break;
+        }
+        $b = array(
+            'username'=>Auth::user()->username,
+            'accion'=>'Descarga de archivo '.$nombreArchivo,
+            'modulo'=>'configuracion'
+        );
+        Controller::bitacora($b);
+        return Excel::download(new ArchivosCarga($id), $nombreArchivo.'.xlsx',\Maatwebsite\Excel\Excel::XLSX);
     }
 }

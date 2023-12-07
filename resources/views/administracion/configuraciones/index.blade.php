@@ -101,32 +101,32 @@
                                         <tr>
                                             <td>1</td>
                                             <td>Áreas funcionales</td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivo-areas-funcionales" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/1"><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>2</td>
                                             <td>Fondos</td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/2" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>3</td>
                                             <td>Centro de costos  / Centro de beneficios </td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/3" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>4</td>
                                             <td>Centro gestor</td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/4" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>5</td>
                                             <td>Pospre</td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/5" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>6</td>
                                             <td>Claves presupuestales</td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/6" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                     </tbody>
                                 </table>
