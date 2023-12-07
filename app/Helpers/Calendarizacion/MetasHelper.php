@@ -255,10 +255,10 @@ class MetasHelper
 					$tipo[] = ['0', 'Acumulativa'];
 				}
 				if($key->Continua == 1){
-					$tipo[] = ['1', 'Acumulativa'];
+					$tipo[] = ['1', 'Continua'];
 				}
 				if($key->Especial == 1){
-					$tipo[] = ['2', 'Acumulativa'];
+					$tipo[] = ['2', 'Especial'];
 				}
 			}
 		return $tipo;
