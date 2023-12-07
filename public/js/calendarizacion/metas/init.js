@@ -166,7 +166,7 @@ var dao = {
             const { urs, tAct } = data;
             var par = $('#ur_filter');
             par.html('');
-            par.append(new Option("-- URS--", ""));
+            par.append(new Option("URS", ""));
             document.getElementById("ur_filter").options[0].disabled = true;
             $.each(urs, function (i, val) {
                 par.append(new Option(val.ur, val.clv_ur));
@@ -652,7 +652,7 @@ var dao = {
             const { upp } = data;
             var par = $('#upp_filter');
             par.html('');
-            par.append(new Option("-- UPPS--", ""));
+            par.append(new Option("Seleccione una UPP", ""));
             document.getElementById("upp_filter").options[0].disabled = true;
             $.each(upp, function (i, val) {
                 par.append(new Option(val.upp, val.clv_upp));
@@ -846,13 +846,13 @@ var dao = {
                  med.append(new Option("Pago de nómina", 829));
                  tipo_be.append(new Option("Empleados", 12));
              } else {
-                med.append(new Option("-- U. Medida--", ""));
+                med.append(new Option(" U. Medida", ""));
                 document.getElementById("medida").options[0].disabled = true;
                 $.each(unidadM, function (i, val) {
                     med.append(new Option(val.unidad_medida, val.clave));
                 });
                  
-                tipo_be.append(new Option("-- Beneficiarios--", ""));
+                tipo_be.append(new Option(" Beneficiarios", ""));
                 document.getElementById("tipo_Be").options[0].disabled = true;
                 $.each(beneficiario, function (i, val) {
                     tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
@@ -906,7 +906,7 @@ var dao = {
             tipo_AC.html('');
             let tm =Object.keys(tAct).length;
             if (tAct.Acumulativa == 0 && $('#calendar').val()!='UUU') {
-                tipo_AC.append(new Option("--Tipo Actividad--", ""));
+                tipo_AC.append(new Option("Tipo Actividad", ""));
                 document.getElementById("tipo_Ac").options[0].disabled = true;
 
             }
@@ -940,7 +940,7 @@ var dao = {
                 var act = $('#actividad_id');
                 act.html('');
                 if (activids.length == 2) {
-                    act.append(new Option("--Actividad--", "true", true, true));
+                    act.append(new Option("Actividad", "true", true, true));
                     document.getElementById("actividad_id").options[0].disabled = true;
                 }
                 $.each(activids, function (i, val) {
