@@ -14,7 +14,7 @@ use App\Http\Controllers\Calendarizacion\MetasController;
 
 class ArchivosCargaHelper
 {
-
+	// se agrega descripcion corta a la tabla...
 	public static function getDataAreasFuncionales(){
 
 		try {
@@ -22,7 +22,7 @@ class ArchivosCargaHelper
 			$areas = DB::table('epp')
 			->SELECT('epp.ejercicio',
 			(DB::raw('CONCAT(c09.clave,c10.clave,c11.clave,c12.clave,c13.clave,c14.clave,c15.clave,c16.clave,c17.clave,c18.clave) area_funcional')),
-			(DB::raw("CONCAT((epp.ejercicio-2000),c06.clave,' ',c18.descripcion) col_3"))
+			(DB::raw("CONCAT((epp.ejercicio-2000),c06.clave,' ',ifnull(c18.descripcion_corta, '')) col_3"))
 			)
 			->leftJoin('catalogo as c06', 'epp.upp_id', '=', 'c06.id')  
 			->leftJoin('catalogo as c09', 'epp.finalidad_id', '=', 'c09.id')  
@@ -42,7 +42,6 @@ class ArchivosCargaHelper
 			foreach ($areas as $key => $value) {
 				$cadena = $value->col_3;
 				$rest = substr($cadena,0, 26);
-				$value->col_3 = $rest;
 				array_push($areasFun, ['ejercicio'=>$value->ejercicio,
 										'area_funcional'=>$value->area_funcional,
 										'col_3'=>$rest]);
@@ -56,14 +55,15 @@ class ArchivosCargaHelper
 
 		return $areasFun;
 	}
+	//ya se agregaron las descripciones cortas en la tabla
 	public static function getDataFondos(){
 		try {
 			$dataSet = [];
 			$fondos = DB::table('fondo')
 			->SELECT('techos_financieros.ejercicio',
 			(DB::raw('CONCAT((techos_financieros.ejercicio - 2000),fondo.clv_etiquetado,fondo.clv_fuente_financiamiento,fondo.clv_ramo,fondo.clv_fondo_ramo,fondo.clv_capital) fondos')),
-			'fondo_ramo AS descripcion_corta',
-			'fondo_ramo AS descripcion'
+			'fondo_desc_corta AS descripcion_corta',
+			'fondo_desc_larga AS descripcion'
 			)
 			->leftJoin('techos_financieros', 'fondo.clv_fondo_ramo', '=', 'techos_financieros.clv_fondo')  
 			->DISTINCT()
@@ -71,19 +71,19 @@ class ArchivosCargaHelper
 			->orderBy('descripcion')
 			->get();
 	
-			foreach ($fondos as $key => $value) {
-				$desCorta = $value->descripcion_corta;
-				$rest = substr($desCorta,0, 22);
-				$descripcion = $value->descripcion;
-				$descLarga = substr($descripcion,0 ,43);
+			// foreach ($fondos as $key => $value) {
+			// 	$desCorta = $value->descripcion_corta;
+			// 	$rest = substr($desCorta,0, 22);
+			// 	$descripcion = $value->descripcion;
+			// 	$descLarga = substr($descripcion,0 ,43);
 	
-				array_push($dataSet, ['ejercicio'=>$value->ejercicio,
-										'fondo'=>$value->fondos,
-										'descripcionCorta'=>$rest,
-										'descripcionLarga'=>$descLarga]);
+			// 	array_push($dataSet, ['ejercicio'=>$value->ejercicio,
+			// 							'fondo'=>$value->fondos,
+			// 							'descripcionCorta'=>$rest,
+			// 							'descripcionLarga'=>$descLarga]);
 	
-			}
-			return $dataSet;
+			// }
+			return $fondos;
 		} catch (\Throwable $th) {
 			throw $th;
 		}
@@ -135,13 +135,14 @@ class ArchivosCargaHelper
 				}
 				$contador = $contador + 1;
 				$cadenaDes1 = $value->descripcion_mun;
-				$restDescMun = substr($cadenaDes1,0, 43);
+				$restDescMun = $cadenaDes1;
+				// $restDescMun = substr($cadenaDes1,0, 43);
 
 				$cadenaDes2 = $value->descripcion_explicativa;
-				$restDescExpl = substr($cadenaDes2,0, 22);
+				$restDescExpl = substr($cadenaDes2,0, 43);
 
 				$cadenaDes3 = $value->descripcion_breve;
-				$restDescExpl = substr($cadenaDes3,0, 26);
+				$restDescExpl = substr($cadenaDes3,0, 22);
 				
 				array_push($dataSet, [
 					'entidad_federativa'=>$value->entidad_federativa,
@@ -180,19 +181,20 @@ class ArchivosCargaHelper
 			throw $th;
 		}
 	}
+	//ya se agregaron las descripciones cortas en la tabla
 	public static function getDataPospre(){
 		try {
 			$dataSet = [];
 			$pospre = DB::table('posicion_presupuestaria')
 			->SELECT(
 			(DB::raw('CONCAT(clv_capitulo,clv_concepto,clv_partida_generica,clv_partida_especifica, clv_tipo_gasto) as pospre')),
-			'partida_especifica',
+			'partida_especifica_desc_corta',
 			)->DISTINCT()->where('deleted_at',null)->orderBy('pospre')->get();
 
 			foreach ($pospre as $key => $value) {
 				array_push($dataSet, ['ejercicio'=>2024,
 										'posicionPre'=>$value->pospre,
-										'descripcion'=>$value->partida_especifica,
+										'descripcion'=>$value->partida_especifica_desc_corta,
 									]);
 
 			}
