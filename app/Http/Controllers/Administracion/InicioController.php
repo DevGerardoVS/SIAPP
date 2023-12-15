@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\cierreEjercicio;
 
 use Illuminate\Support\Facades\Storage;
 use PDF;
@@ -20,9 +21,13 @@ class InicioController extends Controller
     //
     public static function GetInicioA(){
         try {
+
             $anio_act = date('Y');
             $dataSet = array();
            
+            $anio_act = cierreEjercicio::max('ejercicio');
+            //Log::channel('daily')->debug('anio '.$anio_act);
+
             $data = DB::select('CALL inicio_a('.$anio_act.')');
 
             /*$data = DB::table('inicio_a')
@@ -55,7 +60,11 @@ class InicioController extends Controller
             $anio_act = date('Y');
             $dataSet = array();
 
+            $anio_act = cierreEjercicio::max('ejercicio');
+
             $data = DB::select('CALL inicio_b('.$anio_act.')');
+
+
 
             /*$data = DB::table('inicio_b')
             ->where("ejercicio", "=", function($query){
