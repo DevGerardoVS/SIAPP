@@ -1077,10 +1077,10 @@ class ClavePreController extends Controller
         return response()->json($response,200);
     }
     public function getEjercicios(){
-        $ejercicios = DB::table('v_epp')
-        ->SELECT('ejercicio')
-        ->distinct()
-        ->get();
+        $ejercicios = DB::select('select distinct ejercicio from v_epp');
+        // ->SELECT('ejercicio')
+        // ->distinct()
+        // ->get();
         return response()->json($ejercicios,200);
     }
     public function alertaAvtividades($upp,$ejercicio){
