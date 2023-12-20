@@ -166,7 +166,7 @@ var dao = {
             const { urs, tAct } = data;
             var par = $('#ur_filter');
             par.html('');
-            par.append(new Option("-- URS--", ""));
+            par.append(new Option("URS", ""));
             document.getElementById("ur_filter").options[0].disabled = true;
             $.each(urs, function (i, val) {
                 par.append(new Option(val.ur, val.clv_ur));
@@ -652,7 +652,7 @@ var dao = {
             const { upp } = data;
             var par = $('#upp_filter');
             par.html('');
-            par.append(new Option("-- UPPS--", ""));
+            par.append(new Option("Seleccione una UPP", ""));
             document.getElementById("upp_filter").options[0].disabled = true;
             $.each(upp, function (i, val) {
                 par.append(new Option(val.upp, val.clv_upp));
@@ -846,13 +846,13 @@ var dao = {
                  med.append(new Option("Pago de nómina", 829));
                  tipo_be.append(new Option("Empleados", 12));
              } else {
-                med.append(new Option("-- Medida--", ""));
+                med.append(new Option(" U. Medida", ""));
                 document.getElementById("medida").options[0].disabled = true;
                 $.each(unidadM, function (i, val) {
                     med.append(new Option(val.unidad_medida, val.clave));
                 });
                  
-                tipo_be.append(new Option("--U. Beneficiarios--", ""));
+                tipo_be.append(new Option(" Beneficiarios", ""));
                 document.getElementById("tipo_Be").options[0].disabled = true;
                 $.each(beneficiario, function (i, val) {
                     tipo_be.append(new Option(beneficiario[i].beneficiario, beneficiario[i].id));
@@ -892,14 +892,12 @@ var dao = {
                 });
             
             if (fondos.length == 1) {
-                $("#tipo_Ac").removeAttr('disabled');
                 let fondo = '';
                 if ($('#sel_fondo').val() != '' || $('#sel_fondo').val() != null) {
                     fondo = $('#sel_fondo').val();
                 } else {
                     fondo = $('#fondo_id').val();
                 }
-                $('#actividad_id').prop('disabled', false);
                 dao.getMeses(clave, fondo);
                 dao.getActividasdesMir(fondo)
             }
@@ -908,10 +906,11 @@ var dao = {
             tipo_AC.html('');
             let tm =Object.keys(tAct).length;
             if (tAct.Acumulativa == 0 && $('#calendar').val()!='UUU') {
-                tipo_AC.append(new Option("--Tipo Actividad--", ""));
+                tipo_AC.append(new Option("Tipo Actividad", ""));
                 document.getElementById("tipo_Ac").options[0].disabled = true;
 
             }
+            $("#tipo_Ac").removeAttr('disabled');
             if ($('#calendar').val()=='UUU') {
                 tipo_AC.append(new Option('Acumulativa','Acumulativa'));
             } else {
@@ -941,7 +940,7 @@ var dao = {
                 var act = $('#actividad_id');
                 act.html('');
                 if (activids.length == 2) {
-                    act.append(new Option("--Actividad--", "true", true, true));
+                    act.append(new Option("Actividad", "true", true, true));
                     document.getElementById("actividad_id").options[0].disabled = true;
                 }
                 $.each(activids, function (i, val) {
@@ -949,14 +948,17 @@ var dao = {
                 });
             
             if ($("#actividad_id").val() == 'ot') {
-                    $("#conmir").val(false);
+                $("#conmir").val(false);
+                $("#tipo_Ac").removeAttr('disabled');
                         $("#inputAc").removeAttr('disabled');
                         $('#actividad_id').prop('disabled', false);
                         $(".inputAc").show(); 
                         $(".fondodiv").removeClass("col-md-6").addClass("col-md-4"); 
                         $(".actividaddiv").removeClass("col-md-6").addClass("col-md-4"); 
                         $(".acOt").show();
-                    } else {
+            } else {
+                $("#actividad_id").removeAttr('disabled');
+                $("#tipo_Ac").removeAttr('disabled');
                         $(".acOt").hide();
                         $(".inputAc").val('');
                         $("#inputAc").attr('disabled', 'disabled');

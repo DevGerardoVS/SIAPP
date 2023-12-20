@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\cierreEjercicio;
 
 use Illuminate\Support\Facades\Storage;
 use PDF;
@@ -20,16 +21,23 @@ class InicioController extends Controller
     //
     public static function GetInicioA(){
         try {
-            $anio_act = date('Y')-1;
+
+            $anio_act = date('Y');
             $dataSet = array();
-            $data = DB::table('inicio_a')
+           
+            $anio_act = cierreEjercicio::max('ejercicio');
+            //Log::channel('daily')->debug('anio '.$anio_act);
+
+            $data = DB::select('CALL inicio_a('.$anio_act.')');
+
+            /*$data = DB::table('inicio_a')
             ->where("ejercicio", "=", function($query){
             $query->from("inicio_b")
             ->select("ejercicio")
             ->limit(1)
             ->orderBy("ejercicio","desc")
             ->groupBy("ejercicio");
-            })->get();
+            })->get();*/
 
             foreach ($data as $d) {
                 $ds = array(number_format($d->presupuesto_asignado, 2, '.', ',') , number_format($d->presupuesto_calendarizado, 2, '.', ','), number_format($d->disponible, 2, '.', ',') , number_format($d->avance, 2, '.', ','));
@@ -49,16 +57,23 @@ class InicioController extends Controller
 
     public static function GetInicioB(){
         try {
-            $anio_act = date('Y')-1;
+            $anio_act = date('Y');
             $dataSet = array();
-            $data = DB::table('inicio_b')
+
+            $anio_act = cierreEjercicio::max('ejercicio');
+
+            $data = DB::select('CALL inicio_b('.$anio_act.')');
+
+
+
+            /*$data = DB::table('inicio_b')
             ->where("ejercicio", "=", function($query){
             $query->from("inicio_b")
             ->select("ejercicio")
             ->limit(1)
             ->orderBy("ejercicio","desc")
             ->groupBy("ejercicio");
-            })->get();
+            })->get();*/
 
             foreach ($data as $d) {
                 $ds = array($d->clave, $d->fondo, number_format($d->asignado, 2, '.', ','), number_format($d->programado, 2, '.', ','), number_format($d->avance, 2, '.', ','));

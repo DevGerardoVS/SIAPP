@@ -22,6 +22,9 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="autorizadas-tab" data-bs-toggle="tab" data-bs-target="#auto" type="button" role="tab" aria-controls="profile" onclick="adjustTableColumns()" aria-selected="false">UPP's autorizadas para RR HH</button>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="reportesCarga-tab" data-bs-toggle="tab" data-bs-target="#carga" type="button" role="tab" aria-controls="profile" onclick="" aria-selected="false">Archivos de carga</button>
+                            </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <br>
@@ -78,6 +81,54 @@
                                             <th width="30%">Autorizadas para delegación</th>
                                         </tr>
                                     </thead>
+                                </table>
+                            </div>
+                            {{-- se agrega un nuevo tab para los archivos de carga --}}
+                            <div class="tab-pane fade" id="carga" role="tabpanel" aria-labelledby="reportesCarga-tab">
+                                <div class="widget-body-toolbar">
+                                </div>
+                                <br>
+                                <table id="archivosCarga-table" class="table table-striped table-bordered text-center table-b"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr class="colorMorado">
+                                            <th width="20%">#</th>
+                                            <th width="50%">Archivo</th>
+                                            <th width="30%">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Áreas funcionales</td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/1"><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>Fondos</td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/2" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>Centro de costos  / Centro de beneficios </td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/3" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td>Centro gestor</td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/4" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>Pospre</td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/5" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>6</td>
+                                            <td>Claves presupuestales</td>
+                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/6" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
 
