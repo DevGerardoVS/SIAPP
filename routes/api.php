@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Calendarizacion\MetasController;
+use App\Http\Controllers\Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::controller(MetasController::class)->group(function () {
     Route::get('calendarizacion/metas/{anio?}/{upp?}', 'apiMetas');
  });
+Route::controller(Controller::class)->group(function (){
+    Route::post('/registro/global-vepp','getVEpp')->name('v_epp');
+});
 
 
 

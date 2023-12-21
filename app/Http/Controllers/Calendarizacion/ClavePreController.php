@@ -12,6 +12,7 @@ use App\Models\ProgramacionPresupuesto;
 use App\Models\cierreEjercicio;
 use App\Helpers\Calendarizacion\ClavesHelper;
 use App\Helpers\Calendarizacion\MetasHelper;
+use Illuminate\Support\Facades\Http;
 
 use Illuminate\Validation\ValidationException;
 
@@ -448,52 +449,120 @@ class ClavePreController extends Controller
     public function getUpp($ejercicio){
         $uppUsuario = Auth::user()->clv_upp;
         $array_where = [];
+        $where_values = [];
+        // if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
+        //     array_push($array_where, ['v_epp.clv_upp', '=', $uppUsuario]);  
+        // }
+        // array_push($array_where, ['v_epp.ejercicio', '=', $ejercicio]);
+        // array_push($array_where, ['v_epp.deleted_at', '=', null]);
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
-            array_push($array_where, ['v_epp.clv_upp', '=', $uppUsuario]);  
+            array_push($array_where, 'upp');
+            array_push($where_values, $uppUsuario);  
         }
-        array_push($array_where, ['v_epp.ejercicio', '=', $ejercicio]);
-        array_push($array_where, ['v_epp.deleted_at', '=', null]);
-        $upp = DB::table('v_epp')
-        ->select('v_epp.clv_upp','v_epp.upp')
-        ->where($array_where)
-        ->orderBy('v_epp.clv_upp')
-        ->DISTINCT()
-        ->get();
+        array_push($array_where, 'ejercicio');
+        array_push($where_values, $ejercicio);
+        // $upp = DB::table('v_epp')
+        // ->select('v_epp.clv_upp','v_epp.upp')
+        // ->where($array_where)
+        // ->orderBy('v_epp.clv_upp')
+        // ->DISTINCT()
+        // ->get();
+        $request = new \stdClass; //create a new 
+		$request->part1 = 0;
+		$request->part2 = 0;
+		$request->part3 = 0;
+		$request->part4 = 0;
+        $request->part5 = 1;
+		$request->distinct = 1;
+		$request->groupBy = ['upp'];
+		$request->where = $array_where;
+		$request->whereValues = $where_values;
+		$request->orderBy = [];
+		$request->orderDirection = ['DESC'];
+        $upp = Controller::getVEpp($request);
+        // Log::info('upps', [json_encode($upp)]);
         return response()->json($upp,200);
     }
     public function getUnidadesResponsables($id = '',$ejercicio){
-        $unidadResponsable = DB::table('v_epp')
-        ->SELECT('clv_ur', 'ur')
-        ->WHERE('v_epp.clv_upp', '=', $id)
-        ->WHERE('v_epp.ejercicio', '=', $ejercicio)
-        ->WHERE('v_epp.deleted_at', '=' , null)
-        ->WHERE('v_epp.presupuestable', 1)
-        ->orderBy('v_epp.clv_ur')
-        ->DISTINCT()
-        ->get();
+        // $unidadResponsable = DB::table('v_epp')
+        // ->SELECT('clv_ur', 'ur')
+        // ->WHERE('v_epp.clv_upp', '=', $id)
+        // ->WHERE('v_epp.ejercicio', '=', $ejercicio)
+        // ->WHERE('v_epp.deleted_at', '=' , null)
+        // ->WHERE('v_epp.presupuestable', 1)
+        // ->orderBy('v_epp.clv_ur')
+        // ->DISTINCT()
+        // ->get();
+        $array_where = ['upp','ejercicio'];
+        $where_values = [$id,$ejercicio];
+        $request = new \stdClass; //create a new 
+		$request->part1 = 0;
+		$request->part2 = 0;
+		$request->part3 = 0;
+		$request->part4 = 0;
+        $request->part5 = 1;
+		$request->distinct = 1;
+		$request->groupBy = ['ur'];
+		$request->where = $array_where;
+		$request->whereValues = $where_values;
+		$request->orderBy = ['ur'];
+		$request->orderDirection = ['ASC'];
+        $unidadResponsable = Controller::getVEpp($request);
         return response()->json($unidadResponsable,200);
     }
     public function getSubSecretaria($upp,$ur,$ejercicio){
-        $subSecretaria = DB::table('v_epp')
-        ->SELECT('clv_subsecretaria' , 'subsecretaria')
-        ->WHERE('clv_upp','=',$upp)
-        ->WHERE('clv_ur','=',$ur)
-        ->WHERE('ejercicio','=',$ejercicio)
-        ->WHERE('v_epp.deleted_at','=',null)
-        ->WHERE('v_epp.presupuestable', 1)
-        ->first();
-        return response()->json($subSecretaria,200);
+        // $subSecretaria = DB::table('v_epp')
+        // ->SELECT('clv_subsecretaria' , 'subsecretaria')
+        // ->WHERE('clv_upp','=',$upp)
+        // ->WHERE('clv_ur','=',$ur)
+        // ->WHERE('ejercicio','=',$ejercicio)
+        // ->WHERE('v_epp.deleted_at','=',null)
+        // ->WHERE('v_epp.presupuestable', 1)
+        // ->first();
+        $array_where = ['upp','ejercicio','ur'];
+        $where_values = [$upp,$ejercicio,$ur];
+        $request = new \stdClass; //create a new 
+		$request->part1 = 0;
+		$request->part2 = 0;
+		$request->part3 = 0;
+		$request->part4 = 0;
+        $request->part5 = 1;
+		$request->distinct = 1;
+		$request->groupBy = ['subsecretaria'];
+		$request->where = $array_where;
+		$request->whereValues = $where_values;
+		$request->orderBy = ['subsecretaria'];
+		$request->orderDirection = ['ASC'];
+        $subSecretaria = Controller::getVEpp($request);
+        
+        return response()->json($subSecretaria[0],200);
     }
     public function getProgramaPresupuestarios($uppId,$id, $ejercicio){
-        $programasPresupuestales = DB::table('v_epp')
-        ->SELECT( 'clv_programa', 'programa')  
-        ->WHERE('clv_upp','=',$uppId)
-        ->WHERE('clv_ur','=',$id)
-        ->WHERE('ejercicio','=',$ejercicio)
-        ->WHERE('v_epp.presupuestable', 1)
-        ->orderBy('clv_programa')
-        ->DISTINCT()
-        ->get();
+        // $programasPresupuestales = DB::table('v_epp')
+        // ->SELECT( 'clv_programa', 'programa')  
+        // ->WHERE('clv_upp','=',$uppId)
+        // ->WHERE('clv_ur','=',$id)
+        // ->WHERE('ejercicio','=',$ejercicio)
+        // ->WHERE('v_epp.presupuestable', 1)
+        // ->orderBy('clv_programa')
+        // ->DISTINCT()
+        // ->get();
+        $array_where = ['upp','ejercicio','ur'];
+        $where_values = [$uppId,$ejercicio,$id];
+        $request = new \stdClass; //create a new 
+		$request->part1 = 0;
+		$request->part2 = 0;
+		$request->part3 = 0;
+		$request->part4 = 1;
+        $request->part5 = 1;
+		$request->distinct = 1;
+		$request->groupBy = ['programaPre'];
+		$request->where = $array_where;
+		$request->whereValues = $where_values;
+		$request->orderBy = ['programaPre'];
+		$request->orderDirection = ['ASC'];
+        $programasPresupuestales = Controller::getVEpp($request);
+        Log::info('programas presupuestarios', [json_encode($programasPresupuestales)]);
         return response()->json($programasPresupuestales,200);
     }
     public function getSubProgramas($ur, $id, $upp, $ejercicio){
@@ -1125,10 +1194,41 @@ class ClavePreController extends Controller
         return response()->json($response,200);
     }
     public function getEjercicios(){
-        $ejercicios = DB::table('v_epp')
-        ->SELECT('ejercicio')
-        ->distinct()
-        ->get();
+        // $ejercicios = DB::table('v_epp')
+        // ->SELECT('ejercicio')
+        // ->distinct()
+        // ->get();
+        // $host= $_SERVER["HTTP_HOST"];
+        // $url= $_SERVER["REQUEST_URI"];
+        // Log::info('host', [json_encode($host)]);
+        // Log::info('url', [json_encode($url)]);
+        // $ejercicios = Http::post(route('v_epp'),[
+        //     'part1' => 0,
+        //     'part2' => 0,
+        //     'part3'=> 0,
+        //     'part4'=> 0,
+        //     'distinct'=> 1,
+        //     'groupBy'=> [],
+        //     'where'=> [],
+        //     'whereValues'=> [],
+        //     'orderBy'=> [],
+        //     'orderDirection'=> ['DESC']
+
+        // ]);
+        $request = new \stdClass; //create a new 
+		$request->part1 = 0;
+		$request->part2 = 0;
+		$request->part3 = 0;
+		$request->part4 = 0;
+		$request->distinct = 1;
+		$request->groupBy = ['ejercicio'];
+		$request->where = [];
+		$request->whereValues = [];
+		$request->orderBy = [];
+		$request->orderDirection = ['DESC'];
+        $ejercicios = Controller::getVEpp($request);
+        Log::info('ejercicios desde funcion epp', [json_encode($ejercicios)]);
+
         return response()->json($ejercicios,200);
     }
     public function alertaAvtividades($upp,$ejercicio){
