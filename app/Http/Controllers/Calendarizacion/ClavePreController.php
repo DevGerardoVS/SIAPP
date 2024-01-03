@@ -48,6 +48,7 @@ class ClavePreController extends Controller
             $uppDescripcion =  DB::table('catalogo')
             ->SELECT('descripcion')
             ->where('grupo_id', 6)
+            ->where('ejercicio',$ejercicio)
             ->where('clave', '=', $upp)
             ->first();
             $descripcion = $uppDescripcion->descripcion;
@@ -692,12 +693,41 @@ class ClavePreController extends Controller
         return response()->json($response,200);
     }
     public function getPresupuestoPorUppEdit($upp,$fondo,$subPrograma,$ejercicio,$id){
+        $perfil = Auth::user()->id_grupo;
+        switch ($perfil) {
+            case 1:
+                // rol administrador
+                $rol = 0;
+                break;
+            case 4:
+                // rol upp
+                $rol = 1;
+                break;
+            case 5:
+                // rol delegacion
+                $rol = 2;
+                break;
+            default:
+                // rol auditor y gobDigital
+                $rol = 3;
+                break;
+        }
         $disponible = 0;
         $presupuestoUpp = DB::table('techos_financieros')
         ->SELECT('presupuesto','tipo')
         ->WHERE('clv_upp', '=', $upp)
         ->WHERE('clv_fondo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
+        ->where(function ($presupuestoUpp) use ($rol) {
+            //para que solo tome los recursos operativos en perfil upp
+            if ($rol == 1) {
+                $presupuestoUpp->where('tipo', '=', 'Operativo' );
+            }
+            //para que solo tome los recursos RH en perfil delegacion
+            if ($rol == 2) {
+                $presupuestoUpp->where('tipo', '=', 'RH' );
+            }
+        })
         // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
@@ -706,6 +736,16 @@ class ClavePreController extends Controller
         ->WHERE ('upp', '=', $upp)
         ->WHERE('fondo_ramo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
+        ->where(function ($presupuestoAsignado) use ($rol) {
+            //para que solo tome los recursos operativos en perfil upp
+            if ($rol == 1 || $rol == 0) {
+                $presupuestoAsignado->where('tipo', '=', 'Operativo' );
+            }
+            //para que solo tome los recursos RH en perfil delegacion
+            if ($rol == 2) {
+                $presupuestoAsignado->where('tipo', '=', 'RH' );
+            }
+        })
         // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
@@ -714,6 +754,16 @@ class ClavePreController extends Controller
         ->WHERE ('upp', '=', $upp)
         ->WHERE('fondo_ramo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
+        ->where(function ($presupuestoAsignado) use ($rol) {
+            //para que solo tome los recursos operativos en perfil upp
+            if ($rol == 1 || $rol == 0) {
+                $presupuestoAsignado->where('tipo', '=', 'Operativo' );
+            }
+            //para que solo tome los recursos RH en perfil delegacion
+            if ($rol == 2) {
+                $presupuestoAsignado->where('tipo', '=', 'RH' );
+            }
+        })
         // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->WHERE('id',$id)
@@ -937,7 +987,9 @@ class ClavePreController extends Controller
             $arrayProgramacion = "".$arrayProgramacion."&& pp.upp = '".strval($uppUsuario)."'";
             $upp =  DB::table('catalogo')
             ->SELECT('clave','descripcion')
+            ->where('ejercicio',$anio)
             ->where('grupo_id', 6)
+            
             ->where('clave', '=', $uppUsuario)
             ->first();
         }else {
