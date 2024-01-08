@@ -14,7 +14,7 @@ use App\Http\Controllers\Calendarizacion\MetasController;
 
 class ArchivosCargaHelper
 {
-
+	// se agrega descripcion corta a la tabla...
 	public static function getDataAreasFuncionales(){
 
 		try {
@@ -22,7 +22,7 @@ class ArchivosCargaHelper
 			$areas = DB::table('epp')
 			->SELECT('epp.ejercicio',
 			(DB::raw('CONCAT(c09.clave,c10.clave,c11.clave,c12.clave,c13.clave,c14.clave,c15.clave,c16.clave,c17.clave,c18.clave) area_funcional')),
-			(DB::raw("CONCAT((epp.ejercicio-2000),c06.clave,' ',c18.descripcion) col_3"))
+			(DB::raw("CONCAT((epp.ejercicio-2000),c06.clave,' ',ifnull(c18.descripcion_corta, '')) col_3"))
 			)
 			->leftJoin('catalogo as c06', 'epp.upp_id', '=', 'c06.id')  
 			->leftJoin('catalogo as c09', 'epp.finalidad_id', '=', 'c09.id')  
@@ -36,13 +36,13 @@ class ArchivosCargaHelper
 			->leftJoin('catalogo as c17', 'epp.subprograma_id', '=', 'c17.id')  
 			->leftJoin('catalogo as c18', 'epp.proyecto_id', '=', 'c18.id') 
 			->where('epp.ejercicio',2024)
+			->DISTINCT()
 			->orderByRaw('epp.upp_id,epp.ur_id')
 			->get();
 
 			foreach ($areas as $key => $value) {
 				$cadena = $value->col_3;
 				$rest = substr($cadena,0, 26);
-				$value->col_3 = $rest;
 				array_push($areasFun, ['ejercicio'=>$value->ejercicio,
 										'area_funcional'=>$value->area_funcional,
 										'col_3'=>$rest]);
@@ -56,14 +56,15 @@ class ArchivosCargaHelper
 
 		return $areasFun;
 	}
+	//ya se agregaron las descripciones cortas...
 	public static function getDataFondos(){
 		try {
 			$dataSet = [];
 			$fondos = DB::table('fondo')
 			->SELECT('techos_financieros.ejercicio',
 			(DB::raw('CONCAT((techos_financieros.ejercicio - 2000),fondo.clv_etiquetado,fondo.clv_fuente_financiamiento,fondo.clv_ramo,fondo.clv_fondo_ramo,fondo.clv_capital) fondos')),
-			'fondo_ramo AS descripcion_corta',
-			'fondo_ramo AS descripcion'
+			'fondo_desc_corta AS descripcion_corta',
+			'fondo_desc_larga AS descripcion'
 			)
 			->leftJoin('techos_financieros', 'fondo.clv_fondo_ramo', '=', 'techos_financieros.clv_fondo')  
 			->DISTINCT()
@@ -71,53 +72,62 @@ class ArchivosCargaHelper
 			->orderBy('descripcion')
 			->get();
 	
-			foreach ($fondos as $key => $value) {
-				$desCorta = $value->descripcion_corta;
-				$rest = substr($desCorta,0, 22);
-				$descripcion = $value->descripcion;
-				$descLarga = substr($descripcion,0 ,43);
+			// foreach ($fondos as $key => $value) {
+			// 	$desCorta = $value->descripcion_corta;
+			// 	$rest = substr($desCorta,0, 22);
+			// 	$descripcion = $value->descripcion;
+			// 	$descLarga = substr($descripcion,0 ,43);
 	
-				array_push($dataSet, ['ejercicio'=>$value->ejercicio,
-										'fondo'=>$value->fondos,
-										'descripcionCorta'=>$rest,
-										'descripcionLarga'=>$descLarga]);
+			// 	array_push($dataSet, ['ejercicio'=>$value->ejercicio,
+			// 							'fondo'=>$value->fondos,
+			// 							'descripcionCorta'=>$rest,
+			// 							'descripcionLarga'=>$descLarga]);
 	
-			}
-			return $dataSet;
+			// }
+			return $fondos;
 		} catch (\Throwable $th) {
 			throw $th;
 		}
 	}
+	//ya se agregaron las descripciones cortas...
 	public static function getDataCostoBeneficio(){
 		try {
 			$dataSet = [];
-			$costoBen = DB::select("SELECT 
+			$costoBen = DB::select("SELECT
 			pa.entidad_federativa,pa.region,pa.municipio,pa.localidad,pa.upp,pa.subsecretaria,pa.ur,
 			CONCAT((pa.ejercicio-2000),pa.upp) as codigo,
 			CONCAT(pa.entidad_federativa,pa.region,pa.municipio,pa.localidad,pa.upp,pa.subsecretaria,pa.ur) as codigo_cege,
 			CONCAT((pa.ejercicio-2000),'-',pa.ur,' ',ve.ur) as descripcionUr,
 			CONCAT(cg.municipio,' ','-',' ',cg.localidad, ' ','-',' ',ve.ur) as descripcion_mun,
-			CONCAT(cg.municipio,' ',ve.ur) as descripcion_explicativa,
-			ve.ur as descripcion_breve
-			FROM (
-				SELECT distinct
-					pp.entidad_federativa,pp.region,pp.municipio,pp.localidad,pp.upp,pp.subsecretaria,pp.ur, pp.ejercicio
-				FROM `programacion_presupuesto` pp
-				WHERE pp.ejercicio = 2024 AND pp.deleted_at is NULL
-			) pa
-			LEFT JOIN (
-				SELECT distinct
-					clv_upp,upp,
-					clv_ur,ur
-				FROM v_epp
-				WHERE ejercicio = 2024 AND deleted_at IS null
-			) ve ON pa.upp = ve.clv_upp AND pa.ur = ve.clv_ur
-			LEFT JOIN (
-				SELECT DISTINCT
-					clv_region,region,clv_municipio,municipio,clv_localidad,localidad
-				FROM clasificacion_geografica 
-				WHERE deleted_at IS NULL
-			) cg ON pa.region = cg.clv_region AND pa.municipio = cg.clv_municipio AND pa.localidad = cg.clv_localidad;");
+			CONCAT(cg.municipio,' ',ve.ur_larga) as descripcion_explicativa,
+			ve.ur_corta as descripcion_breve
+		FROM (
+			SELECT distinct
+				pp.entidad_federativa,pp.region,pp.municipio,pp.localidad,pp.upp,pp.subsecretaria,pp.ur, pp.ejercicio
+			FROM `programacion_presupuesto` pp
+			WHERE pp.ejercicio = 2024 AND pp.deleted_at is NULL
+		) pa
+		LEFT JOIN (
+			SELECT distinct
+				clv_upp,upp,
+				clv_ur,ur,
+				c1.descripcion_larga upp_larga,
+				c1.descripcion_corta upp_corta,
+				c2.descripcion_larga ur_larga,
+				c2.descripcion_corta ur_corta
+			FROM v_epp v
+			left join catalogo c1 on c1.ejercicio = 2024 and c1.deleted_at is null
+			and c1.grupo_id = 6 and clv_upp = c1.clave
+			left join catalogo c2 on c2.ejercicio = 2024 and c2.deleted_at is null
+			and c2.grupo_id = 8 and clv_ur = c2.clave and ur = c2.descripcion
+			WHERE v.ejercicio = 2024 AND v.deleted_at IS null
+		) ve ON pa.upp = ve.clv_upp AND pa.ur = ve.clv_ur
+		LEFT JOIN (
+			SELECT DISTINCT
+				clv_region,region,clv_municipio,municipio,clv_localidad,localidad
+			FROM clasificacion_geografica
+			WHERE deleted_at IS NULL
+		) cg ON pa.region = cg.clv_region AND pa.municipio = cg.clv_municipio AND pa.localidad = cg.clv_localidad ORDER BY pa.upp, pa.ur;");
 
 				$contador = 1;
 				$codigo = '';
@@ -135,13 +145,14 @@ class ArchivosCargaHelper
 				}
 				$contador = $contador + 1;
 				$cadenaDes1 = $value->descripcion_mun;
-				$restDescMun = substr($cadenaDes1,0, 43);
+				$restDescMun = $cadenaDes1;
+				// $restDescMun = substr($cadenaDes1,0, 43);
 
 				$cadenaDes2 = $value->descripcion_explicativa;
-				$restDescExpl = substr($cadenaDes2,0, 22);
+				$restDescExpl = substr($cadenaDes2,0, 43);
 
 				$cadenaDes3 = $value->descripcion_breve;
-				$restDescExpl = substr($cadenaDes3,0, 26);
+				$restDescExpl = substr($cadenaDes3,0, 22);
 				
 				array_push($dataSet, [
 					'entidad_federativa'=>$value->entidad_federativa,
@@ -167,32 +178,47 @@ class ArchivosCargaHelper
 			throw $th;
 		}
 	}
+	//ya se agregaron las descripciones cortas...
 	public static function getDataCentroGestor(){
 		try {
 			$dataSet = [];
-			$centroGestor = DB::select("WITH aux AS ( SELECT DISTINCT pp.ejercicio, CONCAT(pp.entidad_federativa,region,municipio,localidad,pp.upp,pp.subsecretaria,pp.ur) AS centro_gestor, upp,ur 
-			FROM programacion_presupuesto pp WHERE pp.ejercicio = 2024 AND pp.deleted_at IS NULL ORDER BY centro_gestor ) 
-			SELECT distinct aux.ejercicio, aux.centro_gestor, ve.ur FROM aux 
-			LEFT JOIN v_epp ve ON ve.clv_upp = aux.upp AND ve.clv_ur = aux.ur AND ve.ejercicio = 2024 AND ve.deleted_at IS NULL;");
+			$centroGestor = DB::select("WITH aux AS (
+				SELECT DISTINCT 
+					pp.ejercicio, 
+					CONCAT(
+						pp.entidad_federativa,region,municipio,localidad,pp.upp,pp.subsecretaria,pp.ur
+					) AS centro_gestor, upp,ur
+				FROM programacion_presupuesto pp
+				WHERE pp.ejercicio = 2024 AND pp.deleted_at IS NULL
+				ORDER BY upp,ur
+			)
+			SELECT DISTINCT 
+				aux.ejercicio, aux.centro_gestor,
+				c.descripcion_corta ur_corta
+			FROM aux
+			LEFT JOIN v_epp ve ON ve.clv_upp = aux.upp AND ve.clv_ur = aux.ur AND ve.ejercicio = 2024 AND ve.deleted_at IS NULL
+			LEFT JOIN catalogo c ON c.ejercicio = 2024 AND c.deleted_at IS NULL AND c.grupo_id = 8
+			AND ve.clv_ur = c.clave AND ve.ur = c.descripcion;");
 			
 			return $centroGestor;
 		} catch (\Throwable $th) {
 			throw $th;
 		}
 	}
+	//ya se agregaron las descripciones cortas...
 	public static function getDataPospre(){
 		try {
 			$dataSet = [];
 			$pospre = DB::table('posicion_presupuestaria')
 			->SELECT(
 			(DB::raw('CONCAT(clv_capitulo,clv_concepto,clv_partida_generica,clv_partida_especifica, clv_tipo_gasto) as pospre')),
-			'partida_especifica',
+			'partida_especifica_desc_corta',
 			)->DISTINCT()->where('deleted_at',null)->orderBy('pospre')->get();
 
 			foreach ($pospre as $key => $value) {
 				array_push($dataSet, ['ejercicio'=>2024,
 										'posicionPre'=>$value->pospre,
-										'descripcion'=>$value->partida_especifica,
+										'descripcion'=>$value->partida_especifica_desc_corta,
 									]);
 
 			}
@@ -202,6 +228,7 @@ class ArchivosCargaHelper
 			throw $th;
 		}
 	}
+	//no necesita descripciones cortas...
 	public static function getDataClavesPresupuestales(){
 		try {
 			$clave = DB::select("CALL presupuesto_sap(2024)");
