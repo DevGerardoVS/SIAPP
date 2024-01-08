@@ -450,23 +450,12 @@ class ClavePreController extends Controller
         $uppUsuario = Auth::user()->clv_upp;
         $array_where = [];
         $where_values = [];
-        // if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
-        //     array_push($array_where, ['v_epp.clv_upp', '=', $uppUsuario]);  
-        // }
-        // array_push($array_where, ['v_epp.ejercicio', '=', $ejercicio]);
-        // array_push($array_where, ['v_epp.deleted_at', '=', null]);
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
             array_push($array_where, 'upp');
             array_push($where_values, $uppUsuario);  
         }
         array_push($array_where, 'ejercicio');
         array_push($where_values, $ejercicio);
-        // $upp = DB::table('v_epp')
-        // ->select('v_epp.clv_upp','v_epp.upp')
-        // ->where($array_where)
-        // ->orderBy('v_epp.clv_upp')
-        // ->DISTINCT()
-        // ->get();
         $request = new \stdClass; //create a new 
 		$request->part1 = 0;
 		$request->part2 = 0;
@@ -480,19 +469,9 @@ class ClavePreController extends Controller
 		$request->orderBy = [];
 		$request->orderDirection = ['DESC'];
         $upp = Controller::getVEpp($request);
-        // Log::info('upps', [json_encode($upp)]);
         return response()->json($upp,200);
     }
     public function getUnidadesResponsables($id = '',$ejercicio){
-        // $unidadResponsable = DB::table('v_epp')
-        // ->SELECT('clv_ur', 'ur')
-        // ->WHERE('v_epp.clv_upp', '=', $id)
-        // ->WHERE('v_epp.ejercicio', '=', $ejercicio)
-        // ->WHERE('v_epp.deleted_at', '=' , null)
-        // ->WHERE('v_epp.presupuestable', 1)
-        // ->orderBy('v_epp.clv_ur')
-        // ->DISTINCT()
-        // ->get();
         $array_where = ['upp','ejercicio'];
         $where_values = [$id,$ejercicio];
         $request = new \stdClass; //create a new 
@@ -511,14 +490,6 @@ class ClavePreController extends Controller
         return response()->json($unidadResponsable,200);
     }
     public function getSubSecretaria($upp,$ur,$ejercicio){
-        // $subSecretaria = DB::table('v_epp')
-        // ->SELECT('clv_subsecretaria' , 'subsecretaria')
-        // ->WHERE('clv_upp','=',$upp)
-        // ->WHERE('clv_ur','=',$ur)
-        // ->WHERE('ejercicio','=',$ejercicio)
-        // ->WHERE('v_epp.deleted_at','=',null)
-        // ->WHERE('v_epp.presupuestable', 1)
-        // ->first();
         $array_where = ['upp','ejercicio','ur'];
         $where_values = [$upp,$ejercicio,$ur];
         $request = new \stdClass; //create a new 
@@ -534,19 +505,9 @@ class ClavePreController extends Controller
 		$request->orderBy = ['subsecretaria'];
 		$request->orderDirection = ['ASC'];
         $subSecretaria = Controller::getVEpp($request);
-        
         return response()->json($subSecretaria[0],200);
     }
     public function getProgramaPresupuestarios($uppId,$id, $ejercicio){
-        // $programasPresupuestales = DB::table('v_epp')
-        // ->SELECT( 'clv_programa', 'programa')  
-        // ->WHERE('clv_upp','=',$uppId)
-        // ->WHERE('clv_ur','=',$id)
-        // ->WHERE('ejercicio','=',$ejercicio)
-        // ->WHERE('v_epp.presupuestable', 1)
-        // ->orderBy('clv_programa')
-        // ->DISTINCT()
-        // ->get();
         $array_where = ['upp','ejercicio','ur'];
         $where_values = [$uppId,$ejercicio,$id];
         $request = new \stdClass; //create a new 
@@ -562,70 +523,87 @@ class ClavePreController extends Controller
 		$request->orderBy = ['programaPre'];
 		$request->orderDirection = ['ASC'];
         $programasPresupuestales = Controller::getVEpp($request);
-        Log::info('programas presupuestarios', [json_encode($programasPresupuestales)]);
         return response()->json($programasPresupuestales,200);
     }
     public function getSubProgramas($ur, $id, $upp, $ejercicio){
         $array_where = [];
+        $array_values = [];
         $uppAutorizados = ClavesHelper::esAutorizada($upp);
         if ($uppAutorizados) {
             array_push($array_where, ['clv_subprograma', '!=', 'UUU']);
         }
-        array_push($array_where, ['clv_ur','=',$ur]);
-        array_push($array_where, ['clv_programa','=',$id]);
-        array_push($array_where, ['ejercicio','=',$ejercicio]);
-        array_push($array_where, ['presupuestable','=',1]);
-        array_push($array_where, ['clv_upp','=',$upp]);
-        $subProgramas = DB::table('v_epp')
-        ->SELECT('clv_subprograma', 'subprograma')
-        ->WHERE($array_where)
-        ->orderBy('clv_subprograma')
-        ->DISTINCT()
-        ->get();
+        array_push($array_where, 'ur');
+        array_push($array_where, 'programaPre');
+        array_push($array_where, 'ejercicio');
+        array_push($array_where, 'upp');
+        $where_values = [$ur,$id,$ejercicio,$upp];
+        $request = new \stdClass; //create a new 
+		$request->part1 = 0;
+		$request->part2 = 0;
+		$request->part3 = 0;
+		$request->part4 = 1;
+        $request->part5 = 1;
+		$request->distinct = 1;
+		$request->groupBy = ['programaPre'];
+		$request->where = $array_where;
+		$request->whereValues = $where_values;
+		$request->orderBy = ['programaPre'];
+		$request->orderDirection = ['ASC'];
+        $subProgramas = Controller::getVEpp($request);
         return response()->json($subProgramas,200);
     }
     public function getProyectos($programa,$id, $upp,$ur ,$ejercicio){
-        $proyectos = DB::table('v_epp')
-        ->SELECT('clv_proyecto', 'proyecto')
-        ->WHERE('clv_programa','=',$programa)
-        ->WHERE('clv_subprograma','=',$id)
-        ->WHERE('clv_upp','=',$upp)
-        ->WHERE('clv_ur','=',$ur)
-        ->WHERE('ejercicio','=',$ejercicio)
-        ->WHERE('v_epp.presupuestable', 1)
-        ->orderBy('clv_proyecto')
-        ->DISTINCT()
-        ->get();
+        $array_where = ['programaPre','clv_subprograma','upp','ur','ejercicio'];
+        $where_values = [$programa,$id,$upp,$ur,$ejercicio];
+        $request = new \stdClass; //create a new 
+		$request->part1 = 0;
+		$request->part2 = 0;
+		$request->part3 = 0;
+		$request->part4 = 1;
+        $request->part5 = 1;
+		$request->distinct = 1;
+		$request->groupBy = ['clv_proyecto'];
+		$request->where = $array_where;
+		$request->whereValues = $where_values;
+		$request->orderBy = ['clv_proyecto'];
+		$request->orderDirection = ['ASC'];
+        $proyectos = Controller::getVEpp($request);
         return response()->json($proyectos,200);
     }
     public function getLineaAccion($uppId,$id,$ejercicio,$programa,$subPrograma,$proyecto){
-        $linea = DB::table('v_epp')
-        ->SELECT('clv_linea_accion','linea_accion')
-        ->WHERE('clv_upp','=', $uppId)
-        ->WHERE('clv_ur','=',$id)
-        ->WHERE('ejercicio','=',$ejercicio)
-        ->WHERE('clv_programa','=', $programa)
-        ->WHERE('clv_subprograma','=',$subPrograma)
-        ->WHERE('clv_proyecto','=',$proyecto)
-        ->WHERE('v_epp.presupuestable', 1)
-        ->orderBy('clv_linea_accion')
-        ->DISTINCT()
-        ->get();
+        $array_where = ['upp','ur','ejercicio','programaPre','clv_subprograma','clv_proyecto'];
+        $where_values = [$uppId,$id,$ejercicio,$programa,$subPrograma,$proyecto];
+        $request = new \stdClass; //create a new 
+		$request->part1 = 0;
+		$request->part2 = 0;
+		$request->part3 = 1;
+		$request->part4 = 1;
+        $request->part5 = 1;
+		$request->distinct = 1;
+		$request->groupBy = ['clv_linea_accion'];
+		$request->where = $array_where;
+		$request->whereValues = $where_values;
+		$request->orderBy = ['clv_linea_accion'];
+		$request->orderDirection = ['ASC'];
+        $linea = Controller::getVEpp($request);
         return response()->json($linea,200);
     }
     public function getAreaFuncional($uppId,$id,$ejercicio, $subPrograma,$linea,$programa,$proyecto){
-        $areaFuncional = DB::table('v_epp')
-        ->SELECT('clv_finalidad', 'clv_funcion', 'clv_subfuncion', 'clv_eje', 'clv_programa_sectorial','clv_tipologia_conac')
-        ->WHERE ('clv_upp', '=', $uppId)
-        ->WHERE ('clv_ur', '=', $id)
-        ->WHERE ('ejercicio', '=', $ejercicio)
-        ->WHERE ('presupuestable', 1)
-        ->WHERE ('clv_subprograma', '=',  $subPrograma)
-        ->where ('clv_linea_accion', '=', $linea)
-        ->where ('clv_programa', '=', $programa)
-        ->where ('clv_proyecto', '=', $proyecto)
-        ->DISTINCT()
-        ->first();
+        $array_where = ['upp','ur','ejercicio','programaPre','clv_subprograma','clv_proyecto','clv_linea_accion'];
+        $where_values = [$uppId,$id,$ejercicio,$programa,$subPrograma,$proyecto,$linea];
+        $request = new \stdClass; //create a new 
+		$request->part1 = 0;
+		$request->part2 = 1;
+		$request->part3 = 1;
+		$request->part4 = 1;
+        $request->part5 = 1;
+		$request->distinct = 1;
+		$request->groupBy = [];
+		$request->where = $array_where;
+		$request->whereValues = $where_values;
+		$request->orderBy = [];
+		$request->orderDirection = ['ASC'];
+        $areaFuncional = Controller::getVEpp($request);
         return response()->json($areaFuncional,200);
     }
     public function getPartidas($clasificacion,$upp){
@@ -680,14 +658,22 @@ class ClavePreController extends Controller
         ->get();
         return response()->json($fondos,200);
     }
-    public function getClasificacionAdmin($upp,$ur){
-        $clasificacion = DB::table('v_epp')
-        ->SELECT('clv_sector_publico', 'clv_sector_publico_f', 'clv_sector_economia', 'clv_subsector_economia', 'clv_ente_publico')
-        ->WHERE('clv_upp', '=', $upp)
-        ->WHERE('clv_ur', '=', $ur)
-        ->WHERE('presupuestable', 1)
-        ->DISTINCT()
-        ->first();
+    public function getClasificacionAdmin($upp,$ur,$ejercicio){
+        $array_where = ['upp','ur','ejercicio'];
+        $where_values = [$upp,$ur,$ejercicio];
+        $request = new \stdClass; //create a new 
+		$request->part1 = 1;
+		$request->part2 = 0;
+		$request->part3 = 0;
+		$request->part4 = 0;
+        $request->part5 = 1;
+		$request->distinct = 1;
+		$request->groupBy = ['upp','ur','ejercicio'];
+		$request->where = $array_where;
+		$request->whereValues = $where_values;
+		$request->orderBy = [];
+		$request->orderDirection = ['ASC'];
+        $clasificacion = Controller::getVEpp($request);
         return response()->json($clasificacion,200);
     }
     public function getPresupuestoPorUpp($upp,$fondo,$subPrograma,$ejercicio){
@@ -797,7 +783,6 @@ class ClavePreController extends Controller
                 $presupuestoUpp->where('tipo', '=', 'RH' );
             }
         })
-        // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
         $presupuestoAsignado = DB::table('programacion_presupuesto')
@@ -815,7 +800,6 @@ class ClavePreController extends Controller
                 $presupuestoAsignado->where('tipo', '=', 'RH' );
             }
         })
-        // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
         $asignado = DB::table('programacion_presupuesto')
@@ -833,7 +817,6 @@ class ClavePreController extends Controller
                 $presupuestoAsignado->where('tipo', '=', 'RH' );
             }
         })
-        // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->WHERE('id',$id)
         ->first();
@@ -1194,32 +1177,12 @@ class ClavePreController extends Controller
         return response()->json($response,200);
     }
     public function getEjercicios(){
-        // $ejercicios = DB::table('v_epp')
-        // ->SELECT('ejercicio')
-        // ->distinct()
-        // ->get();
-        // $host= $_SERVER["HTTP_HOST"];
-        // $url= $_SERVER["REQUEST_URI"];
-        // Log::info('host', [json_encode($host)]);
-        // Log::info('url', [json_encode($url)]);
-        // $ejercicios = Http::post(route('v_epp'),[
-        //     'part1' => 0,
-        //     'part2' => 0,
-        //     'part3'=> 0,
-        //     'part4'=> 0,
-        //     'distinct'=> 1,
-        //     'groupBy'=> [],
-        //     'where'=> [],
-        //     'whereValues'=> [],
-        //     'orderBy'=> [],
-        //     'orderDirection'=> ['DESC']
-
-        // ]);
         $request = new \stdClass; //create a new 
 		$request->part1 = 0;
 		$request->part2 = 0;
 		$request->part3 = 0;
 		$request->part4 = 0;
+        $request->part5 = 0;
 		$request->distinct = 1;
 		$request->groupBy = ['ejercicio'];
 		$request->where = [];
@@ -1227,8 +1190,6 @@ class ClavePreController extends Controller
 		$request->orderBy = [];
 		$request->orderDirection = ['DESC'];
         $ejercicios = Controller::getVEpp($request);
-        Log::info('ejercicios desde funcion epp', [json_encode($ejercicios)]);
-
         return response()->json($ejercicios,200);
     }
     public function alertaAvtividades($upp,$ejercicio){

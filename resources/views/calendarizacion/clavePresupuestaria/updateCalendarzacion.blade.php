@@ -209,7 +209,7 @@
 
             dao.getUninadResponsableByUpp(upp,ejercicio,ur);
             dao.getSubSecretaria(upp,ur,ejercicio);
-            dao.getClasificacionAdmin(upp,ur);
+            dao.getClasificacionAdmin(upp,ur,ejercicio);
         }
         if (programa_presupuestario != '') {
             dao.getProgramaPresupuestarioByur(upp,ur,ejercicio,programa_presupuestario);

@@ -52,7 +52,7 @@ Route::controller(TechosController::class)->group(function () {
 		Route::get('/cat-area-funcional/{uppId?}/{id?}/{ejercicio?}/{subPrograma?}/{linea?}/{programa?}/{proyecto?}', 'getAreaFuncional');
 		Route::get('/cat-partidas/{clasificacion?}/{upp?}', 'getPartidas');
 		Route::get('/cat-fondos/{id?}/{subP?}/{ejercicio?}', 'getFondos');
-		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}', 'getClasificacionAdmin');
+		Route::get('/cat-clasificacion-administrativa/{upp?}/{ur?}/{ejercicio?}', 'getClasificacionAdmin');
 		Route::get('/presupuesto-upp-asignado/{upp?}/{fonfo?}/{subPrograma?}/{ejercicio?}', 'getPresupuestoPorUpp');
 		Route::get('/presupuesto-upp-asignado-edit/{upp?}/{fonfo?}/{subPrograma?}/{ejercicio?}/{id?}', 'getPresupuestoPorUppEdit');
 		Route::get('/ver-detalle/{clave?}/{anioFondo?}', 'getConceptosClave')->name('detalle');

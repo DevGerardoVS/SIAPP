@@ -484,12 +484,12 @@ var dao = {
       dataType: "JSON",
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
-      document.getElementById('finalidad').innerHTML = data.clv_finalidad;
-      document.getElementById('funcion').innerHTML = data.clv_funcion;
-      document.getElementById('subfuncion').innerHTML = data.clv_subfuncion;
-      document.getElementById('eje').innerHTML = data.clv_eje;
-      document.getElementById('programaSectorial').innerHTML = data.clv_programa_sectorial;
-      document.getElementById('conac').innerHTML = data.clv_tipologia_conac;
+      document.getElementById('finalidad').innerHTML = data[0].clv_finalidad;
+      document.getElementById('funcion').innerHTML = data[0].clv_funcion;
+      document.getElementById('subfuncion').innerHTML = data[0].clv_subfuncion;
+      document.getElementById('eje').innerHTML = data[0].clv_eje;
+      document.getElementById('programaSectorial').innerHTML = data[0].clv_programa_sectorial;
+      document.getElementById('conac').innerHTML = data[0].clv_tipologia_conac;
     });
   },
 	getPartidaByUpp : function(clasificacion,upp,id){
@@ -547,14 +547,14 @@ var dao = {
         });
     });
   },
-  getClasificacionAdmin:function (upp,ur) {
+  getClasificacionAdmin:function (upp,ur,ejercicio) {
     $.ajax({
       type:'get',
-      url: '/cat-clasificacion-administrativa/' + upp + '/' + ur,
+      url: '/cat-clasificacion-administrativa/' + upp + '/' + ur+ '/'+ ejercicio,
       dataType: "JSON",
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
     }).done(function (data) {
-      let clasificacion = data.clv_sector_publico + data.clv_sector_publico_f + data.clv_sector_economia + data.clv_subsector_economia + data.clv_ente_publico;
+      let clasificacion = data[0].clv_sector_publico + data[0].clv_sector_publico_f + data[0].clv_sector_economia + data[0].clv_subsector_economia + data[0].clv_ente_publico;
       document.getElementById('clasificacion').innerHTML = clasificacion;
       dao.getPartidaByUpp(clasificacion,upp,'');
     });
@@ -1215,7 +1215,7 @@ $(document).ready(function () {
 		dao.getProgramaPresupuestarioByur(uppId,id,ejercicio,'');
 		
     //dao.getAreaFuncional(uppId,id,ejercicio);
-    dao.getClasificacionAdmin(uppId,id);
+    dao.getClasificacionAdmin(uppId,id,ejercicio);
     var urText = $('#sel_unidad_res').find(":selected").text();
     document.getElementById('lbl_ur').innerText = 'Ur: ' + urText;
 	});

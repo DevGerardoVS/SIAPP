@@ -35,7 +35,19 @@ class Controller extends BaseController
                 "linea_accion": "c13.clave",
                 "id_epp": "e.id" ,
                 "subsecretaria":"c07.clave",
-                "programaPre": "c16.clave"
+                "programaPre": "c16.clave",
+                "clv_subprograma": "c17.clave",
+                "clv_proyecto" : "c18.clave",
+                "clv_linea_accion": "c13.clave",
+                "clv_finalidad": "c09.clave",
+                "clv_funcion": "c10.clave",
+                "clv_subfuncion" : "c11.clave",
+                "clv_eje": "c12.clave",
+                "clv_programa_sectorial": "c14.clave",
+                "clv_tipologia_conac": "c15.clave"
+
+
+
 
             }';
 
