@@ -338,6 +338,7 @@ class TechosController extends Controller
                 
                 //si existe en la tabla quiere decir que ya esta asignado y no se puede eliminar
                 if(count($existe) == 0 || $data[0]->deleted_at != null || $existe[0]->deleted_at != null){
+                    
                     TechosFinancieros::where('id', $request->id)->delete();
     
                     $b = array(
@@ -355,7 +356,7 @@ class TechosController extends Controller
                 }else{
                     return [
                         'status' => 400,
-                        'error' => "No se puede eliminar, porque ya fue asignado a una clave presupuestaria"
+                        'error' => "No se pueden eliminar techos cuando ya se está utilizando el presupuesto de esa UPP y fondo, es necesario ajustar las claves presupuestarias y dejar disponible"
                     ];
                 }
             }else{
