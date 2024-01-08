@@ -26,150 +26,153 @@ class EppExport implements FromCollection, ShouldAutoSize, WithHeadings, WithCol
         $epp = '';
 
         if($perfil == 5) {
-            $epp = DB::table('uppautorizadascpnomina as u')
-            ->leftjoin('v_epp as ve', 'u.clv_upp', '=', 've.clv_upp')
+            $cond_upp = '=';
+            $cond_ur = '=';
+            $upp = $this->upp;
+            $ur = $this->ur;
+            if($perfil == 4) $upp = Auth::user()->clv_upp;
+            else if($upp == '000') $cond_upp = '!=';
+            if($ur == '00') $cond_ur = '!=';
+
+            $epp = DB::table('epp as e')
+            ->join('catalogo as c01', 'e.sector_publico_id', '=', 'c01.id')
+            ->join('catalogo as c02', 'e.sector_publico_f_id', '=', 'c02.id')
+            ->join('catalogo as c03', 'e.sector_economia_id', '=', 'c03.id')
+            ->join('catalogo as c04', 'e.subsector_economia_id', '=', 'c04.id')
+            ->join('catalogo as c05', 'e.ente_publico_id', '=', 'c05.id')
+            ->join('catalogo as c06', 'e.upp_id', '=', 'c06.id')
+            ->join('uppautorizadascpnomina as u', function($join){
+                $join->on('c06.clave', '=', 'u.clv_upp');
+                $join->whereNull('u.deleted_at');
+            })
+            ->join('catalogo as c07', 'e.subsecretaria_id', '=', 'c07.id')
+            ->join('catalogo as c08', 'e.ur_id', '=', 'c08.id')
+            ->join('catalogo as c09', 'e.finalidad_id', '=', 'c09.id')
+            ->join('catalogo as c10', 'e.funcion_id', '=', 'c10.id')
+            ->join('catalogo as c11', 'e.subfuncion_id', '=', 'c11.id')
+            ->join('catalogo as c12', 'e.eje_id', '=', 'c12.id')
+            ->join('catalogo as c13', 'e.linea_accion_id', '=', 'c13.id')
+            ->join('catalogo as c14', 'e.programa_sectorial_id', '=', 'c14.id')
+            ->join('catalogo as c15', 'e.tipologia_conac_id', '=', 'c15.id')
+            ->join('catalogo as c16', 'e.programa_id', '=', 'c16.id')
+            ->join('catalogo as c17', 'e.subprograma_id', '=', 'c17.id')
+            ->join('catalogo as c18', 'e.proyecto_id', '=', 'c18.id')
             ->select(DB::raw("
                 CONCAT(
-                    ve.clv_sector_publico,
-                    ve.clv_sector_publico_f,
-                    ve.clv_sector_economia,
-                    ve.clv_subsector_economia,
-                    ve.clv_ente_publico
+                    c02.clave,
+                    c03.clave,
+                    c04.clave,
+                    c05.clave
                 ) AS clas_admin,
-                ve.clv_upp,
-                ve.upp,
-                ve.clv_subsecretaria,
-                ve.subsecretaria,
-                ve.clv_ur,
-                ve.ur,
-                ve.clv_finalidad,
-                ve.finalidad,
-                ve.clv_funcion,
-                ve.funcion,
-                ve.clv_subfuncion,
-                ve.subfuncion,
-                ve.clv_eje,
-                ve.eje,
-                ve.clv_linea_accion,
-                ve.linea_accion,
-                ve.clv_programa_sectorial,
-                ve.programa_sectorial,
-                ve.clv_tipologia_conac,
-                ve.tipologia_conac,
-                ve.clv_programa,
-                ve.programa,
-                ve.clv_subprograma,
-                ve.subprograma,
-                ve.clv_proyecto,
-                ve.proyecto
+                c06.clave clv_upp,
+                c06.descripcion upp,
+                c07.clave clv_subsecretaria,
+                c07.descripcion subsecretaria,
+                c08.clave clv_ur,
+                c08.descripcion ur,
+                c09.clave clv_finalidad,
+                c09.descripcion finalidad,
+                c10.clave clv_funcion,
+                c10.descripcion funcion,
+                c11.clave clv_subfuncion,
+                c11.descripcion subfuncion,
+                c12.clave clv_eje,
+                c12.descripcion eje,
+                c13.clave clv_linea_accion,
+                c13.descripcion linea_accion,
+                c14.clave clv_programa_sectorial,
+                c14.descripcion programa_sectorial,
+                c15.clave clv_tipologia_conac,
+                c15.descripcion tipologia_conac,
+                c16.clave clv_programa,
+                c16.descripcion programa,
+                c17.clave clv_subprograma,
+                c17.descripcion subprograma,
+                c18.clave clv_proyecto,
+                c18.descripcion proyecto
             "))
-            ->where('ejercicio', $this->anio)
-            ->whereNull('ve.deleted_at')
-            ->orderBy('clv_upp')->orderBy('clv_subsecretaria')->orderBy('clv_ur')
-            ->orderBy('clv_finalidad')->orderBy('clv_funcion')->orderBy('clv_subfuncion')
-            ->orderBy('clv_eje')->orderBy('clv_linea_accion')
-            ->orderBy('clv_programa_sectorial')->orderBy('clv_tipologia_conac')
-            ->orderBy('clv_programa')->orderBy('clv_subprograma')->orderBy('clv_proyecto')
-            ->get();
-        }
-        else if($perfil == 4) {
-            $epp = DB::table('v_epp as ve')
-            ->select(DB::raw("
-                CONCAT(
-                    ve.clv_sector_publico,
-                    ve.clv_sector_publico_f,
-                    ve.clv_sector_economia,
-                    ve.clv_subsector_economia,
-                    ve.clv_ente_publico
-                ) AS clas_admin,
-                ve.clv_upp,
-                ve.upp,
-                ve.clv_subsecretaria,
-                ve.subsecretaria,
-                ve.clv_ur,
-                ve.ur,
-                ve.clv_finalidad,
-                ve.finalidad,
-                ve.clv_funcion,
-                ve.funcion,
-                ve.clv_subfuncion,
-                ve.subfuncion,
-                ve.clv_eje,
-                ve.eje,
-                ve.clv_linea_accion,
-                ve.linea_accion,
-                ve.clv_programa_sectorial,
-                ve.programa_sectorial,
-                ve.clv_tipologia_conac,
-                ve.tipologia_conac,
-                ve.clv_programa,
-                ve.programa,
-                ve.clv_subprograma,
-                ve.subprograma,
-                ve.clv_proyecto,
-                ve.proyecto
-            "))
-            ->where('ejercicio', $this->anio)
-            ->where('clv_upp',Auth::user()->clv_upp)
-            ->whereNull('deleted_at')
-            ->orderBy('clv_upp')->orderBy('clv_subsecretaria')->orderBy('clv_ur')
-            ->orderBy('clv_finalidad')->orderBy('clv_funcion')->orderBy('clv_subfuncion')
-            ->orderBy('clv_eje')->orderBy('clv_linea_accion')
-            ->orderBy('clv_programa_sectorial')->orderBy('clv_tipologia_conac')
-            ->orderBy('clv_programa')->orderBy('clv_subprograma')->orderBy('clv_proyecto')
+            ->where('e.ejercicio', $this->anio)
+            ->where('c06.clave', $cond_upp, $upp)
+            ->where('c08.clave', $cond_ur, $ur)
+            ->whereNull('e.deleted_at')
+            ->orderBy(DB::raw('
+                c06.clave,c07.clave,c08.clave,c09.clave,
+                c10.clave,c11.clave,c12.clave,c13.clave,
+                c14.clave,c15.clave,c16.clave,c17.clave,c18.clave
+            '))
             ->get();
         }
         else {
-            $uppS = '=';
-            $urS = '=';
-            if($this->upp == '000') $uppS = '!=';
-            if($this->ur == '00') $urS = '!=';
+            $cond_upp = '=';
+            $cond_ur = '=';
+            $upp = $this->upp;
+            $ur = $this->ur;
+            if($perfil == 4) $upp = Auth::user()->clv_upp;
+            else if($upp == '000') $cond_upp = '!=';
+            if($ur == '00') $cond_ur = '!=';
 
-            $epp = DB::table('v_epp')
+            $epp = DB::table('epp as e')
+            ->join('catalogo as c01', 'e.sector_publico_id', '=', 'c01.id')
+            ->join('catalogo as c02', 'e.sector_publico_f_id', '=', 'c02.id')
+            ->join('catalogo as c03', 'e.sector_economia_id', '=', 'c03.id')
+            ->join('catalogo as c04', 'e.subsector_economia_id', '=', 'c04.id')
+            ->join('catalogo as c05', 'e.ente_publico_id', '=', 'c05.id')
+            ->join('catalogo as c06', 'e.upp_id', '=', 'c06.id')
+            ->join('catalogo as c07', 'e.subsecretaria_id', '=', 'c07.id')
+            ->join('catalogo as c08', 'e.ur_id', '=', 'c08.id')
+            ->join('catalogo as c09', 'e.finalidad_id', '=', 'c09.id')
+            ->join('catalogo as c10', 'e.funcion_id', '=', 'c10.id')
+            ->join('catalogo as c11', 'e.subfuncion_id', '=', 'c11.id')
+            ->join('catalogo as c12', 'e.eje_id', '=', 'c12.id')
+            ->join('catalogo as c13', 'e.linea_accion_id', '=', 'c13.id')
+            ->join('catalogo as c14', 'e.programa_sectorial_id', '=', 'c14.id')
+            ->join('catalogo as c15', 'e.tipologia_conac_id', '=', 'c15.id')
+            ->join('catalogo as c16', 'e.programa_id', '=', 'c16.id')
+            ->join('catalogo as c17', 'e.subprograma_id', '=', 'c17.id')
+            ->join('catalogo as c18', 'e.proyecto_id', '=', 'c18.id')
             ->select(DB::raw("
                 CONCAT(
-                    clv_sector_publico,
-                    clv_sector_publico_f,
-                    clv_sector_economia,
-                    clv_subsector_economia,
-                    clv_ente_publico
+                    c02.clave,
+                    c03.clave,
+                    c04.clave,
+                    c05.clave
                 ) AS clas_admin,
-                clv_upp,
-                upp,
-                clv_subsecretaria,
-                subsecretaria,
-                clv_ur,
-                ur,
-                clv_finalidad,
-                finalidad,
-                clv_funcion,
-                funcion,
-                clv_subfuncion,
-                subfuncion,
-                clv_eje,
-                eje,
-                clv_linea_accion,
-                linea_accion,
-                clv_programa_sectorial,
-                programa_sectorial,
-                clv_tipologia_conac,
-                tipologia_conac,
-                clv_programa,
-                programa,
-                clv_subprograma,
-                subprograma,
-                clv_proyecto,
-                proyecto
+                c06.clave clv_upp,
+                c06.descripcion upp,
+                c07.clave clv_subsecretaria,
+                c07.descripcion subsecretaria,
+                c08.clave clv_ur,
+                c08.descripcion ur,
+                c09.clave clv_finalidad,
+                c09.descripcion finalidad,
+                c10.clave clv_funcion,
+                c10.descripcion funcion,
+                c11.clave clv_subfuncion,
+                c11.descripcion subfuncion,
+                c12.clave clv_eje,
+                c12.descripcion eje,
+                c13.clave clv_linea_accion,
+                c13.descripcion linea_accion,
+                c14.clave clv_programa_sectorial,
+                c14.descripcion programa_sectorial,
+                c15.clave clv_tipologia_conac,
+                c15.descripcion tipologia_conac,
+                c16.clave clv_programa,
+                c16.descripcion programa,
+                c17.clave clv_subprograma,
+                c17.descripcion subprograma,
+                c18.clave clv_proyecto,
+                c18.descripcion proyecto
             "))
-            ->where('ejercicio', $this->anio)
-            ->where('clv_upp',$uppS,$this->upp)
-            ->where('clv_ur',$urS,$this->ur)
-            ->whereNull('deleted_at')
-            ->orderBy('clv_upp')->orderBy('clv_subsecretaria')->orderBy('clv_ur')
-            ->orderBy('clv_finalidad')->orderBy('clv_funcion')->orderBy('clv_subfuncion')
-            ->orderBy('clv_eje')->orderBy('clv_linea_accion')
-            ->orderBy('clv_programa_sectorial')->orderBy('clv_tipologia_conac')
-            ->orderBy('clv_programa')->orderBy('clv_subprograma')->orderBy('clv_proyecto')
+            ->where('e.ejercicio', $this->anio)
+            ->where('c06.clave', $cond_upp, $upp)
+            ->where('c08.clave', $cond_ur, $ur)
+            ->whereNull('e.deleted_at')
+            ->orderBy(DB::raw('
+                c06.clave,c07.clave,c08.clave,c09.clave,
+                c10.clave,c11.clave,c12.clave,c13.clave,
+                c14.clave,c15.clave,c16.clave,c17.clave,c18.clave
+            '))
             ->get();
         }
         
