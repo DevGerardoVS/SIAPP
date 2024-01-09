@@ -5,7 +5,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/upps/',
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             const { upp } = data;
             var par = $('#upp_filter');
@@ -20,19 +21,19 @@ var dao = {
         });
     },
     getAniosM: function () {
-
         $.ajax({
             type: "GET",
-            url: '/actividades/anios-metas/',
-            dataType: "JSON"
+            url: '/actividades/anios-metas',
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             var par = $('#anio_filter');
             par.html('');
-            if (data.length >= 1) {
-                $.each(data, function (i, val) {
+            if (data.anios.length >= 1) {
+                $.each(data.anios, function (i, val) {
                     par.append(new Option(val.ejercicio, val.ejercicio, true, false));
                 });
-            }else {
+            } else {
                 var  d = new  Date();
                 var n = d.getFullYear();
                 var nn = n + 1;
@@ -46,7 +47,8 @@ var dao = {
 		$.ajax({
 			type : "GET",
 			url : "/actividades/data/metas-delegacion/"+upp+"/"+anio,
-			dataType : "json"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (_data) {
 			_table = $("#proyectoM");
 			_columns = [
@@ -139,7 +141,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: "/calendarizacion/update/" + id,
-            dataType : "json"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             $("#tipo_Ac").append(new Option('Acumulativa', 'Acumulativa'));
             $('#proyectoMD').empty();
