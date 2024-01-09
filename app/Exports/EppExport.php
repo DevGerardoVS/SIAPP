@@ -54,6 +54,7 @@ class EppExport implements FromCollection, ShouldAutoSize, WithHeadings, WithCol
             ->join('catalogo as c18', 'e.proyecto_id', '=', 'c18.id')
             ->select(DB::raw("
                 CONCAT(
+                    c01.clave,
                     c02.clave,
                     c03.clave,
                     c04.clave,
