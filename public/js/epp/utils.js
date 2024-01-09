@@ -45,7 +45,7 @@ function actualizarListaUPP(ejercicio){
     let ruta = "get-upp/"+ejercicio;
     let cantidadOpt = select.options.length;
 
-    for(i = cantidadOpt; i > 1; i--){
+    for(i = cantidadOpt; i > 0; i--){
         select.remove(i);
     }
     
