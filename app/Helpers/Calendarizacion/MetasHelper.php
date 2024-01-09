@@ -606,6 +606,103 @@ class MetasHelper
 			throw new \Exception($exp->getMessage());
 		}
 	}
+	public static function actividadesMesesTotal($anio)
+	{
+		try {
+			$proyecto = DB::table('mml_mir')
+				->select(
+					'mml_mir.id',
+					'mml_mir.clv_upp AS upp',
+					'mml_mir.entidad_ejecutora AS entidad',
+					'mml_mir.area_funcional AS area',
+					'mml_mir.ejercicio',
+				)
+				->where('mml_mir.deleted_at', '=', null)
+				->where('mml_mir.nivel', '=', 11)
+				->where('mml_mir.ejercicio', $anio);
+			$actv = DB::table('mml_actividades')
+				->leftJoin('catalogo', 'catalogo.id', '=', 'mml_actividades.id_catalogo')
+				->select(
+					'clv_upp',
+					'mml_actividades.id',
+					'entidad_ejecutora AS entidad',
+					'area_funcional AS area',
+					'mml_actividades.ejercicio',
+				)
+				->where('mml_actividades.deleted_at', '=', null)
+				->where('catalogo.deleted_at', '=', null)
+				->where('mml_actividades.ejercicio', $anio);
+				$upps= DB::table('uppautorizadascpnomina')
+				->select('uppautorizadascpnomina.clv_upp')
+				->where('uppautorizadascpnomina.deleted_at', null)
+				->get();
+				if(count($upps)) {
+				$actv = $actv->where('catalogo.clave', '!=','UUU' );
+				}
+			$query2 = DB::table('metas')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($actv, 'act', function ($join) {
+					$join->on('metas.actividad_id', '=', 'act.id');
+				})
+				->select(
+					'metas.id',
+					'act.entidad',
+					'act.area',
+					'metas.clv_fondo as fondo',
+					DB::raw('IF(enero>=1,1,0) AS enero'),
+					DB::raw('IF(febrero>=1,1,0) AS febrero'),
+					DB::raw('IF(marzo>=1,1,0) AS marzo'),
+					DB::raw('IF(abril>=1,1,0) AS abril'),
+					DB::raw('IF(mayo>=1,1,0) AS mayo '),
+					DB::raw('IF(junio>=1,1,0) AS junio'),
+					DB::raw('IF(julio>=1,1,0) AS julio'),
+					DB::raw('IF(agosto>=1,1,0) AS agosto'),
+					DB::raw('IF(septiembre>=1,1,0) AS septiembre '),
+					DB::raw('IF(octubre>=1,1,0) AS octubre'),
+					DB::raw('IF(noviembre>=1,1,0) AS noviembre'),
+					DB::raw('IF(diciembre>=1,1,0) AS diciembre')
+
+				)
+				->where('metas.mir_id', '=', null)
+				->where('metas.deleted_at', '=', null)
+				->where('metas.ejercicio', $anio);
+			$query = DB::table('metas')
+				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
+				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
+				->leftJoinSub($proyecto, 'pro', function ($join) {
+					$join->on('metas.mir_id', '=', 'pro.id');
+				})
+				->select(
+					'metas.id',
+					'pro.entidad',
+					'pro.area',
+					'metas.clv_fondo as fondo',
+					DB::raw('IF(enero>=1,1,0) AS enero'),
+					DB::raw('IF(febrero>=1,1,0) AS febrero'),
+					DB::raw('IF(marzo>=1,1,0) AS marzo'),
+					DB::raw('IF(abril>=1,1,0) AS abril'),
+					DB::raw('IF(mayo>=1,1,0) AS mayo '),
+					DB::raw('IF(junio>=1,1,0) AS junio'),
+					DB::raw('IF(julio>=1,1,0) AS julio'),
+					DB::raw('IF(agosto>=1,1,0) AS agosto'),
+					DB::raw('IF(septiembre>=1,1,0) AS septiembre '),
+					DB::raw('IF(octubre>=1,1,0) AS octubre'),
+					DB::raw('IF(noviembre>=1,1,0) AS noviembre'),
+					DB::raw('IF(diciembre>=1,1,0) AS diciembre')
+				)
+				->where('metas.actividad_id', '=', null)
+				->where('metas.deleted_at', '=', null)
+				->where('pro.ejercicio', $anio)
+				->unionAll($query2)
+				->orderBy('id')
+				->get();
+			return $query;
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
+		}
+	}
 	public static function clavesPpMeses($upp, $anio)
 	{
 		$meses = DB::table('programacion_presupuesto')
@@ -635,6 +732,124 @@ class MetasHelper
 			}
 			$meses=$meses->get();
 		return $meses;
+	}
+	public static function clavesPpMesesTotal($anio)
+	{
+		$meses = DB::table('programacion_presupuesto')
+			->select(
+				DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad'),
+				DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS area'),
+				'fondo_ramo as fondo',
+				DB::raw("IF(SUM(enero)>=1,1,0) AS enero"),
+				DB::raw("IF(SUM(febrero)>=1,1,0) AS febrero"),
+				DB::raw("IF(SUM(marzo)>=1,1,0) AS marzo"),
+				DB::raw("IF(SUM(abril)>=1,1,0) AS abril"),
+				DB::raw("IF(SUM(mayo)>=1,1,0) AS mayo"),
+				DB::raw("IF(SUM(junio)>=1,1,0) AS junio"),
+				DB::raw("IF(SUM(julio)>=1,1,0) AS julio"),
+				DB::raw("IF(SUM(agosto)>=1,1,0) AS agosto"),
+				DB::raw("IF(SUM(septiembre)>=1,1,0) AS septiembre"),
+				DB::raw("IF(SUM(octubre)>=1,1,0) AS octubre"),
+				DB::raw("IF(SUM(noviembre)>=1,1,0) AS noviembre"),
+				DB::raw("IF(SUM(diciembre)>=1,1,0) AS diciembre")
+			)
+			->where('ejercicio', $anio)
+			->where('programacion_presupuesto.deleted_at', null)
+			->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario');
+			if (Auth::user()->id_grupo == 5) {
+			$meses = $meses->where('programacion_presupuesto.tipo', 'RH');
+			}
+			$meses=$meses->get();
+		return $meses;
+	}
+	public static function validateMesesfinalTotal($anio)
+	{
+		$metas = MetasHelper::actividadesMesesTotal($anio);
+		$claves = MetasHelper::clavesPpMesesTotal($anio);
+		$aux = 0;
+		$ids = [];
+		foreach ($metas as $k) {
+			$cont = $aux;
+			foreach ($claves as $key) {
+				if ($key->entidad == $k->entidad && $key->area == $k->area && $key->fondo == $k->fondo) {
+					if ($key->enero != $k->enero) {
+						if($k->enero !=0){
+							$aux++;
+						}
+						
+					}
+					if ($key->febrero != $k->febrero ) {
+						if($k->febrero !=0){
+							$aux++;
+						}
+					}
+
+					if ($key->marzo != $k->marzo) {
+						if($k->marzo !=0){
+							$aux++;
+						}
+					}
+
+					if ($key->abril != $k->abril) {
+						if($k->abril !=0){
+							$aux++;
+						}
+					}
+
+					if ($key->mayo != $k->mayo) {
+						if($k->mayo !=0){
+							$aux++;
+						}
+					}
+
+					if ($key->junio != $k->junio) {
+						if($k->junio !=0){
+							$aux++;
+						}
+					}
+
+					if ($key->julio != $k->julio) {
+						if($k->julio !=0){
+							$aux++;
+						}
+					}
+
+					if ($key->agosto != $k->agosto) {
+						if($k->agosto !=0){
+							$aux++;
+						}
+					}
+
+					if ($key->septiembre != $k->septiembre) {
+						if($k->septiembre !=0){
+							$aux++;
+						}
+					}
+
+					if ($key->octubre != $k->octubre) {
+						if($k->octubre !=0){
+							$aux++;
+						}
+					}
+
+					if ($key->noviembre != $k->noviembre) {
+						if($k->noviembre !=0){
+							$aux++;
+						}
+					}
+
+					if ($key->diciembre != $k->diciembre) {
+						if($k->diciembre !=0){
+							$aux++;
+						}
+					}
+				}
+			}
+			if ($aux > $cont) {
+				$ids[] = ["ID" => $k->id];
+			}
+		}
+		return ["status" => $aux == 0 ? true : false, "ids" => $ids];
 	}
 
 	public static function validateMesesfinal($upp, $anio)

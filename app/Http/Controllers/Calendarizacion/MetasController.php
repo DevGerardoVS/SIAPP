@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MetasExport;
 use App\Exports\MetasExportErr;
+use App\Exports\MetasExportErrTotal;
 use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
 use Auth;
@@ -774,6 +775,17 @@ class MetasController extends Controller
 		);
 		Controller::bitacora($b);
 		return Excel::download(new MetasExport($upp, $anio), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+	}
+	
+
+	public function exportExcelErrTotal($anio)	
+	{
+		/*Si no coloco estas lineas Falla*/
+		ob_end_clean();
+		ob_start();
+		/*Si no coloco estas lineas Falla*/
+
+		return Excel::download(new MetasExportErrTotal($anio), 'Metas con diferencias.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
 	public function exportExcelErr($upp, $anio)	
 	{
