@@ -161,7 +161,7 @@ class MetasController extends Controller
 						'programacion_presupuesto.subsecretaria AS subsec',
 						DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto'),
 						'v_epp.con_mir AS mir',
-						'programacion_presupuesto.ejercicio'
+						'programacion_presupuesto.ejercicio',
 					)
 					->where('programacion_presupuesto.ur', '=', $ur_filter)
 					->where('programacion_presupuesto.upp', '=', $upp)
@@ -177,29 +177,7 @@ class MetasController extends Controller
 					}
 					$activs=$activs->get();
 				foreach ($activs as $key) {
-					$m = DB::table('v_epp')
-						->select(
-							'v_epp.con_mir'
-						)
-						->where('v_epp.deleted_at', null)
-						->where('clv_finalidad', $key->finalidad)
-						->where('clv_funcion', $key->funcion)
-						->where('clv_subfuncion', $key->subfuncion)
-						->where('clv_eje', $key->eje)
-						->where('clv_linea_accion', $key->linea)
-						->where('clv_programa_sectorial', $key->programaSec)
-						->where('clv_tipologia_conac', $key->tipologia)
-						->where('clv_upp', $upp)
-						->where('clv_ur', $ur_filter)
-						->where('clv_programa', $key->programa)
-						->where('clv_subprograma', $key->subprograma)
-						->where('clv_proyecto', $key->clv_proyecto)
-						->where('presupuestable', '=', 1)
-						->groupByRaw('con_mir')
-						->where('ejercicio', $check['anio'])
-						->get();
-					//$mirx = 0;
-					$mirx = $m[0]->con_mir;
+					$mirx = $key->mir;
 					$area = '"' . strval($key->finalidad) . '-' . strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje) . '-' . strval($key->linea) . '-' . strval($key->programaSec) . '-' . strval($key->tipologia) . '-' . strval($key->programa) . '-' . strval($key->subprograma) . '-' . strval($key->clv_proyecto) . '"';
 					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($ur_filter) . '"';
 					$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';

@@ -12,10 +12,16 @@ use App\Helpers\ArchivosCargaHelper;
 use App\Http\Controllers\Calendarizacion\MetasController;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 use Auth;
 
 
-class ArchivosCarga extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder implements FromCollection, ShouldAutoSize, WithColumnWidths, WithHeadings, WithCustomValueBinder
+class ArchivosCarga extends DefaultValueBinder implements FromCollection, ShouldAutoSize, WithColumnWidths, WithCustomValueBinder
 {
     protected $id;
     // protected $upp;
@@ -28,6 +34,7 @@ class ArchivosCarga extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder imp
     }
     public function collection()
     {
+        ini_set('max_execution_time', 5000);
         switch ($this->id) {
             case 1:
                 $dataSet = ArchivosCargaHelper::getDataAreasFuncionales();
@@ -117,6 +124,49 @@ class ArchivosCarga extends \PhpOffice\PhpSpreadsheet\Cell\StringValueBinder imp
                 break;
         }
       
+    }
+   
+    public function bindValue(Cell $cell, $value)
+    {
+        $stringColumn = [];
+        switch ($this->id) {
+                case 1:
+                    $stringColumn = ['A','B','C'];
+                    break;
+                case 2:
+                    $stringColumn = ['A','B','C','D'];
+                    break;
+                case 3:
+                    $stringColumn = ['A','B','C','D','E','F','G','H','I','J','K','L','M'];
+                    break;
+                case 4:
+                    $stringColumn = ['A','B','C'];
+                    break;
+                case 5:
+                    $stringColumn = ['A','B','C'];
+                    break;
+                case 6:
+                    $stringColumn = ['B','C','D','E','F'];
+                    break;
+                
+                default:
+                    $stringColumn = [];
+                    break;
+            }
+        if (in_array($cell->getColumn(), $stringColumn)) {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+        if (!in_array($cell->getColumn(), $stringColumn) && is_numeric($value)) {
+            $cell->setValueExplicit($value, DataType::TYPE_NUMERIC);
+
+            return true;
+        }
+       
+
+        // else return default behavior
+        return parent::bindValue($cell, $value);
     }
     public function registerEvents():array{
         return[

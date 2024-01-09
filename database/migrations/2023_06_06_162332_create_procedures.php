@@ -3407,20 +3407,79 @@ return new class extends Migration {
         DB::unprepared("CREATE PROCEDURE sp_epp(in delegacion int,in uppC varchar(3),in urC varchar(2), in anio int)
         BEGIN
             set @upp := \"\";
-	        set @ur := \"\";
-	        set @del := \"from v_epp e\";
-	        if(uppC is not null) then set @upp := CONCAT(\"and e.clv_upp = '\",uppC,\"'\"); end if;
-	        if(urC is not null) then set @upr := CONCAT(\"and clv_ur = '\",urC,\"'\"); end if;
-	        if(delegacion = 1) then set @del := \"from uppautorizadascpnomina u join v_epp e on u.clv_upp = e.clv_upp\"; end if;
-           
+            set @ur := \"\";
+            set @del := \"from t_epp e\";
+            set @anio := anio;
+            if(uppC is not null) then set @upp := CONCAT(\"and e.clv_upp = '\",uppC,\"'\"); end if;
+            if(urC is not null) then set @ur := CONCAT(\"and e.clv_ur = '\",urC,\"'\"); end if;
+            if(delegacion = 1) then set @del := \"from uppautorizadascpnomina u join t_epp e on u.clv_upp = e.clv_upp\"; end if;
+                
+            drop temporary table if exists t_epp;
+            
+            set @queri := concat('
+                create temporary table t_epp
+                select 
+                    e.id,
+                    c01.clave clv_sector_publico,c01.descripcion sector_publico,
+                    c02.clave clv_sector_publico_f,c02.descripcion sector_publico_f,
+                    c03.clave clv_sector_economia,c03.descripcion sector_economia,
+                    c04.clave clv_subsector_economia,c04.descripcion subsector_economia,
+                    c05.clave clv_ente_publico,c05.descripcion ente_publico,
+                    c06.clave clv_upp,c06.descripcion upp,
+                    c07.clave clv_subsecretaria,c07.descripcion subsecretaria,
+                    c08.clave clv_ur,c08.descripcion ur,
+                    c09.clave clv_finalidad,c09.descripcion finalidad,
+                    c10.clave clv_funcion,c10.descripcion funcion,
+                    c11.clave clv_subfuncion,c11.descripcion subfuncion,
+                    c12.clave clv_eje,c12.descripcion eje,
+                    c13.clave clv_linea_accion,c13.descripcion linea_accion,
+                    c14.clave clv_programa_sectorial,c14.descripcion programa_sectorial,
+                    c15.clave clv_tipologia_conac,c15.descripcion tipologia_conac,
+                    c16.clave clv_programa,c16.descripcion programa,
+                    c17.clave clv_subprograma,c17.descripcion subprograma,
+                    c18.clave clv_proyecto,c18.descripcion proyecto,
+                    e.presupuestable,
+                    e.con_mir,
+                    e.confirmado,
+                    e.tipo_presupuesto,
+                    e.ejercicio,
+                    e.deleted_at,
+                    e.updated_at,
+                    e.created_at
+                from epp e
+                join catalogo c01 on e.sector_publico_id = c01.id 
+                join catalogo c02 on e.sector_publico_f_id = c02.id 
+                join catalogo c03 on e.sector_economia_id = c03.id 
+                join catalogo c04 on e.subsector_economia_id = c04.id 
+                join catalogo c05 on e.ente_publico_id = c05.id 
+                join catalogo c06 on e.upp_id = c06.id 
+                join catalogo c07 on e.subsecretaria_id = c07.id  
+                join catalogo c08 on e.ur_id = c08.id 
+                join catalogo c09 on e.finalidad_id = c09.id 
+                join catalogo c10 on e.funcion_id = c10.id 
+                join catalogo c11 on e.subfuncion_id = c11.id 
+                join catalogo c12 on e.eje_id = c12.id 
+                join catalogo c13 on e.linea_accion_id = c13.id 
+                join catalogo c14 on e.programa_sectorial_id = c14.id 
+                join catalogo c15 on e.tipologia_conac_id = c15.id 
+                join catalogo c16 on e.programa_id = c16.id 
+                join catalogo c17 on e.subprograma_id = c17.id 
+                join catalogo c18 on e.proyecto_id = c18.id
+                where e.ejercicio = ',@anio,';
+            ');
+                
+            prepare stmt from @queri;
+            execute stmt;
+            deallocate prepare stmt;
+                
             set @query := CONCAT(\"
                 select 
                     concat(
-                    	e.clv_sector_publico,
-                    	e.clv_sector_publico_f,
-                    	e.clv_sector_economia,
-                    	e.clv_subsector_economia,
-                    	e.clv_ente_publico
+                        e.clv_sector_publico,
+                        e.clv_sector_publico_f,
+                        e.clv_sector_economia,
+                        e.clv_subsector_economia,
+                        e.clv_ente_publico
                     ) clasificacion_administrativa,
                     concat(
                         e.clv_upp,' ',
@@ -3476,18 +3535,18 @@ return new class extends Migration {
                     ) proyecto,
                     e.ejercicio
                 \",@del,\"
-                where ejercicio = \",anio,\"
-				and e.deleted_at is null
-				\",@upp,\"
-				\",@ur,\" order by clv_upp,clv_subsecretaria,clv_ur,
-				clv_finalidad,clv_funcion,clv_subfuncion,
-				clv_eje,clv_linea_accion,clv_programa_sectorial,clv_tipologia_conac,
-				clv_programa,clv_subprograma,clv_proyecto
-			\");
-               
-			prepare stmt  from @query;
+                where e.deleted_at is null
+                \",@upp,\" \",@ur,\" order by e.clv_upp,e.clv_subsecretaria,e.clv_ur,
+                e.clv_finalidad,e.clv_funcion,e.clv_subfuncion,
+                e.clv_eje,e.clv_linea_accion,e.clv_programa_sectorial,e.clv_tipologia_conac,
+                e.clv_programa,e.clv_subprograma,e.clv_proyecto
+            \");
+            
+            prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
+                
+            drop temporary table if exists t_epp;
         END");
 
         DB::unprepared("CREATE PROCEDURE avance_etapas(in anio int, in upp varchar(3), in programa varchar(2), in lim_i int, in lim_s int)
