@@ -117,7 +117,10 @@ var dao = {
                 { "aTargets": [7], "mData": [7] },
                 { "aTargets": [8], "mData": [8] },
                 { "aTargets": [9], "mData": [9] },
-                { "aTargets": [10], "mData": [10] }]
+                { "aTargets": [10], "mData": [10] },
+                { "aTargets": [11], "mData": [11] },
+                { "aTargets": [12], "mData": [12] }
+                ]
             }
             ];
             /*  let columns={ "width": "0%", "targets":  _columns } */

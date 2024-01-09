@@ -1161,5 +1161,106 @@ class MetasHelper
 	
 	}
 
+	public static function existMeta($area, $entidad,$anio,$fondo)
+	{
+		try {
+			$proyecto = DB::table('mml_mir')
+				->select(
+					'mml_mir.id',
+					'mml_mir.ejercicio',
+					'mml_mir.entidad_ejecutora',
+					'mml_mir.area_funcional'
+				)
+				->where('mml_mir.deleted_at', '=', null)
+				->where('mml_mir.nivel', '=', 11)
+				->where('mml_mir.ejercicio', $anio)
+				->where('mml_mir.entidad_ejecutora', $entidad)
+				->where('mml_mir.area_funcional', $area);
+			$actv = DB::table('mml_actividades')
+				->select(
+					'mml_actividades.id',
+					'mml_actividades.ejercicio',
+					'mml_actividades.entidad_ejecutora',
+					'mml_actividades.area_funcional'
+				)
+				->where('mml_actividades.deleted_at', '=', null)
+				->where('mml_actividades.entidad_ejecutora', $entidad)
+				->where('mml_actividades.area_funcional', $area)
+				->where('mml_actividades.ejercicio', $anio);
+		
+			$query2 = DB::table('metas')
+				->leftJoinSub($actv, 'act', function ($join) {
+					$join->on('metas.actividad_id', '=', 'act.id');
+				})
+				->select(
+					'metas.clv_fondo  as fondo',
+				)
+				->where('metas.mir_id', '=', null)
+				->where('metas.deleted_at', '=', null)
+				->where('metas.ejercicio', $anio)
+				->where('act.entidad_ejecutora', $entidad)
+				->where('act.area_funcional', $area)
+				->where('metas.clv_fondo', $fondo)
+				->groupByRaw('metas.clv_fondo,act.entidad_ejecutora,act.area_funcional')
+				->distinct();
+			$query = DB::table('metas')
+				->leftJoinSub($proyecto, 'pro', function ($join) {
+					$join->on('metas.mir_id', '=', 'pro.id');
+				})
+				->select(
+					'metas.clv_fondo  as fondo',
+				)
+				->where('metas.actividad_id', '=', null)
+				->where('metas.deleted_at', '=', null)
+				->where('pro.ejercicio', $anio)
+				->where('pro.entidad_ejecutora', $entidad)
+				->where('pro.area_funcional', $area)
+				->where('metas.clv_fondo', $fondo)
+				->unionAll($query2)
+				->groupByRaw('metas.clv_fondo,pro.entidad_ejecutora,pro.area_funcional')
+				->distinct()
+				->get();
+			return $query;
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
+		}
+	}
+
+	public static function fondos($area, $entidad,$anio)
+	{
+		$areaAux = str_split($area);
+		$entidadAux = str_split($entidad);
+		$fondos = DB::table('programacion_presupuesto')
+		->select(
+			'programacion_presupuesto.fondo_ramo as fondo',
+		)
+		->where('programacion_presupuesto.deleted_at', null)
+		->where('programacion_presupuesto.finalidad', intval($areaAux[0]))
+		->where('programacion_presupuesto.funcion', intval($areaAux[1]))
+		->where('programacion_presupuesto.subfuncion', intval($areaAux[2]))
+		->where('programacion_presupuesto.eje', intval($areaAux[3]))
+		->where('programacion_presupuesto.linea_accion', strval($areaAux[4]. $areaAux[5]))
+		->where('programacion_presupuesto.programa_sectorial', $areaAux[6])
+		->where('programacion_presupuesto.tipologia_conac', $areaAux[7])
+		->where('programacion_presupuesto.upp', strval($entidadAux[0].$entidadAux[1].$entidadAux[2]))
+		->where('programacion_presupuesto.ur', strval($entidadAux[4].$entidadAux[5]))
+		->where('programa_presupuestario', strval($areaAux[8].$areaAux[9]))
+		->where('subprograma_presupuestario',  strval($areaAux[10].$areaAux[11].$areaAux[12]))
+		->where('proyecto_presupuestario',  strval($areaAux[13].$areaAux[14].$areaAux[15]))
+		->groupByRaw('programacion_presupuesto.fondo_ramo')
+		->where('programacion_presupuesto.ejercicio',$anio)
+		->get();
+		$fond = new \stdClass;
+		$str = '';
+		$arr = [];
+		foreach ($fondos as $key) {
+			$str =$str.' '.$key->fondo;
+			$arr[]=$key->fondo;
+		}
+		$fond->fondoStr=$str;
+		$fond->fondoArr=$arr;
+		return $fond;
+	}
 
 }
