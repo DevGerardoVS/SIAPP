@@ -23,8 +23,8 @@ class MetasExportErrTotal implements FromCollection, ShouldAutoSize, WithHeading
         $this->anio= $anio;
     }
     public function collection()
-    {       
-        
+    {
+        Log::debug($this->anio);
         $check = MetasHelper::validateMesesfinalTotal($this->anio);
         $array = $check["ids"];
 		return collect($array);

@@ -58,6 +58,8 @@ class MetasController extends Controller
 	}
 	public static function getActiv($upp, $anio)
 	{
+		$check = MetasHelper::validateMesesfinalTotal($anio);
+		Log::debug($check);
 		Controller::check_permission('getMetas');
 		$u2p= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('clv_upp', $upp)->where('uppautorizadascpnomina.deleted_at', null)->get();
 		$aut = count($u2p) == 0?true:false;
@@ -780,12 +782,13 @@ class MetasController extends Controller
 
 	public function exportExcelErrTotal($anio)	
 	{
-		/*Si no coloco estas lineas Falla*/
-		ob_end_clean();
+		Log::debug($anio);
+	/* 	ob_end_clean();
 		ob_start();
-		/*Si no coloco estas lineas Falla*/
 
-		return Excel::download(new MetasExportErrTotal($anio), 'Metas con diferencias.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+		return Excel::download(new MetasExportErrTotal($anio), 'Metas con diferencias.xlsx', \Maatwebsite\Excel\Excel::XLSX);  */
+		$check = MetasHelper::validateMesesfinalTotal($anio);
+		Log::debug($check);
 	}
 	public function exportExcelErr($upp, $anio)	
 	{

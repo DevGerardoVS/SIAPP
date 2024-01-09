@@ -765,7 +765,9 @@ class MetasHelper
 	public static function validateMesesfinalTotal($anio)
 	{
 		$metas = MetasHelper::actividadesMesesTotal($anio);
+		Log::debug("METAS".count($metas));
 		$claves = MetasHelper::clavesPpMesesTotal($anio);
+		Log::debug("claves".count($claves));
 		$aux = 0;
 		$ids = [];
 		foreach ($metas as $k) {
