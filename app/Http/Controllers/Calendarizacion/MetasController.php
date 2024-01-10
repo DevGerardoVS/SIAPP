@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MetasExport;
 use App\Exports\MetasExportErr;
+use App\Exports\MetasExportErrTotal;
 use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
 use Auth;
@@ -127,7 +128,7 @@ class MetasController extends Controller
 				$key->cantidad_beneficiarios,
 				$key->beneficiario,
 				$key->unidad_medida,
-				$button
+				$button,		
 			);
 			$dataSet[] = $i;
 		}
@@ -160,8 +161,12 @@ class MetasController extends Controller
 						'proyecto_presupuestario AS  clv_proyecto',
 						'programacion_presupuesto.subsecretaria AS subsec',
 						DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto'),
+						DB::raw('CONCAT(programacion_presupuesto.upp,programacion_presupuesto.subsecretaria,programacion_presupuesto.ur) AS entidad'),
+						DB::raw('CONCAT(programacion_presupuesto.finalidad,programacion_presupuesto.funcion,programacion_presupuesto.subfuncion,programacion_presupuesto.eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programacion_presupuesto.programa_presupuestario,programacion_presupuesto.subprograma_presupuestario,programacion_presupuesto.proyecto_presupuestario) AS area'),
 						'v_epp.con_mir AS mir',
 						'programacion_presupuesto.ejercicio',
+						'programacion_presupuesto.fondo_ramo AS clv_fondo',
+						DB::raw('CONCAT(programacion_presupuesto.fondo_ramo," ") AS fondo'),
 					)
 					->where('programacion_presupuesto.ur', '=', $ur_filter)
 					->where('programacion_presupuesto.upp', '=', $upp)
@@ -170,7 +175,7 @@ class MetasController extends Controller
 					->where('v_epp.presupuestable', '=', 1)
 					->orderBy('programacion_presupuesto.upp')
 					->where('programacion_presupuesto.deleted_at', null)
-					->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
+					->groupByRaw('programacion_presupuesto.ur,finalidad,programacion_presupuesto.funcion,programacion_presupuesto.subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
 					->distinct();
 					if(auth::user()->id_grupo == 4) {
 					$activs = $activs->where('programacion_presupuesto.tipo', '=','Operativo');
@@ -182,7 +187,9 @@ class MetasController extends Controller
 					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($ur_filter) . '"';
 					$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
 					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . "," . $mirx . "," . $key->ejercicio . ")' ></div>";
-					$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $accion];
+					$fondos=MetasHelper::fondos($key->area,$key->entidad,$check['anio']);
+					$existM=MetasController::existMeta($key->area,$key->entidad,$check['anio'],$fondos->fondoArr);
+					$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $accion,$fondos->fondoStr,$existM->exist];
 				}
 			}
 			return response()->json(["dataSet" => $dataSet], 200);
@@ -769,6 +776,18 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return Excel::download(new MetasExport($upp, $anio), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 	}
+	
+
+	public function exportExcelErrTotal($anio)	
+	{
+		Log::debug($anio);
+	/* 	ob_end_clean();
+		ob_start();
+
+		return Excel::download(new MetasExportErrTotal($anio), 'Metas con diferencias.xlsx', \Maatwebsite\Excel\Excel::XLSX);  */
+		$check = MetasHelper::validateMesesfinalTotal($anio);
+		Log::debug($check);
+	}
 	public function exportExcelErr($upp, $anio)	
 	{
 		/*Si no coloco estas lineas Falla*/
@@ -1110,7 +1129,6 @@ class MetasController extends Controller
 			}
 		} catch (\Exception $exp) {
 			Log::debug('exp ' . $exp->getMessage());
-			throw new \Exception($exp->getMessage());
 			return response()->json('error', 200);
 		}
 
@@ -1497,5 +1515,20 @@ class MetasController extends Controller
 			$dataSet[] = $i;
 		}
 		return $dataSet;
+	}
+	public static function existMeta($area, $entidad, $anio, $fondo)
+	{
+		$exMeta = new \stdClass;
+		$status = '';
+		for ($i = 0; $i < count($fondo); $i++) {
+			$query = MetasHelper::existMeta($area, $entidad, $anio,$fondo[$i]);
+			if(count($query)){
+				$status = $status .'<i class="fa fa-check" aria-hidden="true"></i>'.'<br>';
+			}else{
+				$status = $status .'<i class="fa fa-circle-o" aria-hidden="true"></i>' . '<br>';
+			}
+			$exMeta->exist = $status;
+		}
+		return $exMeta;
 	}
 }

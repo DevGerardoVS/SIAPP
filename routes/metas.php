@@ -36,6 +36,7 @@
 		Route::get('/actividades/anios-metas', 'getAnios');
 		Route::get('/actividades/meses-activos/{mir?}/{fondo?}', 'getMeses');
 		Route::get('/actividades/meses/error/{upp?}/{anio?}', 'exportExcelErr')->name('exportError');
+		Route::get('/prueba-total/{anio?}', 'exportExcelErrTotal');
 		Route::get('/carga-masiva/manual-usuario', 'getManual')->name('Manual_Carga_Masiva_metas');
 		Route::get('/actividades/metas/actividades-mir/{area?}/{enti?}/{fondo?}', 'getActividMir');
 
