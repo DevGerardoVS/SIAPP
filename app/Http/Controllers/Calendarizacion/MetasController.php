@@ -58,8 +58,6 @@ class MetasController extends Controller
 	}
 	public static function getActiv($upp, $anio)
 	{
-		$check = MetasHelper::validateMesesfinalTotal($anio);
-		Log::debug($check);
 		Controller::check_permission('getMetas');
 		$u2p= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('clv_upp', $upp)->where('uppautorizadascpnomina.deleted_at', null)->get();
 		$aut = count($u2p) == 0?true:false;

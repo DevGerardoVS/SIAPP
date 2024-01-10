@@ -755,7 +755,7 @@ class MetasHelper
 			)
 			->where('ejercicio', $anio)
 			->where('programacion_presupuesto.deleted_at', null)
-			->groupByRaw('programacion_presupuesto.ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario');
+			->groupByRaw('fondo_ramo,upp,ur,finalidad,funcion,subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario');
 			if (Auth::user()->id_grupo == 5) {
 			$meses = $meses->where('programacion_presupuesto.tipo', 'RH');
 			}
