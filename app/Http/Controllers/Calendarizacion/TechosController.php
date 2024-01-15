@@ -399,7 +399,7 @@ class TechosController extends Controller
                 ->where('ejercicio','=',$data[0]->ejercicio)
                 ->where('deleted_at','=',null)
                 ->get();
-                log::debug(count($claves_deleted));
+                
                 if(count($claves_deleted) != 0){ 
                     if($request->presupuesto <= $claves_deleted[0]->total){
                         $result = $this->saveEdit($data,$request);
