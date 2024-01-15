@@ -518,7 +518,7 @@ function getEdita(i){
          '</td>\n' +
          '</tr>'); */
          
-        }).fail(function (error) {
+    }).fail(function (error) {
             let arr = Object.keys(error.responseJSON.errors)
             arr.forEach(function (item) {
             $("#frm_create_techo").find("#"+item).addClass('is-invalid');
@@ -589,6 +589,12 @@ function editarRegistro(){
             if(response.status == 200){
                 Swal.fire({
                     icon: 'success',
+                    title: response.mensaje,
+                    showConfirmButton: true
+                });
+            }else if(response.status == 400){
+                Swal.fire({
+                    icon: 'error',
                     title: response.mensaje,
                     showConfirmButton: true
                 });

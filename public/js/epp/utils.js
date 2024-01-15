@@ -45,10 +45,13 @@ function actualizarListaUPP(ejercicio){
     let ruta = "get-upp/"+ejercicio;
     let cantidadOpt = select.options.length;
 
-    for(i = cantidadOpt; i > 1; i--){
+    for(i = cantidadOpt; i > 0; i--){
         select.remove(i);
     }
-    
+
+    let selectUR = document.getElementById("filters_ur");
+    selectUR.options.length = 1;
+
     $.ajax({
         url: ruta,
         data: {anio: ejercicio},
@@ -71,7 +74,11 @@ function actualizarListaUPP(ejercicio){
 function actualizarListaUR(clv_upp,ruta){
     let select = document.getElementById("filters_ur");
     let ejercicio = document.getElementById("filters_anio");
-    select.options.length = 1;
+    let cantidadOpt = select.options.length;
+
+    for(i = cantidadOpt; i > 0; i--){
+        select.remove(i);
+    }
     
     $.ajax({
         url: "get-ur",

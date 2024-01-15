@@ -74,6 +74,8 @@
                                                 <th class="vertical colorMorado sorting">SubProgramas</th>
                                                 <th class="vertical colorMorado sorting">Proyecto</th>
                                                 <th class="vertical" style="background-color:#afafaf;">Selección </th>
+                                                <th class="vertical colorMorado sorting">Fondo(s)</th>
+                                                <th class="vertical colorMorado sorting">Metas</th>
                                             </tr>
                                         </thead>
                                         <tbody id="bodyclaves"></tbody>
