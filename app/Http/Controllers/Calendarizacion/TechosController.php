@@ -391,11 +391,11 @@ class TechosController extends Controller
                 $result = $this->saveEdit($data,$request);
 
                 //DESCONFIRMAR metas
-                $resultDesconfirmacion = $this->desconfirmar($data);
+               // $resultDesconfirmacion = $this->desconfirmar($data);
 
                 return [
-                    'status' => $resultDesconfirmacion['status'],
-                    'mensaje' => $resultDesconfirmacion['mensaje']
+                    'status' => $result['status'],
+                    'mensaje' => $result['mensaje']
                 ];
                 
             }else{
