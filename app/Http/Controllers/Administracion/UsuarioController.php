@@ -446,6 +446,7 @@ class UsuarioController extends Controller
         )
         ->where('deleted_at', '=', null)
         ->where('id', '!=', 2)
+        ->where('id', '!=', 6)
             ->get();
         return response()->json($perfil, 200);
     }
