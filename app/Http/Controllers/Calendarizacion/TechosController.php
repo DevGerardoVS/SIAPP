@@ -298,7 +298,7 @@ class TechosController extends Controller
                     DB::commit();
                     return [
                         'status' => 200,
-                        'mensaje' => "Se guardó correctamente y las UPP correspondientes en las Claves Presupuestarias se desconfirmaron"
+                        'mensaje' => "Se guardó correctamente, las UPP correspondientes en las Claves Presupuestarias se desconfirmaron"
                     ];
                 }
                 return [
@@ -390,9 +390,6 @@ class TechosController extends Controller
             if($request->presupuesto > $data[0]->presupuesto){
                 $result = $this->saveEdit($data,$request);
 
-                //DESCONFIRMAR metas
-               // $resultDesconfirmacion = $this->desconfirmar($data);
-
                 return [
                     'status' => $result['status'],
                     'mensaje' => $result['mensaje']
@@ -437,67 +434,6 @@ class TechosController extends Controller
             return [
                 'status' => 400,
                 'error' => $e
-            ];
-        }
-    }
-
-    private function desconfirmar($data){
-        //se busca el registro en claves para saber el estado CONFIRMADO
-        $confirmadoClave = DB::table('programacion_presupuesto')
-        ->select('estado')
-        ->where('upp','=',$data[0]->clv_upp)
-        ->where('ejercicio','=',$data[0]->ejercicio)
-        ->where('deleted_at','=',null)
-        ->limit(1)
-        ->get();
-
-        $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp, $data[0]->ejercicio);
-
-        if(count($confirmadoClave) == 0){ //si no esta asignado a una clave presupuestaria se EDITA normalmente
-            DB::beginTransaction();
-            if(count($confirmacionMeta) != 0){
-                foreach($confirmacionMeta as $cm){ 
-                        DB::table('metas')
-                        ->where('id','=',$cm->id)
-                        ->update(['estatus' => 0]);
-                }
-            }
-            DB::commit();
-
-            $b = array(
-                "username"=>Auth::user()->username,
-                "accion"=> 'Editar',
-                "modulo"=>'Techos Financieros'
-            );
-            
-            Controller::bitacora($b);
-
-            return [
-                'status' => 200,
-                'mensaje' => "Se guardó correctamente"
-            ];
-        }else{
-            DB::beginTransaction();
-            
-            DB::table('programacion_presupuesto')
-            ->where('upp','=',$data[0]->clv_upp)
-            ->where('ejercicio','=',$data[0]->ejercicio)
-            ->update(['estado' => 0]);
-
-            if(count($confirmacionMeta) != 0){
-                foreach($confirmacionMeta as $cm){
-                    if($data[0]->ejercicio == $cm->ejercicio){
-                        DB::table('metas')
-                        ->where('id','=',$cm->id)
-                        ->update(['estatus' => 0]);
-                    }
-                }
-            }
-            
-            DB::commit();
-            return [
-                'status' => 200,
-                'mensaje' => "Se guardó correctamente y las UPP correspondientes en las Claves Presupuestarias se desconfirmaron"
             ];
         }
     }
