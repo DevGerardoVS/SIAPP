@@ -8704,9 +8704,9 @@ DB::unprepared("INSERT INTO `catalogo_hist` (`id`, `id_original`, `grupo_id`, `e
          ");
          /*  UPDATE PARA LOS REGISTROS CON MIR Y SIN MIR  EPP*/
      DB::unprepared("UPDATE epp SET con_mir = 1;
-     UPDATE epp SET con_mir = 0  WHERE subprograma_id=1060;
-     UPDATE epp SET con_mir = 0  WHERE programa_id = 929;
-     UPDATE epp SET con_mir = 0  WHERE programa_id =931;");
+     UPDATE epp SET con_mir = 0  WHERE subprograma_id=3559;
+     UPDATE epp SET con_mir = 0  WHERE programa_id = 3063;
+     UPDATE epp SET con_mir = 0  WHERE programa_id =3101;");
  
  DB::unprepared("INSERT INTO cierre_ejercicio_claves (id,clv_upp,estatus,ejercicio,capturista,created_at,created_user,updated_at,updated_user,deleted_at,deleted_user,activos) VALUES
 	 (1,'001','Cerrado',2023,NULL,'2023-09-22 12:36:04.0','SISTEMA','2023-09-22 12:36:04.0',NULL,NULL,NULL,1),
@@ -25432,7 +25432,8 @@ DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etap
         (825,381,'Vivienda',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
         (826,809,'Viviendas rociadas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
         (827,382,'Volante',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-        (828,566,'Vuelo',2023,NULL,NOW(),NOW(),null,null,'SEEDER');
+        (828,566,'Vuelo',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+        (829,567,'Pago de nómina',2023,NULL,NOW(),NOW(),null,null,'SEEDER');
         ");
 
         DB::unprepared("INSERT INTO uppautorizadascpnomina values

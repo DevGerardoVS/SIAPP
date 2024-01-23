@@ -36,6 +36,7 @@
 		Route::get('/actividades/anios-metas', 'getAnios');
 		Route::get('/actividades/meses-activos/{mir?}/{fondo?}', 'getMeses');
 		Route::get('/actividades/meses/error/{upp?}/{anio?}', 'exportExcelErr')->name('exportError');
+		Route::get('/prueba-total/{anio?}', 'exportExcelErrTotal');
 		Route::get('/carga-masiva/manual-usuario', 'getManual')->name('Manual_Carga_Masiva_metas');
 		Route::get('/actividades/metas/actividades-mir/{area?}/{enti?}/{fondo?}', 'getActividMir');
 
@@ -48,9 +49,10 @@
 		Route::get('/calendarizacion/proyecto/metas-delegacion', 'getProyecto')->name('proyecto');
 		Route::get('/actividades/data/metas-delegacion/{upp?}/{anio?}', 'getActivDelegacion');
 		Route::post('/calendarizacion/put/metas-delegacion', 'putMeta');
-		Route::get('/actividades/flag-confirmar-metas/{upp?}/{anio?}', 'cmetas');
-		Route::get('/actividades/confirmar-metas/delegacion/{upp?}/{anio?}', 'confirmar');
-		Route::get('/actividades/check-metas/delegacion/{upp?}/{anio?}', 'checkConfirmadas');
+		Route::get('/actividades/flag-confirmar-metas/{anio?}', 'cmetasdel');
+		Route::get('/actividades/confirmar-metas/delegacion/{anio?}', 'confirmardel');
+		Route::get('/actividades/check-metas/delegacion/{anio?}', 'checkConfirmadas');
+		Route::get('/calendarizacion/upps-delegacion', 'getUpps');
 
 
 	});

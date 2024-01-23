@@ -6,8 +6,10 @@
         <input id='upp' type="text" style="display: none" value="{{ Auth::user()->clv_upp }}">
         <input id='area' type="text" style="display: none">
         <input id='conmir' type="text" style="display: none">
+        <input id='nomir' type="text" style="display: none">
         <input id='calendar' type="text" style="display: none">
         <input id='activiMir' type="text" style="display: none">
+        <input id='tipoAct' type="text" style="display: none">
             <div class="row">
                         <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
                             <h2>Agregar Actividad</h2>
@@ -72,6 +74,8 @@
                                                 <th class="vertical colorMorado sorting">SubProgramas</th>
                                                 <th class="vertical colorMorado sorting">Proyecto</th>
                                                 <th class="vertical" style="background-color:#afafaf;">Selección </th>
+                                                <th class="vertical colorMorado sorting">Fondo(s)</th>
+                                                <th class="vertical colorMorado sorting">Metas</th>
                                             </tr>
                                         </thead>
                                         <tbody id="bodyclaves"></tbody>
@@ -104,6 +108,7 @@
     </div>
     <script src="/js/calendarizacion/metas/init.js"></script>
     <script src="/js/utilerias.js"></script>
+    
     <script>
         init.validateFile($('#formFile'));
         init.validateCont($('#formContinua'));

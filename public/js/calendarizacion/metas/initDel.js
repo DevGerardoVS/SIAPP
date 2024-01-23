@@ -5,7 +5,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: '/calendarizacion/upps/',
-            dataType: "JSON"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             const { upp } = data;
             var par = $('#upp_filter');
@@ -20,19 +21,19 @@ var dao = {
         });
     },
     getAniosM: function () {
-
         $.ajax({
             type: "GET",
-            url: '/actividades/anios-metas/',
-            dataType: "JSON"
+            url: '/actividades/anios-metas',
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             var par = $('#anio_filter');
             par.html('');
-            if (data.length >= 1) {
-                $.each(data, function (i, val) {
+            if (data.anios.length >= 1) {
+                $.each(data.anios, function (i, val) {
                     par.append(new Option(val.ejercicio, val.ejercicio, true, false));
                 });
-            }else {
+            } else {
                 var  d = new  Date();
                 var n = d.getFullYear();
                 var nn = n + 1;
@@ -46,7 +47,8 @@ var dao = {
 		$.ajax({
 			type : "GET",
 			url : "/actividades/data/metas-delegacion/"+upp+"/"+anio,
-			dataType : "json"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (_data) {
 			_table = $("#proyectoM");
 			_columns = [
@@ -74,7 +76,8 @@ var dao = {
             _height = '1px';
             _pagination = 15;
 			_gen.setTableScrollFotter(_table, _columns, _data);
-		});
+        });
+        
     },
 
     getPlantillaCmUpp: function () {
@@ -138,7 +141,8 @@ var dao = {
         $.ajax({
             type: "GET",
             url: "/calendarizacion/update/" + id,
-            dataType : "json"
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             $("#tipo_Ac").append(new Option('Acumulativa', 'Acumulativa'));
             $('#proyectoMD').empty();
@@ -210,15 +214,11 @@ var dao = {
         for (let i = 1; i <=12; i++) {
             $("#" + i).prop('disabled', true); 
         }
+        $("#addActividad").modal('hide');
     },
     editarPutMeta: function () {
         var form = $('#actividad')[0];
         var data = new FormData(form);
-     /*    for (let i = 0; i <= 11; i++) {  
-            data.append(i, 2);
-        }
-        data.append(12, 3);
-        data.append('sumMetas', 25); */
         $.ajax({
             type: "POST",
             url: '/calendarizacion/put/metas-delegacion',
@@ -245,34 +245,26 @@ var dao = {
             }
         });
     },
-    rCMetasUpp: function (upp,anio) {
+    rCMetasUpp: function (anio) {
         $.ajax({
             type: "GET",
-            url: '/actividades/flag-confirmar-metas/'+upp+"/"+anio,
+            url: '/actividades/flag-confirmar-metas/'+anio,
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             console.log(data);
-            if (data.status) {
-                dao.checkCMetasUpp(upp,anio);
-            } else {
+            if (!data.status) {
                 $(".confirmacion").hide();
-              /*   $('#validMetas').addClass(" alert alert-danger").addClass("text-center"); */
-            /*     $('#validMetas').text("").removeClass().removeClass(" alert alert-danger");
-                $(".cmupp").hide(); */
-            }
-            
-
+            } 
         });
     },
-    checkCMetasUpp: function (upp,anio) {
+    checkCMetasUpp: function (anio) {
         $.ajax({
             type: "GET",
-            url: '/actividades/check-metas/delegacion/'+upp+"/"+anio,
+            url: '/actividades/check-metas/delegacion/'+anio,
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
-            console.log(data);
             if (data.status) {
                  $(".cmupp").show();
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
@@ -283,6 +275,8 @@ var dao = {
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                  $('#validMetas').text("").removeClass().removeClass(" alert alert-danger");
                 $(".cmupp").hide();
+                dao.rCMetasUpp(anio);
+
             }
             
 
@@ -303,7 +297,7 @@ var dao = {
             if (result.isConfirmed) {
                 $.ajax({
                     type: "GET",
-                    url: '/actividades/confirmar-metas/delegacion/'+upp+"/"+anio,
+                    url: '/actividades/confirmar-metas/delegacion/'+anio,
                     dataType: "JSON",
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
                 }).done(function (data) {
@@ -315,7 +309,7 @@ var dao = {
                         footer: mensaje?.footer,
                     });
                     dao.getData(upp, anio);
-                    dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
+                    dao.checkCMetasUpp($('#anio_filter').val());
                 });
             } /* else if (result.isDenied) {
               Swal.fire('Changes are not saved', '', 'info')
@@ -362,7 +356,6 @@ $(document).ready(function () {
     });
     dao.getUpps();
     dao.getAniosM();
-    dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
@@ -374,12 +367,11 @@ $(document).ready(function () {
 
     $('#upp_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
-        dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
 
     });
     $('#anio_filter').change(() => {
         dao.getData($('#upp_filter').val(), $('#anio_filter').val());
-        dao.rCMetasUpp($('#upp_filter').val(), $('#anio_filter').val());
+        dao.checkCMetasUpp($('#anio_filter').val());
 
     });
     $('#btnSave').click(function (e) {
@@ -388,4 +380,18 @@ $(document).ready(function () {
                 dao.editarPutMeta();
             }
     });
+    let i = 0;
+    if (window.location.pathname == '/calendarizacion/proyecto/metas-delegacion') {
+        function mousemove(event) {
+            if (i <= 1) {
+                console.log("confirmar");
+             dao.checkCMetasUpp($('#anio_filter').val())
+                i++;
+           }
+          }
+          
+          window.addEventListener('mousemove', mousemove);
+     
+    }
+  
 });

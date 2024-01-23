@@ -53,6 +53,9 @@ Route::controller(UsuarioController::class)->group(function () {
 		Route::post('/amd-configuracion/upps-auto', 'GetUppsAuto')->name('getUppsAuto');
 		Route::post('/amd-configuracion/data-auto', 'GetAutorizadas')->name('uppsAutorizadas');
 		Route::post('/amd-configuracion/update-auto', 'updateAutoUpps')->name('updateAutoUpps');
+		// Rutas de descarga archivos de carga
+			Route::get('/archivos-carga/{id?}', 'getArchivosDeCarga2024');
+		// Fin de rutas archivos de carga
 	});
 
 	Route::controller(GrupoController::class)->group(function () {
@@ -100,8 +103,9 @@ Route::controller(UsuarioController::class)->group(function () {
     	Route::post('/Reportes/analisis-informativo-mml/mir', 'getMIR')->name('get_mir'); // Ruta mir
     	Route::post('/Reportes/analisis-informativo-mml/proyecto-presupuestal', 'getProyectoPresupuestal')->name('get_proyecto_presupuestal'); // Ruta proyecto presupuestal
 
+		Route::post('/Reportes/administrativos/data-upp/{ejercicio?}','getUPPAdministrativo')->name('get_upp_administrativo'); // Obtener UPP de acuerdo al usuario en los reportes administrativos
 		Route::post('/Reportes/data-fecha-corte/{ejercicio?}','getFechaCorte')->name('get_fecha_corte'); // Obtener fecha de acuerdo al año
-		Route::post('/Reportes/analisis-informativo-mml/data-upp/{ejercicio?}','getUPP')->name('get_UPP'); // Obtener UPP de acuerdo a la UPP
+		Route::post('/Reportes/analisis-informativo-mml/data-upp/{ejercicio?}','getUPP')->name('get_upp'); // Obtener UPP de acuerdo al ejercicio
 		Route::post('/Reportes/analisis-informativo-mml/data-programa/{clv_upp?}','getPrograma')->name('get_programa'); // Obtener programa de acuerdo a la UPP
 		Route::post('/Reportes/download/{nombre}', 'downloadReport')->name('downloadReport'); // Descargar reportes
 	});

@@ -19,7 +19,7 @@
                     <label for="estatus_filter" class="form-label fw-bold">UPP:</label>
                 </div>
                 <div class="col-sm-12 col-md-3 col-lg-2">
-                    <select onchange="actualizarTabla(true)" class="form-control filters filters_upp" id="filters_upp" name="estatus_filter" autocomplete="upp_filter">
+                    <select onchange="actualizarTabla(true,false)" class="form-control filters filters_upp" id="filters_upp" name="estatus_filter" autocomplete="upp_filter">
                         <option value="000">Todos</option>
                         @foreach ($listaUpp as $upp)
                             <option value={{$upp->clv_upp}}>{{$upp->clv_upp}} - {{$upp->upp}}</option>
@@ -31,7 +31,7 @@
                     <label for="estatus_filter" class="form-label fw-bold">UR:</label>
                 </div>
                 <div class="col-sm-12 col-md-3 col-lg-2">
-                    <select onchange="actualizarTabla(false)" class="form-control filters filters_ur" id="filters_ur" name="estatus_filter" autocomplete="ur_filter">
+                    <select onchange="actualizarTabla(false,false)" class="form-control filters filters_ur" id="filters_ur" name="estatus_filter" autocomplete="ur_filter">
                         <option value="00">Todos</option>
                     </select>
                 </div>
@@ -44,7 +44,7 @@
             <div class="col-md-10 col-sm-12 d-md-flex">
         @endif
                 <div class="col-sm-12 col-md-3 col-lg-2">
-                    <select onchange="actualizarTabla(true)" class="form-control filters filters_anio" id="filters_anio" name="estatus_filter" autocomplete="upp_filter">
+                    <select onchange="actualizarTabla(false,true)" class="form-control filters filters_anio" id="filters_anio" name="estatus_filter" autocomplete="upp_filter">
                         <?php $i = 0; $len = count($anios); ?>
                         @foreach ($anios as $anio)
                             <option value={{$anio->ejercicio}} <?php $i++; if($i == 1){echo("selected");} ?>>{{$anio->ejercicio}}</option>

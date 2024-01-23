@@ -45,6 +45,7 @@ class LoginController extends Controller
 
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             if (Auth::user()->estatus == 1) {Session::put('last_activity',Carbon::now());
+                Session::put('cargaMasClav',3);
                 return redirect('/');} else {
                 Auth::logout();
                 return back()->withErrors('Este usuario ha sido deshabilitado');

@@ -19,9 +19,7 @@ class LogController extends Controller
                 $file = pathinfo($path);
                 array_push($logList, $file);
             }
-            
-            // Log::debug($logList);
-            
+                        
         
             return view($auxRoute)->with(["logs" => $logList]);
         } catch (\Exception $e) {
@@ -37,7 +35,6 @@ class LogController extends Controller
     }
 
     public function downloadLogs(Request $request){
-        //Log::debug($request->selected);
         $file = $request->selected;
 
         try{//-----------------------------
