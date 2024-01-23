@@ -246,6 +246,7 @@ class TechosController extends Controller
                 $confirmadoClave = DB::table('programacion_presupuesto')
                 ->select('estado')
                 ->where('upp','=',$data[0]->clv_upp)
+                ->where('fondo_ramo','=',$data[0]->clv_fondo)
                 ->where('ejercicio','=',$data[0]->ejercicio)
                 ->where('deleted_at','=',null)
                 ->limit(1)
@@ -297,7 +298,7 @@ class TechosController extends Controller
                     DB::commit();
                     return [
                         'status' => 200,
-                        'mensaje' => "Se guardó correctamente y las UPP correspondientes en las Claves Presupuestarias se desconfirmaron"
+                        'mensaje' => "Se guardó correctamente, las UPP correspondientes en las Claves Presupuestarias se desconfirmaron"
                     ];
                 }
                 return [
@@ -377,24 +378,21 @@ class TechosController extends Controller
     }
 
     public function editar(Request $request){
-        log::debug($request);
+        
         Controller::check_permission('putTechos');
         try{
             ///buscamos el registro en los techos para despues filtrarlo 
             $data = DB::table('techos_financieros')
-            ->select('clv_upp','clv_fondo','ejercicio','presupuesto')
+            ->select('clv_upp','clv_fondo','ejercicio','presupuesto','tipo')
             ->where('id','=',$request->id)
             ->get();
             
             if($request->presupuesto > $data[0]->presupuesto){
                 $result = $this->saveEdit($data,$request);
 
-                //DESCONFIRMAR metas
-                $resultDesconfirmacion = $this->desconfirmar($data);
-
                 return [
-                    'status' => $resultDesconfirmacion['status'],
-                    'mensaje' => $resultDesconfirmacion['mensaje']
+                    'status' => $result['status'],
+                    'mensaje' => $result['mensaje']
                 ];
                 
             }else{
@@ -405,9 +403,10 @@ class TechosController extends Controller
                 ->where('upp','=',$data[0]->clv_upp)
                 ->where('fondo_ramo','=',$data[0]->clv_fondo)
                 ->where('ejercicio','=',$data[0]->ejercicio)
+                ->where('tipo','=',$data[0]->tipo)
                 ->where('deleted_at','=',null)
                 ->get();
-                log::debug($claves_deleted);
+
                 if(count($claves_deleted) != 0){ 
                     if($request->presupuesto >= $claves_deleted[0]->total){
                         $result = $this->saveEdit($data,$request);
@@ -439,72 +438,13 @@ class TechosController extends Controller
         }
     }
 
-    private function desconfirmar($data){
-        //se busca el registro en claves para saber el estado CONFIRMADO
-        $confirmadoClave = DB::table('programacion_presupuesto')
-        ->select('estado')
-        ->where('upp','=',$data[0]->clv_upp)
-        ->where('ejercicio','=',$data[0]->ejercicio)
-        ->where('deleted_at','=',null)
-        ->limit(1)
-        ->get();
-
-        $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp, $data[0]->ejercicio);
-
-        if(count($confirmadoClave) == 0){ //si no esta asignado a una clave presupuestaria se EDITA normalmente
-            DB::beginTransaction();
-            if(count($confirmacionMeta) != 0){
-                foreach($confirmacionMeta as $cm){ 
-                        DB::table('metas')
-                        ->where('id','=',$cm->id)
-                        ->update(['estatus' => 0]);
-                }
-            }
-            DB::commit();
-
-            $b = array(
-                "username"=>Auth::user()->username,
-                "accion"=> 'Editar',
-                "modulo"=>'Techos Financieros'
-            );
-            
-            Controller::bitacora($b);
-
-            return [
-                'status' => 200,
-                'mensaje' => "Se guardó correctamente"
-            ];
-        }else{
-            DB::beginTransaction();
-            
-            DB::table('programacion_presupuesto')
-            ->where('upp','=',$data[0]->clv_upp)
-            ->where('ejercicio','=',$data[0]->ejercicio)
-            ->update(['estado' => 0]);
-
-            if(count($confirmacionMeta) != 0){
-                foreach($confirmacionMeta as $cm){
-                    if($data[0]->ejercicio == $cm->ejercicio){
-                        DB::table('metas')
-                        ->where('id','=',$cm->id)
-                        ->update(['estatus' => 0]);
-                    }
-                }
-            }
-            
-            DB::commit();
-            return [
-                'status' => 200,
-                'mensaje' => "Se guardó correctamente y las UPP correspondientes en las Claves Presupuestarias se desconfirmaron"
-            ];
-        }
-    }
-
     private function saveEdit($data, $request){
         $confirmadoClave = DB::table('programacion_presupuesto')
                 ->select('estado')
                 ->where('upp','=',$data[0]->clv_upp)
+                ->where('fondo_ramo','=',$data[0]->clv_fondo)
                 ->where('ejercicio','=',$data[0]->ejercicio)
+                ->where('tipo','=',$data[0]->tipo)
                 ->where('deleted_at','=',null)
                 ->limit(1)
                 ->get();
@@ -517,6 +457,12 @@ class TechosController extends Controller
                     DB::table('techos_financieros')
                     ->where('id','=',$request->id)
                     ->update(['presupuesto' => $request->presupuesto,'updated_user' =>Auth::user()->username ]);
+
+                    DB::table('programacion_presupuesto')
+                    ->where('upp','=',$data[0]->clv_upp)
+                    ->where('ejercicio','=',$data[0]->ejercicio)
+                    ->where('tipo','=',$data[0]->tipo)
+                    ->update(['estado' => 0]);
 
                     if(count($confirmacionMeta) != 0){
                         foreach($confirmacionMeta as $cm){ 
@@ -549,6 +495,7 @@ class TechosController extends Controller
                     DB::table('programacion_presupuesto')
                     ->where('upp','=',$data[0]->clv_upp)
                     ->where('ejercicio','=',$data[0]->ejercicio)
+                    ->where('tipo','=',$data[0]->tipo)
                     ->update(['estado' => 0]);
 
                     if(count($confirmacionMeta) != 0){
