@@ -1326,7 +1326,7 @@ return new class extends Migration
             $table->string('centro_gestor',16);
             $table->string('clasificacion_administrativa',5);
             $table->string('proyecto_obra',6);
-            $table->decimal('original_sap',22,2);
+            $table->decimal('original_sapp',22,2);
             $table->decimal('ampliacion',22,2);
             $table->decimal('reduccion',22,2);
             $table->decimal('traspaso',22,2);
