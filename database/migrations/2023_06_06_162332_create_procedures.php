@@ -3777,6 +3777,23 @@ return new class extends Migration {
             from v_epp ve
             where ejercicio = @anio
             and presupuestable = 1;
+
+            insert into sapp_cierre_ejercicio(
+                clv_upp,enero,febrero,marzo,trimestre_uno,abril,mayo,junio,trimestre_dos,
+                julio,agosto,septiembre,trimestre_tres,octubre,noviembre,diciembre,trimestre_cuatro,
+                ejercicio,created_at,updated_at,deleted_at,created_user,updated_user,deleted_user,id_usuario
+            )
+            select 
+                clave clv_upp,
+                0 enero,0 febrero,0 marzo,0 trimestre_uno,
+                0 abril,0 mayo,0 junio,0 trimestre_dos,
+                0 julio,0 agosto,0 septiembre,0 trimestre_tres,
+                0 octubre,0 noviembre,0 diciembre,0 trimestre_cuatro,
+                @anio,now(),now(),null,'SISTEMA',null,null,0
+            from catalogo 
+            where ejercicio = @anio and 
+            deleted_at is null and grupo_id = 6
+            order by clv_upp;
         END");
 
         DB::unprepared("CREATE PROCEDURE llenado_nuevo_anio(in anio int,in usuario varchar(45))
