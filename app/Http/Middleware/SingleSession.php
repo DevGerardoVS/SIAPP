@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use App\Models\carga_masiva_estatus;
+use App\Models\notificaciones;
 use Illuminate\Support\Facades\Redirect;
 class SingleSession
 {
@@ -30,25 +30,25 @@ class SingleSession
             $userId = auth()->user()->id;
     
             // Continue with your middleware logic here
-            $data = \DB::table('carga_masiva_estatus')
+            $data = \DB::table('notificaciones')
             ->select('*')
          
             ->where('id_usuario','=',$userId)
             ->first();
            
            
-            if(isset($data->cargaMasClav)){
+            if(isset($data->status)){
                 // Log::debug('si entro');
-                Session::put('cargapayload', $data->cargapayload);
-                Session::put('cargaMasClav',$data->cargaMasClav);
-                session(['cargapayload' => $data->cargapayload]);
-                session(['cargaMasClav' => $data->cargaMasClav]);
+                Session::put('payload', $data->payload);
+                Session::put('status',$data->status);
+                session(['payload' => $data->payload]);
+                session(['status' => $data->status]);
             }
             else{
-                Session::put('cargapayload','');
-                Session::put('cargaMasClav',3);
-                session(['cargapayload' =>'']);
-                session(['cargaMasClav' => 3]);
+                Session::put('payload','');
+                Session::put('status',3);
+                session(['payload' =>'']);
+                session(['status' => 3]);
             }
             
          

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Calendarizacion;
 
 use App\Exports\ImportErrorsExport;
 use App\Http\Controllers\Controller;
-use App\Models\carga_masiva_estatus;
+use App\Models\notificaciones;
 use App\Jobs\ValidacionesCargaMasivaClaves;
 use Illuminate\Http\Request;
 
@@ -43,8 +43,8 @@ class CalendarizacionCargaMasivaController extends Controller
        
         $fails=0;
      
-        if (session()->has('cargapayload')) {
-            $fails = json_decode(session::get('cargapayload'));
+        if (session()->has('payload')) {
+            $fails = json_decode(session::get('payload'));
 
         }
         $b = array(
@@ -53,17 +53,17 @@ class CalendarizacionCargaMasivaController extends Controller
             "modulo" => 'Errores carga masiva'
         );
         // session::flush();
-        $fr=session::pull('cargaMasClav');
-    session()->forget(['cargapayload']);
+        $fr=session::pull('status');
+    session()->forget(['payload']);
      
-    Session::put('cargaMasClav',3);
+    Session::put('status',3);
 
 
         Controller::bitacora($b);
         /*Si no coloco estas lineas Falla*/
         ob_end_clean();
         ob_start();
-        $deleted = carga_masiva_estatus::where('id_usuario','=',Auth::user()->id)->forceDelete();
+        $deleted = notificaciones::where('id_usuario','=',Auth::user()->id)->forceDelete();
 
         return Excel::download(new ImportErrorsExport($fails), 'Errores.xlsx');
     }
@@ -155,7 +155,7 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
           $filearray = array_map('self::nestedtrim', $filearray);
-         $tienecargapen=carga_masiva_estatus::where('id_usuario',$user->id)->first();
+         $tienecargapen=notificaciones::where('id_usuario',$user->id)->first();
 
 
         if($tienecargapen){
@@ -163,10 +163,11 @@ class CalendarizacionCargaMasivaController extends Controller
 
         }else{
             ValidacionesCargaMasivaClaves::dispatch($filearray,$user,$tipocarga)->onQueue('high');
-            Session::put('cargaMasClav',0);
-            carga_masiva_estatus::create([
+            Session::put('status',0);
+            notificaciones::create([
                 'id_usuario' => $user->id,
-                'cargaMasClav' => 0,
+                'id_sistema' => 1,
+                'status' => 0,
                 'created_user' => $user->username
             ]);
             return redirect()->back();

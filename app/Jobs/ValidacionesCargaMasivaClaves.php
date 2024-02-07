@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\carga_masiva_estatus;
+use App\Models\notificaciones;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -383,10 +383,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                 json_encode($arrayErrores);
                 $payload = json_encode($arrayErrores);
-                carga_masiva_estatus::where('id_usuario', $usuario->id)
+                notificaciones::where('id_usuario', $usuario->id)
                     ->update([
-                        'cargapayload' => $payload,
-                        'cargaMasClav' => 2,
+                        'payload' => $payload,
+                        'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
 
@@ -404,10 +404,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             $error = array();
             array_push($error, ' $ $Ocurrio un error interno contacte a soporte.');
             json_encode($error);
-            carga_masiva_estatus::where('id_usuario', $usuario->id)
+            notificaciones::where('id_usuario', $usuario->id)
                 ->update([
-                    'cargapayload' => $error,
-                    'cargaMasClav' => 2,
+                    'payload' => $error,
+                    'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
         }

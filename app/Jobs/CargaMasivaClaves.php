@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\carga_masiva_estatus;
+use App\Models\notificaciones;
 use Illuminate\Bus\Queueable;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -133,10 +133,10 @@ class CargaMasivaClaves implements ShouldQueue
                     }
                 }
                 $payload = json_encode($storeP_array);
-                carga_masiva_estatus::where('id_usuario', $usuario->id)
+                notificaciones::where('id_usuario', $usuario->id)
                     ->update([
-                        'cargapayload' => $payload,
-                        'cargaMasClav' => 2,
+                        'payload' => $payload,
+                        'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
             } else {
@@ -144,10 +144,10 @@ class CargaMasivaClaves implements ShouldQueue
                 array_push($array_exito, 'Carga masiva exitosa');
                 $payload = json_encode($array_exito);
 
-                carga_masiva_estatus::where('id_usuario', $usuario->id)
+                notificaciones::where('id_usuario', $usuario->id)
                     ->update([
-                        'cargapayload' => $payload,
-                        'cargaMasClav' => 1,
+                        'payload' => $payload,
+                        'status' => 1,
                         'updated_user' => $usuario->username
                     ]);
             }
@@ -168,10 +168,10 @@ class CargaMasivaClaves implements ShouldQueue
             array_push($arrayErrores, ' $ $Ocurrio un error interno contacte a soporte.');
             $payload = json_encode($arrayfail);
             \Log::debug($e);
-            carga_masiva_estatus::where('id_usuario', $usuario->id)
+            notificaciones::where('id_usuario', $usuario->id)
                 ->update([
-                    'cargapayload' => $arrayfail,
-                    'cargaMasClav' => 2,
+                    'payload' => $arrayfail,
+                    'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
 
