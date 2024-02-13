@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('carga_masiva_estatus', function (Blueprint $table) {
+        Schema::create('notificaciones', function (Blueprint $table) {
             $table->id();
             $table->Integer('id_usuario')->nullable(true);
-            $table->json('cargapayload')->nullable(true);
-            $table->tinyInteger('cargaMasClav')->nullable(false)->default(0);
+            $table->Integer('id_sistema')->nullable(true);
+            $table->json('payload')->nullable(true);
+            $table->tinyInteger('status')->nullable(false)->default(0);
             $table->string('created_user',45)->nullable(true);
             $table->string('updated_user',45)->nullable(true);
             $table->string('deleted_user',45)->nullable(true);
@@ -33,6 +34,7 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('notificaciones');
+
     }
 };

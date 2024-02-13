@@ -88,4 +88,24 @@ function existMetas()
         return false;
     }
 }
+function funcionessXsistemas($nombre)
+{
+    $func = DB::table('adm_funciones')
+        ->select('id','tipo')
+        ->where('modulo', $nombre)
+        ->where('id_sistema',Session::get('sistema'))
+        ->get();
+    return $func;
+}
+function menuXsistema($nombre){
+    $menu = DB::table('adm_funciones')
+        ->select('id','tipo')
+        ->where('padre', $nombre)
+        ->where('id_sistema',Session::get('sistema'))
+        ->orderBy('modulo')
+        ->distinct()
+        ->get();
+    return $menu;
+
+}
 

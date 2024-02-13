@@ -26,13 +26,13 @@ class ActualizarSesionUsuarioListener
     public function handle(ActualizarSesionUsuario $event)
     {
         $usuario = $event->usuario;
-        $datos = $event->cargapayload;
-        $cargaMasClav=$event->cargaMasClav;
+        $datos = $event->payload;
+        $status=$event->status;
         \Log::debug("Datos DEl usuario en el listener ". $usuario);
         if (auth()->check() && $usuario && $usuario->id === auth()->id()) {
             // Verificar que el usuario esté autenticado y que el usuario del evento coincida con el usuario autenticado
-            Session::put('cargapayload', $datos);
-            Session::put('cargaMasClav',$cargaMasClav);
+            Session::put('payload', $datos);
+            Session::put('status',$status);
             \Log::debug("puse datos al usuario");
         }
     }
