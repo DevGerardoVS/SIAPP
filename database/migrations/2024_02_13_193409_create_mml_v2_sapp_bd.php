@@ -209,6 +209,17 @@ return new class extends Migration
             $table->string('updated_user',45)->nullable();
             $table->string('deleted_user',45)->nullable();
         });
+
+        Schema::create('sapp_enlaces', function (Blueprint $table) {
+            $table->string('created_user',45)->add();
+            $table->string('updated_user',45)->nullable()->add();
+            $table->string('deleted_user',45)->nullable()->add();
+        });
+
+        Schema::table('cat_permisos', function (Blueprint $table) {
+            $table->unsignedInteger('id_sistema')->default(1)->add();
+            $table->foreign('id_sistema' )->references('id')->on('adm_sistemas')->add();
+        });
     }
 
     /**
