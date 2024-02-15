@@ -220,8 +220,9 @@ return new class extends Migration
             $table->unsignedInteger('id_sistema')->default(1)->add();
             $table->foreign('id_sistema' )->references('id')->on('adm_sistemas')->add();
         });
-    }
 
+        Schema::rename('carga_masiva_estatus', 'notificaciones');
+    }
     /**
      * Reverse the migrations.
      *
