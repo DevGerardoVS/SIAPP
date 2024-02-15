@@ -103,7 +103,8 @@ class FunFormatsDel
                                                         DB::table('metas_temp_Nomir')->insert($sinmirData);
                                                         $sinmir++;
                                                     }
-                                    
+                                                    $nombre=null;
+                                                    $act = FunFormats::createMml_Ac($k,$entidad_ejecutora,$area_funcional,$idActividad->id, $nombre, $anioMax);
                                                     
                                                             $act = MmlMir::create([
                                                                 'clv_upp' => strval($k[7]),
@@ -119,7 +120,7 @@ class FunFormatsDel
                                                                 'upp' => strval($k[7]),
                                                                 'meta_id' => $e["id"],
                                                                 'clv_fondo' => $k[12],
-                                                                'actividad_id' =>$act->id,
+                                                                'actividad_id' =>$act,
                                                                 'mir_id' => null,
                                                                 'tipo' => 'Acumulativa',
                                                                 'beneficiario_id' => 12,
@@ -602,5 +603,21 @@ class FunFormatsDel
 
         }
     }
+    public static function createMml_Ac($k,$entidad_ejecutora, $area_funcional,$id_catalogo, $nombre, $anio)
+	{
+		$mml_act = new MmlMir();
+		$mml_act->clv_upp = strval($k[7]);
+		$mml_act->clv_ur =strval($k[8]);
+		$mml_act->clv_pp =strval($k[9]);
+		$mml_act->entidad_ejecutora = $entidad_ejecutora;
+		$mml_act->area_funcional = $area_funcional;
+		$mml_act->id_catalogo =$id_catalogo;
+        $mml_act->nombre = $nombre;
+		$mml_act->ejercicio = $anio;
+        $mml_act->created_user = Auth::user()->username . '- CM';
+		$mml_act->save();
+	
+		return $mml_act->id;
+	}
 
 }

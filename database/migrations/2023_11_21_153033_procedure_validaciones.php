@@ -25,9 +25,23 @@ return new class extends Migration
             
             drop temporary table if exists errores;
             create temporary table errores(
-                num_linea varchar(10000),
+                num_linea text,
                 modulo varchar(100),
                 error varchar(255)
+            );
+        
+            set @tipo_usuario := (select id_grupo from adm_users where id = id_usuario);
+        
+            if(@anio is null and @tipo_usuario != 1) then
+                insert into errores(num_linea,modulo,error) values
+                ('','Ejercicios abiertos','No hay ningún ejercicio abierto');
+            else
+        
+            set @anio := (
+                select c.ejercicio from cierre_ejercicio_claves c
+                where c.deleted_at is null
+                order by ejercicio desc 
+                limit 1
             );
             
             #CIERRE EJERCICIO CLAVES
@@ -589,7 +603,6 @@ return new class extends Migration
         
             set @c_errores := (select count(*) cantidad from errores);
             if(@c_errores = 0) then
-                set @tipo_usuario := (select id_grupo from adm_users where id = id_usuario);
                 update programacion_presupuesto_aux set ejercicio = @anio where id_carga = @carga;
             
                 if(@tipo_usuario = 5) then
@@ -618,6 +631,8 @@ return new class extends Migration
                     0,tipo,null,@usuario,null,null,now(),now()
                 from programacion_presupuesto_aux a
                 where id_carga = @carga;
+            end if;
+        
             end if;
         
             delete from programacion_presupuesto_aux where id_carga = @carga;

@@ -25432,7 +25432,8 @@ DB::unprepared("INSERT INTO mml_avance_etapas_pp (id,clv_upp,clv_pp,etapa_0,etap
         (825,381,'Vivienda',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
         (826,809,'Viviendas rociadas',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
         (827,382,'Volante',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
-        (828,566,'Vuelo',2023,NULL,NOW(),NOW(),null,null,'SEEDER');
+        (828,566,'Vuelo',2023,NULL,NOW(),NOW(),null,null,'SEEDER'),
+        (829,567,'Pago de nómina',2023,NULL,NOW(),NOW(),null,null,'SEEDER');
         ");
 
         DB::unprepared("INSERT INTO uppautorizadascpnomina values

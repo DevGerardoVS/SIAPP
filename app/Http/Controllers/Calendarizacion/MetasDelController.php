@@ -46,8 +46,8 @@ class MetasDelController extends Controller
 		Controller::check_permission('viewGetMetasDel');
 		return view('calendarizacion.metasDelegacion.proyecto');
 	}
-    public static function getActivDelegacion($upp, $anio){
-
+    public static function getActivDelegacion($upp, $anio)
+	{
 		Controller::check_permission('viewGetMetasDel');
 		$query = MetasHelper::actividadesDel($upp, $anio);
 		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
@@ -575,6 +575,33 @@ class MetasDelController extends Controller
 		->where('catalogo.clave', 'UUU')
 		->where('mml_actividades.deleted_at', null)
 		->where('metas.deleted_at', null);
+		return $metas;
+
+	}
+
+	public static function actividadesCargaMasDel($upp,$username,$anio){
+		$metas = DB::table('metas')
+		->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
+		->leftJoin('catalogo', 'catalogo.id', 'mml_actividades.id_catalogo')
+		->select(
+			'metas.id as idm',
+			DB::raw('CONCAT(mml_actividades.id, " - ", IFNULL(mml_actividades.nombre,catalogo.descripcion)) AS actividad'),
+			'mml_actividades.area_funcional AS area',
+			'mml_actividades.entidad_ejecutora AS entidad',
+			'mml_actividades.clv_upp',
+			DB::raw('"" AS clv_ur'),
+			'mml_actividades.id as actividad_id',
+			'metas.ejercicio',
+			'metas.estatus'
+
+		)
+		->where('metas.ejercicio',$anio)
+		->where('mml_actividades.clv_upp',$upp)
+		->where('catalogo.clave', 'UUU')
+		->where('mml_actividades.deleted_at', null)
+		->where('metas.deleted_at', null)
+		->where ('metas.created_user',$username)->get();
+	
 		return $metas;
 
 	}

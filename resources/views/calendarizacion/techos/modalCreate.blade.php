@@ -16,7 +16,7 @@
                         <div class="col-sm-1">
                             <label><b>UPP:</b></label>
                         </div>
-                        <?php $upp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->get();?>
+                        <?php $upp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->orderBy('clv_upp')->get();?>
                         <div class="col-sm-7" >
                             <select class="form-control filters" placeholder="Seleccione una UPP" id="uppSelected" name="uppSelected" required>
                                 <option value="0" selected>Seleccione una UPP</option>

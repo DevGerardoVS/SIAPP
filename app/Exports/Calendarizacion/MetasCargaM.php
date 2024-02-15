@@ -8,6 +8,8 @@ use App\Exports\Calendarizacion\Beneficiarios;
 use App\Exports\Calendarizacion\UnidadMedida;
 use App\Exports\Calendarizacion\TipoCalendar;
 use App\Exports\Calendarizacion\ActividadesPp;
+use App\Helpers\Calendarizacion\MetasHelper;
+
 
 
 
@@ -26,7 +28,11 @@ class MetasCargaM implements WithMultipleSheets
             $sheets[] = new ActividadesPp($this->upp);
             $sheets[] = new Beneficiarios();
             $sheets[] = new UnidadMedida();
-            $sheets[] = new TipoCalendar();
+            $tipo = MetasHelper::tCalendario($this->upp);
+            if(count($tipo)>1){
+                $sheets[] = new TipoCalendar($this->upp);
+            }
+            
 
         return $sheets;
     }

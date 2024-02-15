@@ -141,14 +141,14 @@ date_default_timezone_set('America/Mexico_City');
             </nav>
             <!-- Carga masiva en proceso -->
 
-                         @if(session()->has('cargaMasClav')&& session('cargaMasClav')==0)
+                         @if(session()->has('status')&& session('status')==0)
                          <!-- Carga masiva con errores -->
                  <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-warning" role="alert">
                     Carga masiva en proceso. &nbsp;
                   </div>                               
                       @endif
 
-                    @if(session()->has('cargaMasClav')&& session('cargaMasClav')==2)
+                    @if(session()->has('status')&& session('status')==2)
                     <!-- Carga masiva con errores -->
             <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-danger" role="alert">
                 Error de carga masiva : &nbsp;
@@ -158,7 +158,7 @@ date_default_timezone_set('America/Mexico_City');
                  @endif
                 <!-- Carga masiva con exito -->
 
-                 @if(session()->has('cargaMasClav')&& session('cargaMasClav')==1)
+                 @if(session()->has('status')&& session('status')==1)
          
                  <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-success" role="alert">
                      CARGA MASIVA EXITOSA : &nbsp;

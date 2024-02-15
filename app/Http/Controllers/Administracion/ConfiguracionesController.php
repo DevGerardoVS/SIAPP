@@ -6,11 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use App\Models\administracion\TipoActividadUpp;
 use App\Models\administracion\UppAutorizadascpNomina;
 use App\Models\calendarizacion\TechosFinancieros;
 use App\Helpers\BitacoraHelper;
+use App\Exports\ArchivosCarga\AreasFuncionales;
+use App\Exports\ArchivosCarga\ArchivosCarga;
 
 class ConfiguracionesController extends Controller
 {
@@ -404,5 +407,40 @@ class ConfiguracionesController extends Controller
             Log::channel('daily')->debug('exp '.$exp->getMessage());
             throw new \Exception($exp->getMessage());
         }
+    }
+    public function getArchivosDeCarga2024($id){
+        ob_end_clean();
+        ob_start();
+        $nombreArchivo = '';
+        switch ($id) {
+            case 1:
+                $nombreArchivo = 'Áreas funcionales';
+            break;
+            case 2:
+                $nombreArchivo = 'Fondos';
+            break;
+            case 3:
+                $nombreArchivo = 'CeCo-Be y CeGe-Descripcion';
+            break;
+            case 4:
+                $nombreArchivo = 'Centro gestor 2024';          
+            break;
+            case 5:
+                $nombreArchivo = 'Pospre';        
+            break;
+            case 6:
+                $nombreArchivo = 'LAYOUT PRESUPUESTO 2024';                
+            break;
+            default:
+                
+            break;
+        }
+        $b = array(
+            'username'=>Auth::user()->username,
+            'accion'=>'Descarga de archivo '.$nombreArchivo,
+            'modulo'=>'configuracion'
+        );
+        Controller::bitacora($b);
+        return Excel::download(new ArchivosCarga($id), $nombreArchivo.'.xlsx',\Maatwebsite\Excel\Excel::XLSX);
     }
 }

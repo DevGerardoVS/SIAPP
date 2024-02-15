@@ -48,6 +48,7 @@ class ClavePreController extends Controller
             $uppDescripcion =  DB::table('catalogo')
             ->SELECT('descripcion')
             ->where('grupo_id', 6)
+            ->where('ejercicio',$ejercicio)
             ->where('clave', '=', $upp)
             ->first();
             $descripcion = $uppDescripcion->descripcion;
@@ -79,29 +80,43 @@ class ClavePreController extends Controller
         }
         $array_where = [];
         $array_whereCierre = [];
+        $whereCierre = [];
         $anio = '';
+        $tabla = 'programacion_presupuesto';
+        if ($uppUsuario != '') {
+            array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
+        }
+        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT(DB::raw('MAX( ejercicio )AS ejercicio'))->WHERE($whereCierre)->first();
         if ($request->ejercicio && $request->ejercicio != '') {
             $anio = $request->ejercicio;
+            if ($anio < $ejercicioActual->ejercicio) {
+                $tabla = 'programacion_presupuesto_hist';
+            }
         }else {
             $anio = date('Y');
+            $tabla = 'programacion_presupuesto_hist';
         }
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
-            array_push($array_where, ['programacion_presupuesto.upp', '=', $uppUsuario]);
-            array_push($array_where, ['programacion_presupuesto.deleted_at', '=', null]);
-            array_push($array_where, ['programacion_presupuesto.ejercicio', '=', $anio]);
+            array_push($array_where, [$tabla.'.upp', '=', $uppUsuario]);
+            if ($tabla == 'programacion_presupuesto') {
+                array_push($array_where, [$tabla.'.deleted_at', '=', null]);
+            }
+            array_push($array_where, [$tabla.'.ejercicio', '=', $anio]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
             if ($request->ur && $request->ur != '') {
-                array_push($array_where, ['programacion_presupuesto.ur', '=', $request->ur]);
+                array_push($array_where, [$tabla.'.ur', '=', $request->ur]);
             }
         }else {
-            array_push($array_where, ['programacion_presupuesto.deleted_at', '=', null]);
-            array_push($array_where, ['programacion_presupuesto.ejercicio', '=', $anio]);
+            if ($tabla == 'programacion_presupuesto') {
+                array_push($array_where, [$tabla.'.deleted_at', '=', null]);    
+            }
+            array_push($array_where, [$tabla.'.ejercicio', '=', $anio]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
             if ($request->upp && $request->upp != '') {
-                array_push($array_where, ['programacion_presupuesto.upp', '=', $request->upp]);
+                array_push($array_where, [$tabla.'.upp', '=', $request->upp]);
                 if ($request->ur && $request->ur != '') {
-                    array_push($array_where, ['programacion_presupuesto.ur', '=', $request->ur]);
+                    array_push($array_where, [$tabla.'.ur', '=', $request->ur]);
                 }
             }
         }
@@ -110,35 +125,35 @@ class ClavePreController extends Controller
         ->WHERE($array_whereCierre)
         ->first(); 
 
-        $claves = DB::table('programacion_presupuesto')
-        ->SELECT('programacion_presupuesto.id','programacion_presupuesto.clasificacion_administrativa','programacion_presupuesto.entidad_federativa','programacion_presupuesto.region','programacion_presupuesto.municipio',
-                'programacion_presupuesto.localidad','programacion_presupuesto.upp','programacion_presupuesto.subsecretaria','programacion_presupuesto.ur','programacion_presupuesto.finalidad','programacion_presupuesto.funcion',
-                'programacion_presupuesto.subfuncion','programacion_presupuesto.eje','programacion_presupuesto.linea_accion','programacion_presupuesto.programa_sectorial','programacion_presupuesto.tipologia_conac','programacion_presupuesto.programa_presupuestario',
-                'programacion_presupuesto.subprograma_presupuestario','proyecto_presupuestario','programacion_presupuesto.periodo_presupuestal','programacion_presupuesto.posicion_presupuestaria',
-                'programacion_presupuesto.tipo_gasto','programacion_presupuesto.anio','programacion_presupuesto.etiquetado','programacion_presupuesto.fuente_financiamiento','programacion_presupuesto.ramo','programacion_presupuesto.fondo_ramo',
-                'programacion_presupuesto.capital','programacion_presupuesto.proyecto_obra','programacion_presupuesto.ejercicio','programacion_presupuesto.estado',
+        $claves = DB::table($tabla)
+        ->SELECT($tabla.'.id',$tabla.'.clasificacion_administrativa',$tabla.'.entidad_federativa',$tabla.'.region',$tabla.'.municipio',
+                $tabla.'.localidad',$tabla.'.upp',$tabla.'.subsecretaria',$tabla.'.ur',$tabla.'.finalidad',$tabla.'.funcion',
+                $tabla.'.subfuncion',$tabla.'.eje',$tabla.'.linea_accion',$tabla.'.programa_sectorial',$tabla.'.tipologia_conac',$tabla.'.programa_presupuestario',
+                $tabla.'.subprograma_presupuestario','.proyecto_presupuestario',$tabla.'.periodo_presupuestal',$tabla.'.posicion_presupuestaria',
+                $tabla.'.tipo_gasto',$tabla.'.anio',$tabla.'.etiquetado',$tabla.'.fuente_financiamiento',$tabla.'.ramo',$tabla.'.fondo_ramo',
+                $tabla.'.capital',$tabla.'.proyecto_obra',$tabla.'.ejercicio',$tabla.'.estado',
         (DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre AS totalByClave')),'v_entidad_ejecutora.clv_ur as claveUr','v_entidad_ejecutora.ur as descripcionUr','v_entidad_ejecutora.clv_upp as claveUpp')
-        ->leftJoin('v_entidad_ejecutora', function($join)
+        ->leftJoin('v_entidad_ejecutora', function($join) use ($tabla)
         {
-            $join->on('v_entidad_ejecutora.clv_upp', '=', 'programacion_presupuesto.upp');
-            $join->on('v_entidad_ejecutora.clv_subsecretaria','=','programacion_presupuesto.subsecretaria');
-            $join->on('v_entidad_ejecutora.clv_ur','=','programacion_presupuesto.ur');
-            $join->on('v_entidad_ejecutora.ejercicio','=','programacion_presupuesto.ejercicio');
+            $join->on('v_entidad_ejecutora.clv_upp', '=', $tabla.'.upp');
+            $join->on('v_entidad_ejecutora.clv_subsecretaria','=',$tabla.'.subsecretaria');
+            $join->on('v_entidad_ejecutora.clv_ur','=',$tabla.'.ur');
+            $join->on('v_entidad_ejecutora.ejercicio','=',$tabla.'.ejercicio');
         })
-        ->where(function ($claves) use ($rol,$array_where) {
+        ->where(function ($claves) use ($rol,$array_where, $tabla) {
             $claves->where($array_where);
             if ($rol == 1) {
-                $claves->where('programacion_presupuesto.tipo','Operativo');
+                $claves->where($tabla.'.tipo','Operativo');
             }
             if ($rol == 2) {
-                $claves->where('programacion_presupuesto.tipo','RH');
+                $claves->where($tabla.'.tipo','RH');
                 $arrayClaves = [];
                 $uppAutorizados = DB::table('uppautorizadascpnomina')->select('clv_upp')->where('deleted_at','=',null)->get()->toArray();
                 foreach ($uppAutorizados as $key => $value) {
                     array_push($arrayClaves, $value->clv_upp);
                 }
-                $claves->where('programacion_presupuesto.tipo','RH');
-                $claves->whereIn('programacion_presupuesto.upp',$arrayClaves);
+                $claves->where($tabla.'.tipo','RH');
+                $claves->whereIn($tabla.'.upp',$arrayClaves);
             }
         })
         ->orderBy('v_entidad_ejecutora.clv_upp')
@@ -678,12 +693,41 @@ class ClavePreController extends Controller
         return response()->json($response,200);
     }
     public function getPresupuestoPorUppEdit($upp,$fondo,$subPrograma,$ejercicio,$id){
+        $perfil = Auth::user()->id_grupo;
+        switch ($perfil) {
+            case 1:
+                // rol administrador
+                $rol = 0;
+                break;
+            case 4:
+                // rol upp
+                $rol = 1;
+                break;
+            case 5:
+                // rol delegacion
+                $rol = 2;
+                break;
+            default:
+                // rol auditor y gobDigital
+                $rol = 3;
+                break;
+        }
         $disponible = 0;
         $presupuestoUpp = DB::table('techos_financieros')
         ->SELECT('presupuesto','tipo')
         ->WHERE('clv_upp', '=', $upp)
         ->WHERE('clv_fondo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
+        ->where(function ($presupuestoUpp) use ($rol) {
+            //para que solo tome los recursos operativos en perfil upp
+            if ($rol == 1) {
+                $presupuestoUpp->where('tipo', '=', 'Operativo' );
+            }
+            //para que solo tome los recursos RH en perfil delegacion
+            if ($rol == 2) {
+                $presupuestoUpp->where('tipo', '=', 'RH' );
+            }
+        })
         // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
@@ -692,6 +736,16 @@ class ClavePreController extends Controller
         ->WHERE ('upp', '=', $upp)
         ->WHERE('fondo_ramo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
+        ->where(function ($presupuestoAsignado) use ($rol) {
+            //para que solo tome los recursos operativos en perfil upp
+            if ($rol == 1 || $rol == 0) {
+                $presupuestoAsignado->where('tipo', '=', 'Operativo' );
+            }
+            //para que solo tome los recursos RH en perfil delegacion
+            if ($rol == 2) {
+                $presupuestoAsignado->where('tipo', '=', 'RH' );
+            }
+        })
         // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->first();
@@ -700,6 +754,16 @@ class ClavePreController extends Controller
         ->WHERE ('upp', '=', $upp)
         ->WHERE('fondo_ramo', '=', $fondo)
         ->WHERE('ejercicio', '=', $ejercicio)
+        ->where(function ($presupuestoAsignado) use ($rol) {
+            //para que solo tome los recursos operativos en perfil upp
+            if ($rol == 1 || $rol == 0) {
+                $presupuestoAsignado->where('tipo', '=', 'Operativo' );
+            }
+            //para que solo tome los recursos RH en perfil delegacion
+            if ($rol == 2) {
+                $presupuestoAsignado->where('tipo', '=', 'RH' );
+            }
+        })
         // ->WHERE('tipo', '=', $subPrograma != 'UUU' ? 'Operativo' : 'RH' )
         ->WHERE('deleted_at', '=', null)
         ->WHERE('id',$id)
@@ -756,36 +820,53 @@ class ClavePreController extends Controller
         $array_where = [];
         $array_where2 = [];
         $array_whereCierre = [];
+        $whereCierre = [];
         $anio = '';
+        $tabla = 'programacion_presupuesto';
+        if ($uppUsuario != '') {
+            array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
+        }
+            
+        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT(DB::raw('MAX( ejercicio )AS ejercicio'))->WHERE($whereCierre)->first();
         if ($ejercicio && $ejercicio > 0) {
             $anio = $ejercicio;
+            if ($anio < $ejercicioActual->ejercicio) {
+                $tabla = 'programacion_presupuesto_hist';
+            }
         }else {
             $anio = date('Y');
+            $tabla = 'programacion_presupuesto_hist';
         }
         $autorizado = ClavesHelper::esAutorizada($uppUsuario ? $uppUsuario : $upp);
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
                 array_push($array_where, ['techos_financieros.clv_upp', '=', $uppUsuario]);
                 array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
                 array_push($array_where, ['techos_financieros.ejercicio', '=', $anio]);
-                array_push($array_where2, ['programacion_presupuesto.upp', '=', $uppUsuario]);
-                array_push($array_where2, ['programacion_presupuesto.deleted_at', '=', null]);
-                array_push($array_where2, ['programacion_presupuesto.ejercicio', '=', $anio]);
+                array_push($array_where2, [$tabla.'.upp', '=', $uppUsuario]);
+                if ($tabla == 'programacion_presupuesto') {
+                    array_push($array_where2, [$tabla.'.deleted_at', '=', null]);
+                }
+               
+                array_push($array_where2, [$tabla.'.ejercicio', '=', $anio]);
                 array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
                 array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
             if ($autorizado) {
                 array_push($array_where, ['techos_financieros.tipo', '=', 'Operativo']);
-                array_push($array_where2, ['programacion_presupuesto.tipo', '=', 'Operativo']);
+                array_push($array_where2, [$tabla.'.tipo', '=', 'Operativo']);
             }
            
         }else {
             array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
             array_push($array_where, ['techos_financieros.ejercicio', '=', $anio]);
-            array_push($array_where2, ['programacion_presupuesto.deleted_at', '=', null]);
-            array_push($array_where2, ['programacion_presupuesto.ejercicio', '=', $anio]);
+            if ($tabla == 'programacion_presupuesto') {
+                array_push($array_where2, [$tabla.'.deleted_at', '=', null]);
+            }
+            
+            array_push($array_where2, [$tabla.'.ejercicio', '=', $anio]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
             if ($upp != '') {
                 array_push($array_where, ['techos_financieros.clv_upp', '=', $upp]);
-                array_push($array_where2, ['programacion_presupuesto.upp', '=', $upp]);
+                array_push($array_where2, [$tabla.'.upp', '=', $upp]);
                 array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $upp]);
             }
         } 
@@ -809,9 +890,9 @@ class ClavePreController extends Controller
             }
         })
         ->get();
-        $calendarizados = DB::table('programacion_presupuesto')
+        $calendarizados = DB::table($tabla)
         ->SELECT(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre as calendarizados'),'estado')
-        ->where(function ($calendarizados) use ($rol,$array_where2) {
+        ->where(function ($calendarizados) use ($rol,$array_where2,$tabla) {
             $calendarizados->where($array_where2);
             if ($rol == 2) {
                 $arrayClaves = [];
@@ -819,8 +900,8 @@ class ClavePreController extends Controller
                 foreach ($uppAutorizados as $key => $value) {
                     array_push($arrayClaves, $value->clv_upp);
                 }
-                $calendarizados->whereIn('programacion_presupuesto.upp',$arrayClaves);
-                $calendarizados->where('programacion_presupuesto.tipo', '=', 'RH');
+                $calendarizados->whereIn($tabla.'.upp',$arrayClaves);
+                $calendarizados->where($tabla.'.tipo', '=', 'RH');
             }
         })
         ->get();
@@ -877,42 +958,58 @@ class ClavePreController extends Controller
         $totalCalendarizado = 0;
         $uppUsuario = Auth::user()->clv_upp;
         $anio = '';
+        $whereCierre = [];
+        $tabla = 'programacion_presupuesto';
+        if ($uppUsuario != '') {
+            array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
+        }
+        $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT(DB::raw('MAX( ejercicio )AS ejercicio'))->WHERE($whereCierre)->first();
+
         $upp = ['clave'=>'000','descripcion'=>'Detalle General'];
         if ($ejercicio && $ejercicio > 0) {
             $anio = $ejercicio;
+            if ($anio < $ejercicioActual->ejercicio) {
+                $tabla = 'programacion_presupuesto_hist';
+            }
         }else {
             $anio = date('Y');
+            $tabla = 'programacion_presupuesto_hist';
         }
         $uppAutorizados = ClavesHelper::esAutorizada($clvUpp != '' ? $clvUpp : $uppUsuario);
         $arrayTechos = "tf.deleted_at IS NULL  && tf.ejercicio = ".$anio;
-        $arrayProgramacion = "pp.deleted_at IS NULL && pp.ejercicio = ".$anio;
+        $arrayProgramacion = "pp.ejercicio = ".$anio;
+        if ($tabla == 'programacion_presupuesto') {
+            $arrayProgramacion = "".$arrayProgramacion." && pp.deleted_at IS NULL";
+        }
         
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
-            $arrayTechos = "".$arrayTechos."&& tf.clv_upp = '".strval($uppUsuario)."'";
+            $arrayTechos = "".$arrayTechos." && tf.clv_upp = '".strval($uppUsuario)."'";
             $arrayProgramacion = "".$arrayProgramacion."&& pp.upp = '".strval($uppUsuario)."'";
             $upp =  DB::table('catalogo')
             ->SELECT('clave','descripcion')
+            ->where('ejercicio',$anio)
             ->where('grupo_id', 6)
+            
             ->where('clave', '=', $uppUsuario)
             ->first();
         }else {
             if ($clvUpp != '') {
-                $arrayTechos = "".$arrayTechos."&& tf.clv_upp = '".strval($clvUpp)."'";
+                $arrayTechos = "".$arrayTechos." && tf.clv_upp = '".strval($clvUpp)."'";
                 $arrayProgramacion = "".$arrayProgramacion."&& pp.upp = '".strval($clvUpp)."'";
             }
         } 
         if ($rol == 2) {
-            $fondos = ClavesHelper::detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion);
+            $fondos = ClavesHelper::detallePresupuestoDelegacion($arrayTechos,$arrayProgramacion, $tabla);
         }else {
             if ($uppAutorizados) {
                 if ($rol == 0) {
-                    $fondos = ClavesHelper::detallePresupuestoGeneral($arrayTechos,$arrayProgramacion);
+                    $fondos = ClavesHelper::detallePresupuestoGeneral($arrayTechos,$arrayProgramacion, $tabla);
                 }else {
-                    $fondos = ClavesHelper::detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion);
+                    $fondos = ClavesHelper::detallePresupuestoAutorizadas($arrayTechos,$arrayProgramacion, $tabla);
                 }
                
             }else {
-                    $fondos = ClavesHelper::detallePresupuestoGeneral($arrayTechos,$arrayProgramacion);
+                    $fondos = ClavesHelper::detallePresupuestoGeneral($arrayTechos,$arrayProgramacion, $tabla);
                 }
         }
         

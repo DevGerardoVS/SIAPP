@@ -60,55 +60,7 @@ return new class extends Migration
         join catalogo c15 on e.tipologia_conac_id = c15.id 
         join catalogo c16 on e.programa_id = c16.id 
         join catalogo c17 on e.subprograma_id = c17.id 
-        join catalogo c18 on e.proyecto_id = c18.id
-        union all 
-        select 
-            e.id,
-            c01.clave clv_sector_publico,c01.descripcion sector_publico,
-            c02.clave clv_sector_publico_f,c02.descripcion sector_publico_f,
-            c03.clave clv_sector_economia,c03.descripcion sector_economia,
-            c04.clave clv_subsector_economia,c04.descripcion subsector_economia,
-            c05.clave clv_ente_publico,c05.descripcion ente_publico,
-            c06.clave clv_upp,c06.descripcion upp,
-            c07.clave clv_subsecretaria,c07.descripcion subsecretaria,
-            c08.clave clv_ur,c08.descripcion ur,
-            c09.clave clv_finalidad,c09.descripcion finalidad,
-            c10.clave clv_funcion,c10.descripcion funcion,
-            c11.clave clv_subfuncion,c11.descripcion subfuncion,
-            c12.clave clv_eje,c12.descripcion eje,
-            c13.clave clv_linea_accion,c13.descripcion linea_accion,
-            c14.clave clv_programa_sectorial,c14.descripcion programa_sectorial,
-            c15.clave clv_tipologia_conac,c15.descripcion tipologia_conac,
-            c16.clave clv_programa,c16.descripcion programa,
-            c17.clave clv_subprograma,c17.descripcion subprograma,
-            c18.clave clv_proyecto,c18.descripcion proyecto,
-            e.presupuestable,
-            e.con_mir,
-            e.confirmado,
-            e.tipo_presupuesto,
-            e.ejercicio,
-            e.deleted_at,
-            e.updated_at,
-            e.created_at
-        from epp e
-        join catalogo_hist c01 on e.sector_publico_id = c01.id 
-        join catalogo_hist c02 on e.sector_publico_f_id = c02.id 
-        join catalogo_hist c03 on e.sector_economia_id = c03.id 
-        join catalogo_hist c04 on e.subsector_economia_id = c04.id 
-        join catalogo_hist c05 on e.ente_publico_id = c05.id 
-        join catalogo_hist c06 on e.upp_id = c06.id 
-        join catalogo_hist c07 on e.subsecretaria_id = c07.id  
-        join catalogo_hist c08 on e.ur_id = c08.id 
-        join catalogo_hist c09 on e.finalidad_id = c09.id 
-        join catalogo_hist c10 on e.funcion_id = c10.id 
-        join catalogo_hist c11 on e.subfuncion_id = c11.id 
-        join catalogo_hist c12 on e.eje_id = c12.id 
-        join catalogo_hist c13 on e.linea_accion_id = c13.id 
-        join catalogo_hist c14 on e.programa_sectorial_id = c14.id 
-        join catalogo_hist c15 on e.tipologia_conac_id = c15.id 
-        join catalogo_hist c16 on e.programa_id = c16.id 
-        join catalogo_hist c17 on e.subprograma_id = c17.id 
-        join catalogo_hist c18 on e.proyecto_id = c18.id;");
+        join catalogo c18 on e.proyecto_id = c18.id;");
 
         DB::unprepared("CREATE VIEW v_entidad_ejecutora as
         select 

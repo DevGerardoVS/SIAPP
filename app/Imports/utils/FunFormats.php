@@ -187,31 +187,26 @@ class FunFormats
 
                             $pres = FunFormats::existPP($clave, $anio, $k[12]);
                             if (count($pres)) {
-                               
-                                if (is_string($k[16])) {
-                                    $error = array(
-                                        "icon" => 'error',
-                                        "title" => 'Datos erróneos',
-                                        "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
-                                    );
-                                    return $error;
-                                    
-                                }else{
-                                    if ($k[16]<0 ) {
+                                $tipoCalendario = strval($k[16]);
+
+                                switch ($tipoCalendario) {
+                                    case '0':
+
+                                        break;
+                                    case '1':
+
+                                        break;
+                                    case '2':
+
+                                        break;
+
+                                    default:
                                         $error = array(
                                             "icon" => 'error',
                                             "title" => 'Datos erróneos',
                                             "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
                                         );
                                         return $error;
-                                    }else if($k[16]>=4){
-                                        $error = array(
-                                            "icon" => 'error',
-                                            "title" => 'Datos erróneos',
-                                            "text" => 'La clave del calendario no coincide con el catálogo usa los datos proporcionados, en la fila: ' . $index
-                                        );
-                                        return $error;
-                                    }
                                 }
                                 $s = FunFormats::validatecalendar($k[7], $k[16]);
                                 if ($s["status"]) {
@@ -275,6 +270,7 @@ class FunFormats
                                         );
                                         return $error;
                                     }
+                                   
                                     $m = FunFormats::validateMonth($entidad, json_encode($meses), $anio, $k[12]);
                                     if ($m["status"]) {
                                         $mir = is_numeric($k[14]) ? $k[14] : NULL;
@@ -310,31 +306,46 @@ class FunFormats
                                                 );
                                                 return $error;
                                             }
-
                                             $medidas = DB::table('unidades_medida')->select('id as clave')->where('deleted_at', null)->where('id', $k[33])->get();
+                                            if (!count($medidas)) {
+                                                $error = array(
+                                                    "icon" => 'error',
+                                                    "title" => 'Error',
+                                                    "text" => 'La unidad de medida no existe en la fila ' . $index
+                                                );
+                                                return $error;
 
-                                            if (count($medidas)) {
+                                            }
                                                 $bene = DB::table('beneficiarios')->select('id', 'clave')->where('deleted_at', null)->where('clave', $k[30])->get();
-                                                if (count($bene)) {
-                                                        if (!is_numeric($k[32])) {
-                                                            $error = array(
-                                                                "icon" => 'error',
-                                                                "title" => 'Datos incorrectos',
-                                                                "text" => 'El numero de beneficiarios debe ser un NUMERO mayor a 0 en la fila: ' . $index
-                                                            );
-                                                            return $error;
-                                                           
-                                                        }else{
-                                                            if($k[32]<=0){
-                                                                $error = array(
-                                                                    "icon" => 'error',
-                                                                    "title" => 'Datos incorrectos',
-                                                                    "text" => 'El numero de beneficiarios debe ser un NUMERO mayor a 0 en la fila: ' . $index
-                                                                );
-                                                                return $error;
+                                            if (count($bene)) {
+                                                if (!is_numeric($k[32])) {
+                                                    $error = array(
+                                                        "icon" => 'error',
+                                                        "title" => 'Datos incorrectos',
+                                                        "text" => 'El numero de beneficiarios debe ser un NUMERO mayor a 0 en la fila: ' . $index
+                                                    );
+                                                    return $error;
 
-                                                            }
-                                                        }
+                                                } else {
+                                                    if ($k[32] <= 0) {
+                                                        $error = array(
+                                                            "icon" => 'error',
+                                                            "title" => 'Datos incorrectos',
+                                                            "text" => 'El numero de beneficiarios debe ser un NUMERO mayor a 0 en la fila: ' . $index
+                                                        );
+                                                        return $error;
+
+                                                    }
+                                                }
+                                            } else {
+                                                $error = array(
+                                                    "icon" => 'error',
+                                                    "title" => 'Error',
+                                                    "text" => 'La clave de beneficiario no existe en la fila ' . $index
+                                                );
+                                                return $error;
+
+                                            }
                                                     if ($uniqueMir != '') {
                                                         $conmirData = ['clave' => $uniqueMir, 'fila' => $index, 'upp' => strval($k[7]),"ur"=> strval($k[8])];
                                                         DB::table('metas_temp')->insert($conmirData);
@@ -346,30 +357,17 @@ class FunFormats
                                                         $sinmir++;
                                                     }
                                                   
-
                                                     $type = FunFormats::typeTotal($k, $m["validos"]);
                                                     if ($type != false) {
                                                         if (is_numeric($k[13])) {
-                                                            $act = MmlMir::create([
-                                                                'clv_upp' => strval($k[7]),
-                                                                'entidad_ejecutora' => $entidad_ejecutora,
-                                                                'area_funcional' => $area_funcional,
-                                                                'id_catalogo' => $k[13],
-                                                                'nombre' => null,
-                                                                'ejercicio' => $anio,
-                                                                'created_user' => auth::user()->username.'-'.'CM'
-                                                            ]);
+                                                            $id_catalogo=$k[13];
+                                                            $nombre=null;
+                                                            $act = FunFormats::createMml_Ac($k,$entidad_ejecutora,$area_funcional,$id_catalogo, $nombre, $anio);
                                                         }
                                                         if (strtolower($k[13]) == 'ot') {
-                                                            $act = MmlMir::create([
-                                                                'clv_upp' => strval($k[7]),
-                                                                'entidad_ejecutora' => $entidad_ejecutora,
-                                                                'area_funcional' => $area_funcional,
-                                                                'id_catalogo' => null,
-                                                                'nombre' => $k[15],
-                                                                'ejercicio' => $anio,
-                                                                'created_user' => auth::user()->username.'-'.'CM'
-                                                            ]);
+                                                            $id_catalogo=null;
+                                                            $nombre=$k[15];
+                                                            $act = FunFormats::createMml_Ac($k,$entidad_ejecutora,$area_funcional,$id_catalogo, $nombre, $anio);
                                                         }
                                                         if(strval($k[10])!='UUU'){
                                                             $aux[] = [
@@ -377,7 +375,7 @@ class FunFormats
                                                                 'upp' => strval($k[7]),
                                                                 'meta_id' => $e["id"],
                                                                 'clv_fondo' => $k[12],
-                                                                'actividad_id' => is_numeric($k[14]) ? NULL : $act->id,
+                                                                'actividad_id' => is_numeric($k[14]) ? NULL : $act,
                                                                 'mir_id' => is_numeric($k[13]) || strtolower($k[13]) == 'ot' ? NULL : $k[14],
                                                                 'tipo' => $s['a'],
                                                                 'beneficiario_id' => $k[30],
@@ -406,7 +404,7 @@ class FunFormats
                                                                 'upp' => strval($k[7]),
                                                                 'meta_id' => $e["id"],
                                                                 'clv_fondo' => $k[12],
-                                                                'actividad_id' => is_numeric($k[14]) ? NULL : $act->id,
+                                                                'actividad_id' => is_numeric($k[14]) ? NULL : $act,
                                                                 'mir_id' => is_numeric($k[13]) || strtolower($k[13]) == 'ot' ? NULL : $k[14],
                                                                 'tipo' => $s['a'],
                                                                 'beneficiario_id' => $k[30],
@@ -439,25 +437,6 @@ class FunFormats
                                                         );
                                                         return $error;
                                                     }
-                                                } else {
-                                                    $error = array(
-                                                        "icon" => 'error',
-                                                        "title" => 'Error',
-                                                        "text" => 'La clave de beneficiario no existe en la fila ' . $index
-                                                    );
-                                                    return $error;
-
-                                                }
-                                            } else {
-                                                $error = array(
-                                                    "icon" => 'error',
-                                                    "title" => 'Error',
-                                                    "text" => 'La unidad de medida no existe en la fila ' . $index
-                                                );
-                                                return $error;
-
-                                            }
-
                                         } else {
                                             $error = array(
                                                 "icon" => 'error',
@@ -868,7 +847,7 @@ class FunFormats
     public static function isExist($entidad, $fondo, $mir, $noMir)
     {
         $areaAux = explode('/', $entidad);
-        if ($mir != NULL) {
+        if ($mir != NULL && is_numeric($mir)) {
             $metas = DB::table('metas')
                 ->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
                 ->select(
@@ -903,13 +882,31 @@ class FunFormats
                 ->where('metas.deleted_at', null)->get();
 
         }
-        if ($noMir == 'ot') {
-            $metas = [];
+        if (strtolower($noMir) == 'ot') {
+                $metas = DB::table('metas')
+                ->leftJoin('mml_actividades', 'mml_actividades.id', 'metas.actividad_id')
+                ->select(
+                    'metas.id',
+                    'mml_actividades.entidad_ejecutora',
+                    'mml_actividades.area_funcional',
+                    'mml_actividades.clv_upp',
+                    'mml_actividades.id'
+                    
+                )
+                ->where('mml_actividades.entidad_ejecutora', str_replace("-", '', $areaAux[1]))
+                ->where('mml_actividades.area_funcional',  str_replace("-", '', $areaAux[0]))
+                ->where('metas.clv_fondo', $fondo)
+                ->where('mml_actividades.id_catalogo', null)
+                ->where('metas.mir_id', null)
+                ->where('mml_actividades.deleted_at', null)
+                ->where('metas.deleted_at', null)->get();
         }
-        if (count($metas) == 0) {
-            return ["status" => true, "id" => null];
-        } else {
+        if (count($metas)) {
+
             return ["status" => false, "id" => $metas[0]->id];
+           
+        } else {
+            return ["status" => true, "id" => null];
         }
 
     }
@@ -974,13 +971,11 @@ class FunFormats
             $metaConMir->estatus = 0;
             $metaConMir->ejercicio = $key['ejercicio'];
             $metaConMir->created_user = $key['created_user'].'-'.'CM';
-            $metaSinMir->tipo_meta = "Operativo";
-
+            $metaConMir->tipo_meta = "Operativo";
             $metaConMir->save();
-            if ($metaConMir) {
-                $metaConMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaConMir->id . '-' . $key['ejercicio'];
-                $metaConMir->save();
-            }
+            $metaConMir->clv_actividad = "" . $key['upp'] . '-' . $key['pp'] . '-' . $metaConMir->id . '-' . $key['ejercicio'];
+            $metaConMir->save();
+         
         }
 
     }
@@ -1012,5 +1007,21 @@ class FunFormats
 
         }
     }
+    public static function createMml_Ac($k,$entidad_ejecutora, $area_funcional,$id_catalogo, $nombre, $anio)
+	{
+		$mml_act = new MmlMir();
+		$mml_act->clv_upp = strval($k[7]);
+		$mml_act->clv_ur =strval($k[8]);
+		$mml_act->clv_pp =strval($k[9]);
+		$mml_act->entidad_ejecutora = $entidad_ejecutora;
+		$mml_act->area_funcional = $area_funcional;
+		$mml_act->id_catalogo =$id_catalogo;
+        $mml_act->nombre = $nombre;
+		$mml_act->ejercicio = $anio;
+        $mml_act->created_user = Auth::user()->username . '- CM';
+		$mml_act->save();
+	
+		return $mml_act->id;
+	}
 
 }
