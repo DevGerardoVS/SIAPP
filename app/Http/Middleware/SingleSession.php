@@ -34,6 +34,7 @@ class SingleSession
             ->select('*')
          
             ->where('id_usuario','=',$userId)
+            ->where('id_sistema','=',1)
             ->first();
            
            
