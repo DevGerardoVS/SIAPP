@@ -12,7 +12,6 @@ return new class extends Migration {
      */
     public function up()
     {
-        DB::beginTransaction();
         try {
             if (!Schema::hasTable('mml_observaciones_pp_hist')) {
                 Schema::create('mml_observaciones_pp_hist', function (Blueprint $table) {
@@ -247,10 +246,8 @@ return new class extends Migration {
                     $table->renameColumn('cargaMasClav', 'status');
                 });
             }
-            DB::commit();
             echo "\n    - Se aplico con exito la migracion - v2:\n";
         } catch (\Exception $e) {
-            DB::rollback();
             echo "\n    - Ocurrio un error al ejecutar la operacion:", $e;
         }
     }

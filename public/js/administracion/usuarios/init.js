@@ -293,7 +293,6 @@ var dao = {
         _url = "/adm-usuarios-exportPdf";
         window.open(_url, '_blank');
                 // $('#cabecera').css("visibility","visible");
-
     },
 };
 var init = {
