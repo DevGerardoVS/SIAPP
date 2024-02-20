@@ -244,18 +244,14 @@ var dao = {
             var par = $('#id_grupo');
             par.html('');
             par.append(new Option(nombre_grupo, id_grupo));
-           // document.getElementById("id_permiso").options[0].disabled = true;
-           // $("#id_grupo option[value='"+id_grupo+"']").attr("selected", true);
-           // $('#label_idGrupo').text(nombre_grupo).show();
-            $("#id_grupo").hide();
-            $("#labelGrupo").hide();
             $("#passchange").hide();
             $("#passchange1").hide();
 
         });
     },
     limpiarFormularioCrear: function () {
-
+        $("#passchange").show();
+        $("#passchange1").show();
         inps = [
             'id_user',
             'username',
@@ -283,12 +279,8 @@ var dao = {
         dao.getUsers();
         dao.getPermisos();
         $('.form-group').removeClass('has-error');
-        $("#id_grupo").show();
-        $("#labelGrupo").show();
-        $("#label_idGrupo").text("").hide();
         $('#exampleModalLabel').text('Agregar usuario');
-        $("#passchange").show();
-        $("#passchange1").show();
+ 
 
     },
     exportExcel: function () {
