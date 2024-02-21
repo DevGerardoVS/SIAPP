@@ -244,6 +244,7 @@ var dao = {
             var par = $('#id_grupo');
             par.html('');
             par.append(new Option(nombre_grupo, id_grupo));
+            par.prop('disabled', 'disabled');
             $("#passchange").hide();
             $("#passchange1").hide();
 
@@ -280,8 +281,7 @@ var dao = {
         dao.getPermisos();
         $('.form-group').removeClass('has-error');
         $('#exampleModalLabel').text('Agregar usuario');
- 
-
+        $('#id_grupo').prop('disabled', false);
     },
     exportExcel: function () {
         _url = "/adm-usuarios-exportExcel";
@@ -420,7 +420,9 @@ $(document).ready(function () {
             }
         }
         if (selectValue == 4) {
-                if ($("#clv_upp").val() != null) {
+            
+            let edit = $('#exampleModalLabel').text()=='Editar usuario'?true:false;
+                if ($("#clv_upp").val() != null ||edit) {
                 init.valUpp($('#frm_create'));
                 if ($('#frm_create').valid()) {
                     dao.crearUsuario();
