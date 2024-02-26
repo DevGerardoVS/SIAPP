@@ -96,7 +96,7 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     include('administracion.php'); //Agregar las rutas para el módulo de administración en este archivo
     include('calendarizacion.php'); //Agregar las rutas para el módulo de Calendarizacion en este archivo
     include('epp.php'); //Agregar las rutas para el módulo de Epp en este archivo
-    Route::get('/borrar-sesion_excel', [App\Http\Controllers\HomeController::class, 'borrarsesionexcel'])->name('borrar-sesion_excel');
+    Route::get('/borrar-sesion_sesion_notificacion', [App\Http\Controllers\HomeController::class, 'borrarsesionnotificacion'])->name('borrar-sesion_notificacion');
   
 
     

@@ -5,6 +5,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <?php ini_set('memory_limit', '-1');
 date_default_timezone_set('America/Mexico_City');
+
 ?>
 
 <head>
@@ -139,20 +140,22 @@ date_default_timezone_set('America/Mexico_City');
                 </div>
 
             </nav>
+            <!--Notificaciones modificar blade -->
             <!-- Carga masiva en proceso -->
 
                          @if(session()->has('status')&& session('status')==0)
                          <!-- Carga masiva con errores -->
-                 <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-warning" role="alert">
-                    Carga masiva en proceso. &nbsp;
+                 <div id="alerts_notificaciones" name="alerts_notificaciones" style="text-align: center" class="alert alert-warning" role="alert">
+                   {{session('mensaje')}} &nbsp;
                   </div>                               
                       @endif
 
                     @if(session()->has('status')&& session('status')==2)
                     <!-- Carga masiva con errores -->
-            <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-danger" role="alert">
-                Error de carga masiva : &nbsp;
-                <button  class="btn btn-success"  onclick="_notificaciones.carga_masiva_alerts(2)" >Descargar Errores</button>
+            <div id="alerts_notificaciones" name="alerts_notificaciones" style="text-align: center" class="alert alert-danger" role="alert">
+                {{session('mensaje')}} : &nbsp;
+                <!-- agregar boton para href a la descarga de errores -->
+                <button  class="btn btn-success"  onclick="_notificaciones.alerts_notificaciones({{session('status')}},{{session('route')}})" >Descargar Errores</button>
 
              </div>                               
                  @endif
@@ -160,10 +163,11 @@ date_default_timezone_set('America/Mexico_City');
 
                  @if(session()->has('status')&& session('status')==1)
          
-                 <div id="alerts_carga_masiva" name="alerts_carga_masiva" style="text-align: center" class="alert alert-success" role="alert">
-                     CARGA MASIVA EXITOSA : &nbsp;
-     
-                         <button  class="btn btn-primary"  onclick="_notificaciones.carga_masiva_alerts(1)" >ACEPTAR</button>
+                 <div id="alerts_notificaciones" name="alerts_notificaciones" style="text-align: center" class="alert alert-success" role="alert">
+                    {{session('mensaje')}} : &nbsp;
+                     <!-- agregar boton para href a la lista -->
+
+                         <button  class="btn btn-primary"  onclick="_notificaciones.alerts_notificaciones({{session('status')}},{{session('route')}})" >ACEPTAR</button>
 
                   </div>                               
                       @endif

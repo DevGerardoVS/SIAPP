@@ -126,21 +126,21 @@ var _gen = {
 };
 
 var _notificaciones = {
-    carga_masiva_alerts: function(estatus){
+    alerts_notificaciones: function(estatus,route){
         
         if(estatus==1){
-            $("#alerts_carga_masiva").on('click', function(e) {
+            $("#alerts_notificaciones").on('click', function(e) {
                 const tempLink = document.createElement('a');
-                tempLink.href = `/borrar-sesion_excel`;
+                tempLink.href = route;
                 tempLink.click();
-                $('#alerts_carga_masiva').hide();
+                $('#alerts_notificaciones').hide();
             });
         }else{
-            $("#alerts_carga_masiva").on('click', function(e) {
+            $("#alerts_notificaciones").on('click', function(e) {
                 const tempLink = document.createElement('a');
-                tempLink.href = `/calendarizacion/download-errors-excel`;
+                tempLink.href = route;
                 tempLink.click();
-                $('#alerts_carga_masiva').hide();
+                $('#alerts_notificaciones').hide();
             });
         }
 

@@ -113,7 +113,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
 
                         if ($this->tipocarga == 1) {
-                            $deleted = ProgramacionPresupuesto::where('upp', $u)->where('tipo','Operativo')->where('ejercicio', $ejercicio[0])->where('estado', 0)->delete();
+                            $deleted = ProgramacionPresupuesto::where('upp', $u)->where('tipo', 'Operativo')->where('ejercicio', $ejercicio[0])->where('estado', 0)->delete();
                         }
                     }
                     if ($this->tipocarga == 1) {
@@ -122,8 +122,8 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                             "accion" => 'Borrar registros carga masiva',
                             "modulo" => 'Claves presupuestales'
                         );
-                        Controller::bitacora($b);              
-                          }
+                        Controller::bitacora($b);
+                    }
 
                 }
 
@@ -238,7 +238,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
 
                         switch ($uppsautorizadas) {
                             case 0:
-                                $confirmadasC=0;
+                                $confirmadasC = 0;
 
                                 //validacion para eliminar registros no confirmados 
                                 foreach ($arrayupps as $u) {
@@ -247,7 +247,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                         array_push($arrayErrores, ' $ $No tiene permiso para registrar de  la upp: ' . $u);
                                     }
 
-                                    $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('tipo','Operativo')->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+                                    $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('tipo', 'Operativo')->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
                                     if ($confirmadas > 0) {
                                         $confirmadasC++;
                                     }
@@ -258,10 +258,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                     }
 
                                     if ($this->tipocarga == 1) {
-                                        $deleted = ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('tipo','Operativo')->where('ejercicio', $ejercicio[0])->delete();
+                                        $deleted = ProgramacionPresupuesto::where('upp', $u)->where('estado', 0)->where('tipo', 'Operativo')->where('ejercicio', $ejercicio[0])->delete();
                                     }
                                 }
-                                if($confirmadasC>0){
+                                if ($confirmadasC > 0) {
                                     array_push($arrayErrores, ' $ $No se pueden añadir más claves por carga masiva a la upp: ' . $u . ' porque ya tiene claves confirmadas. ');
 
                                 }
@@ -282,7 +282,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                 if ($countR > 0) {
                                     array_push($arrayErrores, '$ $Hay claves de RH en el archivo de cargas masivas ');
                                 }
-                                $confirmadasC=0;
+                                $confirmadasC = 0;
                                 //validacion para eliminar registros no confirmados 
                                 foreach ($arrayupps as $u) {
                                     if ($u != $uppUsuario) {
@@ -293,16 +293,16 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                         array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. ');
                                     }
 
-                                    $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('subprograma_presupuestario','!=', 'UUU')->where('tipo','Operativo')->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+                                    $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('subprograma_presupuestario', '!=', 'UUU')->where('tipo', 'Operativo')->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
                                     if ($confirmadas > 0) {
                                         $confirmadasC++;
                                     }
 
                                     if ($this->tipocarga == 1) {
-                                        $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario','!=', 'UUU')->where('tipo','Operativo')->where('estado', 0)->where('ejercicio', $ejercicio[0])->delete();
+                                        $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', '!=', 'UUU')->where('tipo', 'Operativo')->where('estado', 0)->where('ejercicio', $ejercicio[0])->delete();
                                     }
                                 }
-                                if($confirmadasC>0){
+                                if ($confirmadasC > 0) {
                                     array_push($arrayErrores, ' $ $No se pueden añadir más claves por carga masiva a la upp: ' . $u . ' porque ya tiene claves confirmadas. ');
 
                                 }
@@ -326,13 +326,13 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         foreach ($arrayupps as $key => $u) {
                             //nueva funcion aca
                             if ($countO == 0) {
-                                $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('subprograma_presupuestario', 'UUU')->where('tipo','RH')->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
+                                $confirmadas = ProgramacionPresupuesto::select()->where('upp', $u)->where('subprograma_presupuestario', 'UUU')->where('tipo', 'RH')->where('estado', 1)->where('ejercicio', $ejercicio[0])->count();
                                 if ($confirmadas > 0) {
                                     array_push($arrayErrores, ' $ $No se pueden añadir más claves por carga masiva a la upp: ' . $u . ' porque ya tiene claves confirmadas. ');
                                 }
 
                                 if ($this->tipocarga == 1) {
-                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', 'UUU')->where('tipo','RH')->where('estado', 0)->where('ejercicio', $ejercicio[0])->delete();
+                                    $deleted = ProgramacionPresupuesto::where('upp', $u)->where('subprograma_presupuestario', 'UUU')->where('tipo', 'RH')->where('estado', 0)->where('ejercicio', $ejercicio[0])->delete();
                                 }
 
                                 $query = MetasDelController::actividadesCargaMasDel($u, $usuario->username, $ejercicio[0]);
@@ -381,11 +381,19 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
 
-                json_encode($arrayErrores);
+
                 $payload = json_encode($arrayErrores);
+                $payloadsent = json_encode(
+                    array(
+                        "TypeButton" => 1,
+                        "route" => "'/calendarizacion/download-errors-excel'",
+                        "mensaje" => trans('messages.carga_masiva_error'),
+                        "payload" => $payload
+                    )
+                );
                 notificaciones::where('id_usuario', $usuario->id)
                     ->update([
-                        'payload' => $payload,
+                        'payload' => $payloadsent,
                         'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
@@ -403,10 +411,18 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
             \Log::debug($th);
             $error = array();
             array_push($error, ' $ $Ocurrio un error interno contacte a soporte.');
-            json_encode($error);
+            $error = json_encode($error);
+            $payloadsent = json_encode(
+                array(
+                    "TypeButton" => 1,
+                    "route" => "'/calendarizacion/download-errors-excel'",
+                    "mensaje" => trans('messages.carga_masiva_error'),
+                    "payload" => $error
+                )
+            );
             notificaciones::where('id_usuario', $usuario->id)
                 ->update([
-                    'payload' => $error,
+                    'payload' => $payloadsent,
                     'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
