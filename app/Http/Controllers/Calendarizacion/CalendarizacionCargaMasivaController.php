@@ -163,7 +163,7 @@ class CalendarizacionCargaMasivaController extends Controller
 
         }else{
             $payloadsent= json_encode(array(
-                "TypeButton" => 0,// 0 es mensaje 1 es que si es botton 2 ahref 
+                "TypeButton" => 0,// 0 es mensaje, 1 es que si es botton, 2 ahref 
                 "route" => "",
                 "mensaje" => trans('messages.carga_masiva_cargando'),
                 "payload" => ""
