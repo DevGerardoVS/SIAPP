@@ -141,6 +141,7 @@ date_default_timezone_set('America/Mexico_City');
 
             </nav>
             <!--Notificaciones modificar blade -->
+
             <!-- Carga masiva en proceso -->
 
                          @if(session()->has('status')&& session('status')==0)

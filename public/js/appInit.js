@@ -1,3 +1,9 @@
+
+    window.Echo.channel('Notificaciones')
+        .listen('NotificacionCreateEdit', (e) => {
+            console.log(e.data);
+        });
+
 var _gen = {
     block: function () {
         const local = '127.0.0.1';

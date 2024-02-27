@@ -9,6 +9,7 @@
         "apalfrey/select2-bootstrap-5-theme": "^1.3",
         "artisaninweb/laravel-soap": "0.2.5.10",
         "barryvdh/laravel-dompdf": "^2.0",
+        "beyondcode/laravel-websockets": "^2.0@beta",
         "biscolab/laravel-recaptcha": "^6.0",
         "cossou/jasperphp": "^2.8",
         "doctrine/dbal": "^3.4",

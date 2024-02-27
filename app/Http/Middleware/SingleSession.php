@@ -38,7 +38,7 @@ class SingleSession
             ->first();
            
            
-            if(isset($data->status)){
+/*             if(isset($data->status)){
                 $payload = json_decode($data->payload);
                 session::put('mensaje',$payload->mensaje);
                 session::put('route',$payload->route);
@@ -54,7 +54,7 @@ class SingleSession
                 Session::put('status',3);
                 session(['payload' =>'']);
                 session(['status' => 3]);
-            }
+            } */
             
          
                  

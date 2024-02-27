@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Calendarizacion\MetasDelController;
 use App\Jobs\CargaMasivaClaves;
 use DB;
+use App\Events\NotificacionCreateEdit;
 
 class ValidacionesCargaMasivaClaves implements ShouldQueue
 {
@@ -397,6 +398,9 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
+                    $datos = notificaciones::where('id_usuario', $usuario->id)->first();
+
+                    event(new NotificacionCreateEdit($datos));
 
 
             } else {
@@ -426,6 +430,9 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
+                $datos = notificaciones::where('id_usuario', $usuario->id)->first();
+                event(new NotificacionCreateEdit($datos));
+
         }
     }
 }

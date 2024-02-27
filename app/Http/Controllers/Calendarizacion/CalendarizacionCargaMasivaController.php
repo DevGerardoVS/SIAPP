@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Calendarizacion;
 
+use App\Events\NotificacionCreateEdit;
 use App\Exports\ImportErrorsExport;
 use App\Http\Controllers\Controller;
 use App\Models\notificaciones;
 use App\Jobs\ValidacionesCargaMasivaClaves;
 use Illuminate\Http\Request;
-
 use App\Exports\PlantillaExport;
 use Log;
 use Maatwebsite\Excel\Facades\Excel;
@@ -39,10 +39,10 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
     public function DownloadErrors()
-    {   
-       
-        $fails=0;
-     
+    {
+
+        $fails = 0;
+
         if (session()->has('payload')) {
             $fails = json_decode(session::get('payload'));
 
@@ -52,18 +52,19 @@ class CalendarizacionCargaMasivaController extends Controller
             "accion" => 'Descarga',
             "modulo" => 'Errores carga masiva'
         );
-        // session::flush();
-        $fr=session::pull('status');
-        session()->forget(['payload', 'status','mensaje','route']);
-     
-    Session::put('status',3);
+        session()->forget(['payload', 'mensaje', 'route']);
+
+        Session::put('status', 3);
 
 
         Controller::bitacora($b);
         /*Si no coloco estas lineas Falla*/
         ob_end_clean();
         ob_start();
-        $deleted = notificaciones::where('id_usuario','=',Auth::user()->id)->forceDelete();
+        
+        $deleted = notificaciones::where('id_usuario', '=', Auth::user()->id)
+        ->where('id_sistema','=',1)
+        ->forceDelete();
 
         return Excel::download(new ImportErrorsExport($fails), 'Errores.xlsx');
     }
@@ -72,12 +73,12 @@ class CalendarizacionCargaMasivaController extends Controller
     public function loadDataPlantilla(Request $request)
     {
 
-        $tipocarga=0;
+        $tipocarga = 0;
 
-        if($request->tipo){
-            $tipocarga=$request->tipo;
-        }elseif($request->tipo_adm){
-            $tipocarga=$request->tipo_adm;
+        if ($request->tipo) {
+            $tipocarga = $request->tipo;
+        } elseif ($request->tipo_adm) {
+            $tipocarga = $request->tipo_adm;
         }
         $message = [
             'file' => 'El archivo debe ser tipo xlsx'
@@ -130,8 +131,8 @@ class CalendarizacionCargaMasivaController extends Controller
 
         ini_set('max_execution_time', 1200);
 
-        $user=Auth::user();
-        
+        $user = Auth::user();
+
         if ($xlsx = SimpleXLSX::parse($request->file)) {
             $filearray = $xlsx->rows();
             //tomamos los encabezados
@@ -154,31 +155,49 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
 
-          $filearray = array_map('self::nestedtrim', $filearray);
-         $tienecargapen=notificaciones::where('id_usuario',$user->id)->first();
+        $filearray = array_map('self::nestedtrim', $filearray);
+        $tienecargapen = notificaciones::where('id_usuario', $user->id)->first();
 
 
-        if($tienecargapen){
-            return redirect()->back()->withErrors('Ya tienes una carga masiva en proceso ');
+        if ($tienecargapen) {
+            $payloadsent = json_encode(
+                array(
+                    "TypeButton" => 0,
+                    "route" => "",
+                    "mensaje" => trans('messages.carga_masiva_proceso'),
+                    "payload" => ""
+                )
+            );
+            $datos = notificaciones::create([
+                'id_usuario' => $user->id,
+                'id_sistema' => 1,
+                'payload' => $payloadsent,
+                'status' => 2,
+                'created_user' => $user->username
+            ]);
+            broadcast(new NotificacionCreateEdit($datos));
+            return redirect()->back();
 
-        }else{
-            $payloadsent= json_encode(array(
-                "TypeButton" => 0,// 0 es mensaje 1 es que si es botton 2 ahref 
-                "route" => "",
-                "mensaje" => trans('messages.carga_masiva_cargando'),
-                "payload" => ""
-            ));
+        } else {
+            $payloadsent = json_encode(
+                array(
+                    "TypeButton" => 0,
+                    "route" => "",
+                    "mensaje" => trans('messages.carga_masiva_cargando'),
+                    "payload" => ""
+                )
+            );
 
-            ValidacionesCargaMasivaClaves::dispatch($filearray,$user,$tipocarga)->onQueue('high');
-            Session::put('status',0);
-            notificaciones::create([
+            ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga)->onQueue('high');
+           // Session::put('status', 0);
+            $datos = notificaciones::create([
                 'id_usuario' => $user->id,
                 'id_sistema' => 1,
                 'payload' => $payloadsent,
                 'status' => 0,
                 'created_user' => $user->username
             ]);
-
+            broadcast(new NotificacionCreateEdit($datos));
             return redirect()->back();
         }
 
@@ -187,7 +206,8 @@ class CalendarizacionCargaMasivaController extends Controller
     }
 
 
-   public static function nestedtrim($value) {
+    public static function nestedtrim($value)
+    {
         if (is_array($value)) {
             return array_map('self::nestedtrim', $value);
         }

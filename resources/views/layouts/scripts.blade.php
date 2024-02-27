@@ -1,5 +1,5 @@
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}" ></script>
     <!-- Fonts -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap.min.js')) }}"></script>
@@ -51,7 +51,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
         integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="{{asset('vendors/js/jquery/jquery.validate.min.js')}}"></script>
+    <script src="{{ asset('vendors/js/jquery/jquery.validate.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
         integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -60,33 +60,33 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap4.min.js')) }}"></script>
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script src="/js/appInit.js"></script>
-    <script >
-        
-          function callbackThen(response) {
+    <script>
+
+        function callbackThen(response) {
             // read HTTP status
             // read Promise object
             response.json().then(function(data) {
                 // console.log(data.action);
             });
         }
-    
+
         function callbackCatch(error) {
             console.error('Error:', error)
         }
-     
-        var tiemporestante2 = new Date("{{Session::get('last_activity')}}");
-        var cargamasiva="{{Session::get('status')??'3'}}";
- 
+
+        var tiemporestante2 = new Date("{{ Session::get('last_activity') }}");
+        var cargamasiva = "{{ Session::get('status') ?? '3' }}";
 
 
-       
 
-       
-        _gen.essential(tiemporestante2,cargamasiva);
+
+
+
+        _gen.essential(tiemporestante2, cargamasiva);
     </script>
     <script>
         $(document).ready(function() {
             _gen.block();
-            
+
         });
     </Script>
