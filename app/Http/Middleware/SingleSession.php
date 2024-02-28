@@ -42,6 +42,7 @@ class SingleSession
                 $payload = json_decode($data->payload);
                 session::put('mensaje',$payload->mensaje);
                 session::put('route',$payload->route);
+                session::put('TypeButton',$payload->TypeButton);
                 Session::put('payload', $payload->payload);
                 Session::put('status',$data->status);
                 session(['payload' => $payload->payload]);
@@ -52,6 +53,8 @@ class SingleSession
                 session::put('mensaje','');
                 session::put('route','');
                 Session::put('status',3);
+                Session::put('TypeButton','');
+
                 session(['payload' =>'']);
                 session(['status' => 3]);
             }
