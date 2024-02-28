@@ -34,18 +34,23 @@ class SingleSession
             ->select('*')
          
             ->where('id_usuario','=',$userId)
+            ->where('id_sistema','=',1)
             ->first();
            
            
             if(isset($data->status)){
-                // Log::debug('si entro');
-                Session::put('payload', $data->payload);
+                $payload = json_decode($data->payload);
+                session::put('mensaje',$payload->mensaje);
+                session::put('route',$payload->route);
+                Session::put('payload', $payload->payload);
                 Session::put('status',$data->status);
-                session(['payload' => $data->payload]);
+                session(['payload' => $payload->payload]);
                 session(['status' => $data->status]);
             }
             else{
                 Session::put('payload','');
+                session::put('mensaje','');
+                session::put('route','');
                 Session::put('status',3);
                 session(['payload' =>'']);
                 session(['status' => 3]);

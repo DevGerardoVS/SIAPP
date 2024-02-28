@@ -401,18 +401,23 @@ ul, #myUL {
 
 
  #footerA {
-  
   position: absolute;
   bottom: 0%;
   width: 100%;
- 
+
   color: rgb(0, 0, 0);
   margin-left: 0%;
   margin-right: 0%;
   margin-bottom: 0%;
   padding-left: 0%;
- 
 }
+
+@media (height <= 800px) {
+  #footerA{
+    position: relative;
+  }
+}
+
 .colortextfoot{
   color: #000;
 

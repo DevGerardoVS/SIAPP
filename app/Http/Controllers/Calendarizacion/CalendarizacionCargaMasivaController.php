@@ -54,7 +54,7 @@ class CalendarizacionCargaMasivaController extends Controller
         );
         // session::flush();
         $fr=session::pull('status');
-    session()->forget(['payload']);
+        session()->forget(['payload', 'status','mensaje','route']);
      
     Session::put('status',3);
 
@@ -162,14 +162,23 @@ class CalendarizacionCargaMasivaController extends Controller
             return redirect()->back()->withErrors('Ya tienes una carga masiva en proceso ');
 
         }else{
+            $payloadsent= json_encode(array(
+                "TypeButton" => 0,// 0 es mensaje, 1 es que si es botton, 2 ahref 
+                "route" => "",
+                "mensaje" => trans('messages.carga_masiva_cargando'),
+                "payload" => ""
+            ));
+
             ValidacionesCargaMasivaClaves::dispatch($filearray,$user,$tipocarga)->onQueue('high');
             Session::put('status',0);
             notificaciones::create([
                 'id_usuario' => $user->id,
                 'id_sistema' => 1,
+                'payload' => $payloadsent,
                 'status' => 0,
                 'created_user' => $user->username
             ]);
+
             return redirect()->back();
         }
 

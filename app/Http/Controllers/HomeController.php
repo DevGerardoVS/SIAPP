@@ -35,11 +35,13 @@ class HomeController extends Controller
     }
 
 
-    public function borrarsesionexcel()
+    public function borrarsesionnotificacion()
     {
-        $deleted = notificaciones::where('id_usuario','=',Auth::user()->id)->forceDelete();
-         session()->forget(['payload', 'status']);
-        return back();
+        $deleted = notificaciones::where('id_usuario','=',Auth::user()->id)
+        ->where('id_sistema','=',1)
+        ->forceDelete();
+         session()->forget(['payload', 'status','mensaje','route']);
+        return redirect()->back();
     }
 
 

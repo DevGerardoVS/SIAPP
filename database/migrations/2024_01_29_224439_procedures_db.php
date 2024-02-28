@@ -4007,7 +4007,7 @@ return new class extends Migration
             )t2;
         END");
 
-        DB::unprepared("CREATE PROCEDURE mml_comprobacion(in upp varchar(3),in programa varchar(2),in ur varchar(2),in anio int)
+     /*    DB::unprepared("CREATE PROCEDURE mml_comprobacion(in upp varchar(3),in programa varchar(2),in ur varchar(2),in anio int)
         begin
             set @upp := '';
             set @upp2 := '';
@@ -4113,7 +4113,7 @@ return new class extends Migration
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
-        END;");
+        END;"); */
 
         //------------------------Producer historico----------------------
 
@@ -6120,7 +6120,428 @@ return new class extends Migration
             drop temporary table if exists t_programa;
             drop temporary table if exists t_ur;
             drop temporary table if exists t_upp;
-        END;");   
+        END;");
+
+    DB::unprepared("CREATE PROCEDURE mml_presupuesto_egresos(in anio int,in upp_v varchar(3),in ur_v varchar(2),in pp_v varchar(2),in eje_v varchar(1))
+    begin
+        drop temporary table if exists aux_1;
+        drop temporary table if exists catalogo_aux;
+        drop temporary table if exists completo;
+        drop temporary table if exists parte_0;
+        drop temporary table if exists parte_1;
+        drop temporary table if exists parte_2;
+        drop temporary table if exists parte_3;
+        drop temporary table if exists parte_4;
+        drop temporary table if exists parte_5;
+        drop temporary table if exists parte_6;
+
+        set @upp := '';
+        set @ur := '';
+        set @pp := '';
+        set @eje := '';
+
+        if(upp_v is not null) then set @upp := concat(\"where clv_upp = '\",upp_v,\"'\"); end if;
+        if(ur_v is not null) then set @ur := concat(\" and clv_ur = '\",ur_v,\"'\"); end if;
+        if(pp_v is not null) then 
+            if(upp_v is not null) then
+                set @pp := concat(\" and clv_programa = '\",pp_v,\"'\");
+            else
+                set @pp := concat(\"where clv_programa = '\",pp_v,\"'\");
+            end if;
+        end if;
+        if(eje_v is not null) then set @eje := concat(\" and clv_eje = '\",eje_v,\"'\"); end if;
+        
+        set @queri := concat(\"
+        create temporary table aux_1
+        select *
+        from (
+            select 
+                case 
+                    when m.mir_id is not null then mm.clv_upp
+                    else ma.clv_upp
+                end clv_upp,
+                case 
+                    when m.mir_id is not null then mm.clv_ur 
+                    else substr(ma.entidad_ejecutora,5,2)
+                end clv_ur,
+                case 
+                    when m.mir_id is not null then substr(mm.area_funcional,9,2)
+                    else substr(ma.area_funcional,9,2)
+                end clv_programa,
+                case 
+                    when m.mir_id is not null then substr(mm.area_funcional,4,1)
+                    else substr(ma.area_funcional,4,1)
+                end clv_eje,
+                case 
+                    when m.mir_id is not null then substr(mm.area_funcional,5,2)
+                    else substr(ma.area_funcional,5,2)
+                end clv_linea_accion,
+                case 
+                    when m.mir_id is not null then mm.indicador
+                    when m.actividad_id is not null and ma.id_catalogo is null then ma.nombre
+                    when m.actividad_id is not null and ma.id_catalogo is not null then c.descripcion
+                end actividad,
+                m.total programado_anual,
+                um.unidad_medida,
+                m.cantidad_beneficiarios,
+                b.beneficiario
+            from metas m
+            left join mml_mir mm on m.mir_id = mm.id
+            left join mml_actividades ma on m.actividad_id = ma.id
+            left join catalogo c on ma.id_catalogo = c.id
+            left join unidades_medida um on m.unidad_medida_id = um.id
+            left join beneficiarios b on m.beneficiario_id = b.id
+            where m.ejercicio = \",anio,\" and m.deleted_at is null
+        )t \",@upp,\"\",@ur,\"\",@pp,\"\",@eje,\";
+        \");
+
+        prepare stmt from @queri;
+        execute stmt;
+        deallocate prepare stmt;
+        
+        create temporary table catalogo_aux
+        with aux as (
+            select distinct
+                e.upp_id,e.ur_id,e.programa_id,e.eje_id,e.linea_accion_id
+            from epp e
+            where e.ejercicio = anio and e.deleted_at is null
+        )
+        select 
+            c1.clave clv_upp,c1.descripcion upp,
+            c2.clave clv_ur,c2.descripcion ur,
+            c3.clave clv_programa,c3.descripcion programa,
+            c4.clave clv_eje,c4.descripcion eje,
+            c5.clave clv_linea_accion,c5.descripcion linea_accion
+        from aux a
+        left join catalogo c1 on a.upp_id = c1.id
+        left join catalogo c2 on a.ur_id = c2.id 
+        left join catalogo c3 on a.programa_id = c3.id
+        left join catalogo c4 on a.eje_id = c4.id
+        left join catalogo c5 on a.linea_accion_id = c5.id;
+        
+        create temporary table completo
+        with aux as (
+            select 
+                a1.clv_upp,ca.upp,a1.clv_ur,ca.ur,a1.clv_programa,ca.programa,
+                a1.clv_eje,ca.eje,a1.clv_linea_accion,
+                case 
+                    when substr(ca.linea_accion,8,1) = '.' or substr(ca.linea_accion,8,1) = ' '
+                    then substr(ca.linea_accion,1,7)
+                    else substr(ca.linea_accion,1,8)
+                end clv_cpladem,
+                case 
+                    when substr(ca.linea_accion,8,1) = '.' or substr(ca.linea_accion,8,1) = ' '
+                    then substr(ca.linea_accion,9,60)
+                    else substr(ca.linea_accion,11,60)
+                end linea_accion,
+                actividad,programado_anual,unidad_medida,cantidad_beneficiarios,beneficiario
+            from aux_1 a1
+            left join catalogo_aux ca on a1.clv_upp = ca.clv_upp and 
+            a1.clv_ur = ca.clv_ur and a1.clv_programa = ca.clv_programa and 
+            a1.clv_eje = ca.clv_eje and a1.clv_linea_accion = ca.clv_linea_accion
+            order by clv_upp,clv_ur,clv_programa,clv_eje,clv_linea_accion
+        )
+        select 
+            clv_upp,upp,clv_ur,ur,clv_programa,programa,clv_eje,eje,
+            substr(clv_cpladem,1,3) clv_objetivo_sectorial,mo.objetivo_sectorial,
+            substr(clv_cpladem,1,5) clv_estrategia,mo.estrategia,
+            concat(substr(clv_cpladem,1,5),'.',clv_linea_accion) clv_linea_accion,
+            linea_accion,
+            actividad,programado_anual,unidad_medida,cantidad_beneficiarios,beneficiario
+        from aux a
+        left join mml_objetivo_sectorial_estrategia mo on a.clv_cpladem = mo.clv_cpladem_linea_accion
+        and mo.deleted_at is null order by clv_upp,clv_ur,clv_programa,clv_estrategia;
+        
+        create temporary table parte_0
+        select distinct
+            clv_upp,upp,clv_ur,ur,clv_programa,programa,
+            clv_eje,eje,clv_objetivo_sectorial,objetivo_sectorial,
+            clv_estrategia,estrategia,clv_linea_accion,linea_accion
+        from completo;
+        
+        create temporary table parte_1
+        select distinct
+            clv_upp,upp,clv_ur,ur,clv_programa,programa,
+            clv_eje,eje,clv_objetivo_sectorial,objetivo_sectorial,
+            clv_estrategia,estrategia
+        from completo;
+        
+        create temporary table parte_2
+        select distinct
+            clv_upp,upp,clv_ur,ur,clv_programa,programa,
+            clv_eje,eje,clv_objetivo_sectorial,objetivo_sectorial
+        from parte_1;
+        
+        create temporary table parte_3
+        select distinct
+            clv_upp,upp,clv_ur,ur,clv_programa,programa,clv_eje,eje
+        from parte_2;
+        
+        create temporary table parte_4
+        select distinct
+            clv_upp,upp,clv_ur,ur,clv_programa,programa
+        from parte_3;
+        
+        create temporary table parte_5
+        select distinct
+            clv_upp,upp,clv_ur,ur
+        from parte_4;
+        
+        create temporary table parte_6
+        select distinct clv_upp,upp from parte_5;
+        
+        with aux as (
+            select 
+                clv_upp,'' clv_ur,'' clv_programa,'' clv_eje,'' clv_objetivo_sectorial,'' clv_estrategia,'' clv_linea_accion,
+                upp denominacion,
+                '' actividad,'' programado_anual,'' unidad_medida,'' cantidad_beneficiarios,'' beneficiario
+            from parte_6
+            union all
+            select 
+                clv_upp,clv_ur,'' clv_programa,'' clv_eje,'' clv_objetivo_sectorial,'' clv_estrategia,'' clv_linea_accion,
+                ur denominacion,
+                '' actividad,'' programado_anual,'' unidad_medida,'' cantidad_beneficiarios,'' beneficiario
+            from parte_5
+            union all
+            select 
+                clv_upp,clv_ur,clv_programa,'' clv_eje,'' clv_objetivo_sectorial,'' clv_estrategia,'' clv_linea_accion,
+                programa denominacion,
+                '' actividad,'' programado_anual,'' unidad_medida,'' cantidad_beneficiarios,'' beneficiario
+            from parte_4
+            union all
+            select 
+                clv_upp,clv_ur,clv_programa,clv_eje,'' clv_objetivo_sectorial,'' clv_estrategia,'' clv_linea_accion,
+                eje denominacion,
+                '' actividad,'' programado_anual,'' unidad_medida,'' cantidad_beneficiarios,'' beneficiario
+            from parte_3
+            union all
+            select 
+                clv_upp,clv_ur,clv_programa,clv_eje,clv_objetivo_sectorial,'' clv_estrategia,'' clv_linea_accion,
+                objetivo_sectorial denominacion,
+                '' actividad,'' programado_anual,'' unidad_medida,'' cantidad_beneficiarios,'' beneficiario
+            from parte_2
+            union all
+            select 
+                clv_upp,clv_ur,clv_programa,clv_eje,clv_objetivo_sectorial,clv_estrategia,'' clv_linea_accion,estrategia denominacion,
+                '' actividad,'' programado_anual,'' unidad_medida,'' cantidad_beneficiarios,'' beneficiario
+            from parte_1
+            union all
+            select 
+                clv_upp,clv_ur,clv_programa,clv_eje,clv_objetivo_sectorial,clv_estrategia,clv_linea_accion,
+                case 
+                    when substr(linea_accion,1,1) != ' ' then linea_accion
+                    else substr(linea_accion,2,70)
+                end denominacion,
+                '' actividad,'' programado_anual,'' unidad_medida,'' cantidad_beneficiarios,'' beneficiario
+            from parte_0
+            union all
+            select 
+                clv_upp,clv_ur,clv_programa,clv_eje,clv_objetivo_sectorial,clv_estrategia,clv_linea_accion,
+                linea_accion denominacion,actividad,programado_anual,unidad_medida,cantidad_beneficiarios,beneficiario
+            from completo
+            order by clv_upp,clv_ur,clv_programa,clv_eje,clv_objetivo_sectorial,clv_estrategia,clv_linea_accion,actividad
+        )
+        select 
+            case 
+                when clv_ur != '' then ''
+                else clv_upp
+            end clv_upp,
+            case 
+                when clv_programa != '' then ''
+                else clv_ur
+            end clv_ur,
+            case 
+                when clv_eje != '' then ''
+                else clv_programa
+            end clv_programa,
+            case 
+                when clv_objetivo_sectorial != '' then ''
+                else clv_eje
+            end clv_eje,
+            case 
+                when clv_estrategia != '' then ''
+                else clv_objetivo_sectorial
+            end clv_objetivo_sectorial,
+            case 
+                when clv_linea_accion != '' then ''
+                else clv_estrategia
+            end clv_estrategia,
+            case 
+                when actividad != '' then ''
+                else clv_linea_accion
+            end clv_linea_accion,
+            case 
+                when actividad != '' then ''
+                else denominacion
+            end denominacion,
+            actividad,programado_anual,unidad_medida,cantidad_beneficiarios,beneficiario
+        from aux;
+        
+        drop temporary table if exists aux_1;
+        drop temporary table if exists catalogo_aux;
+        drop temporary table if exists completo;
+        drop temporary table if exists parte_0;
+        drop temporary table if exists parte_1;
+        drop temporary table if exists parte_2;
+        drop temporary table if exists parte_3;
+        drop temporary table if exists parte_4;
+        drop temporary table if exists parte_5;
+        drop temporary table if exists parte_6;
+    END;
+    ");
+
+    DB::unprepared("CREATE PROCEDURE mml_matrices_indicadores(in anio int,in trimestre_n int,in semaforo int)
+    BEGIN
+        drop temporary table if exists aux_1;
+        drop temporary table if exists catalogo_aux;
+        drop temporary table if exists epp_aux;
+        drop temporary table if exists seguimiento;
+        drop temporary table if exists aux_2;
+
+        set @trimestre := '';
+        if(trimestre_n = 1) then set @trimestre := '(1,2,3)'; end if;
+        if(trimestre_n = 2) then set @trimestre := '(1,2,3,4,5,6)'; end if;
+        if(trimestre_n = 3) then set @trimestre := '(1,2,3,4,5,6,7,8,9)'; end if;
+        if(trimestre_n = 4) then set @trimestre := '(1,2,3,4,5,6,7,8,9,10,11,12)'; end if;
+        
+        set @queri := concat(\"
+        create temporary table seguimiento
+        select 
+            meta_id,
+            sum(realizado) realizado
+        from sapp_seguimiento ss 
+        where ejercicio = \",anio,\" and deleted_at is null and mes in \",@trimestre,\"
+        group by meta_id;
+        \");
+
+        prepare stmt from @queri;
+        execute stmt;
+        deallocate prepare stmt;
+
+        create temporary table aux_1
+        select 
+            mm.clv_upp,
+            mm.clv_pp clv_programa,
+            mm.clv_ur,
+            mm.nivel,
+            case 
+                when mm.nivel = 8 then 'Fin'
+                when mm.nivel = 9 then 'Propósito'
+                when mm.nivel = 10 then 'Componente'
+                when mm.nivel = 11 then 'Actividad'
+            end tipo_indicador,
+            mm.objetivo resumen_narrativo,
+            mm.indicador nombre_indicador,
+            mm.definicion_indicador,
+            mm.metodo_calculo,
+            mm.descripcion_metodo,
+            case 
+                when mm.frecuencia_medicion = 29 then 'Quincenal'
+                when mm.frecuencia_medicion = 30 then 'Mensual'
+                when mm.frecuencia_medicion = 31 then 'Bimestral'
+                when mm.frecuencia_medicion = 32 then 'Trimestral'
+                when mm.frecuencia_medicion = 33 then 'Cuatrimestral'
+                when mm.frecuencia_medicion = 34 then 'Semestral'
+                when mm.frecuencia_medicion = 35 then 'Anual'
+                when mm.frecuencia_medicion = 36 then 'Bianual'
+                when mm.frecuencia_medicion = 37 then 'Quinquenal'
+                when mm.frecuencia_medicion = 38 then 'Sexenal'
+            end frecuencia_medicion,
+            um.unidad_medida,
+            case 
+                when mm.dimension = 21 then 'Eficacia'
+                when mm.dimension = 22 then 'Eficiencia'
+                when mm.dimension = 23 then 'Calidad'
+                when mm.dimension = 24 then 'Economía'
+            end dimension,
+            mm.medios_verificacion,
+            m.total meta_anual,
+            case 
+                when ss.realizado is null and mm.nivel = 11 then 0
+                else ss.realizado
+            end trimestre,
+            case
+                when ss.realizado is null then 0
+                when ss.realizado = 0 then 0
+                when ss.realizado > 0 then truncate(((ss.realizado/m.total)*100),2)
+            end avance
+        from mml_mir mm
+        left join unidades_medida um on mm.unidad_medida = um.id
+        left join metas m on mm.id = m.mir_id
+        left join seguimiento ss on ss.meta_id = m.id
+        where mm.ejercicio = anio and mm.deleted_at is null;
+        
+        create temporary table catalogo_aux
+        select 
+            id,clave clv_programa,descripcion programa
+        from catalogo 
+        where ejercicio = anio and deleted_at is null and grupo_id in (16);
+        
+        create temporary table epp_aux
+        with aux as (
+            select distinct
+                upp_id,
+                ur_id
+            from epp
+            where ejercicio = anio and deleted_at is null
+        )
+        select 
+            c1.clave clv_upp, c1.descripcion upp,
+            c2.clave clv_ur, c2.descripcion ur
+        from aux a
+        left join catalogo c1 on c1.id = a.upp_id
+        left join catalogo c2 on c2.id = a.ur_id;
+        
+        create temporary table aux_2
+        select 
+            clv_upp,upp,clv_programa,programa,clv_ur,
+            case 
+                when ur is null then ''
+                else ur
+            end ur,
+            nivel,tipo_indicador,resumen_narrativo,
+            nombre_indicador,definicion_indicador,metodo_calculo,descripcion_metodo,frecuencia_medicion,
+            unidad_medida,dimension,medios_verificacion,meta_anual,trimestre,avance,
+            case 
+                when avance <= 60 then 0
+                when avance > 60 and avance <= 94 then 1
+                when avance > 94 and avance <= 110 then 2
+                when avance > 110 then 3
+            end color
+        from (
+            select
+                a1.clv_upp,c1.upp,a1.clv_programa,ca.programa,a1.clv_ur,ea.ur,a1.nivel,tipo_indicador,resumen_narrativo,
+                nombre_indicador,definicion_indicador,metodo_calculo,descripcion_metodo,frecuencia_medicion,
+                unidad_medida,dimension,medios_verificacion,meta_anual,trimestre,avance
+            from aux_1 a1
+            left join catalogo_aux ca on a1.clv_programa = ca.clv_programa
+            left join epp_aux ea on a1.clv_upp = ea.clv_upp and a1.clv_ur = ea.clv_ur
+            left join (
+                select clave clv_upp,descripcion upp
+                from catalogo where ejercicio = anio
+                and deleted_at is null and grupo_id = 6
+            ) c1 on a1.clv_upp = c1.clv_upp
+        )t
+        order by clv_upp,clv_programa,clv_ur,nivel;
+
+        set @semaforo := \"\";
+        if(semaforo is not null) then set @semaforo := concat(\"where color = \",semaforo); end if;
+
+        set @queri := concat(\"
+        select *
+        from aux_2 \",@semaforo,\"
+        \");
+
+        prepare stmt from @queri;
+        execute stmt;
+        deallocate prepare stmt;
+
+        drop temporary table if exists aux_1;
+        drop temporary table if exists catalogo_aux;
+        drop temporary table if exists epp_aux;
+        drop temporary table if exists seguimiento;
+        drop temporary table if exists aux_2;
+    END;");
     }
 
     /**
@@ -6188,5 +6609,8 @@ return new class extends Migration
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_seguimiento_1;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_seguimiento_2;");
         DB::unprepared("DROP PROCEDURE IF EXISTS seguimiento_totales;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS mml_presupuesto_egresos;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS mml_comprobacion");
+        DB::unprepared("DROP PROCEDURE IF EXISTS mml_matrices_indicadores");
     }
 };

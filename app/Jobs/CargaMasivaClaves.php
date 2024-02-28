@@ -133,20 +133,32 @@ class CargaMasivaClaves implements ShouldQueue
                     }
                 }
                 $payload = json_encode($storeP_array);
+                $payloadsent = json_encode(
+                    array(
+                        "TypeButton" => 1,
+                        "route" => "'/calendarizacion/download-errors-excel'",
+                        "mensaje" => trans('messages.carga_masiva_error'),
+                        "payload" => $payload
+                    )
+                );
                 notificaciones::where('id_usuario', $usuario->id)
                     ->update([
-                        'payload' => $payload,
+                        'payload' => $payloadsent,
                         'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
             } else {
-                $array_exito = array();
-                array_push($array_exito, 'Carga masiva exitosa');
-                $payload = json_encode($array_exito);
-
+                $payloadsent = json_encode(
+                    array(
+                        "TypeButton" => 0,
+                        "route" => "'/borrar-sesion_sesion_notificacion'",
+                        "mensaje" => trans('messages.carga_masiva_exito'),
+                        "payload" => ""
+                    )
+                );
                 notificaciones::where('id_usuario', $usuario->id)
                     ->update([
-                        'payload' => $payload,
+                        'payload' => $payloadsent,
                         'status' => 1,
                         'updated_user' => $usuario->username
                     ]);

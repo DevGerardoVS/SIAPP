@@ -1,10 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use App\Models\administracion\Sistema;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 
@@ -47,10 +45,9 @@ function getExplodePartiqcipacion($data){
     $permiso = DB::table('permisos_funciones')
         ->select(
             'id_user',
-            'id_permiso',
-            )
+            'id_permiso')
         ->where('id_user', auth::user()->id)
-        ->where('permisos_funciones.deleted_at',null)
+        ->where('deleted_at',null)
         ->where('id_permiso', $name)->get();
     if(count($permiso)) {
         return true;
@@ -88,6 +85,10 @@ function existMetas()
         return false;
     }
 }
+function SystemName(){
+    $res = Sistema::where('id', Session::get('sistema'))->select('nombre_sistema')->get();
+    return $res[0]->nombre_sistema;
+}
 function funcionessXsistemas($nombre)
 {
     $func = DB::table('adm_funciones')
@@ -108,4 +109,18 @@ function menuXsistema($nombre){
     return $menu;
 
 }
+function check_sistema($id_group) {
+    $permiso = DB::table('adm_rel_sistema_grupo')
+        ->select(
+            'id',
+            )
+        ->where('id_grupo', $id_group)
+        ->where('id_sistema',1)->get();
+    if(count($permiso)>=1) {
+        return true;
+    }
+    else
+    return false;
+}
+
 
