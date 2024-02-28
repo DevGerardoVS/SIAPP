@@ -4007,7 +4007,7 @@ return new class extends Migration
             )t2;
         END");
 
-        DB::unprepared("CREATE PROCEDURE mml_comprobacion(in upp varchar(3),in programa varchar(2),in ur varchar(2),in anio int)
+     /*    DB::unprepared("CREATE PROCEDURE mml_comprobacion(in upp varchar(3),in programa varchar(2),in ur varchar(2),in anio int)
         begin
             set @upp := '';
             set @upp2 := '';
@@ -4113,7 +4113,7 @@ return new class extends Migration
             prepare stmt  from @query;
             execute stmt;
             deallocate prepare stmt;
-        END;");
+        END;"); */
 
         //------------------------Producer historico----------------------
 
@@ -6389,114 +6389,6 @@ return new class extends Migration
         drop temporary table if exists parte_6;
     END;
     ");
-
-    DB::unprepared("CREATE PROCEDURE mml_comprobacion(in upp varchar(3),in programa varchar(2),in ur varchar(2),in anio int)
-    begin
-        set @upp := '';
-        set @upp2 := '';
-        set @programa := '';
-        set @ur := '';
-        set @ur2 := '';
-        set @programa2 := '';
-        if(upp is not null) then 
-            set @upp := CONCAT('and mm.clv_upp = \"',upp,'\"'); 
-            set @upp2 := CONCAT('and clv_upp = \"',upp,'\"'); 
-        end if;
-        if(programa is not null) then
-            set @programa := CONCAT('and mm.clv_pp = \"',programa,'\"'); 
-            set @programa2 := CONCAT('and clv_programa = \"',programa,'\"'); 
-        end if;
-        if(ur is not null) then 
-            set @ur := CONCAT('and mm.clv_ur = \"',ur,'\"'); 
-            set @ur2 := CONCAT('and clv_ur = \"',ur,'\"'); 
-        end if;
-
-        set @query := concat(\"
-            SELECT
-                case 
-                    when nivel = 9 then clv_upp
-                    else ''
-                end clv_upp,
-                case 
-                    when nivel = 9 then clv_pp
-                    else ''
-                end clv_pp,
-                case 
-                    when nivel = 9 then clv_ur
-                    else ''
-                end clv_ur,
-                case 
-                    when nivel != 9 then area_funcional
-                    else ''
-                end area_funcional,
-                case 
-                    when nivel != 9 then proyecto
-                    else ''
-                end nombre_proyecto,
-                case 
-                    when nivel = 10 then 'Componente'
-                    when nivel = 11 then 'Actividad'
-                    else ''
-                end nivel,
-                objetivo,
-                indicador 
-            FROM (
-                SELECT *
-                FROM (
-                    SELECT 
-                        mm.id,
-                        mm.clv_upp,
-                        mm.clv_pp,
-                        mm.clv_ur,
-                        mm.area_funcional,
-                        ve.proyecto,
-                        mm.nivel,
-                        mm.objetivo,
-                        mm.indicador
-                    from mml_mir mm
-                    join v_epp ve on ve.id = mm.id_epp and ve.clv_subprograma not in ('UUU','21B')
-                    where mm.ejercicio = \",anio,\" and mm.deleted_at is null and mm.clv_pp not in ('5H','RM')
-                    and nivel in (10) \",@upp,\" \",@ur,\" \",@programa,\"
-                    UNION ALL 
-                    SELECT 
-                        mm.componente_padre id,
-                        mm.clv_upp,
-                        mm.clv_pp,
-                        mm.clv_ur,
-                        mm.area_funcional,
-                        ve.proyecto,
-                        mm.nivel,
-                        mm.objetivo,
-                        mm.indicador
-                    from mml_mir mm
-                    join v_epp ve on ve.id = mm.id_epp and ve.clv_subprograma not in ('UUU','21B')
-                    where mm.ejercicio = \",anio,\" and mm.deleted_at is NULL
-                    and nivel IN (11) \",@upp,\" \",@ur,\" \",@programa,\"
-                    and mm.clv_pp not in ('5H','RM')
-                    UNION ALL 
-                    select distinct
-                        0 id,
-                        ve.clv_upp,
-                        ve.clv_programa clv_pp,
-                        ve.clv_ur,
-                        '' area_funcional,
-                        '' proyecto,
-                        9 nivel,
-                        '' objetivo,
-                        '' indicador
-                    from v_epp ve
-                    where ejercicio = \",anio,\" and deleted_at is NULL \",@upp2,\" \",@ur2,\" \",@programa2,\"
-                    and clv_programa not in ('5H','RM') and clv_subprograma not in ('UUU','21B')
-                )t 
-                GROUP BY clv_upp,clv_pp,clv_ur,id,nivel
-                ORDER BY clv_upp,clv_pp,clv_ur,id,nivel
-            )t2;
-        \");
-
-        prepare stmt  from @query;
-        execute stmt;
-        deallocate prepare stmt;
-    END;");
 
     DB::unprepared("CREATE PROCEDURE mml_matrices_indicadores(in anio int,in trimestre_n int,in semaforo int)
     BEGIN
