@@ -56,6 +56,13 @@ Route::controller(UsuarioController::class)->group(function () {
 		// Rutas de descarga archivos de carga
 			Route::get('/archivos-carga/{id?}', 'getArchivosDeCarga2024');
 		// Fin de rutas archivos de carga
+		Route::get('/configuraciones/manuales',[App\Http\Controllers\CargaManualesController::class, 'index'])->name('viewManuales');
+		Route::post('/configuraciones/get-manuales', [App\Http\Controllers\CargaManualesController::class, 'getManuales'])->name('get_manuales');
+		Route::get('/configuraciones/get-usuarios', [App\Http\Controllers\CargaManualesController::class, 'getUsers'])->name('get_tipos_usuarios');
+		Route::post('/configuraciones/add-manual', [App\Http\Controllers\CargaManualesController::class, 'saveManual'])->name('add_manual');
+		Route::post('/configuraciones/get-manual', [App\Http\Controllers\CargaManualesController::class, 'getManual'])->name('get_manual');
+		Route::post('/configuraciones/delete-manual', [App\Http\Controllers\CargaManualesController::class, 'deleteManual'])->name('del_manual');
+		Route::get('/configuraciones/download-manual', [App\Http\Controllers\CargaManualesController::class, 'getDownload'])->name('download_manual');
 	});
 
 	Route::controller(GrupoController::class)->group(function () {
