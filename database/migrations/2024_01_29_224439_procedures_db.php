@@ -5808,7 +5808,8 @@ return new class extends Migration
                 original,ampliacion,modificado,comprometido,devengado,cumplimiento
             from aux_1 a1
             left join aux_2 a2 on a1.clv_upp = a2.clv_upp 
-            and a1.clv_ur = a2.clv_ur;
+            and a1.clv_ur = a2.clv_ur
+            order by clv_upp,clv_ur,clv_programa,clv_fondo,clv_partida;
 
             drop temporary table if exists aux_1;
             drop temporary table if exists aux_2;
