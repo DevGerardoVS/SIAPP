@@ -1,12 +1,12 @@
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" ></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     <!-- Fonts -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/charts/chart.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/jquery/jquery.min.js')) }}"></script>
     <script src="{{ asset('vendors/js/jquery/jquery.mask.min.js') }}"></script>
     <script src="{{ asset('vendors/js/jquery/jquery-3.7.0.js') }}"></script>
+    <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap.bundle.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/bootstrap/bootstrap-multiselect.js')) }}"></script>
 
@@ -61,6 +61,11 @@
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script src="/js/appInit.js"></script>
     <script>
+        Echo.channel(`notificacion`)
+            .listen('NotificacionCreateEdit', (e) => {
+                console.log(e);
+                console.log('Se ha creado o editado un registro');
+            });
 
         function callbackThen(response) {
             // read HTTP status

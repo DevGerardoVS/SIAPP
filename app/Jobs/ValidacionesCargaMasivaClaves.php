@@ -398,9 +398,10 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
-                    $datos = notificaciones::where('id_usuario', $usuario->id)->first();
+                $datos = notificaciones::where('id_usuario', $usuario->id)->first();
 
-                    event(new NotificacionCreateEdit($datos));
+               event(new NotificacionCreateEdit($datos));
+
 
 
             } else {
@@ -430,8 +431,9 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
-                $datos = notificaciones::where('id_usuario', $usuario->id)->first();
-                event(new NotificacionCreateEdit($datos));
+            $datos = notificaciones::where('id_usuario', $usuario->id)->first();
+           event(new NotificacionCreateEdit($datos));
+
 
         }
     }

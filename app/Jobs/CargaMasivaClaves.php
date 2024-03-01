@@ -148,6 +148,7 @@ class CargaMasivaClaves implements ShouldQueue
                         'updated_user' => $usuario->username
                     ]);
                 $datos = notificaciones::where('id_usuario', $usuario->id)->first();
+              //  Log::debug($datos);
                 event(new NotificacionCreateEdit($datos));
 
             } else {
@@ -166,6 +167,7 @@ class CargaMasivaClaves implements ShouldQueue
                         'updated_user' => $usuario->username
                     ]);
                 $datos = notificaciones::where('id_usuario', $usuario->id)->first();
+
                 event(new NotificacionCreateEdit($datos));
 
             }
@@ -185,7 +187,7 @@ class CargaMasivaClaves implements ShouldQueue
             $arrayfail = array();
             array_push($arrayErrores, ' $ $Ocurrio un error interno contacte a soporte.');
             $payload = json_encode($arrayfail);
-            \Log::debug($e);
+            Log::debug($e);
             notificaciones::where('id_usuario', $usuario->id)
                 ->update([
                     'payload' => $arrayfail,
@@ -193,7 +195,7 @@ class CargaMasivaClaves implements ShouldQueue
                     'updated_user' => $usuario->username
                 ]);
             $datos = notificaciones::where('id_usuario', $usuario->id)->first();
-            event(new NotificacionCreateEdit($datos));
+             event(new NotificacionCreateEdit($datos));
 
 
         }

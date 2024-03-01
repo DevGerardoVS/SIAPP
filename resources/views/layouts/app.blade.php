@@ -53,9 +53,7 @@ date_default_timezone_set('America/Mexico_City');
 
 <body>
     <div id="app" style="">
-      
         @if (isset(Auth::user()->id))
-       
         <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
                 <div class="container">
                     <a class="navbar-brand" href="/"

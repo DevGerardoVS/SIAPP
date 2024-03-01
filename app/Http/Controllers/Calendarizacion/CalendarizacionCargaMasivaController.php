@@ -69,6 +69,18 @@ class CalendarizacionCargaMasivaController extends Controller
         return Excel::download(new ImportErrorsExport($fails), 'Errores.xlsx');
     }
 
+
+/*     public function test(){
+        $test=json_encode(array(
+            "id"=>66,
+            "TypeButton" => 0,
+            "route" => "",
+            "mensaje" => ' Error: No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados.',
+            "payload" => ""
+        ));
+        event(new NotificacionCreateEdit($test));
+    }
+ */
     //Obtener datos del excel
     public function loadDataPlantilla(Request $request)
     {
@@ -143,11 +155,41 @@ class CalendarizacionCargaMasivaController extends Controller
             //Verificamos si hay diferencia entre lo que debe ser y lo que mandaron
             $equals = array_diff($encabezadosMin, $arrayCampos);
             if (count($equals) > 0) {
-                return redirect()->back()->withErrors('Error: No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados. ');
-
+                $payloadsent = json_encode(
+                    array(
+                        "TypeButton" => 0,
+                        "route" => "",
+                        "mensaje" => ' Error: No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados.',
+                        "payload" => ""
+                    )
+                );
+                $datos = notificaciones::create([
+                    'id_usuario' => $user->id,
+                    'id_sistema' => 1,
+                    'payload' => $payloadsent,
+                    'status' => 2,
+                    'created_user' => $user->username
+                ]);
+                 event(new NotificacionCreateEdit($datos));
             }
             if (count($filearray) <= 0) {
-                return redirect()->back()->withErrors('Error: El excel esta vacio. ');
+                $payloadsent = json_encode(
+                    array(
+                        "TypeButton" => 0,
+                        "route" => "",
+                        "mensaje" => ' El excel esta vacio.',
+                        "payload" => ""
+                    )
+                );
+                $datos = notificaciones::create([
+                    'id_usuario' => $user->id,
+                    'id_sistema' => 1,
+                    'payload' => $payloadsent,
+                    'status' => 2,
+                    'created_user' => $user->username
+                ]);
+                 event(new NotificacionCreateEdit($datos));
+                 
             }
         }
 
@@ -175,7 +217,9 @@ class CalendarizacionCargaMasivaController extends Controller
                 'status' => 2,
                 'created_user' => $user->username
             ]);
-            broadcast(new NotificacionCreateEdit($datos));
+            Log::debug("aqui deberia saltar el evento");
+             event(new NotificacionCreateEdit($datos));
+
             return redirect()->back();
 
         } else {
@@ -187,9 +231,6 @@ class CalendarizacionCargaMasivaController extends Controller
                     "payload" => ""
                 )
             );
-
-            ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga)->onQueue('high');
-           // Session::put('status', 0);
             $datos = notificaciones::create([
                 'id_usuario' => $user->id,
                 'id_sistema' => 1,
@@ -197,7 +238,10 @@ class CalendarizacionCargaMasivaController extends Controller
                 'status' => 0,
                 'created_user' => $user->username
             ]);
-            broadcast(new NotificacionCreateEdit($datos));
+             event(new NotificacionCreateEdit($datos));
+
+            ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga)->onQueue('high');
+           // Session::put('status', 0);
             return redirect()->back();
         }
 
