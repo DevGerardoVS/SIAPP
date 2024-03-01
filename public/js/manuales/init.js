@@ -14,7 +14,7 @@ $(document).ready(function() {
                 $("#roles").empty();
                 //console.log(response.roles.length);
                 response.roles.forEach(element => {
-                    $("#roles").append('<label>'+element.name+'</label><input class="form-check-input roles" type="checkbox" value="'+element.id+'" name="'+element.name+'" id="'+element.id+'" style="margin-left:20px"><br>');
+                    $("#roles").append('<label>'+element.nombre_grupo+'</label><input class="form-check-input roles" type="checkbox" value="'+element.id+'" name="'+element.nombre_grupo+'" id="'+element.id+'" style="margin-left:20px"><br>');
                 });
 
             },
@@ -169,7 +169,7 @@ function getManual(id){
         processData: false,
         success: function(response) {
             $("#roles").empty();
-
+            //console.log(response);
             $("#nombre").val(response.manual.nombre);
             $("#id_act").val(response.manual.id);
             
@@ -186,7 +186,7 @@ function getManual(id){
                         break;
                     } 
                 }
-                $("#roles").append('<label>'+element.name+'</label><input class="form-check-input roles" type="checkbox" value="'+element.id+'" name="'+element.name+'" id="'+element.id+'" '+checked+' style="margin-left:20px"><br>');
+                $("#roles").append('<label>'+element.nombre_grupo+'</label><input class="form-check-input roles" type="checkbox" value="'+element.id+'" name="'+element.nombre_grupo+'" id="'+element.id+'" '+checked+' style="margin-left:20px"><br>');
             }
             
 

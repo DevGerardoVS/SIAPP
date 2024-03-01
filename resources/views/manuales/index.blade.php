@@ -26,7 +26,7 @@
                             </div>
                         </form>
                         <br>
-                        <button type="button" id="btn_new_registro" data-toggle="modal" data-target="#modalNuevoM" class="btn" style="color:#0d6efd"><i class="fas fa-plus">
+                        <button type="button" id="btn_new_registro" data-toggle="modal" data-target="#modalNuevoM" class="btn" style="color:#0d6efd"><i class="fa fa-plus">
                                 {{ __('messages.nuevo_registro') }}</i></button>
                         <br>
                         <div class="row">
