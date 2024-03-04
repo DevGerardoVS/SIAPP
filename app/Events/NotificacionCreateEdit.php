@@ -24,7 +24,7 @@ class NotificacionCreateEdit implements ShouldBroadcast
 
     public function broadcastOn()
     {
-         return new Channel('notificacion'.$this->notificacion['id']);
+         return new PrivateChannel('notificacion.'.$this->notificacion['id']);
      
 
 }

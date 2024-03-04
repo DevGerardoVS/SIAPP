@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\notificaciones;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -17,6 +18,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('Notificaciones', function ($user) {
-    return $user != null;
+Broadcast::channel('notificacion.{id}', function ($user, $id) {
+    return  $user->id ===  notificaciones::find($id)->id_usuario;
 });

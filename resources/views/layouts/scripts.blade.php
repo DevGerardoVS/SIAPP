@@ -61,7 +61,7 @@
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script src="/js/appInit.js"></script>
     <script>
-        Echo.channel(`notificacion`)
+        Echo.private(`notificacion.${id}`)
             .listen('NotificacionCreateEdit', (e) => {
                 console.log(e);
                 console.log('Se ha creado o editado un registro');
