@@ -143,9 +143,12 @@ date_default_timezone_set('America/Mexico_City');
             <!-- Carga masiva en proceso -->
 
                          @if(session()->has('status')&& session('status')==0)
-                         <!-- Carga masiva con errores -->
+                         <!-- Carga masiva con errores -->  
+                       {{-- Ejemplo de solo un mensaje --}}
+                           @if (session('TypeButton')==0)
                  <div id="alerts_notificaciones" name="alerts_notificaciones" style="text-align: center" class="alert alert-warning" role="alert">
-                   {{session('mensaje')}} &nbsp;
+                    {{session('mensaje')}} &nbsp;
+                    @endif
                   </div>                               
                       @endif
 
@@ -153,8 +156,10 @@ date_default_timezone_set('America/Mexico_City');
                     <!-- Carga masiva con errores -->
             <div id="alerts_notificaciones" name="alerts_notificaciones" style="text-align: center" class="alert alert-danger" role="alert">
                 {{session('mensaje')}} : &nbsp;
-                <!-- agregar boton para href a la descarga de errores -->
+                {{-- ejemplo boton en 1 errores --}}
+                @if (session('TypeButton')==0)
                 <button  class="btn btn-success"  onclick="_notificaciones.alerts_notificaciones({{session('status')}},{{session('route')}})" >Descargar Errores</button>
+                @endif
 
              </div>                               
                  @endif
@@ -164,10 +169,14 @@ date_default_timezone_set('America/Mexico_City');
          
                  <div id="alerts_notificaciones" name="alerts_notificaciones" style="text-align: center" class="alert alert-success" role="alert">
                     {{session('mensaje')}} : &nbsp;
-                     <!-- agregar boton para href a la lista -->
-
+                   {{-- ejemplo boton en 1 boton de aceptar--}}
+                         @if (session('TypeButton')==0)
                          <button  class="btn btn-primary"  onclick="_notificaciones.alerts_notificaciones({{session('status')}},{{session('route')}})" >ACEPTAR</button>
-
+                         @endif
+                         {{-- Ejemplo de boton de href --}}
+{{--                          @if (session('TypeButton')==0)
+                         <a class="btn btn-primary"  href="{{session('route')}}" >ACEPTAR</a>
+                         @endif --}}
                   </div>                               
                       @endif
 

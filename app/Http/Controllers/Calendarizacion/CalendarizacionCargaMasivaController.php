@@ -222,16 +222,17 @@ class CalendarizacionCargaMasivaController extends Controller
 
             return redirect()->back();
 
-        } else {
-            $payloadsent = json_encode(
-                array(
-                    "TypeButton" => 0,
-                    "route" => "",
-                    "mensaje" => trans('messages.carga_masiva_cargando'),
-                    "payload" => ""
-                )
-            );
-            $datos = notificaciones::create([
+        }else{
+            $payloadsent= json_encode(array(
+                "TypeButton" => 0,// 0 es mensaje, 1 es que si es botton, 2 ahref 
+                "route" => "",
+                "mensaje" => trans('messages.carga_masiva_cargando'),
+                "payload" => ""
+            ));
+
+            ValidacionesCargaMasivaClaves::dispatch($filearray,$user,$tipocarga)->onQueue('high');
+            Session::put('status',0);
+            notificaciones::create([
                 'id_usuario' => $user->id,
                 'id_sistema' => 1,
                 'payload' => $payloadsent,
