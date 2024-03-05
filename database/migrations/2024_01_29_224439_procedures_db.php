@@ -5815,12 +5815,13 @@ return new class extends Migration
             drop temporary table if exists aux_2;
         END;");   
 
-        DB::unprepared("CREATE PROCEDURE reporte_seguimiento_2(in anio int,in upp_v varchar(3),in ur_v varchar(2),in programa_v varchar(2), in fondo_v varchar(2))
+        DB::unprepared("CREATE PROCEDURE reporte_seguimiento_2(in anio int,in upp_v varchar(3),in ur_v varchar(2),in programa_v varchar(2), in fondo_v varchar(2), in capiulo_v varchar(6))
         begin
             set @upp := '';
             set @ur := '';
             set @programa := '';
             set @fondo := '';
+            set @capitulo := '';
 
             if(upp_v is not null) then 
                 set @upp := concat(\"where clv_upp = '\",upp_v,\"'\");
@@ -5833,6 +5834,13 @@ return new class extends Migration
             end if;
             if(fondo_v is not null) then 
                 set @fondo := concat(\" and clv_fondo = '\",fondo_v,\"'\");
+            end if;
+            if(capitulo_v is not null) then 
+                if(upp_v is not null) then
+                    set @capitulo := concat(\" and clv_partida = '\",capitulo_v,\"'\");
+                else
+                    set @capitulo := concat(\"where clv_partida = '\",capitulo_v,\"'\");
+                end if;
             end if;
 
             set @queri := concat(\"
@@ -5891,7 +5899,7 @@ return new class extends Migration
                     left join unidades_medida um on m.unidad_medida_id = um.id
                     where ss.ejercicio = \",anio,\" and ss.deleted_at is null
                     order by clv_upp,clv_ur,clv_programa,clv_fondo,mes
-                )t \",@upp,\"\",@ur,\"\",@programa,\"\",@fondo,\"
+                )t \",@upp,\"\",@ur,\"\",@programa,\"\",@fondo,\"\",@capitulo,\"
             )
             select *
             from (
