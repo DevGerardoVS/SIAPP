@@ -1414,6 +1414,19 @@ return new class extends Migration
             $table->string('updated_user',45)->nullable();
             $table->string('deleted_user',45)->nullable();
         });
+
+        Schema::create('sapp_rel_metas_partidas', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('meta_id');
+            $table->string('partida',6);
+            $table->integer('ejercicio');
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+            $table->string('created_user',45);
+            $table->string('updated_user',45)->nullable();
+            $table->string('deleted_user',45)->nullable();
+        });
     }
 
     /**
@@ -1485,5 +1498,6 @@ return new class extends Migration
         Schema::dropIfExists('sapp_enlaces');
         Schema::dropIfExists('grupos');
         Schema::dropIfExists('manuales');
+        Schema::dropIfExists('sapp_rel_metas_partidas');
     }
 };
