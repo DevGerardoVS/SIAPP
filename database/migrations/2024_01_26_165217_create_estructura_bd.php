@@ -400,6 +400,7 @@ return new class extends Migration
             $table->decimal('diciembre',22,2)->default(null);
             $table->decimal('total',22,2)->default(null);
             $table->integer('estado');
+            $table->tinyInteger('estatus_sapp');
             $table->enum('tipo', ['Operativo', 'RH']);
             $table->softDeletes();
             $table->string('created_user',45);
@@ -1180,6 +1181,7 @@ return new class extends Migration
                 $table->decimal('diciembre',22,2)->default(null);
                 $table->decimal('total',22,2)->default(null);
                 $table->integer('estado');
+                $table->tinyInteger('estatus_sapp');
                 $table->enum('tipo', ['Operativo', 'RH']);
                 $table->string('created_user',45);
                 $table->string('updated_user',45)->nullable();
