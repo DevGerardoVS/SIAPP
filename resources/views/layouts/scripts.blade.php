@@ -61,28 +61,39 @@
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     <script src="/js/appInit.js"></script>
     <script>
-        /*             Echo.private(`notificacion.${this.id}`)
-                    .listen('NotificacionCreateEdit', (e) => {
-                        console.log(e);
-                        console.log('Se ha creado o editado un registro');
-                    }); */
+/*         Echo.private(`notificacion.${this.id}`)
+            .listen('NotificacionCreateEdit', (e) => {
+                var notificacion = e['notificacion'];
+                $.ajax({
+                    url: "{{ route('notificacion') }}",
+                    method: "POST",
+                    data: {
+                        notificacion: notificacion
+                    },
+                    success: function(response) {
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("Error" + error);
+                    }
+                });
+            }); */
         Echo.private(`notificacion`)
             .listen('NotificacionCreateEdit', (e) => {
                 var notificacion = e['notificacion'];
-            $.ajax({
-                url: "{{ route('notificacion') }}",
-                method: "POST",
-                data: {
-                    notificacion: notificacion
-                },
-                success: function(response) {
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    console.log("Error"+error);
-                }
+                $.ajax({
+                    url: "{{ route('notificacion') }}",
+                    method: "POST",
+                    data: {
+                        notificacion: notificacion
+                    },
+                    success: function(response) {
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                    }
+                });
             });
-        });
 
         function callbackThen(response) {
             // read HTTP status
