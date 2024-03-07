@@ -45,14 +45,14 @@
                                     </div>
                                     <div class="col-md-2 text-right">
                                         <label for="buttonBtnNew">&nbsp;</label>
-                                        @if (Auth::user()->clv_upp==NULL && Auth::user()->id_grupo==1 && session('status')==3)
+                                        @if (Auth::user()->clv_upp==NULL && Auth::user()->id_grupo==1 && session('blocked')!=0)
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga_adm" id="button_modal_carga_adm">
                                             <i class="fas fa-plus">{{__("messages.carga_masiva")}} </i>
                                         </div>
                                         @else
-                                        @if (check_assignFront(1)  && session('status')==3)
+                                        @if (check_assignFront(1)  && session('blocked')!=0)
                                         <div class="row">
                                             <button type="button" class="btn colorMorado"
                                             name="button_modal_carga" id="button_modal_carga">
@@ -211,7 +211,7 @@
         });
        
         
-        @if($errors->any())
+/*         @if($errors->any())
        
         var failures= {!! $errors !!};
         const fails = [];
@@ -230,7 +230,7 @@
             }).then(function(){
                 location.reload();
             });
-        @endif
+        @endif */
 
     </script>
 @endsection

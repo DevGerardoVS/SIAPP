@@ -13,19 +13,22 @@ class NotificacionCreateEdit implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $queue = 'high';
+
 
     public $notificacion;
     public function __construct($notificacion)
     {
     $this->notificacion = $notificacion;
-/*     $this->notificacion = json_decode($notificacion, true); */
-    }
+/*      $this->notificacion = json_decode($notificacion, true); 
+ */    }
 
 
     public function broadcastOn()
     {
-         return new PrivateChannel('notificacion.'.$this->notificacion['id']);
-     
+        /*   return new PrivateChannel('notificacion.'.$this->notificacion['id']); */
+      
+         return new PrivateChannel('notificacion');
 
 }
     

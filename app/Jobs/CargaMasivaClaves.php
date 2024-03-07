@@ -21,12 +21,14 @@ class CargaMasivaClaves implements ShouldQueue
     protected $user;
     protected $tipocarga;
 
-    public function __construct($filearray, $user, $tipocarga)
+    protected $id;
+
+    public function __construct($filearray, $user, $tipocarga, $id)
     {
         $this->filearray = $filearray;
         $this->user = $user;
         $this->tipocarga = $tipocarga;
-
+        $this->id = $id;
     }
     /**
      * Execute the job.
@@ -137,38 +139,48 @@ class CargaMasivaClaves implements ShouldQueue
                     array(
                         "TypeButton" => 1,
                         "route" => "'/calendarizacion/download-errors-excel'",
+                        'blocked' => 3,
                         "mensaje" => trans('messages.carga_masiva_error'),
                         "payload" => $payload
                     )
                 );
-                notificaciones::where('id_usuario', $usuario->id)
+                notificaciones::where('id', $this->id)
                     ->update([
                         'payload' => $payloadsent,
                         'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
-                $datos = notificaciones::where('id_usuario', $usuario->id)->first();
-              //  Log::debug($datos);
-                event(new NotificacionCreateEdit($datos));
+                $datos = notificaciones::where('id', $this->id)->first();
+                $notification = json_encode([
+                    'id' => $datos->id
+
+                ]);
+                event(new NotificacionCreateEdit($notification));
 
             } else {
                 $payloadsent = json_encode(
                     array(
                         "TypeButton" => 0,
                         "route" => "'/borrar-sesion_sesion_notificacion'",
+                        'blocked' => 3,
                         "mensaje" => trans('messages.carga_masiva_exito'),
                         "payload" => ""
                     )
                 );
-                notificaciones::where('id_usuario', $usuario->id)
+                DB::commit();
+                notificaciones::where('id', $this->id)
                     ->update([
                         'payload' => $payloadsent,
                         'status' => 1,
                         'updated_user' => $usuario->username
                     ]);
-                $datos = notificaciones::where('id_usuario', $usuario->id)->first();
+                $datos = notificaciones::where('id', $this->id)->first();
 
-                event(new NotificacionCreateEdit($datos));
+                $notification = json_encode([
+                    'id' => $datos->id
+
+                ]);
+                event(new NotificacionCreateEdit($notification));
 
             }
 
@@ -180,7 +192,7 @@ class CargaMasivaClaves implements ShouldQueue
                 "modulo" => 'Claves presupuestales'
             );
             Controller::bitacora($b);
-            DB::commit();
+
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -188,14 +200,27 @@ class CargaMasivaClaves implements ShouldQueue
             array_push($arrayErrores, ' $ $Ocurrio un error interno contacte a soporte.');
             $payload = json_encode($arrayfail);
             Log::debug($e);
-            notificaciones::where('id_usuario', $usuario->id)
+            $payloadsent = json_encode(
+                array(
+                    "TypeButton" => 1,
+                    "route" => "'/calendarizacion/download-errors-excel'",
+                    'blocked' => 3,
+                    "mensaje" => trans('messages.carga_masiva_error'),
+                    "payload" => $error
+                )
+            );
+            notificaciones::where('id', $this->id)
                 ->update([
-                    'payload' => $arrayfail,
+                    'payload' =>  $payloadsent,
                     'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
-            $datos = notificaciones::where('id_usuario', $usuario->id)->first();
-             event(new NotificacionCreateEdit($datos));
+            $datos = notificaciones::where('id', $this->id)->first();
+            $notification = json_encode([
+                'id' => $datos->id
+
+            ]);
+            event(new NotificacionCreateEdit($notification));
 
 
         }

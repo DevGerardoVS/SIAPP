@@ -26,13 +26,14 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
     protected $filearray;
     protected $user;
     protected $tipocarga;
+    protected $id;
 
-    public function __construct($filearray, $user, $tipocarga)
+    public function __construct($filearray, $user, $tipocarga, $id)
     {
         $this->filearray = $filearray;
         $this->user = $user;
         $this->tipocarga = $tipocarga;
-
+        $this->id = $id;
     }
 
     public function handle()
@@ -388,25 +389,30 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     array(
                         "TypeButton" => 1,
                         "route" => "'/calendarizacion/download-errors-excel'",
+                        'blocked' => 3,
                         "mensaje" => trans('messages.carga_masiva_error'),
                         "payload" => $payload
                     )
                 );
-                notificaciones::where('id_usuario', $usuario->id)
+                notificaciones::where('id', $this->id)
                     ->update([
                         'payload' => $payloadsent,
                         'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
-                $datos = notificaciones::where('id_usuario', $usuario->id)->first();
+                $datos = notificaciones::where('id', $this->id)->first();
 
-               event(new NotificacionCreateEdit($datos));
+                $notification = json_encode([
+                    'id' => $datos->id
+
+                ]);
+                event(new NotificacionCreateEdit($notification));
 
 
 
             } else {
                 DB::commit();
-                CargaMasivaClaves::dispatch($this->filearray, $usuario, $this->tipocarga)->onQueue('high');
+                CargaMasivaClaves::dispatch($this->filearray, $usuario, $this->tipocarga, $this->id)->onQueue('high');
 
             }
 
@@ -421,18 +427,23 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                 array(
                     "TypeButton" => 1,
                     "route" => "'/calendarizacion/download-errors-excel'",
+                    'blocked' => 3,
                     "mensaje" => trans('messages.carga_masiva_error'),
                     "payload" => $error
                 )
             );
-            notificaciones::where('id_usuario', $usuario->id)
+            notificaciones::where('id', $this->id)
                 ->update([
                     'payload' => $payloadsent,
                     'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
-            $datos = notificaciones::where('id_usuario', $usuario->id)->first();
-           event(new NotificacionCreateEdit($datos));
+            $datos = notificaciones::where('id', $this->id)->first();
+            $notification = json_encode([
+                'id' => $datos->id
+
+            ]);
+            event(new NotificacionCreateEdit($notification));
 
 
         }

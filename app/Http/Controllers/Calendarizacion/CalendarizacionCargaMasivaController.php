@@ -61,26 +61,17 @@ class CalendarizacionCargaMasivaController extends Controller
         /*Si no coloco estas lineas Falla*/
         ob_end_clean();
         ob_start();
-        
+
         $deleted = notificaciones::where('id_usuario', '=', Auth::user()->id)
-        ->where('id_sistema','=',1)
-        ->forceDelete();
+            ->where('id_sistema', '=', 1)
+            ->forceDelete();
 
         return Excel::download(new ImportErrorsExport($fails), 'Errores.xlsx');
     }
 
 
-/*     public function test(){
-        $test=json_encode(array(
-            "id"=>66,
-            "TypeButton" => 0,
-            "route" => "",
-            "mensaje" => ' Error: No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados.',
-            "payload" => ""
-        ));
-        event(new NotificacionCreateEdit($test));
-    }
- */
+
+
     //Obtener datos del excel
     public function loadDataPlantilla(Request $request)
     {
@@ -159,6 +150,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     array(
                         "TypeButton" => 0,
                         "route" => "",
+                        'blocked' => 3,
                         "mensaje" => ' Error: No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados.',
                         "payload" => ""
                     )
@@ -170,13 +162,18 @@ class CalendarizacionCargaMasivaController extends Controller
                     'status' => 2,
                     'created_user' => $user->username
                 ]);
-                 event(new NotificacionCreateEdit($datos));
+                $notification = json_encode([
+                    'id' => $datos->id
+
+                ]);
+                event(new NotificacionCreateEdit($notification));
             }
             if (count($filearray) <= 0) {
                 $payloadsent = json_encode(
                     array(
                         "TypeButton" => 0,
                         "route" => "",
+                        'blocked' => 3,
                         "mensaje" => ' El excel esta vacio.',
                         "payload" => ""
                     )
@@ -188,8 +185,12 @@ class CalendarizacionCargaMasivaController extends Controller
                     'status' => 2,
                     'created_user' => $user->username
                 ]);
-                 event(new NotificacionCreateEdit($datos));
-                 
+                $notification = json_encode([
+                    'id' => $datos->id
+
+                ]);
+                event(new NotificacionCreateEdit($notification));
+
             }
         }
 
@@ -214,36 +215,44 @@ class CalendarizacionCargaMasivaController extends Controller
                 'id_usuario' => $user->id,
                 'id_sistema' => 1,
                 'payload' => $payloadsent,
-                'status' => 2,
+                'status' => 0,
                 'created_user' => $user->username
             ]);
-            Log::debug("aqui deberia saltar el evento");
-             event(new NotificacionCreateEdit($datos));
+            $notification = json_encode([
+                'id' => $datos->id
 
-            return redirect()->back();
+            ]);
+            event(new NotificacionCreateEdit($notification));
+            return true;
 
-        }else{
-            $payloadsent= json_encode(array(
-                "TypeButton" => 0,// 0 es mensaje, 1 es que si es botton, 2 ahref 
-                "route" => "",
-                "mensaje" => trans('messages.carga_masiva_cargando'),
-                "payload" => ""
-            ));
+        } else {
 
-            ValidacionesCargaMasivaClaves::dispatch($filearray,$user,$tipocarga)->onQueue('high');
-            Session::put('status',0);
-            notificaciones::create([
+            $payloadsent = json_encode(
+                array(
+                    "TypeButton" => 0,// 0 es mensaje, 1 es que si es botton, 2 ahref 
+                    "route" => "",
+                    'blocked' => 0, // 0 es Carga masiva Calendarizacion, 1 es Reportes SAPP,3 Carga Masiva SAPP
+                    "mensaje" => trans('messages.carga_masiva_cargando'),
+                    "payload" => ""
+                )
+            );
+
+            $datos = notificaciones::create([
                 'id_usuario' => $user->id,
                 'id_sistema' => 1,
                 'payload' => $payloadsent,
                 'status' => 0,
                 'created_user' => $user->username
             ]);
-             event(new NotificacionCreateEdit($datos));
+            $notification = json_encode([
+                'id' => $datos->id
 
-            ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga)->onQueue('high');
-           // Session::put('status', 0);
-            return redirect()->back();
+            ]);
+            event(new NotificacionCreateEdit($notification));
+
+
+            ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga, $datos->id)->onQueue('high');
+            return true;
         }
 
 
