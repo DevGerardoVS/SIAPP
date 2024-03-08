@@ -30,7 +30,7 @@ class SingleSession
             $userId = auth()->user()->id;
     
             // Continue with your middleware logic here
-            $data = \DB::table('notificaciones')
+    /*         $data = \DB::table('notificaciones')
             ->select('*')
          
             ->where('id_usuario','=',$userId)
@@ -38,7 +38,7 @@ class SingleSession
             ->first();
            
            
-/*             if(isset($data->status)){
+            if(isset($data->status)){
                 $payload = json_decode($data->payload);
                 session::put('mensaje',$payload->mensaje);
                 session::put('route',$payload->route);

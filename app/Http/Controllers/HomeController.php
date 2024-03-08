@@ -41,6 +41,7 @@ class HomeController extends Controller
         ->where('id_sistema','=',1)
         ->forceDelete();
          session::put('status',3);
+         session::put('blocked',3);
          session()->forget(['payload','mensaje','route']);
         return redirect()->back();
     }

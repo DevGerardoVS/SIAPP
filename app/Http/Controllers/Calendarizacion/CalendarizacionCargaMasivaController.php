@@ -55,6 +55,7 @@ class CalendarizacionCargaMasivaController extends Controller
         session()->forget(['payload', 'mensaje', 'route']);
 
         Session::put('status', 3);
+        Session::put("blocked", 3);
 
 
         Controller::bitacora($b);
@@ -150,7 +151,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     array(
                         "TypeButton" => 0,
                         "route" => "",
-                        'blocked' => 3,
+                        "blocked" => 3,
                         "mensaje" => ' Error: No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados.',
                         "payload" => ""
                     )
@@ -173,7 +174,7 @@ class CalendarizacionCargaMasivaController extends Controller
                     array(
                         "TypeButton" => 0,
                         "route" => "",
-                        'blocked' => 3,
+                        "blocked" => 3,
                         "mensaje" => ' El excel esta vacio.',
                         "payload" => ""
                     )
@@ -207,6 +208,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 array(
                     "TypeButton" => 0,
                     "route" => "",
+                    "blocked" => 3,
                     "mensaje" => trans('messages.carga_masiva_proceso'),
                     "payload" => ""
                 )
@@ -231,7 +233,7 @@ class CalendarizacionCargaMasivaController extends Controller
                 array(
                     "TypeButton" => 0,// 0 es mensaje, 1 es que si es botton, 2 ahref 
                     "route" => "",
-                    'blocked' => 0, // 0 es Carga masiva Calendarizacion, 1 es Reportes SAPP,3 Carga Masiva SAPP
+                    "blocked" => 0, // 0 es Carga masiva Calendarizacion, 1 es Reportes SAPP,3 Carga Masiva SAPP
                     "mensaje" => trans('messages.carga_masiva_cargando'),
                     "payload" => ""
                 )

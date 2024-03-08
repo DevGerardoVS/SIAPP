@@ -139,7 +139,7 @@ class CargaMasivaClaves implements ShouldQueue
                     array(
                         "TypeButton" => 1,
                         "route" => "'/calendarizacion/download-errors-excel'",
-                        'blocked' => 3,
+                        "blocked" => 3,
                         "mensaje" => trans('messages.carga_masiva_error'),
                         "payload" => $payload
                     )
@@ -162,7 +162,7 @@ class CargaMasivaClaves implements ShouldQueue
                     array(
                         "TypeButton" => 0,
                         "route" => "'/borrar-sesion_sesion_notificacion'",
-                        'blocked' => 3,
+                        "blocked" => 3,
                         "mensaje" => trans('messages.carga_masiva_exito'),
                         "payload" => ""
                     )
@@ -204,7 +204,7 @@ class CargaMasivaClaves implements ShouldQueue
                 array(
                     "TypeButton" => 1,
                     "route" => "'/calendarizacion/download-errors-excel'",
-                    'blocked' => 3,
+                    "blocked" => 3,
                     "mensaje" => trans('messages.carga_masiva_error'),
                     "payload" => $error
                 )
