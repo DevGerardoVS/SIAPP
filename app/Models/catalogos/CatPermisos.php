@@ -13,7 +13,8 @@ class CatPermisos extends Model
     protected $table = 'cat_permisos';
 
     protected $fillable = [
-    	'nombre'
+    	'nombre',
+        'id_sistema'
     ];
 
     protected $dates = ['deleted_at'];

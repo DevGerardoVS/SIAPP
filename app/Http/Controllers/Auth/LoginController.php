@@ -40,19 +40,25 @@ class LoginController extends Controller
      * @return void
      */
 
-    public function login(Request $request)
-    {
-
-        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
-            if (Auth::user()->estatus == 1) {Session::put('last_activity',Carbon::now());
-                Session::put('status',3);
-                return redirect('/');} else {
-                Auth::logout();
-                return back()->withErrors('Este usuario ha sido deshabilitado');
-            }}
-        return Redirect::back()->withInput()->withErrors('El nombre de usuario o contraseña es incorrecto');
-
-    }
+     public function login(Request $request)
+     {
+         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
+             if (check_sistema(Auth::user()->id_grupo)) {
+                 if (Auth::user()->estatus == 1) {
+                     Session::put('last_activity', Carbon::now());
+                     Session::put('status', 3);
+                     Session::put('blocked', 3);
+                     return redirect('/');
+                 } else {
+                     Auth::logout();
+                     return back()->withErrors('Este usuario ha sido deshabilitado');
+                 }
+             }
+             Auth::logout();
+             return Redirect::back()->withInput()->withErrors('El usuario no está autorizado para este sistema');
+         }
+         return Redirect::back()->withInput()->withErrors('El nombre de usuario o contraseña es incorrecto');
+     }
 
     public function logout()
     {

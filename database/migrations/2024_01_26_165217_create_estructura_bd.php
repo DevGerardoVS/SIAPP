@@ -177,16 +177,18 @@ return new class extends Migration
             $table->timestamp('failed_at')->useCurrent();
         });
 
-        Schema::create('personal_access_tokens', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('tokenable_type', 191);
-            $table->integer('tokenable_id');
-            $table->string('name');
-            $table->string('token', 64)->unique();
-            $table->text('abilities')->nullable();
-            $table->timestamp('last_used_at')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('personal_access_tokens')) {
+            Schema::create('personal_access_tokens', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('tokenable_type', 191);
+                $table->integer('tokenable_id');
+                $table->string('name');
+                $table->string('token', 64)->unique();
+                $table->text('abilities')->nullable();
+                $table->timestamp('last_used_at')->nullable();
+                $table->timestamps();
+            });
+        }
 
         Schema::create('grupos', function (Blueprint $table){
             $table->increments('id');
@@ -398,6 +400,7 @@ return new class extends Migration
             $table->decimal('diciembre',22,2)->default(null);
             $table->decimal('total',22,2)->default(null);
             $table->integer('estado');
+            $table->tinyInteger('estatus_sapp');
             $table->enum('tipo', ['Operativo', 'RH']);
             $table->softDeletes();
             $table->string('created_user',45);
@@ -462,6 +465,17 @@ return new class extends Migration
             $table->tinyInteger('activos')->default(1);
         });
 
+        Schema::create('manuales', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre',70)->nullable(false);
+            $table->string('ruta',255)->nullable(false);
+            $table->json('usuarios')->nullable(false);
+            $table->integer('estatus')->nullable(false);
+            $table->string('usuario_creacion',20)->nullable(false);
+            $table->string('usuario_modificacion',20)->nullable(true);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at')->nullable(true)->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+        });
         //-------------------------- Tablas MML ---------------------------------
 
         Schema::create('mml_definicion_problema', function (Blueprint $table){
@@ -1167,6 +1181,7 @@ return new class extends Migration
                 $table->decimal('diciembre',22,2)->default(null);
                 $table->decimal('total',22,2)->default(null);
                 $table->integer('estado');
+                $table->tinyInteger('estatus_sapp');
                 $table->enum('tipo', ['Operativo', 'RH']);
                 $table->string('created_user',45);
                 $table->string('updated_user',45)->nullable();
@@ -1401,6 +1416,19 @@ return new class extends Migration
             $table->string('updated_user',45)->nullable();
             $table->string('deleted_user',45)->nullable();
         });
+
+        Schema::create('sapp_rel_metas_partidas', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('meta_id');
+            $table->string('partida',6);
+            $table->integer('ejercicio');
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+            $table->string('created_user',45);
+            $table->string('updated_user',45)->nullable();
+            $table->string('deleted_user',45)->nullable();
+        });
     }
 
     /**
@@ -1471,5 +1499,7 @@ return new class extends Migration
         Schema::dropIfExists('sapp_acuse');
         Schema::dropIfExists('sapp_enlaces');
         Schema::dropIfExists('grupos');
+        Schema::dropIfExists('manuales');
+        Schema::dropIfExists('sapp_rel_metas_partidas');
     }
 };

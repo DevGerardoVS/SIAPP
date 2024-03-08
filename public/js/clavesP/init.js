@@ -10,7 +10,9 @@ var dao = {
         Swal.showLoading()
         const b = Swal.getHtmlContainer().querySelector('b')
         timerInterval = setInterval(() => {
-          b.textContent = Swal.getTimerLeft()
+          if(b){
+            b.textContent = Swal.getTimerLeft()
+          }
         }, 100)
       },
       willClose: () => {
@@ -192,6 +194,7 @@ var dao = {
             'success'
           );
           $("#filtro_anio option[value="+ ejercicio +"]").attr("selected",true);
+          console.log("entro1");
           window.location.href = '/calendarizacion/claves';
         }
       });
@@ -224,7 +227,10 @@ var dao = {
           response.mensaje,
           response.icon
         );
-      if (response.icon == 'success') window.location.href = '/calendarizacion/claves';
+      if (response.icon == 'success'){
+        console.log("entro1");
+        window.location.href = '/calendarizacion/claves';
+      } 
     });
 
   },
