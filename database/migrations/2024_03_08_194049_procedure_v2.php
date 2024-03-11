@@ -2852,6 +2852,8 @@ return new class extends Migration
             set @epp := 'epp';
             set @deleted := 'and e.deleted_at is null';
             set @id := 'id';
+            set @metas := 'metas';
+            set @mir := 'mml_mir';
         
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
@@ -2860,6 +2862,8 @@ return new class extends Migration
                 set @epp := 'epp_hist';
                 set @deleted := CONCAT('e.deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 HOUR)');
                 set @id := 'id_original';
+                set @metas := 'metas_hist';
+                set @mir := 'mml_mir_hist';
             end if;
         
             drop temporary table if exists aux_0;
@@ -2867,6 +2871,7 @@ return new class extends Migration
             drop temporary table if exists aux_2;
             drop temporary table if exists aux_3;
         
+            set @queri:= concat('
             create temporary table aux_0 
             select 
                 mm.clv_upp,
@@ -2877,19 +2882,24 @@ return new class extends Migration
                 mm.objetivo,
                 mm.indicador actividad,
                 count(*) metas
-            from metas m
-            join mml_mir mm on m.mir_id = mm.id and mm.tipo_indicador = 13
+            from ',@metas,' m
+            join ',@mir,' mm on m.mir_id = mm.id and mm.tipo_indicador = 13
             left JOIN (
                 SELECT 
                     mm.clv_upp,
                     mm.clv_pp,
                     mm.indicador
-                FROM mml_mir mm
-                WHERE ejercicio = anio AND deleted_at IS NULL AND nivel = 8
+                FROM ',@mir,' mm
+                WHERE ejercicio = ',anio,' AND deleted_at IS NULL AND nivel = 8
             ) mm2 ON mm.clv_upp = mm2.clv_upp AND mm.clv_pp = mm2.clv_pp
-            where m.mir_id is not null and m.deleted_at is null and m.ejercicio = anio
+            where m.mir_id is not null and m.deleted_at is null and m.ejercicio = ',anio,'
             group by mm.clv_upp,m.clv_fondo,mm.clv_pp,mm.area_funcional,mm2.indicador,mm.objetivo,mm.indicador;
-            
+            ');
+
+            prepare stmt from @queri;
+            execute stmt;
+            deallocate prepare stmt;
+
             set @queri:= concat('
             create temporary table aux_1
             select 
@@ -3116,10 +3126,14 @@ return new class extends Migration
             set @tabla := 'programacion_presupuesto';
             set @corte := 'and deleted_at is null';
             set @catalogo := 'catalogo';
+            set @metas := 'metas';
+            set @mir := 'mml_mir';
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('and deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 HOUR)');
                 set @catalogo := 'catalogo_hist';
+                set @metas := 'metas_hist';
+                set @mir := 'mml_mir_hist';
             end if;
         
             drop temporary table if exists aux_0;
@@ -3127,6 +3141,7 @@ return new class extends Migration
             drop temporary table if exists aux_2;
             drop temporary table if exists aux_3;
             
+            set @queri := concat('
             create temporary table aux_0 
             select 
                 mm.clv_pp clv_programa,
@@ -3134,18 +3149,23 @@ return new class extends Migration
                 mm.objetivo,
                 mm.indicador actividad,
                 count(*) metas
-            from metas m
-            join mml_mir mm on m.mir_id = mm.id and mm.tipo_indicador = 13
+            from ',@metas,' m
+            join ',@mir,' mm on m.mir_id = mm.id and mm.tipo_indicador = 13
             left join (
                 select 
                     mm.clv_upp,
                     mm.clv_pp,
                     mm.indicador
-                from mml_mir mm
-                where ejercicio = anio AND deleted_at IS NULL AND nivel = 8
+                from ',@mir,' mm
+                where ejercicio = ',anio,' AND deleted_at IS NULL AND nivel = 8
             ) mm2 on mm.clv_upp = mm2.clv_upp AND mm.clv_pp = mm2.clv_pp
-            where m.mir_id is not null and m.deleted_at is null and m.ejercicio = anio
+            where m.mir_id is not null and m.deleted_at is null and m.ejercicio = ',anio,'
             group by mm.clv_pp,mm2.indicador,mm.objetivo,mm.indicador;
+            ');
+
+            prepare stmt from @queri;
+            execute stmt;
+            deallocate prepare stmt;
             
             set @queri := concat('
             create temporary table aux_1
@@ -3720,9 +3740,11 @@ return new class extends Migration
         begin
             set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @catalogo := 'catalogo';
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+                set @catalogo := 'catalogo_hist';
             end if;
         
             set @query := CONCAT('
@@ -3732,7 +3754,7 @@ return new class extends Migration
                     c.clave clv_upp,
                     c.descripcion upp,
                     pp.total
-                from catalogo c 
+                from ',@catalogo,' c 
                 left join ',@tabla,' pp on c.clave = pp.upp
                 and pp.',@corte,' and pp.ejercicio = ',anio,' and pp.etiquetado = 1
                 where c.deleted_at is null and c.ejercicio = ',anio,' and c.grupo_id = 6
@@ -3742,7 +3764,7 @@ return new class extends Migration
                     c.clave clv_upp,
                     c.descripcion upp,
                     pp.total
-                from catalogo c 
+                from ',@catalogo,' c 
                 left join ',@tabla,' pp on c.clave = pp.upp
                 and pp.',@corte,' and pp.ejercicio = ',anio,' and pp.etiquetado = 2
                 where c.deleted_at is null and c.ejercicio = ',anio,' and c.grupo_id = 6
@@ -3957,11 +3979,13 @@ return new class extends Migration
             set @corte := 'deleted_at is null';
             set @clasificacion := 'clasificacion_geografica';
             set @anio_cg := '';
+            set @catalogo := 'catalogo';
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
                 set @clasificacion := 'clasificacion_geografica_hist';
                 set @anio_cg := concat('and cg.ejercicio = ',anio);
+                set @catalogo := 'catalogo_hist';
             end if;
             
             drop temporary table if exists aux_0;
@@ -4000,7 +4024,7 @@ return new class extends Migration
                 left join ',@clasificacion,' cg on a.clv_region = cg.clv_region
                 and a.clv_municipio = cg.clv_municipio and a.clv_localidad = cg.clv_localidad
                 and cg.deleted_at is null ',@anio_cg,'
-                left join catalogo c on a.clv_upp = c.clave and c.grupo_id = 6
+                left join ',@catalogo,' c on a.clv_upp = c.clave and c.grupo_id = 6
                 and c.ejercicio = ',anio,' and c.deleted_at is null
                 order by cg.clv_region,cg.clv_municipio,cg.clv_localidad,a.clv_upp;
             ');
@@ -4051,9 +4075,11 @@ return new class extends Migration
         begin
             set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @catalogo := 'catalogo';
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+                set @catalogo := 'catalogo_hist';
             end if;
         
             set @query := CONCAT('
@@ -4064,7 +4090,7 @@ return new class extends Migration
                         when sum(pp.total) is null then 0
                         else sum(pp.total)
                     end importe
-                from catalogo c
+                from ',@catalogo,' c
                 left join ',@tabla,' pp on c.clave = pp.eje 
                 and pp.ejercicio = ',anio,' and pp.',@corte,'
                 where c.ejercicio = ',anio,' and c.deleted_at is null and c.grupo_id = 12
@@ -4080,9 +4106,11 @@ return new class extends Migration
         begin
             set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @catalogo := 'catalogo';
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 HOUR)');
+                set @catalogo := 'catalogo_hist';
             end if;
         
             set @query := CONCAT('
@@ -4247,9 +4275,15 @@ return new class extends Migration
         begin
             set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @epp := 'epp';
+            set @catalogo := 'catalogo';
+            set @id := 'id';
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+                set @epp := 'epp_hist';
+                set @catalogo := 'catalogo_hist';
+                set @id := 'id_original';
             end if;
         
             drop temporary table if exists aux_0;
@@ -4266,10 +4300,10 @@ return new class extends Migration
                 c1.descripcion funcion,
                 c2.clave clv_subfuncion,
                 c2.descripcion subfuncion
-            from epp e
-            join catalogo c0 on e.finalidad_id = c0.id
-            join catalogo c1 on e.funcion_id = c1.id
-            join catalogo c2 on e.subfuncion_id = c2.id
+            from ',@epp,' e
+            join ',@catalogo,' c0 on e.finalidad_id = c0.',@id,'
+            join ',@catalogo,' c1 on e.funcion_id = c1.',@id,'
+            join ',@catalogo,' c2 on e.subfuncion_id = c2.',@id,'
             where e.ejercicio = ',anio,' and e.deleted_at is null;
             ');
         
@@ -4613,9 +4647,15 @@ return new class extends Migration
         begin
             set @tabla := 'programacion_presupuesto';
             set @corte := 'deleted_at is null';
+            set @epp := 'epp';
+            set @catalogo := 'catalogo';
+            set @id := 'id';
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
+                set @epp := 'epp_hist';
+                set @catalogo := 'catalogo_hist';
+                set @id := 'id_original';
             end if;
         
             drop temporary table if exists aux_0;
@@ -4630,9 +4670,9 @@ return new class extends Migration
                 c0.descripcion finalidad,
                 c1.clave clv_funcion,
                 c1.descripcion funcion
-            from epp e
-            join catalogo c0 on e.finalidad_id = c0.id
-            join catalogo c1 on e.funcion_id = c1.id
+            from ',@epp,' e
+            join ',@catalogo,' c0 on e.finalidad_id = c0.',@id,'
+            join ',@catalogo,' c1 on e.funcion_id = c1.',@id,'
             where e.ejercicio = ',anio,' and e.deleted_at is null;
             ');
         
@@ -4742,11 +4782,13 @@ return new class extends Migration
             set @corte := 'deleted_at is null';
             set @epp := 'epp';
             set @catalogo := 'catalogo';
+            set @id := 'id';
             if (corte is not null) then 
                 set @tabla := 'programacion_presupuesto_hist';
                 set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
                 set @epp := 'epp_hist';
                 set @catalogo := 'catalogo_hist';
+                set @id := 'id_original';
             end if;
         
             drop temporary table if exists aux_0;
@@ -4762,8 +4804,8 @@ return new class extends Migration
                 c1.clave clv_funcion,
                 c1.descripcion funcion
             from ',@epp,' e
-            join ',@catalogo,' c0 on e.finalidad_id = c0.id
-            join ',@catalogo,' c1 on e.funcion_id = c1.id
+            join ',@catalogo,' c0 on e.finalidad_id = c0.',@id,'
+            join ',@catalogo,' c1 on e.funcion_id = c1.',@id,'
             where e.ejercicio = ',anio,' and e.',@corte,';
             ');
         
