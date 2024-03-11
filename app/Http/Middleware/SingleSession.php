@@ -30,7 +30,7 @@ class SingleSession
             $userId = auth()->user()->id;
     
             // Continue with your middleware logic here
-            $data = \DB::table('notificaciones')
+    /*         $data = \DB::table('notificaciones')
             ->select('*')
          
             ->where('id_usuario','=',$userId)
@@ -57,7 +57,7 @@ class SingleSession
 
                 session(['payload' =>'']);
                 session(['status' => 3]);
-            }
+            } */
             
          
                  

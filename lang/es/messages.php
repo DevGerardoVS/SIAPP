@@ -30,6 +30,7 @@ return [
     'carga_masiva' => 'Carga masiva',
     'carga_masiva_title'=> 'Carga masiva',
     'carga_masiva_cargando' => 'Cargando datos, espere por favor...',
+    'carga_masiva_proceso' => 'Ya tienes una carga masiva en proceso.',
     'carga_masiva_exito' => 'Carga masiva exitosa',
     'carga_masiva_error' => 'Error en la carga masiva',
     'cargar_archivo' => 'Leí las instrucciones - Cargar archivo',

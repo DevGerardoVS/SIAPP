@@ -47,6 +47,7 @@ class LoginController extends Controller
                  if (Auth::user()->estatus == 1) {
                      Session::put('last_activity', Carbon::now());
                      Session::put('status', 3);
+                     Session::put('blocked', 3);
                      return redirect('/');
                  } else {
                      Auth::logout();

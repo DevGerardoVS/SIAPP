@@ -53,9 +53,7 @@ date_default_timezone_set('America/Mexico_City');
 
 <body>
     <div id="app" style="">
-      
         @if (isset(Auth::user()->id))
-       
         <nav class="navbar navbar-expand-md navbar-dark shadow-sm colorMorado">
                 <div class="container">
                     <a class="navbar-brand" href="/"
@@ -141,6 +139,7 @@ date_default_timezone_set('America/Mexico_City');
 
             </nav>
             <!--Notificaciones modificar blade -->
+
             <!-- Carga masiva en proceso -->
 
                          @if(session()->has('status')&& session('status')==0)
@@ -158,7 +157,10 @@ date_default_timezone_set('America/Mexico_City');
             <div id="alerts_notificaciones" name="alerts_notificaciones" style="text-align: center" class="alert alert-danger" role="alert">
                 {{session('mensaje')}} : &nbsp;
                 {{-- ejemplo boton en 1 errores --}}
-                @if (session('TypeButton')==0)
+{{--                 @if (session('TypeButton')==0)
+                <button  class="btn btn-primary"  onclick="_notificaciones.alerts_notificaciones({{session('status')}},{{session('route')}})" >ACEPTAR</button>
+                @endif --}}
+                @if (session('TypeButton')==1)
                 <button  class="btn btn-success"  onclick="_notificaciones.alerts_notificaciones({{session('status')}},{{session('route')}})" >Descargar Errores</button>
                 @endif
 
@@ -175,7 +177,7 @@ date_default_timezone_set('America/Mexico_City');
                          <button  class="btn btn-primary"  onclick="_notificaciones.alerts_notificaciones({{session('status')}},{{session('route')}})" >ACEPTAR</button>
                          @endif
                          {{-- Ejemplo de boton de href --}}
-{{--                          @if (session('TypeButton')==0)
+{{--                          @if (session('TypeButton')==2)
                          <a class="btn btn-primary"  href="{{session('route')}}" >ACEPTAR</a>
                          @endif --}}
                   </div>                               

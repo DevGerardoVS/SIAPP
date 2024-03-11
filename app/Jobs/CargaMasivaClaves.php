@@ -10,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-
+use App\Events\NotificacionCreateEdit;
 use DB;
 
 class CargaMasivaClaves implements ShouldQueue
@@ -21,12 +21,14 @@ class CargaMasivaClaves implements ShouldQueue
     protected $user;
     protected $tipocarga;
 
-    public function __construct($filearray, $user, $tipocarga)
+    protected $id;
+
+    public function __construct($filearray, $user, $tipocarga, $id)
     {
         $this->filearray = $filearray;
         $this->user = $user;
         $this->tipocarga = $tipocarga;
-
+        $this->id = $id;
     }
     /**
      * Execute the job.
@@ -43,7 +45,7 @@ class CargaMasivaClaves implements ShouldQueue
             $tipoclave = '';
             $añoclave = 0;
             $currentrow = 2;
-            $storeP_array=array();
+            $storeP_array = array();
             DB::beginTransaction();
             //validacion de año 
             if (strlen($this->filearray['0']['20']) == 2 && is_numeric($this->filearray['0']['20'])) {
@@ -59,8 +61,8 @@ class CargaMasivaClaves implements ShouldQueue
             foreach ($this->filearray as $k) {
 
                 DB::table('programacion_presupuesto_aux')->insert([
-                    'id' =>$currentrow,
-                    'id_carga'=> $usuario->id,
+                    'id' => $currentrow,
+                    'id_carga' => $usuario->id,
                     'clasificacion_administrativa' => $k['0'],
                     'entidad_federativa' => $k['1'],
                     'region' => $k['2'],
@@ -110,7 +112,7 @@ class CargaMasivaClaves implements ShouldQueue
                 $currentrow++;
 
             }
-            $arrayErrores = DB::select("CALL validacion_claves(".$usuario->id.", '".$usuario->username."',".$this->tipocarga.")"); 
+            $arrayErrores = DB::select("CALL validacion_claves(" . $usuario->id . ", '" . $usuario->username . "'," . $this->tipocarga . ")");
             if (count($arrayErrores) > 0) {
                 DB::rollBack();
 
@@ -120,14 +122,14 @@ class CargaMasivaClaves implements ShouldQueue
                         switch ($key1) {
 
                             case 'num_linea':
-                                $storeP_array[$key0]=$err;
+                                $storeP_array[$key0] = $err;
 
                                 break;
                             case 'modulo':
-                                $storeP_array[$key0]=$storeP_array[$key0]."$".$err;
+                                $storeP_array[$key0] = $storeP_array[$key0] . "$" . $err;
                                 break;
                             case 'error':
-                                $storeP_array[$key0]=$storeP_array[$key0]."$".$err;
+                                $storeP_array[$key0] = $storeP_array[$key0] . "$" . $err;
                                 break;
                         }
                     }
@@ -137,31 +139,49 @@ class CargaMasivaClaves implements ShouldQueue
                     array(
                         "TypeButton" => 1,
                         "route" => "'/calendarizacion/download-errors-excel'",
+                        "blocked" => 3,
                         "mensaje" => trans('messages.carga_masiva_error'),
                         "payload" => $payload
                     )
                 );
-                notificaciones::where('id_usuario', $usuario->id)
+                notificaciones::where('id', $this->id)
                     ->update([
                         'payload' => $payloadsent,
                         'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
+                $datos = notificaciones::where('id', $this->id)->first();
+                $notification = json_encode([
+                    'id' => $datos->id
+
+                ]);
+                event(new NotificacionCreateEdit($notification));
+
             } else {
                 $payloadsent = json_encode(
                     array(
                         "TypeButton" => 0,
                         "route" => "'/borrar-sesion_sesion_notificacion'",
+                        "blocked" => 3,
                         "mensaje" => trans('messages.carga_masiva_exito'),
                         "payload" => ""
                     )
                 );
-                notificaciones::where('id_usuario', $usuario->id)
+                DB::commit();
+                notificaciones::where('id', $this->id)
                     ->update([
                         'payload' => $payloadsent,
                         'status' => 1,
                         'updated_user' => $usuario->username
                     ]);
+                $datos = notificaciones::where('id', $this->id)->first();
+
+                $notification = json_encode([
+                    'id' => $datos->id
+
+                ]);
+                event(new NotificacionCreateEdit($notification));
+
             }
 
 
@@ -172,20 +192,35 @@ class CargaMasivaClaves implements ShouldQueue
                 "modulo" => 'Claves presupuestales'
             );
             Controller::bitacora($b);
-            DB::commit();
+
 
         } catch (\Exception $e) {
             DB::rollBack();
             $arrayfail = array();
             array_push($arrayErrores, ' $ $Ocurrio un error interno contacte a soporte.');
             $payload = json_encode($arrayfail);
-            \Log::debug($e);
-            notificaciones::where('id_usuario', $usuario->id)
+            Log::debug($e);
+            $payloadsent = json_encode(
+                array(
+                    "TypeButton" => 1,
+                    "route" => "'/calendarizacion/download-errors-excel'",
+                    "blocked" => 3,
+                    "mensaje" => trans('messages.carga_masiva_error'),
+                    "payload" => $error
+                )
+            );
+            notificaciones::where('id', $this->id)
                 ->update([
-                    'payload' => $arrayfail,
+                    'payload' =>  $payloadsent,
                     'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
+            $datos = notificaciones::where('id', $this->id)->first();
+            $notification = json_encode([
+                'id' => $datos->id
+
+            ]);
+            event(new NotificacionCreateEdit($notification));
 
 
         }

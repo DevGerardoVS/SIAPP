@@ -1,11 +1,9 @@
 <?php
 
-use App\Imports\ClavePresupuestaria;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Calendarizacion\ClavePreController;
 use App\Http\Controllers\Auth\RestablecerPass;
+use App\Http\Controllers\NotificacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +52,6 @@ Route::get('', function () {
         return view('auth.login');
     }
 });
-
 Route::get('/login', function () {
     if ((!Auth::check())) {
         return view('auth.login');
@@ -78,7 +75,6 @@ Route::get('/home', function () {
     }
 });
 
-
 Route::get('/Inicio', [App\Http\Controllers\HomeController::class, 'index',])->name('Inicio');
 Route::get('/get-links', [App\Http\Controllers\Administracion\InicioController::class, 'getLinks'])->name('links');
 Route::get('/download-file', [App\Http\Controllers\Administracion\InicioController::class, 'getManual'])->name('manual');
@@ -97,7 +93,7 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     include('calendarizacion.php'); //Agregar las rutas para el módulo de Calendarizacion en este archivo
     include('epp.php'); //Agregar las rutas para el módulo de Epp en este archivo
     Route::get('/borrar-sesion_sesion_notificacion', [App\Http\Controllers\HomeController::class, 'borrarsesionnotificacion'])->name('borrar-sesion_notificacion');
-  
+    Route::post('/notificacion', [App\Http\Controllers\NotificacionesController::class, 'store'])->name('notificacion');
 
     
 });
