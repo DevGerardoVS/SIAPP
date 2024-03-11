@@ -5304,87 +5304,107 @@ return new class extends Migration
 
         DB::unprepared("CREATE PROCEDURE reporte_seguimiento_1(in anio int,in upp_v varchar(3),in ur_v varchar(2),in programa_v varchar(2),in fondo_v varchar(2),in capitulo_v varchar(1))
         begin
-            set @tabla := 'programacion_presupuesto';
-            set @corte := 'deleted_at is null';
-            set @id := 'id';
-        
-            if (corte is not null) then 
-                set @tabla := 'programacion_presupuesto_hist';
-                set @corte := CONCAT('deleted_at between \"',corte,'\" and DATE_ADD(\"',corte,'\", INTERVAL 1 DAY)');
-                set @id := 'id_original';
-            end if;
-        
-            drop temporary table if exists aux_0;
+            set @upp := '';
+            set @ur := '';
+            set @programa := '';
+            set @fondo := '';
+            set @capitulo := '';
+
             drop temporary table if exists aux_1;
             drop temporary table if exists aux_2;
-        
-            create temporary table aux_0
-            select distinct
-                clv_capitulo,
-                capitulo,
-                concat(
-                    pp.clv_capitulo,
-                    pp.clv_concepto,
-                    pp.clv_partida_generica,
-                    pp.clv_partida_especifica
-                ) clv_partida,
-                pp.partida_especifica partida
-            from posicion_presupuestaria pp
-            where pp.deleted_at is null;
+
+            if(upp_v is not null) then 
+                set @upp := concat(\" and clv_upp = '\",upp_v,\"'\");
+            end if;
+            if(ur_v is not null) then 
+                set @ur := concat(\" and clv_ur = '\",ur_v,\"'\");
+            end if;
+            if(programa_v is not null) then 
+                set @programa := concat(\" and clv_programa = '\",programa_v,\"'\");
+            end if;
+            if(fondo_v is not null) then 
+                set @fondo := concat(\" and substr(fondo,7,2) = '\",fondo_v,\"'\");
+            end if;
+            if(capitulo_v is not null) then 
+                set @capitulo := concat(\" and substr(partida,1,1) = '\",capitulo_v,\"'\");
+            end if;
             
-            set @query := concat(\"
+            set @queri := concat(\"
             create temporary table aux_1
-            with aux as(
+            with aux as (
                 select 
-                    substring(pp.posicion_presupuestaria,1,1) clv_capitulo, 
-                    pp.posicion_presupuestaria clv_partida,
-                    sum(pp.total) importe
-                from \",@tabla,\" pp
-                where pp.ejercicio = \",anio,\" and pp.\",@corte,\"
-                group by posicion_presupuestaria
+                    clv_upp,clv_ur,clv_programa,clv_fondo,partida clv_partida,
+                    sum(original_sapp) original,sum(ampliacion) ampliacion,
+                    sum(modificado) modificado,sum(comprometido) comprometido,
+                    sum(devengado) devengado,
+                    case 
+                        when sum(modificado) = 0 then 0
+                        else truncate(((sum(devengado)/sum(modificado))*100),2)
+                    end cumplimiento
+                from (
+                    select 
+                        sm.clv_upp,sm.clv_ur,sm.clv_programa,
+                        substr(sm.fondo,7,2) clv_fondo,sm.partida,sm.original_sapp,
+                        case 
+                            when sm.ampliacion > 0 then sm.ampliacion
+                            when sm.reduccion > 0 then sm.reduccion
+                            else 0
+                        end ampliacion,
+                        sm.modificado,
+                        sm.comprometido,
+                        sm.devengado
+                    from sapp_movimientos sm
+                    where sm.ejercicio = \",anio,\"\",@upp,\"\",@ur,\"\",@programa,\"\",@fondo,\"\",@capitulo,\"
+                )t
+                group by clv_upp,clv_ur,clv_programa,clv_fondo,clv_partida
+                order by clv_upp,clv_ur,clv_programa,clv_fondo,clv_partida
             )
             select 
-                concat(
-                    a0.clv_capitulo,'000 ',
-                    a0.capitulo
-                ) capitulo,
-                concat(
-                    a0.clv_partida,' ',
-                    a0.partida
-                ) partida,
-                a.importe
-            from aux a
-            left join aux_0 a0 on a.clv_capitulo = a0.clv_capitulo
-            and a.clv_partida = a0.clv_partida;
+                a.clv_upp,a.clv_ur,a.clv_programa,a.clv_fondo,a.clv_partida,pp.partida,
+                a.original,a.ampliacion,a.modificado,a.comprometido,a.devengado,a.cumplimiento
+            from aux a 
+            left join (
+                select 
+                    concat(
+                        clv_capitulo,
+                        clv_concepto,
+                        clv_partida_generica,
+                        clv_partida_especifica,
+                        clv_tipo_gasto
+                    ) clv_partida,
+                    partida_especifica partida
+                from posicion_presupuestaria
+                where deleted_at is null
+            ) pp on a.clv_partida = pp.clv_partida;
             \");
-            
-            prepare stmt from @query;
+
+            prepare stmt from @queri;
             execute stmt;
             deallocate prepare stmt;
-        
+
             create temporary table aux_2
             select 
-                capitulo,sum(importe) importe
-            from aux_1
-            group by capitulo;
-            
-            select 
-                case 
-                    when partida != '' then ''
-                    else capitulo
-                end capitulo,
-                partida,
-                importe
+                c1.clave clv_upp,c1.descripcion upp,
+                c2.clave clv_ur,c2.descripcion ur
             from (
-                select * from aux_1
-                union all
-                select capitulo,'' partida,importe from aux_2
-                order by capitulo,partida
-            )t;
-            
-            drop temporary table aux_0;
-            drop temporary table aux_1;
-            drop temporary table aux_2;
+                select distinct
+                    e.upp_id,e.ur_id
+                from epp e
+                where ejercicio = anio and deleted_at is null
+            )t
+            join catalogo c1 on t.upp_id = c1.id
+            join catalogo c2 on t.ur_id = c2.id;
+
+            select 
+                a1.clv_upp,a1.clv_ur,a2.ur,clv_programa,clv_fondo,clv_partida,partida,
+                original,ampliacion,modificado,comprometido,devengado,cumplimiento
+            from aux_1 a1
+            left join aux_2 a2 on a1.clv_upp = a2.clv_upp 
+            and a1.clv_ur = a2.clv_ur
+            ORDER BY clv_upp,clv_ur,clv_programa,clv_fondo,clv_partida;
+
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
         end;");
 
         DB::unprepared("CREATE PROCEDURE reporte_seguimiento_2(in anio int,in upp_v varchar(3),in ur_v varchar(2),in programa_v varchar(2),in fondo_v varchar(2),in capitulo_v varchar(6))
