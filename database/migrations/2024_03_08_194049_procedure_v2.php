@@ -2181,7 +2181,7 @@ return new class extends Migration
             drop temporary table if exists aux_2;
         end;");
 
-        DB::unprepared("CREATE PROCEDURE mml_presupuesto_egresos(in anio int,in upp_v varchar(3),in ur_v varchar(2),in pp_v varchar(2),in eje_v varchar(1))
+        DB::unprepared("CREATE PROCEDURE mml_presupuesto_egresos(in anio int,in upp_v varchar(3),in ur_v varchar(2),in pp_v varchar(2),in eje_v varchar(1),in corte date)
         begin
             drop temporary table if exists aux_1;
             drop temporary table if exists catalogo_aux;
