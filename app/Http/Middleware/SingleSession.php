@@ -52,7 +52,7 @@ class SingleSession
             else{
                 Session::put('payload','');
                 session::put('mensaje','');
-                session::put('blocked','');
+                session::put('blocked',3);
                 session::put('route','');
                 Session::put('status',3);
                 Session::put('TypeButton','');
