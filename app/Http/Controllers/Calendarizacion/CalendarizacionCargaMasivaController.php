@@ -147,51 +147,53 @@ class CalendarizacionCargaMasivaController extends Controller
             //Verificamos si hay diferencia entre lo que debe ser y lo que mandaron
             $equals = array_diff($encabezadosMin, $arrayCampos);
             if (count($equals) > 0) {
-                $payloadsent = json_encode(
-                    array(
-                        "TypeButton" => 0,
-                        "route" => "",
-                        "blocked" => 3,
-                        "mensaje" => ' Error: No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados.',
-                        "payload" => ""
-                    )
-                );
-                $datos = notificaciones::create([
-                    'id_usuario' => $user->id,
-                    'id_sistema' => 1,
-                    'payload' => $payloadsent,
-                    'status' => 2,
-                    'created_user' => $user->username
-                ]);
-                $notification = json_encode([
-                    'id' => $datos->id
+                return redirect()->back()->withErrors('Error: No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados. ');
+                /*        $payloadsent = json_encode(
+                            array(
+                                "TypeButton" => 0,
+                                "route" => "",
+                                "blocked" => 3,
+                                "mensaje" => ' Error: No es la plantilla o fue editada. Favor de solo usar la plantilla sin modificar los encabezados.',
+                                "payload" => ""
+                            )
+                        );
+                        $datos = notificaciones::create([
+                            'id_usuario' => $user->id,
+                            'id_sistema' => 1,
+                            'payload' => $payloadsent,
+                            'status' => 2,
+                            'created_user' => $user->username
+                        ]);
+                        
+                         $notification = json_encode([
+                            'id' => $datos->id
 
-                ]);
-                event(new NotificacionCreateEdit($notification));
+                        ]); */
+                /* event(new NotificacionCreateEdit($notification)); */
             }
             if (count($filearray) <= 0) {
-                $payloadsent = json_encode(
-                    array(
-                        "TypeButton" => 0,
-                        "route" => "",
-                        "blocked" => 3,
-                        "mensaje" => ' El excel esta vacio.',
-                        "payload" => ""
-                    )
-                );
-                $datos = notificaciones::create([
-                    'id_usuario' => $user->id,
-                    'id_sistema' => 1,
-                    'payload' => $payloadsent,
-                    'status' => 2,
-                    'created_user' => $user->username
-                ]);
-                $notification = json_encode([
-                    'id' => $datos->id
+                return redirect()->back()->withErrors('Error: El excel esta vacio. ');
+                /*           $payloadsent = json_encode(
+                             array(
+                                 "TypeButton" => 0,
+                                 "route" => "",
+                                 "blocked" => 3,
+                                 "mensaje" => ' El excel esta vacio.',
+                                 "payload" => ""
+                             )
+                         );
+                         $datos = notificaciones::create([
+                             'id_usuario' => $user->id,
+                             'id_sistema' => 1,
+                             'payload' => $payloadsent,
+                             'status' => 2,
+                             'created_user' => $user->username
+                         ]);
+                        $notification = json_encode([
+                             'id' => $datos->id
 
-                ]);
-                event(new NotificacionCreateEdit($notification));
-
+                         ]); */
+                /* event(new NotificacionCreateEdit($notification)); */
             }
         }
 
@@ -204,28 +206,28 @@ class CalendarizacionCargaMasivaController extends Controller
 
 
         if ($tienecargapen) {
-            $payloadsent = json_encode(
-                array(
-                    "TypeButton" => 0,
-                    "route" => "",
-                    "blocked" => 3,
-                    "mensaje" => trans('messages.carga_masiva_proceso'),
-                    "payload" => ""
-                )
-            );
-            $datos = notificaciones::create([
-                'id_usuario' => $user->id,
-                'id_sistema' => 1,
-                'payload' => $payloadsent,
-                'status' => 0,
-                'created_user' => $user->username
-            ]);
-            $notification = json_encode([
-                'id' => $datos->id
+            return redirect()->back()->withErrors('Ya tienes una carga masiva en proceso ');
+            /*           $payloadsent = json_encode(
+                           array(
+                               "TypeButton" => 0,
+                               "route" => "",
+                               "blocked" => 3,
+                               "mensaje" => trans('messages.carga_masiva_proceso'),
+                               "payload" => ""
+                           )
+                       );
+                       $datos = notificaciones::create([
+                           'id_usuario' => $user->id,
+                           'id_sistema' => 1,
+                           'payload' => $payloadsent,
+                           'status' => 0,
+                           'created_user' => $user->username
+                       ]);
+                        $notification = json_encode([
+                           'id' => $datos->id
 
-            ]);
-            event(new NotificacionCreateEdit($notification));
-            return true;
+                       ]); */
+            /* event(new NotificacionCreateEdit($notification)); */
 
         } else {
 
@@ -246,15 +248,19 @@ class CalendarizacionCargaMasivaController extends Controller
                 'status' => 0,
                 'created_user' => $user->username
             ]);
-            $notification = json_encode([
-                'id' => $datos->id
+            /*             $notification = json_encode([
+                            'id' => $datos->id
 
-            ]);
-            event(new NotificacionCreateEdit($notification));
+                        ]); */
+            /* event(new NotificacionCreateEdit($notification)); */
 
+            Session::put('status', 0);
 
-            ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga, $datos->id)->onQueue('high');
-            return true;
+            /*             ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga, $datos->id)->onQueue('high');
+             */
+            ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga)->onQueue('high');
+            return redirect()->back();
+
         }
 
 

@@ -21,15 +21,15 @@ class CargaMasivaClaves implements ShouldQueue
     protected $user;
     protected $tipocarga;
 
-    protected $id;
-
-    public function __construct($filearray, $user, $tipocarga, $id)
+/*     protected $id;
+ */
+    public function __construct($filearray, $user, $tipocarga/* , $id */)
     {
         $this->filearray = $filearray;
         $this->user = $user;
         $this->tipocarga = $tipocarga;
-        $this->id = $id;
-    }
+/*         $this->id = $id;
+ */    }
     /**
      * Execute the job.
      *
@@ -150,13 +150,12 @@ class CargaMasivaClaves implements ShouldQueue
                         'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
-                $datos = notificaciones::where('id', $this->id)->first();
-                $notification = json_encode([
+               /* event(new NotificacionCreateEdit($notification)); */
+ /*                 $notification = json_encode([
                     'id' => $datos->id
 
-                ]);
-                event(new NotificacionCreateEdit($notification));
-
+                ]); */ 
+    /* event(new NotificacionCreateEdit($notification)); */
             } else {
                 $payloadsent = json_encode(
                     array(
@@ -174,14 +173,13 @@ class CargaMasivaClaves implements ShouldQueue
                         'status' => 1,
                         'updated_user' => $usuario->username
                     ]);
-                $datos = notificaciones::where('id', $this->id)->first();
+                /*
 
-                $notification = json_encode([
+               /*  $notification = json_encode([
                     'id' => $datos->id
 
-                ]);
-                event(new NotificacionCreateEdit($notification));
-
+                ]); */
+    /* event(new NotificacionCreateEdit($notification)); */
             }
 
 
@@ -215,13 +213,12 @@ class CargaMasivaClaves implements ShouldQueue
                     'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
-            $datos = notificaciones::where('id', $this->id)->first();
-            $notification = json_encode([
+           /* event(new NotificacionCreateEdit($notification)); */
+/*             $notification = json_encode([
                 'id' => $datos->id
 
-            ]);
-            event(new NotificacionCreateEdit($notification));
-
+            ]); */
+/* event(new NotificacionCreateEdit($notification)); */
 
         }
     }

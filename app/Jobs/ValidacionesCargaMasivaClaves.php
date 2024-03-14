@@ -400,14 +400,13 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         'status' => 2,
                         'updated_user' => $usuario->username
                     ]);
-                $datos = notificaciones::where('id', $this->id)->first();
+               /* event(new NotificacionCreateEdit($notification)); */
 
-                $notification = json_encode([
+/*                 $notification = json_encode([
                     'id' => $datos->id
 
-                ]);
-                event(new NotificacionCreateEdit($notification));
-
+                ]); */
+    /* event(new NotificacionCreateEdit($notification)); */
 
 
             } else {
@@ -438,13 +437,12 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                     'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
-            $datos = notificaciones::where('id', $this->id)->first();
-            $notification = json_encode([
+           /* event(new NotificacionCreateEdit($notification)); */
+/*             $notification = json_encode([
                 'id' => $datos->id
 
-            ]);
-            event(new NotificacionCreateEdit($notification));
-
+            ]); */
+/* event(new NotificacionCreateEdit($notification)); */
 
         }
     }
