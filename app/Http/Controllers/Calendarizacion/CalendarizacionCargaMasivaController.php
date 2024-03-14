@@ -255,10 +255,8 @@ class CalendarizacionCargaMasivaController extends Controller
             /* event(new NotificacionCreateEdit($notification)); */
 
             Session::put('status', 0);
-
-            /*             ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga, $datos->id)->onQueue('high');
-             */
-            ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga)->onQueue('high');
+            session::put('blocked', 3);
+            ValidacionesCargaMasivaClaves::dispatch($filearray, $user, $tipocarga, $datos->id)->onQueue('high');
             return redirect()->back();
 
         }

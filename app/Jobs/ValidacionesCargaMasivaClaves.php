@@ -26,14 +26,14 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
     protected $filearray;
     protected $user;
     protected $tipocarga;
-    protected $id;
+    protected $id; 
 
-    public function __construct($filearray, $user, $tipocarga, $id)
+    public function __construct($filearray, $user, $tipocarga , $id )
     {
         $this->filearray = $filearray;
         $this->user = $user;
         $this->tipocarga = $tipocarga;
-        $this->id = $id;
+        $this->id = $id; 
     }
 
     public function handle()
