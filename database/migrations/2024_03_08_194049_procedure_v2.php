@@ -13,6 +13,70 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('cat_permisos');
+        Schema::dropIfExists('adm_users');
+        Schema::dropIfExists('adm_grupos');
+        Schema::dropIfExists('adm_rel_user_grupo');
+        Schema::dropIfExists('adm_sistemas');
+        Schema::dropIfExists('adm_rel_sistema_grupo');
+        Schema::dropIfExists('adm_menus');
+        Schema::dropIfExists('adm_rel_menu_grupo');
+        Schema::dropIfExists('adm_funciones');
+        Schema::dropIfExists('permisos_funciones');
+        Schema::dropIfExists('adm_rel_funciones_grupos');
+        Schema::dropIfExists('adm_bitacora');
+        Schema::dropIfExists('password_resets');
+        Schema::dropIfExists('failed_jobs');
+        Schema::dropIfExists('personal_access_tokens');
+        Schema::dropIfExists('pp_identificadores');
+        Schema::dropIfExists('ramo_33');
+        Schema::dropIfExists('fondo');
+        Schema::dropIfExists('techos_financieros');
+        Schema::dropIfExists('programacion_presupuesto');
+        Schema::dropIfExists('tipologia_conac');
+        Schema::dropIfExists('metas');
+        Schema::dropIfExists('unidades_medida');
+        Schema::dropIfExists('beneficiarios');
+        Schema::dropIfExists('cierre_ejercicio_metas');
+        Schema::dropIfExists('cierre_ejercicio_claves');
+        Schema::dropIfExists('uppAutorizadasCPNomina');
+        Schema::dropIfExists('clasificacion_administrativa');
+        Schema::dropIfExists('clasificacion_geografica');
+        Schema::dropIfExists('entidad_ejecutora');
+        Schema::dropIfExists('posicion_presupuestaria');
+        Schema::dropIfExists('epp');
+        Schema::dropIfExists('sector_linea_accion');
+        Schema::dropIfExists('catalogo');
+        Schema::dropIfExists('subgrupos');
+        Schema::dropIfExists('proyectos_obra');
+        Schema::dropIfExists('tipo_actividad_upp');
+        Schema::dropIfExists('rel_economica_administrativa');
+        Schema::dropIfExists('programacion_presupuesto_hist');
+        Schema::dropIfExists('mml_avance_etapas_pp');
+        Schema::dropIfExists('mml_catalogos');
+        Schema::dropIfExists('mml_objetivos_desarrollo_sostenible');
+        Schema::dropIfExists('mml_arbol_problema');
+        Schema::dropIfExists('mml_arbol_objetivos');
+        Schema::dropIfExists('mml_observaciones_pp');
+        Schema::dropIfExists('mml_definicion_problema');
+        Schema::dropIfExists('mml_objetivo_sectorial_estrategia');
+        Schema::dropIfExists('mml_mir');
+        Schema::dropIfExists('epp_aux');
+        Schema::dropIfExists('configuracion');
+        Schema::dropIfExists('jobs');
+        Schema::dropIfExists('carga_masiva_estatus');
+        Schema::dropIfExists('mml_cremaa');
+        Schema::dropIfExists('mml_variable');
+        Schema::dropIfExists('mml_doc_enlaces');
+        Schema::dropIfExists('sapp_cierre_ejercicio');
+        Schema::dropIfExists('sapp_movimientos');
+        Schema::dropIfExists('sapp_seguimiento');
+        Schema::dropIfExists('sapp_acuse');
+        Schema::dropIfExists('sapp_enlaces');
+        Schema::dropIfExists('grupos');
+        Schema::dropIfExists('manuales');
+        Schema::dropIfExists('sapp_rel_metas_partidas');
+        
         DB::unprepared("CREATE PROCEDURE avance_etapas(in anio int, in upp varchar(3), in programa varchar(2), in lim_i int, in lim_s int)
         begin
             set @programa := '';
