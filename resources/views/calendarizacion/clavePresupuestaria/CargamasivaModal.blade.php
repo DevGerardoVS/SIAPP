@@ -6,7 +6,8 @@
                 <h5 class="modal-title" id="staticBackdropLabel">{{ __('messages.carga_masiva_title') }}</h5>
                 <button type="button" class="btn-close" id="close" name="close"></button>
             </div>
-            <form  id="Formmodal" 
+            <form action="{{ route('load_data_plantilla') }}" id="Formmodal" method="POST"
+            {{-- <form  id="Formmodal"  --}}
                 enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
@@ -138,10 +139,13 @@
                 <div class="modal-footer-carga">
                     <button type="button" onclick="document.getElementById('close').click()" class="btn btn-secondary "
                         data-bs-dismiss="modal">{{ __('messages.cancelar') }}</button>
-                    <button type="button" name="aceptar" id="aceptar" class="btn colorMorado">
+{{--                     <button type="button" name="aceptar" id="aceptar" class="btn colorMorado">
                         <i class="fa fa-upload" style="color: #dfdfdf"></i>
-                        {{ __('messages.cargar_archivo') }}</button>
-                </div>
+                        {{ __('messages.cargar_archivo') }}</button> --}}
+                        <button type="submit" name="aceptar" id="aceptar" class="btn colorMorado">
+                            <i class="fa fa-upload" style="color: #dfdfdf"></i>
+                            {{ __('messages.cargar_archivo') }}</button>
+                    </div>
         </div>
         </form>
     </div>
@@ -160,7 +164,7 @@
         e.preventDefault();
         $("#ModalCargaMasiva").find("#file_label").val($('#file')[0].files[0].name)
     });
-
+/* 
     $('#aceptar').click(function(e) {
         e.preventDefault();
        var form = $('#ModalCargaMasiva').find("#Formmodal");
@@ -193,6 +197,24 @@
                     }
                 });
             });
+    }); */
+
+    $('#aceptar').click(function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: '{{ __('messages.msg_cargando_datos') }}',
+            html: ' <b></b>',
+            allowOutsideClick: false,
+            timer: 3000000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+
+            },
+
+        })
+        form.submit();
+
     });
 
     $(document).delegate("#close", "click", function(event){

@@ -30,7 +30,7 @@ class SingleSession
             $userId = auth()->user()->id;
     
             // Continue with your middleware logic here
-    /*         $data = \DB::table('notificaciones')
+            $data = \DB::table('notificaciones')
             ->select('*')
          
             ->where('id_usuario','=',$userId)
@@ -43,6 +43,7 @@ class SingleSession
                 session::put('mensaje',$payload->mensaje);
                 session::put('route',$payload->route);
                 session::put('TypeButton',$payload->TypeButton);
+                session::put('blocked',$payload->blocked);
                 Session::put('payload', $payload->payload);
                 Session::put('status',$data->status);
                 session(['payload' => $payload->payload]);
@@ -51,13 +52,14 @@ class SingleSession
             else{
                 Session::put('payload','');
                 session::put('mensaje','');
+                session::put('blocked',3);
                 session::put('route','');
                 Session::put('status',3);
                 Session::put('TypeButton','');
 
                 session(['payload' =>'']);
                 session(['status' => 3]);
-            } */
+            }
             
          
                  

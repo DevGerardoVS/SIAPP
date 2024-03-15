@@ -1,4 +1,4 @@
-import Echo from 'laravel-echo';
+/* import Echo from 'laravel-echo'; */
 window._ = require('lodash');
 
 try {
@@ -21,7 +21,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * allows your team to easily build robust real-time web applications.
  */
 
-window.Pusher = require('pusher-js');
+/* window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
@@ -35,4 +35,4 @@ window.Echo = new Echo({
     disableStats: true,
     enabledTransports: ['ws', 'wss'],
  
-});
+}); */
