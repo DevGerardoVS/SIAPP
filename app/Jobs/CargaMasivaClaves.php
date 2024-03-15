@@ -21,15 +21,15 @@ class CargaMasivaClaves implements ShouldQueue
     protected $user;
     protected $tipocarga;
 
-/*     protected $id;
- */
-    public function __construct($filearray, $user, $tipocarga/* , $id */)
+    protected $id;
+ 
+    public function __construct($filearray, $user, $tipocarga, $id )
     {
         $this->filearray = $filearray;
         $this->user = $user;
         $this->tipocarga = $tipocarga;
-/*         $this->id = $id;
- */    }
+         $this->id = $id;
+     }
     /**
      * Execute the job.
      *
