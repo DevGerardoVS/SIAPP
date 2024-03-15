@@ -532,14 +532,14 @@ return new class extends Migration
             deallocate prepare stmt;
         END;");
 
-        DB::unprepared("CREATE PROCEDURE corte_anual_no_pp(in anio_act int,in usuario varchar(45))
+        DB::unprepared("CREATE PROCEDURE corte_anual(in anio_act int,in usuario varchar(45))
         begin
             set @anio := anio_act;
             set @deleted_at := now();
-            
+                    
             set @version := (select case when max(version) is null then 1 else (max(version)+1) end
-                from programacion_presupuesto_hist where ejercicio = @anio);
-            
+           from programacion_presupuesto_hist where ejercicio = @anio);
+                    
             #mml_arbol_objetivos_hist
             insert into mml_arbol_objetivos_hist(
                 id_original,version,problema_id,clv_upp,clv_pp,tipo,padre_id,indice,tipo_objeto,descripcion,calificacion_id,seleccion_mir,
@@ -549,7 +549,7 @@ return new class extends Migration
                 tipo_indicador,ejercicio,created_user,updated_user,created_at,updated_at,@deleted_at,ramo33
             from mml_arbol_objetivos ma
             where ma.ejercicio = @anio and deleted_at is null;
-            
+                    
             #mml_arbol_problema_hist
             insert into mml_arbol_problema_hist(
                 id_original,version,problema_id,clv_upp,clv_pp,tipo,padre_id,indice,tipo_objeto,descripcion,ejercicio,
@@ -559,7 +559,7 @@ return new class extends Migration
                 created_user,updated_user,created_at,updated_at,@deleted_at,ramo33
             from mml_arbol_problema ma
             where ma.ejercicio = @anio and deleted_at is null;
-            
+                    
             #mml_definicion_problema_hist
             insert into mml_definicion_problema_hist(
                 id_original,version,clv_upp,clv_pp,poblacion_objetivo,descripcion,magnitud,necesidad_atender,delimitacion_geografica,
@@ -571,7 +571,7 @@ return new class extends Migration
                 created_user,updated_user,created_at,updated_at,@deleted_at,ramo33
             from mml_definicion_problema
             where ejercicio = @anio and deleted_at is null;
-            
+                    
             #mml_mir
             insert into mml_mir_hist(
                 id_original,version,entidad_ejecutora,area_funcional,clv_upp,clv_ur,clv_pp,nivel,id_epp,componente_padre,objetivo,indicador,
@@ -587,7 +587,7 @@ return new class extends Migration
                 supuestos,estrategias,ejercicio,created_user,updated_user,created_at,updated_at,@deleted_at,ramo33
             from mml_mir mm
             where ejercicio = @anio and deleted_at is null;
-            
+                    
             #mml_actividades
             insert into mml_actividades_hist(
                 id_original,version,clv_upp,entidad_ejecutora,area_funcional,id_catalogo,nombre,ejercicio,
@@ -597,7 +597,7 @@ return new class extends Migration
                 created_user,updated_user,usuario,created_at,updated_at,@deleted_at
             from mml_actividades
             where ejercicio = @anio and deleted_at is null;
-            
+                    
             #metas
             insert into metas_hist(
                 id_original,version,clv_actividad,clv_fondo,mir_id,actividad_id,tipo_meta,tipo,beneficiario_id,unidad_medida_id,cantidad_beneficiarios,
@@ -609,9 +609,63 @@ return new class extends Migration
                 created_user,created_at,updated_user,updated_at,usuario,@deleted_at
             from metas
             where ejercicio = @anio and deleted_at is null;
-        END;");
+        
+            #catalogo
+            insert into catalogo_hist(id_original,grupo_id,ejercicio,clave,descripcion,
+                descripcion_larga,descripcion_corta,deleted_at,created_user,updated_user,
+                deleted_user,created_at,updated_at,version)
+            select 
+                id,grupo_id,ejercicio,clave,descripcion,
+                descripcion_larga,descripcion_corta,@deleted_at,created_user,updated_user,
+                usuario,created_at,updated_at,@version
+            from catalogo
+            where ejercicio = @anio and deleted_at is null;
+        
+            #epp
+            insert epp_hist(id_original,sector_publico_id,sector_publico_f_id,sector_economia_id,
+                subsector_economia_id,ente_publico_id,upp_id,subsecretaria_id,ur_id,finalidad_id,funcion_id,
+                subfuncion_id,eje_id,linea_accion_id,programa_sectorial_id,tipologia_conac_id,programa_id,
+                subprograma_id,proyecto_id,ejercicio,presupuestable,con_mir,confirmado,tipo_presupuesto,
+                created_at,updated_at,deleted_at,deleted_user,updated_user,created_user,version)
+            select 
+                id,sector_publico_id,sector_publico_f_id,sector_economia_id,
+                subsector_economia_id,ente_publico_id,upp_id,subsecretaria_id,ur_id,finalidad_id,funcion_id,
+                subfuncion_id,eje_id,linea_accion_id,programa_sectorial_id,tipologia_conac_id,programa_id,
+                subprograma_id,proyecto_id,ejercicio,presupuestable,con_mir,confirmado,tipo_presupuesto,
+                created_at,updated_at,@deleted_at,usuario,updated_user,created_user,@version
+            from epp 
+            where ejercicio = @anio and deleted_at is null;
+        
+            #mml_observaciones_pp
+            insert into mml_observaciones_pp(id_original,version,clv_upp,clv_pp,problema_id,etapa,comentario,
+                ruta,nombre,ejercicio,created_user,updated_user,created_at,updated_at,deleted_at,ramo33)
+            select 
+                id,@version,clv_upp,clv_pp,problema_id,etapa,comentario,
+                ruta,nombre,ejercicio,created_user,updated_user,created_at,updated_at,@deleted_at,ramo33
+            from mml_observaciones_pp
+            where ejercicio = @anio and deleted_at is null;
+        
+            #programacion_presupuesto
+            insert into programacion_presupuesto_hist(id_original,version,clasificacion_administrativa,
+                entidad_federativa,region,municipio,localidad,upp,subsecretaria,ur,finalidad,funcion,subfuncion,
+                eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,
+                proyecto_presupuestario,periodo_presupuestal,posicion_presupuestaria,tipo_gasto,anio,etiquetado,
+                fuente_financiamiento,ramo,fondo_ramo,capital,proyecto_obra,ejercicio,enero,febrero,marzo,abril,
+                mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre,total,estado,tipo,
+                created_user,updated_user,deleted_user,created_at,updated_at,deleted_at)
+            select 
+                id,@version,clasificacion_administrativa,
+                entidad_federativa,region,municipio,localidad,upp,subsecretaria,ur,finalidad,funcion,subfuncion,
+                eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,
+                proyecto_presupuestario,periodo_presupuestal,posicion_presupuestaria,tipo_gasto,anio,etiquetado,
+                fuente_financiamiento,ramo,fondo_ramo,capital,proyecto_obra,ejercicio,enero,febrero,marzo,abril,
+                mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre,total,estado,tipo,
+                created_user,updated_user,usuario,created_at,updated_at,@deleted_at
+            from programacion_presupuesto
+            where ejercicio = @anio and deleted_at is null;
+         END;");
 
-        DB::unprepared("CREATE PROCEDURE estatus_movimientos(in anio int,in mes_n int)
+        DB::unprepared("CREATE PROCEDURE estatus_movimientos(IN anio INT, IN mes_n int)
         begin
             drop temporary table if exists metas_area;
             drop temporary table if exists movimientos;
@@ -675,6 +729,10 @@ return new class extends Migration
             where ejercicio = \",@anio,\" and deleted_at is null
             order by clv_upp,clv_ur,area_funcional,clv_fondo;
             \");
+            
+            prepare stmt from @queri;
+            execute stmt;
+            deallocate prepare stmt;
         
             create temporary table ext_mov(
                 id int not null,
@@ -6473,7 +6531,7 @@ return new class extends Migration
         DB::unprepared("DROP PROCEDURE IF EXISTS calendario_fondo_mensual;");
         DB::unprepared("DROP PROCEDURE IF EXISTS calendario_general;");
         DB::unprepared("DROP PROCEDURE IF EXISTS conceptos_clave;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS corte_anual_no_pp;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS corte_anual;");
         DB::unprepared("DROP PROCEDURE IF EXISTS estatus_movimientos;");
         DB::unprepared("DROP PROCEDURE IF EXISTS inicio_a;");
         DB::unprepared("DROP PROCEDURE IF EXISTS inicio_b;");
