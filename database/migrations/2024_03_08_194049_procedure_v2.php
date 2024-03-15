@@ -707,7 +707,7 @@ return new class extends Migration
             where ejercicio = @anio and deleted_at is null;
         
             #mml_observaciones_pp
-            insert into mml_observaciones_pp(id_original,version,clv_upp,clv_pp,problema_id,etapa,comentario,
+            insert into mml_observaciones_pp_hist(id_original,version,clv_upp,clv_pp,problema_id,etapa,comentario,
                 ruta,nombre,ejercicio,created_user,updated_user,created_at,updated_at,deleted_at,ramo33)
             select 
                 id,@version,clv_upp,clv_pp,problema_id,etapa,comentario,
