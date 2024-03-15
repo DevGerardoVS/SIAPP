@@ -13,6 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
+        DB::unprepared("DROP VIEW IF EXISTS v_epp");
+        DB::unprepared("DROP VIEW IF EXISTS v_entidad_ejecutora");
+        DB::unprepared("DROP VIEW IF EXISTS v_epp_llaves");
+        DB::unprepared("DROP VIEW IF EXISTS v_programacion_presupuesto_llaves");
+        DB::unprepared("DROP VIEW IF EXISTS v_clasificacion_geografica");
+        DB::unprepared("DROP VIEW IF EXISTS v_posicion_presupuestaria_llaves");
+        DB::unprepared("DROP VIEW IF EXISTS v_fondo_llaves");
+        DB::unprepared("DROP VIEW IF EXISTS inicio_a");
+        DB::unprepared("DROP VIEW IF EXISTS inicio_b");
+        DB::unprepared("DROP VIEW IF EXISTS v_sector_importe");
+        DB::unprepared("DROP VIEW IF EXISTS v_ramo_33");
+
         DB::unprepared("CREATE VIEW v_epp AS
         select 
             e.id,
