@@ -947,6 +947,7 @@ class MetasHelper
 	public static function actividadesDel($upp, $anio)
 	{
 		try {
+			log::debug("upp: ".$upp." anio: ". $anio);
 			$actv = DB::table('mml_actividades')
 				->leftJoin('catalogo', 'catalogo.id', '=', 'mml_actividades.id_catalogo')
 				->select(
