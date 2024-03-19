@@ -14,8 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::table('catalogo_hist', function (Blueprint $table) {
-            $table->string('descripcion_larga', 43);
-            $table->string('descripcion_corta', 22);
+            if (!Schema::hasColumn('catalogo_hist', 'descripcion_larga')) {
+                $table->string('descripcion_larga', 43);
+            }
+            if (!Schema::hasColumn('catalogo_hist', 'descripcion_corta')) {
+                $table->string('descripcion_corta', 43);
+            }
         });
     }
 

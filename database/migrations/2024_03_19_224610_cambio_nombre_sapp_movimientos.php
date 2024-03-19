@@ -14,7 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('sapp_movimientos', function (Blueprint $table) {
-            $table->renameColumn('original_sap', 'original_sapp');
+            if (Schema::hasColumn('sapp_movimientos', 'original_sap')) {
+                $table->renameColumn('original_sap', 'original_sapp');
+            }
 
         });
     }

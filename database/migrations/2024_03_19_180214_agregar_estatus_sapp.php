@@ -14,7 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('programacion_presupuesto_hist', function (Blueprint $table) {
-            $table->tinyInteger('estatus_sapp')->default(0);
+            if (!Schema::hasColumn('programacion_presupuesto_hist', 'estatus_sapp')) {
+                $table->tinyInteger('estatus_sapp')->default(0);
+            }
         });
     }
 
