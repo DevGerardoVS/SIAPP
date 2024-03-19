@@ -393,7 +393,8 @@ class DatabaseSeeder extends Seeder
             ProgramacionPresupuestoSeeder::class,
             TipoActividadUppSeeder::class,
             mml_seeder::class,
-            ramo_33::class
+            ramo_33::class,
+            epp_catalogo_v2::class
         ]);
         
         echo "\nInicializacion de Catalogos del Sistema";
