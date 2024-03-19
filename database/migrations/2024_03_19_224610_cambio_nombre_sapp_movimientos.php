@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('programacion_presupuesto_hist', function (Blueprint $table) {
-            if (!Schema::hasColumn('programacion_presupuesto_hist', 'estatus_sapp')) {
-                $table->tinyInteger('estatus_sapp')->default(0);
+        Schema::table('sapp_movimientos', function (Blueprint $table) {
+            if (Schema::hasColumn('sapp_movimientos', 'original_sap')) {
+                $table->renameColumn('original_sap', 'original_sapp');
             }
+
         });
     }
 
@@ -27,8 +28,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('programacion_presupuesto_hist', function (Blueprint $table) {
-            $table->dropColumn('estatus_sapp');
+        Schema::table('sapp_movimientos', function (Blueprint $table) {
+            $table->dropColumn('original_sapp');
 
         });
     }
