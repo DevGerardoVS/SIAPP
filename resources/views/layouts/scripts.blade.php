@@ -78,7 +78,7 @@
                     }
                 });
             }); */
-        Echo.private(`notificacion`)
+/*         Echo.private(`notificacion`)
             .listen('NotificacionCreateEdit', (e) => {
                 var notificacion = e['notificacion'];
                 $.ajax({
@@ -93,7 +93,7 @@
                     error: function(xhr, status, error) {
                     }
                 });
-            });
+            }); */
 
         function callbackThen(response) {
             // read HTTP status

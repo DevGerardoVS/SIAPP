@@ -211,7 +211,7 @@
         });
        
         
-/*         @if($errors->any())
+        @if($errors->any())
        
         var failures= {!! $errors !!};
         const fails = [];
@@ -230,7 +230,7 @@
             }).then(function(){
                 location.reload();
             });
-        @endif */
+        @endif
 
     </script>
 @endsection
