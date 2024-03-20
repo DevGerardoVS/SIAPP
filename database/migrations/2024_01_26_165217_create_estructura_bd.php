@@ -1104,6 +1104,28 @@ return new class extends Migration {
         if (!Schema::hasTable('epp')) {
             Schema::create('epp', function (Blueprint $table) {
                 $table->increments('id');
+                $table->unique([
+                    'sector_publico_id',
+                    'sector_publico_f_id',
+                    'sector_economia_id',
+                    'subsector_economia_id',
+                    'ente_publico_id',
+                    'upp_id',
+                    'subsecretaria_id',
+                    'ur_id',
+                    'finalidad_id',
+                    'funcion_id',
+                    'subfuncion_id',
+                    'eje_id',
+                    'linea_accion_id',
+                    'programa_sectorial_id',
+                    'tipologia_conac_id',
+                    'programa_id',
+                    'subprograma_id',
+                    'proyecto_id',
+                    'ejercicio',
+                    'deleted_at',
+                ], 'llave_epp');
                 $table->unsignedInteger('sector_publico_id');
                 $table->unsignedInteger('sector_publico_f_id');
                 $table->unsignedInteger('sector_economia_id');
