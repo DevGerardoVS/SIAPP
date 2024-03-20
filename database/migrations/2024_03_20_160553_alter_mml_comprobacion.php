@@ -36,9 +36,9 @@ return new class extends Migration
             if(programa is not null) then
                 set @programa := CONCAT('and mm.clv_pp = \"',programa,'\"'); 
                 if(upp is not null) then
-                    set @programa2 := CONCAT('and clv_programa = \"',programa,'\"'); 
+                    set @programa2 := CONCAT('and clv_pp = \"',programa,'\"'); 
                 else
-                    set @programa2 := CONCAT('where clv_programa = \"',programa,'\"'); 
+                    set @programa2 := CONCAT('where clv_pp = \"',programa,'\"'); 
                 end if;
             end if;
             if(ur is not null) then 
