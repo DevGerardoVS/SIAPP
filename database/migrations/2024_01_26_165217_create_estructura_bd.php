@@ -1124,7 +1124,6 @@ return new class extends Migration {
                     'subprograma_id',
                     'proyecto_id',
                     'ejercicio',
-                    'deleted_at',
                 ], 'llave_epp');
                 $table->unsignedInteger('sector_publico_id');
                 $table->unsignedInteger('sector_publico_f_id');
