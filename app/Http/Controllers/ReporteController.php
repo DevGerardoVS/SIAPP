@@ -207,7 +207,7 @@ class ReporteController extends Controller
 
             if ($fechaCorte != null) {
                 $parameters["fecha"] = $fechaCorte;
-                $nameFile = $nameFile . "_" . $fechaCorte;
+                $nameFile = $nameFile . "_" . substr($fechaCorte, 0,-3);
             }
 
             if ($nombre == "calendario_clave_presupuestaria" || $nombre == "proyecto_calendario_actividades") {
@@ -270,7 +270,7 @@ class ReporteController extends Controller
 
     public function getFechaCorte($anio)
     {
-        $fechaCorte = DB::select('SELECT DISTINCT version, MAX(DATE_FORMAT(deleted_at, "%Y-%m-%d")) AS deleted_at FROM programacion_presupuesto_hist pp WHERE ejercicio = ? AND deleted_at IS NOT NULL GROUP BY version', [$anio]);
+        $fechaCorte = DB::select('SELECT DISTINCT version, MAX(DATE_FORMAT(deleted_at, "%Y-%m-%d $H")) AS deleted_at FROM programacion_presupuesto_hist pp WHERE ejercicio = ? AND deleted_at IS NOT NULL GROUP BY version', [$anio]);
         return $fechaCorte;
     }
     
