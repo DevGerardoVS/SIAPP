@@ -43,6 +43,7 @@ class ManualHelper{
             }
             $manual->nombre = $datos->name;
             $manual->estatus = 1;
+            $manual->id_sistema = 1;
             $manual->ruta = $ruta;
             $manual->usuarios = $datos->users;
             

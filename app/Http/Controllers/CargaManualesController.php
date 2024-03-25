@@ -32,7 +32,7 @@ class CargaManualesController extends Controller
     public function getManuales(){
         try{
             
-            $data = DB::connection('mysql')->table('manuales')->where('estatus',1)->get();
+            $data = DB::connection('mysql')->table('manuales')->where('estatus',1)->where('id_sistema',1)->get();
 
             $dataSet = array();
             foreach ($data as $d) {
@@ -60,7 +60,7 @@ class CargaManualesController extends Controller
 
     public function getEnlacesMenu(){
         try{
-            $data = DB::connection('mysql')->table('manuales')->where('estatus',1)->get();
+            $data = DB::connection('mysql')->table('manuales')->where('estatus',1)->where('id_sistema',1)->get();
 
             $dataSet = array();
             foreach ($data as $d) {
