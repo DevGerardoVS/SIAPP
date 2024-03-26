@@ -4461,5 +4461,21 @@ class epp_catalogo_2023_v2 extends Seeder
         (11305, 4420, 4421, 4422, 4423, 4426, 4498, 4510, 4554, 4950, 4955, 5010, 5040, 5078, 5324, 5344, 5458, 5864, 6459, 2023, 1, 1, 1, NULL, '2024-03-26 11:16:38', '2024-03-26 11:16:38', NULL, NULL, NULL, 'SISTEMA'),
         (11306, 4420, 4421, 4422, 4424, 4425, 4442, 4510, 4684, 4950, 4962, 5009, 5041, 5183, 5328, 5352, 5434, 5545, 6411, 2023, 1, 1, 1, NULL, '2024-03-26 11:16:38', '2024-03-26 11:16:38', NULL, NULL, NULL, 'SISTEMA'),
         (11307, 4420, 4421, 4422, 4423, 4426, 4448, 4510, 4549, 4949, 4965, 4993, 5042, 5204, 5335, 5349, 5392, 5567, 6382, 2023, 0, 1, 1, NULL, '2024-03-26 11:16:38', '2024-03-26 11:30:56', NULL, NULL, NULL, 'SISTEMA');");
+
+        DB::unprepapred("UPDATE epp SET con_mir = 0 WHERE subprograma_id IN (
+            select 
+                id
+            from catalogo c
+            where c.clave in ('UUU','21B') and deleted_at is null and c.grupo_id = 17 AND ejercicio = 2024
+        )
+        AND ejercicio = 2024 AND deleted_at IS NULL;");
+
+        DB::unprepapred("UPDATE epp SET con_mir = 0 WHERE programa_id IN (
+            select 
+                id
+            from catalogo c
+            where c.clave in ('RM','5H') and deleted_at is null and c.grupo_id = 16 AND ejercicio = 2024
+        )
+        AND  ejercicio = 2024 AND deleted_at IS NULL;");
     }
 }
