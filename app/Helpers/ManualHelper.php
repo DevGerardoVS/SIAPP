@@ -34,6 +34,7 @@ class ManualHelper{
                     'usuario_modificacion' => $manual->usuario_modificacion,
                     'created_at'=>date("d/m/Y H:i:s", strtotime($manual->created_at)),
                     'updated_at'=>date("d/m/Y H:i:s", strtotime($manual->updated_at)),
+                    'id_sistema'=> $manual->id_sistema
                 );
                 
                 $manual->usuario_modificacion = Auth::user()->username;
@@ -43,6 +44,7 @@ class ManualHelper{
             }
             $manual->nombre = $datos->name;
             $manual->estatus = 1;
+            $manual->id_sistema = 1;
             $manual->ruta = $ruta;
             $manual->usuarios = $datos->users;
             
@@ -57,6 +59,7 @@ class ManualHelper{
                 'usuario_modificacion' => $manual->usuario_modificacion,
                 'created_at'=>date("d/m/Y H:i:s", strtotime($manual->created_at)),
                 'updated_at'=>date("d/m/Y H:i:s", strtotime($manual->updated_at)),
+                'id_sistema'=> $manual->id_sistema
             );
             // generamos arreglo con el dato anterior y el nuevo
             $array_data_act = array(
@@ -93,6 +96,7 @@ class ManualHelper{
                     'usuario_modificacion' => $manual->usuario_modificacion,
                     'created_at'=>date("d/m/Y H:i:s", strtotime($manual->created_at)),
                     'updated_at'=>date("d/m/Y H:i:s", strtotime($manual->updated_at)),
+                    'id_sistema'=> $manual->id_sistema
                 );
                 
                 $manual->usuario_modificacion = Auth::user()->username;
@@ -109,6 +113,7 @@ class ManualHelper{
                 'usuario_modificacion' => $manual->usuario_modificacion,
                 'created_at'=>date("d/m/Y H:i:s", strtotime($manual->created_at)),
                 'updated_at'=>date("d/m/Y H:i:s", strtotime($manual->updated_at)),
+                'id_sistema'=> $manual->id_sistema
             );
             // generamos arreglo con el dato anterior y el nuevo
             $array_data_act = array(
