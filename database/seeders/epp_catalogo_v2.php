@@ -15,6 +15,7 @@ class epp_catalogo_v2 extends Seeder
      */
     public function run()
     {
+        DB::transaction(function() {
         DB::unprepared("UPDATE epp SET deleted_at = NOW() WHERE ejercicio = 2024 and deleted_at is null;");
 
         DB::unprepared("INSERT INTO `epp` (`id`, `sector_publico_id`, `sector_publico_f_id`, `sector_economia_id`, `subsector_economia_id`, `ente_publico_id`, `upp_id`, `subsecretaria_id`, `ur_id`, `finalidad_id`, `funcion_id`, `subfuncion_id`, `eje_id`, `linea_accion_id`, `programa_sectorial_id`, `tipologia_conac_id`, `programa_id`, `subprograma_id`, `proyecto_id`, `ejercicio`, `presupuestable`, `con_mir`, `confirmado`, `tipo_presupuesto`, `created_at`, `updated_at`, `deleted_at`, `deleted_user`, `updated_user`, `created_user`) VALUES 
@@ -4540,5 +4541,6 @@ class epp_catalogo_v2 extends Seeder
         (4418, 18, 2024, 'FMC', 'Fortalecimiento y/o mejora de los Centros de Conciliación Laboral', NULL, NULL, NULL, 'SEEDER', NULL, NULL, '2024-03-19 15:51:55', '2024-03-19 15:51:55'),
         (4419, 18, 2024, 'PDD', 'Acciones de Promoción y Difusión de Derechos de NNA', NULL, NULL, NULL, 'SEEDER', NULL, NULL, '2024-03-19 15:51:55', '2024-03-19 15:51:55')
         ON DUPLICATE KEY UPDATE descripcion = descripcion;");
+        });
     }
 }
