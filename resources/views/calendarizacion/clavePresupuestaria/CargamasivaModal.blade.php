@@ -7,8 +7,8 @@
                 <button type="button" class="btn-close" id="close" name="close"></button>
             </div>
             <form action="{{ route('load_data_plantilla') }}" id="Formmodal" method="POST"
+            {{-- <form  id="Formmodal"  --}}
                 enctype="multipart/form-data">
-
                 @csrf
                 <div class="modal-body">
                     <div class="row">
@@ -139,10 +139,13 @@
                 <div class="modal-footer-carga">
                     <button type="button" onclick="document.getElementById('close').click()" class="btn btn-secondary "
                         data-bs-dismiss="modal">{{ __('messages.cancelar') }}</button>
-                    <button type="submit" name="aceptar" id="aceptar" class="btn colorMorado">
+{{--                     <button type="button" name="aceptar" id="aceptar" class="btn colorMorado">
                         <i class="fa fa-upload" style="color: #dfdfdf"></i>
-                        {{ __('messages.cargar_archivo') }}</button>
-                </div>
+                        {{ __('messages.cargar_archivo') }}</button> --}}
+                        <button type="submit" name="aceptar" id="aceptar" class="btn colorMorado">
+                            <i class="fa fa-upload" style="color: #dfdfdf"></i>
+                            {{ __('messages.cargar_archivo') }}</button>
+                    </div>
         </div>
         </form>
     </div>
@@ -150,19 +153,54 @@
 
 
 
+
 <script type="text/javascript">
     $(document).on("ajaxStart", function() {
         $("#loading").show();
     });
+
     //mostrar campos una vez selecionado el municipio
     $('#file').change(function(e) {
         e.preventDefault();
         $("#ModalCargaMasiva").find("#file_label").val($('#file')[0].files[0].name)
     });
+/* 
+    $('#aceptar').click(function(e) {
+        e.preventDefault();
+       var form = $('#ModalCargaMasiva').find("#Formmodal");
+        var formData = new FormData(form[0]);
+        Swal.fire({
+            title: '{{ __('messages.msg_cargando_datos') }}',
+            html: ' <b></b>',
+            allowOutsideClick: false,
+            timer: 3000000,
+            timer: 500,
+
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+
+        }).then(()=>{
+            $.ajax({
+                    url: "{{ route('load_data_plantilla') }}",
+                    type: 'POST',
+                    data:formData,
+                    global: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        Swal.close();
+                        $("#ModalCargaMasiva").find("#file").val(null);
+                        $("#ModalCargaMasiva").find("#file_label").val('Seleccionar archivo');
+                        $('#ModalCargaMasiva').modal('hide');
+                    }
+                });
+            });
+    }); */
 
     $('#aceptar').click(function(e) {
         e.preventDefault();
-        form = $('#ModalCargaMasiva').find("#Formmodal");
         Swal.fire({
             title: '{{ __('messages.msg_cargando_datos') }}',
             html: ' <b></b>',
@@ -177,15 +215,14 @@
         })
         form.submit();
 
-    })
+    });
 
     $(document).delegate("#close", "click", function(event){
-            $("#ModalCargaMasiva").find("#file_label").val('Seleccionar archivo');
-            $("#ModalCargaMasiva").find("#file_").val(null);
-            $('#ModalCargaMasiva').modal('hide');
-});
-
-
-
-        
+        $("#ModalCargaMasiva").find("#file_label").val('Seleccionar archivo');
+        $("#ModalCargaMasiva").find("#file").val(null);
+        $('#ModalCargaMasiva').modal('hide');
+    });
 </script>
+
+
+

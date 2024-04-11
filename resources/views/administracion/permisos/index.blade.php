@@ -72,8 +72,7 @@
                                                                                             </span>
                                                                                         </span>
                                                                                         <ul class="list-group">
-                                                                                            <?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ', [$nieto->nombre]); ?>
-                                                                                            @foreach($permisos as $permiso)
+                                                                                            @foreach(funcionessXsistemas($nieto->nombre) as $permiso)
                                                                                             <li class="list-group-item" style="display:none">
 																							<span>
 																								<label class="checkbox inline-block">
@@ -82,26 +81,24 @@
 																									@else
 																									<input type="checkbox" name="permisos" value="{{$permiso->id}}">
 																									@endif
-																									<i></i> {{$permiso->tipo}}
+                                                                                                    <i></i>{{$permiso->tipo}}
 																								</label>
 																							</span>
                                                                                             </li>
                                                                                             @endforeach
-                                                                                            <?php $modulos = DB::select('SELECT DISTINCT modulo FROM adm_funciones WHERE padre=? ORDER BY modulo', [$nieto->nombre]); ?>
-                                                                                            @foreach($modulos as $modulo)
+                                                                                            @foreach(menuXsistema($nieto->nombre) as $modulo)
                                                                                             <li class="list-group-item" style="display: none"><span><i class="fa fa-lg fa-plus-circle"></i>&nbsp; {{$modulo->modulo}}</span>
                                                                                                 <ul class="list-group">
-                                                                                                    <?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$modulo->modulo]); ?>
-                                                                                                    @foreach($permisos as $permiso)
+                                                                                                    @foreach(funcionessXsistemas($modulo->modulo) as $permiso)
                                                                                                     <li class="list-group-item" style="display:none">
                                                                                                     <span>
                                                                                                         <label class="checkbox inline-block">
                                                                                                             @if(in_array($permiso->id, $data['asignados']))
-                                                                                                            <input type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
+                                                                                                            <input  type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
                                                                                                             @else
                                                                                                             <input type="checkbox" name="permisos" value="{{$permiso->id}}">
                                                                                                             @endif
-                                                                                                            <i></i> {{$permiso->tipo}}
+                                                                                                            <i></i>{{$permiso->tipo}}
                                                                                                         </label>
                                                                                                     </span>
                                                                                                     </li>
@@ -114,8 +111,7 @@
                                                                                 </ul>
                                                                                 @else
                                                                                 <ul class="list-group">
-                                                                                    <?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$hijo->nombre_menu]); ?>
-                                                                                    @foreach($permisos as $permiso)
+                                                                                    @foreach(funcionessXsistemas($hijo->nombre_menu) as $permiso)
                                                                                     <li class="list-group-item" style="display:none">
 																					<span>
 																						<label class="checkbox inline-block">
@@ -124,7 +120,7 @@
 																							@else
 																							<input type="checkbox" name="permisos" value="{{$permiso->id}}">
 																							@endif
-																							<i></i>&nbsp; {{$permiso->tipo}}
+                                                                                            <i></i>{{$permiso->tipo}}
 																						</label>
 																					</span>
                                                                                     </li>
@@ -135,8 +131,7 @@
                                                                             @endforeach
                                                                         </ul>
                                                                         <ul class="list-group">
-                                                                            <?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$menu->nombre_menu]); ?>
-                                                                            @foreach($permisos as $permiso)
+                                                                            @foreach(funcionessXsistemas($menu->nombre_menu) as $permiso)
                                                                             <li class="list-group-item" style="display:none">
                                                                                 <span>
                                                                                     <label class="checkbox inline-block">
@@ -145,7 +140,7 @@
                                                                                         @else
                                                                                         <input type="checkbox" name="permisos" value="{{$permiso->id}}">
                                                                                         @endif
-                                                                                        <i></i>&nbsp; {{$permiso->tipo}}
+                                                                                        <i></i>{{$permiso->tipo}}
                                                                                     </label>
                                                                                 </span>
                                                                             </li>

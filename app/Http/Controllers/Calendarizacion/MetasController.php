@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MetasExport;
 use App\Exports\MetasExportErr;
+use App\Exports\MetasExportErrTotal;
 use App\Exports\Calendarizacion\MetasCargaM;
 use App\Models\calendarizacion\Metas;
 use Auth;
@@ -188,7 +189,7 @@ class MetasController extends Controller
 					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . "," . $mirx . "," . $key->ejercicio . ")' ></div>";
 					$fondos=MetasHelper::fondos($key->area,$key->entidad,$check['anio']);
 					$existM=MetasController::existMeta($key->area,$key->entidad,$check['anio'],$fondos->fondoArr);
-					$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $accion,$fondos->fondoStr,$existM->exist];
+					$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto,$fondos->fondoStr,$existM->exist, $accion];
 				}
 			}
 			return response()->json(["dataSet" => $dataSet], 200);
@@ -774,6 +775,18 @@ class MetasController extends Controller
 		);
 		Controller::bitacora($b);
 		return Excel::download(new MetasExport($upp, $anio), 'Proyecto con actividades.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+	}
+	
+
+	public function exportExcelErrTotal($anio)	
+	{
+		Log::debug($anio);
+	/* 	ob_end_clean();
+		ob_start();
+
+		return Excel::download(new MetasExportErrTotal($anio), 'Metas con diferencias.xlsx', \Maatwebsite\Excel\Excel::XLSX);  */
+		$check = MetasHelper::validateMesesfinalTotal($anio);
+		Log::debug($check);
 	}
 	public function exportExcelErr($upp, $anio)	
 	{
@@ -1510,9 +1523,9 @@ class MetasController extends Controller
 		for ($i = 0; $i < count($fondo); $i++) {
 			$query = MetasHelper::existMeta($area, $entidad, $anio,$fondo[$i]);
 			if(count($query)){
-				$status = $status .'<i class="fa fa-check" aria-hidden="true"></i>'.'<br>';
+				$status = $status .'<i class="fa fa-check" aria-hidden="true" style="color:green;"></i>'.'<br>';
 			}else{
-				$status = $status .'<i class="fa fa-circle-o" aria-hidden="true"></i>' . '<br>';
+				$status = $status .'<i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:#EE2A00;"></i>' . '<br>';
 			}
 			$exMeta->exist = $status;
 		}

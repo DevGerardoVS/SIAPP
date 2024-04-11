@@ -1081,6 +1081,7 @@ var dao = {
         for (let i = 1; i <=12; i++) {
             $("#" + i).prop('disabled', true); 
         }
+        $("#addActividad").modal('hide');
     },
     limpiarFormFirma: function () {
         $('#firmaModal').modal('hide');

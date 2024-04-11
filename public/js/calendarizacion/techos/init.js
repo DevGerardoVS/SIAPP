@@ -592,6 +592,12 @@ function editarRegistro(){
                     title: response.mensaje,
                     showConfirmButton: true
                 });
+            }else if(response.status == 400){
+                Swal.fire({
+                    icon: 'error',
+                    title: response.mensaje,
+                    showConfirmButton: true
+                });
             }
             getData();
         }).fail(function (error) {

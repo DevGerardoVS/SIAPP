@@ -214,15 +214,11 @@ var dao = {
         for (let i = 1; i <=12; i++) {
             $("#" + i).prop('disabled', true); 
         }
+        $("#addActividad").modal('hide');
     },
     editarPutMeta: function () {
         var form = $('#actividad')[0];
         var data = new FormData(form);
-     /*    for (let i = 0; i <= 11; i++) {  
-            data.append(i, 2);
-        }
-        data.append(12, 3);
-        data.append('sumMetas', 25); */
         $.ajax({
             type: "POST",
             url: '/calendarizacion/put/metas-delegacion',

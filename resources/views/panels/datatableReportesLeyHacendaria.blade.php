@@ -16,7 +16,8 @@
                         var getLastYear = {!! json_encode($anios[0]->ejercicio) !!}; // Variable para obtener el último año de la tabla pp y pph
                         if(getLastYear == anio) par.append(new Option("Actuales", "")); // Comprobar si el último año es igual al año del select y eliminar la opción de actuales para los años anteriores
                         $.each(data, function(i, val){
-                            var date = new Date(val.deleted_at);
+                            var deleted_at = val.deleted_at.slice(0,-3);
+                            var date = new Date(deleted_at);
                             var getCorrectDate = new Date(date.valueOf() + date.getTimezoneOffset() * 60000);
                             var formattedDate = ("0" + getCorrectDate.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
                             par.append(new Option("V"+ data[i].version +" - "+formattedDate , data[i].deleted_at));

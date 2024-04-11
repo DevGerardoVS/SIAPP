@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use App\Models\carga_masiva_estatus;
+use App\Models\notificaciones;
 use Illuminate\Support\Facades\Redirect;
 class SingleSession
 {
@@ -30,25 +30,35 @@ class SingleSession
             $userId = auth()->user()->id;
     
             // Continue with your middleware logic here
-            $data = \DB::table('carga_masiva_estatus')
+            $data = \DB::table('notificaciones')
             ->select('*')
          
             ->where('id_usuario','=',$userId)
+            ->where('id_sistema','=',1)
             ->first();
            
            
-            if(isset($data->cargaMasClav)){
-                // Log::debug('si entro');
-                Session::put('cargapayload', $data->cargapayload);
-                Session::put('cargaMasClav',$data->cargaMasClav);
-                session(['cargapayload' => $data->cargapayload]);
-                session(['cargaMasClav' => $data->cargaMasClav]);
+            if(isset($data->status)){
+                $payload = json_decode($data->payload);
+                session::put('mensaje',$payload->mensaje);
+                session::put('route',$payload->route);
+                session::put('TypeButton',$payload->TypeButton);
+                session::put('blocked',$payload->blocked);
+                Session::put('payload', $payload->payload);
+                Session::put('status',$data->status);
+                session(['payload' => $payload->payload]);
+                session(['status' => $data->status]);
             }
             else{
-                Session::put('cargapayload','');
-                Session::put('cargaMasClav',3);
-                session(['cargapayload' =>'']);
-                session(['cargaMasClav' => 3]);
+                Session::put('payload','');
+                session::put('mensaje','');
+                session::put('blocked',3);
+                session::put('route','');
+                Session::put('status',3);
+                Session::put('TypeButton','');
+
+                session(['payload' =>'']);
+                session(['status' => 3]);
             }
             
          
