@@ -370,9 +370,6 @@ return new class extends Migration
         m.area_funcional = s.area_funcional AND m.clv_fondo = s.clv_fondo
         ORDER BY clv_upp,clv_ur,area_funcional,clv_fondo,mes;
          
-        ALTER TEMPORARY TABLE borrar 
-        ADD CONSTRAINT borrar_pk PRIMARY KEY (id);
-         
         update sapp_seguimiento set deleted_at = now(), deleted_user = 'SISTEMA'
         where id in (SELECT id FROM borrar);
          
