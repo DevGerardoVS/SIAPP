@@ -328,9 +328,6 @@ return new class extends Migration
         DB::unprepared("UPDATE epp SET con_mir = 0
         WHERE id IN (
             SELECT id FROM v_epp
-            WHERE deleted_at IS NULL AND clv_programa IN ('5H','RM')
-            UNION ALL
-            SELECT id FROM v_epp
             WHERE deleted_at IS NULL AND clv_subprograma IN ('21B','UUU')
         );");
 
@@ -385,6 +382,8 @@ return new class extends Migration
         AND mm.clv_ur = ve.clv_ur AND mm.area_funcional = ve.area_funcional AND ve.deleted_at IS NULL
         SET mm.id_epp = ve.id
         WHERE mm.id_epp != 0;");
+
+        DB::unprepared("UPDATE metas SET enero=0, febrero=0, marzo=1, abril=0, mayo=0, junio=0, julio=0, agosto=0, septiembre=0, octubre=0, noviembre=0, diciembre=0, total=1 WHERE id=2975;");
     }
 
     /**
