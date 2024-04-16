@@ -2,8 +2,10 @@ $(document).ready(function() {
 
     dropifyInit();
 
-    generaDatatable();
-
+    //manualDatatable();
+    $("#manuales-tab").on('click', function() {
+        manualDatatable();
+    });
 
     $(".container").on('click', '#btn_new_registro', function() {
         limpiarCampos();
@@ -258,7 +260,7 @@ function dropifyInit(){
 
 
 
-function generaDatatable() {
+function manualDatatable() {
     var dt = $('#catalogo_c');
     dt.DataTable().clear().destroy();
     var orderDt = "";
