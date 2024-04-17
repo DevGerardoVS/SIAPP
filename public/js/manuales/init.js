@@ -52,11 +52,13 @@ $(document).ready(function() {
                     icon: response.status,
                     title: response.title,
                     text: response.message,
+                    timer: 3000,
                     confirmButtonText: "Aceptar",
                 });
+                
                 if(response.status == "success"){
                     $("#close-modal").click();
-                    generaDatatable();
+                    manualDatatable();
                 }
             },
             error: function(response) {
@@ -123,12 +125,13 @@ function sendData(){
                 icon: response.status,
                 title: response.title,
                 text: response.message,
+                timer: 3000,
                 confirmButtonText: "Aceptar",
             });
             if(response.status == "success"){
                 
                 $("#close-modal-new").click();
-                generaDatatable();
+                manualDatatable();
             }
             limpiarCampos();
         },
