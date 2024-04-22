@@ -116,10 +116,19 @@ function activarFiltros(){
     filtro_upp.disabled = false;
     filtro_ur.disabled = false;
     filtro_anio.disabled = false;
+    document.getElementById('btn_export_pdf').disabled = false;
+    document.getElementById('btn_export_excel').disabled = false;
 }
 
 function desactivarFiltros(){
     filtro_upp.disabled = true;
     filtro_ur.disabled = true;
     filtro_anio.disabled = true;
+
+    let export_pdf = document.getElementById('btn_export_pdf');
+    let export_excel = document.getElementById('btn_export_excel');
+    if(export_pdf){
+        export_pdf.disabled = true;
+        export_excel.disabled = true;
+    }
 }
