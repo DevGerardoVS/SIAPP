@@ -107,3 +107,19 @@ function exportPdf(){
     _url = "/epp-exportPdf/"+anio;
     window.open(_url, '_blank');
 }
+
+const filtro_upp = document.getElementById('filters_upp');
+const filtro_ur = document.getElementById('filters_ur');
+const filtro_anio = document.getElementById('filters_anio');
+
+function activarFiltros(){
+    filtro_upp.disabled = false;
+    filtro_ur.disabled = false;
+    filtro_anio.disabled = false;
+}
+
+function desactivarFiltros(){
+    filtro_upp.disabled = true;
+    filtro_ur.disabled = true;
+    filtro_anio.disabled = true;
+}

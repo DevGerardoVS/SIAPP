@@ -7,6 +7,7 @@
         }
 
         function generaDatatable() {
+            desactivarFiltros();
             var e = document.getElementById("filters_anio");
             var anio = e.value;
             var name = 'Lista EPP '+e.value;
@@ -155,6 +156,7 @@
                         }
                     });
                     redrawTable('#catalogo');
+                    activarFiltros();
                 },
                 error: function(response) {
                     console.log('Error: ', response.responseJSON.message);
