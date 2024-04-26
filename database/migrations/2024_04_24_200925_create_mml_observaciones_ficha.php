@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
             $table->integer('mir_id')->unsigned()->nullable(false);
-            $table->tinyInteger('etapa')->unsigned()->nullable(false);
             $table->text('comentario')->nullable(true);
             $table->string('ruta',200)->nullable(true);
             $table->string('nombre',500)->nullable(true);
