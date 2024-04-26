@@ -1,12 +1,16 @@
 $(document).ready(function() {
 
     dropifyInit();
-    getData();
+
+    //manualDatatable();
+    $("#manuales-tab").on('click', function() {
+        manualDatatable();
+    });
 
     $(".container").on('click', '#btn_new_registro', function() {
         limpiarCampos();
         $.ajax({
-            url: "/configuraciones/get-usuarios",
+            url: "/amd-configuracion/get-usuarios",
             type: "GET",
             data: {},
             dataType: 'json',
@@ -35,7 +39,7 @@ $(document).ready(function() {
         formData.append("id",id);
 
         $.ajax({
-            url: "/configuraciones/delete-manual",
+            url: "/amd-configuracion/delete-manual",
             data: formData,
             type:'POST',
             dataType: 'json',
@@ -48,11 +52,13 @@ $(document).ready(function() {
                     icon: response.status,
                     title: response.title,
                     text: response.message,
+                    timer: 3000,
                     confirmButtonText: "Aceptar",
                 });
+                
                 if(response.status == "success"){
                     $("#close-modal").click();
-                    getData();
+                    manualDatatable();
                 }
             },
             error: function(response) {
@@ -92,7 +98,7 @@ function sendData(){
     formData.append("users",users);
     
     $.ajax({
-        url: "/configuraciones/add-manual",
+        url: "/amd-configuracion/add-manual",
         data: formData,
         type:'POST',
         dataType: 'json',
@@ -119,12 +125,13 @@ function sendData(){
                 icon: response.status,
                 title: response.title,
                 text: response.message,
+                timer: 3000,
                 confirmButtonText: "Aceptar",
             });
             if(response.status == "success"){
                 
                 $("#close-modal-new").click();
-                getData();
+                manualDatatable();
             }
             limpiarCampos();
         },
@@ -161,7 +168,7 @@ function getManual(id){
     formData.append("id",id);
 
     $.ajax({
-        url: "/configuraciones/get-manual",
+        url: "/amd-configuracion/get-manual",
         data: formData,
         type:'POST',
         dataType: 'json',
@@ -210,7 +217,7 @@ function descargar(id){
     formData.append("id",id);
 
     $.ajax({
-        url: "/configuraciones/download-manual",
+        url: "/amd-configuracion/download-manual",
         data: formData,
         type:'POST',
         dataType: 'json',
@@ -250,6 +257,127 @@ function dropifyInit(){
             'maxHeight': 'El alto de la imágen es muy grande (máxima px).',
             'imageFormat': 'El formato de esta imágen no esta permitido (solo JPG).',
             'fileFormat': 'El formato de archivo no esta permitido (solamente pdf, doc, docx, xls, xlsx).',
+        }
+    });
+}
+
+
+
+function manualDatatable() {
+    var dt = $('#catalogo_c');
+    dt.DataTable().clear().destroy();
+    var orderDt = "";
+    var column = "";
+    var formatCantidades = [];
+    var ordenamiento = [];
+    var columns_hidden = [];
+    const url = $("#buscarForm_c").attr("action");
+    /* console.log("url", url); */
+
+    if (dt.attr('data-id') != undefined) {
+        var data_order = dt.attr('data-id').split(",");
+        for (var i in data_order) {
+            var dato = data_order[i].split("_");
+            orderDt = dato[0];
+            column = dato[1];
+            ordenamiento[i] = [parseInt(column), "" + orderDt];
+        }
+    }
+
+    if (dt.attr('data-hidden') != undefined) {
+        var data_hidden = dt.attr('data-hidden').split(",");
+        for (var i in data_hidden) {
+            columns_hidden[i] = parseInt(data_hidden[i]);
+        }
+    }
+
+    if (dt.attr('data-format') != undefined) {
+        formatCantidades = dt.attr('data-format').split(",");
+        for (var i in formatCantidades) {
+            if (formatCantidades[i] != "") {
+                formatCantidades[i] = parseInt(formatCantidades[i]);
+            }
+        }
+    }
+    $.ajax({
+        url: $("#buscarForm_c").attr("action"),
+        data: $("#buscarForm_c").serializeArray(),
+        type: $("#buscarForm_c").attr("method"),
+        dataType: 'json',
+        success: function(response) {
+            /* console.log("res-DataTable", response) */
+            if (response?.dataSet?.length == 0) {
+                dt.attr('data-empty', 'true');
+            } else {
+                dt.attr('data-empty', 'false');
+            }
+
+
+            dt.DataTable({
+                data: response?.dataSet,
+                pageLength: 10,
+                scrollX: true,
+                autoWidth: false,
+                processing: true,
+                order: ordenamiento,
+                ServerSide: true,
+                language: {
+                    processing: "Procesando...",
+                    lengthMenu: "Mostrar _MENU_ registros",
+                    zeroRecords: "No se encontraron resultados",
+                    emptyTable: "Ningún dato disponible en esta tabla",
+                    info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    infoFiltered: "(filtrado de un total de _MAX_ registros)",
+                    search: "Búsqueda:",
+                    infoThousands: ",",
+                    loadingRecords: "Cargando...",
+                    buttonText: "Imprimir",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior",
+                    },
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'excel', 'pdf',
+                    ]
+                },
+                columnDefs: [{
+                        targets: formatCantidades,
+                        className: 'text-center'
+                    },
+                    {
+                        targets: columns_hidden,
+                        visible: false,
+                        searcheable: false
+                    }
+                ],
+                footerCallback: function(row, data, start, end, display) {
+                    var api = this.api();
+                    api.columns('.sum', {
+                        page: 'current'
+                    }).every(function() {
+                        var sum = this.data().reduce(function(a, b) {
+                            var x = parseFloat(a) || 0;
+                            if (b == null) {
+                                b = "0.00";
+                            }
+                            var y = parseFloat(b.replaceAll(",", "")) || 0;
+                            return x + y;
+                        }, 0);
+                        sum = sum.toFixed(2);
+                        $(this.footer()).html($(this.footer()).attr('data-title') +
+                            ": " + sum.toString().replace(
+                                /\B(?=(\d{3})+(?!\d))/g, ","));
+                    });
+                }
+            });
+            redrawTable('#catalogo_c');
+        },
+        error: function(response) {
+            console.log('Error: ', response.responseJSON.message);
         }
     });
 }
