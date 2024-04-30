@@ -7,6 +7,7 @@
         }
 
         function generaDatatable() {
+            desactivarFiltros();
             var e = document.getElementById("filters_anio");
             var anio = e.value;
             var name = 'Lista EPP '+e.value;
@@ -91,6 +92,9 @@
                             buttons: [
                                 {
                                     text: 'Excel',
+                                    attr:{
+                                        id: 'btn_export_excel'
+                                    },
                                     action: function(e){
                                         var e = document.getElementById("filters_anio");
                                         var anio = e.value;
@@ -121,6 +125,9 @@
                                     pageSize: 'A2',
                                     filename: name,
                                     orientation: 'landscape',
+                                    attr:{
+                                        id: 'btn_export_pdf'
+                                    }
                                 },
                             ]
                         },
@@ -155,6 +162,7 @@
                         }
                     });
                     redrawTable('#catalogo');
+                    activarFiltros();
                 },
                 error: function(response) {
                     console.log('Error: ', response.responseJSON.message);
