@@ -37,12 +37,10 @@ class sapp_movimientos implements ToCollection, WithProgressBar, SkipsEmptyRows,
              $clv_programa = substr($row[4], 8, 2);
              $clv_subprograma = substr($row[4], 10, 3);
              $clv_proyecto = substr($row[4], -3);
-             \Log::debug($split_row);
              $numeroMes = $this->obtenerNumeroMes($split_row[1]);
              $proyecto_obra = !empty($row[6]) ? $row[6] : "000000";
- 
              $this->file_content .= "(".$row[0].",".$numeroMes.",".$split_row[0].",'".$upp."','".$ur."','".$clv_programa."','".$clv_subprograma."','".$clv_proyecto."','".$row[2]."','".$row[3]."','".$row[4]."','".$row[5]."','".$row[7]."','".$proyecto_obra."',".$row[8].",".$row[9].",".$row[10].",".$row[11].",".$row[12].",".$row[13].",".$row[14].",".$row[15].",".$row[16].",".$row[17].",".$row[18].",".$row[19].",".$row[20].",".$row[21].","."'seeder'".","."'seeder'".",".'now()'."),\n";
-         }
+            }
      }
     public function obtenerNumeroMes($mesAbreviado)
     {
@@ -79,7 +77,7 @@ class sapp_movimientos implements ToCollection, WithProgressBar, SkipsEmptyRows,
                 $creator = $event->reader->getProperties()->getCreator();
                 //$this->file_content .= "}\n}\n";
                 //Storage::disk('public')->put("PruebaSeeder.php", $this->file_content);
-                Storage::disk('public')->put("Marzo.sql", $this->file_content);
+                Storage::disk('public')->put("Enero-marzo.sql", $this->file_content);
             },
 			
                         

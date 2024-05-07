@@ -30,7 +30,7 @@ class importSeederSappMov extends Command
     {
         //para funcionamento comodo de la importacion cambiar el nombre del archivo a importar aqui y en el archivo import spp_movimientos.php
         $this->output->title('Starting import');
-        (new sapp_movimientos)->withOutput($this->output)->import('Marzo.xlsx');
+        (new sapp_movimientos)->withOutput($this->output)->import('Enero-marzo.xlsx');
         $this->output->success('Import successful');
     }
 }
