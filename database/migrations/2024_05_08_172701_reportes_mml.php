@@ -50,7 +50,11 @@ return new class extends Migration
             with aux as (
                 select 
                     clv_upp,clv_ur,clv_programa,clv_fondo,clv_partida,mes_n,actividad,unidad_medida,beneficiarios,
-                    mes,programado,realizado,(realizado-programado) diferencia,0 avance,
+                    mes,programado,realizado,(realizado-programado) diferencia,
+                    case
+                        when programado = 0 then 100
+                        else truncate(((realizado/programado)*100),2)
+                    end avance,
                     justificacion,propuesta_mejora
                 from (
                     select 
