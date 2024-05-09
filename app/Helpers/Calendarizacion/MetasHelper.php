@@ -109,6 +109,7 @@ class MetasHelper
 				->unionAll($query2)
 				->orderByRaw('upp,clv_ur,clv_pp')
 				->get();
+				Log::debug($query);
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());
