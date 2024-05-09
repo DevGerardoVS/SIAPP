@@ -13,6 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
+        DB::unprepared("DROP VIEW IF EXISTS v_epp");
+        DB::unprepared("DROP VIEW IF EXISTS v_entidad_ejecutora");
+        DB::unprepared("DROP VIEW IF EXISTS v_epp_llaves");
+        DB::unprepared("DROP VIEW IF EXISTS v_programacion_presupuesto_llaves");
+        DB::unprepared("DROP VIEW IF EXISTS v_clasificacion_geografica");
+        DB::unprepared("DROP VIEW IF EXISTS v_posicion_presupuestaria_llaves");
+        DB::unprepared("DROP VIEW IF EXISTS v_fondo_llaves");
+        DB::unprepared("DROP VIEW IF EXISTS inicio_a");
+        DB::unprepared("DROP VIEW IF EXISTS inicio_b");
+        DB::unprepared("DROP VIEW IF EXISTS v_sector_importe");
+        DB::unprepared("DROP VIEW IF EXISTS v_ramo_33");
+
         DB::unprepared("CREATE VIEW v_epp AS
         select 
             e.id,
@@ -193,76 +205,6 @@ return new class extends Migration
                 f.clv_capital
             ) as llave
         from fondo f;");
-
-        DB::unprepared("CREATE VIEW inicio_a AS
-        select
-            sum(presupuesto_asignado) presupuesto_asignado,
-            sum(presupuesto_calendarizado) presupuesto_calendarizado,
-            sum(presupuesto_asignado) - sum(presupuesto_calendarizado) as disponible,
-            (sum(presupuesto_calendarizado) / sum(presupuesto_asignado)) * 100 as avance,
-            ejercicio
-        FROM (
-            select 
-                sum(presupuesto) as presupuesto_asignado,
-                0 as presupuesto_calendarizado,
-                ejercicio
-            from techos_financieros
-            where deleted_at is null
-            group by ejercicio
-            union all
-            select 
-                0 as presupuesto_asignado,
-                sum(total) as presupuesto_calendarizado,
-                ejercicio
-            from programacion_presupuesto
-            where deleted_at is null
-            group by ejercicio
-        )t 
-        group by ejercicio;");
-
-
-        DB::unprepared("CREATE VIEW inicio_b AS
-        SELECT 
-            clv_fondo clave,
-            f.fondo_ramo fondo,
-            asignado,
-            programado,
-            (programado/asignado)*100 avance,
-            ejercicio
-        FROM (
-            SELECT 
-                asig.clv_fondo,
-                case 
-                    when asignado IS NULL then 0
-                    ELSE asignado
-                END asignado,
-                case 
-                    when programado IS NULL then 0
-                    ELSE programado
-                END programado,
-                asig.ejercicio
-            FROM (
-                SELECT 
-                    clv_fondo,
-                    SUM(presupuesto) asignado,
-                    tf.ejercicio
-                FROM techos_financieros tf
-                WHERE deleted_at IS NULL
-                GROUP BY clv_fondo,ejercicio
-            ) asig
-            LEFT JOIN (
-                SELECT 
-                    fondo_ramo clv_fondo,
-                    SUM(total) programado,
-                    ejercicio
-                FROM programacion_presupuesto
-                WHERE deleted_at IS NULL
-                GROUP BY clv_fondo,ejercicio
-            )prog 
-            ON asig.clv_fondo = prog.clv_fondo AND asig.ejercicio = prog.ejercicio
-            ORDER BY ejercicio,clv_fondo
-        )t2 
-        LEFT JOIN fondo f ON t2.clv_fondo = f.clv_fondo_ramo AND f.deleted_at IS NULL;");
 
         DB::unprepared("CREATE VIEW v_sector_importe AS 
         select 

@@ -16,6 +16,8 @@ use Log;
 use PDF;
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Session;
+
 
 class UsuarioController extends Controller
 {
@@ -32,21 +34,24 @@ class UsuarioController extends Controller
     }
     public function getUsers()
     {
-        $user = DB::table('adm_users')->select(
-            'id',
-            'username',
+        $user = DB::table('adm_users')
+        ->leftJoin('adm_rel_sistema_grupo AS rel', 'rel.id_grupo', '=', 'adm_users.id_grupo')
+        ->select(
+            'adm_users.id',
+            'adm_users.username',
             DB::raw('CONCAT(username," ","-"," ",adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as fullname'),
         )
         ->where('adm_users.estatus','!=', 2)
-        ->where('adm_users.id_grupo', '!=', 2)
-        ->where('adm_users.id_grupo', '!=', 3)
-        ->where('deleted_at', null)->get();
+        ->where('adm_users.id_grupo','!=', 3)
+        ->where('adm_users.id_grupo','!=', 2)
+        ->where('rel.id_sistema','=', Session::get('sistema'))
+        ->where('adm_users.deleted_at', null)->get();
 
         return $user;
     }
     public function getModulos()
     {
-        $modul = DB::table('adm_menus')->select('id', 'nombre_menu as nombre')->where('deleted_at', null)->where('padre', 0)->get();
+        $modul = DB::table('adm_menus')->select('id', 'nombre_menu as nombre')->where('id_sistema', Session::get('sistema'))->where('deleted_at', null)->where('padre', 0)->get();
         return $modul;
     }
     public function assignPermisson(Request $request)
@@ -69,8 +74,7 @@ class UsuarioController extends Controller
                     DB::raw('CONCAT(username," ","-"," ",adm_users.nombre, " ", adm_users.p_apellido, " ", adm_users.s_apellido) as fullname'),
                 )
                 ->where('adm_users.estatus','!=', 2)
-                ->where('adm_users.id_grupo', '!=', 2)
-                ->where('adm_users.id_grupo', '!=', 3)
+                ->whereNotIn('adm_users.id_grupo',[2,3,6])
                 ->where('deleted_at', null)->get();
                 $resul = PermisosUpp::create([
                     'id_user' => $request->id_userP,
@@ -157,7 +161,7 @@ class UsuarioController extends Controller
     }
     public function getPermisson()
     {
-        $permisos = CatPermisos::where('deleted_at', null)->get();
+        $permisos = CatPermisos::where('deleted_at', null)->where('id_sistema',Session::get('sistema'))->get();
         return response()->json($permisos, 200);
     }
     //Vista Create Usuario
@@ -203,6 +207,7 @@ class UsuarioController extends Controller
             ->leftJoin('adm_grupos', 'adm_grupos.id', '=', 'adm_users.id_grupo')
             ->where('adm_users.deleted_at', '=', null)
             ->where('adm_users.id_grupo', '!=', 2)
+            ->where('adm_users.id_grupo', '!=', 6)
             ->orderByRaw('adm_users.estatus');
 
         if ($id != 0) {
@@ -246,13 +251,14 @@ class UsuarioController extends Controller
             DB::raw('GROUP_CONCAT(cat_permisos.nombre SEPARATOR " / ") AS permiso'),
             DB::raw('GROUP_CONCAT(permisos_funciones.id_permiso SEPARATOR "/") AS permisos'),
             'adm_grupos.nombre_grupo AS grupo',
-            
+
         )
-        ->where('adm_users.estatus', '!=', 2)
-        ->where('adm_users.id_grupo', '!=', 2)
             ->leftJoin('adm_users', 'adm_users.id', '=', 'permisos_funciones.id_user')
             ->leftJoin('cat_permisos', 'cat_permisos.id', '=', 'permisos_funciones.id_permiso')
             ->leftJoin('adm_grupos', 'adm_grupos.id', '=', 'adm_users.id_grupo')
+            ->where('adm_users.estatus', '!=', 2)
+            ->where('cat_permisos.id_sistema', '=', Session::get('sistema'))
+            ->whereNotIn('adm_users.id_grupo', [2, 6])
             ->groupBy('permisos_funciones.id_user')
             ->get();
         $dataSet = [];
@@ -445,9 +451,7 @@ class UsuarioController extends Controller
             'estatus'
         )
         ->where('deleted_at', '=', null)
-        ->where('id', '!=', 2)
-        ->where('id', '!=', 6)
-            ->get();
+        ->whereNotIn('id',[2,6])->get();
         return response()->json($perfil, 200);
     }
     //Actualiza Estatus de Usuario

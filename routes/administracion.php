@@ -8,6 +8,7 @@
 	use App\Http\Controllers\AdmonCapturaController;
 	use App\Http\Controllers\Administracion\InicioController;
 	use App\Http\Controllers\Administracion\ConfiguracionesController;
+	use App\Http\Controllers\CargaManualesController;
 
 	Route::controller(SistemasController::class)->group(function () {
 		Route::get('/sistemas/panel', 'getPanel');
@@ -56,6 +57,17 @@ Route::controller(UsuarioController::class)->group(function () {
 		// Rutas de descarga archivos de carga
 			Route::get('/archivos-carga/{id?}', 'getArchivosDeCarga2024');
 		// Fin de rutas archivos de carga
+		
+	});
+
+	Route::controller(CargaManualesController::class)->group(function (){
+		Route::get('/amd-configuracion/manuales', 'index')->name('viewManuales');
+		Route::post('/amd-configuracion/get-manuales', 'getManuales')->name('get_manuales');
+		Route::get('/amd-configuracion/get-usuarios', 'getUsers')->name('get_tipos_usuarios');
+		Route::post('/amd-configuracion/add-manual', 'saveManual')->name('add_manual');
+		Route::post('/amd-configuracion/get-manual', 'getManual')->name('get_manual');
+		Route::post('/amd-configuracion/delete-manual', 'deleteManual')->name('del_manual');
+		Route::get('/amd-configuracion/download-manual', 'getDownload')->name('download_manual');
 	});
 
 	Route::controller(GrupoController::class)->group(function () {

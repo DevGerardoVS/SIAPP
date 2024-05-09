@@ -21,9 +21,9 @@ use DB;
 class DatabaseSeeder extends Seeder
 {
         protected $cat_permisos = array(
-           ['id'=>1,'nombre'=>'Carga masiva'],
-           ['id'=>2,'nombre'=>'Cargar Obra'],
-           ['id'=>3,'nombre'=>'Descargar oficio']
+           ['id'=>1,'nombre'=>'Carga masiva',"id_sistema"=>1],
+           ['id'=>2,'nombre'=>'Cargar Obra',"id_sistema"=>1],
+           ['id'=>3,'nombre'=>'Descargar oficio',"id_sistema"=>1]
         );
         protected $grupos = array(
             ['id' => 1, 'nombre_grupo' => 'Administrador', 'estatus' => 0],
@@ -393,7 +393,9 @@ class DatabaseSeeder extends Seeder
             ProgramacionPresupuestoSeeder::class,
             TipoActividadUppSeeder::class,
             mml_seeder::class,
-            ramo_33::class
+            ramo_33::class,
+            epp_catalogo_v2::class,
+            epp_catalogo_2023_v2::class
         ]);
         
         echo "\nInicializacion de Catalogos del Sistema";
@@ -410,6 +412,16 @@ class DatabaseSeeder extends Seeder
 
         DB::beginTransaction();
         try {
+            echo "\n    -Carga Catálogo Sistemas";
+            foreach ($this->sistemas as $sistema) {
+                $sistema_bd = Sistema::find($sistema['id']);
+                if (!$sistema_bd) {
+                    Sistema::create($sistema);
+                } else {
+                    $sistema_bd->update($sistema);
+                    $sistema_bd->save();
+                }
+            }
             echo "\n    -Carga Catálogo Entes";
             foreach ($this->cat_permisos as $ente) {
                 $ente_bd = CatPermisos::find($ente['id']);
@@ -446,16 +458,6 @@ class DatabaseSeeder extends Seeder
                 }
             }
 
-            echo "\n    -Carga Catálogo Sistemas";
-            foreach ($this->sistemas as $sistema) {
-                $sistema_bd = Sistema::find($sistema['id']);
-                if (!$sistema_bd) {
-                    Sistema::create($sistema);
-                } else {
-                    $sistema_bd->update($sistema);
-                    $sistema_bd->save();
-                }
-            }
             echo "\n    -Carga rel Sistema Grupo";
             foreach ($this->grupos as $grupo) {
                 SistemaGrupo::create([
