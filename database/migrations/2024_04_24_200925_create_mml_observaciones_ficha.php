@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('mml_observaciones_ficha', function (Blueprint $table) {
-            $table->unique(['clv_upp', 'clv_pp', 'ejercicio', 'mir_id', 'etapa'], 'clave');
+            $table->unique(['clv_upp', 'clv_pp', 'ejercicio', 'mir_id'], 'clave');
             $table->increments('id');
             $table->string('clv_upp',4)->nullable(true);
             $table->string('clv_pp',255)->nullable(false);
