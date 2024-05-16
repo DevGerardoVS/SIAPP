@@ -123,4 +123,14 @@ function check_sistema($id_group) {
     return false;
 }
 
+function getEntidadEje($upp,$ur,$anio) {
+    $resul = DB::table('programacion_presupuesto')
+        ->select(DB::raw('CONCAT(programacion_presupuesto.upp,programacion_presupuesto.subsecretaria,programacion_presupuesto.ur) AS entidad'))
+        ->where('programacion_presupuesto.ur', '=', $ur)
+        ->where('programacion_presupuesto.upp', '=', $upp)
+        ->where('programacion_presupuesto.ejercicio', '=',$anio)
+        ->first();
+    return $resul->entidad;
+}
+
 
