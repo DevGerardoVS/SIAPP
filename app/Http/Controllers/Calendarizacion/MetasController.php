@@ -26,7 +26,7 @@ use Shuchkin\SimpleXLSX;
 use Illuminate\Support\Facades\Http;
 use Storage;
 use App\Models\calendarizacion\CierreMetas;
-use App\Models\MmlMir;
+use App\Models\MmlActividades;
 use App\Models\Catalogo;
 use App\Http\Controllers\utils\ReportesJasper;
 
@@ -620,10 +620,10 @@ class MetasController extends Controller
 		$mDelete = Metas::where('id', $request->id)->delete();
 		if ($mDelete) {
 			if ($meta->actividad_id != null) {
-				$actv = MmlMir::where('id', $meta->actividad_id)->firstOrFail();
+				$actv = MmlActividades::where('id', $meta->actividad_id)->firstOrFail();
 				$actv->deleted_user = Auth::user()->username;
 				$actv->save();
-				$m = MmlMir::where('id', $meta->actividad_id)->delete();
+				$m = MmlActividades::where('id', $meta->actividad_id)->delete();
 			}
 
 			$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];

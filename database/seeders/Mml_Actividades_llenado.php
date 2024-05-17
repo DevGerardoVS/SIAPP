@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
-use App\Models\MmlMir;
+use App\Models\MmlActividades;
 
 class Mml_Actividades_llenado extends Seeder
 {
