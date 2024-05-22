@@ -7,7 +7,7 @@ use Config;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\MmlMir;
+use App\Models\MmlActividades;
 use App\Models\calendarizacion\Metas;
 use App\Http\Controllers\Calendarizacion\MetasController;
 
@@ -109,6 +109,7 @@ class MetasHelper
 				->unionAll($query2)
 				->orderByRaw('upp,clv_ur,clv_pp')
 				->get();
+				Log::debug($query);
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());
@@ -1322,7 +1323,7 @@ class MetasHelper
 	{
 		$ur = str_split($entidad_ejecutora);
 		$pp = str_split($area_funcional);
-		$mml_act = new MmlMir();
+		$mml_act = new MmlActividades();
 		$mml_act->clv_upp =$upp;
 		$mml_act->clv_ur =''.$ur[4].$ur[5].'';
 		$mml_act->clv_pp =''.$pp[8].$pp[9].'';
