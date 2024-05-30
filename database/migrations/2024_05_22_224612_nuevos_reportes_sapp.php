@@ -18,6 +18,7 @@ return new class extends Migration
         DB::unprepared("DROP PROCEDURE if exists reporte_seguimiento_2;");
         DB::unprepared("DROP PROCEDURE if exists sapp_reporte_presupuesto_1;");
         DB::unprepared("DROP PROCEDURE if exists reporte_presupuesto_2;");
+        DB::unprepared("DROP PROCEDURE if exists sapp_reporte_calendario;");
 
         DB::unprepared("CREATE PROCEDURE sapp_ingresos(in anio int,in mes int,in trimestre int,in upp_v varchar(3),in programa_v varchar(2),in fondo_v varchar(2),in capitulo_v varchar(2))
         begin
@@ -572,6 +573,254 @@ return new class extends Migration
             execute stmt;
             deallocate prepare stmt;
         end;");
+
+        DB::unprepared("CREATE PROCEDURE sapp_reporte_calendario(in anio int,in mes int,in trimestre int,in upp_v varchar(3),in ur_v varchar(2),in programa_v varchar(2),in subprograma_v varchar(3),in proyecto_v varchar(3))
+        begin
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+            drop temporary table if exists aux_3;
+        
+            set @upp := ''; 		set @upp2 := '';
+            set @ur := '';			set @ur2 := '';
+            set @programa := '';	set @programa2 := '';
+            set @subprograma := ''; set @subprograma2 := '';
+            set @proyecto := '';	set @proyecto2 := '';
+            set @mes := '';         set @trimestre := '';
+            set @todos := '';
+        
+            if(upp_v is not null) then 
+                set @upp := concat(\" where clv_upp =  '\",upp_v,\"'\");
+                set @upp2 := concat(\" and upp =  '\",upp_v,\"'\");
+            end if;
+            if(ur_v is not null) then 
+                set @ur := concat(\" and clv_ur = '\",ur_v,\"'\");
+                set @ur2 := concat(\" and ur = '\",ur_v,\"'\"); 
+            end if;
+            if(programa_v is not null) then 
+                set @programa := concat(\" and clv_programa = '\",programa_v,\"'\"); 
+                set @programa2 := concat(\" and programa_presupuestario = '\",programa_v,\"'\"); 
+            end if;
+            if(subprograma_v is not null) then 
+                set @subprograma := concat(\" and clv_subprograma = '\",subprograma_v,\"'\");
+                set @subprograma2 := concat(\" and subprograma_presupuestario = '\",subprograma_v,\"'\");
+            end if;
+            if(proyecto_v is not null) then 
+                set @proyecto := concat(\" and clv_proyecto = '\",proyecto_v,\"'\");
+                set @proyecto2 := concat(\" and proyecto_presupuestario = '\",proyecto_v,\"'\");
+            end if;
+            if(mes is not null) then
+                if(mes = 1) then set @mes := 'enero'; end if;
+                if(mes = 2) then set @mes := 'febrero'; end if;
+                if(mes = 3) then set @mes := 'marzo'; end if;
+                if(mes = 4) then set @mes := 'abril'; end if;
+                if(mes = 5) then set @mes := 'mayo'; end if;
+                if(mes = 6) then set @mes := 'junio'; end if;
+                if(mes = 7) then set @mes := 'julio'; end if;
+                if(mes = 8) then set @mes := 'agosto'; end if;
+                if(mes = 9) then set @mes := 'septiembre'; end if;
+                if(mes = 10) then set @mes := 'octubre'; end if;
+                if(mes = 11) then set @mes := 'noviembre'; end if;
+                if(mes = 12) then set @mes := 'diciembre'; end if;
+            end if;
+            if(trimestre is not null) then
+                if(trimestre = 1) then set @trimestre := 'enero, febrero, marzo'; end if;
+                if(trimestre = 2) then set @trimestre := 'abril, mayo, junio'; end if;
+                if(trimestre = 3) then set @trimestre := 'julio, agosto, septiembre'; end if;
+                if(trimestre = 4) then set @trimestre := 'octubre, noviembre, diciembre'; end if;
+            end if;
+            if(mes is null and trimestre is null) then 
+                set @todos := 'enero,febrero,marzo,abril,mayo,junio,julio,agosto,septiembre,octubre,noviembre,diciembre';
+            end if;
+            
+            set @queri := concat(\"
+            create temporary table aux_2
+            with temp as (
+                with aux as (
+                    select 
+                        c1.clave clv_upp,c1.descripcion upp,
+                        c2.clave clv_ur,c2.descripcion ur,
+                        c3.clave clv_programa,c3.descripcion programa,
+                        c4.clave clv_subprograma,c4.descripcion subprograma,
+                        c5.clave clv_proyecto,c5.descripcion proyecto
+                    from (
+                        select distinct
+                            e.upp_id,e.ur_id,e.programa_id,
+                            e.subprograma_id,e.proyecto_id
+                        from epp e
+                        where e.ejercicio = \",anio,\" and e.deleted_at is null
+                    )t
+                    join catalogo c1 on t.upp_id = c1.id
+                    join catalogo c2 on t.ur_id = c2.id
+                    join catalogo c3 on t.programa_id = c3.id
+                    join catalogo c4 on t.subprograma_id = c4.id
+                    join catalogo c5 on t.proyecto_id = c5.id
+                )
+                select 
+                    a.*,t.monto
+                from (
+                    select 
+                        upp clv_upp,ur clv_ur,
+                        programa_presupuestario clv_programa,
+                        subprograma_presupuestario clv_subprograma,
+                        proyecto_presupuestario clv_proyecto,
+                        sum(total) monto
+                    from programacion_presupuesto
+                    where ejercicio = \",anio,\" and deleted_at is null\",@upp2,\"\",@ur2,\"\",@programa2,\"\",@subprograma2,\"\",@proyecto2,\"
+                    group by upp,ur,programa_presupuestario,
+                    subprograma_presupuestario,proyecto_presupuestario
+                )t
+                left join aux a on t.clv_upp = a.clv_upp and t.clv_ur = a.clv_ur
+                and t.clv_programa = a.clv_programa and t.clv_subprograma = a.clv_subprograma
+                and t.clv_proyecto = a.clv_proyecto
+                order by clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto
+            )
+            select 
+                clv_upp,'' clv_ur,'' clv_programa,'' clv_subprograma,'' clv_proyecto,upp descripcion,sum(monto) monto
+            from temp
+            group by clv_upp,upp
+            union all
+            select 
+                clv_upp,clv_ur,'' clv_programa,'' clv_subprograma,'' clv_proyecto,ur descripcion,sum(monto) monto
+            from temp
+            group by clv_upp,clv_ur,ur
+            union all
+            select 
+                clv_upp,clv_ur,clv_programa,'' clv_subprograma,'' clv_proyecto,programa descripcion,sum(monto) monto
+            from temp
+            group by clv_upp,upp,clv_ur,ur,clv_programa,programa
+            union all
+            select 
+                clv_upp,clv_ur,clv_programa,clv_subprograma,'' clv_proyecto,subprograma descripcion,sum(monto) monto
+            from temp
+            group by clv_upp,clv_ur,clv_programa,clv_subprograma,subprograma
+            union all
+            select 
+                clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto,proyecto descripcion,monto
+            from temp
+            order by clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto;
+            \");
+            
+            prepare stmt from @queri;
+            execute stmt;
+            deallocate prepare stmt;
+        
+            set @mes2 := '';
+            set @trimestre2 := '';
+            set @todos2 := '';
+            if(mes is not null) then set @mes2 := concat('0 ',@mes); end if;
+            if(trimestre is not null) then set @trimestre2 := concat('0 ',replace(@trimestre,',',',0')); end if;
+            if(mes is null and trimestre is null) then set @todos2 := concat('0 ',replace(@todos,',',',0 ')); end if;
+        
+            set @queri := concat(\"
+            create temporary table aux_3
+            select 
+                clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto,descripcion,monto,
+                '' actividad,'' beneficiarios,'' unidades_medida,
+                \",@mes2,\"\",@trimestre2,\"\",@todos2,\"
+            from aux_2
+            union all
+            select 
+                clv_upp,clv_ur,clv_programa,clv_subprograma,clv_proyecto,
+                '' descripcion,0 monto,actividad,beneficiarios,unidades_medida,
+                \",@mes,\"\",@trimestre,\"\",@todos,\"
+            from (
+                select *
+                from (
+                    select 
+                        case 
+                            when m.mir_id is not null then mm.clv_upp 
+                            when m.actividad_id is not null then ma.clv_upp
+                        end clv_upp,
+                        case 
+                            when m.mir_id is not null then mm.clv_ur
+                            when m.actividad_id is not null then substr(ma.entidad_ejecutora,5,2)
+                        end clv_ur,
+                        case 
+                            when m.mir_id is not null then mm.clv_pp
+                            when m.actividad_id is not null then substr(ma.area_funcional,9,2)
+                        end clv_programa,
+                        case 
+                            when m.mir_id is not null then substr(mm.area_funcional,11,3)
+                            when m.actividad_id is not null then substr(ma.area_funcional,11,3)
+                        end clv_subprograma,
+                        case 
+                            when m.mir_id is not null then substr(mm.area_funcional,14,3)
+                            when m.actividad_id is not null then substr(ma.area_funcional,14,3)
+                        end clv_proyecto,
+                        case 
+                            when m.mir_id is not null then concat(mm.id,' ',mm.indicador)
+                            when m.actividad_id is not null and ma.id_catalogo is null
+                                then concat(ma.id,' ',ma.nombre)
+                            when m.actividad_id is not null and ma.id_catalogo is not null 
+                                then concat(ma.id_catalogo,' ',c.descripcion)
+                        end actividad,
+                        concat(m.cantidad_beneficiarios,' ',b.beneficiario) beneficiarios,
+                        concat(m.total,' ',um.unidad_medida) unidades_medida,
+                        \",@mes,\"\",@trimestre,\"\",@todos,\"
+                    from metas m
+                    left join mml_mir mm on m.mir_id = mm.id
+                    left join mml_actividades ma on m.actividad_id = ma.id
+                    left join catalogo c on ma.id_catalogo = c.id
+                    left join beneficiarios b on m.beneficiario_id = b.id
+                    left join unidades_medida um on m.unidad_medida_id = um.id
+                    where m.ejercicio = \",anio,\" and m.deleted_at is null
+                )t2\",@upp,\"\",@ur,\"\",@programa,\"\",@subprograma,\"\",@proyecto,\"
+            ) aux_1
+            order by clv_upp,clv_ur,clv_programa,clv_subprograma,
+            clv_proyecto,actividad;
+            \");
+        
+            if(mes is not null) then set @mes := concat(@mes,' as mes'); end if;
+            if(trimestre is not null) then 
+                if(trimestre = 1) then set @trimestre := 'enero mes1,febrero mes2,marzo mes3'; end if;
+                if(trimestre = 2) then set @trimestre := 'abril mes1,mayo mes2,junio mes3'; end if;
+                if(trimestre = 3) then set @trimestre := 'julio mes1,agosto mes2,septiembre mes3'; end if;
+                if(trimestre = 4) then set @trimestre := 'octubre mes1,noviembre mes2,diciembre mes3'; end if;
+            end if;
+        
+            prepare stmt from @queri;
+            execute stmt;
+            deallocate prepare stmt;
+            
+            set @queri := concat(\"
+            select 
+                case 
+                    when actividad != '' then 2
+                    else 1
+                end claves,
+                case 
+                    when clv_ur != '' then ''
+                    else clv_upp
+                end clv_upp,
+                case 
+                    when clv_programa != '' then ''
+                    else clv_ur
+                end clv_ur,
+                case 
+                    when clv_subprograma != '' then ''
+                    else clv_programa
+                end clv_programa,
+                case 
+                    when clv_proyecto != '' then ''
+                    else clv_subprograma
+                end clv_subprograma,
+                case 
+                    when actividad != '' then ''
+                    else clv_proyecto
+                end clv_proyecto,
+                descripcion,monto,actividad,beneficiarios,unidades_medida,
+                \",@mes,\"\",@trimestre,\"\",@todos,\"
+            from aux_3;
+            \");
+        
+            prepare stmt from @queri;
+            execute stmt;
+            deallocate prepare stmt;
+            
+            drop temporary table if exists aux_1;
+            drop temporary table if exists aux_2;
+            drop temporary table if exists aux_3;
+        end;");
     }
 
     /**
@@ -586,5 +835,6 @@ return new class extends Migration
         DB::unprepared("DROP PROCEDURE if exists reporte_seguimiento_2;");
         DB::unprepared("DROP PROCEDURE if exists sapp_reporte_presupuesto_1;");
         DB::unprepared("DROP PROCEDURE if exists reporte_presupuesto_2;");
+        DB::unprepared("DROP PROCEDURE if exists sapp_reporte_calendario;");
     }
 };
