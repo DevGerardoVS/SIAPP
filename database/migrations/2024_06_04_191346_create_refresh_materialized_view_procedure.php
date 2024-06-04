@@ -15,6 +15,7 @@ return new class extends Migration
      */
     public function up()
     {
+        DB::unprepared("DROP PROCEDURE IF EXISTS refresh_materialized_v_epp");
         DB::unprepared("
             CREATE PROCEDURE refresh_materialized_v_epp()
             BEGIN

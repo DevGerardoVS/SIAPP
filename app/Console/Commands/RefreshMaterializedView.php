@@ -30,6 +30,8 @@ class RefreshMaterializedView extends Command
     {
         DB::statement('CALL refresh_materialized_v_epp()');
         $this->info('Materialized view refreshed successfully.');
+        DB::statement('CALL refresh_entidad_ejecutora_table()');
+        $this->info('Materialized view refreshed successfully.');
         return Command::SUCCESS;
     }
 }
