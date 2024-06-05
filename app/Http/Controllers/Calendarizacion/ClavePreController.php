@@ -120,11 +120,23 @@ class ClavePreController extends Controller
                 }
             }
         }
+        $urr = $request->ur;
         $estatusCierre = DB::table('cierre_ejercicio_claves')
         ->SELECT('ejercicio','estatus')
         ->WHERE($array_whereCierre)
         ->first(); 
-
+        $desc = DB::table('v_epp')
+            ->select('clv_upp','upp','clv_ur','ur','ejercicio')
+            ->where(function ($desc) use ($clvUpp,$anio,$urr) {
+                $desc->where('ejercicio','=',$anio)->where('deleted_at','=',null);
+                if ($clvUpp && $clvUpp != '') {
+                    $desc->where('clv_upp', '=', $clvUpp);   
+                }
+                if ($urr && $urr != '') {
+                    $desc->where('clv_ur',$urr);
+                }
+            })
+            ->distinct();
         $claves = DB::table($tabla)
         ->SELECT($tabla.'.id',$tabla.'.clasificacion_administrativa',$tabla.'.entidad_federativa',$tabla.'.region',$tabla.'.municipio',
                 $tabla.'.localidad',$tabla.'.upp',$tabla.'.subsecretaria',$tabla.'.ur',$tabla.'.finalidad',$tabla.'.funcion',
@@ -132,13 +144,11 @@ class ClavePreController extends Controller
                 $tabla.'.subprograma_presupuestario','.proyecto_presupuestario',$tabla.'.periodo_presupuestal',$tabla.'.posicion_presupuestaria',
                 $tabla.'.tipo_gasto',$tabla.'.anio',$tabla.'.etiquetado',$tabla.'.fuente_financiamiento',$tabla.'.ramo',$tabla.'.fondo_ramo',
                 $tabla.'.capital',$tabla.'.proyecto_obra',$tabla.'.ejercicio',$tabla.'.estado',
-        (DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre AS totalByClave')),'v_entidad_ejecutora.clv_ur as claveUr','v_entidad_ejecutora.ur as descripcionUr','v_entidad_ejecutora.clv_upp as claveUpp')
-        ->leftJoin('v_entidad_ejecutora', function($join) use ($tabla)
-        {
-            $join->on('v_entidad_ejecutora.clv_upp', '=', $tabla.'.upp');
-            $join->on('v_entidad_ejecutora.clv_subsecretaria','=',$tabla.'.subsecretaria');
-            $join->on('v_entidad_ejecutora.clv_ur','=',$tabla.'.ur');
-            $join->on('v_entidad_ejecutora.ejercicio','=',$tabla.'.ejercicio');
+        (DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre AS totalByClave')),'desc.clv_ur as claveUr','desc.ur as descripcionUr','desc.clv_upp as claveUpp')
+        ->leftJoinSub($desc, 'desc', function ($join) use($tabla){
+            $join->on('desc.clv_upp', '=', $tabla.'.upp');
+            $join->on('desc.clv_ur','=',$tabla.'.ur');
+            $join->on('desc.ejercicio','=',$tabla.'.ejercicio');
         })
         ->where(function ($claves) use ($rol,$array_where, $tabla) {
             $claves->where($array_where);
@@ -156,8 +166,8 @@ class ClavePreController extends Controller
                 $claves->whereIn($tabla.'.upp',$arrayClaves);
             }
         })
-        ->orderBy('v_entidad_ejecutora.clv_upp')
-        ->orderBy('v_entidad_ejecutora.clv_ur');
+        ->orderBy('desc.clv_upp')
+        ->orderBy('desc.clv_ur');
         if ($request->upp && $request->upp != '' || $uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
            $claves =  $claves->get();
         }else {
