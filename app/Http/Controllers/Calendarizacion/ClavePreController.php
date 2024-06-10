@@ -59,11 +59,13 @@ class ClavePreController extends Controller
         return view('calendarizacion.clavePresupuestaria.calendarizacion');
     }
     public function getClaves(Request $request){
+        // Revisa los permisos para poder ver las claves presupuestales...
         Controller::check_permission('getClaves');
         $uppUsuario =  Auth::user()->clv_upp;
         $rol = '';
-        $clvUpp = $request->upp ? $request->upp : $uppUsuario;
+        $clvUpp = $request->filUpp ? $request->filUpp : $uppUsuario;
         $perfil = Auth::user()->id_grupo;
+        // asigna el valor del rol al cual pertenece el usuario actual...
         switch ($perfil) {
             case 1:
                 $rol = 0;
@@ -83,18 +85,31 @@ class ClavePreController extends Controller
         $whereCierre = [];
         $anio = '';
         $tabla = 'programacion_presupuesto';
-        if ($uppUsuario != '') {
+        // page Lenngth
+        $pageNumber = ($request->start / $request->length) + 1;
+        $pageLength = $request->length;
+        $skip = ($pageNumber - 1) * $pageLength;
+        // Page order
+        $orderColumnIndex = $request->order[0]['column'] ?? '0';
+        $orderBy = $request->order[0]['dir'] ?? 'desc';
+        
+        if ($uppUsuario != '') { // Si el usuario es perfil upp agrega el cierre de ejercicio a un array where para agregarlo a la consulta
             array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
         }
+        // obtenemos el ejercicio actual en base a la tabla cierre ejercicio claves...
         $ejercicioActual = DB::table('cierre_ejercicio_claves')->SELECT(DB::raw('MAX( ejercicio )AS ejercicio'))->WHERE($whereCierre)->first();
-        if ($request->ejercicio && $request->ejercicio != '') {
-            $anio = $request->ejercicio;
-            if ($anio < $ejercicioActual->ejercicio) {
+        if ($request->filtro_anio && $request->filtro_anio != '') {//verifica que exista un ejercicio en los filtros seleccionados...
+            $anio = $request->filtro_anio;
+            if ($anio < $ejercicioActual->ejercicio) {// verifica que el ejercicio actual sea el mismo que se pasa en el filtro para decidir a que tabla dirigir la consulata...
                 $tabla = 'programacion_presupuesto_hist';
+                 // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
+                array_push($array_where, [$tabla.'.version', '=', 0]);
             }
         }else {
             $anio = date('Y');
             $tabla = 'programacion_presupuesto_hist';
+            // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
+            array_push($array_where, [$tabla.'.version', '=', 0]);
         }
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
             array_push($array_where, [$tabla.'.upp', '=', $uppUsuario]);
@@ -104,8 +119,8 @@ class ClavePreController extends Controller
             array_push($array_where, [$tabla.'.ejercicio', '=', $anio]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
-            if ($request->ur && $request->ur != '') {
-                array_push($array_where, [$tabla.'.ur', '=', $request->ur]);
+            if ($request->filtro_ur && $request->filtro_ur != '') {
+                array_push($array_where, [$tabla.'.ur', '=', $request->filtro_ur]);
             }
         }else {
             if ($tabla == 'programacion_presupuesto') {
@@ -113,18 +128,21 @@ class ClavePreController extends Controller
             }
             array_push($array_where, [$tabla.'.ejercicio', '=', $anio]);
             array_push($array_whereCierre, ['cierre_ejercicio_claves.ejercicio', '=', $anio]);
-            if ($request->upp && $request->upp != '') {
-                array_push($array_where, [$tabla.'.upp', '=', $request->upp]);
-                if ($request->ur && $request->ur != '') {
-                    array_push($array_where, [$tabla.'.ur', '=', $request->ur]);
+            if ($request->filUpp  && $request->filUpp  != '') {
+                array_push($array_where, [$tabla.'.upp', '=', $request->filUpp ]);
+                if ($request->filtro_ur && $request->filtro_ur != '') {
+                    array_push($array_where, [$tabla.'.ur', '=', $request->filtro_ur]);
                 }
             }
         }
-        $urr = $request->ur;
+        // agregamos la variable urr para usarla en la sub consulta y poder obtener las descripciones de cada ur... 
+        $urr = $request->filtro_ur;
+        // sub consulta para retorna el estatus de cierre de ejercicio de las claves...
         $estatusCierre = DB::table('cierre_ejercicio_claves')
         ->SELECT('ejercicio','estatus')
         ->WHERE($array_whereCierre)
         ->first(); 
+        // generamos una sub consulta para obtener las descripciones de las urs sin consultar la v_epp...
         $desc = DB::table('v_epp')
             ->select('clv_upp','upp','clv_ur','ur','ejercicio')
             ->where(function ($desc) use ($clvUpp,$anio,$urr) {
@@ -137,15 +155,26 @@ class ClavePreController extends Controller
                 }
             })
             ->distinct();
+        // agregamos la variable de busqueda...
+        $search = $request->search['value'];
         $claves = DB::table($tabla)
-        ->SELECT($tabla.'.id',$tabla.'.clasificacion_administrativa',$tabla.'.entidad_federativa',$tabla.'.region',$tabla.'.municipio',
-                $tabla.'.localidad',$tabla.'.upp',$tabla.'.subsecretaria',$tabla.'.ur',$tabla.'.finalidad',$tabla.'.funcion',
-                $tabla.'.subfuncion',$tabla.'.eje',$tabla.'.linea_accion',$tabla.'.programa_sectorial',$tabla.'.tipologia_conac',$tabla.'.programa_presupuestario',
-                $tabla.'.subprograma_presupuestario','.proyecto_presupuestario',$tabla.'.periodo_presupuestal',$tabla.'.posicion_presupuestaria',
-                $tabla.'.tipo_gasto',$tabla.'.anio',$tabla.'.etiquetado',$tabla.'.fuente_financiamiento',$tabla.'.ramo',$tabla.'.fondo_ramo',
-                $tabla.'.capital',$tabla.'.proyecto_obra',$tabla.'.ejercicio',$tabla.'.estado',
-        (DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre AS totalByClave')),'desc.clv_ur as claveUr','desc.ur as descripcionUr','desc.clv_upp as claveUpp')
-        ->leftJoinSub($desc, 'desc', function ($join) use($tabla){
+        ->SELECT($tabla.'.id',$tabla.'.clasificacion_administrativa',
+        (DB::raw("CONCAT(".strval($tabla).'.entidad_federativa'.','.$tabla.'.region'.','.$tabla.'.municipio'.','.$tabla.'.localidad'.','.$tabla.'.upp'.','.$tabla.'.subsecretaria'.','.$tabla.'.ur'.") AS centroGestor")),
+        (DB::raw("CONCAT(".strval($tabla).'.finalidad'.','.$tabla.'.funcion'.','.$tabla.'.subfuncion'.','.$tabla.'.eje'.','.$tabla.'.linea_accion'.','.$tabla.'.programa_sectorial'.','.$tabla.'.tipologia_conac'.','.$tabla.'.programa_presupuestario'.','.$tabla.'.subprograma_presupuestario'.','.$tabla.'.proyecto_presupuestario'.") AS areaFuncional")),
+        $tabla.'.periodo_presupuestal',
+        (DB::raw("CONCAT(".strval($tabla).'.posicion_presupuestaria'.','.$tabla.'.tipo_gasto'.") AS posicionPre")),
+        (DB::raw("CONCAT(".strval($tabla).'.anio'.','.$tabla.'.etiquetado'.','.$tabla.'.fuente_financiamiento'.','.$tabla.'.ramo'.','.$tabla.'.fondo_ramo'.','.$tabla.'.capital'.") AS fondo")),
+        $tabla.'.proyecto_obra',
+        $tabla.'.ejercicio',
+        $tabla.'.estado',
+        (DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre AS totalByClave')),
+        (DB::raw("case
+		when estado = 0 then CONCAT(desc.clv_upp, '-' ,desc.clv_ur, '-' ,desc.ur,' - Registradas')
+		when estado = 1 then CONCAT(desc.clv_upp, '-' ,desc.clv_ur, '-' ,desc.ur,' - Confirmadas')
+	    END AS row")),
+        'desc.clv_ur as claveUr','desc.ur as descripcionUr','desc.clv_upp as claveUpp'
+        
+        )->leftJoinSub($desc, 'desc', function ($join) use($tabla){
             $join->on('desc.clv_upp', '=', $tabla.'.upp');
             $join->on('desc.clv_ur','=',$tabla.'.ur');
             $join->on('desc.ejercicio','=',$tabla.'.ejercicio');
@@ -166,23 +195,46 @@ class ClavePreController extends Controller
                 $claves->whereIn($tabla.'.upp',$arrayClaves);
             }
         })
+        ->where(function($claves) use ($search, $tabla){
+            if ($search && $search != '') {
+                $claves->orWhere(DB::raw('enero + febrero + marzo + abril + mayo + junio + julio + agosto + septiembre + octubre + noviembre + diciembre'),'like',"%".$search."%");
+                $claves->orWhere('proyecto_obra','like',"%".$search."%");
+                $claves->orWhere(DB::raw("CONCAT(".strval($tabla).'.posicion_presupuestaria'.','.$tabla.'.tipo_gasto'.")"),'like',"%".$search."%");
+                $claves->orWhere(DB::raw("CONCAT(".strval($tabla).'.finalidad'.','.$tabla.'.funcion'.','.$tabla.'.subfuncion'.','.$tabla.'.eje'.','.$tabla.'.linea_accion'.','.$tabla.'.programa_sectorial'.','.$tabla.'.tipologia_conac'.','.$tabla.'.programa_presupuestario'.','.$tabla.'.subprograma_presupuestario'.','.$tabla.'.proyecto_presupuestario'.")"),'like',"%".$search."%");
+                $claves->orWhere(DB::raw("CONCAT(".strval($tabla).'.entidad_federativa'.','.$tabla.'.region'.','.$tabla.'.municipio'.','.$tabla.'.localidad'.','.$tabla.'.upp'.','.$tabla.'.subsecretaria'.','.$tabla.'.ur'.")"),'like',"%".$search."%");
+                $claves->orWhere($tabla.'.clasificacion_administrativa','like',"%".$search."%");
+                $claves->orWhere($tabla.'.periodo_presupuestal','like',"%".$search."%");
+            }
+        })
         ->orderBy('desc.clv_upp')
         ->orderBy('desc.clv_ur');
-        if ($request->upp && $request->upp != '' || $uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
-           $claves =  $claves->get();
+        if ($request->filUpp  && $request->filUpp  != '' || $uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
+            $recordsFiltered = $recordsTotal = $claves->count();
+            $claves = $claves->skip($skip)->take($pageLength)->get();
+        //    $claves =  $claves->get();
         }else {
             if ($rol == 2) {
-                $claves =  $claves->get();
+                $recordsFiltered = $recordsTotal = $claves->count();
+                $claves = $claves->skip($skip)->take($pageLength)->get();
+                // $claves =  $claves->get();
             }else {
-                $claves =  $claves->limit(1000)->get();
+                $recordsFiltered = $recordsTotal = $claves->count();
+                $claves = $claves->skip($skip)->take($pageLength)->get();
+                // $claves =  $claves->limit(1000)->get();
             }
         }
         $esAutorizada = ClavesHelper::esAutorizada($clvUpp);
+        foreach ($claves as $key => $value) {
+            $value->estatus = $estatusCierre;
+            $value->esAutorizada = $esAutorizada;
+            $value->rol = $rol;
+        }
         $response = [
-            'claves'=> $claves,
+            'data'=> $claves,
             'estatus' => $estatusCierre,
             'rol'=>$rol,
             'esAutorizada'=>$esAutorizada,
+            "draw"=> $request->draw, "recordsTotal"=> $recordsTotal, "recordsFiltered" => $recordsFiltered,
         ];
         return response()->json($response, 200);
     } 
@@ -842,10 +894,14 @@ class ClavePreController extends Controller
             $anio = $ejercicio;
             if ($anio < $ejercicioActual->ejercicio) {
                 $tabla = 'programacion_presupuesto_hist';
+                // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
+                array_push($array_where2, [$tabla.'.version', '=', 0]);
             }
         }else {
             $anio = date('Y');
             $tabla = 'programacion_presupuesto_hist';
+            // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
+            array_push($array_where2, [$tabla.'.version', '=', 0]);
         }
         $autorizado = ClavesHelper::esAutorizada($uppUsuario ? $uppUsuario : $upp);
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
@@ -980,10 +1036,14 @@ class ClavePreController extends Controller
             $anio = $ejercicio;
             if ($anio < $ejercicioActual->ejercicio) {
                 $tabla = 'programacion_presupuesto_hist';
+                // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
+                $arrayProgramacion = "".$arrayProgramacion." && programacion_presupuesto_hist.version = 0";
             }
         }else {
             $anio = date('Y');
             $tabla = 'programacion_presupuesto_hist';
+            // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
+            $arrayProgramacion = "".$arrayProgramacion." && programacion_presupuesto_hist.version = 0";
         }
         $uppAutorizados = ClavesHelper::esAutorizada($clvUpp != '' ? $clvUpp : $uppUsuario);
         $arrayTechos = "tf.deleted_at IS NULL  && tf.ejercicio = ".$anio;
