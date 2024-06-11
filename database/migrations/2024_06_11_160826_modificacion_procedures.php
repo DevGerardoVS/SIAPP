@@ -4085,7 +4085,7 @@ begin
              descripcion upp,'' clv_upp,'' clv_pp,'' clv_ur,'' area_funcional,
              '' nombre_proyecto,'' nivel,'' objetivo,'' indicador
          from \",@catalogo,\" 
-         where grupo_id = 6 and deleted_at is null and ejercicio = \",anio,\" and clave = '\",upp,\"'
+         where grupo_id = 6 and \",@corte,\" and ejercicio = \",anio,\" and clave = '\",upp,\"'
          union all\");
     end if;
             
