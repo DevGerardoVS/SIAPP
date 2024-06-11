@@ -784,6 +784,7 @@ var _gen = {
         otable.$('[data-toggle="popover"]').popover();
     },
     setTableScrollGroupBy: function (
+        ejercicio, upp, ur,
         tabla,
         columnDefs,
         datelist,
@@ -792,8 +793,8 @@ var _gen = {
         order
     ) {
         height = height || 500;
-        pagination = pagination || 50;
-        order = order || [];
+        pagination = 50;
+        order = order || ['1', 'DESC'];
 
         var responsiveHelper_datatable_tabletools = undefined;
         var breakpointDefinition = {
@@ -801,8 +802,8 @@ var _gen = {
             phone: 480,
         };
         if ($.fn.DataTable.isDataTable(tabla)) {
-            tabla.DataTable().clear().rows.add(datelist);
-        } else {
+            tabla.DataTable().clear();
+        }
             tabla.DataTable({
                 //	dom: "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs text-right'T>r>"+
                 dom:
@@ -819,6 +820,22 @@ var _gen = {
                     ],
                     sSwfPath:
                         'assets/js/plugin/datatables/swf/copy_csv_xls_pdf.swf',
+                },
+                processing: true,
+                serverSide: true,
+                snapshot: null,
+                retrieve: true,
+                aaSorting: [],
+                ordering: false,
+                ajax:{
+                    type : "POST",
+                    url : "/calendarizacion-claves-get",
+                    "data": function (d) {
+                        var formData = $('#filtrosClaves').serializeArray();
+                        $.each(formData, function (index,element) {
+                            d[element.name] = element.value;
+                        });
+                    }
                 },
                 language: {
                     info: 'Página _PAGE_ de _PAGES_',
@@ -843,8 +860,79 @@ var _gen = {
                     dataSrc: 'row'
                 },
                 scrollY: height + 'px',
-                data: datelist,
-                columnDefs: columnDefs,
+                
+                aoColumns: 
+                [
+                    {
+                        data: 'clasificacion_administrativa',
+                    },
+                    {
+                        data: 'centroGestor',
+                    },
+                    {
+                        data: 'areaFuncional',
+                    },
+                    {
+                        data: 'periodo_presupuestal',
+                    },
+                    {
+                        data: 'posicionPre',
+                    },
+                    {
+                        data: 'fondo',
+                    },
+                    {
+                        data: 'proyecto_obra',
+                    },
+                    {
+                        sClass: "montosR",
+                        data: 'totalByClave',
+                        render: function (data,type) {
+                            let totalByClave = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data);
+                            return totalByClave; 
+                        }
+                    },
+                    {
+                        data:'id',
+                        render: function (data,type,params,esAutorizada) {
+                            console.log('data',data);
+                            console.log('params',params);
+                            
+                            if (params.rol == 0 && params.esAutorizada == true) {
+                                $('#alertaUppAutorizado').show(true);
+                            }else{
+                                $('#alertaUppAutorizado').hide(true);
+                            }
+                          
+                            let filtroEjercicio = document.getElementById('filAnioAbierto').value;
+                            if (params.rol == 1) {//verifica el rol que sea usuario upp
+                                if (params.estatus.estatus != 'Cerrado' && params.estatus.estatus != '') {//aqui revisamos el estatus cierre...
+                                  if (params.estado == 0) {//verifica el estado de la clave...
+                                    let upp = "'"+params.claveUpp+"'";
+                                    return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+params.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
+                                  +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + params.id + ','+upp+','+filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';
+                                  }else{
+                                    return '<p><i class="fa fa-check">&nbsp;Confirmado</i></p>';
+                                  }
+                                }else{
+                                  return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
+                                }
+                            }
+                            if (params.rol == 0) {//verifica que el rol sea administrador...
+                                if (filtroEjercicio == params.ejercicio) {//verifica que el ejercicio del filtro y el de la clave sean el mismo...
+                                  let upp = "'"+params.claveUpp+"'";
+                                  return '<a data-toggle="tooltip" title="Modificar" class="btn btn-sm btn-success" href="/clave-update/'+params.id+'" >' + '<i class="fa fa-pencil" style="color: aliceblue"></i></a>&nbsp;'
+                                  +  '<a data-toggle="tooltip" title="Eliminar" class="btn btn-sm btn-danger" onclick="dao.eliminarClave(' + params.id + ','+upp+','+filtroEjercicio+')">' + '<i class="fa fa-trash" style="color: aliceblue"></i></a>&nbsp;';  
+                                }else{
+                                  return '<p><i class="fa fa-ban">&nbsp;Cerrado</i></p>';
+                                }
+                            }
+                            if (params.rol != 0 && params.rol != 1) {//verifica que el rol sea diferente de los anteriores para dejarlo sin acciones...
+                                return '<p><i class="fa fa-ban">&nbsp;Sin acciones</i></p>';
+                            }
+                        }
+                    },  
+                ],
                 preDrawCallback: function () {
                     if (!responsiveHelper_datatable_tabletools) {
                         responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper(
@@ -862,12 +950,12 @@ var _gen = {
                     responsiveHelper_datatable_tabletools.respond();
                     tabla.$('[data-toggle="popover"]').popover();
                     tabla.$('[data-toggle="tooltip"]').tooltip();
+                    tabla.removeAttr("hidden");
                 },
                 initComplete: function () {
                     otable = tabla.DataTable().columns.adjust().draw();
                 },
             });
-        }
         otable = tabla.DataTable().columns.adjust().draw();
         otable.$('[data-toggle="popover"]').popover();
     },
