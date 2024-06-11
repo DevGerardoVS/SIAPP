@@ -47,6 +47,10 @@ return new class extends Migration
         DB::unprepared("DROP PROCEDURE if EXISTS reporte_art_20_frac_X_b_num_11_8;");
         DB::unprepared("DROP PROCEDURE if EXISTS reporte_resumen_por_capitulo_y_partida;");
         DB::unprepared("DROP PROCEDURE if EXISTS sapp_reporte_calendario;");
+        DB::unprepared("DROP PROCEDURE if EXISTS mml_alineacion;");
+        DB::unprepared("DROP PROCEDURE if EXISTS mml_comprobacion;");
+        DB::unprepared("DROP PROCEDURE if EXISTS mml_matrices_indicadores;");
+        DB::unprepared("DROP PROCEDURE if EXISTS mml_presupuesto_egresos;");
 
         DB::unprepared("CREATE PROCEDURE avance_etapas(in anio int, in upp varchar(3), in programa varchar(2), in lim_i int, in lim_s int)
 begin
