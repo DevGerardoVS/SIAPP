@@ -116,7 +116,8 @@ body {
   }
   
   .menu-item:nth-child(1) {
-    transform: translate3d(11.6554658284vh, -27.6432652978vh, 0);
+    transform: translate3d(7.76vh, -28.98vh, 0);
+    /*transform: translate3d(11.6554658284vh, -27.6432652978vh, 0);*/
     opacity: 0;
     animation-name: fadeInOpacity;
     animation-delay: 500ms;
@@ -126,7 +127,7 @@ body {
     animation-fill-mode: forwards;
   }
   .menu-item:nth-child(2) {
-    transform: translate3d(18.1374196671vh, 23.8963178716vh, 0);
+    transform: translate3d(-28.98vh, -7.76vh, 0);
     opacity: 0;
     animation-name: fadeInOpacity;
     animation-delay: 1000ms;
@@ -136,7 +137,8 @@ body {
     animation-fill-mode: forwards;
   }
   .menu-item:nth-child(3) {
-    transform: translate3d(-29.7595198749vh, 3.7909071233vh, 0);
+    /*transform: translate3d(-29.7595198749vh, 3.7909071233vh, 0);*/
+    transform: translate3d(-7.76vh, 29.26vh, 0);
     opacity: 0;
     animation-name: fadeInOpacity;
     animation-delay: 1500ms;
@@ -146,7 +148,7 @@ body {
     animation-fill-mode: forwards;
   }
   .menu-item:nth-child(4) {
-    transform: translate3d(11.5673545567vh, -27.6802512373vh, 0);
+    transform: translate3d(28.98vh, 7.76vh, 0);
     opacity: 0;
     animation-name: fadeInOpacity;
     animation-delay: 2000ms;
@@ -161,11 +163,15 @@ body {
   }
   
   #_cap {
-    transform: translate(19vh, 79vh);
+    transform: translate(-28vh, 47vh);
   }
   
   #_sapp {
-    transform: translate(-30vh, 55vh);
+    transform: translate(30vh, 78vh);
+  }
+
+  #_epp {
+    transform: translate(48vh,35vh);
   }
   
   .menu-item i {
