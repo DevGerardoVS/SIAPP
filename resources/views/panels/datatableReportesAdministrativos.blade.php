@@ -16,7 +16,9 @@
                     var date = new Date(deleted_at);
                     var getCorrectDate = new Date(date.valueOf() + date.getTimezoneOffset() * 60000);
                     var formattedDate = ("0" + getCorrectDate.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
-                    par.append(new Option("V"+ data[i].version +" - "+formattedDate , data[i].deleted_at));
+
+                    if(data[i].version == 0) par.append(new Option("Última versión", data[i].deleted_at));
+                    else par.append(new Option("V"+ data[i].version +" - "+formattedDate , data[i].deleted_at)); 
                 });
             }
         });

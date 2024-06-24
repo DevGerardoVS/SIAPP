@@ -37,6 +37,7 @@
                 <a href="http://10.8.7.95/" id="mir" class="menu-item"> <!--MML--><i class="fa fa-pie-chart"></i> </a>
                 <a href="{{url('login')}}" id="cap" class="menu-item"> <!--SIAPP--><i class="fa fa-calendar"></i> </a> 
                 <a href="#" id="siapp" class="menu-item"> <!--SAPP--><i class="fa fa-bar-chart"></i></a>
+                <a href="#" id="epp" class="menu-item"> <!--SAPP--><i class="fa fa-book"></i></a>
                 <!--<a href="#" id="app" class="menu-item"><i class="fa fa-envelope"></i> </a>-->
             </nav>
             
@@ -52,6 +53,11 @@
 
             <div id="tres" class="cal">
                 <h1 id="_sapp" class="title">SAPP - Sistema de Análisis Programático Presupuestal</h1>
+
+            </div>
+
+            <div id="cuatro" class="cal">
+                <h1 id="_epp" class="title">EPP - Estructura Programática Presupuestal</h1>
 
             </div>
 
@@ -95,6 +101,10 @@
 
             $("#siapp").hover(function(){
                 $("#tres").addClass("div-content");
+            });
+
+            $("#epp").hover(function(){
+                $("#cuatro").addClass("div-content");
             });
 
             $("#calendarizacion").hover(function(){
