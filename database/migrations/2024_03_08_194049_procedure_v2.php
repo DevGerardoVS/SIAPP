@@ -64,7 +64,6 @@ return new class extends Migration
         DB::unprepared("DROP PROCEDURE IF EXISTS inicio_a;");
         DB::unprepared("DROP PROCEDURE IF EXISTS inicio_b;");
         DB::unprepared("DROP PROCEDURE IF EXISTS corte_anual_no_pp;");
-        DB::unprepared("DROP PROCEDURE IF EXISTS validacion_claves;");
         DB::unprepared("DROP PROCEDURE IF EXISTS sapp_reporte_calendario;");
         DB::unprepared("DROP PROCEDURE IF EXISTS reporte_presupuesto_2;");
         DB::unprepared("DROP PROCEDURE IF EXISTS sapp_ingresos;");

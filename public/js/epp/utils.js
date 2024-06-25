@@ -108,21 +108,30 @@ function exportPdf(){
     window.open(_url, '_blank');
 }
 
-const filtro_upp = document.getElementById('filters_upp');
-const filtro_ur = document.getElementById('filters_ur');
-const filtro_anio = document.getElementById('filters_anio');
+let filtro_upp = '';
+let filtro_ur = '';
+let filtro_anio = document.getElementById('filters_anio');
+
+if(document.getElementById('filters_upp') != null){
+    filtro_upp = document.getElementById('filters_upp');
+    filtro_ur = document.getElementById('filters_ur');
+}
 
 function activarFiltros(){
-    filtro_upp.disabled = false;
-    filtro_ur.disabled = false;
+    if(filtro_upp != null){
+        filtro_upp.disabled = false;
+        filtro_ur.disabled = false;
+    }
     filtro_anio.disabled = false;
     document.getElementById('btn_export_pdf').disabled = false;
     document.getElementById('btn_export_excel').disabled = false;
 }
 
 function desactivarFiltros(){
-    filtro_upp.disabled = true;
-    filtro_ur.disabled = true;
+    if(filtro_upp != null){
+        filtro_upp.disabled = true;
+        filtro_ur.disabled = true;
+    }
     filtro_anio.disabled = true;
 
     let export_pdf = document.getElementById('btn_export_pdf');
