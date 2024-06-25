@@ -31,6 +31,32 @@ return new class extends Migration
 
         DB::statement('ALTER TABLE catalogo_hist MODIFY COLUMN id_original INT UNSIGNED NOT NULL AUTO_INCREMENT');
 
+
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS sector_publico_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS sector_publico_f_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS sector_economia_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS subsector_economia_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS ente_publico_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS upp_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS subsecretaria_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS ur_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS finalidad_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS funcion_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS subfuncion_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS eje_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS linea_accion_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS programa_sectorial_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS tipologia_conac_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS programa_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS subprograma_id_foreign');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS proyecto_id_foreign');
+
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS upp_fk');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS ur_fk');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS programa_fk');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS eje_fk');
+        DB::statement('ALTER TABLE epp_hist DROP FOREIGN KEY IF EXISTS linea_accion_fk');
+
         Schema::table('epp_hist', function (Blueprint $table) {
             $table->foreign('sector_publico_id')->references('id_original')->on('catalogo_hist');
             $table->foreign('sector_publico_f_id')->references('id_original')->on('catalogo_hist');
@@ -52,17 +78,9 @@ return new class extends Migration
             $table->foreign('proyecto_id')->references('id_original')->on('catalogo_hist');
         });
 
-        DB::statement('ALTER TABLE metas_hist MODIFY COLUMN mir_id INT');
-
         Schema::table('metas_hist', function (Blueprint $table) {
             $table->foreign('mir_id')->references('id_original')->on('mml_mir_hist');
             $table->foreign('actividad_id')->references('id_original')->on('mml_actividades_hist');
-        });
-
-        DB::statement('ALTER TABLE mml_actividades_hist MODIFY COLUMN id_catalogo INT(10) UNSIGNED');
-
-        Schema::table('mml_actividades_hist', function (Blueprint $table) {
-            $table->foreign('id_catalogo')->references('id_original')->on('catalogo_hist');
         });
     }
 
