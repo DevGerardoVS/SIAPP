@@ -159,7 +159,7 @@ body {
   }
   
   #_mir {
-    transform: translate(12vh, 10vh);
+    transform: translate(43vh,46vh);
   }
   
   #_cap {
@@ -171,7 +171,8 @@ body {
   }
 
   #_epp {
-    transform: translate(48vh,35vh);
+    transform: translate(12vh, -2vh);
+    
   }
   
   .menu-item i {
