@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         if (!Schema::hasTable('epp_observaciones')) {
-            Schema::table('epp_observaciones', function (Blueprint $table) {
+            Schema::create('epp_observaciones', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('id_epp');
                 $table->integer('etapa');
