@@ -77,6 +77,8 @@ return new class extends Migration
             $table->foreign('subprograma_id')->references('id_original')->on('catalogo_hist');
             $table->foreign('proyecto_id')->references('id_original')->on('catalogo_hist');
         });
+        
+        DB::unprepared("ALTER TABLE metas_hist MODIFY mir_id int(11);");
 
         Schema::table('metas_hist', function (Blueprint $table) {
             $table->foreign('mir_id')->references('id_original')->on('mml_mir_hist');
