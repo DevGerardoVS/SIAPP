@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\Calendarizacion\MetasCmHelper;
 use App\Models\Mir;
 use App\Http\Controllers\Calendarizacion\MetasController;
 
@@ -630,11 +631,11 @@ class FunFormats
 
     }
 
-    public static function validateMonth($clave, $m, $anio, $fondo)
+    public static function validateMonth($obj,$m)
     {
         $meses = json_decode($m);
-        $areaAux = explode('/', $clave);
-        $m = MetasController::meses($areaAux[0], $areaAux[1], $anio, $fondo);
+        $perfil=$obj->id_grupo == 4 ? false : true;
+        $m = MetasCmHelper::ProgPresupuestoMeses($obj,$perfil);
         $arrM = [];
         $arrMV = [];
         $mesCero = [];
