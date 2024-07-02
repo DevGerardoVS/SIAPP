@@ -270,7 +270,7 @@ class ReporteController extends Controller
 
     public function getFechaCorte($anio)
     {
-        $fechaCorte = DB::select('SELECT DISTINCT version, MAX(DATE_FORMAT(deleted_at, "%Y-%m-%d $H")) AS deleted_at FROM programacion_presupuesto_hist pp WHERE ejercicio = ? AND deleted_at IS NOT NULL GROUP BY version', [$anio]);
+        $fechaCorte = DB::select('SELECT DISTINCT version, MAX(DATE_FORMAT(deleted_at, "%Y-%m-%d %H")) AS deleted_at FROM programacion_presupuesto_hist pp WHERE ejercicio = ? AND deleted_at IS NOT NULL GROUP BY version', [$anio]);
         return $fechaCorte;
     }
     
