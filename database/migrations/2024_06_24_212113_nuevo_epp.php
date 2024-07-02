@@ -28,6 +28,7 @@ return new class extends Migration
         Schema::dropIfExists('fondo');
         Schema::dropIfExists('epp');
         Schema::dropIfExists('v_epp');
+        Schema::dropIfExists('sector_linea_accion');
         Schema::dropIfExists('catalogo');
 
         if (!Schema::hasTable('catalogo')) {
@@ -55,6 +56,22 @@ return new class extends Migration
                 $table->string('deleted_user', 45)->nullable();
             });
         }
+
+        Schema::create('sector_linea_accion', function(Blueprint $table){
+            $table->increments('id');
+            $table->integer('linea_accion_id')->unsigned();
+            $table->string('clv_sector',1)->nullable(false);
+            $table->string('sector',255)->nullable(false);
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->softDeletes();
+            $table->string('created_user', 45);
+            $table->string('updated_user', 45)->nullable();
+            $table->string('deleted_user', 45)->nullable();
+            $table->string('linea_accion_num',8)->nullable(false);
+            $table->string('clv_linea_accion',2)->nullable(false);
+            $table->foreign('linea_accion_id')->references('id')->on('catalogo');
+        });
 
         Schema::create('clasificacion_administrativa', function(Blueprint $table){
             $table->increments('id');
