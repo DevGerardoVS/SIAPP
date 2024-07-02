@@ -23,8 +23,6 @@ class FunFormatsNew extends CargaMasivaMetas
         $conmir = 0;
         $sinmir = 0;
         $arrayError = [];
-        $metas_temp_Nomir=[];
-        $metas_temp=[];
         $clv_metas_temp_Nomir=[];
         $clv_metas_temp=[];
         if (count($filearray) <= 0) {
@@ -344,17 +342,10 @@ class FunFormatsNew extends CargaMasivaMetas
                 }
 
                 if ($uniqueMir != '') {
-                    $conmirData = ['clave' => $uniqueMir, 'fila' => $index, 'upp' => $cM->clv_upp, "ur" => $cM->clv_ur];
-                    $metas_temp[]= $conmirData;
-                    $clv_metas_temp[]=$uniqueMir;
-                    // DB::table('metas_temp')->insert($conmirData);
                     $conmir++;
                 }
                 if ($unique != '') {
-                    $sinmirData = ['clave' => $unique, 'fila' => $index, 'upp' => $cM->clv_upp, 'ur' => $cM->clv_ur];
-                    $metas_temp_Nomir[]= $sinmirData;
                     $clv_metas_temp_Nomir[]=  $unique;
-                   // DB::table('metas_temp_Nomir')->insert($sinmirData);
                     $sinmir++;
                 }
                 Log::debug('VALIDACION  calendario EXISTA');
@@ -368,24 +359,6 @@ class FunFormatsNew extends CargaMasivaMetas
                      $arrayError[]=$error;
                 }
                 $cM->total = $type;
-/*                 Log::debug('VALIDACION  CREATE MML_ACTIVIDADE');
-                Log::debug($cM->tipoMeta);
-                switch ($cM->tipoMeta) {
-                    case 'C':
-                        $cM->nombre_actividad = null;
-                        $act = FunFormats::createMml_Ac($cM);
-                        $cM->actividad_id = $act;
-                        break;
-                    case 'O':
-
-                        $act = FunFormats::createMml_Ac($cM);
-                        $cM->actividad_id = $act;
-                        break;
-                    default:
-                    $cM->actividad_id = null;
-                        break;
-                } */
-              //  $aux[] =json_encode($cM);
               $aux[] =$cM;
                 $index++;
             }
@@ -395,25 +368,6 @@ class FunFormatsNew extends CargaMasivaMetas
                     Log::debug('VALIDACION  REPETIDAS EN EL EXCEL');
                     $repsmir =array_unique($clv_metas_temp);
                     $reps =array_unique($clv_metas_temp_Nomir);
-            /*         $repsmir = DB::table('metas_temp')
-                        ->select(
-                            DB::raw('COUNT(clave) AS rep'),
-                            'clave',
-                            'fila',
-                            'upp',
-                        )->groupBy('clave')
-                        ->get();
-                    $reps = DB::table('metas_temp_Nomir')
-                        ->select(
-                            DB::raw('COUNT(clave) AS rep'),
-                            'clave',
-                            'fila',
-                            'upp',
-                        )->groupBy('clave')
-                        ->get(); */
-
-          
-        
                     if (count($repsmir) == $conmir && count($reps) == $sinmir && count($arrayError)<=0) {
                         Log::debug('VALIDACION  UPPS EN EL EXCEL');
                         if ($user->id_grupo == 4) {
@@ -434,34 +388,7 @@ class FunFormatsNew extends CargaMasivaMetas
                             "title" => 'Cuidado',
                             "text" => 'Metas repetidas en el excel'
                         );
-
                         $arrayError[]=$error;
-
-                      /*   $filas = [];
-                        foreach ($repsmir as $key) {
-                            if ($key->rep > 1) {
-                                $reps = DB::table('metas_temp')->select('clave', 'fila')->where('clave', $key->clave)->get();
-                                foreach ($reps as $a) {
-                                    $filas[] = $a->fila;
-                                }
-                            }
-                        }
-                        foreach ($reps as $key) {
-                            if ($key->rep > 1) {
-                                $r = DB::table('metas_temp_Nomir')->select('clave', 'fila')->where('clave', $key->clave)->get();
-                                foreach ($r as $a) {
-                                    $filas[] = $a->fila;
-                                }
-                            }
-                        }
-                        $f = implode(", ", $filas);
-                        $error = array(
-                            "icon" => 'info',
-                            "title" => 'Cuidado',
-                            "text" => 'Existen registros repetidos en el excel: ' . $f
-                        );
-                         $arrayError[]=$error; */
-        
                     }
                     if(count($arrayError)>=1){
                         Log::debug('VALIDACION  RESPONSE ERROR');
