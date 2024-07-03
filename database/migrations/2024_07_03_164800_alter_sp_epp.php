@@ -156,7 +156,8 @@ BEGIN
                 e.clv_proyecto,' ',
                 e.proyecto
             ) proyecto,
-            e.ejercicio
+            e.ejercicio,
+            e.confirmado
         \",@del,\"
         where e.deleted_at is null
         \",@upp,\" \",@ur,\" order by e.clv_upp,e.clv_subsecretaria,e.clv_ur,
