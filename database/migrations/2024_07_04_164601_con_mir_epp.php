@@ -27,6 +27,12 @@ return new class extends Migration
                 $table->integer('padre_id')->nullable(true)->default(null)->after('id');
             });
         }
+
+        if (Schema::hasTable('upp_extras')) {
+            Schema::table('upp_extras', function (Blueprint $table) {
+                $table->smallInteger('estatus_epp')->nullable(true)->default(5)->change();
+            });
+        }
     }
 
     /**
