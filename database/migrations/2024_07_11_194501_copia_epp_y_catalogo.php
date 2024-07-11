@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        DB::unprepared("DROP PROCEDURE IF EXISTS insert_v_epp;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS llenar_v_epp;");
         DB::unprepared("DROP PROCEDURE IF EXISTS rellenar_tablas_intermedias;");
 
         DB::unprepared("CREATE PROCEDURE rellenar_tablas_intermedias(in usuario varchar(45))
