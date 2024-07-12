@@ -304,7 +304,7 @@ class MetasHelper
 				$actv = $actv->where('mml_actividades.id_catalogo', '!=',2367);
 				}
 			$query2 = DB::table('metas')
-				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+				->leftJoin('catalogo AS cat', 'cat.clave', '=', 'metas.clv_fondo')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 				->leftJoinSub($actv, 'act', function ($join) {
@@ -323,13 +323,16 @@ class MetasHelper
 					'metas.cantidad_beneficiarios',
 					'beneficiarios.beneficiario',
 					'unidades_medida.unidad_medida',
-				)
-				->where('metas.mir_id', '=', null)
-				->where('metas.deleted_at', '=', null)
-				->where('act.clv_upp', $upp)
-				->where('metas.ejercicio', $anio);
+				)->where([
+						'metas.mir_id' => null,
+						'metas.deleted_at' => null,
+						'act.clv_upp' => $upp,
+						'metas.ejercicio'=>$anio,
+						'cat.grupo_id'=>'FONDO DEL RAMO'
+					]);
 			$query = DB::table('metas')
-				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+			->leftJoin('catalogo AS cat', 'cat.clave', '=', 'metas.clv_fondo')
+				/* ->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo') */
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 				->leftJoinSub($proyecto, 'pro', function ($join) {
@@ -349,11 +352,14 @@ class MetasHelper
 					'beneficiarios.beneficiario',
 					'unidades_medida.unidad_medida',
 				)
-				->where('metas.estatus', '=', 1)
-				->where('metas.actividad_id', '=', null)
-				->where('metas.deleted_at', '=', null)
-				->where('pro.ejercicio', $anio)
-				->where('pro.upp', $upp)
+				->where([
+					'metas.estatus' => 1,
+					'metas.actividad_id' => null,
+					'metas.deleted_at'=>null,
+					'pro.upp' => $upp,
+					'pro.ejercicio'=>$anio,
+					'cat.grupo_id'=>'FONDO DEL RAMO'
+				])
 				->unionAll($query2);
 			$query=$query->get();
 			return $query;
@@ -1037,7 +1043,8 @@ class MetasHelper
 				$actv = $actv->where('catalogo.clave', '!=','UUU' );
 				}
 			$query2 = DB::table('metas')
-				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+				->leftJoin('catalogo AS cat', 'cat.clave', '=', 'metas.clv_fondo')
+				/* 	->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo') */
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 				->leftJoinSub($actv, 'act', function ($join) {
@@ -1056,13 +1063,20 @@ class MetasHelper
 					'metas.cantidad_beneficiarios',
 					'beneficiarios.beneficiario',
 					'unidades_medida.unidad_medida',
-				)
-				->where('metas.mir_id', '=', null)
+				)->where([
+					'metas.mir_id'=>null,
+					'metas.deleted_at'=>null,
+					'act.clv_upp'=>$upp,
+					'metas.ejercicio'=>$anio,
+					'cat.grupo_id' => 'FONDO DEL RAMO'
+					]);
+				/* ->where('metas.mir_id', '=', null)
 				->where('metas.deleted_at', '=', null)
 				->where('act.clv_upp', $upp)
-				->where('metas.ejercicio', $anio);
+				->where('metas.ejercicio', $anio); */
 			$query = DB::table('metas')
-				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+			->leftJoin('catalogo AS cat', 'cat.clave', '=', 'metas.clv_fondo')
+				/* ->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')  */
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 				->leftJoinSub($proyecto, 'pro', function ($join) {
@@ -1082,11 +1096,19 @@ class MetasHelper
 					'beneficiarios.beneficiario',
 					'unidades_medida.unidad_medida',
 				)
+				->where([
+					'metas.estatus'=> 1,
+					'metas.actividad_id'=>null,
+					'metas.deleted_at'=>null,
+					'pro.upp'=>$upp,
+					'metas.ejercicio'=>$anio,
+					'cat.grupo_id' => 'FONDO DEL RAMO'
+					])/* ;
 				->where('metas.estatus', '=', 1)
 				->where('metas.actividad_id', '=', null)
 				->where('metas.deleted_at', '=', null)
 				->where('pro.ejercicio', $anio)
-				->where('pro.upp', $upp)
+				->where('pro.upp', $upp) */
 				->unionAll($query2);
 			$query=$query->get();
 			return $query;
