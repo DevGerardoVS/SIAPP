@@ -161,12 +161,11 @@ function getCatUr($ejercicio,$upp){
     ->select(
         'c08.clave as clv_ur',
         DB::raw('CONCAT(c08.clave, "  ",c08.descripcion) as ur')
-    )->where([
+    )->where([   
             'ej.deleted_at' => null,
             'ej.ejercicio' => $ejercicio,
-            'c06.clave' => $upp,
-            'ej.estatus' => 3
-        ])
+            'c06.clave' => $upp
+        ])->whereIn('ej.estatus',[3,4])
     ->distinct();
         if(auth::user()->id_grupo==7){
             $ur = $ur->where('c08.clave', auth::user()->clv_ur);
