@@ -205,17 +205,7 @@ class MetasController extends Controller
 			$check = $this->checkClosing($upp);
 
 			if ($check['status'] && $upp != null) {
-				$urs = DB::table('v_epp')
-					->select(
-						'id',
-						'clv_ur',
-						DB::raw('CONCAT(clv_ur, " - ",ur) AS ur')
-					)->distinct()
-					->where('deleted_at', null)
-					->groupByRaw('clv_ur')
-					->orderBy('clv_ur')
-					->where('clv_upp', $upp)
-					->where('ejercicio', $check['anio'])->get();
+				$urs = getCatUr($check['anio'],$upp);
 				$Act = DB::table('tipo_actividad_upp')
 					->select(
 						'Acumulativa',
@@ -240,15 +230,7 @@ class MetasController extends Controller
 	{
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		if (auth::user()->id_grupo != 5) {
-			$upps = DB::table('v_epp')
-				->select(
-					'id',
-					'clv_upp',
-					DB::raw('CONCAT(clv_upp, " - ", upp) AS upp')
-				)->distinct()
-				->orderBy('clv_upp')
-				->groupByRaw('clv_upp')
-				->where('ejercicio', $anio)->get();
+			$upps = getCatUpp($anio);
 		}else{
 			$upps= DB::table('uppautorizadascpnomina')
 			->leftJoin('v_epp', 'v_epp.clv_upp', '=', 'uppautorizadascpnomina.clv_upp')
