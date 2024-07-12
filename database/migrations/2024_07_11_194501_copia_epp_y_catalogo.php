@@ -213,7 +213,7 @@ BEGIN
         c1.id_new c1_id,
         c2.id_new c2_id,
         c3.id_new c3_id,
-        0 estatus,e.presupuestable,e.con_mir,e.confirmado,e.tipo_presupuesto,
+        0 estatus,0 presupuestable,e.con_mir,e.confirmado,e.tipo_presupuesto,
         @created created_at,@created updated_at,null deleted_at,
         usuario created_user,null updated_user,null deleted_user
     from (
