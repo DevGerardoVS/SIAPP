@@ -251,15 +251,13 @@ class MetasController extends Controller
 		$check = $this->checkClosing($entidadAux[0]);
 		if ($check['status']) {
 			$fondos = DB::table('programacion_presupuesto')
-				->leftJoin('fondo', 'fondo.clv_fondo_ramo', 'programacion_presupuesto.fondo_ramo')
+/* 				->leftJoin('fondo', 'fondo.clv_fondo_ramo', 'programacion_presupuesto.fondo_ramo')
+ */				->leftJoin('catalogo AS cat', 'cat.clave', '=', 'programacion_presupuesto.fondo_ramo')
 				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
 				->select(
-
-					'fondo.id',
 					'programacion_presupuesto.fondo_ramo as clave',
-					DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", fondo.ramo) AS ramo')
+					DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", cat.descripcion) AS ramo')
 				)
-				->where('fondo.deleted_at', null)
 				->where('programacion_presupuesto.deleted_at', null)
 				->where('programacion_presupuesto.finalidad', $areaAux[0])
 				->where('programacion_presupuesto.funcion', $areaAux[1])
@@ -288,11 +286,13 @@ class MetasController extends Controller
 		$areaAux = explode('-', $area);
 		$entidadAux = explode('-', $entidad);
 		$check = $this->checkClosing($entidadAux[0]);
+		
 		$tipo='';
 		$framo33 = false;
+		$conmir = 0;
 		if ($check['status']) {
 			
-			$ramo33 = DB::table('v_ramo_33')
+		/* 	$ramo33 = DB::table('v_ramo_33')
 				->select('id')
 				->where('clv_programa', $areaAux[7])
 				->where('clv_fondo_ramo', $areaAux[8])
@@ -300,7 +300,7 @@ class MetasController extends Controller
 				->get();
 				if($ramo33){
 					$framo33 = true;
-				}
+				} */
 
 			$m = DB::table('v_epp')
 				->select(
@@ -324,8 +324,22 @@ class MetasController extends Controller
 				->groupByRaw('con_mir')
 				->where('ejercicio', $check['anio'])
 				->get();
+			$conmir = $m[0]->con_mir;
 			$activ = [];
-			if ($m[0]->con_mir == 1) {
+			switch ($areaAux[8]) {
+				case 'UUU':
+					$conmir = 0;
+					break;
+				case '21B':
+					$conmir = 0;
+					break;
+
+				default:
+					$conmir = 1;
+					break;
+			}
+
+			if ($conmir) {
 				$activ = DB::table('mml_mir')
 					->select(
 						'mml_mir.id',
@@ -349,16 +363,18 @@ class MetasController extends Controller
 					$activ =$activ->get();
 				$tipo='M';
 				if (count($activ) == 0) {
+					$conmir = 0;
 					$activ[] = ['id' => 'ot', 'clave' => 'ot', 'actividad' => 'Otra actividad'];
 					$tipo='O';
 				}
 			} else {
+				$conmir = 0;
 				$activ = Catalogo::select('id', 'clave', DB::raw('CONCAT(clave, " - ",descripcion) AS actividad'))->where('ejercicio',  $check['anio'])->where('clave', $areaAux[8])->where('deleted_at', null)->where('grupo_id', 20)->get();
 				$tipo='C';
 			}
 		}
 
-		return ["activids" => $activ ,"con_mir"=>$m[0]->con_mir,"tipoAc"=>$tipo];
+		return ["activids" => $activ ,"con_mir"=>$conmir ,"tipoAc"=>$tipo];
 	}
 	public static function meses($area, $entidad, $anio, $fondo)
 	{
