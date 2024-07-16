@@ -165,7 +165,10 @@ function getCatUr($ejercicio,$upp){
             'ej.deleted_at' => null,
             'ej.ejercicio' => $ejercicio,
             'c06.clave' => $upp
-        ])->whereIn('ej.estatus',[3,4])
+        ])->whereIn('ej.estatus',[0,3,4])
+        ->whereNotNull('ej.upp_id')
+        ->whereNotNull('ej.subsecretaria_id')
+        ->whereNotNull('ej.ur_id')
     ->distinct();
         if(auth::user()->id_grupo==7){
             $ur = $ur->where('c08.clave', auth::user()->clv_ur);
