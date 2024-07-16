@@ -18,6 +18,7 @@ use Auth;
 use DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\Calendarizacion\MetasHelper;
+use App\Helpers\Calendarizacion\AreayEntidad;
 use Illuminate\Support\Facades\Schema;
 use PDF;
 use JasperPHP\JasperPHP as PHPJasper;
@@ -66,7 +67,6 @@ class MetasController extends Controller
 		$dataSet = [];
 		foreach ($query as $key) {
 			$area = str_split($key->area);
-			$entidad = str_split($key->entidad);
 			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
 				'<i class="fa fa-pencil" style="color:green;"></i></button>' .
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
@@ -249,29 +249,32 @@ class MetasController extends Controller
 		$areaAux = explode('-', $area);
 		$entidadAux = explode('-', $entidad);
 		$check = $this->checkClosing($entidadAux[0]);
+		$af = new AreayEntidad($areaAux,$entidadAux);
 		if ($check['status']) {
 			$fondos = DB::table('programacion_presupuesto')
-/* 				->leftJoin('fondo', 'fondo.clv_fondo_ramo', 'programacion_presupuesto.fondo_ramo')
- */				->leftJoin('catalogo AS cat', 'cat.clave', '=', 'programacion_presupuesto.fondo_ramo')
+			 ->leftJoin('catalogo AS cat', 'cat.clave', '=', 'programacion_presupuesto.fondo_ramo')
 				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
 				->select(
 					'programacion_presupuesto.fondo_ramo as clave',
 					DB::raw('CONCAT(programacion_presupuesto.fondo_ramo, " - ", cat.descripcion) AS ramo')
-				)
-				->where('programacion_presupuesto.deleted_at', null)
-				->where('programacion_presupuesto.finalidad', $areaAux[0])
-				->where('programacion_presupuesto.funcion', $areaAux[1])
-				->where('programacion_presupuesto.subfuncion', $areaAux[2])
-				->where('programacion_presupuesto.eje', $areaAux[3])
-				->where('programacion_presupuesto.linea_accion', $areaAux[4])
-				->where('programacion_presupuesto.programa_sectorial', $areaAux[5])
-				->where('programacion_presupuesto.tipologia_conac', $areaAux[6])
-				->where('programacion_presupuesto.upp', $entidadAux[0])
-				->where('programacion_presupuesto.ur', $entidadAux[2])
-				->where('programa_presupuestario', $areaAux[7])
-				->where('subprograma_presupuestario', $areaAux[8])
-				->where('proyecto_presupuestario', $areaAux[9])
-				->where('v_epp.presupuestable', '=', 1)
+				)->where([
+					'programacion_presupuesto.deleted_at'=>null,
+					'programacion_presupuesto.finalidad'=>$af->clv_finalidad,
+					'programacion_presupuesto.funcion'=> $af->clv_funcion,
+					'programacion_presupuesto.subfuncion'=> $af->clv_subfuncion,
+					'programacion_presupuesto.eje'=>$af->clv_eje,
+					'programacion_presupuesto.linea_accion'=>$af->clv_linea_accion,
+					'programacion_presupuesto.programa_sectorial'=>$af->clv_programa_sectorial,
+					'programacion_presupuesto.tipologia_conac'=> $af->clv_tipologia_conac,
+					'programacion_presupuesto.upp'=> $af->clv_upp,
+					'programacion_presupuesto.ur'=>$af->clv_ur,
+					'programa_presupuestario'=> $af->clv_programa,
+					'subprograma_presupuestario'=> $af->clv_subprograma,
+					'proyecto_presupuestario'=> $af->clv_proyecto,
+					'v_epp.presupuestable'=> 1,
+					'programacion_presupuesto.ejercicio'=>$check['anio']
+				])
+			
 				->groupByRaw('clave')
 				->where('programacion_presupuesto.ejercicio', $check['anio'])
 				->get();
@@ -286,7 +289,7 @@ class MetasController extends Controller
 		$areaAux = explode('-', $area);
 		$entidadAux = explode('-', $entidad);
 		$check = $this->checkClosing($entidadAux[0]);
-		
+		$af = new AreayEntidad($areaAux,$entidadAux);
 		$tipo='';
 		$framo33 = false;
 		$conmir = 0;
@@ -307,26 +310,26 @@ class MetasController extends Controller
 					'con_mir',
 					'tipo_presupuesto'
 				)
-				->where('v_epp.deleted_at', null)
-				->where('clv_finalidad', $areaAux[0])
-				->where('clv_funcion', $areaAux[1])
-				->where('clv_subfuncion', $areaAux[2])
-				->where('clv_eje', $areaAux[3])
-				->where('clv_linea_accion', $areaAux[4])
-				->where('clv_programa_sectorial', $areaAux[5])
-				->where('clv_tipologia_conac', $areaAux[6])
-				->where('clv_upp', $entidadAux[0])
-				->where('clv_ur', $entidadAux[2])
-				->where('clv_programa', $areaAux[7])
-				->where('clv_subprograma', $areaAux[8])
-				->where('clv_proyecto', $areaAux[9])
-				->where('presupuestable', '=', 1)
+				->where(['v_epp.deleted_at'=> null,
+				'clv_finalidad'=>$af->clv_finalidad,
+				'clv_funcion'=> $af->clv_funcion,
+				'clv_subfuncion'=> $af->clv_subfuncion,
+				'clv_eje'=> $af->clv_eje,
+				'clv_linea_accion'=> $af->clv_linea_accion,
+				'clv_programa_sectorial'=>$af->clv_programa_sectorial,
+				'clv_tipologia_conac'=> $af->clv_tipologia_conac,
+				'clv_upp'=> $af->clv_upp,
+				'clv_ur'=> $af->clv_ur,
+				'clv_programa'=> $af->clv_programa,
+				'clv_subprograma'=> $af->clv_subprograma,
+				'clv_proyecto'=> $af->clv_proyecto,
+				'presupuestable'=> 1,
+				'ejercicio'=> $check['anio']])
 				->groupByRaw('con_mir')
-				->where('ejercicio', $check['anio'])
 				->get();
 			$conmir = $m[0]->con_mir;
 			$activ = [];
-			switch ($areaAux[8]) {
+			switch ($af->clv_subprograma) {
 				case 'UUU':
 					$conmir = 0;
 					break;
