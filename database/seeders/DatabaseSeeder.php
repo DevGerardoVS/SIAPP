@@ -389,13 +389,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             fondosSeeder::class,
-            pp_identificadoresSeeder::class,
+        /*     pp_identificadoresSeeder::class, */
             ProgramacionPresupuestoSeeder::class,
             TipoActividadUppSeeder::class,
             mml_seeder::class,
-            ramo_33::class,
-            epp_catalogo_v2::class,
-            epp_catalogo_2023_v2::class
+          /*   ramo_33::class, */
+      /*       epp_catalogo_v2::class,
+            epp_catalogo_2023_v2::class */
         ]);
         
         echo "\nInicializacion de Catalogos del Sistema";
