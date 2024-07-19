@@ -17,8 +17,11 @@ return new class extends Migration
 
     public function up()
     {
-        DB::beginTransaction();
+     
         try {
+          //  DB::beginTransaction();
+    /*         DB::select("CALL rellenar_tablas_intermedias(?)",["SISTEMA"]);
+            DB::select("CALL llenar_v_epp(?,?)",["SISTEMA",NULL]); */
             DB::unprepared("UPDATE mml_actividades SET id_catalogo =NULL WHERE id in(1188,1191,1192,1198,1199,1200,1229,1230,1231,1232,1233,1234,1235);");
             $cat = Catalogo::where(['clave' => "UUU", 'ejercicio' => 2024,'grupo_id'=>'ACTIVIDADES ADMON'])->first();
             DB::unprepared("UPDATE mml_actividades SET id_catalogo = $cat->id WHERE id_catalogo=2093;");
@@ -27,9 +30,9 @@ return new class extends Migration
             $ben = Beneficiarios::where('beneficiario',"Personas")->first();
             $uni = UnidadesMedida::where('unidad_medida', "Pago")->first();
             DB::unprepared("UPDATE metas SET beneficiario_id =   $ben->id, unidad_medida_id = $uni->id, cantidad_beneficiarios = 1, enero = 0, febrero = 0, marzo = 0, abril = 0, mayo = 0, junio = 1, julio = 0, agosto = 0, septiembre = 0, octubre = 0, noviembre = 0, diciembre = 0, total = 1 WHERE id in(4305,4306);");
-        	DB::commit();
+        	//DB::commit();
         } catch (\Throwable $th) {
-            DB::rollBack();
+         //   DB::rollBack();
 			throw $th;
         }
     }
