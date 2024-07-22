@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        DB::unprepapred("DROP PROCEDURE IF EXISTS inicio_b;");
+        DB::unprepared("DROP PROCEDURE IF EXISTS inicio_b;");
 
         DB::unprepared("CREATE PROCEDURE inicio_b(in anio int)
 begin

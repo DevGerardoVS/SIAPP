@@ -25,7 +25,7 @@ return new class extends Migration
         DB::unprepared("delete from upp_extras where ejercicio > 2024;");
         DB::unprepared("delete from catalogo where ejercicio > 2024;");
 
-        DB::unprepapred("INSERT INTO v_epp (id, ejercicio, mes_i, mes_f, clv_sector_publico, sector_publico, clv_sector_publico_f, sector_publico_f, clv_sector_economia, sector_economia, clv_subsector_economia, subsector_economia, clv_ente_publico, ente_publico, clv_upp, upp, clv_subsecretaria, subsecretaria, clv_ur, ur, clv_finalidad, finalidad, clv_funcion, funcion, clv_subfuncion, subfuncion, clv_eje, eje, clv_linea_accion, linea_accion, clv_programa_sectorial, programa_sectorial, clv_tipologia_conac, tipologia_conac, clv_programa, programa, clv_subprograma, subprograma, clv_proyecto, proyecto, estatus, presupuestable, con_mir, confirmado, tipo_presupuesto, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
+        DB::unprepared("INSERT INTO v_epp (id, ejercicio, mes_i, mes_f, clv_sector_publico, sector_publico, clv_sector_publico_f, sector_publico_f, clv_sector_economia, sector_economia, clv_subsector_economia, subsector_economia, clv_ente_publico, ente_publico, clv_upp, upp, clv_subsecretaria, subsecretaria, clv_ur, ur, clv_finalidad, finalidad, clv_funcion, funcion, clv_subfuncion, subfuncion, clv_eje, eje, clv_linea_accion, linea_accion, clv_programa_sectorial, programa_sectorial, clv_tipologia_conac, tipologia_conac, clv_programa, programa, clv_subprograma, subprograma, clv_proyecto, proyecto, estatus, presupuestable, con_mir, confirmado, tipo_presupuesto, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
 (4552, 2025, NULL, NULL, '2', 'Sector Público de las Entidades Federativas', '1', 'Sector Público No Financiero', '1', 'Gobierno General Estatal o del Distrito Federal', '1', 'Gobierno Estatal o del Distrito Federal', '2', 'Poder Legislativo', '001', 'Congreso del Estado de Michoacán de Ocampo', '0', 'Sin Subsecretaría', '01', 'Congreso del Estado', '1', 'Gobierno', '1', 'Legislación', '1', 'Legislación', '1', 'Armonía, Paz y Reconciliación', 'AA', '1.1.1.1. Impulsar la cultura democrática y de legalidad.', 'A', 'Gobernabilidad', 'R', 'Específicos', '4B', 'Reformas Legislativas', '0HQ', 'Reformas Legislativas', '662', 'Conducción y Coordinación de la Política Pública', 0, 1, 1, 0, NULL, '2024-07-22 13:07:30', '2024-07-22 13:07:30', NULL, 'SISTEMA', NULL, NULL),
 (4553, 2025, NULL, NULL, '2', 'Sector Público de las Entidades Federativas', '1', 'Sector Público No Financiero', '1', 'Gobierno General Estatal o del Distrito Federal', '1', 'Gobierno Estatal o del Distrito Federal', '2', 'Poder Legislativo', '001', 'Congreso del Estado de Michoacán de Ocampo', '0', 'Sin Subsecretaría', '01', 'Congreso del Estado', '1', 'Gobierno', '1', 'Legislación', '1', 'Legislación', '1', 'Armonía, Paz y Reconciliación', 'AA', '1.1.1.1. Impulsar la cultura democrática y de legalidad.', 'A', 'Gobernabilidad', 'Y', 'Aportaciones a Fondos de Estabilización', 'RM', 'Estabilización de los Ingresos de las Entidades Federativas', 'R1M', 'Complemento de Aportaciones Federales', '8Z7', 'Fondo de Estabilización para las Entidades Federativas', 0, 0, 0, 0, NULL, '2024-07-22 13:07:30', '2024-07-22 13:07:30', NULL, 'SISTEMA', NULL, NULL),
 (4554, 2025, NULL, NULL, '2', 'Sector Público de las Entidades Federativas', '1', 'Sector Público No Financiero', '1', 'Gobierno General Estatal o del Distrito Federal', '1', 'Gobierno Estatal o del Distrito Federal', '2', 'Poder Legislativo', '001', 'Congreso del Estado de Michoacán de Ocampo', '0', 'Sin Subsecretaría', '01', 'Congreso del Estado', '1', 'Gobierno', '1', 'Legislación', '1', 'Legislación', '1', 'Armonía, Paz y Reconciliación', 'AA', '1.1.1.1. Impulsar la cultura democrática y de legalidad.', 'A', 'Gobernabilidad', 'L', 'Obligaciones de Cumplimiento de Resolución Jurisdiccional', '4B', 'Reformas Legislativas', '21B', 'Resoluciones Jurídicas', '8Z8', 'Indemnizaciones y Resolutivos de Autoridad Competente', 0, 1, 0, 0, NULL, '2024-07-22 13:07:30', '2024-07-22 13:07:30', NULL, 'SISTEMA', NULL, NULL),
@@ -2264,7 +2264,7 @@ return new class extends Migration
 (6787, 2025, NULL, NULL, '2', 'Sector Público de las Entidades Federativas', '1', 'Sector Público No Financiero', '1', 'Gobierno General Estatal o del Distrito Federal', '2', 'Entidades Paraestatales y Fideicomisos No Empresariales y No Financieros', '0', 'Entidades Paraestatales y Fideicomisos No Empresariales y No Financieros', '017', 'Servicios de Salud de Michoacán', '0', 'Sin Subsecretaría', '04', 'Dirección Administrativa', '2', 'Desarrollo Social', '3', 'Salud', '2', 'Prestación de Servicios de Salud a la Persona', '2', 'Bienestar', 'KI', '2.4.4.3. Crear o rehabilitar la infraestructura hospitalaria priorizando el primer nivel de atención y fortaleciendo el nivel de especialidades.', 'F', 'Salud', 'U', 'Otros Subsidios', 'SS', 'Atención a la Salud y Medicamentos Gratuitos para la Población sin Seguridad Social Laboral', '0EF', 'Fortalecimiento de la Infraestructura Hospitalaria', 'MAI', 'Modificación y Adecuación de Infraestructura', 0, 0, 0, 0, NULL, '2024-07-19 12:38:59', '2024-07-19 12:38:59', NULL, 'PRUEBAS', NULL, NULL),
 (6788, 2025, NULL, NULL, '2', 'Sector Público de las Entidades Federativas', '1', 'Sector Público No Financiero', '1', 'Gobierno General Estatal o del Distrito Federal', '1', 'Gobierno Estatal o del Distrito Federal', '1', 'Poder Ejecutivo', '024', 'Erogaciones Adicionales y Provisiones', '0', 'Sin Subsecretaría', '01', 'Erogaciones Adicionales y Provisiones', '1', 'Gobierno', '5', 'Asuntos Financieros y Hacendarios', '2', 'Asuntos Hacendarios', '3', 'Prosperidad Económica', 'NA', '3.1.1.1 Contribuir a la sostenibilidad de las ﬁnanzas públicas a través del saneamiento derivado de un manejo eﬁcaz de la deuda pública e implementación de medidas de austeridad del gasto público acorde a la austeridad republicana.', 'M', 'Gestión Pública', 'R', 'Específicos', '5H', 'Provisiones Transitorias', '21A', 'Medidas de Racionalidad y Austeridad del Gasto', 'VYU', 'Vestuarios y Uniformes', 0, 0, 0, 0, NULL, '2024-07-19 12:38:59', '2024-07-19 12:38:59', NULL, 'PRUEBAS', NULL, NULL);");
 
-        DB::unprepapred("INSERT INTO upp_extras (id, ejercicio, upp_id, clasificacion_administrativa_id, estatus_epp, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
+        DB::unprepared("INSERT INTO upp_extras (id, ejercicio, upp_id, clasificacion_administrativa_id, estatus_epp, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
 (82, 2025, 18949, 11, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:33', NULL, 'SISTEMA', NULL, NULL),
 (83, 2025, 18939, 12, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:33', NULL, 'SISTEMA', NULL, NULL),
 (84, 2025, 18940, 12, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:33', NULL, 'SISTEMA', NULL, NULL),
@@ -2347,7 +2347,7 @@ return new class extends Migration
 (161, 2025, 19014, 15, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:33', NULL, 'SISTEMA', NULL, NULL),
 (162, 2025, 19017, 15, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:33', NULL, 'SISTEMA', NULL, NULL);");
 
-        DB::unprepapred("INSERT INTO pladiem (id, ejercicio, eje_id, objetivo_sectorial_id, estrategia_id, linea_accion_id, programa_sectorial_id, estatus, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
+        DB::unprepared("INSERT INTO pladiem (id, ejercicio, eje_id, objetivo_sectorial_id, estrategia_id, linea_accion_id, programa_sectorial_id, estatus, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
 (590, 2025, 19551, 21187, 21213, 19723, 19907, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (591, 2025, 19551, 21187, 21213, 19725, 19907, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (592, 2025, 19551, 21187, 21213, 19727, 19907, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
@@ -2621,7 +2621,7 @@ return new class extends Migration
 (860, 2025, 19554, 21212, 21293, 19756, 19923, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (861, 2025, 19554, 21212, 21293, 19758, 19923, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL);");
 
-        DB::unprepapred("INSERT INTO epp (id, ejercicio, mes_i, mes_f, upp_id, clasificacion_administrativa_id, entidad_ejecutora_id, clasificacion_funcional_id, pladiem_id, conac_id, programa_id, subprograma_id, proyecto_id, estatus, presupuestable, con_mir, confirmado, tipo_presupuesto, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
+        DB::unprepared("INSERT INTO epp (id, ejercicio, mes_i, mes_f, upp_id, clasificacion_administrativa_id, entidad_ejecutora_id, clasificacion_funcional_id, pladiem_id, conac_id, programa_id, subprograma_id, proyecto_id, estatus, presupuestable, con_mir, confirmado, tipo_presupuesto, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
 (4552, 2025, 1, 12, 18937, 13, 1270, 139, 590, 32, 20059, 20331, 20508, 0, 1, 1, 0, NULL, '2024-07-22 13:07:30', '2024-07-22 13:07:30', NULL, 'SISTEMA', NULL, NULL),
 (4553, 2025, 1, 12, 18937, 13, 1270, 139, 590, 41, 19973, 20430, 20785, 0, 0, 0, 0, NULL, '2024-07-22 13:07:30', '2024-07-22 13:07:30', NULL, 'SISTEMA', NULL, NULL),
 (4554, 2025, 1, 12, 18937, 13, 1270, 139, 590, 37, 20059, 20184, 20788, 0, 1, 0, 0, NULL, '2024-07-22 13:07:30', '2024-07-22 13:07:30', NULL, 'SISTEMA', NULL, NULL),
@@ -4860,7 +4860,7 @@ return new class extends Migration
 (6787, 2025, NULL, NULL, 18949, 11, 1121, 157, 728, 25, 19980, 20281, 21496, 0, 0, 0, 0, NULL, '2024-07-22 13:08:09', '2024-07-22 13:08:09', NULL, 'ADMIN', NULL, NULL),
 (6788, 2025, NULL, NULL, 18955, 12, 1305, 149, 748, 32, 20065, 20182, 21497, 0, 0, 0, 0, NULL, '2024-07-22 13:08:09', '2024-07-22 13:08:09', NULL, 'ADMIN', NULL, NULL);");
 
-        DB::unprepapred("INSERT INTO entidad_ejecutora (id, ejercicio, upp_id, subsecretaria_id, ur_id, estatus, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
+        DB::unprepared("INSERT INTO entidad_ejecutora (id, ejercicio, upp_id, subsecretaria_id, ur_id, estatus, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
 (998, 2025, 18939, 19018, 19051, 4, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (999, 2025, 18944, 19034, 19052, 4, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (1000, 2025, 18959, 19018, 19053, 4, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
@@ -5360,7 +5360,7 @@ return new class extends Migration
 (1494, 2025, 18948, 19031, 19458, 4, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (1495, 2025, 18940, 19018, 19459, 4, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL);");
 
-        DB::unprepapred("INSERT INTO conac (id, ejercicio, padre_id, tipologia_conac_id, estatus, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
+        DB::unprepared("INSERT INTO conac (id, ejercicio, padre_id, tipologia_conac_id, estatus, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
 (24, 2025, 21294, 19940, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (25, 2025, 21294, 19942, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (26, 2025, 21295, 19929, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
@@ -5385,7 +5385,7 @@ return new class extends Migration
 (45, 2025, 21301, NULL, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (46, 2025, 21302, NULL, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL);");
 
-        DB::unprepapred("INSERT INTO comp_catalogo (id_old, id_new, ejercicio, grupo_id, clave, descripcion, descripcion_larga, descripcion_corta, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
+        DB::unprepared("INSERT INTO comp_catalogo (id_old, id_new, ejercicio, grupo_id, clave, descripcion, descripcion_larga, descripcion_corta, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
 (2121, 18927, 2025, 'SECTOR PÚBLICO', '2', 'Sector Público de las Entidades Federativas', NULL, NULL, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
 (2122, 18928, 2025, 'SECTOR PÚBLICO FINANCIERO/NO FINANCIERO', '1', 'Sector Público No Financiero', NULL, NULL, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
 (2123, 18929, 2025, 'SECTOR DE ECONOMÍA', '1', 'Gobierno General Estatal o del Distrito Federal', NULL, NULL, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
@@ -7952,7 +7952,7 @@ return new class extends Migration
 (18804, 21490, 2025, 'LÍNEA DE ACCIÓN', 'VS', '4.6.3.6 Impulsar planes y sistemas integrales de movilidad urbana sustentable para los principales centros urbanos del estado.', NULL, NULL, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
 (18805, 21491, 2025, 'LÍNEA DE ACCIÓN', 'VT', '4.6.3.7 Impulsar la creación del sistema estatal de movilidad y seguridad vial.', NULL, NULL, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL);");
 
-        DB::unprepapred("INSERT INTO clasificacion_funcional (id, ejercicio, finalidad_id, funcion_id, subfuncion_id, estatus, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
+        DB::unprepared("INSERT INTO clasificacion_funcional (id, ejercicio, finalidad_id, funcion_id, subfuncion_id, estatus, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
 (131, 2025, 19462, 19468, 19486, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (132, 2025, 19462, 19464, 19487, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (133, 2025, 19460, 19476, 19488, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
@@ -8019,14 +8019,14 @@ return new class extends Migration
 (194, 2025, 19460, 19472, 19549, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL),
 (195, 2025, 19461, 19480, 19550, 1, '2024-07-22 13:07:27', '2024-07-22 13:07:31', NULL, 'SISTEMA', NULL, NULL);");
 
-        DB::unprepapred("INSERT INTO clasificacion_administrativa (id, ejercicio, sector_publico_id, sector_publico_f_id, sector_economia_id, subsector_economia_id, ente_publico_id, estatus, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
+        DB::unprepared("INSERT INTO clasificacion_administrativa (id, ejercicio, sector_publico_id, sector_publico_f_id, sector_economia_id, subsector_economia_id, ente_publico_id, estatus, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
 (11, 2025, 18927, 18928, 18929, 18931, 18932, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
 (12, 2025, 18927, 18928, 18929, 18930, 18933, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
 (13, 2025, 18927, 18928, 18929, 18930, 18934, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
 (14, 2025, 18927, 18928, 18929, 18930, 18935, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
 (15, 2025, 18927, 18928, 18929, 18930, 18936, 0, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL);");
 
-        DB::unprepapred("INSERT INTO catalogo (id, padre_id, ejercicio, grupo_id, clave, descripcion, descripcion_larga, descripcion_corta, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
+        DB::unprepared("INSERT INTO catalogo (id, padre_id, ejercicio, grupo_id, clave, descripcion, descripcion_larga, descripcion_corta, created_at, updated_at, deleted_at, created_user, updated_user, deleted_user) VALUES 
 (18927, NULL, 2025, 'SECTOR PÚBLICO', '2', 'Sector Público de las Entidades Federativas', NULL, NULL, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
 (18928, NULL, 2025, 'SECTOR PÚBLICO FINANCIERO/NO FINANCIERO', '1', 'Sector Público No Financiero', NULL, NULL, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
 (18929, NULL, 2025, 'SECTOR DE ECONOMÍA', '1', 'Gobierno General Estatal o del Distrito Federal', NULL, NULL, '2024-07-22 13:07:27', '2024-07-22 13:07:27', NULL, 'SISTEMA', NULL, NULL),
