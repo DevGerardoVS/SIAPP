@@ -14,9 +14,7 @@ class UppExtras extends Seeder
        
         echo "\nInicializacion de upp_extras SEEDER 2023";
         try {
-            DB::unprepared("");
-
-                DB::unprepared("INSERT INTO `upp_extras` (`ejercicio`, `upp_id`, `clasificacion_administrativa_id`, `estatus_epp`, `created_at`, `updated_at`, `deleted_at`, `created_user`, `updated_user`, `deleted_user`) VALUES (2023, 11, 3, 4, '2024-07-22 13:08:09', '2024-07-22 13:08:09', NULL, 'ADMIN', NULL, NULL);");
+                 DB::unprepared("INSERT INTO `upp_extras` (`ejercicio`, `upp_id`, `clasificacion_administrativa_id`, `estatus_epp`, `created_at`, `updated_at`, `deleted_at`, `created_user`, `updated_user`, `deleted_user`) VALUES (2023, 11, 3, 4, '2024-07-22 13:08:09', '2024-07-22 13:08:09', NULL, 'ADMIN', NULL, NULL);");
                 DB::unprepared("INSERT INTO `upp_extras` (`ejercicio`, `upp_id`, `clasificacion_administrativa_id`, `estatus_epp`, `created_at`, `updated_at`, `deleted_at`, `created_user`, `updated_user`, `deleted_user`) VALUES (2023, 12, 4, 4, '2024-07-22 13:08:09', '2024-07-22 13:08:09', NULL, 'ADMIN', NULL, NULL);");
                 DB::unprepared("INSERT INTO `upp_extras` (`ejercicio`, `upp_id`, `clasificacion_administrativa_id`, `estatus_epp`, `created_at`, `updated_at`, `deleted_at`, `created_user`, `updated_user`, `deleted_user`) VALUES (2023, 25, 2, 4, '2024-07-22 13:08:09', '2024-07-22 13:08:09', NULL, 'ADMIN', NULL, NULL);");
                 DB::unprepared("INSERT INTO `upp_extras` (`ejercicio`, `upp_id`, `clasificacion_administrativa_id`, `estatus_epp`, `created_at`, `updated_at`, `deleted_at`, `created_user`, `updated_user`, `deleted_user`) VALUES (2023, 27, 2, 4, '2024-07-22 13:08:09', '2024-07-22 13:08:09', NULL, 'ADMIN', NULL, NULL);");
