@@ -16,13 +16,13 @@ return new class extends Migration
     public function up()
     {
      try {
-        DB::select("CALL rellenar_tablas_intermedias(?)",["SISTEMA"]);
-        DB::select("CALL llenar_v_epp(?,?)",[null,"SISTEMA"]);
-        $clf_a = ClasificacionAdministrativa::where('deleted_at', null);
+      /*   DB::select("CALL rellenar_tablas_intermedias(?)",["SISTEMA"]);
+        DB::select("CALL llenar_v_epp(?,?)",[null,"SISTEMA"]); */
+        $clf_a = DB::table('clasificacion_administrativa')->where('deleted_at', null)->get();
         foreach ($clf_a as $key ) {
-            $rel = UppExtras::where('clasificacion_administrativa_id ', $key->id)->first();
+            $rel = UppExtras::where('clasificacion_administrativa_id', $key->id)->first();
             $editclf = ClasificacionAdministrativa::find($key->id);
-            if (count($rel) >= 1) {
+            if (isset($rel)) {
                 $editclf->estatus = 1;
                 $editclf->save();
             }
