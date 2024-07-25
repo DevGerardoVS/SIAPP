@@ -2974,5 +2974,36 @@ UPDATE mml_mir SET id_epp=2895 WHERE id=4183;
 UPDATE mml_mir SET id_epp=2895 WHERE id=4184;
 UPDATE mml_mir SET id_epp=2895 WHERE id=4185;
         ");
+
+        DB::unprepared("UPDATE sapp_seguimiento SET realizado= 1030 WHERE id = 7486;
+            UPDATE sapp_seguimiento SET realizado= 287 WHERE id = 9723;
+
+            UPDATE sapp_seguimiento SET realizado= 1123 WHERE id = 11724;
+            UPDATE sapp_seguimiento SET realizado= 4236 WHERE id = 9299;
+            UPDATE sapp_seguimiento SET realizado= 1103 WHERE id = 9695;
+            
+            UPDATE sapp_seguimiento SET realizado= 9027 WHERE id = 9304;
+            UPDATE sapp_seguimiento SET realizado= 2342 WHERE id = 9696;
+            
+            UPDATE sapp_seguimiento SET realizado= 3183 WHERE id = 9451;
+            UPDATE sapp_seguimiento SET realizado= 809 WHERE id = 9586;
+            
+            UPDATE sapp_seguimiento SET realizado= 824 WHERE id = 9185;
+            UPDATE sapp_seguimiento SET realizado= 230 WHERE id = 9688;
+            
+            UPDATE sapp_seguimiento SET realizado= 417 WHERE id = 9157;
+            UPDATE sapp_seguimiento SET realizado= 123 WHERE id = 9638;
+            
+            UPDATE sapp_seguimiento SET realizado= 204 WHERE id = 9158;
+            UPDATE sapp_seguimiento SET realizado= 72 WHERE id = 9621;
+        ");
+
+        DB::unprepared("UPDATE sapp_seguimiento SET realizado = 3074 WHERE id = 7581;
+            UPDATE sapp_seguimiento SET realizado = 783 WHERE id = 9829;
+            UPDATE sapp_seguimiento SET realizado = 2038 WHERE id = 7582;
+            UPDATE sapp_seguimiento SET realizado = 558 WHERE id = 9830;
+        ");
+
+        DB::unprepared("UPDATE catalogo SET deleted_at = NOW(), deleted_user = 'ADMIN' WHERE grupo_id = 15 AND clave IN ('C','D','H');");
     }
 }
