@@ -14,7 +14,34 @@ return new class extends Migration
     public function up()
     {
         DB::statement("SET foreign_key_checks=0");
-        DB::unprepared("truncate comp_catalogo;");
+        if (Schema::hasTable('comp_catalogo')) {
+            DB::statement('truncate comp_catalogo;');
+        }else{
+                Schema::create('comp_catalogo', function (Blueprint $table) {
+                    $table->integer('id_old');
+                    $table->integer('id_new');
+                    $table->integer('ejercicio');
+                    $table->enum('grupo_id', [
+                        'SECTOR PÚBLICO','SECTOR PÚBLICO FINANCIERO/NO FINANCIERO','SECTOR DE ECONOMÍA','SUBSECTOR DE ECONOMÍA','ENTE PÚBLICO',
+                        'UNIDAD PROGRAMÁTICA PRESUPUESTAL','SUBSECRETARÍA','UNIDAD RESPONSABLE','FINALIDAD','FUNCIÓN','SUBFUNCIÓN',
+                        'EJE','LÍNEA DE ACCIÓN','PROGRAMA SECTORIAL','TIPOLOGÍA CONAC','PROGRAMA PRESUPUESTARIO','SUBPROGRAMA PRESUPUESTARIO',
+                        'PROYECTO PRESUPUESTARIO','METAS_TIPO','ACTIVIDADES ADMON','FONDO FEDERAL','ENTIDAD FEDERATIVA','REGIÓN','MUNICIPIO',
+                        'LOCALIDAD','OBJETIVO SECTORIAL','ESTRATEGIA','PADRE - TIPOLOGÍA CONAC','CAPÍTULO','CONCEPTO','PARTIDA GENÉRICA',
+                        'PARTIDA ESPECÍFICA','TIPO DE GASTO','ETIQUETADO/NO ETIQUETADO','FUENTE DE FINANCIAMIENTO','RAMO',
+                        'FONDO DEL RAMO','CAPITAL/INTERES','PROYECTO DE OBRA'
+                    ]);
+                    $table->string('clave', 6);
+                    $table->text('descripcion');
+                    $table->string('descripcion_larga',43);
+                    $table->string('descripcion_corta',22);
+                    $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+                    $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+                    $table->softDeletes();
+                    $table->string('created_user', 45);
+                    $table->string('updated_user', 45)->nullable();
+                    $table->string('deleted_user', 45)->nullable();
+                });
+        }
         DB::unprepared("delete from clasificacion_administrativa where ejercicio > 2024;");
         DB::unprepared("delete from entidad_ejecutora where ejercicio > 2024;");
         DB::unprepared("delete from clasificacion_funcional where ejercicio > 2024;");
