@@ -78,7 +78,7 @@ return new class extends Migration
         join catalogo c19 on e.proyecto_id = c19.id;");
         $upps_ids =Catalogo::select('id','clave')
         ->where(['grupo_id'=>6,'ejercicio'=>2025])
-        ->whereIn('clave',['009','014','078','082','083'])->get();
+        ->whereIn('clave',['009','014','078','082','083','031'])->get();
 
         foreach ($upps_ids as $key) {
            $uppExt= UppExtras::where(['ejercicio' => 2025, 'upp_id' => $key->id])->first();
@@ -87,7 +87,7 @@ return new class extends Migration
                 $uppExt->save();
 
            }
-           if($key->clave='083'){
+           if($key->clave=='083' || $key->clave=='031'){
                 DB::table('archivos_epp')
                 ->where([
                 'ejercicio'=>2025,
