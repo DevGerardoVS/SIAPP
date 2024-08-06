@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         DB::unprepared("UPDATE mml_mir SET id_epp = null WHERE id_epp = 0;");
+        DB::unprepared("UPDATE mml_mir SET id_epp = null WHERE deleted_at is not null;");
         DB::unprepared("UPDATE mml_mir SET componente_padre = null WHERE componente_padre = 0;");
 
         Schema::table('mml_mir', function (Blueprint $table) {
