@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        DB::unprepared("truncate v_epp;");
+        /*DB::unprepared("truncate v_epp;");
         DB::unprepared("
         insert into v_epp(
         	id,ejercicio,mes_i,mes_f,clv_sector_publico,sector_publico,clv_sector_publico_f,sector_publico_f,clv_sector_economia,sector_economia,clv_subsector_economia,subsector_economia,clv_ente_publico,ente_publico,
@@ -76,7 +76,7 @@ return new class extends Migration
         join catalogo c18 on e.subprograma_id = c18.id
         join catalogo c19 on e.proyecto_id = c19.id;");
         DB::unprepared("update upp_extras set estatus_epp=0 where upp_id = 18943 and ejercicio=2025");
-        DB::unprepared("delete from archivos_epp where upp_id=18989 and id=177;");
+        DB::unprepared("delete from archivos_epp where upp_id=18989 and id=177;");*/
     }
     
         
