@@ -48,12 +48,6 @@ return new class extends Migration {
                     WHERE ejercicio = OLD.ejercicio
                     AND clv_ente_publico = OLD.clave;
                 END IF;
-                IF OLD.grupo_id = \'UNIDAD PROGRAMÁTICA PRESUPUESTAL\' THEN
-                    UPDATE v_epp
-                    SET upp = NEW.descripcion
-                    WHERE ejercicio = OLD.ejercicio
-                    AND clv_upp = OLD.clave;
-                END IF;
                 IF OLD.grupo_id = \'SUBSECRETARÍA\' THEN
                     UPDATE v_epp
                     SET subsecretaria = NEW.descripcion
