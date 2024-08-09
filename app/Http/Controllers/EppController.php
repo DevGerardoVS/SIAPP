@@ -17,26 +17,12 @@ class EppController extends Controller
         $perfil = Auth::user()->id_grupo;
         $dataSet = array();
         $max_anio = DB::table('epp')->max('ejercicio');
-        $listaUpp = DB::table('catalogo')
-            ->select('clave as clv_upp','descripcion as upp')
-            ->where('ejercicio', $max_anio)
-            ->where('grupo_id', 6)
-            ->orderBy('clv_upp')
-            ->get();
+        $listaUpp = $this->listaUPP($perfil,$max_anio);
 
-        if($perfil == 5){
-            $listaUpp = DB::table('uppautorizadascpnomina as u')
-                ->join('catalogo as c', 'u.clv_upp', '=', 'c.clave')
-                ->where('c.grupo_id', '=', 6)
-                ->where('c.deleted_at')
-                ->where('c.ejercicio', $max_anio)
-                ->select('u.clv_upp','c.descripcion as upp')->distinct()
-                ->orderBy('u.clv_upp')->get();
-        }
         $listaAnio = DB::table('epp')->distinct()->where('deleted_at')
             ->orderBy('ejercicio','DESC')
             ->get(['ejercicio']);
-        $perfil = Auth::user()->id_grupo;
+        
         return view('epp/epp', 
             [
                 'dataSet' => $dataSet,
@@ -106,13 +92,12 @@ class EppController extends Controller
     }
 
     public function getUR(Request $request){
-        $listaUR = DB::table('epp as e')
-            ->join('catalogo as c1', 'e.upp_id', '=', 'c1.id')
-            ->join('catalogo as c2', 'e.ur_id', '=', 'c2.id')
-            ->where('e.ejercicio', '=', $request->anio)
-            ->where('c1.clave', '=', $request->upp)
-            ->distinct()->orderBy('c2.clave')
-            ->get(['c2.clave as clv_ur','c2.descripcion as ur']);
+        $listaUR = DB::table('v_epp')
+            ->where('ejercicio', '=', $request->anio)
+            ->where('clv_upp', '=', $request->upp)
+            ->where('deleted_at')
+            ->distinct()->orderBy('clv_ur')
+            ->get(['clv_ur','ur']);
 
         return response()->json([
             'listaUR'=> $listaUR
@@ -122,26 +107,29 @@ class EppController extends Controller
     public function getUPP(Request $request){
         $perfil = Auth::user()->id_grupo;
 
-        $listaUPP = '';
+        return response()->json([
+            'listaUPP'=> $this->listaUPP($perfil,$request->anio)
+        ]);
+    }
+
+    private function listaUPP($perfil,$anio){
         if($perfil == 5){
-            $listaUPP = DB::table('catalogo as c')
+            return $lista = DB::table('catalogo as c')
                 ->join('uppautorizadascpnomina as u', 'u.clv_upp', '=', 'c.clave')
-                ->where('c.ejercicio','=',$request->anio)
+                ->where('c.ejercicio','=',$anio)
+                ->where('c.deleted_at')
                 ->where('c.grupo_id', 6)
                 ->orderBy('c.clave')
                 ->get(['c.clave as clv_upp','c.descripcion as upp']);
         }
         else {
-            $listaUPP = DB::table('catalogo')
-                ->where('ejercicio','=',$request->anio)
+            return $lista = DB::table('catalogo')
+                ->where('ejercicio','=',$anio)
+                ->where('deleted_at')
                 ->where('grupo_id', 6)
                 ->orderBy('clv_upp')
                 ->get(['clave as clv_upp','descripcion as upp']);
         }
-
-        return response()->json([
-            'listaUPP'=> $listaUPP
-        ]);
     }
 
     public function exportExcelEPP(Request $request){

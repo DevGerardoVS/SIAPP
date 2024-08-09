@@ -36,7 +36,6 @@ function actualizarTabla(updateUR,updateUPP){
 
     accion += "/" + ur;
     opt.action = accion;
-    //console.log(accion);
     getData();
 }
 
@@ -71,7 +70,7 @@ function actualizarListaUPP(ejercicio){
     });
 }
 
-function actualizarListaUR(clv_upp,ruta){
+function actualizarListaUR(clv_upp){
     let select = document.getElementById("filters_ur");
     let ejercicio = document.getElementById("filters_anio");
     let cantidadOpt = select.options.length;
