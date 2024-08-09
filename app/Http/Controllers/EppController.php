@@ -61,8 +61,9 @@ class EppController extends Controller
         else $anio = "'$request->anio'";
 
         //OBTENER TABLA
-        $data = DB::select('call sp_epp(0,'.$upp.','.$ur.','.$anio.')');
+        $data = '';
         if($perfil == 5) $data = DB::select('call sp_epp(1,'.$upp.','.$ur.','.$anio.')');
+        else $data = DB::select('call sp_epp(0,'.$upp.','.$ur.','.$anio.')');
         $dataSet = array();
         foreach($data as $d){
             $ds = array(

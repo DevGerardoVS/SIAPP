@@ -41,7 +41,6 @@ function actualizarTabla(updateUR,updateUPP){
 
 function actualizarListaUPP(ejercicio){
     let select = document.getElementById("filters_upp");
-    let ruta = "get-upp/"+ejercicio;
     let cantidadOpt = select.options.length;
 
     for(i = cantidadOpt; i > 0; i--){
@@ -52,7 +51,7 @@ function actualizarListaUPP(ejercicio){
     selectUR.options.length = 1;
 
     $.ajax({
-        url: ruta,
+        url: 'get-upp',
         data: {anio: ejercicio},
         type:'POST',
         dataType: 'json',
