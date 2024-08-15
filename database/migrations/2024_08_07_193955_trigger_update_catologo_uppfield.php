@@ -20,12 +20,7 @@ return new class extends Migration
             BEGIN
                 IF OLD.grupo_id = "UNIDAD PROGRAMÁTICA PRESUPUESTAL" THEN
                     -- Primer if es para verificar si es una actualización y no un soft delete
-                    IF NEW.deleted_at IS NULL THEN
-                        UPDATE v_epp
-                        SET upp = NEW.descripcion
-                        WHERE ejercicio = OLD.ejercicio
-                        AND clv_upp = OLD.clave;
-                    ELSE
+                    IF NEW.deleted_at IS NOT NULL THEN
                         -- Acciones en caso de soft delete 
 
                         -- Borrar cierre ejercicio claves
