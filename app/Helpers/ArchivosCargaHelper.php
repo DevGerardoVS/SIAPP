@@ -7,7 +7,6 @@ use Config;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\MmlMir;
 use App\Models\calendarizacion\Metas;
 use App\Http\Controllers\Calendarizacion\MetasController;
 

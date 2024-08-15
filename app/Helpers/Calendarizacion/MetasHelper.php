@@ -7,7 +7,7 @@ use Config;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\MmlMir;
+use App\Models\MmlActividades;
 use App\Models\calendarizacion\Metas;
 use App\Http\Controllers\Calendarizacion\MetasController;
 
@@ -109,6 +109,7 @@ class MetasHelper
 				->unionAll($query2)
 				->orderByRaw('upp,clv_ur,clv_pp')
 				->get();
+				Log::debug($query);
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());
@@ -303,7 +304,7 @@ class MetasHelper
 				$actv = $actv->where('mml_actividades.id_catalogo', '!=',2367);
 				}
 			$query2 = DB::table('metas')
-				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+				->leftJoin('catalogo AS cat', 'cat.clave', '=', 'metas.clv_fondo')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 				->leftJoinSub($actv, 'act', function ($join) {
@@ -322,13 +323,16 @@ class MetasHelper
 					'metas.cantidad_beneficiarios',
 					'beneficiarios.beneficiario',
 					'unidades_medida.unidad_medida',
-				)
-				->where('metas.mir_id', '=', null)
-				->where('metas.deleted_at', '=', null)
-				->where('act.clv_upp', $upp)
-				->where('metas.ejercicio', $anio);
+				)->where([
+						'metas.mir_id' => null,
+						'metas.deleted_at' => null,
+						'act.clv_upp' => $upp,
+						'metas.ejercicio'=>$anio,
+						'cat.grupo_id'=>'FONDO DEL RAMO'
+					]);
 			$query = DB::table('metas')
-				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+			->leftJoin('catalogo AS cat', 'cat.clave', '=', 'metas.clv_fondo')
+				/* ->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo') */
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 				->leftJoinSub($proyecto, 'pro', function ($join) {
@@ -348,11 +352,14 @@ class MetasHelper
 					'beneficiarios.beneficiario',
 					'unidades_medida.unidad_medida',
 				)
-				->where('metas.estatus', '=', 1)
-				->where('metas.actividad_id', '=', null)
-				->where('metas.deleted_at', '=', null)
-				->where('pro.ejercicio', $anio)
-				->where('pro.upp', $upp)
+				->where([
+					'metas.estatus' => 1,
+					'metas.actividad_id' => null,
+					'metas.deleted_at'=>null,
+					'pro.upp' => $upp,
+					'pro.ejercicio'=>$anio,
+					'cat.grupo_id'=>'FONDO DEL RAMO'
+				])
 				->unionAll($query2);
 			$query=$query->get();
 			return $query;
@@ -1036,7 +1043,8 @@ class MetasHelper
 				$actv = $actv->where('catalogo.clave', '!=','UUU' );
 				}
 			$query2 = DB::table('metas')
-				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+				->leftJoin('catalogo AS cat', 'cat.clave', '=', 'metas.clv_fondo')
+				/* 	->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo') */
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 				->leftJoinSub($actv, 'act', function ($join) {
@@ -1055,13 +1063,20 @@ class MetasHelper
 					'metas.cantidad_beneficiarios',
 					'beneficiarios.beneficiario',
 					'unidades_medida.unidad_medida',
-				)
-				->where('metas.mir_id', '=', null)
+				)->where([
+					'metas.mir_id'=>null,
+					'metas.deleted_at'=>null,
+					'act.clv_upp'=>$upp,
+					'metas.ejercicio'=>$anio,
+					'cat.grupo_id' => 'FONDO DEL RAMO'
+					]);
+				/* ->where('metas.mir_id', '=', null)
 				->where('metas.deleted_at', '=', null)
 				->where('act.clv_upp', $upp)
-				->where('metas.ejercicio', $anio);
+				->where('metas.ejercicio', $anio); */
 			$query = DB::table('metas')
-				->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')
+			->leftJoin('catalogo AS cat', 'cat.clave', '=', 'metas.clv_fondo')
+				/* ->leftJoin('fondo', 'fondo.clv_fondo_ramo', '=', 'metas.clv_fondo')  */
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
 				->leftJoinSub($proyecto, 'pro', function ($join) {
@@ -1081,11 +1096,19 @@ class MetasHelper
 					'beneficiarios.beneficiario',
 					'unidades_medida.unidad_medida',
 				)
+				->where([
+					'metas.estatus'=> 1,
+					'metas.actividad_id'=>null,
+					'metas.deleted_at'=>null,
+					'pro.upp'=>$upp,
+					'metas.ejercicio'=>$anio,
+					'cat.grupo_id' => 'FONDO DEL RAMO'
+					])/* ;
 				->where('metas.estatus', '=', 1)
 				->where('metas.actividad_id', '=', null)
 				->where('metas.deleted_at', '=', null)
 				->where('pro.ejercicio', $anio)
-				->where('pro.upp', $upp)
+				->where('pro.upp', $upp) */
 				->unionAll($query2);
 			$query=$query->get();
 			return $query;
@@ -1322,7 +1345,7 @@ class MetasHelper
 	{
 		$ur = str_split($entidad_ejecutora);
 		$pp = str_split($area_funcional);
-		$mml_act = new MmlMir();
+		$mml_act = new MmlActividades();
 		$mml_act->clv_upp =$upp;
 		$mml_act->clv_ur =''.$ur[4].$ur[5].'';
 		$mml_act->clv_pp =''.$pp[8].$pp[9].'';

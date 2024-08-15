@@ -806,7 +806,6 @@ return new class extends Migration {
                 $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
                 $table->softDeletes();
                 $table->tinyInteger('ramo33');
-                $table->integer('desagregacion_geografica')->nullable();
             });
         }
         if (!Schema::hasTable('mml_mir_hist')) {
@@ -1124,7 +1123,6 @@ return new class extends Migration {
                     'subprograma_id',
                     'proyecto_id',
                     'ejercicio',
-                    'deleted_at',
                 ], 'llave_epp');
                 $table->unsignedInteger('sector_publico_id');
                 $table->unsignedInteger('sector_publico_f_id');

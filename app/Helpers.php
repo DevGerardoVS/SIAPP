@@ -123,4 +123,58 @@ function check_sistema($id_group) {
     return false;
 }
 
+function getEntidadEje($upp,$ur,$anio) {
+    $resul = DB::table('programacion_presupuesto')
+        ->select(DB::raw('CONCAT(programacion_presupuesto.upp,programacion_presupuesto.subsecretaria,programacion_presupuesto.ur) AS entidad'))
+        ->where('programacion_presupuesto.ur', '=', $ur)
+        ->where('programacion_presupuesto.upp', '=', $upp)
+        ->where('programacion_presupuesto.ejercicio', '=',$anio)
+        ->first();
+    return $resul->entidad;
+}
+function getCatUpp($ejercicio)
+{
+    $upp = DB::table('catalogo as c06')
+    ->select(
+        'c06.clave as clv_upp',
+        DB::raw('CONCAT(c06.clave, "  ",c06.descripcion) as upp'))
+        ->where(['c06.deleted_at'=>null,
+        'c06.grupo_id'=>6,
+        'c06.ejercicio'=>$ejercicio
+        ])
+    ->distinct()
+    ->orderBy('clv_upp');
+    if(auth::user()->id_grupo==4 || auth::user()->id_grupo==7){
+        $upp = $upp->where('c06.clave', auth::user()->clv_upp);
+    }
+
+    $upp = $upp->get();
+    return $upp;
+}
+function getCatUr($ejercicio,$upp){
+    if(auth::user()->id_grupo==4 || auth::user()->id_grupo==7){
+        $upp = auth::user()->clv_upp;
+    }
+    $ur = DB::table('entidad_ejecutora as ej')
+    ->leftJoin('catalogo as c06', 'ej.upp_id', '=', 'c06.id')
+    ->leftJoin('catalogo as c08', 'ej.ur_id', '=', 'c08.id')
+    ->select(
+        'c08.clave as clv_ur',
+        DB::raw('CONCAT(c08.clave, "  ",c08.descripcion) as ur')
+    )->where([   
+            'ej.deleted_at' => null,
+            'ej.ejercicio' => $ejercicio,
+            'c06.clave' => $upp
+        ])->whereIn('ej.estatus',[0,3,4])
+        ->whereNotNull('ej.upp_id')
+        ->whereNotNull('ej.subsecretaria_id')
+        ->whereNotNull('ej.ur_id')
+    ->distinct();
+        if(auth::user()->id_grupo==7){
+            $ur = $ur->where('c08.clave', auth::user()->clv_ur);
+        }
+        $ur =$ur->orderBy('clv_ur')->get();
+    return $ur;
+ }
+
 

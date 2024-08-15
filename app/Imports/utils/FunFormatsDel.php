@@ -2,7 +2,7 @@
 namespace App\Imports\utils;
 
 use App\Models\calendarizacion\Metas;
-use App\Models\MmlMir;
+use App\Models\MmlActividades;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -106,7 +106,7 @@ class FunFormatsDel
                                                     $nombre=null;
                                                     $act = FunFormats::createMml_Ac($k,$entidad_ejecutora,$area_funcional,$idActividad->id, $nombre, $anioMax);
                                                     
-                                                            $act = MmlMir::create([
+                                                            $act = MmlActividades::create([
                                                                 'clv_upp' => strval($k[7]),
                                                                 'entidad_ejecutora' => $entidad_ejecutora,
                                                                 'area_funcional' => $area_funcional,
@@ -605,7 +605,7 @@ class FunFormatsDel
     }
     public static function createMml_Ac($k,$entidad_ejecutora, $area_funcional,$id_catalogo, $nombre, $anio)
 	{
-		$mml_act = new MmlMir();
+		$mml_act = new MmlActividades();
 		$mml_act->clv_upp = strval($k[7]);
 		$mml_act->clv_ur =strval($k[8]);
 		$mml_act->clv_pp =strval($k[9]);

@@ -33,7 +33,7 @@ Route::controller(TechosController::class)->group(function () {
 		Route::get('/calendarizacion/claves', 'getPanel');
 		Route::get('/calendarizacion/get-manual-carga-masiva-claves', 'getManualCMC')->name('getManualCMC');
 		Route::get('/calendarizacion-claves-create/{ejercicio?}', 'getCreate');
-		Route::post('/calendarizacion-claves-get', 'getClaves');
+		Route::post('/calendarizacion-claves-get', 'getClaves')->name('getClaves');
 		Route::get('/cat-regiones', 'getRegiones');
 		Route::get('/cat-municipios/{id?}', 'getMunicipios');
 		Route::get('/cat-localidad/{id?}', 'getLocalidades');		

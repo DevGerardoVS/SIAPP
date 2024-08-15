@@ -36,13 +36,11 @@ function actualizarTabla(updateUR,updateUPP){
 
     accion += "/" + ur;
     opt.action = accion;
-    //console.log(accion);
     getData();
 }
 
 function actualizarListaUPP(ejercicio){
     let select = document.getElementById("filters_upp");
-    let ruta = "get-upp/"+ejercicio;
     let cantidadOpt = select.options.length;
 
     for(i = cantidadOpt; i > 0; i--){
@@ -53,7 +51,7 @@ function actualizarListaUPP(ejercicio){
     selectUR.options.length = 1;
 
     $.ajax({
-        url: ruta,
+        url: 'get-upp',
         data: {anio: ejercicio},
         type:'POST',
         dataType: 'json',
@@ -71,7 +69,7 @@ function actualizarListaUPP(ejercicio){
     });
 }
 
-function actualizarListaUR(clv_upp,ruta){
+function actualizarListaUR(clv_upp){
     let select = document.getElementById("filters_ur");
     let ejercicio = document.getElementById("filters_anio");
     let cantidadOpt = select.options.length;
@@ -106,4 +104,38 @@ function exportPdf(){
     console.log('entro en la funcion');
     _url = "/epp-exportPdf/"+anio;
     window.open(_url, '_blank');
+}
+
+let filtro_upp = '';
+let filtro_ur = '';
+let filtro_anio = document.getElementById('filters_anio');
+
+if(document.getElementById('filters_upp') != null){
+    filtro_upp = document.getElementById('filters_upp');
+    filtro_ur = document.getElementById('filters_ur');
+}
+
+function activarFiltros(){
+    if(filtro_upp != null){
+        filtro_upp.disabled = false;
+        filtro_ur.disabled = false;
+    }
+    filtro_anio.disabled = false;
+    document.getElementById('btn_export_pdf').disabled = false;
+    document.getElementById('btn_export_excel').disabled = false;
+}
+
+function desactivarFiltros(){
+    if(filtro_upp != null){
+        filtro_upp.disabled = true;
+        filtro_ur.disabled = true;
+    }
+    filtro_anio.disabled = true;
+
+    let export_pdf = document.getElementById('btn_export_pdf');
+    let export_excel = document.getElementById('btn_export_excel');
+    if(export_pdf){
+        export_pdf.disabled = true;
+        export_excel.disabled = true;
+    }
 }
