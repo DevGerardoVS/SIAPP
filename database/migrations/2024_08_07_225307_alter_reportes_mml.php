@@ -693,7 +693,7 @@ begin
     set @queri := concat(\"
     CREATE TEMPORARY TABLE epp_t
     select 
-        id,clv_upp,clv_ur,clv_programa clv_pp,proyecto,
+        \",@id,\",clv_upp,clv_ur,clv_programa clv_pp,proyecto,
         concat(
             clv_finalidad,clv_funcion,clv_subfuncion,clv_eje,
             clv_linea_accion,clv_programa_sectorial,clv_tipologia_conac,
@@ -762,7 +762,7 @@ begin
                 mm.objetivo,
                 mm.indicador
             from \",@mir,\" mm
-            join epp_t ve on ve.id = mm.id_epp
+            join epp_t ve on ve.\",@id,\" = mm.id_epp
             where mm.ejercicio = \",anio,\" and mm.\",@corte,\"
             and nivel in (10) \",@upp,\" \",@ur,\" \",@programa,\"
             union all 
@@ -777,7 +777,7 @@ begin
                 mm.objetivo,
                 mm.indicador
             from \",@mir,\" mm
-            join epp_t ve on ve.id = mm.id_epp
+            join epp_t ve on ve.\",@id,\" = mm.id_epp
             where mm.ejercicio = \",anio,\" and mm.\",@corte,\"
             and nivel in (11) \",@upp,\" \",@ur,\" \",@programa,\"
             union all
