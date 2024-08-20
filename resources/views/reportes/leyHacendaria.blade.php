@@ -50,8 +50,8 @@
                     <div class="card">
                         <div class="card-body">
                             <table class="table table-striped table-bordered" id="tbl-reportes">
-                                <tbody>
-                                    @foreach ($names as $name)
+                                <tbody id="putNames">
+                                    {{-- @foreach ($names as $key=>$name)
                                         <tr>
                                             <td class="d-flex justify-content-between px-5">
                                                 @php
@@ -65,7 +65,7 @@
                                                     $correct_name = $replace_dot;  
                                                 @endphp
 
-                                                <div class="my-auto me-2" style="font-size: 14px;">{{strtoupper($correct_name)}}</div>
+                                                <div class="my-auto me-2" style="font-size: 14px;" id="reporte{{$key}}">{{strtoupper($correct_name)}}</div>
                                                 <div class="d-flex justify-content-end flex-wrap p-1">
                                                     <form action="{{ route('downloadReport',['nombre'=>$name->name]) }}" method="POST" enctype="multipart/form-data" class="my-auto">
                                                         @csrf
@@ -84,7 +84,7 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforeach 			
+                                    @endforeach 			 --}}
                                 </tbody>
                             </table>
                         </div>

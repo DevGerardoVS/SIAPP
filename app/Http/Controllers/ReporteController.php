@@ -19,13 +19,46 @@ class ReporteController extends Controller
         Controller::check_permission('getCaptura');
         $db = $_ENV['DB_DATABASE'];
         $dataSet = array();
-        $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
+        // $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto_hist pph UNION SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC'); 
         return view("reportes.leyHacendaria", [
             'dataSet' => json_encode($dataSet),
-            'names' => $names,
+            // 'names' => $names,
             'anios' => $anios,
         ]);
+    }
+
+    public function names($anio){
+        try {
+            $db = $_ENV['DB_DATABASE'];
+            $getNames = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
+            $names = $getNames;
+            if($anio > 2023){ // Modificar a 2025
+                $getNames = array_filter($getNames, function($name) {
+                    return !in_array($name->name, ['reporte_art_20_frac_X_a_num_4', 'reporte_art_20_frac_X_a_num_5', 'reporte_art_20_frac_X_b_num_5','reporte_art_20_frac_X_b_num_2']);
+                });
+                $names = array_values($getNames);
+            }
+
+            return response()->json($names,200);
+        } catch (\Exception $e) {
+            $errLocation1 = 'ReporteController'; $errLocation2 = 'names';
+                
+            $logMSG = "Ocurrio un error con el siguiente mensaje ".$e->getMessage();
+
+            log::info("Error con el siguiente mensaje: ".$e->getMessage()." Capturado en la función '$errLocation2' del '$errLocation1'");
+
+            if(str_contains($e, 'SQLSTATE')) $logMSG = 'Ocurrió un error en base de datos';
+            if(str_contains($e, 'on null')) $logMSG = 'Asegúrese de ingresar todos los parametros';
+
+            $returnData = array(
+                'status' => 'error',
+                'title' => 'error',
+                'message' => $logMSG,
+            );
+            return response()->json($returnData, 500);
+        };        
+        
     }
 
     public function indexAdministrativo()
@@ -262,9 +295,16 @@ class ReporteController extends Controller
             Controller::bitacora($b);
 
             return $request->action == 'pdf' ? response()->download($file . ".pdf", $nameFile . ".pdf")->deleteFileAfterSend() : response()->download($file . ".xlsx", $nameFile . ".xlsx")->deleteFileAfterSend();
-        } catch (\Exception $exp) {
-            Log::channel('daily')->debug('exp ' . $exp->getMessage());
-            return back()->withErrors(['msg' => '¡Ocurrió un error al descargar el archivo!']);
+        } catch (\Exception $e) {
+            $errLocation1 = 'ReporteController'; $errLocation2 = 'downloadReport';
+            $logMSG = "Ocurrio un error ".$e->getMessage();
+
+            Log::info("Error con el siguiente mensaje: ".$e->getMessage()." Capturado en la función '$errLocation2' del '$errLocation1'");
+
+            if(str_contains($e, 'SQLSTATE')) $logMSG = 'Ocurrió un error en base de datos';
+            if(str_contains($e, 'on null')) $logMSG = 'Asegúrese de ingresar todos los parametros';
+            if(str_contains($e, "couldn't be processed")) $logMSG = 'El reporte no pudo ser generado';
+            return back()->withErrors(['msg' => $logMSG]);
         }
     }
 
