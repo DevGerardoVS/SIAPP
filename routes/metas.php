@@ -46,7 +46,7 @@
 		Route::get('/calendarizacion/metas-delegacion', 'getMetasDelegacion')->name('index_metas_del');
 		Route::get('/actividades/plantilla/metas-delegacion', 'getPlantillaExcel')->name('PlantillaExcel');
 		Route::post('/actividades/import/metas-delegacion', 'importPlantilla');
-		Route::get('/calendarizacion/proyecto/metas-delegacion', 'getProyecto')->name('proyecto');
+		Route::get('/calendarizacion/proyecto/metas-delegacion', 'getProyecto')->name('proyectoDelegacio');
 		Route::get('/actividades/data/metas-delegacion/{upp?}/{anio?}', 'getActivDelegacion');
 		Route::post('/calendarizacion/put/metas-delegacion', 'putMeta');
 		Route::get('/actividades/flag-confirmar-metas/{anio?}', 'cmetasdel');
