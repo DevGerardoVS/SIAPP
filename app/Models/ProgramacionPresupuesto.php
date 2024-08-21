@@ -42,7 +42,6 @@ class ProgramacionPresupuesto extends Model
 		'capital',
         'proyecto_obra',
         'ejercicio', 
-        'fondo_id',
         'enero',
         'febrero',  
         'marzo',   
