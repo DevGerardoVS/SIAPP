@@ -1050,6 +1050,7 @@ class ClavePreController extends Controller
         $uppUsuario = Auth::user()->clv_upp;
         $anio = '';
         $whereCierre = [];
+        $arrayProgramacion = '';
         $tabla = 'programacion_presupuesto';
         if ($uppUsuario != '') {
             array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
