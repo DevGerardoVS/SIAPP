@@ -649,7 +649,6 @@ class ClavePreController extends Controller
         ->WHERE($array_where)
         ->DISTINCT()
         ->get();
-        $partidas = [];
         return response()->json($partidas,200);
     }
     public function getFondos($id,$subP,$ejercicio = 0){
