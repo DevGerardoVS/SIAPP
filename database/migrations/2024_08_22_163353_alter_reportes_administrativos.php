@@ -18,7 +18,7 @@ return new class extends Migration
         DB::unprepared("DROP PROCEDURE IF EXISTS calendario_general;");
         DB::unprepared("DROP PROCEDURE IF EXISTS seguimiento_totales;");
 
-        DB::unprepapred("CREATE PROCEDURE avance_proyectos_actividades_upp(in anio int,in ver int)
+        DB::unprepared("CREATE PROCEDURE avance_proyectos_actividades_upp(in anio int,in ver int)
 BEGIN
     set @corte := 'deleted_at is null';
     set @tabla := 'programacion_presupuesto';
@@ -213,7 +213,7 @@ begin
     set @upp := '';
     set @tipo := '';
 
-    if (corte is not null) then 
+    if (ver is not null) then 
         set @tabla := 'programacion_presupuesto_hist';
         set @corte := concat('version = ',ver);
         set @epp := 'v_epp_hist';
