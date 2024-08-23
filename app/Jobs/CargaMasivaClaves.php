@@ -195,16 +195,16 @@ class CargaMasivaClaves implements ShouldQueue
         } catch (\Exception $e) {
             DB::rollBack();
             $arrayfail = array();
+            Log::debug($e);
             array_push($arrayErrores, ' $ $Ocurrio un error interno contacte a soporte.');
             $payload = json_encode($arrayfail);
-            $error = $e->getMessage();
             $payloadsent = json_encode(
                 array(
                     "TypeButton" => 1,
                     "route" => "'/calendarizacion/download-errors-excel'",
                     "blocked" => 3,
                     "mensaje" => trans('messages.carga_masiva_error'),
-                    "payload" => $error
+                    "payload" => $arrayErrores
                 )
             );
             notificaciones::where('id', $this->id)
@@ -213,12 +213,7 @@ class CargaMasivaClaves implements ShouldQueue
                     'status' => 2,
                     'updated_user' => $usuario->username
                 ]);
-           /* event(new NotificacionCreateEdit($notification)); */
-/*             $notification = json_encode([
-                'id' => $datos->id
 
-            ]); */
-/* event(new NotificacionCreateEdit($notification)); */
 
         }
     }
