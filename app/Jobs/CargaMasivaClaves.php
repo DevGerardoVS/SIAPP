@@ -197,7 +197,7 @@ class CargaMasivaClaves implements ShouldQueue
             $arrayfail = array();
             array_push($arrayErrores, ' $ $Ocurrio un error interno contacte a soporte.');
             $payload = json_encode($arrayfail);
-            Log::debug($e);
+            $error = $e->getMessage();
             $payloadsent = json_encode(
                 array(
                     "TypeButton" => 1,
