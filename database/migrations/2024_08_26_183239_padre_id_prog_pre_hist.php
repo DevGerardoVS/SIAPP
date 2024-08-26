@@ -44,6 +44,10 @@ return new class extends Migration
         DB::unprepared("UPDATE catalogo c
         JOIN pladiem p ON p.linea_accion_id = c.id
         SET c.padre_id = p.estrategia_id;");
+
+        Schema::table('catalogo', function (Blueprint $table) {
+            $table->string('clave', 10)->change();
+        });
     }
 
     /**
