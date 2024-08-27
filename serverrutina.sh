@@ -1,4 +1,6 @@
 #!/bin/bash
+php artisan optimize
+echo "se limpio  correctamente"
 php artisan cache:clear
  echo "se limpio cache correctamente"
 php artisan config:clear

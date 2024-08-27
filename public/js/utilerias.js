@@ -895,8 +895,6 @@ var _gen = {
                     {
                         data:'id',
                         render: function (data,type,params,esAutorizada) {
-                            console.log('data',data);
-                            console.log('params',params);
                             
                             if (params.rol == 0 && params.esAutorizada == true) {
                                 $('#alertaUppAutorizado').show(true);
