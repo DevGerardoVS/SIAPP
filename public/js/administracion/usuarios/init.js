@@ -129,7 +129,7 @@ var dao = {
             par.append(new Option("-- Selecciona Grupo --", ""));
             document.getElementById("clv_upp").options[0].disabled = true;
             $.each(data, function (i, val) {
-                par.append(new Option(`${val.clave} - ${val.descripcion}`, val.clave));
+                par.append(new Option(`${val.upp}`, val.clv_upp));
             });
         });
     },

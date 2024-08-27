@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Calendarizacion;
 
 use App\Imports\utils\FunFormats;
+use App\Imports\utils\FunFormatsNew;
+use App\Imports\utils\InsertCMActividades;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
@@ -919,7 +921,7 @@ class MetasController extends Controller
 		Controller::check_assign(1);
 		DB::beginTransaction();
 		try {
-
+			Log::debug('no upp');
 			$flag = false;
 			if (Auth::user()->id_grupo == 4) {
 				$check = $this->checkClosing(Auth::user()->clv_upp);
@@ -938,9 +940,11 @@ class MetasController extends Controller
 				}
 				$flag = $check['status'];
 			} else if (Auth::user()->id_grupo == 1) {
+				Log::debug('no upp');
 				$flag = true;
 			}
 			if ($flag) {
+				Log::debug('if no upp');
 				Schema::create('metas_temp', function (Blueprint $table) {
 					$table->temporary();
 					$table->increments('id');
@@ -961,8 +965,11 @@ class MetasController extends Controller
 				if ($xlsx = SimpleXLSX::parse($assets)) {
 					$filearray = $xlsx->rows();
 					array_shift($filearray);
-					$resul = FunFormats::saveImport($filearray);
+					Log::debug('archivo');
+					$resul = FunFormatsNew::saveImport($filearray,Auth::user());
 					if ($resul['icon'] == 'success') {
+						Log::debug('success');
+						InsertCMActividades::handle($resul['arreglo']  ,Auth::user());
 						DB::commit();
 						$b = array(
 							"username" => Auth::user()->username,
