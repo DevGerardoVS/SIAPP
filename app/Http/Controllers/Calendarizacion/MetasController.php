@@ -32,7 +32,8 @@ use App\Models\calendarizacion\CierreMetas;
 use App\Models\MmlActividades;
 use App\Models\Catalogo;
 use App\Http\Controllers\utils\ReportesJasper;
-
+use App\Models\notificaciones;
+use App\Exports\MetasExportErrCm;
 
 class MetasController extends Controller
 {
@@ -970,14 +971,36 @@ class MetasController extends Controller
 					if ($resul['icon'] == 'success') {
 						Log::debug('success');
 						InsertCMActividades::handle($resul['arreglo']  ,Auth::user());
-						DB::commit();
+					
 						$b = array(
 							"username" => Auth::user()->username,
 							"accion" => 'Carga masiva metas',
 							"modulo" => 'Metas'
 						);
 						Controller::bitacora($b);
+					}else{
+						$payload = json_encode($resul['arreglo']);
+						Log::debug($payload );
+						$payloadsent = json_encode(
+							array(
+								"TypeButton" => 1,// 0 es mensaje, 1 es que si es botton, 2 ahref 
+								"route" => "'/metas/errores/carga-masiva/'",
+								"blocked" => 0, // 0 es Carga masiva Calendarizacion, 1 es Reportes SAPP,3 Carga Masiva SAPP
+								"mensaje" => trans('messages.carga_masiva_cargando'),
+								"payload" => $payload
+							)
+						);
+				
+						$datos = notificaciones::create([
+							'id_usuario' => Auth::user()->id,
+							'id_sistema' => 1,
+							'payload' => $payloadsent,
+							'status' => 2,
+							'created_user' => Auth::user()->username
+						]);
+						Log::debug($datos);
 					}
+					DB::commit();
 					return response()->json($resul);
 				}
 			} else {
@@ -1538,5 +1561,18 @@ class MetasController extends Controller
 			$exMeta->exist = $status;
 		}
 		return $exMeta;
+	}
+	public function erooresCargaMasiva(){
+		ini_set('max_execution_time', 10000);
+        ini_set('memory_limit', '1024M');
+		/*Si no coloco estas lineas Falla*/
+		ob_end_clean();
+		ob_start();
+		$res = DB::table('notificaciones')->select('payload')->where('id_sistema', 1)->where('id_usuario', Auth::user()->id)->first();
+        $play = json_decode($res->payload);
+        $e = json_decode($play->payload);
+		$res = DB::table('notificaciones')->where('id_sistema', 1)->where('id_usuario', Auth::user()->id)->delete();
+		/*Si no coloco estas lineas Falla*/
+		return Excel::download(new MetasExportErrCm($e), 'CargaMasiva_Errores'.'.xlsx');
 	}
 }

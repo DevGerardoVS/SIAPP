@@ -40,8 +40,30 @@ class TechosController extends Controller
     public function getTechos(Request $request){
         Controller::check_permission('getTechos');
         $dataSet = [];
+        $prueba = DB::table('techos_financieros as tf')
+            ->select('tf.id','tf.clv_upp','ve.upp as descPre','tf.tipo','tf.clv_fondo','c.descripcion as fondo_ramo','tf.presupuesto','tf.ejercicio','tf.updated_user')
+            ->leftJoin('catalogo as c','tf.clv_fondo','=','c.clave')
+            ->leftJoin('v_epp as ve','tf.clv_upp','=','ve.clv_upp')
+            ->where('tf.deleted_at','=',null);
+            if($request->anio_filter != null){
+                $prueba =  $prueba -> where('tf.ejercicio','=',intval($request->anio_filter));
+                $prueba =  $prueba -> where('ve.ejercicio','=',intval($request->anio_filter));
+            }
+            if($request->fondo_filter != null && $request->fondo_filter != '0'){
+                $prueba = $prueba -> where('tf.clv_fondo','=',$request->fondo_filter);
+            }
+            if($request->upp_filter != null && $request->upp_filter != '0'){
+                $prueba = $prueba -> where('tf.clv_upp','=',$request->upp_filter);
+            }
 
-        $data = DB::table('techos_financieros as tf')
+        $prueba = $prueba 
+            ->where('c.grupo_id','=','FONDO DEL RAMO')
+            ->orderBy('tf.clv_upp','asc')
+            ->distinct()
+        ->get();
+        
+        log::debug($prueba);
+        /* $data = DB::table('techos_financieros as tf')
             ->select('tf.id','tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio','tf.updated_user')
             ->leftJoinSub('select distinct clv_upp, upp, ejercicio as Ej from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
             ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo')
@@ -57,7 +79,7 @@ class TechosController extends Controller
                 $data = $data -> where('tf.clv_fondo','=',$request->fondo_filter);
             }
         $data = $data ->orderBy('vee.clv_upp','asc')->get();
-        
+         */
         $max_ejercicio = DB::table('epp')
             ->select('ejercicio')
             ->groupBy('ejercicio')
@@ -66,7 +88,7 @@ class TechosController extends Controller
             ->get();
 
         
-            foreach ($data as $d){
+            foreach ($prueba as $d){
             if($max_ejercicio[0]->ejercicio == $d->ejercicio){
                 $button2 = '<a class="btn btn-secondary" onclick="getEdita('.$d->id.')" data-bs-toggle="modal" data-bs-target="#editar" ><i class="fa fa-pencil" style="font-size: large; color: white"></i></a>';
                 /* $button3 = '<button id="eliminar" title="Eliminar" class="btn btn-danger"><i class="fa fa-trash" style="font-size: large"></i></button>'; */
@@ -80,7 +102,7 @@ class TechosController extends Controller
 
         return [
             'dataSet'=>$dataSet,
-            'data' => json_encode($data)
+            'data' => json_encode($prueba)
         ];
     }
 
