@@ -62,7 +62,6 @@ class TechosController extends Controller
             ->distinct()
         ->get();
         
-        log::debug($prueba);
         /* $data = DB::table('techos_financieros as tf')
             ->select('tf.id','tf.clv_upp','vee.upp as descPre','tf.tipo','tf.clv_fondo','f.fondo_ramo','tf.presupuesto','tf.ejercicio','tf.updated_user')
             ->leftJoinSub('select distinct clv_upp, upp, ejercicio as Ej from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
@@ -131,10 +130,12 @@ class TechosController extends Controller
 
     public function getFondos(){
         Controller::check_permission('getTechos');
-        $fondos = DB::table('fondo')
+        $fondos = DB::table('catalogo')->select('id','clave as clv_fondo_ramo','descripcion as fondo_ramo')->where('grupo_id','=','FONDO DEL RAMO')->get();
+        log::debug($fondos);
+        /* $fondos = DB::table('fondo')
             ->select('clv_fondo_ramo','fondo_ramo')
             ->distinct()
-            ->get();
+            ->get(); */
 
         return json_encode($fondos);
     }
