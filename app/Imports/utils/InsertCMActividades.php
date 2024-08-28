@@ -28,6 +28,7 @@ class InsertCMActividades
                             $key->actividad_id = $act;
                             break;
                         case 'O':
+                            $key->actividad_id = null;
                             $act = FunFormats::createMml_Ac($key);
                             $key->actividad_id = $act;
                             break;

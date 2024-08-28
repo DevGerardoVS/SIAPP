@@ -39,6 +39,8 @@
 		Route::get('/prueba-total/{anio?}', 'exportExcelErrTotal');
 		Route::get('/carga-masiva/manual-usuario', 'getManual')->name('Manual_Carga_Masiva_metas');
 		Route::get('/actividades/metas/actividades-mir/{area?}/{enti?}/{fondo?}', 'getActividMir');
+		Route::get('metas/errores/carga-masiva', 'erooresCargaMasiva')->name('ErrCmAct');
+
 
 	});
 
