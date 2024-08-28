@@ -17,7 +17,14 @@ class notificaciones extends Model
         'payload',
         'status',
         'created_user',
-        'updated_user'
+        'updated_user',
+        'deleted_user'
+    ];
+    protected $dates = ['deleted_at'];
+
+    protected $hidden = [
+    	'created_at', 
+    	'updated_at'
     ];
 
     protected function data(): Attribute
