@@ -31,14 +31,26 @@ class TechosExportPresupuestos implements FromCollection, WithHeadings, WithStyl
 
         $array_data = array();
         $final_data= array();
-        $data = DB::table('techos_financieros as tf')
+        /* $data = DB::table('techos_financieros as tf')
             ->select('tf.clv_upp','tf.clv_fondo','tf.tipo','tf.presupuesto','tf.ejercicio','vee.Ej')
             ->leftJoinSub('select distinct clv_upp, upp, ejercicio as Ej from v_epp','vee','tf.clv_upp','=','vee.clv_upp')
             ->leftJoinSub('select distinct clv_fondo_ramo, fondo_ramo from fondo','f','tf.clv_fondo','=','f.clv_fondo_ramo')
             ->where('tf.deleted_at','=',null)
             ->where('tf.ejercicio','=',$this->ejercicio)
             ->where('vee.Ej','=',$this->ejercicio)
-            ->get();
+        ->get(); */
+
+        $data = DB::table('techos_financieros as tf')
+            ->select('tf.clv_upp','tf.clv_fondo','tf.tipo','tf.presupuesto','tf.ejercicio','ve.ejercicio as Ej')
+            ->leftJoin('catalogo as c','tf.clv_fondo','=','c.clave')
+            ->leftJoin('v_epp as ve','tf.clv_upp','=','ve.clv_upp')
+            ->where('tf.deleted_at','=',null)
+            ->where('tf.ejercicio','=',intval($this->ejercicio))
+            ->where('ve.ejercicio','=',intval($this->ejercicio))
+            ->where('c.grupo_id','=','FONDO DEL RAMO')
+            ->orderBy('tf.clv_upp','asc')
+            ->distinct()
+        ->get();
 
             $arr = json_decode(json_encode ( $data ) , true);
             foreach($arr as $d){
@@ -55,7 +67,6 @@ class TechosExportPresupuestos implements FromCollection, WithHeadings, WithStyl
                        }
         
                    }else{
-
                             $array_data[$keyname] = $d['presupuesto'];                           
                    }
             }

@@ -48,7 +48,7 @@
                                                 placeholder="Seleccione una UPP" data-live-search="true">
                                                 <option value="0" selected>Todas las UPP</option>
                                                 @foreach ($upp as $u)
-                                                    <option value="{{ $u->id }}">
+                                                    <option value="{{ $u->clave }}">
                                                         {{ $u->clave . ' - ' . $u->descripcion }}
                                                     </option>
                                                 @endforeach
@@ -60,7 +60,7 @@
                                                 placeholder="Seleccione un fondo" data-live-search="true">
                                                 <option value="0" selected>Todos los fondos</option>
                                                 @foreach ($fondo as $f)
-                                                    <option value="{{ $f->id }}">
+                                                    <option value="{{ $f->clave }}">
                                                         {{ $f->clave . ' - ' . $f->descripcion }}</option>
                                                 @endforeach
                                             </select>

@@ -213,8 +213,8 @@ $(document).ready(function () {
     getData();
     dao.getAnio();
     $('#cmFile').val(null);
-    $('#fondo_filter').selectpicker({ search: true });
-    $('#upp_filter').selectpicker({ search: true });
+    /* $('#fondo_filter').selectpicker({ search: true });
+    $('#upp_filter').selectpicker({ search: true }); */
 
     $('#btnNew').on('click',function (e) {
         e.preventDefault();
