@@ -2,7 +2,6 @@
 namespace App\Imports\utils;
 
 use Auth;
-
 class CargaMasivaMetas
 {
     public $finalidad;
@@ -47,8 +46,7 @@ class CargaMasivaMetas
     public $created_user;
     public $updated_user;
     public $id_grupo;
-    function __construct($k, $anio, $user)
-    {
+    function __construct($k,$anio,$user) {
 
         $this->finalidad = $k[0];
         $this->funcion = $k[1];
@@ -66,36 +64,36 @@ class CargaMasivaMetas
         $this->clv_ur = strval($k[8]);
         $this->clv_pp = strval($k[9]);
         $this->clv_fondo = strval($k[12]);
-        $this->actividad_id = is_numeric($k[13]) ? intval($k[13]) : strval($k[13]);
-        $this->mir_id = is_numeric($k[14]) ? intval($k[14]) : strval($k[14]);
+        $this->actividad_id = is_numeric($k[13])? intval($k[13]):strval($k[13]);
+        $this->mir_id = is_numeric($k[14])? intval($k[14]):strval($k[14]);
         $this->nombre_actividad = strval($k[15]);
         $this->clv_cal = strval($k[16]);
         $this->tipo = $k[17];
         $this->beneficiario_id = $k[30];
         $this->unidad_medida_id = $k[33];
         $this->cantidad_beneficiarios = $k[32];
-        $this->enero = $this->is3u == false ? intval($k[18]) : 2;
-        $this->febrero = $this->is3u == false ? intval($k[19]) : 2;
-        $this->marzo = $this->is3u == false ? intval($k[20]) : 2;
-        $this->abril = $this->is3u == false ? intval($k[21]) : 2;
-        $this->mayo = $this->is3u == false ? intval($k[22]) : 2;
-        $this->junio = $this->is3u == false ? intval($k[23]) : 2;
-        $this->julio = $this->is3u == false ? intval($k[24]) : 2;
-        $this->agosto = $this->is3u == false ? intval($k[25]) : 2;
-        $this->septiembre = $this->is3u == false ? intval($k[26]) : 2;
-        $this->octubre = $this->is3u == false ? intval($k[27]) : 2;
-        $this->noviembre = $this->is3u == false ? intval($k[28]) : 2;
-        $this->diciembre = $this->is3u == false ? intval($k[29]) : 3;
+        $this->enero = $this->is3u ==false? $k[18] : 2;
+        $this->febrero = $this->is3u ==false ? $k[19] : 2;
+        $this->marzo = $this->is3u ==false ? $k[20] : 2;
+        $this->abril = $this->is3u ==false ?$k[21] : 2;
+        $this->mayo = $this->is3u ==false ? $k[22] : 2;
+        $this->junio = $this->is3u ==false ? $k[23] : 2;
+        $this->julio = $this->is3u ==false ? $k[24] : 2;
+        $this->agosto = $this->is3u ==false ? $k[25] : 2;
+        $this->septiembre = $this->is3u ==false? $k[26] : 2;
+        $this->octubre = $this->is3u ==false ? $k[27] : 2;
+        $this->noviembre = $this->is3u ==false ? $k[28] : 2;
+        $this->diciembre = $this->is3u ==false ? $k[29] : 3;
         $this->ejercicio = $anio;
-        $this->entidad_ejecutora = getEntidadEje($this->clv_upp, $this->clv_ur, $this->area_funcional);
+       // $this->entidad_ejecutora = getEntidadEje($this->clv_upp,$this->clv_ur,$this->area_funcional );
         $this->created_user = $user->username;
-        $this->updated_user = $user->username;
-        $this->id_grupo = $user->id_grupo;
+        $this->updated_user= $user->username;
+        $this->id_grupo= $user->id_grupo;
     }
     public function MetasPp()
     {
-        $num = array($this->finalidad, $this->funcion, $this->subfuncion, $this->eje, $this->linea_accion, $this->programa_sectorial, $this->tipologia_conac, $this->clv_upp, $this->clv_ur, $this->programa_presupuestario, $this->subprograma_presupuestario, $this->proyecto_presupuestario, $this->clv_fondo, $this->actividad_id, $this->mir_id, $this->nombre_actividad, $this->clv_cal, $this->tipo, $this->enero, $this->febrero, $this->marzo, $this->abril, $this->mayo, $this->junio, $this->julio, $this->agosto, $this->septiembre, $this->octubre, $this->noviembre, $this->diciembre, $this->total, $this->beneficiario_id, $this->cantidad_beneficiarios, $this->unidad_medida_id, $this->ejercicio, $this->area_funcional, $this->entidad_ejecutora, $this->is3u, $this->tipoMeta, $this->id_grupo); //create an array
-        $obj = (object) $num; //change array to stdClass object
-        return $obj;
+        $num = array($this->finalidad,$this->funcion,$this->subfuncion,$this->eje,$this->linea_accion,$this->programa_sectorial,$this->tipologia_conac,$this->clv_upp,$this->clv_ur,$this->programa_presupuestario,$this->subprograma_presupuestario,$this->proyecto_presupuestario,$this->clv_fondo,$this->actividad_id,$this->mir_id,$this->nombre_actividad,$this->clv_cal,$this->tipo,$this->enero,$this->febrero,$this->marzo,$this->abril,$this->mayo,$this->junio,$this->julio,$this->agosto,$this->septiembre,$this->octubre,$this->noviembre,$this->diciembre,  $this->total,$this->beneficiario_id,$this->cantidad_beneficiarios,$this->unidad_medida_id,$this->ejercicio,$this->area_funcional,$this->entidad_ejecutora,$this->is3u,$this->tipoMeta,$this->id_grupo); //create an array
+        $obj = (object)$num; //change array to stdClass object
+        return  $obj; 
     }
 }

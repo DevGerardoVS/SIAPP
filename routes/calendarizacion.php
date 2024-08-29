@@ -27,6 +27,7 @@ Route::controller(TechosController::class)->group(function () {
 	Route::get('/calendarizacion/techos/export-presupuestos', 'exportPresupuestos')->name('exportPresupuestos');
 	Route::post('/calendarizacion/techos/eliminar', 'eliminar')->name('eliminar');
 	Route::post('/calendarizacion/techos/editar', 'editar')->name('editar');
+	
 });
 
 	Route::controller(ClavePreController::class)->group(function () {

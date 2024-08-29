@@ -802,9 +802,15 @@ var dao = {
             Swal.fire({
                 icon: response.icon,
                 title: response.title,
-                text: response.text
-            });
-
+                text: response.text,
+                showCancelButton: false,
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Aceptar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload();
+                }
+            });          
 
         });
     },

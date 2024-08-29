@@ -124,13 +124,20 @@ function check_sistema($id_group) {
 }
 
 function getEntidadEje($upp,$ur,$anio) {
-    $resul = DB::table('programacion_presupuesto')
-        ->select(DB::raw('CONCAT(programacion_presupuesto.upp,programacion_presupuesto.subsecretaria,programacion_presupuesto.ur) AS entidad'))
-        ->where('programacion_presupuesto.ur', '=', $ur)
-        ->where('programacion_presupuesto.upp', '=', $upp)
-        ->where('programacion_presupuesto.ejercicio', '=',$anio)
-        ->first();
+    try {
+        $resul = DB::table('v_epp')
+        ->select(DB::raw('CONCAT(clv_upp,clv_subsecretaria,clv_ur) AS entidad'))
+        ->where([
+            'clv_upp' => $upp,
+            'clv_ur' => $ur,
+            'ejercicio' => $anio,
+            'deleted_at' => null
+        ])->first();
     return $resul->entidad;
+    } catch (\Throwable $th) {
+        Log::debug($th);
+    }
+
 }
 function getCatUpp($ejercicio)
 {
