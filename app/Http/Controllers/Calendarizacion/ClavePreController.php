@@ -1062,20 +1062,21 @@ class ClavePreController extends Controller
         $upp = ['clave'=>'000','descripcion'=>'Detalle General'];
         if ($ejercicio && $ejercicio > 0) {
             $anio = $ejercicio;
+            $arrayProgramacion = "pp.ejercicio = ".$anio;
             if ($anio < $ejercicioActual->ejercicio) {
                 $tabla = 'programacion_presupuesto_hist';
                 // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
-                $arrayProgramacion = "".$arrayProgramacion." && programacion_presupuesto_hist.version = 0";
+                $arrayProgramacion = "".$arrayProgramacion." && pp.version = 0";
             }
         }else {
             $anio = date('Y');
+            $arrayProgramacion = "pp.ejercicio = ".$anio;
             $tabla = 'programacion_presupuesto_hist';
             // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
-            $arrayProgramacion = "".$arrayProgramacion." && programacion_presupuesto_hist.version = 0";
+            $arrayProgramacion = "".$arrayProgramacion." && pp.version = 0";
         }
         $uppAutorizados = ClavesHelper::esAutorizada($clvUpp != '' ? $clvUpp : $uppUsuario);
         $arrayTechos = "tf.deleted_at IS NULL  && tf.ejercicio = ".$anio;
-        $arrayProgramacion = "pp.ejercicio = ".$anio;
         if ($tabla == 'programacion_presupuesto') {
             $arrayProgramacion = "".$arrayProgramacion." && pp.deleted_at IS NULL";
         }
