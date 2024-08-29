@@ -16,12 +16,13 @@
                         <div class="col-sm-1">
                             <label><b>UPP:</b></label>
                         </div>
-                        <?php $upp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->orderBy('clv_upp')->get();?>
+                        <?php /* $upp = DB::table('v_epp')->select('clv_upp','upp')->distinct()->orderBy('clv_upp')->get(); */?>
+                        <?php $upp = DB::table('catalogo')->select('id','clave', 'descripcion')->where('grupo_id','=','UNIDAD PROGRAMÁTICA PRESUPUESTAL')->distinct()->get(); ?>
                         <div class="col-sm-7" >
                             <select class="form-control filters" placeholder="Seleccione una UPP" id="uppSelected" name="uppSelected" required>
                                 <option value="0" selected>Seleccione una UPP</option>
                                 @foreach($upp as $u)
-                                <option value="{{$u->clv_upp}}" >{{$u->clv_upp.' - '.$u->upp}}</option>
+                                <option value="{{$u->clave}}" >{{$u->clave.' - '.$u->descripcion}}</option>
                                 @endforeach
                             </select>
                         </div>
