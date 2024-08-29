@@ -32,6 +32,9 @@ return new class extends Migration
         FROM v_epp
         WHERE ejercicio = 2025 AND deleted_at IS NULL;");
 
+        DB::unprepared("UPDATE adm_users SET deleted_at = NOW(), deleted_user = 'SISTEMA'
+        WHERE id IN (2,3,5,91,92,95,150,152,157,158,159,160,162,163,164,165,166);");
+
         DB::unprepared("UPDATE adm_users SET email = 'hugo.diaza+37@sfa.michoacan.gob.mx' where id = 9;");
         DB::unprepared("UPDATE adm_users SET email = 'hugo.diaza+38@sfa.michoacan.gob.mx' where id = 10;");
         DB::unprepared("UPDATE adm_users SET email = 'hugo.diaza+39@sfa.michoacan.gob.mx' where id = 11;");
