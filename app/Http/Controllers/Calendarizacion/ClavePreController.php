@@ -921,12 +921,14 @@ class ClavePreController extends Controller
                 $tabla = 'programacion_presupuesto_hist';
                 // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
                 array_push($array_where2, [$tabla.'.version', '=', 0]);
+                array_push($array_where2, ['tipo', '=', 'Operativo']);
             }
         }else {
             $anio = date('Y');
             $tabla = 'programacion_presupuesto_hist';
             // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
             array_push($array_where2, [$tabla.'.version', '=', 0]);
+            array_push($array_where2, ['tipo', '=', 'Operativo']);
         }
         $autorizado = ClavesHelper::esAutorizada($uppUsuario ? $uppUsuario : $upp);
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
