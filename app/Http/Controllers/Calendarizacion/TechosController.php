@@ -601,6 +601,7 @@ class TechosController extends Controller
                             }
                             return response()->json($resul);
                         } else {
+
                             $error = array(
                                 "icon" => 'error',
                                 "title" => 'Error',
@@ -612,7 +613,15 @@ class TechosController extends Controller
                 }
             }
         } catch (\Exception $e) {
+            Log::debug($e);
+            $error = array(
+                "icon" => 'error',
+                "title" => 'Error',
+                "text" => 'Error sql consulte con el administrador.'
+            );
             DB::rollback();
+            return response()->json($error);
+
         }
     }
     

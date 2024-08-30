@@ -17,15 +17,47 @@ class ReporteController extends Controller
     public function indexPlaneacion()
     {
         Controller::check_permission('getCaptura');
-        $db = $_ENV['DB_DATABASE'];
+        // $db = $_ENV['DB_DATABASE'];
         $dataSet = array();
-        $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
+        // $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto_hist pph UNION SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC'); 
         return view("reportes.leyHacendaria", [
             'dataSet' => json_encode($dataSet),
-            'names' => $names,
+            // 'names' => $names,
             'anios' => $anios,
         ]);
+    }
+
+    public function names($anio){
+        try {
+            $db = $_ENV['DB_DATABASE'];
+            $getNames = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%' ORDER BY ROUTINE_NAME asc");
+            $names = $getNames;
+            if($anio > 2024){
+                $getNames = array_filter($getNames, function($name) {
+                    return !in_array($name->name, ['reporte_art_20_frac_X_a_num_4', 'reporte_art_20_frac_X_b_num_5','reporte_art_20_frac_X_b_num_2']);
+                });
+                $names = array_values($getNames);
+            }
+            return response()->json($names,200);
+        } catch (\Exception $e) {
+            $errLocation1 = 'ReporteController'; $errLocation2 = 'names';
+                
+            $logMSG = "Ocurrio un error con el siguiente mensaje ".$e->getMessage();
+
+            log::info("Error con el siguiente mensaje: ".$e->getMessage()." Capturado en la función '$errLocation2' del '$errLocation1'");
+
+            if(str_contains($e, 'SQLSTATE')) $logMSG = 'Ocurrió un error en base de datos';
+            if(str_contains($e, 'on null')) $logMSG = 'Asegúrese de ingresar todos los parametros';
+
+            $returnData = array(
+                'status' => 'error',
+                'title' => 'error',
+                'message' => $logMSG,
+            );
+            return response()->json($returnData, 500);
+        };        
+        
     }
 
     public function indexAdministrativo()
@@ -180,24 +212,84 @@ class ReporteController extends Controller
     public function downloadReport(Request $request, $nombre)
     {
         ini_set('max_execution_time', 600); // Tiempo máximo de ejecución 
-
-        $report =  $nombre;
-        $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
-        $fechaCorte = !$request->input('fechaCorte') ? $request->fechaCorte_filter : $request->input('fechaCorte');
-        $upp = Auth::user()->clv_upp != null ? Auth::user()->clv_upp : $request->upp_filter;
-
-        // Comprobar si el reporte es administrativo o de ley hacendaria
-        if (str_contains($report, "reporte_art_20")) $tipoReporte = "Reportes de ley hacendaria";
-        else  $tipoReporte = "Reportes administrativos";
-
         try {
+            $report =  $nombre;
+            $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
+            $fechaCorte = $request->fechaCorte ? substr($request->fechaCorte,2) : $request->input('fechaCorte');
+            $version = $request->fechaCorte ? substr($request->fechaCorte,0,1) : "null";
+            $upp = Auth::user()->clv_upp != null ? Auth::user()->clv_upp : $request->upp_filter;
+
+            // Comprobar si el reporte es administrativo o de ley hacendaria
+            if (str_contains($report, "reporte_art_20")){ 
+                $tipoReporte = "Reportes de ley hacendaria";
+                if($anio > 2024){
+                    switch ($nombre) { // Cambiar el nombre del reporte por el que se va a descargar.
+                        case "reporte_art_20_frac_X_a_num_3":
+                            $report = "reporte_art_20_frac_X_a_num_1";
+                            break;
+                        case "reporte_art_20_frac_X_a_num_4":
+                            $report = "reporte_art_20_frac_X_a_num_2";
+                            break;
+                        case "reporte_art_20_frac_X_a_num_5":
+                            $report = "reporte_art_20_frac_X_a_num_3";
+                            break;
+                        case "reporte_art_20_frac_X_a_num_1":
+                            $report = "reporte_art_20_frac_X_a_num_1_2025";
+                            break;
+                        case "reporte_art_20_frac_X_a_num_2":
+                            $report = "reporte_art_20_frac_X_a_num_6";
+                            break;
+                        case "reporte_art_20_frac_X_b_num_3":
+                            $report = "reporte_art_20_frac_X_b_num_1";
+                            break;
+                        case "reporte_art_20_frac_X_b_num_4":
+                            $report = "reporte_art_20_frac_X_b_num_3";
+                            break;
+                        case "reporte_art_20_frac_X_b_num_2":
+                            $report = "reporte_art_20_frac_X_b_num_4";
+                            break;
+                        case "reporte_art_20_frac_X_c_num_3":
+                            $report = "reporte_art_20_frac_X_b_num_10";
+                            break;
+                        case "reporte_art_20_frac_X_c_num_4_1":
+                            $report = "reporte_art_20_frac_X_b_num_11_1";
+                            break;
+                        case "reporte_art_20_frac_X_c_num_4_2":
+                            $report = "reporte_art_20_frac_X_b_num_11_2";
+                            break;
+                        case "reporte_art_20_frac_X_c_num_4_3":
+                            $report = "reporte_art_20_frac_X_b_num_11_3";
+                            break;
+                        case "reporte_art_20_frac_X_c_num_4_4":
+                            $report = "reporte_art_20_frac_X_b_num_11_4";
+                            break;
+                        case "reporte_art_20_frac_X_c_num_4_6":
+                            $report = "reporte_art_20_frac_X_b_num_11_6";
+                            break;
+                        case "reporte_art_20_frac_X_c_num_4_7":
+                            $report = "reporte_art_20_frac_X_b_num_11_7";
+                            break;
+                        case "reporte_art_20_frac_X_c_num_4_8":
+                            $report = "reporte_art_20_frac_X_b_num_11_8";
+                            break;
+                    }
+                }
+            }else  $tipoReporte = "Reportes administrativos";
+
+            // llamar el procedimiento para saber si tiene datos.
+            $data = DB::select("CALL ".$report."(".$anio.",".$version.")");
+
             $logoLeft = public_path() . "/img/escudoBN.png";
             $logoRight = public_path() . "/img/logo.png";
             $report_path = app_path() . "/Reportes/" . $report . ".jasper";
             $format = array($request->action);
-            $output_file =  public_path() . "/reportes";
-            $file = public_path() . "/reportes/" . $report;
-            $nameFile = "EF_" . $anio . "_" . $report;
+            // $output_file =  public_path() . "/reportes";
+            // $file = public_path() . "/reportes/" . $report;
+            $nameFile = "EF_" . $anio . "_" . $nombre;
+            $output_file = sys_get_temp_dir()."/".time()."/";
+            $file = $output_file. $report; 
+
+            mkdir($output_file, 0777, true); // Crear carpeta tmp
             $parameters = array(
                 "anio" => $anio,
                 "logoLeft" => $logoLeft,
@@ -206,7 +298,7 @@ class ReporteController extends Controller
             );
 
             if ($fechaCorte != null) {
-                $parameters["fecha"] = $fechaCorte;
+                $parameters["ver"] = $version;
                 $nameFile = $nameFile . "_" . substr($fechaCorte, 0,-3);
             }
 
@@ -226,7 +318,6 @@ class ReporteController extends Controller
                     $nameFile = $nameFile . "_" . $parameters["tipo"];
                 } 
             }
-
             $database_connection = \Config::get('database.connections.mysql');
 
             $jasper = new PHPJasper;
@@ -240,31 +331,59 @@ class ReporteController extends Controller
             // dd($jasper);
             )->execute();
 
-            if ($request->action == 'xlsx') { // Verificar el tipo de archivo
-                if (File::exists($output_file . "/" . $report . ".xlsx") && filesize($file . ".xlsx") < 4097) { // Verificar si el archivo generado está vacío y Verificar si existe el archivo guardado en caso de existir lo elimina
-                    File::delete($output_file . "/" . $report . ".xlsx");
-                    return back()->withErrors(['msg' => "$nameFile.xlsx está vacío."]); // Regresar un mensaje para dar a entender al usuario que el archivo esta vacío
-                }
+            
+            // log::info($file.".".$request->action);
+            if (file_exists($file.".".$request->action)) { // Comprobar si existe el archivo 
+                // Verificar el tipo de archivo
+                if(count($data) == 0 ) return back()->withErrors(['msg' => "No hay datos para generar el Reporte $nombre.$anio.$request->action vacío."]); // Regresar un mensaje para dar a entender al usuario que el archivo esta vacío.
+
+                ob_end_clean();
+                // Bitácora
+                $b = array(
+                    "username" => Auth::user()->username,
+                    "accion" => $nameFile . "." . $request->action,
+                    "modulo" => $tipoReporte,
+                );
+                Controller::bitacora($b); 
+
+                return $request->action == 'pdf' ? response()->download($file . ".pdf", $nameFile .".pdf")->deleteFileAfterSend() : response()->download($file . ".xlsx", $nameFile .".xlsx")->deleteFileAfterSend();
             } else {
-                if (File::exists($output_file . "/" . $report . ".pdf") && filesize($file . ".pdf") < 4097) {
-                    File::delete($output_file . "/" . $report . ".pdf");
-                    return back()->withErrors(['msg' => "$nameFile.pdf está vacío."]);
-                }
+                return back()->withErrors(['msg' => '¡No se encontro el archivo!']);
             }
 
-            ob_end_clean();
-            // Bitácora
-            $b = array(
-                "username" => Auth::user()->username,
-                "accion" => $nameFile . "." . $request->action,
-                "modulo" => $tipoReporte,
-            );
-            Controller::bitacora($b);
 
-            return $request->action == 'pdf' ? response()->download($file . ".pdf", $nameFile . ".pdf")->deleteFileAfterSend() : response()->download($file . ".xlsx", $nameFile . ".xlsx")->deleteFileAfterSend();
-        } catch (\Exception $exp) {
-            Log::channel('daily')->debug('exp ' . $exp->getMessage());
-            return back()->withErrors(['msg' => '¡Ocurrió un error al descargar el archivo!']);
+            // if ($request->action == 'xlsx') { // Verificar el tipo de archivo
+            //     if (File::exists($output_file . "/" . $report . ".xlsx") && filesize($file . ".xlsx") < 4097) { // Verificar si el archivo generado está vacío y Verificar si existe el archivo guardado en caso de existir lo elimina
+            //         File::delete($output_file . "/" . $report . ".xlsx");
+            //         return back()->withErrors(['msg' => "$nameFile.xlsx está vacío."]); // Regresar un mensaje para dar a entender al usuario que el archivo esta vacío
+            //     }
+            // } else {
+            //     if (File::exists($output_file . "/" . $report . ".pdf") && filesize($file . ".pdf") < 4097) {
+            //         File::delete($output_file . "/" . $report . ".pdf");
+            //         return back()->withErrors(['msg' => "$nameFile.pdf está vacío."]);
+            //     }
+            // }
+
+            // ob_end_clean();
+            // // Bitácora
+            // $b = array(
+            //     "username" => Auth::user()->username,
+            //     "accion" => $nameFile . "." . $request->action,
+            //     "modulo" => $tipoReporte,
+            // );
+            // Controller::bitacora($b);
+
+            // return $request->action == 'pdf' ? response()->download($file . ".pdf", $nameFile . ".pdf")->deleteFileAfterSend() : response()->download($file . ".xlsx", $nameFile . ".xlsx")->deleteFileAfterSend();
+        } catch (\Exception $e) {
+            $errLocation1 = 'ReporteController'; $errLocation2 = 'downloadReport';
+            $logMSG = "Ocurrio un error ".$e->getMessage();
+
+            Log::info("Error con el siguiente mensaje: ".$e->getMessage()." Capturado en la función '$errLocation2' del '$errLocation1'");
+
+            if(str_contains($e, 'SQLSTATE')) $logMSG = 'Ocurrió un error en base de datos';
+            if(str_contains($e, 'on null')) $logMSG = 'Asegúrese de ingresar todos los parametros';
+            if(str_contains($e, "couldn't be processed")) $logMSG = 'El reporte no pudo ser generado';
+            return back()->withErrors(['msg' => $logMSG]);
         }
     }
 
