@@ -410,13 +410,10 @@ class UsuarioController extends Controller
     }
     public function getUpp()
     {
-        $upp = DB::table('catalogo')->select(
-            'id',
-            'clave',
-            'descripcion'
-        )->where('grupo_id', '=', 6)
-            ->get();
-        return $upp;
+        $anio = DB::table('catalogo')->select('ejercicio')->max('ejercicio');
+        $upps= getCatUpp($anio);
+ 
+         return $upps;
     }
 
     //Inserta Roles

@@ -479,30 +479,37 @@ class ClavePreController extends Controller
         return response()->json('done',200);
     }
     public function getRegiones(){
-        $regiones = DB::table('clasificacion_geografica')
-        ->SELECT('clasificacion_geografica.clv_region','clasificacion_geografica.region')
-        ->where('clasificacion_geografica.deleted_at', '=', null)
-        ->orderBy('clasificacion_geografica.clv_region')
+        $regiones = DB::table('catalogo')
+        ->SELECT('clave as clv_region','descripcion as region')
+        ->where('grupo_id','REGIÓN')
+        ->whereNull('deleted_at')
+        ->orderBy('clave')
         ->distinct()
         ->get();
         return response()->json($regiones, 200);
     }
     public function getMunicipios($id){
-        $municipios = DB::table('clasificacion_geografica')
-        ->SELECT('clasificacion_geografica.clv_municipio','clasificacion_geografica.municipio')
-        ->where('clasificacion_geografica.deleted_at', '=', null)
-        ->where('clasificacion_geografica.clv_region', '=', $id)
-        ->orderBy('clasificacion_geografica.clv_municipio')
+        
+        $municipios = DB::table('clasificacion_geografica as cg')
+        ->join('catalogo as c1','c1.id','=','cg.region_id')
+        ->join('catalogo as c2','c2.id','=','cg.municipio_id')
+        ->SELECT('c2.clave as clv_municipio','c2.descripcion as municipio')
+        ->whereNull('cg.deleted_at')
+        ->where('c1.clave', '=', $id)
+        ->orderBy('c2.clave')
         ->distinct()
         ->get();
         return response()->json($municipios, 200);
     }
     public function getLocalidades($id){
-        $localidades = DB::table('clasificacion_geografica')
-        ->SELECT('clasificacion_geografica.clv_localidad', 'clasificacion_geografica.localidad')
-        ->WHERE('clasificacion_geografica.clv_municipio','=' ,$id)
-        ->WHERE('clasificacion_geografica.deleted_at', '=', null)
-        ->orderBy('clasificacion_geografica.clv_localidad')
+        $localidades = DB::table('clasificacion_geografica as cg')
+        ->join('catalogo as c1','c1.id','=','cg.region_id')
+        ->join('catalogo as c2','c2.id','=','cg.municipio_id')
+        ->join('catalogo as c3','c3.id','=','cg.localidad_id')
+        ->select('c3.clave as clv_localidad', 'c3.descripcion as localidad')
+        ->where('c2.clave','=' ,$id)
+        ->whereNull('cg.deleted_at')
+        ->orderBy('c3.clave')
         ->DISTINCT()
         ->get();
         return response()->json($localidades,200);
@@ -659,15 +666,33 @@ class ClavePreController extends Controller
                 }else {
                     $tipo = $subP != 'UUU'  ? 'Operativo' : 'RH';
                 }
-            array_push($array_where, ['tipo', '=', $tipo]);
-            array_push($array_where, ['techos_financieros.clv_upp', '=', $id]);
-            array_push($array_where, ['techos_financieros.ejercicio', '=', $anio]);
-            array_push($array_where, ['techos_financieros.deleted_at', '=', null]);
-            array_push($array_where, ['fondo.deleted_at', '=', null]);
-        $fondos = DB::table('techos_financieros')
-        ->SELECT('techos_financieros.ejercicio' , 'techos_financieros.clv_fondo', 'fondo.fondo_ramo', 'fondo.clv_etiquetado', 
-        'fondo.clv_fuente_financiamiento', 'fondo.clv_ramo', 'fondo.clv_capital')
-        ->leftJoin('fondo', 'techos_financieros.clv_fondo' ,'=', 'fondo.clv_fondo_ramo') 
+            array_push($array_where, ['tf.tipo', '=', $tipo]);
+            array_push($array_where, ['tf.clv_upp', '=', $id]);
+            array_push($array_where, ['tf.ejercicio', '=', $anio]);
+            array_push($array_where, ['tf.deleted_at', '=', null]);
+            // array_push($array_where, ['fondo.deleted_at', '=', null]);
+
+
+        $fondos = DB::table('fondo as f')
+        ->SELECT( 
+        'tf.ejercicio','tf.clv_fondo',
+        'c1.clave as clv_etiquetado','c1.descripcion as etiquetado',
+        'c2.clave as clv_fuente_financiamiento','c2.descripcion as fuente_financiamiento',
+        'c3.clave as clv_ramo','c3.descripcion as ramo',
+        'c4.clave as clv_fondo_ramo','c4.descripcion as fondo_ramo',
+        'c5.clave as clv_capital','c5.descripcion as capital',
+        
+        )
+        ->JOIN('catalogo as c1', 'f.etiquetado_id', '=', 'c1.id') 
+        ->JOIN('catalogo as c2', 'f.fuente_financiamiento_id', '=', 'c2.id') 
+        ->JOIN('catalogo as c3', 'f.ramo_id', '=', 'c3.id') 
+        ->JOIN('catalogo as c4', 'f.fondo_ramo_id', '=', 'c4.id') 
+        ->JOIN('catalogo as c5', 'f.capital_id', '=', 'c5.id') 
+        ->JOIN('techos_financieros as tf', 'c4.clave', '=', 'tf.clv_fondo') 
+        
+        // ->SELECT('techos_financieros.ejercicio' , 'techos_financieros.clv_fondo', 'fondo.fondo_ramo', 'fondo.clv_etiquetado', 
+        // 'fondo.clv_fuente_financiamiento', 'fondo.clv_ramo', 'fondo.clv_capital')
+        // ->leftJoin('fondo', 'techos_financieros.clv_fondo' ,'=', 'fondo.clv_fondo_ramo') 
         ->WHERE($array_where)
         ->DISTINCT()
         ->get();
@@ -896,12 +921,14 @@ class ClavePreController extends Controller
                 $tabla = 'programacion_presupuesto_hist';
                 // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
                 array_push($array_where2, [$tabla.'.version', '=', 0]);
+                array_push($array_where2, ['tipo', '=', 'Operativo']);
             }
         }else {
             $anio = date('Y');
             $tabla = 'programacion_presupuesto_hist';
             // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
             array_push($array_where2, [$tabla.'.version', '=', 0]);
+            array_push($array_where2, ['tipo', '=', 'Operativo']);
         }
         $autorizado = ClavesHelper::esAutorizada($uppUsuario ? $uppUsuario : $upp);
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
@@ -1025,6 +1052,7 @@ class ClavePreController extends Controller
         $uppUsuario = Auth::user()->clv_upp;
         $anio = '';
         $whereCierre = [];
+        $arrayProgramacion = '';
         $tabla = 'programacion_presupuesto';
         if ($uppUsuario != '') {
             array_push($whereCierre, ['cierre_ejercicio_claves.clv_upp', '=', $uppUsuario]);
@@ -1034,20 +1062,21 @@ class ClavePreController extends Controller
         $upp = ['clave'=>'000','descripcion'=>'Detalle General'];
         if ($ejercicio && $ejercicio > 0) {
             $anio = $ejercicio;
+            $arrayProgramacion = "pp.ejercicio = ".$anio;
             if ($anio < $ejercicioActual->ejercicio) {
                 $tabla = 'programacion_presupuesto_hist';
                 // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
-                $arrayProgramacion = "".$arrayProgramacion." && programacion_presupuesto_hist.version = 0";
+                $arrayProgramacion = "".$arrayProgramacion." && pp.version = 0";
             }
         }else {
             $anio = date('Y');
+            $arrayProgramacion = "pp.ejercicio = ".$anio;
             $tabla = 'programacion_presupuesto_hist';
             // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
-            $arrayProgramacion = "".$arrayProgramacion." && programacion_presupuesto_hist.version = 0";
+            $arrayProgramacion = "".$arrayProgramacion." && pp.version = 0";
         }
         $uppAutorizados = ClavesHelper::esAutorizada($clvUpp != '' ? $clvUpp : $uppUsuario);
         $arrayTechos = "tf.deleted_at IS NULL  && tf.ejercicio = ".$anio;
-        $arrayProgramacion = "pp.ejercicio = ".$anio;
         if ($tabla == 'programacion_presupuesto') {
             $arrayProgramacion = "".$arrayProgramacion." && pp.deleted_at IS NULL";
         }

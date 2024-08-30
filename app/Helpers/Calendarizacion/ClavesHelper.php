@@ -116,6 +116,9 @@ class ClavesHelper{
             $deleted = [];
             if ($tabla == 'programacion_presupuesto') {
                 array_push($deleted, ['deleted_at','=',null]);
+            }else {
+                # si la tabla es historico entonces tomamos la version 0 del historico...
+                array_push($deleted, ['version','=',0]);
             }
             array_push($deleted, ['ejercicio','=',$anio]);
             $calendarizadoOperativo->where('tipo','=','Operativo')->where($deleted);
@@ -178,6 +181,9 @@ class ClavesHelper{
             $deleted = [];
             if ($tabla == 'programacion_presupuesto') {
                 array_push($deleted, ['deleted_at','=',null]);
+            }else {
+                # si la tablas es historico solo traemos la version 0...
+                array_push($deleted, ['version','=',0]);
             }
             array_push($deleted, ['ejercicio','=',$anio]);
             $calendarizadoRH->where('tipo','=','RH')->where($deleted);
@@ -355,7 +361,14 @@ class ClavesHelper{
             where pp.tipo = 'RH' and pp.upp IN (select uppautorizadascpnomina.clv_upp from uppautorizadascpnomina where uppautorizadascpnomina.deleted_at is null) && ".$arrayProgramacion."
             group by clv_fondo,ejercicio
         ) tabla
-        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
+        join (
+            select
+            f.id,
+            c4.clave clv_fondo_ramo,c4.descripcion fondo_ramo,
+            f.created_at,f.updated_at,f.deleted_at
+            from fondo f
+            join catalogo c4 on f.fondo_ramo_id = c4.id
+        ) f on tabla.clv_fondo = f.clv_fondo_ramo
         group by clv_fondo,f.fondo_ramo,ejercicio;");
 
         return $fondos;
@@ -392,7 +405,14 @@ class ClavesHelper{
             where pp.tipo = 'Operativo' && ".$arrayProgramacion."
             group by clv_fondo
         ) tabla
-        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
+        join (
+            select
+            f.id,
+            c4.clave clv_fondo_ramo,c4.descripcion fondo_ramo,
+            f.created_at,f.updated_at,f.deleted_at
+            from fondo f
+            join catalogo c4 on f.fondo_ramo_id = c4.id
+        ) f on tabla.clv_fondo = f.clv_fondo_ramo
         group by clv_fondo,f.fondo_ramo;");
 
         return $fondos;
@@ -438,7 +458,14 @@ class ClavesHelper{
             where ".$arrayProgramacion."
             group by clv_fondo
         ) tabla
-        join fondo f on tabla.clv_fondo = f.clv_fondo_ramo
+        join (
+            select
+            f.id,
+            c4.clave clv_fondo_ramo,c4.descripcion fondo_ramo,
+            f.created_at,f.updated_at,f.deleted_at
+            from fondo f
+            join catalogo c4 on f.fondo_ramo_id = c4.id
+        ) f on tabla.clv_fondo = f.clv_fondo_ramo
         group by clv_fondo,f.fondo_ramo;");
 
         return $fondos;
