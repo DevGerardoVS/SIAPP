@@ -61,7 +61,7 @@ Route::controller(UsuarioController::class)->group(function () {
 	});
 
 	Route::controller(CargaManualesController::class)->group(function (){
-		Route::get('/amd-configuracion/manuales', 'index')->name('viewManuales');
+		Route::get('/configuraciones/manuales', 'index')->name('viewManuales');
 		Route::post('/amd-configuracion/get-manuales', 'getManuales')->name('get_manuales');
 		Route::get('/amd-configuracion/get-usuarios', 'getUsers')->name('get_tipos_usuarios');
 		Route::post('/amd-configuracion/add-manual', 'saveManual')->name('add_manual');
