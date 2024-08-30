@@ -17,7 +17,7 @@ class ReporteController extends Controller
     public function indexPlaneacion()
     {
         Controller::check_permission('getCaptura');
-        $db = $_ENV['DB_DATABASE'];
+        // $db = $_ENV['DB_DATABASE'];
         $dataSet = array();
         // $names = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%'");
         $anios = DB::select('SELECT ejercicio FROM programacion_presupuesto_hist pph UNION SELECT ejercicio FROM programacion_presupuesto pp GROUP BY ejercicio ORDER BY ejercicio DESC'); 
@@ -33,7 +33,7 @@ class ReporteController extends Controller
             $db = $_ENV['DB_DATABASE'];
             $getNames = DB::select("SELECT ROUTINE_NAME AS name FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db' AND ROUTINE_NAME LIKE 'reporte_art_20%' AND ROUTINE_NAME NOT LIKE '%a_num_1_%' ORDER BY ROUTINE_NAME asc");
             $names = $getNames;
-            if($anio > 2023){ // Modificar a 2024
+            if($anio > 2024){
                 $getNames = array_filter($getNames, function($name) {
                     return !in_array($name->name, ['reporte_art_20_frac_X_a_num_4', 'reporte_art_20_frac_X_b_num_5','reporte_art_20_frac_X_b_num_2']);
                 });
@@ -222,7 +222,7 @@ class ReporteController extends Controller
             // Comprobar si el reporte es administrativo o de ley hacendaria
             if (str_contains($report, "reporte_art_20")){ 
                 $tipoReporte = "Reportes de ley hacendaria";
-                if($anio > 2023){
+                if($anio > 2024){
                     switch ($nombre) { // Cambiar el nombre del reporte por el que se va a descargar.
                         case "reporte_art_20_frac_X_a_num_3":
                             $report = "reporte_art_20_frac_X_a_num_1";
@@ -346,7 +346,7 @@ class ReporteController extends Controller
                 );
                 Controller::bitacora($b); 
 
-                return $request->action == 'pdf' ? response()->download($file . ".pdf", $nameFile ."_".$anio. ".pdf")->deleteFileAfterSend() : response()->download($file . ".xlsx", $nameFile ."_".$anio. ".xlsx")->deleteFileAfterSend();
+                return $request->action == 'pdf' ? response()->download($file . ".pdf", $nameFile .".pdf")->deleteFileAfterSend() : response()->download($file . ".xlsx", $nameFile .".xlsx")->deleteFileAfterSend();
             } else {
                 return back()->withErrors(['msg' => '¡No se encontro el archivo!']);
             }

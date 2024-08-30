@@ -53,7 +53,7 @@
                         newData[15].name = "reporte_art_20_frac_X_c_num_4_7";
                         newData[16].name = "reporte_art_20_frac_X_c_num_4_8";
 
-                        let getDataToIterate = anio > 2023 ? newData : data;
+                        let getDataToIterate = anio > 2024 ? newData : data;
 
                         function extractNumber(str) {
                             const match = str.match(/\d+/g);
@@ -90,7 +90,7 @@
                             if (replaceNum.includes('num')) {
                                 replaceNum = replaceNum.slice(0, 15) + 'inc ' + replaceNum.slice(15);
                             }
-                            let replaceDot =  anio > 2023 ? replaceNum.replace(/4 /g, '4.') : replaceNum.replace(/11 /g, '11.');
+                            let replaceDot =  anio > 2024 ? replaceNum.replace(/4 /g, '4.') : replaceNum.replace(/11 /g, '11.');
                             let correctName = replaceDot;
                             var newRow = `
                                 <tr>
