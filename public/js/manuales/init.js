@@ -1,11 +1,14 @@
 $(document).ready(function() {
 
+    console.log("ejecuta");
     dropifyInit();
 
     //manualDatatable();
-    $("#manuales-tab").on('click', function() {
-        manualDatatable();
-    });
+    /*$("#manuales-tab").on('click', function() {
+        
+    });*/
+
+    manualDatatable();
 
     $(".container").on('click', '#btn_new_registro', function() {
         limpiarCampos();
@@ -264,14 +267,14 @@ function dropifyInit(){
 
 
 function manualDatatable() {
-    var dt = $('#catalogo_c');
+    var dt = $('#catalogo');
     dt.DataTable().clear().destroy();
     var orderDt = "";
     var column = "";
     var formatCantidades = [];
     var ordenamiento = [];
     var columns_hidden = [];
-    const url = $("#buscarForm_c").attr("action");
+    const url = $("#buscarForm").attr("action");
     /* console.log("url", url); */
 
     if (dt.attr('data-id') != undefined) {
@@ -300,9 +303,9 @@ function manualDatatable() {
         }
     }
     $.ajax({
-        url: $("#buscarForm_c").attr("action"),
-        data: $("#buscarForm_c").serializeArray(),
-        type: $("#buscarForm_c").attr("method"),
+        url: $("#buscarForm").attr("action"),
+        data: $("#buscarForm").serializeArray(),
+        type: $("#buscarForm").attr("method"),
         dataType: 'json',
         success: function(response) {
             /* console.log("res-DataTable", response) */

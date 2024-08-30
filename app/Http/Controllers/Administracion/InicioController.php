@@ -131,7 +131,24 @@ class InicioController extends Controller
     }
     
     public function getFondos(){
+
         $fondos = DB::table("techos_financieros as tf")
+            ->join("catalogo as c", "c.id","=","tf.clv_fondo")
+            ->select("tf.clv_fondo", "tf.ejercicio", "c.descripcion as fondo_ramo")
+            ->where("c.ejercicio", "=", function($query){
+                    $query->from("techos_financieros")
+                    ->select("ejercicio")
+                ->limit(1)
+                ->whereNull("deleted_at")
+                ->orderBy("c.ejercicio","desc")
+                ->groupBy("c.ejercicio");
+            })
+            ->whereNull("tf.deleted_at")
+            ->groupBy("tf.clv_fondo")
+            ->get();
+        return $fondos;
+
+        /*$fondos = DB::table("techos_financieros as tf")
         ->join("fondo as f", function($join){
             $join->on("f.clv_fondo_ramo", "tf.clv_fondo");
         })
@@ -147,7 +164,7 @@ class InicioController extends Controller
         ->whereNull("tf.deleted_at")
         ->groupBy("tf.clv_fondo")
         ->get();
-        return $fondos;
+        return $fondos;*/
     }
 
     public function exportPdf()
