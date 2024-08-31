@@ -53,63 +53,35 @@ class MetasController extends Controller
 	public function getIndex()
 	{
 		Controller::check_permission('getMetas');
-		return view('calendarizacion.metas.index');
+		return view('calendarizacion.metas.navs');
 	}
 	public function getProyecto()
 	{
 		Controller::check_permission('getMetas');
 		return view('calendarizacion.metas.proyecto');
 	}
-	public static function getActiv($upp, $anio)
+	public static function getActiv($upp,$ur ,$anio)
 	{
 		Controller::check_permission('getMetas');
 		$u2p= DB::table('uppautorizadascpnomina')->select('clv_upp')->where('clv_upp', $upp)->where('uppautorizadascpnomina.deleted_at', null)->get();
-		$aut = count($u2p) == 0?true:false;
-		$query = MetasHelper::actividades($upp, $anio);
-		$anioMax = DB::table('cierre_ejercicio_metas')->max('ejercicio');
+		$query = MetasHelper::actividades($upp,$ur ,$anio);
 		$dataSet = [];
 		foreach ($query as $key) {
 			$area = str_split($key->area);
-			$accion = Auth::user()->id_grupo != 2 && Auth::user()->id_grupo != 3 ? '<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
+			$accion ='<button title="Modificar meta" class="btn btn-sm"onclick="dao.editarMeta(' . $key->id . ')">' .
 				'<i class="fa fa-pencil" style="color:green;"></i></button>' .
 				'<button title="Eliminar meta" class="btn btn-sm" onclick="dao.eliminar(' . $key->id . ')">' .
-				'<i class="fa fa-trash" style="color:B40000;" ></i></button>' : '';
-				$sub = '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '';
-			$button = '';
-			if ($key->estatus == 1 && Auth::user()->id_grupo == 1) {
-				if ($anio == $anioMax) {
-						$button = $accion;
-				} else {
-					$button = '';
-				}
-			} 
-			if ($key->estatus == 0 && Auth::user()->id_grupo == 4) {
-					if ($sub == 'UUU') {
-						if ($aut) {
-							$button = $accion;
-						} else {
-							$button = '';
-						}
-
-					} else {
-						$button = $accion;
-					}
-
-			}
-			if ($key->estatus == 0  && Auth::user()->id_grupo == 5 ) {
-					if($sub =='UUU' && !$aut){
-						$button = $accion;
-					}else{
-						$button = '';
-					}
-				}
-			if ($key->estatus == 0  && Auth::user()->id_grupo == 1 ) {
-					if ($anio == $anioMax) {
-						$button = $accion;
-				} else {
-					$button = '';
-				}
-				}
+				'<i class="fa fa-trash" style="color:B40000;" ></i></button>';
+			$varAcciones = array(
+				'clv_upp'=>$upp,
+				"uppautorizadascpnomina"=>count($u2p) == 0?true:false,
+				"anio_filtro"=>$anio,
+				'ejercicio_metas'=> DB::table('cierre_ejercicio_metas')->max('ejercicio'),
+				'estatus'=>$key->estatus,
+				'boton'=>$accion,
+				'subprograma'=>'' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
+			);
+			$objAcc = (object)$varAcciones;
 			$i = array(
 				$key->id,
 				$area[0],
@@ -131,84 +103,102 @@ class MetasController extends Controller
 				$key->cantidad_beneficiarios,
 				$key->beneficiario,
 				$key->unidad_medida,
-				$button,		
+				MetasController::accions($objAcc),		
 			);
 			$dataSet[] = $i;
 		}
 		return $dataSet;
 	}
-	public function getMetasP($upp_filter, $ur_filter)
+	public function getMetasP($upp_filter, $ur_filter, $anio_filter)
 	{
 		Controller::check_permission('getMetas');
+		Log::debug($upp_filter . '-' . $ur_filter . '-' . $anio_filter);
 		$dataSet = [];
 		$upp = isset($upp_filter) ? $upp_filter : auth::user()->clv_upp;
 		if (auth::user()->id_grupo == 4) {
 			$upp = auth::user()->clv_upp;
 		}
-		if ($ur_filter != null && $upp != '') {
-			$check = $this->checkClosing($upp);
-			if ($check['status']) {
-				$activs = DB::table("programacion_presupuesto")
-					->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
-					->select(
-						'programacion_presupuesto.finalidad',
-						'programacion_presupuesto.funcion',
-						'programacion_presupuesto.subfuncion',
-						'programacion_presupuesto.eje',
-						'programacion_presupuesto.linea_accion AS linea',
-						'programacion_presupuesto.programa_sectorial AS programaSec',
-						'programacion_presupuesto.tipologia_conac AS tipologia',
-						'programacion_presupuesto.id',
-						'programa_presupuestario as programa',
-						'subprograma_presupuestario as subprograma',
-						'proyecto_presupuestario AS  clv_proyecto',
-						'programacion_presupuesto.subsecretaria AS subsec',
-						DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto'),
-						DB::raw('CONCAT(programacion_presupuesto.upp,programacion_presupuesto.subsecretaria,programacion_presupuesto.ur) AS entidad'),
-						DB::raw('CONCAT(programacion_presupuesto.finalidad,programacion_presupuesto.funcion,programacion_presupuesto.subfuncion,programacion_presupuesto.eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programacion_presupuesto.programa_presupuestario,programacion_presupuesto.subprograma_presupuestario,programacion_presupuesto.proyecto_presupuestario) AS area'),
-						'v_epp.con_mir AS mir',
-						'programacion_presupuesto.ejercicio',
-						'programacion_presupuesto.fondo_ramo AS clv_fondo',
-						DB::raw('CONCAT(programacion_presupuesto.fondo_ramo," ") AS fondo'),
-					)
-					->where('programacion_presupuesto.ur', '=', $ur_filter)
-					->where('programacion_presupuesto.upp', '=', $upp)
-					->where('programacion_presupuesto.ejercicio', '=', $check['anio'])
-					->where('v_epp.ejercicio', '=', $check['anio'])
-					->where('v_epp.presupuestable', '=', 1)
-					->orderBy('programacion_presupuesto.upp')
-					->where('programacion_presupuesto.deleted_at', null)
-					->groupByRaw('programacion_presupuesto.ur,finalidad,programacion_presupuesto.funcion,programacion_presupuesto.subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
-					->distinct();
-					if(auth::user()->id_grupo == 4) {
-					$activs = $activs->where('programacion_presupuesto.tipo', '=','Operativo');
+		if ($upp != 0 && $upp != null) {
+			$check = $this->checkCierre($upp, $anio_filter);
+			if ($check->status) {
+				$check = $this->revisionUpp($upp, $anio_filter);
+				if ($check->status) {
+					$activs = DB::table("programacion_presupuesto")
+						->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
+						->select(
+							'programacion_presupuesto.finalidad',
+							'programacion_presupuesto.funcion',
+							'programacion_presupuesto.subfuncion',
+							'programacion_presupuesto.eje',
+							'programacion_presupuesto.linea_accion AS linea',
+							'programacion_presupuesto.programa_sectorial AS programaSec',
+							'programacion_presupuesto.tipologia_conac AS tipologia',
+							'programacion_presupuesto.id',
+							'programa_presupuestario as programa',
+							'subprograma_presupuestario as subprograma',
+							'proyecto_presupuestario AS  clv_proyecto',
+							'programacion_presupuesto.subsecretaria AS subsec',
+							DB::raw('CONCAT(proyecto_presupuestario, " - ", v_epp.proyecto) AS proyecto'),
+							DB::raw('CONCAT(programacion_presupuesto.upp,programacion_presupuesto.subsecretaria,programacion_presupuesto.ur) AS entidad'),
+							DB::raw('CONCAT(programacion_presupuesto.finalidad,programacion_presupuesto.funcion,programacion_presupuesto.subfuncion,programacion_presupuesto.eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programacion_presupuesto.programa_presupuestario,programacion_presupuesto.subprograma_presupuestario,programacion_presupuesto.proyecto_presupuestario) AS area'),
+							'v_epp.con_mir AS mir',
+							'programacion_presupuesto.ejercicio',
+							'programacion_presupuesto.fondo_ramo AS clv_fondo',
+							DB::raw('CONCAT(programacion_presupuesto.fondo_ramo," ") AS fondo'),
+						)
+						->where('programacion_presupuesto.upp', '=', $upp)
+						->where('programacion_presupuesto.ejercicio', '=', $anio_filter)
+						->where('v_epp.ejercicio', '=', $anio_filter)
+						->where('v_epp.presupuestable', '=', 1)
+						->orderBy('programacion_presupuesto.upp')
+						->where('programacion_presupuesto.deleted_at', null)
+						->groupByRaw('programacion_presupuesto.ur,finalidad,programacion_presupuesto.funcion,programacion_presupuesto.subfuncion,eje,programacion_presupuesto.linea_accion,programacion_presupuesto.programa_sectorial,programacion_presupuesto.tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario')
+						->distinct();
+					if ($ur_filter != 0) {
+						$activs = $activs->where('programacion_presupuesto.ur', '=', $ur_filter);
 					}
-					$activs=$activs->get();
-				foreach ($activs as $key) {
-					$mirx = $key->mir;
-					$area = '"' . strval($key->finalidad) . '-' . strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje) . '-' . strval($key->linea) . '-' . strval($key->programaSec) . '-' . strval($key->tipologia) . '-' . strval($key->programa) . '-' . strval($key->subprograma) . '-' . strval($key->clv_proyecto) . '"';
-					$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($ur_filter) . '"';
-					$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
-					$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . "," . $mirx . "," . $key->ejercicio . ")' ></div>";
-					$fondos=MetasHelper::fondos($key->area,$key->entidad,$check['anio']);
-					$existM=MetasController::existMeta($key->area,$key->entidad,$check['anio'],$fondos->fondoArr);
-					$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto,$fondos->fondoStr,$existM->exist, $accion];
+					if (auth::user()->id_grupo == 4) {
+						$activs = $activs->where('programacion_presupuesto.tipo', '=', 'Operativo');
+					}
+					$activs = $activs->get();
+					if($ur_filter != 0 && count($activs)>=1){
+						foreach ($activs as $key) {
+							$mirx = $key->mir;
+							$area = '"' . strval($key->finalidad) . '-' . strval($key->funcion) . '-' . strval($key->subfuncion) . '-' . strval($key->eje) . '-' . strval($key->linea) . '-' . strval($key->programaSec) . '-' . strval($key->tipologia) . '-' . strval($key->programa) . '-' . strval($key->subprograma) . '-' . strval($key->clv_proyecto) . '"';
+							$entidad = '"' . strval($upp) . '-' . strval($key->subsec) . '-' . strval($ur_filter) . '"';
+							$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
+							$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.getFyA(" . $area . "," . $entidad . "," . $mirx . "," . $key->ejercicio . ")' ></div>";
+							$fondos = MetasHelper::fondos($key->area, $key->entidad, $anio_filter);
+							$existM = MetasController::existMeta($key->area, $key->entidad, $anio_filter, $fondos->fondoArr);
+							$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $fondos->fondoStr, $existM->exist, $accion];
+						}
+					
+
+					}else{
+						$varAcciones = array(
+							'icon'=> 'info',
+							'title'=>'Esta unidad responsable no cuenta con presupuesto',
+							'text'=> $upp,
+
+						);
+						$check = (object)$varAcciones;
+
+					}
+
 				}
 			}
-			return response()->json(["dataSet" => $dataSet], 200);
+			return response()->json(["dataSet" => $dataSet, "response" => $check], 200);
 		}
 
 	}
-	public function getUrs($_upp)
+	public function getUrs($anio,$_upp)
 	{
 		$urs = [];
 		$tAct = [];
 		if ($_upp != 0) {
 			$upp = $_upp != null ? $_upp : auth::user()->clv_upp;
-			$check = $this->checkClosing($upp);
-
-			if ($check['status'] && $upp != null) {
-				$urs = getCatUr($check['anio'],$upp);
+			if ($upp != null) {
+				$urs = getCatUr($anio,$upp);
 				$Act = DB::table('tipo_actividad_upp')
 					->select(
 						'Acumulativa',
@@ -229,9 +219,8 @@ class MetasController extends Controller
 
 		return ["urs" => $urs, "tAct" => $tAct];
 	}
-	public function getUpps()
+	public function getUpps($anio)
 	{
-		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
 		if (auth::user()->id_grupo != 5) {
 			$upps = getCatUpp($anio);
 		}else{
@@ -914,9 +903,7 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return ReportesJasper::claves($request);
 	}
-
-
-	public function importPlantilla(Request $request)
+		public function importPlantilla(Request $request)
 	{
 		Controller::check_permission('putMetas');
 		Controller::check_assign(1);
@@ -1014,6 +1001,44 @@ class MetasController extends Controller
 		} catch (\Exception $e) {
 			DB::rollback();
 		}
+	}
+	public function revisionUpp($upp,$anio)
+	{
+		$obj = ["status" => false, "mensaje" => 'No se pudo obtener la información', "estado" => false];
+				//ver si esta confirmada la mir
+				$isMir = DB::table("mml_cierre_ejercicio")
+					->select('id', 'estatus')
+					->where([
+						'clv_upp'=> $upp,
+						'ejercicio'=> $anio,
+						'statusm'=>1
+					])->get();
+				if (count($isMir)) {
+					$activs = DB::table("programacion_presupuesto")
+						->select(
+							'programa_presupuestario AS programa',
+							DB::raw('CONCAT(upp,subsecretaria,ur) AS entidad'),
+							DB::raw('CONCAT(finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestario) AS clave')
+						)
+						->where([
+							'upp'=> $upp,
+							'ejercicio'=> $anio,
+							'estado'=>1,
+							'deleted_at'=>null
+						])
+						->groupByRaw('finalidad,funcion,subfuncion,eje,linea_accion,programa_sectorial,tipologia_conac,programa_presupuestario,subprograma_presupuestario,proyecto_presupuestariour,fondo_ramo')
+						->distinct()->get();
+					if (count($activs)) {
+						$obj= ["status" => true, "mensaje" => '', "estado" => true];
+					} else {
+						$obj= ["status" => false, "mensaje" => 'Es necesario capturar y confirmar tus claves presupuestarias', "estado" => false, "url" => '/calendarizacion/claves'];
+					}
+				} else {
+					$obj= ["status" => false, "mensaje" => 'Los registros de la MIR no estan confirmadas en el sistema MML, acércate a CPLADEM', "estado" => true];
+				}
+				$objAcc = (object)$obj;
+		return $objAcc;
+				//ver si esta confirmada la mir
 	}
 	public function checkCombination($upp)
 	{
@@ -1191,6 +1216,55 @@ class MetasController extends Controller
 		}
 
 	}
+
+	public static function checkCierre($upp, $anio)
+	{
+			$obj = new \stdClass;
+			$obj->anio = $anio;
+			$obj->status = false;
+			$obj->title = 'La captura de metas esta cerrada';
+			$obj->mensaje = 'La captura de metas para la UPP: ' . $upp . ' estan cerradas';
+			$cierre = DB::table('cierre_ejercicio_metas')
+				->select('estatus', 'ejercicio')
+				->where([
+					'deleted_at' => null,
+					'clv_upp' => $upp,
+					'ejercicio' => $anio
+				])->first();
+			if (isset($anio)) {
+				switch (Auth::user()->id_grupo) {
+					case '1':
+						$obj->status = true;
+						$obj->title = '';
+						$obj->mensaje = '';
+						break;
+	
+					default:
+						if ($cierre == 'Abierto') {
+							$metas = DB::table('metas')->select('id','estatus')
+							->where([
+								'deleted_at'=> null,
+								'ejercicio'=> $anio
+							])->where(DB::raw('substr(clv_actividad, 1, 3)'), '=' , $upp)->first();
+							if($metas->estatus==0){
+								$obj->status = true;
+								$obj->title = '';
+								$obj->mensaje = '';
+							}else{
+								$obj->status = false;
+								$obj->title = 'Las metas esta confirmadas';
+								$obj->mensaje = 'Las metas para la UPP: ' . $upp . ' estan cerradas';
+							}
+
+						}
+	
+						break;
+				}
+	
+			}
+			Log::debug(json_encode($obj));
+			return $obj;
+	}
 	function checkGoals($upp)
 	{
 		$anioMax = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', $upp)->max('ejercicio');
@@ -1214,7 +1288,6 @@ class MetasController extends Controller
 			return ["status" => false];
 		}
 	}
-
 	public function jasperMetas($upp, $anio, $tipo)
 	{
 		return ReportesJasper::Metas($upp, $anio, $tipo);
@@ -1574,5 +1647,51 @@ class MetasController extends Controller
 		$res = DB::table('notificaciones')->where('id_sistema', 1)->where('id_usuario', Auth::user()->id)->delete();
 		/*Si no coloco estas lineas Falla*/
 		return Excel::download(new MetasExportErrCm($e), 'CargaMasiva_Errores'.'.xlsx');
+	}
+	public static function accions($obj){
+		$button = '<i class="fa fa-ban" aria-hidden="true"></i>';
+		$id_grupo = Auth::user()->id_grupo;
+		switch ($obj->estatus) {
+			case '0':
+				switch ($id_grupo) {
+					case '1':
+						if ($obj->anio_filtro == $obj->ejercicio_metas) {
+							$button = $obj->boton;
+						}
+						break;
+					case '4':
+						if ($obj->subprograma == 'UUU') {
+							if ($obj->uppautorizadascpnomina) {
+								$button = $obj->boton;
+							} 
+						} else {
+							$button = $obj->boton;
+						}
+						break;
+					case '5':
+						if($obj->subprograma == 'UUU' && !$obj->uppautorizadascpnomina){
+							$button = $obj->boton;
+						}
+						break;
+				}
+				break;
+
+			case '1':
+				switch ($id_grupo) {
+					case '1':
+			/* 			if ($obj->anio_filtro == $obj->ejercicio_metas) {
+							$button = $obj->boton;
+						} */
+						$estatus = DB::table('cierre_ejercicio_metas')->where(['clv_upp' => $obj->clv_upp, 'ejercicio' => $obj->anio_filtro])->first();
+						if ($estatus=='Abierto') {
+							$button = $obj->boton;
+						}
+						break;
+				}
+
+				break;
+		}
+		return $button;
+
 	}
 }

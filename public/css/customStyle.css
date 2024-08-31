@@ -45,6 +45,12 @@ footer{
     color: white !important;
 
   }
+  .BorderNavPink{
+    border-top: #FFC3D0 3px solid!important;
+    border-left: #FFC3D0 3px solid !important;
+    border-right:  #FFC3D0 3px solid!important;
+  }
+  
   .colorRosa{
     background-color: #6D807F !important;
     color: white !important;

@@ -15,7 +15,7 @@ use App\Http\Controllers\Calendarizacion\MetasController;
 class MetasHelper
 {
 
-	public static function actividades($upp, $anio)
+	public static function actividades($upp, $ur, $anio)
 	{
 		try {
 			$proyecto = DB::table('mml_mir')
@@ -34,6 +34,9 @@ class MetasHelper
 				->where('mml_mir.ejercicio', $anio)
 				->where('mml_mir.clv_upp', $upp)
 				->orderByRaw('upp,clv_ur,clv_pp');
+			if ($ur != 0) {
+				$proyecto = $proyecto->where('mml_mir.clv_ur', $ur);
+			}
 			$actv = DB::table('mml_actividades')
 				->leftJoin('catalogo', 'catalogo.id', '=', 'mml_actividades.id_catalogo')
 				->select(
@@ -49,8 +52,12 @@ class MetasHelper
 				->where('mml_actividades.deleted_at', '=', null)
 				->where('catalogo.deleted_at', '=', null)
 				->where('mml_actividades.clv_upp', $upp)
+
 				->where('mml_actividades.ejercicio', $anio)
 				->orderByRaw('upp,clv_ur,clv_pp');
+			if ($ur != 0) {
+				$actv = $actv->where('mml_actividades.clv_ur', $ur);
+			}
 
 			$query2 = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
@@ -79,6 +86,9 @@ class MetasHelper
 				->where('metas.deleted_at', '=', null)
 				->where('act.upp', $upp)
 				->where('metas.ejercicio', $anio);
+			if ($ur != 0) {
+				$query2 = $query2->where('act.clv_ur', $ur);
+			}
 			$query = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -107,9 +117,11 @@ class MetasHelper
 				->where('pro.ejercicio', $anio)
 				->where('pro.upp', $upp)
 				->unionAll($query2)
-				->orderByRaw('upp,clv_ur,clv_pp')
-				->get();
-				Log::debug($query);
+				->orderByRaw('upp,clv_ur,clv_pp');
+			if ($ur != 0) {
+				$query = $query->where('pro.clv_ur', $ur);
+			}
+			$query = $query->get();
 			return $query;
 		} catch (\Exception $exp) {
 			Log::channel('daily')->debug('exp ' . $exp->getMessage());
