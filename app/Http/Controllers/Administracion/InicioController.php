@@ -133,19 +133,19 @@ class InicioController extends Controller
     public function getFondos(){
 
         $fondos = DB::table("techos_financieros as tf")
-            ->join("catalogo as c", "c.id","=","tf.clv_fondo")
+            ->join("catalogo as c", "c.clave","=","tf.clv_fondo")
             ->select("tf.clv_fondo", "tf.ejercicio", "c.descripcion as fondo_ramo")
             ->where("c.ejercicio", "=", function($query){
                     $query->from("techos_financieros")
-                    ->select("ejercicio")
-                ->limit(1)
-                ->whereNull("deleted_at")
-                ->orderBy("c.ejercicio","desc")
-                ->groupBy("c.ejercicio");
+                    ->max("ejercicio")
+                ->whereNull("deleted_at");
             })
+            ->where("tf.ejercicio","c.ejercicio")
+            ->where("c.grupo_id","UNIDAD RESPONSABLE")
             ->whereNull("tf.deleted_at")
             ->groupBy("tf.clv_fondo")
             ->get();
+
         return $fondos;
 
         /*$fondos = DB::table("techos_financieros as tf")
