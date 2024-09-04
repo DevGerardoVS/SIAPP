@@ -216,8 +216,8 @@ class ReporteController extends Controller
         try {
             $report =  $nombre;
             $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
-            $fechaCorte = $request->fecha ? substr($request->fecha,2) : $request->input('fecha');
-            $version = $request->fecha ? substr($request->fecha,0,1) : "null";
+            $fechaCorte = $request->fecha ? substr($request->fecha,2) : ($request->fechaCorte_filter ? substr($request->fechaCorte_filter,2) : null);
+            $version = $request->fecha ? substr($request->fecha,0,1) : ($request->fechaCorte_filter ? substr($request->fechaCorte_filter,0,1) : "null");
             $upp = Auth::user()->clv_upp != null ? Auth::user()->clv_upp : $request->upp_filter;
 
             // Comprobar si el reporte es administrativo o de ley hacendaria
@@ -316,9 +316,8 @@ class ReporteController extends Controller
                     $nameFile = $nameFile . "_" . $parameters["tipo"];
                 } 
             }
+            
             $database_connection = \Config::get('database.connections.mysql');
-            // Checar esta función para que haga las descargas de los modulos de reportes administrativos y ley hacendaria.
-            log::info($request);
             $jasper = new PHPJasper;
             $jasper->process(
                 $report_path,
@@ -348,30 +347,6 @@ class ReporteController extends Controller
             } else {
                 return back()->withErrors(['msg' => '¡No se encontro el archivo!']);
             }
-
-
-            // if ($request->action == 'xlsx') { // Verificar el tipo de archivo
-            //     if (File::exists($output_file . "/" . $report . ".xlsx") && filesize($file . ".xlsx") < 4097) { // Verificar si el archivo generado está vacío y Verificar si existe el archivo guardado en caso de existir lo elimina
-            //         File::delete($output_file . "/" . $report . ".xlsx");
-            //         return back()->withErrors(['msg' => "$nameFile.xlsx está vacío."]); // Regresar un mensaje para dar a entender al usuario que el archivo esta vacío
-            //     }
-            // } else {
-            //     if (File::exists($output_file . "/" . $report . ".pdf") && filesize($file . ".pdf") < 4097) {
-            //         File::delete($output_file . "/" . $report . ".pdf");
-            //         return back()->withErrors(['msg' => "$nameFile.pdf está vacío."]);
-            //     }
-            // }
-
-            // ob_end_clean();
-            // // Bitácora
-            // $b = array(
-            //     "username" => Auth::user()->username,
-            //     "accion" => $nameFile . "." . $request->action,
-            //     "modulo" => $tipoReporte,
-            // );
-            // Controller::bitacora($b);
-
-            // return $request->action == 'pdf' ? response()->download($file . ".pdf", $nameFile . ".pdf")->deleteFileAfterSend() : response()->download($file . ".xlsx", $nameFile . ".xlsx")->deleteFileAfterSend();
         } catch (\Exception $e) {
             $errLocation1 = 'ReporteController'; $errLocation2 = 'downloadReport';
             $logMSG = "Ocurrio un error ".$e->getMessage();

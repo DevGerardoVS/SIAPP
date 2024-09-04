@@ -133,7 +133,7 @@
            var tipo = !$("#tipo_filter").val() ? "null" : $("#tipo_filter").val();
            formData.append("tipo",tipo);
         }
-// Checar porque no llegan los nombres que se ponen en el formdata, llegan con el filter
+        
         getDataFechaCorte(anio).then(() => {
             dt.DataTable().clear().destroy();
             var fecha = !$("#fechaCorte_filter").val() ? "null" : $("#fechaCorte_filter").val();
@@ -171,16 +171,6 @@
                         data: response.dataSet,
                         searching: true,
                         autoWidth: true,
-                        // processing: false,
-                        // serverSide: true,
-                        // ajax: {
-                                
-                        //     url:   $(ruta).attr("action"),
-                        //     "data": {
-                        //         "filtros":  $(ruta).serializeArray()
-                        //     },
-                        //     "type": "POST",
-                        //     },
                         order:[],
                         group: [],
                         rowGroup: estatus,
