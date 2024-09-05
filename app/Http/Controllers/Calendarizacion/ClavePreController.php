@@ -461,7 +461,7 @@ class ClavePreController extends Controller
             if ($esEjercicioCerrado && $perfil != 1) {
                 return response()->json('invalid',200);
             }
-        $tieneMetas = MetasHelper::actividades($request->upp, $request->ejercicio);
+        $tieneMetas = MetasHelper::actividades($request->upp, 0,$request->ejercicio);
         if (count($tieneMetas)) {
             return response()->json('invalid',200);
         }
@@ -1249,7 +1249,7 @@ class ClavePreController extends Controller
     }
     public function alertaAvtividades($upp,$ejercicio){
         $estatus = 0;
-        $tieneMetas = MetasHelper::actividades($upp, $ejercicio);
+        $tieneMetas = MetasHelper::actividades($upp, 0,$ejercicio);
         //revisar el estatus en uno si estan confirmadas si no no mostrar mensaje;
         if (count($tieneMetas)) {
             $estatus = $tieneMetas[0]->estatus;
