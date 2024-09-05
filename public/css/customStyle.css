@@ -50,6 +50,16 @@ footer{
     border-left: #FFC3D0 3px solid !important;
     border-right:  #FFC3D0 3px solid!important;
   }
+  .nav-pills .nav-link{
+    border: 1px solid hotpink !important;
+    color: black !important;
+  }
+  
+  .nav-pills .nav-link.active{
+    border: 1px solid hotpink !important;
+    background-color: #FFC3D0 !important;
+    color: black !important;
+  }
   
   .colorRosa{
     background-color: #6D807F !important;

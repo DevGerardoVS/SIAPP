@@ -18,6 +18,7 @@ class MetasHelper
 	public static function actividades($upp, $ur, $anio)
 	{
 		try {
+			$id_grupo=auth::user()->id_grupo;
 			$proyecto = DB::table('mml_mir')
 				->select(
 					'mml_mir.id',
@@ -89,6 +90,9 @@ class MetasHelper
 			if ($ur != 0) {
 				$query2 = $query2->where('act.clv_ur', $ur);
 			}
+			if ($id_grupo == 5) {
+				$query2 = $query2->where('metas.tipo_meta','RH');
+			}
 			$query = DB::table('metas')
 				->leftJoin('beneficiarios', 'beneficiarios.id', '=', 'metas.beneficiario_id')
 				->leftJoin('unidades_medida', 'unidades_medida.id', '=', 'metas.unidad_medida_id')
@@ -120,6 +124,9 @@ class MetasHelper
 				->orderByRaw('upp,clv_ur,clv_pp');
 			if ($ur != 0) {
 				$query = $query->where('pro.clv_ur', $ur);
+			}
+			if ($id_grupo == 5) {
+				$query = $query->where('metas.tipo_meta','RH');
 			}
 			$query = $query->get();
 			return $query;
@@ -237,7 +244,6 @@ class MetasHelper
 
 		return $result;
 	}
-
 	public static function unidadMedida()
 	{
 		$result = DB::table('unidades_medida')
@@ -251,7 +257,6 @@ class MetasHelper
 
 		return $result;
 	}
-
 	public static function tCalendario($upp)
 	{
 		$tpc = DB::table('tipo_actividad_upp')
@@ -380,7 +385,6 @@ class MetasHelper
 			throw new \Exception($exp->getMessage());
 		}
 	}
-
 	public static function MetasIndex($upp)
 	{
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
@@ -497,7 +501,6 @@ class MetasHelper
 		$data = $data->get();
 		return $data;
 	}
-
 	public static function MetasIndexDel()
 	{
 		$anio = DB::table('cierre_ejercicio_metas')->max('ejercicio');
@@ -872,7 +875,6 @@ class MetasHelper
 		}
 		return ["status" => $aux == 0 ? true : false, "ids" => $ids];
 	}
-
 	public static function validateMesesfinal($upp, $anio)
 	{
 
@@ -1375,7 +1377,8 @@ class MetasHelper
 		try {
 			$confirm = MetasController::cmetasUpp($request->upp, $anio);
 			$clv = explode('/', $request->area);
-			$pp = explode('-', $clv[0]);
+			$pp = substr(strval($clv[0]), 8, 2);
+			Log::debug($pp);
 			$meta = new Metas();
 			$meta->mir_id = $request->tipoAct == 'M'?$actividad:null;
 			$meta->actividad_id = $request->tipoAct !='M'?$act:null;
@@ -1402,7 +1405,7 @@ class MetasHelper
 			$meta->tipo_meta = 'Operativo';
 			/* PROGRAMA:7 SUBPRO:8 PROYECTO:9 */
 			$meta->save();
-			$meta->clv_actividad = "" . $request->upp . "-" . $pp[9] . "-" . $meta->id . "-" . $anio;
+			$meta->clv_actividad = "" . $request->upp . "-" . $pp . "-" . $meta->id . "-" . $anio;
 			if (!$confirm["status"] & Auth::user()->id_grupo == 1) {
 				$meta->estatus = 1;
 			}
@@ -1413,7 +1416,6 @@ class MetasHelper
 		}
 	
 	}
-
 	public static function existMeta($area, $entidad,$anio,$fondo)
 	{
 		try {
@@ -1479,7 +1481,6 @@ class MetasHelper
 			throw new \Exception($exp->getMessage());
 		}
 	}
-
 	public static function fondos($area, $entidad,$anio)
 	{
 		$areaAux = str_split($area);

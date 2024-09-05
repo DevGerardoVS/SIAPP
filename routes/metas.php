@@ -9,8 +9,8 @@
 		Route::get('/calendarizacion/data/{upp_filter?}/{ur_filter?}/{anio_filter?}', 'getMetasP');
 		Route::get('/actividades/data/{upp?}/{ur?}/{anio?}', 'getActiv')->name('actividades');
 		Route::get('/actividades/proyecto_calendario/{upp?}', 'proyExcel')->name('ProyExcel');
-		Route::get('/actividades/exportExcel/{upp?}/{anio?}', 'exportExcel');
-		Route::get('/actividades/exportPdf/{upp?}/{anio?}',  'exportPdf');
+		Route::get('/actividades/exportExcel/{upp?}/{ur?}/{anio?}', 'exportExcel');
+		Route::get('/actividades/exportPdf/{upp?}/{ur?}/{anio?}',  'exportPdf');
 		Route::post('/actividades/import', 'importPlantilla');
 		Route::get('/actividades/jasper/{upp?}/{anio?}/{tipo?}', 'downloadActividades')->name('exportjasper');
         Route::get('/calendarizacion/proyecto', 'getProyecto')->name('proyecto');
@@ -18,6 +18,7 @@
 		Route::get('/calendarizacion/tcalendario/{upp?}', 'getTcalendar');
 		Route::get('/calendarizacion/urs/{anio?}/{upp?}', 'getUrs');
 		Route::get('/calendarizacion/fondos/{area?}/{enti?}', 'getFyA');
+		Route::get('/calendarizacion/fondos/{area?}/{enti?}/{upp?}/{anio?}', 'newGetFyA');
 		Route::get('/calendarizacion/upps/{anio?}', 'getUpps');
 		Route::get('/calendarizacion/subprog/{ur?}', 'getSubProg');
 		Route::post('/calendarizacion/create', 'createMeta');
@@ -34,11 +35,10 @@
 		Route::get('/actividades/confirmar-metas/{upp?}/{anio?}', 'confirmar');
 		Route::get('/actividades/desconfirmar-metas/{upp?}/{anio?}', 'desconfirmar');
 		Route::get('/actividades/anios-metas', 'getAnios');
-		Route::get('/actividades/meses-activos/{mir?}/{fondo?}', 'getMeses');
+		Route::get('/actividades/meses-activos/{mir?}/{fondo?}/{anios?}', 'getMeses');
 		Route::get('/actividades/meses/error/{upp?}/{anio?}', 'exportExcelErr')->name('exportError');
-		Route::get('/prueba-total/{anio?}', 'exportExcelErrTotal');
 		Route::get('/carga-masiva/manual-usuario', 'getManual')->name('Manual_Carga_Masiva_metas');
-		Route::get('/actividades/metas/actividades-mir/{area?}/{enti?}/{fondo?}', 'getActividMir');
+		Route::get('/actividades/metas/actividades-mir/{area?}/{enti?}/{fondo?}/{upp?}', 'getActividMir');
 		Route::get('metas/errores/carga-masiva', 'erooresCargaMasiva')->name('ErrCmAct');
 
 

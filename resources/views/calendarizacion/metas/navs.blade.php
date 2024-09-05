@@ -8,11 +8,56 @@
             <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
                 <h2>Agregar Actividad</h2>
             </header>
-            &nbsp;
-            <label id="validMetas"  ></label>    
+            <label id="validMetas"></label>
+        </div>
+        <br>
+        <ul class="nav nav-pills nav-fill BorderPink" id="tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link BorderNavPink active" id="metas-tab" data-bs-toggle="tab" data-bs-target="#metas"
+                    type="button" role="tab" aria-controls="metas" aria-selected="false">Agregar
+                    actividades</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link BorderNavPink" id="capturadas-tab" data-bs-toggle="tab" data-bs-target="#capturadas"
+                    type="button" role="tab" aria-controls="capturadas" aria-selected="false">Metas capturadas</button>
+            </li>
+        </ul>
+        &nbsp;
+        <div class="row">
+            @if (check_assignFrontCM('Actividades'))
+                <div class="col-md-12">
+                    <button type="button" id="btn_cargaMasiva" class="btn btn-outline-primary float-right CargaMasiva" data-toggle="modal" data-target="#carga" data-backdrop="static" style="display: none">Carga Masiva</button>
+                </div>
+            @endif
+            @if (Auth::user()->id_grupo == 1 || Auth::user()->id_grupo == 4)
+                <div class="col-md-12">
+                    @if (Auth::user()->id_grupo == 4)
+                        @if (Auth::user()->id_grupo == 4 || Auth::user()->id_grupo == 5)
+                            <button type="button" class="btn btn-outline-primary float-right confirmacion botones_exportar" onclick="dao.ConfirmarMetas()" style="display: none"><i class="fa fa-check-square-o"
+                                    aria-hidden="true"></i>&nbsp;Confirmar Metas</button>
+                        @endif
+                        <button type="button" class="btn btn-outline-primary cmupp botones_exportar"
+                            onclick="dao.exportJasperMetas()" style="display: none">Formato Metas</button>&nbsp;
+                        <button type="button" class="btn btn-outline-primary cmupp botones_exportar"
+                            onclick="dao.exportJasper()" style="display: none">Formato claves</button>&nbsp;
+                    @endif
+
+                    <button type="button" onclick="dao.exportPdf()"class="btn btn-outline-danger botones_exportar"
+                        style="display: none"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar
+                        PDF</button>&nbsp
+                    <button type="button" onclick="dao.exportExcel()" class="btn btn-outline-success botones_exportar"
+                        style="display: none"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar
+                        Excel</button> &nbsp
+                    {{--  <button type="button" class="btn btn-outline-primary float-right" onclick="dao.DesconfirmarMetas()" ><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Confirmar Metas</button>  --}}
+                </div>
+            @endif
+        </div>
+        &nbsp;
+        
+        <div class="row">
             <div class="col-md-2">
                 <label class="control-label">AÑO</label>
-                <select class="form-control filters select2" id="anio_filter" name="anio_filter" autocomplete="anio_filter"
+                <select class="form-control select2" id="anio_filter" name="anio_filter" autocomplete="anio_filter"
                     placeholder="Seleccione un año">getEjercicios
                     <option value="" disabled selected>Seleccione un año</option>
                     @foreach (getEjercicios() as $a)
@@ -22,64 +67,21 @@
             </div>
             <div class="col-md-4">
                 <label class="control-label">UPP</label>
-                <select class="form-control filters select2" id="upp_filter" name="upp_filter" autocomplete="upp_filter"
+                <select class="form-control select2" id="upp_filter" name="upp_filter" autocomplete="upp_filter"
                     placeholder="Seleccione una UR">
                     <option value="0" disabled selected>Seleccione una UPP</option>
                 </select>
             </div>
             <div class="col-md-4">
                 <label class="control-label">UR</label>
-                <select class="form-control filters select2" id="ur_filter" name="ur_filter" autocomplete="ur_filter"
+                <select class="form-control select2" id="ur_filter" name="ur_filter" autocomplete="ur_filter"
                     placeholder="Seleccione una UR" disabled>
                     <option value="0" selected>Seleccione una UR</option>
                 </select>
             </div>
-            {{-- if para no alinear la vista en caso de que este deshabilitada la carga masiva --}}
-            @if (!check_assignFrontCM('Actividades'))
-                <div class="col-md-2">
-                    <br>
-                    <button type="button" style="justify-content: float-right;" onclick="dao.exportExcel()"
-                        class="btn btn-outline-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar
-                        Excel</button>
-                </div>
-            @endif
         </div>
-        <br>
-        <ul class="nav nav-tabs BorderPink" id="tabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link BorderNavPink active" id="metas-tab" data-bs-toggle="tab" data-bs-target="#metas"
-                        type="button" role="tab" aria-controls="metas" aria-selected="false">Agregar
-                        actividades</button>
-                </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link BorderNavPink" id="capturadas-tab" data-bs-toggle="tab" data-bs-target="#capturadas"
-                    type="button" role="tab" aria-controls="capturadas" aria-selected="false">Metas capturadas</button>
-            </li>
-            {{-- if de carga masiva  --}}
-            @if (check_assignFrontCM('Actividades'))
-                <div class="col-md-4"></div>
-                <div class="row">
-                    <div class="col-md-4"></div>
-                    @if (checkAcces('Carga masiva'))
-                        <div class="col-md-4">
-                            <button type="button" id="btn_cargaMasiva"
-                                class="btn btn-outline-primary float-right CargaMasiva" data-toggle="modal"
-                                data-target="#carga" data-backdrop="static" style="display: none">Carga Masiva</button>
-                        </div>
-                    @else
-                        <div class="col-md-4"></div>
-                    @endif
-                    <div class="col-md-4">
-                        <button id="btn_exportMetas" type="button" style="justify-content: float-right;display: none;"
-                            onclick="dao.exportExcel()" class="btn btn-outline-success"><i class="fa fa-file-excel-o"
-                                aria-hidden="true"></i> Exportar
-                            Excel</button>
-                    </div>
-                </div>
-            @endif
-        </ul>
-        <br>
         <div class="tab-content">
+
             <!--ss Metas-->
             <div class="tab-pane active" id="metas" role="tabpanel" aria-labelledby="metas-tab" style="min-width: 100%">
                 <div class="row">

@@ -221,6 +221,7 @@ var dao = {
     },
     getUrs: function (anio,upp) {
         $('#ur_filter').empty();
+        console.log('getUrs',{anio,upp});
         $.ajax({
             type: "GET",
             url: '/calendarizacion/urs/' + anio + '/' + upp,
@@ -883,12 +884,14 @@ var dao = {
         });
     },
     getSelect: function () {
+        console.log('getSelect');
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
+            console.log('getSelect',data);
             const { unidadM, beneficiario } = data;
             var med = $('#medida');
             med.html('');
@@ -1159,6 +1162,7 @@ var dao = {
         })
 
     },
+    
     arrEquals: function (numeros) {
         let duplicados = [];
         let bool = numeros.length;
@@ -1386,6 +1390,7 @@ $(document).ready(function () {
 
     });
     $('#ur_filter').change(() => {
+        console.log('click ur');
         let id = $(".active")[0].id;
         let anio = $("#anio_filter").val();
         let upp = $("#upp_filter").val();
@@ -1402,7 +1407,6 @@ $(document).ready(function () {
     $('#sel_fondo').change(() => {
         dao.getActividasdesMir($('#sel_fondo').val())
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
-
     });
     $('#sel_actividad').change(() => {
         if ($('#sel_fondo').val() != '' && $('#sel_fondo').val() != null) {

@@ -2,10 +2,6 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
-                <h2>Carga masiva metas</h2>
-            </header>
-            &nbsp;
 
             <div class="d-inline-flex p-2">
                 <div>
