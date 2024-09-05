@@ -1,85 +1,155 @@
 const inputs = ['sel_actividad', 'sel_fondo', 'tipo_Ac', 'beneficiario', 'tipo_Be', 'medida'];
 
 var dao = {
+    optionTabs: function (id, anio, upp, ur) {
+        ur = ur != null ? ur : '0';
+        upp = upp != null ? upp : '0';
+        switch (id) {
+            case 'metas-tab':
+                $('.botones_exportar').attr("style", "display:none;");
+               /*  dao.limpiar('A');
+                dao.getData(upp, ur,anio); */
+                break;
+            case 'capturadas-tab':
+                dao.limpiar();
+                if (upp != '0' && upp != 0) {
+                    $('.botones_exportar').removeAttr('style');
+                    dao.getDataCapturadas(upp, ur, anio);
+                }
+                break;
+        }
+        
+    },
+    getDataCapturadas: function (upp, ur, anio) {
+        $.ajax({
+            type: "GET",
+            url: "/actividades/data/" + upp + "/" + ur + "/" + anio,
+            dataType: "json"
+        }).done(function (_data) {
+            const { dataSet, confirmado } = _data;
+            if (confirmado == 1) {
+                $('.confirmacion').attr("style", "display:none;");
+                $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
+                $('#validMetas').text("Las metas ya fueron confirmadas para la UPP: " + upp);
+            } else {
+                $('.botones_exportar').removeAttr('style');
+                $('#validMetas').removeClass(" alert alert-danger").removeClass("text-center");
+                $('#validMetas').text('');
+            }
+            _table = $("#proyectoM");
+            _columns = [
+                { "aTargets": [0], "mData": [0] },
+                { "aTargets": [1], "mData": [1] },
+                { "aTargets": [2], "mData": [2] },
+                { "aTargets": [3], "mData": [3] },
+                { "aTargets": [4], "mData": [4] },
+                { "aTargets": [5], "mData": [5] },
+                { "aTargets": [6], "mData": [6] },
+                { "aTargets": [7], "mData": [7] },
+                { "aTargets": [8], "mData": [8] },
+                { "aTargets": [9], "mData": [9] },
+                { "aTargets": [10], "mData": [10] },
+                { "aTargets": [11], "mData": [11] },
+                { "aTargets": [12], "mData": [12] },
+                { "aTargets": [13], "mData": [13] },
+                { "aTargets": [14], "mData": [14] },
+                { "aTargets": [15], "mData": [15] },
+                { "aTargets": [16], "mData": [16] },
+                { "aTargets": [17], "mData": [17] },
+                { "aTargets": [18], "mData": [18] },
+                { "aTargets": [19], "mData": [19] }
+            ];
+            _height = '1px';
+            _pagination = 15;
+            _gen.setTableScrollFotter(_table, _columns, dataSet);
+        });
+    },
     getUpps: function () {
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/upps/',
+            url: '/calendarizacion/upps/' + $("#anio_filter").val(),
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
             const { upp } = data;
             var par = $('#upp_filter');
             par.html('');
+            if (upp.length>2) {
+                par.append(new Option("Seleccione una UPP", "upp"));
+                document.getElementById("upp_filter").options[0].disabled = true;
+            }
             $.each(upp, function (i, val) {
-                if (val.clv_upp == '001') {
-                    par.append(new Option(val.upp, val.clv_upp, true, false));
-                } else {
-                    par.append(new Option(val.upp, val.clv_upp));
-                }
+                par.append(new Option(val.upp, val.clv_upp));
             });
-        });
-    },
-    getAniosM: function () {
-        $.ajax({
-            type: "GET",
-            url: '/actividades/anios-metas',
-            dataType: "JSON",
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-        }).done(function (data) {
-            var par = $('#anio_filter');
-            par.html('');
-            if (data.anios.length >= 1) {
-                $.each(data.anios, function (i, val) {
-                    par.append(new Option(val.ejercicio, val.ejercicio, true, false));
-                });
-            } else {
-                var  d = new  Date();
-                var n = d.getFullYear();
-                var nn = n + 1;
-                par.append(new Option(nn,nn, true, false));
-                par.append(new Option(n,n, true, false));
-             
+            if (upp.length == 1) {
+                let clv_upp = upp[0].clv_upp;
+                $("#upp_filter option[value=" + clv_upp + "]").attr("selected", true);
+                dao.getUrs(anio,clv_upp);
             }
         });
     },
-    getData : function(upp,anio){
-		$.ajax({
-			type : "GET",
-			url : "/actividades/data/metas-delegacion/"+upp+"/"+anio,
+    getData: function (upp, ur,anio) {
+        $.ajax({
+            type: "GET",
+            url: "/calendarizacion/data/" + upp + "/" + ur+"/"+anio,
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (_data) {
-			_table = $("#proyectoM");
-			_columns = [
-				{"aTargets" : [0] , "mData" :[0] },
-				{"aTargets" : [1] , "mData" :[1] },
-				{"aTargets" : [2] , "mData" :[2] },
-				{"aTargets" : [3] , "mData" :[3] },
-				{"aTargets" : [4] , "mData" :[4] },
-                {"aTargets" : [5] , "mData": [5] },
-                {"aTargets" : [6] , "mData" :[6] },
-				{"aTargets" : [7] , "mData" :[7] },
-				{"aTargets" : [8] , "mData" :[8] },
-				{"aTargets" : [9] , "mData" :[9] },
-				{"aTargets" : [10], "mData" :[10]},
+            _table = $("#entidad");
+            _columns = [{
+                width: "0rem",
+                targets: [{ "aTargets": [0], "mData": [0] },
+                { "aTargets": [1], "mData": [1] },
+                { "aTargets": [2], "mData": [2] },
+                { "aTargets": [3], "mData": [3] },
+                { "aTargets": [4], "mData": [4] },
+                { "aTargets": [5], "mData": [5] },
+                { "aTargets": [6], "mData": [6] },
+                { "aTargets": [7], "mData": [7] },
+                { "aTargets": [8], "mData": [8] },
+                { "aTargets": [9], "mData": [9] },
+                { "aTargets": [10], "mData": [10] },
                 { "aTargets": [11], "mData": [11] },
-                {"aTargets" : [12] , "mData" :[12] },
-				{"aTargets" : [13] , "mData" :[13] },
-				{"aTargets" : [14] , "mData" :[14] },
-				{"aTargets" : [15] , "mData" :[15] },
-				{"aTargets" : [16] , "mData" :[16] },
-                {"aTargets" : [17] , "mData": [17] },
-                {"aTargets" : [18] , "mData" :[18] },
-				{"aTargets" : [19] , "mData" :[19] }
+                { "aTargets": [12], "mData": [12] }
+                ]
+            }
             ];
-            _height = '1px';
-            _pagination = 15;
-			_gen.setTableScrollFotter(_table, _columns, _data);
-        });
-        
-    },
+            /*  let columns={ "width": "0%", "targets":  _columns } */
+            _gen.setTableScrollFotter(_table, _columns, _data.dataSet);
+            let index = _data.dataSet;
+            if (index.length == 0) {
+                if (upp != 'upp' && ur != 'ur') {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Esta unidad responsable no cuenta con presupuesto',
+                        text: $('#ur_filter').find('option:selected').text(),
+                    });
+                    $('#incomplete').show();
+                    $("#icono").addClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                    $('#texto').text('Esta unidad responsable no cuenta con presupuesto');
+                    $('#metasVista').hide();
+                }
+                dao.limpiar();
+                $('.btnSave').hide();
+                $(".CargaMasiva").hide();
+                if ($('#upp').val() == '') {
+                    dao.getUrs($('#anio_filter').val(),$('#upp_filter').val());
+                    
+                } else {
+                    dao.getUrs($('#anio_filter').val(),$('#upp_filter').val());
+                }
 
+            } else {
+                $('.btnSave').show();
+                $('#incomplete').hide();
+                $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
+                $('#texto').text('');
+                $('#metasVista').show();
+                $(".CargaMasiva").show();
+            }
+
+        });
+    },
     getPlantillaCmUpp: function () {
         const url = "/actividades/plantilla/metas-delegacion";
         window.location.href = url;
@@ -109,6 +179,7 @@ var dao = {
     importMeta: function () {
         var form = $('#formFile')[0];
         var data = new FormData(form);
+        data.append('anio',$("#anio_filter").val());
         $.ajax({
             type: "POST",
             url: '/calendarizacion/create',
@@ -132,9 +203,20 @@ var dao = {
         });
     },
     save: function () {
+        if($('#cmFile').val()!=''){
             if ($('#formFile').valid()) {
                 dao.crearMetaImp();
-            }
+            }  
+        } else {
+            $('.boton_cargaMasiva').attr("style", "display:none;");
+            Swal.fire({
+                title: "El archivo es requerido, el campo no puede ser vacío",
+                text: "Solo puedes subir archivos excel, para continuar",
+                icon: "warning"
+              });
+            
+        }
+            
     },
     editarMeta: function (id) {
         $("#addActividad").modal("show");
@@ -237,12 +319,11 @@ var dao = {
                 text: mensaje.text,
             });
             $('#cerrar').trigger('click');
-            if ($('#upp').val() == '') {
-                dao.getUpps();
-                dao.getData($('#upp_filter').val(),$('#anio_filter').val());
-            } else {
-                dao.getData($('#upp').val(),$('#anio_filter').val());
-            }
+            let id = $(".active")[0].id;
+            let anio = $("#anio_filter").val();
+            let upp = $("#upp_filter").val();
+            let ur = $("#ur_filter").val();
+            dao.optionTabs(id, anio, upp, ur);
         });
     },
     rCMetasUpp: function (anio) {
@@ -308,8 +389,11 @@ var dao = {
                         text: mensaje.text,
                         footer: mensaje?.footer,
                     });
-                    dao.getData(upp, anio);
-                    dao.checkCMetasUpp($('#anio_filter').val());
+                    let id = $(".active")[0].id;
+                    let anio = $("#anio_filter").val();
+                    let upp = $("#upp_filter").val();
+                    let ur = $("#ur_filter").val();
+                    dao.optionTabs(id, anio, upp, ur);
                 });
             } /* else if (result.isDenied) {
               Swal.fire('Changes are not saved', '', 'info')
@@ -354,25 +438,36 @@ $(document).ready(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+    $(".nav-link").on("click", function () {
+        let id = $(".active")[0].id;
+        let anio = $("#anio_filter").val();
+        let upp = $("#upp_filter").val();
+        let ur = $("#ur_filter").val();
+        dao.optionTabs(id, anio, upp, ur);
+    });
     dao.getUpps();
-    dao.getAniosM();
     $("#upp_filter").select2({
         maximumSelectionLength: 10
     });
     $("#anio_filter").select2({
         maximumSelectionLength: 10
     });
-    dao.getData($('#upp_filter').val(), $('#anio_filter').val());
     init.validateFile($('#formFile'));
 
     $('#upp_filter').change(() => {
-        dao.getData($('#upp_filter').val(), $('#anio_filter').val());
+        let id = $(".active")[0].id;
+        let anio = $("#anio_filter").val();
+        let upp = $("#upp_filter").val();
+        let ur = $("#ur_filter").val();
+        dao.optionTabs(id, anio, upp, ur);
 
     });
     $('#anio_filter').change(() => {
-        dao.getData($('#upp_filter').val(), $('#anio_filter').val());
-        dao.checkCMetasUpp($('#anio_filter').val());
-
+        let id = $(".active")[0].id;
+        let anio = $("#anio_filter").val();
+        let upp = $("#upp_filter").val();
+        let ur = $("#ur_filter").val();
+        dao.optionTabs(id, anio, upp, ur);
     });
     $('#btnSave').click(function (e) {
         e.preventDefault();
@@ -380,18 +475,36 @@ $(document).ready(function () {
                 dao.editarPutMeta();
             }
     });
-    let i = 0;
-    if (window.location.pathname == '/calendarizacion/proyecto/metas-delegacion') {
-        function mousemove(event) {
-            if (i <= 1) {
-                console.log("confirmar");
-             dao.checkCMetasUpp($('#anio_filter').val())
-                i++;
-           }
-          }
-          
-          window.addEventListener('mousemove', mousemove);
-     
-    }
+    $(document).on('change','input[type="file"]',function(){			
+			
+        var fileName = this.files[0].name;
+        var fileSize = this.files[0].size;
+
+            var ext = fileName.split('.');
+            // ahora obtenemos el ultimo valor despues el punto
+            // obtenemos el length por si el archivo lleva nombre con mas de 2 puntos
+            ext = ext[ext.length-1];
+
+            switch (ext) {
+                case 'xlsx':
+                    $('#tamanoArchivo').text(fileSize + " bytes en " + ext);
+                    $('.boton_cargaMasiva').removeAttr('style');
+                break;	
+                case 'csv': 
+                    $('#tamanoArchivo').text(fileSize+" bytes "+ext);
+                break;
+                default:
+                    // alert('El archivo no tiene la extensión adecuada');
+                    $('.boton_cargaMasiva').attr("style", "display:none;");
+                    Swal.fire({
+                        title: "El archivo no tiene la extensión adecuada",
+                        text: "Solo puedes subir archivos excel, para continuar",
+                        icon: "warning"
+                      });
+                    this.value = ''; // reset del valor
+                    this.files[0].name = '';
+                break;	
+            }
+    });
   
 });
