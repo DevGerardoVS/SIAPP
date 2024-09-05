@@ -11,33 +11,64 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use App\Helpers\Calendarizacion\MetasHelper;
 use App\Http\Controllers\Calendarizacion\MetasController;
 use Auth;
+use Log;
 
 
 class MetasExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths
 {
     protected $filas;
     protected $upp;
+    protected $ur;
     protected $anio;
 
-    function __construct($upp, $anio)
+    function __construct($upp,$ur,$anio)
     {
         $this->upp = $upp;
+        $this->ur = $ur;
         $this->anio = $anio;
     }
     public function collection()
     {
-        if(Auth::user()->id_grupo == 4){
-            $dataSet = MetasController::getActiv($this->upp, $this->anio);
-        $this->filas = count($dataSet);
-        for ($i = 0; $i < count($dataSet); $i++) {
-            unset($dataSet[$i][20]);
-            $dataSet = array_values($dataSet);
+        try {
+            if(Auth::user()->id_grupo == 4){
+                $dataSet = MetasHelper::actividades($this->upp,0,$this->anio);
+            $this->filas = count($dataSet);
+                $newDataset = [];
+                foreach ($dataSet as $key) {
+                    $area = str_split($key->area);
+                    $i = array(
+                        $key->id,
+                        $area[0],
+                        $area[1],
+                        $area[2],
+                        $area[3],
+                        '' . strval($area[4]) . strval($area[5]) . '',
+                        $area[6],
+                        $area[7],
+                        $key->upp,
+                        $key->clv_ur,
+                        $key->clv_pp,
+                        '' . strval($area[10]) . strval($area[11]) . strval($area[12]) . '',
+                        '' . strval($area[13]) . strval($area[14]) . strval($area[15]) . '',
+                        $key->fondo,
+                        $key->actividad,
+                        $key->tipo,
+                        $key->total,
+                        $key->cantidad_beneficiarios,
+                        $key->beneficiario,
+                        $key->unidad_medida,
+                    );
+                    $newDataset[] = $i;
+                }
+            }else{
+                $newDataset = MetasController::getActivAdm($this->anio);
+            }
+            
+            return collect($newDataset);
+        } catch (\Throwable $th) {
+            Log::debug($th);
         }
-        }else{
-            $dataSet = MetasController::getActivAdm($this->anio);
-        }
-        
-        return collect($dataSet);
+ 
     }
 
     /**
