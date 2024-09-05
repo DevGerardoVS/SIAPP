@@ -90,7 +90,8 @@ class ReporteController extends Controller
     public function calendarioFondoMensual(Request $request)
     {
         $anio = $request->anio;
-        $fecha = $request->fecha != "null" ? "'" . $request->fecha . "'"  : "null";
+        // $fecha = $request->fecha != "null" ? "'" . $request->fecha . "'"  : "null";
+        $fecha = $request->fecha != "null" ? substr($request->fecha,0,1)  : "null";
         $dataSet = array();
         $data = DB::select("CALL calendario_fondo_mensual(" . $anio . ", " . $fecha . ")");
         foreach ($data as $d) {
@@ -108,7 +109,7 @@ class ReporteController extends Controller
     public function resumenCapituloPartida(Request $request)
     {
         $anio = $request->anio;
-        $fecha = $request->fecha != "null" ? "'" . $request->fecha . "'"  : "null";
+        $fecha = $request->fecha != "null" ? substr($request->fecha,0,1)  : "null";
         $dataSet = array();
         $data = DB::select("CALL reporte_resumen_por_capitulo_y_partida(" . $anio . ", " . $fecha . ")");
         foreach ($data as $d) {
@@ -123,7 +124,7 @@ class ReporteController extends Controller
     public function proyectoAvanceGeneral(Request $request)
     {
         $anio = $request->anio;
-        $fecha = $request->fecha != "null" ? "'" . $request->fecha . "'"  : "null";
+        $fecha = $request->fecha != "null" ? substr($request->fecha,0,1)  : "null";
         $dataSet = array();
         $data = DB::select("CALL proyecto_avance_general(" . $anio . ", " . $fecha . ")");
         foreach ($data as $d) {
@@ -138,7 +139,7 @@ class ReporteController extends Controller
     public function proyectoCalendarioGeneral(Request $request)
     {
         $anio = $request->anio;
-        $fecha = $request->fecha != "null" ? "'" . $request->fecha . "'"  : "null";
+        $fecha = $request->fecha != "null" ? substr($request->fecha,0,1)  : "null";
         if (Auth::user()->clv_upp != null) $upp = "'" . Auth::user()->clv_upp . "'";
         else $upp = $request->upp != "null" ? "'" . $request->upp . "'"  : "null";
 
@@ -160,7 +161,7 @@ class ReporteController extends Controller
     public function proyectoCalendarioGeneralActividad(Request $request)
     {
         $anio = $request->anio;
-        $fecha = $request->fecha != "null" ? "'" . $request->fecha . "'"  : "null";
+        $fecha = $request->fecha != "null" ? substr($request->fecha,0,1)  : "null";
         if (Auth::user()->clv_upp != null) $upp = "'" . Auth::user()->clv_upp . "'";
         else $upp = $request->upp != "null" ? "'" . $request->upp . "'"  : "null";
        
@@ -197,7 +198,7 @@ class ReporteController extends Controller
     public function avanceProyectoActividadUPP(Request $request)
     {
         $anio = $request->anio;
-        $fecha = $request->fecha != "null" ? "'" . $request->fecha . "'"  : "null";
+        $fecha = $request->fecha != "null" ? substr($request->fecha,0,1)  : "null";
         $dataSet = array();
         $data = DB::select("CALL avance_proyectos_actividades_upp(" . $anio . ", " . $fecha . ")");
         foreach ($data as $d) {
@@ -215,8 +216,8 @@ class ReporteController extends Controller
         try {
             $report =  $nombre;
             $anio = !$request->input('anio') ? (int)$request->anio_filter : (int)$request->input('anio');
-            $fechaCorte = $request->fechaCorte ? substr($request->fechaCorte,2) : $request->input('fechaCorte');
-            $version = $request->fechaCorte ? substr($request->fechaCorte,0,1) : "null";
+            $fechaCorte = $request->fecha ? substr($request->fecha,2) : ($request->fechaCorte_filter ? substr($request->fechaCorte_filter,2) : null);
+            $version = $request->fecha ? substr($request->fecha,0,1) : ($request->fechaCorte_filter ? substr($request->fechaCorte_filter,0,1) : "null");
             $upp = Auth::user()->clv_upp != null ? Auth::user()->clv_upp : $request->upp_filter;
 
             // Comprobar si el reporte es administrativo o de ley hacendaria
@@ -274,17 +275,14 @@ class ReporteController extends Controller
                             break;
                     }
                 }
+                // llamar el procedimiento para saber si tiene datos.
+                $data = DB::select("CALL ".$report."(".$anio.",".$version.")");
             }else  $tipoReporte = "Reportes administrativos";
-
-            // llamar el procedimiento para saber si tiene datos.
-            $data = DB::select("CALL ".$report."(".$anio.",".$version.")");
 
             $logoLeft = public_path() . "/img/escudoBN.png";
             $logoRight = public_path() . "/img/logo.png";
             $report_path = app_path() . "/Reportes/" . $report . ".jasper";
             $format = array($request->action);
-            // $output_file =  public_path() . "/reportes";
-            // $file = public_path() . "/reportes/" . $report;
             $nameFile = "EF_" . $anio . "_" . $nombre;
             $output_file = sys_get_temp_dir()."/".time()."/";
             $file = $output_file. $report; 
@@ -318,8 +316,8 @@ class ReporteController extends Controller
                     $nameFile = $nameFile . "_" . $parameters["tipo"];
                 } 
             }
+            
             $database_connection = \Config::get('database.connections.mysql');
-
             $jasper = new PHPJasper;
             $jasper->process(
                 $report_path,
@@ -331,11 +329,10 @@ class ReporteController extends Controller
             // dd($jasper);
             )->execute();
 
-            
-            // log::info($file.".".$request->action);
             if (file_exists($file.".".$request->action)) { // Comprobar si existe el archivo 
-                // Verificar el tipo de archivo
-                if(count($data) == 0 ) return back()->withErrors(['msg' => "No hay datos para generar el Reporte $nombre.$anio.$request->action vacío."]); // Regresar un mensaje para dar a entender al usuario que el archivo esta vacío.
+                if (str_contains($report, "reporte_art_20")){ // Solo se verificará la data cuando sean los reportes ley hacendaria
+                    if(count($data) == 0 ) return back()->withErrors(['msg' => "No hay datos para generar el Reporte $nombre.$anio.$request->action vacío."]); // Regresar un mensaje para dar a entender al usuario que el archivo esta vacío.
+                }
 
                 ob_end_clean();
                 // Bitácora
@@ -350,30 +347,6 @@ class ReporteController extends Controller
             } else {
                 return back()->withErrors(['msg' => '¡No se encontro el archivo!']);
             }
-
-
-            // if ($request->action == 'xlsx') { // Verificar el tipo de archivo
-            //     if (File::exists($output_file . "/" . $report . ".xlsx") && filesize($file . ".xlsx") < 4097) { // Verificar si el archivo generado está vacío y Verificar si existe el archivo guardado en caso de existir lo elimina
-            //         File::delete($output_file . "/" . $report . ".xlsx");
-            //         return back()->withErrors(['msg' => "$nameFile.xlsx está vacío."]); // Regresar un mensaje para dar a entender al usuario que el archivo esta vacío
-            //     }
-            // } else {
-            //     if (File::exists($output_file . "/" . $report . ".pdf") && filesize($file . ".pdf") < 4097) {
-            //         File::delete($output_file . "/" . $report . ".pdf");
-            //         return back()->withErrors(['msg' => "$nameFile.pdf está vacío."]);
-            //     }
-            // }
-
-            // ob_end_clean();
-            // // Bitácora
-            // $b = array(
-            //     "username" => Auth::user()->username,
-            //     "accion" => $nameFile . "." . $request->action,
-            //     "modulo" => $tipoReporte,
-            // );
-            // Controller::bitacora($b);
-
-            // return $request->action == 'pdf' ? response()->download($file . ".pdf", $nameFile . ".pdf")->deleteFileAfterSend() : response()->download($file . ".xlsx", $nameFile . ".xlsx")->deleteFileAfterSend();
         } catch (\Exception $e) {
             $errLocation1 = 'ReporteController'; $errLocation2 = 'downloadReport';
             $logMSG = "Ocurrio un error ".$e->getMessage();

@@ -24,6 +24,7 @@
                             if(data[i].version == 0) par.append(new Option("Última versión", data[i].version+"_"+data[i].deleted_at));
                             else par.append(new Option("V"+ data[i].version +" - "+formattedDate , data[i].version+"_"+data[i].deleted_at));
                         });
+                        //Checar cuando se hace la ultima version antes de que se haga el nuevo año.
                     }
                 });
             }
@@ -100,7 +101,7 @@
                                             <form action="/Reportes/download/${row.name}" method="POST" enctype="multipart/form-data" class="my-auto">
                                                 <input type="hidden" name="_token" value=${csrfToken}>
                                                 <input type="text" hidden class="anio" id="anio" name="anio" value=${anio}>
-                                                <input type="text" hidden class="fechaCorte" id="fechaCorte" name="fechaCorte">
+                                                <input type="text" hidden class="fecha" id="fecha" name="fecha">
                                                 <button id="btnPDF" type="submit" formtarget="_blank" class="btn btn-light btn-sm btn-labeled me-sm-3 align-middle" style="border-color: #6a0f49;" title="Generar Reporte PDF" name="action" value="pdf">
                                                     <span class="btn-label"><i class="fa fa-file-pdf-o text-danger fs-4 align-middle"></i></span>
                                                     <span class="d-sm-none d-lg-inline align-middle" style="color:#6a0f49; font-size: 1rem">Exportar a PDF</span> 
@@ -144,9 +145,6 @@
                 }
             });
 
-            // setTimeout(() => {
-            //     $(".anio").val($('#anio_filter option:selected').val());
-            // }, 800);
             getDataFechaCorte($('#anio_filter option:selected').val());
             getNames($('#anio_filter option:selected').val());
 
@@ -165,9 +163,7 @@
                 e.preventDefault();
                 $("#fechaCorte_filter").val("");
                 setTimeout(() => {
-                    // console.log($("#anio").val());
-                    // $(".anio").val($('#anio_filter').val());
-                    $(".fechaCorte").val($('#fechaCorte_filter').val());
+                    $(".fecha").val($('#fechaCorte_filter').val());
                 }, 500);
                 getDataFechaCorte($('#anio_filter').val());
                 getNames($('#anio_filter').val());
@@ -175,7 +171,7 @@
 
             $("#buscarForm").on("change", ".filters_fechaCorte", function(e) {
                 e.preventDefault();
-                $(".fechaCorte").val($('#fechaCorte_filter').val());
+                $(".fecha").val($('#fechaCorte_filter').val());
             });
 
         });
