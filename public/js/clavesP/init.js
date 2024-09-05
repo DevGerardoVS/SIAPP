@@ -1099,12 +1099,7 @@ function soloEnteros() {
     });
   });
 };
-$(".monto").change(function () {
-  let value =  document.getElementById(this.id).value.replaceAll(",","").replaceAll("$","");
-  let valueFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value); 
-  document.getElementById(this.id).value = valueFormated;
-  
-});
+
 $(document).ready(function () {
   $.ajaxSetup({
     headers: {
@@ -1367,6 +1362,11 @@ $(document).ready(function () {
   $('#btnNuevaClave').click(function (e) {
     let ejercicio = document.getElementById('filtro_anio').value;
     window.location.href = '/calendarizacion-claves-create/'+ejercicio;
+  });
+  $(".monto").change(function () {
+    let value =  document.getElementById(this.id).value.replaceAll(",","").replaceAll("$","");
+    let valueFormated = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value); 
+    document.getElementById(this.id).value = valueFormated;
   });
   soloEnteros();
 });
