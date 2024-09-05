@@ -50,7 +50,6 @@ class TechosController extends Controller
                 $data =  $data -> where('ve.ejercicio','=',intval($request->anio_filter));
             }
             if($request->upp_filter != null && $request->upp_filter != '0'){
-                log::debug($request->upp_filter);
                 $data = $data -> where('tf.clv_upp','=',$request->upp_filter);
             }
             if($request->fondo_filter != null && $request->fondo_filter != '0'){
@@ -288,7 +287,7 @@ class TechosController extends Controller
                 ->limit(1)
                 ->get();
                 
-                $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp, $data[0]->ejercicio);
+                $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp,0, $data[0]->ejercicio);
                 
                 if(count($confirmadoClave) == 0){ //si no esta asignado a una clave presupuestaria se EDITA normalmente
                     DB::beginTransaction();
@@ -485,7 +484,7 @@ class TechosController extends Controller
                 ->limit(1)
                 ->get();
 
-                $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp, $data[0]->ejercicio);
+                $confirmacionMeta = MetasHelper::actividades($data[0]->clv_upp,0, $data[0]->ejercicio);
                     
                 if(count($confirmadoClave) == 0){ //si no esta asignado a una clave presupuestaria se EDITA normalmente
                     DB::beginTransaction();

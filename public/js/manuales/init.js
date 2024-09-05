@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    console.log("ejecuta");
+    //console.log("ejecuta");
     dropifyInit();
 
     //manualDatatable();
