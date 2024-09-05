@@ -629,23 +629,40 @@ class ClavePreController extends Controller
         return response()->json($areaFuncional,200);
     }
     public function getPartidas($clasificacion,$upp){
+    $vPosicionPre = DB::table('clasificacion_economica as ce')
+    ->SELECT('ce.id','ce.deleted_at',
+	'c1.clave as clv_capitulo','c1.descripcion as capitulo',
+	'c2.clave as clv_concepto','c2.descripcion as concepto',
+	'c3.clave as clv_partida_generica','c3.descripcion as partida_generica',
+	'c4.clave as clv_partida_especifica','c4.descripcion as partida_especifica',
+	'c5.clave as clv_tipo_gasto','c5.descripcion as tipo_gasto') 
+	
+    ->JOIN('catalogo as c1','ce.capitulo_id','=','c1.id') 
+    ->JOIN('catalogo as c2', 'ce.concepto_id','=','c2.id')   
+    ->JOIN('catalogo as c3','ce.partida_generica_id','=','c3.id') 
+    ->JOIN('catalogo as c4','ce.partida_especifica_id','=','c4.id') 
+    ->JOIN('catalogo as c5','ce.tipo_gasto_id','=','c5.id') 
+    ->whereNull('ce.deleted_at');
         $array_where = [];
         $esAutorizada = ClavesHelper::esAutorizada($upp);
         array_push($array_where, ['rel_economica_administrativa.clasificacion_administrativa','=',$clasificacion]);
-        array_push($array_where, ['v_posicion_presupuestaria_llaves.deleted_at','=', null]);
+        array_push($array_where, ['vPosicionPre.deleted_at','=', null]);
         if ($esAutorizada) {
-            array_push($array_where, ['v_posicion_presupuestaria_llaves.clv_capitulo','!=',1]);
-            array_push($array_where, ['v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave','!=',398011]);
+            array_push($array_where, ['vPosicionPre.clv_capitulo','!=',1]);
+            array_push($array_where, [DB::raw("CONCAT(vPosicionPre.clv_capitulo,vPosicionPre.clv_concepto,vPosicionPre.clv_partida_generica,vPosicionPre.clv_partida_especifica,vPosicionPre.clv_tipo_gasto)"),'!=',398011]);
         }
         $partidas = DB::table('rel_economica_administrativa')
+        ->leftJoinSub($vPosicionPre, 'vPosicionPre', function ($join){
+            $join->on('rel_economica_administrativa.clasificacion_economica', '=', DB::raw("CONCAT(vPosicionPre.clv_capitulo,vPosicionPre.clv_concepto,vPosicionPre.clv_partida_generica,vPosicionPre.clv_partida_especifica,vPosicionPre.clv_tipo_gasto)"));
+        })
         ->SELECT(
-        'v_posicion_presupuestaria_llaves.clv_capitulo',
-        'v_posicion_presupuestaria_llaves.clv_concepto',
-        'v_posicion_presupuestaria_llaves.clv_partida_generica',
-        'v_posicion_presupuestaria_llaves.clv_partida_especifica',
-        'v_posicion_presupuestaria_llaves.clv_tipo_gasto',
-        'v_posicion_presupuestaria_llaves.partida_especifica')
-        ->leftJoin('v_posicion_presupuestaria_llaves','rel_economica_administrativa.clasificacion_economica','=','v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave')
+        'vPosicionPre.clv_capitulo',
+        'vPosicionPre.clv_concepto',
+        'vPosicionPre.clv_partida_generica',
+        'vPosicionPre.clv_partida_especifica',
+        'vPosicionPre.clv_tipo_gasto',
+        'vPosicionPre.partida_especifica')
+        // ->leftJoin('v_posicion_presupuestaria_llaves','rel_economica_administrativa.clasificacion_economica','=','v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave')
         ->WHERE($array_where)
         ->DISTINCT()
         ->get();
@@ -921,12 +938,14 @@ class ClavePreController extends Controller
                 $tabla = 'programacion_presupuesto_hist';
                 // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
                 array_push($array_where2, [$tabla.'.version', '=', 0]);
+                array_push($array_where2, ['tipo', '=', 'Operativo']);
             }
         }else {
             $anio = date('Y');
             $tabla = 'programacion_presupuesto_hist';
             // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
             array_push($array_where2, [$tabla.'.version', '=', 0]);
+            array_push($array_where2, ['tipo', '=', 'Operativo']);
         }
         $autorizado = ClavesHelper::esAutorizada($uppUsuario ? $uppUsuario : $upp);
         if ($uppUsuario && $uppUsuario != null && $uppUsuario != 'null') {
@@ -1060,20 +1079,21 @@ class ClavePreController extends Controller
         $upp = ['clave'=>'000','descripcion'=>'Detalle General'];
         if ($ejercicio && $ejercicio > 0) {
             $anio = $ejercicio;
+            $arrayProgramacion = "pp.ejercicio = ".$anio;
             if ($anio < $ejercicioActual->ejercicio) {
                 $tabla = 'programacion_presupuesto_hist';
                 // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
-                $arrayProgramacion = "".$arrayProgramacion." && programacion_presupuesto_hist.version = 0";
+                $arrayProgramacion = "".$arrayProgramacion." && pp.version = 0";
             }
         }else {
             $anio = date('Y');
+            $arrayProgramacion = "pp.ejercicio = ".$anio;
             $tabla = 'programacion_presupuesto_hist';
             // agregar que sea version cero cuando la tabla sea programcacion presupuesto historico
-            $arrayProgramacion = "".$arrayProgramacion." && programacion_presupuesto_hist.version = 0";
+            $arrayProgramacion = "".$arrayProgramacion." && pp.version = 0";
         }
         $uppAutorizados = ClavesHelper::esAutorizada($clvUpp != '' ? $clvUpp : $uppUsuario);
         $arrayTechos = "tf.deleted_at IS NULL  && tf.ejercicio = ".$anio;
-        $arrayProgramacion = "pp.ejercicio = ".$anio;
         if ($tabla == 'programacion_presupuesto') {
             $arrayProgramacion = "".$arrayProgramacion." && pp.deleted_at IS NULL";
         }

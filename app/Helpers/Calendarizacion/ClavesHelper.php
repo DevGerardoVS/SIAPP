@@ -116,6 +116,9 @@ class ClavesHelper{
             $deleted = [];
             if ($tabla == 'programacion_presupuesto') {
                 array_push($deleted, ['deleted_at','=',null]);
+            }else {
+                # si la tabla es historico entonces tomamos la version 0 del historico...
+                array_push($deleted, ['version','=',0]);
             }
             array_push($deleted, ['ejercicio','=',$anio]);
             $calendarizadoOperativo->where('tipo','=','Operativo')->where($deleted);
@@ -178,6 +181,9 @@ class ClavesHelper{
             $deleted = [];
             if ($tabla == 'programacion_presupuesto') {
                 array_push($deleted, ['deleted_at','=',null]);
+            }else {
+                # si la tablas es historico solo traemos la version 0...
+                array_push($deleted, ['version','=',0]);
             }
             array_push($deleted, ['ejercicio','=',$anio]);
             $calendarizadoRH->where('tipo','=','RH')->where($deleted);

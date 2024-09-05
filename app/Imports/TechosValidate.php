@@ -58,7 +58,18 @@ class TechosValidate
                     );
                     return $error;
                 }
-                $fondo = DB::table('fondo')->select('clv_fondo_ramo')->where('clv_fondo_ramo', $row[$i][2])->get();
+                $fondo_id = DB::table('catalogo')->select('id')->where('grupo_id', 'FONDO DEL RAMO')->where('clave', $row[$i][2])->first();
+                $fondo=0;
+                if(!$fondo_id){
+                    $error = array(
+                        "icon" => 'error',
+                        "title" => 'Error',
+                        "text" => 'El fondo  ' . $row[$i][2] . ' no es valido. Revisa la fila: "' . $index . '"'
+                    );
+                    return $error;
+                }else{
+                    $fondo = DB::table('fondo')->select('id')->where('fondo_ramo_id', $fondo_id->id)->get();
+                }
                 if (count($fondo) == 0) {
                     $error = array(
                         "icon" => 'error',
@@ -78,7 +89,7 @@ class TechosValidate
                 }
                 $existT = TechosValidate::existTecho($row[$i][1], $row[$i][2], $row[$i][0]);
                 if (count($existT) > 1) {
-                   $tech[] = $index;
+                    $tech[] = $index;
                 }
                 if ($row[$i][3] != '') {
                     if (!is_numeric($row[$i][3])) {
@@ -172,7 +183,7 @@ class TechosValidate
 
                 }
             } else {
-                $filas=implode(", ", $tech);
+                $filas = implode(", ", $tech);
                 $error = array(
                     "icon" => 'error',
                     "title" => 'Error',
@@ -209,65 +220,70 @@ class TechosValidate
             ->get();
         return $tech;
     }
-    
+
     public static function insert($row)
     {
-        foreach ($row as $key) {
-            if (!empty($key)) {
-                $user = Auth::user()->username;
-                $monto = 0;
-                if ($key[3] != NULL && $key[3] > 0 && $key[4] != NULL && $key[4] > 0 && $key[3] != 'UPP' && $key[2] != 'FO') {
-                    $ejercicio = $key[0];
-                    $upp = $key[1];
-                    $fondo = $key[2];
-                    TechosFinancieros::create([
-                        'clv_upp' => $upp,
-                        'clv_fondo' => $fondo,
-                        'tipo' => 'Operativo',
-                        'presupuesto' => $key[3],
-                        'ejercicio' => $ejercicio,
-                        'updated_user' => $user,
-                        'created_user' => $user
-                    ]);
-                    TechosFinancieros::create([
-                        'clv_upp' => $upp,
-                        'clv_fondo' => $fondo,
-                        'tipo' => 'RH',
-                        'presupuesto' => $key[4],
-                        'ejercicio' => $ejercicio,
-                        'updated_user' => $user,
-                        'created_user' => $user
-                    ]);
-
-                } else {
-                    if ($key[3] != NULL) {
+        try {
+            foreach ($row as $key) {
+                if (!empty($key)) {
+                    $user = Auth::user()->username;
+                    $monto = 0;
+                    if ($key[3] != NULL && $key[3] > 0 && $key[4] != NULL && $key[4] > 0 && $key[3] != 'UPP' && $key[2] != 'FO') {
                         $ejercicio = $key[0];
                         $upp = $key[1];
                         $fondo = $key[2];
-                        $tipo = 'Operativo';
-                        $monto = $key[3];
-                    }
-                    if ($key[4] != NULL) {
-                        $ejercicio = $key[0];
-                        $upp = $key[1];
-                        $fondo = $key[2];
-                        $tipo = 'RH';
-                        $monto = $key[4];
-                    }
-                    if ($monto != 0 && $key[3] != 'UPP' && $key[2] != 'FO') {
                         TechosFinancieros::create([
                             'clv_upp' => $upp,
                             'clv_fondo' => $fondo,
-                            'tipo' => $tipo,
-                            'presupuesto' => $monto,
+                            'tipo' => 'Operativo',
+                            'presupuesto' => $key[3],
                             'ejercicio' => $ejercicio,
                             'updated_user' => $user,
                             'created_user' => $user
                         ]);
+                        TechosFinancieros::create([
+                            'clv_upp' => $upp,
+                            'clv_fondo' => $fondo,
+                            'tipo' => 'RH',
+                            'presupuesto' => $key[4],
+                            'ejercicio' => $ejercicio,
+                            'updated_user' => $user,
+                            'created_user' => $user
+                        ]);
+
+                    } else {
+                        if ($key[3] != NULL) {
+                            $ejercicio = $key[0];
+                            $upp = $key[1];
+                            $fondo = $key[2];
+                            $tipo = 'Operativo';
+                            $monto = $key[3];
+                        }
+                        if ($key[4] != NULL) {
+                            $ejercicio = $key[0];
+                            $upp = $key[1];
+                            $fondo = $key[2];
+                            $tipo = 'RH';
+                            $monto = $key[4];
+                        }
+                        if ($monto != 0 && $key[3] != 'UPP' && $key[2] != 'FO') {
+                            TechosFinancieros::create([
+                                'clv_upp' => $upp,
+                                'clv_fondo' => $fondo,
+                                'tipo' => $tipo,
+                                'presupuesto' => $monto,
+                                'ejercicio' => $ejercicio,
+                                'updated_user' => $user,
+                                'created_user' => $user
+                            ]);
+                        }
                     }
                 }
             }
+            return 'done';
+        } catch (\Throwable $th) {
+          return 'error';
         }
-        return 'done';
+
     }
 }

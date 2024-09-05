@@ -18,6 +18,8 @@
 <div class="col-sm-12 col-md-4 col-lg-2">
     <label class="form-label fw-bold mt-md-1">Ejercicio:</label>
     <label class="form-label fw-bold mt-md-1" id="anio"></label>
+    <select class="form-control filters filters_fondo" id="ejercicio_filter" name="ejercicio_filter" autocomplete="ejercicio_filter">
+    </select>
 </div>
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -86,7 +88,12 @@
         });
 
         getDatos();
-        getFondos();
+        getFondos(); 
+
+        $("#ejercicio_filter").on('change', function(){
+            getFondos(); 
+
+        });
 
     });
     function exportPdf(){
@@ -271,18 +278,47 @@
     }
 
     function getFondos() { //función obtener fondos
+        
+        var anio = $("#ejercicio_filter").val();
+
+        var formData = new FormData();
+        formData.append("anio",anio);
+        
         $.ajax({
             url: "/fondos/inicio",
+            data: formData,
             type:'POST',
             dataType: 'json',
+            processData: false,
+            contentType: false,
             success: function(data) {
+                console.log(data);
                 var par = $('#fondo_filter');
-                $('#anio').text(data[0].ejercicio);
+                var anios = $("#ejercicio_filter");
+
+                var fondos = data.fondos;
+                
                 par.html('');
                 par.append(new Option("Todos", ""));
-                $.each(data, function(i, val){
-                    par.append(new Option(data[i].clv_fondo +" "+ data[i].fondo_ramo, data[i].clv_fondo+" "+ data[i].fondo_ramo));
+                $.each(fondos, function(i, val){
+                    par.append(new Option(fondos[i].clv_fondo +" "+ fondos[i].fondo_ramo, fondos[i].clv_fondo+" "+ fondos[i].fondo_ramo));
                 });
+
+                var ejercicios = data.ejercicios;
+
+                $('#anio').text(ejercicios[0].ejercicio);
+
+                anios.empty();
+
+                $.each(ejercicios, function(i, val){
+                    anios.append(new Option(ejercicios[i].ejercicio,ejercicios[i].ejercicio));
+                    
+                    if(anio==ejercicios[i].ejercicio){
+                        //console.log(anio+" "+ejercicios[i].ejercicio);
+                        $("#ejercicio_filter option[value="+anio+"]").prop('selected',true);
+                    } 
+                });
+
             }
         });
     }
