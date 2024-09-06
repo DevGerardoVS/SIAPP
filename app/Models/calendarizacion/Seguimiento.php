@@ -6,23 +6,31 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CierreMetas extends Model
+class Seguimiento extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'cierre_ejercicio_metas';
+    protected $table = 'sapp_seguimiento';
 
     protected $fillable = [
+       
+        'meta_id',
         'clv_upp',
-        'estatus',
-        'confirmado',
+        'clv_ur',
+        'clv_programa',
+        'clv_subprograma',
+        'clv_proyecto',
+        'realizado',
+        'descripcion_act',
+        'justificacion',
+        'propuesta_mejora',
+        'observaciones',
         'ejercicio',
-        'capturista',
-        'activos',
+        'mes',
+        'estatus',
         'created_user',
         'updated_user',
-        'deleted_user',
-        'activos'
+        'deleted_user'
     ];
 
     protected $dates = ['deleted_at'];

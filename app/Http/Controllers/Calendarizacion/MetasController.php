@@ -34,6 +34,7 @@ use App\Models\Catalogo;
 use App\Http\Controllers\utils\ReportesJasper;
 use App\Models\notificaciones;
 use App\Exports\MetasExportErrCm;
+use App\Models\calendarizacion\Seguimiento;
 
 class MetasController extends Controller
 {
@@ -113,7 +114,7 @@ class MetasController extends Controller
 			);
 			$dataSet[] = $i;
 		}
-		return ['dataSet'=>$dataSet ,'confirmado'=>$confirmado->confirmado];
+		return ['dataSet'=>$dataSet ,'confirmado'=>isset($confirmado->confirmado)?$confirmado->confirmado:0];
 	}
 	public function getMetasP($upp_filter, $ur_filter, $anio_filter)
 	{
@@ -240,7 +241,6 @@ class MetasController extends Controller
 		}
 		return ["upp" => $upps];
 	}
-
 	public function newGetFyA($area, $entidad,$upp,$anio)
 	{
 	/* 	$areaAux = explode('-', $area);
@@ -468,7 +468,6 @@ class MetasController extends Controller
 			$area_funcional =  strval($clv[0]);
 			$fondo = $request->sel_fondo;
 			$actividad = $request->actividad_id;
-			Log::debug($entidad_ejecutora.'-'.$area_funcional);
 			$act = '';
 			switch ($request->tipoAct) {
 				case 'M':
@@ -648,6 +647,8 @@ class MetasController extends Controller
 	{
 		$metas = [];
 		$m = Metas::where('deleted_at', null)->where('id', $id)->get();
+		$seg = Seguimiento::where('meta_id',$id)->first();
+		$conSeguimiento = isset($seg)?1:0;
 		if ($m[0]->mir_id != null) {
 			$metas = DB::table('metas')
 				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
@@ -760,7 +761,8 @@ class MetasController extends Controller
 				"noviembre" => $key->noviembre,
 				"diciembre" => $key->diciembre,
 				"total" => $key->total,
-				"meses" => $meses
+				"meses" => $meses,
+				"conSeguimiento"=>$conSeguimiento
 			);
 			$data[] = $i;
 		}
@@ -858,7 +860,6 @@ class MetasController extends Controller
 		}
 		return view('calendarizacion.metas.proyectoPDF', compact('data'));
 	}
-
 	public function exportPdf($upp,$ur ,$year)
 	{
 		ini_set('max_execution_time', 5000);
@@ -926,7 +927,7 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return ReportesJasper::claves($request);
 	}
-		public function importPlantilla(Request $request)
+	public function importPlantilla(Request $request)
 	{
 		Controller::check_permission('putMetas');
 		Controller::check_assign(1);
@@ -1278,11 +1279,11 @@ class MetasController extends Controller
 		$obj->status = false;
 		$obj->title = 'La captura de metas esta cerrada';
 		$obj->mensaje = 'La captura de metas para la UPP: ' . $upp . ' estan cerradas';
+		$obj->confirmado = 0;
 		$cierre = DB::table('cierre_ejercicio_metas')->select('estatus', 'ejercicio', 'confirmado')
 			->where(['deleted_at' => null, 'clv_upp' => $upp, 'ejercicio' => $anio])->first();
-		Log::debug(json_encode($cierre));
-		$obj->confirmado = $cierre->confirmado;
-		if (isset($anio)) {
+		if (isset($cierre)) {
+			$obj->confirmado = $cierre->confirmado;
 			switch (Auth::user()->id_grupo) {
 				case '1':
 					$obj->status = true;
@@ -1307,10 +1308,14 @@ class MetasController extends Controller
 				break;
 			}
 
+		}else{
+			$obj->status = false;
+			$obj->title = 'Sin registros encontrados';
+			$obj->mensaje = 'No se encontraron datos para la UPP: ' . $upp;
+
 		}
 		return $obj;
-	}
-	
+	}	
 	function checkGoals($upp)
 	{
 		$anioMax = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', $upp)->max('ejercicio');
@@ -1373,6 +1378,9 @@ class MetasController extends Controller
 			} 
 			if ($s['status']) {
 				DB::beginTransaction();
+				CierreMetas::where(['clv_upp' => $upp, 'ejercicio' => $anio])->update([
+					'confirmado'=>1
+				]);
 				$metas = MetasHelper::actividades($upp, 0,$anio);
 				$i = 0;
 				foreach ($metas as $key) {
