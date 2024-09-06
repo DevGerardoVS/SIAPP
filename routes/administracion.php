@@ -61,7 +61,7 @@ Route::controller(UsuarioController::class)->group(function () {
 	});
 
 	Route::controller(CargaManualesController::class)->group(function (){
-		Route::get('/amd-configuracion/manuales', 'index')->name('viewManuales');
+		Route::get('/configuraciones/manuales', 'index')->name('viewManuales');
 		Route::post('/amd-configuracion/get-manuales', 'getManuales')->name('get_manuales');
 		Route::get('/amd-configuracion/get-usuarios', 'getUsers')->name('get_tipos_usuarios');
 		Route::post('/amd-configuracion/add-manual', 'saveManual')->name('add_manual');
@@ -120,6 +120,7 @@ Route::controller(UsuarioController::class)->group(function () {
 		Route::post('/Reportes/analisis-informativo-mml/data-upp/{ejercicio?}','getUPP')->name('get_upp'); // Obtener UPP de acuerdo al ejercicio
 		Route::post('/Reportes/analisis-informativo-mml/data-programa/{clv_upp?}','getPrograma')->name('get_programa'); // Obtener programa de acuerdo a la UPP
 		Route::post('/Reportes/download/{nombre}', 'downloadReport')->name('downloadReport'); // Descargar reportes
+		Route::get('/Reportes/names/{anio?}', 'names')->name('reporteNames'); // nombres reportes ley hacendaria
 	});
 
 	Route::controller(AdmonCapturaController::class)->group(function(){

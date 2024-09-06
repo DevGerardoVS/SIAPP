@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\DB;
 use App\Models\administracion\Sistema;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\catalogos\CatPermisos;
+use App\Models\administracion\PermisosUpp;
+
 
 function verifyRole($role){
     $validation = Auth::user()->hasRole($role);
@@ -124,13 +128,20 @@ function check_sistema($id_group) {
 }
 
 function getEntidadEje($upp,$ur,$anio) {
-    $resul = DB::table('programacion_presupuesto')
-        ->select(DB::raw('CONCAT(programacion_presupuesto.upp,programacion_presupuesto.subsecretaria,programacion_presupuesto.ur) AS entidad'))
-        ->where('programacion_presupuesto.ur', '=', $ur)
-        ->where('programacion_presupuesto.upp', '=', $upp)
-        ->where('programacion_presupuesto.ejercicio', '=',$anio)
-        ->first();
+    try {
+        $resul = DB::table('v_epp')
+        ->select(DB::raw('CONCAT(clv_upp,clv_subsecretaria,clv_ur) AS entidad'))
+        ->where([
+            'clv_upp' => $upp,
+            'clv_ur' => $ur,
+            'ejercicio' => $anio,
+            'deleted_at' => null
+        ])->first();
     return $resul->entidad;
+    } catch (\Throwable $th) {
+        Log::debug($th);
+    }
+
 }
 function getCatUpp($ejercicio)
 {
@@ -176,5 +187,61 @@ function getCatUr($ejercicio,$upp){
         $ur =$ur->orderBy('clv_ur')->get();
     return $ur;
  }
+ function getEjercicios(){
+    $ejercicios = DB::table('cierre_ejercicio_metas')
+    ->select('ejercicio')
+    ->distinct()
+    ->orderBy('ejercicio')
+    ->get();
+    if(count($ejercicios)==0)
+    {
+    $fecha = Carbon::now();
+    $ejercicios = [(object)["ejercicio"=>$fecha->year]];
+    }
+    return $ejercicios;
+}
 
+function check_assignFrontCM($m)
+{
+    $permiso = DB::table('adm_funciones')
+        ->select('id')
+        ->where('modulo', $m)
+        ->where('funcion', 'CargaMasiva')->first();
+    if ($permiso) {
+        $relPermiso = DB::table('adm_rel_funciones_grupos')
+            ->select('id')
+            ->where('id_funcion', $permiso->id)
+            ->where('id_grupo', auth::user()->id_grupo)->first();
+        if ($relPermiso) {
+            return true;
+        } else {
+            return false;
+        }
 
+    } else
+        return false;
+}
+function checkAcces($permiso){
+    $status = false;
+    if(Auth::user()->id_grupo!=1){
+        $cat = CatPermisos::where([
+            'nombre'=>$permiso,
+            'id_sistema'=>2
+        ])->pluck('id');
+        $resul= PermisosUpp::where([
+            'descripcion'=>Auth::user()->clv_upp,
+            'id_permiso'=> $cat
+            ])->get();
+        if(count($resul)){
+            if(Auth::user()->id_grupo !=7){
+                $status = true;
+            }
+           
+        }
+
+    }else{
+        $status = true;
+    }
+
+    return $status;
+}

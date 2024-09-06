@@ -31,6 +31,54 @@ let mesesName = [
 let actividades = [];
 let bandera = false
 var dao = {
+    optionTabs: function (id, anio, upp, ur) {
+        ur = ur != null ? ur : '0';
+        /* upp = upp != null ? ur : '0'; */
+        switch (id) {
+            case 'metas-tab':
+                dao.limpiar('A');
+                dao.getData(upp, ur,anio);
+                break;
+            case 'capturadas-tab':
+                dao.getDataCapturadas(upp, ur, anio);
+                break;
+        }
+        
+    },
+    getDataCapturadas: function (upp, ur, anio) {
+        $.ajax({
+            type: "GET",
+            url: "/actividades/data/" + upp + "/" + ur + "/" + anio,
+            dataType: "json"
+        }).done(function (_data) {
+            _table = $("#proyectoM");
+            _columns = [
+                { "aTargets": [0], "mData": [0] },
+                { "aTargets": [1], "mData": [1] },
+                { "aTargets": [2], "mData": [2] },
+                { "aTargets": [3], "mData": [3] },
+                { "aTargets": [4], "mData": [4] },
+                { "aTargets": [5], "mData": [5] },
+                { "aTargets": [6], "mData": [6] },
+                { "aTargets": [7], "mData": [7] },
+                { "aTargets": [8], "mData": [8] },
+                { "aTargets": [9], "mData": [9] },
+                { "aTargets": [10], "mData": [10] },
+                { "aTargets": [11], "mData": [11] },
+                { "aTargets": [12], "mData": [12] },
+                { "aTargets": [13], "mData": [13] },
+                { "aTargets": [14], "mData": [14] },
+                { "aTargets": [15], "mData": [15] },
+                { "aTargets": [16], "mData": [16] },
+                { "aTargets": [17], "mData": [17] },
+                { "aTargets": [18], "mData": [18] },
+                { "aTargets": [19], "mData": [19] }
+            ];
+            _height = '1px';
+            _pagination = 15;
+            _gen.setTableScrollFotter(_table, _columns, _data);
+        });
+    },
     checkCombination: function (upp) {
         $.ajax({
             type: "GET",
@@ -46,12 +94,12 @@ var dao = {
                 $("#icono").removeClass("fa fa-info-circle fa-5x d-flex justify-content-center");
                 $('#texto').text('');
                 if ($('#upp').val() != '') {
-                    dao.getUrs($('#upp').val());
+                    dao.getUrs($('#anio_filter').val(),$('#upp_filter').val());
                 } else {
                     if ($('#upp_filter').val() != '') {
-                        dao.getUrs($('#upp_filter').val());
+                        dao.getUrs($('#anio_filter').val(),$('#upp_filter').val());
                     } else {
-                        dao.getUrs('0');
+                        dao.getUrs($('#anio_filter').val(),$('#upp_filter').val());
                     }
 
                 }
@@ -61,7 +109,7 @@ var dao = {
             } else {
                 $(".CargaMasiva").hide();
                 $(".btnSave").hide();
-                dao.getUrs('0');
+                dao.getUrs($('#anio_filter').val(),$('#upp_filter').val());
                 $('#carga').hide();
                 $("#ur_filter").attr('disabled', 'disabled');
                 $("#tipo_Ac").attr('disabled', 'disabled');
@@ -90,17 +138,29 @@ var dao = {
 
         });
     },
-    getData: function (upp, ur) {
-        /*   var data = new FormData();
-          if ($('#upp').val() != '') {
-              data.append('ur_filter', ur);
-          } else {
-              data.append('ur_filter', ur);
-              data.append('upp_filter', upp);
-          } */
+    getUpps: function () {
         $.ajax({
             type: "GET",
-            url: "/calendarizacion/data/" + upp + "/" + ur,
+            url: '/calendarizacion/upps',
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        }).done(function (data) {
+            const { upp } = data;
+            var par = $('#upp_filter');
+            par.html('');
+            par.append(new Option("Seleccione una UPP", ""));
+            document.getElementById("upp_filter").options[0].disabled = true;
+            $.each(upp, function (i, val) {
+                par.append(new Option(val.upp, val.clv_upp));
+            });
+
+
+        });
+    },
+    getData: function (upp, ur,anio) {
+        $.ajax({
+            type: "GET",
+            url: "/calendarizacion/data/" + upp + "/" + ur+"/"+anio,
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (_data) {
@@ -142,9 +202,10 @@ var dao = {
                 $('.btnSave').hide();
                 $(".CargaMasiva").hide();
                 if ($('#upp').val() == '') {
-                    dao.getUrs($('#upp_filter').val());
+                    dao.getUrs($('#anio_filter').val(),$('#upp_filter').val());
+                    
                 } else {
-                    dao.getUrs($('#upp').val());
+                    dao.getUrs($('#anio_filter').val(),$('#upp_filter').val());
                 }
 
             } else {
@@ -158,11 +219,12 @@ var dao = {
 
         });
     },
-    getUrs: function (upp) {
+    getUrs: function (anio,upp) {
         $('#ur_filter').empty();
+        console.log('getUrs',{anio,upp});
         $.ajax({
             type: "GET",
-            url: '/calendarizacion/urs/' + upp,
+            url: '/calendarizacion/urs/' + anio + '/' + upp,
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
@@ -176,6 +238,7 @@ var dao = {
             });
         });
     },
+    
     nCont: function () {
         if ($('#nContinua').val()!='') {
             contValue = $('#nContinua').val();
@@ -645,25 +708,7 @@ var dao = {
             return true;
         }
     },
-    getUpps: function () {
-        $.ajax({
-            type: "GET",
-            url: '/calendarizacion/upps',
-            dataType: "JSON",
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-        }).done(function (data) {
-            const { upp } = data;
-            var par = $('#upp_filter');
-            par.html('');
-            par.append(new Option("Seleccione una UPP", ""));
-            document.getElementById("upp_filter").options[0].disabled = true;
-            $.each(upp, function (i, val) {
-                par.append(new Option(val.upp, val.clv_upp));
-            });
 
-
-        });
-    },
     getPlantillaCmUpp: function () {
         let upp = $('#upp').val() != '' ? $('#upp').val() : $('#upp_filter').val();
         const url = "/actividades/proyecto_calendario/" + upp;
@@ -802,9 +847,15 @@ var dao = {
             Swal.fire({
                 icon: response.icon,
                 title: response.title,
-                text: response.text
-            });
-
+                text: response.text,
+                showCancelButton: false,
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Aceptar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.reload();
+                }
+            });          
 
         });
     },
@@ -833,12 +884,14 @@ var dao = {
         });
     },
     getSelect: function () {
+        console.log('getSelect');
         $.ajax({
             type: "GET",
             url: '/calendarizacion/selects',
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
+            console.log('getSelect',data);
             const { unidadM, beneficiario } = data;
             var med = $('#medida');
             med.html('');
@@ -987,10 +1040,10 @@ var dao = {
             }
         });
         if ($('#upp').val() == '') {
-            dao.getUrs(0);
+            dao.getUrs($('#anio_filter').val(),$('#upp_filter').val());
         } else {
             upp = $('#upp').val();
-            dao.getUrs(upp);
+            dao.getUrs($('#anio_filter').val(),$('#upp_filter').val());
         }
        
         dao.getSelect();
@@ -1109,6 +1162,7 @@ var dao = {
         })
 
     },
+    
     arrEquals: function (numeros) {
         let duplicados = [];
         let bool = numeros.length;
@@ -1286,6 +1340,13 @@ $(document).ready(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+    $(".nav-link").on("click", function () {
+        let id = $(".active")[0].id;
+        let anio = $("#anio_filter").val();
+        let upp = $("#upp_filter").val();
+        let ur = $("#ur_filter").val();
+        dao.optionTabs(id, anio, upp, ur);
+    });
     $(".CargaMasiva").hide();
     $(".btnSave").hide();
     $("#beneficiario").on('paste', function (e) {
@@ -1299,13 +1360,42 @@ $(document).ready(function () {
     } else {
         dao.checkCombination($('#upp').val())
     }
+    $('#anio_filter').change(() => {
+        let id = $(".active")[0].id;
+        let anio = $("#anio_filter").val();
+        let upp = $("#upp_filter").val();
+        let ur = $("#ur_filter").val();
+        dao.optionTabs(id, anio, upp, ur);
+    });
+/*     $('#upp_filter').change(() => {
+    
+        let id = $(".active")[0].id;
+        let anio = $("#anio_filter").val();
+        let upp = $("#upp_filter").val();
+        let ur = $("#ur_filter").val();
+       dao.optionTabs(id, anio, upp, ur);
+    }); */
     $('#upp_filter').change(() => {
+    
+       // $("#btn_exportMetas").removeAttr('style');
+        $("#ur_filter").removeAttr('disabled');
+        let id = $(".active")[0].id;
+        let anio = $("#anio_filter").val();
+        let upp = $("#upp_filter").val();
+        dao.getUrs(anio, upp);
         dao.checkCombination($('#upp_filter').val());
         dao.rCMetasUpp($('#upp_filter').val());
+        let ur = $("#ur_filter").val();
+       dao.optionTabs(id, anio, upp, ur);
+
     });
     $('#ur_filter').change(() => {
-        dao.clearUR()
-        dao.getData($('#upp_filter').val(), $('#ur_filter').val());
+        console.log('click ur');
+        let id = $(".active")[0].id;
+        let anio = $("#anio_filter").val();
+        let upp = $("#upp_filter").val();
+        let ur = $("#ur_filter").val();
+       dao.optionTabs(id, anio, upp, ur);
         
         $('#sel_actividad').empty();
         $('#sel_actividad').append("<option value=''class='text-center' ><b>-- Actividad--</b></option>");
@@ -1317,7 +1407,6 @@ $(document).ready(function () {
     $('#sel_fondo').change(() => {
         dao.getActividasdesMir($('#sel_fondo').val())
         dao.getMeses($('#area').val(), $('#sel_fondo').val());
-
     });
     $('#sel_actividad').change(() => {
         if ($('#sel_fondo').val() != '' && $('#sel_fondo').val() != null) {

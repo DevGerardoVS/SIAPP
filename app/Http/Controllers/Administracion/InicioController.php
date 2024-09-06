@@ -19,13 +19,14 @@ use App\Exports\InicioExport;
 class InicioController extends Controller
 {
     //
-    public static function GetInicioA(){
+    public static function GetInicioA(Request $request){
         try {
 
-            $anio_act = date('Y');
             $dataSet = array();
-           
-            $anio_act = cierreEjercicio::max('ejercicio');
+
+            if($request->anio == null || $request->anio =="") $anio_act = cierreEjercicio::max('ejercicio'); 
+            else $anio_act = $request->anio;
+            
             //Log::channel('daily')->debug('anio '.$anio_act);
 
             $data = DB::select('CALL inicio_a('.$anio_act.')');
@@ -55,16 +56,14 @@ class InicioController extends Controller
         }
     }
 
-    public static function GetInicioB(){
+    public static function GetInicioB(Request $request){
         try {
-            $anio_act = date('Y');
             $dataSet = array();
 
-            $anio_act = cierreEjercicio::max('ejercicio');
+            if($request->anio == null || $request->anio =="") $anio_act = cierreEjercicio::max('ejercicio'); 
+            else $anio_act = $request->anio;
 
             $data = DB::select('CALL inicio_b('.$anio_act.')');
-
-
 
             /*$data = DB::table('inicio_b')
             ->where("ejercicio", "=", function($query){
@@ -130,24 +129,55 @@ class InicioController extends Controller
         return response()->download($file,$name,$headers);
     }
     
-    public function getFondos(){
-        $fondos = DB::table("techos_financieros as tf")
-        ->join("fondo as f", function($join){
-            $join->on("f.clv_fondo_ramo", "tf.clv_fondo");
-        })
-        ->select("tf.clv_fondo", "tf.ejercicio", "f.fondo_ramo")
-        ->where("ejercicio", "=", function($query){
-                $query->from("techos_financieros")
-                ->select("ejercicio")
-            ->limit(1)
+    public function getFondos(Request $request){
+
+        $ejercicios = DB::table("catalogo")
+            ->select("ejercicio")
             ->whereNull("deleted_at")
+            ->where("grupo_id","UNIDAD RESPONSABLE")
+            ->groupBy("ejercicio")
             ->orderBy("ejercicio","desc")
-            ->groupBy("ejercicio");
-        })
-        ->whereNull("tf.deleted_at")
-        ->groupBy("tf.clv_fondo")
-        ->get();
-        return $fondos;
+            ->get();
+
+        if($request->anio == null || $request->anio ==""){
+
+            $fondos = DB::table("techos_financieros as tf")
+            ->join("catalogo as c", "c.clave","=","tf.clv_fondo")
+            ->select("tf.clv_fondo", "tf.ejercicio", "c.descripcion as fondo_ramo")
+            ->where("c.ejercicio", "=", function($query){
+                $query->from("techos_financieros")
+                ->selectRaw("MAX(ejercicio)")
+                ->whereNull("deleted_at");
+            })
+            ->whereColumn("tf.ejercicio","c.ejercicio")
+            ->where("c.grupo_id","UNIDAD RESPONSABLE")
+            ->whereNull("tf.deleted_at")
+            ->groupBy("tf.clv_fondo")
+            ->get();
+
+        }else{
+            
+            $fondos = DB::table("techos_financieros as tf")
+            ->join("catalogo as c", "c.clave","=","tf.clv_fondo")
+            ->select("tf.clv_fondo", "tf.ejercicio", "c.descripcion as fondo_ramo")
+            ->where("c.ejercicio", $request->anio)
+            ->whereColumn("tf.ejercicio","c.ejercicio")
+            ->where("c.grupo_id","UNIDAD RESPONSABLE")
+            ->whereNull("tf.deleted_at")
+            ->groupBy("tf.clv_fondo")
+            ->get();
+
+        }
+
+        //Log::channel('daily')->debug('ej '.$fondos->toSql());
+
+        $array = array(
+            "ejercicios"=>$ejercicios,
+            "fondos"=>$fondos
+        );
+
+        return $array;
+
     }
 
     public function exportPdf()

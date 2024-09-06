@@ -15,7 +15,10 @@ class CierreMetas extends Model
     protected $fillable = [
         'clv_upp',
         'estatus',
+        'confirmado',
         'ejercicio',
+        'capturista',
+        'activos',
         'created_user',
         'updated_user',
         'deleted_user',
