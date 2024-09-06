@@ -1377,8 +1377,9 @@ class MetasHelper
 		try {
 			$confirm = MetasController::cmetasUpp($request->upp, $anio);
 			$clv = explode('/', $request->area);
-			$pp = substr(strval($clv[0]), 8, 2);
-			Log::debug($pp);
+			$area_funcional =  strval($clv[0]);
+			$rj = explode('$', $clv[1]);
+			$clv_ur=substr($rj[0], 4, 2);
 			$meta = new Metas();
 			$meta->mir_id = $request->tipoAct == 'M'?$actividad:null;
 			$meta->actividad_id = $request->tipoAct !='M'?$act:null;
@@ -1405,7 +1406,8 @@ class MetasHelper
 			$meta->tipo_meta = 'Operativo';
 			/* PROGRAMA:7 SUBPRO:8 PROYECTO:9 */
 			$meta->save();
-			$meta->clv_actividad = "" . $request->upp . "-" . $pp . "-" . $meta->id . "-" . $anio;
+			$clv_actividad = strval($request->upp . '-' .  $clv_ur . '-' . $area_funcional. '-' .$fondo . '-' . $anio . '-' . $meta->id);
+			$meta->clv_actividad =$clv_actividad;
 			if (!$confirm["status"] & Auth::user()->id_grupo == 1) {
 				$meta->estatus = 1;
 			}

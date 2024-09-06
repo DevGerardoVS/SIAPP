@@ -18,7 +18,7 @@ return new class extends Migration
         if (!Schema::hasColumn('cierre_ejercicio_metas', 'confirmado')) {
             Schema::table('cierre_ejercicio_metas', function (Blueprint $table) {
                 $table->tinyInteger('confirmado', 10)->nullable(true)->default(0)->after('estatus')->comment('estatus de confirmacion de metas')->change();
-            });
+            });         
         }
         $Cat = Catalogo::where(['grupo_id' => 'ACTIVIDADES ADMON', 'ejercicio' => 2025])
         ->whereIn('clave',['UUU','21B'])->get();
