@@ -461,7 +461,7 @@ class ClavePreController extends Controller
             if ($esEjercicioCerrado && $perfil != 1) {
                 return response()->json('invalid',200);
             }
-        $tieneMetas = MetasHelper::actividades($request->upp, $request->ejercicio);
+        $tieneMetas = MetasHelper::actividades($request->upp, 0,$request->ejercicio);
         if (count($tieneMetas)) {
             return response()->json('invalid',200);
         }
@@ -629,23 +629,40 @@ class ClavePreController extends Controller
         return response()->json($areaFuncional,200);
     }
     public function getPartidas($clasificacion,$upp){
+    $vPosicionPre = DB::table('clasificacion_economica as ce')
+    ->SELECT('ce.id','ce.deleted_at',
+	'c1.clave as clv_capitulo','c1.descripcion as capitulo',
+	'c2.clave as clv_concepto','c2.descripcion as concepto',
+	'c3.clave as clv_partida_generica','c3.descripcion as partida_generica',
+	'c4.clave as clv_partida_especifica','c4.descripcion as partida_especifica',
+	'c5.clave as clv_tipo_gasto','c5.descripcion as tipo_gasto') 
+	
+    ->JOIN('catalogo as c1','ce.capitulo_id','=','c1.id') 
+    ->JOIN('catalogo as c2', 'ce.concepto_id','=','c2.id')   
+    ->JOIN('catalogo as c3','ce.partida_generica_id','=','c3.id') 
+    ->JOIN('catalogo as c4','ce.partida_especifica_id','=','c4.id') 
+    ->JOIN('catalogo as c5','ce.tipo_gasto_id','=','c5.id') 
+    ->whereNull('ce.deleted_at');
         $array_where = [];
         $esAutorizada = ClavesHelper::esAutorizada($upp);
         array_push($array_where, ['rel_economica_administrativa.clasificacion_administrativa','=',$clasificacion]);
-        array_push($array_where, ['v_posicion_presupuestaria_llaves.deleted_at','=', null]);
+        array_push($array_where, ['vPosicionPre.deleted_at','=', null]);
         if ($esAutorizada) {
-            array_push($array_where, ['v_posicion_presupuestaria_llaves.clv_capitulo','!=',1]);
-            array_push($array_where, ['v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave','!=',398011]);
+            array_push($array_where, ['vPosicionPre.clv_capitulo','!=',1]);
+            array_push($array_where, [DB::raw("CONCAT(vPosicionPre.clv_capitulo,vPosicionPre.clv_concepto,vPosicionPre.clv_partida_generica,vPosicionPre.clv_partida_especifica,vPosicionPre.clv_tipo_gasto)"),'!=',398011]);
         }
         $partidas = DB::table('rel_economica_administrativa')
+        ->leftJoinSub($vPosicionPre, 'vPosicionPre', function ($join){
+            $join->on('rel_economica_administrativa.clasificacion_economica', '=', DB::raw("CONCAT(vPosicionPre.clv_capitulo,vPosicionPre.clv_concepto,vPosicionPre.clv_partida_generica,vPosicionPre.clv_partida_especifica,vPosicionPre.clv_tipo_gasto)"));
+        })
         ->SELECT(
-        'v_posicion_presupuestaria_llaves.clv_capitulo',
-        'v_posicion_presupuestaria_llaves.clv_concepto',
-        'v_posicion_presupuestaria_llaves.clv_partida_generica',
-        'v_posicion_presupuestaria_llaves.clv_partida_especifica',
-        'v_posicion_presupuestaria_llaves.clv_tipo_gasto',
-        'v_posicion_presupuestaria_llaves.partida_especifica')
-        ->leftJoin('v_posicion_presupuestaria_llaves','rel_economica_administrativa.clasificacion_economica','=','v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave')
+        'vPosicionPre.clv_capitulo',
+        'vPosicionPre.clv_concepto',
+        'vPosicionPre.clv_partida_generica',
+        'vPosicionPre.clv_partida_especifica',
+        'vPosicionPre.clv_tipo_gasto',
+        'vPosicionPre.partida_especifica')
+        // ->leftJoin('v_posicion_presupuestaria_llaves','rel_economica_administrativa.clasificacion_economica','=','v_posicion_presupuestaria_llaves.posicion_presupuestaria_llave')
         ->WHERE($array_where)
         ->DISTINCT()
         ->get();
@@ -1232,7 +1249,7 @@ class ClavePreController extends Controller
     }
     public function alertaAvtividades($upp,$ejercicio){
         $estatus = 0;
-        $tieneMetas = MetasHelper::actividades($upp, $ejercicio);
+        $tieneMetas = MetasHelper::actividades($upp, 0,$ejercicio);
         //revisar el estatus en uno si estan confirmadas si no no mostrar mensaje;
         if (count($tieneMetas)) {
             $estatus = $tieneMetas[0]->estatus;
