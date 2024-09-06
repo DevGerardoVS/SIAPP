@@ -84,7 +84,8 @@
         });
 
         $('#fondo_filter').on('change', function(){
-            dt.DataTable().search(this.value).draw();   
+            getDatos();
+            //dt.DataTable().search(this.value).draw();   
         });
 
         getDatos();
@@ -110,10 +111,15 @@
         var tabla = $("#catalogo");
         var tabla_b = $("#catalogoB");
 
+        var anio = $("#ejercicio_filter").val();
+        var formData = new FormData();
+        formData.append("anio",anio);
+
         try{
             $.ajax({
             url:"{{route('inicio_a')}}",
             type: "POST",
+            data: formData,
             dataType: 'json',
             processData: false,
             contentType: false,
@@ -196,6 +202,7 @@
             $.ajax({
             url:"{{route('inicio_b')}}",
             type: "POST",
+            data: formData,
             dataType: 'json',
             processData: false,
             contentType: false,
@@ -292,7 +299,7 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                console.log(data);
+                //console.log(data);
                 var par = $('#fondo_filter');
                 var anios = $("#ejercicio_filter");
 
