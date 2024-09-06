@@ -13,13 +13,26 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 
 class InicioExport implements FromCollection, ShouldAutoSize, WithHeadings, WithColumnWidths, WithStyles, WithColumnFormatting
 {
+
+    protected $yr;
+
+    function __construct($yr) {
+        $this->yr = $yr;
+    }
+
     public function collection()
     {
-        $data = DB::table('inicio_b')
+        $data = DB::select('CALL inicio_b('.$this->yr.')');
+
+        return collect($data);
+
+        /*$data = DB::table('inicio_b')
             ->select(DB::raw('
             ejercicio,
             clave,
@@ -34,7 +47,7 @@ class InicioExport implements FromCollection, ShouldAutoSize, WithHeadings, With
                 ->orderBy("ejercicio","desc")
                 ->groupBy("ejercicio");})
             ->get();
-        return $data;
+        return $data;*/
     }
 
     /**
@@ -72,12 +85,12 @@ class InicioExport implements FromCollection, ShouldAutoSize, WithHeadings, With
     public function columnWidths(): array
     {
         return [
-            'A' => 9,
-            'B' => 14,
-            'C' => 53,
-            'D' => 23,
-            'E' => 23,
-            'F' => 12
+            'A' => 10,
+            'B' => 75,
+            'C' => 25,
+            'D' => 25,
+            'E' => 25,
+            'F' => 15
         ];
     }
  

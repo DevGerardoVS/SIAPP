@@ -14,13 +14,12 @@
         <h2>Inicio</h2>
     </header>
 <br>
-
-<div class="col-sm-12 col-md-4 col-lg-2">
-    <label class="form-label fw-bold mt-md-1">Ejercicio:</label>
-    <label class="form-label fw-bold mt-md-1" id="anio"></label>
+<div class="form-group d-flex align-items-center col-sm-12 col-md-4 col-lg-2" style="display:flex;align-items:center">
+    <label class="form-label fw-bold mt-md-1" style="margin-right: 10px">Ejercicio:</label>
     <select class="form-control filters filters_fondo" id="ejercicio_filter" name="ejercicio_filter" autocomplete="ejercicio_filter">
     </select>
 </div>
+
     <div class="row justify-content-center">
         <div class="col-md-8">
             <table id="catalogo" class="table table-striped table-bordered text-center " style="width:100%">
@@ -88,7 +87,7 @@
             //dt.DataTable().search(this.value).draw();   
         });
 
-        getDatos();
+        
         getFondos(); 
 
         $("#ejercicio_filter").on('change', function(){
@@ -103,8 +102,11 @@
     }
 
     function exportExcel(){
-        _url = "/export-Excel";
+        var anio = $("#ejercicio_filter").val();
+        //console.log(anio);
+        _url = "/export-Excel/"+anio;
         window.location.href = _url;
+       
     }
 
     function getDatos(){
@@ -115,6 +117,9 @@
         var formData = new FormData();
         formData.append("anio",anio);
 
+        tabla.DataTable().destroy();
+        tabla_b.DataTable().destroy();
+        
         try{
             $.ajax({
             url:"{{route('inicio_a')}}",
@@ -300,31 +305,37 @@
             contentType: false,
             success: function(data) {
                 //console.log(data);
-                var par = $('#fondo_filter');
-                var anios = $("#ejercicio_filter");
+                try {
+                    var par = $('#fondo_filter');
+                    var anios = $("#ejercicio_filter");
 
-                var fondos = data.fondos;
-                
-                par.html('');
-                par.append(new Option("Todos", ""));
-                $.each(fondos, function(i, val){
-                    par.append(new Option(fondos[i].clv_fondo +" "+ fondos[i].fondo_ramo, fondos[i].clv_fondo+" "+ fondos[i].fondo_ramo));
-                });
-
-                var ejercicios = data.ejercicios;
-
-                $('#anio').text(ejercicios[0].ejercicio);
-
-                anios.empty();
-
-                $.each(ejercicios, function(i, val){
-                    anios.append(new Option(ejercicios[i].ejercicio,ejercicios[i].ejercicio));
+                    var fondos = data.fondos;
                     
-                    if(anio==ejercicios[i].ejercicio){
-                        //console.log(anio+" "+ejercicios[i].ejercicio);
-                        $("#ejercicio_filter option[value="+anio+"]").prop('selected',true);
-                    } 
-                });
+                    par.html('');
+                    par.append(new Option("Todos", ""));
+                    $.each(fondos, function(i, val){
+                        par.append(new Option(fondos[i].clv_fondo +" "+ fondos[i].fondo_ramo, fondos[i].clv_fondo+" "+ fondos[i].fondo_ramo));
+                    });
+
+                    var ejercicios = data.ejercicios;
+
+                    $('#anio').text(ejercicios[0].ejercicio);
+
+                    anios.empty();
+
+                    $.each(ejercicios, function(i, val){
+                        anios.append(new Option(ejercicios[i].ejercicio,ejercicios[i].ejercicio));
+                        
+                        if(anio==ejercicios[i].ejercicio){
+                            //console.log(anio+" "+ejercicios[i].ejercicio);
+                            $("#ejercicio_filter option[value="+anio+"]").prop('selected',true);
+                        } 
+                    });
+                } catch (error) {
+                    
+                }
+                
+                getDatos();
 
             }
         });
