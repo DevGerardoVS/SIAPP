@@ -97,7 +97,8 @@
 
     });
     function exportPdf(){
-        _url = "/export-Pdf";
+        var anio = $("#ejercicio_filter").val();
+        _url = "/export-Pdf/"+anio;
         window.location.href = _url;
     }
 

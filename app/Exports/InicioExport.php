@@ -28,6 +28,8 @@ class InicioExport implements FromCollection, ShouldAutoSize, WithHeadings, With
 
     public function collection()
     {
+        if($this->yr== null || $this->yr== "" || $this->yr == "null") $this->yr = date('Y');
+
         $data = DB::select('CALL inicio_b('.$this->yr.')');
 
         return collect($data);

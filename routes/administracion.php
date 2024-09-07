@@ -43,7 +43,7 @@ Route::controller(UsuarioController::class)->group(function () {
 		Route::post('adm-inicio/b', 'GetInicioB')->name('inicio_b');
 		Route::post('/fondos/inicio', 'getFondos')->name('get_fondos');
 		Route::get('/export-Excel/{yr?}', 'exportExcel');
-		Route::get('/export-Pdf', 'exportPdf');
+		Route::get('/export-Pdf/{yr?}', 'exportPdf');
 	});
 
 	Route::controller(ConfiguracionesController::class)->group(function (){

@@ -178,11 +178,16 @@ class InicioController extends Controller
 
     }
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
         ini_set('max_execution_time', 5000);
         ini_set('memory_limit', '1024M');
-        $data = DB::table('inicio_b')
+
+        if($request->yr== null || $request->yr== "" || $request->yr == "null") $request->yr = date('Y');
+
+        $data = DB::select('CALL inicio_b('.$request->yr.')');
+
+        /*$data = DB::table('inicio_b')
         ->select(DB::raw('
             ejercicio,
             clave,
@@ -196,9 +201,9 @@ class InicioController extends Controller
                 ->limit(1)
                 ->orderBy("ejercicio","desc")
                 ->groupBy("ejercicio");})
-        ->get();
+        ->get();*/
         
-        view()->share(['data'=>$data,"anio"=>$data[0]->ejercicio]);
+        view()->share(['data'=>collect($data),"anio"=>$data[0]->ejercicio]);
         $pdf = PDF::loadView('inicioPdf')->setPaper('a4', 'landscape');
         $b = array(
             "username" => Auth::user()->username,
