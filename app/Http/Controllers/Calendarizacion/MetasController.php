@@ -128,17 +128,14 @@ class MetasController extends Controller
 		if ($upp != 0 && $upp != null) {
 			 /* validacion de las tablas de cierres */
 			$check = $this->checkCierre($upp, $anio_filter);
-			Log::debug(json_encode($check));
 			if ($check->status) {
 				/*Validacion de confirmacion mir y programacion_presupuesto - existan datos  */
 				$check = $this->revisionUpp($upp, $anio_filter,$check->confirmado);
-							 /* validacion de las tablas de cierres */
-			$check = $this->checkCierre($upp, $anio_filter);
+							 /* validacion de las tablas de revisionUpp */
 				if ($check->status) {
 						/*que existan datos para la ur si viene en el filtro */
 					$check = $this->revisionUppUr($upp, $ur_filter, $anio_filter,$check->confirmado);
-								 /* validacion de las tablas de cierres */
-			$check = $this->checkCierre($upp, $anio_filter);
+								 /* validacion de las tablas de revisionUppUr */
 					if ($check->status) {
 						$activs = DB::table("programacion_presupuesto")
 							->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
@@ -181,13 +178,13 @@ class MetasController extends Controller
 							$activs = $activs->where('programacion_presupuesto.tipo', '=', 'RH');
 						}
 						$activs = $activs->get();
-						foreach ($activs as $key) {
-							$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
-							$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.newGetFyA(" . strval('"'.$key->area.'"') . "," . strval('"'.$key->entidad.'"') . ")' ></div>";
-							$fondos = MetasHelper::fondos($key->area, $key->entidad, $anio_filter);
-							$existM = MetasController::existMeta($key->area, $key->entidad, $anio_filter, $fondos->fondoArr);
-							$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $fondos->fondoStr, $existM->exist, $accion];
-						}
+							foreach ($activs as $key) {
+								$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
+								$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.newGetFyA(" . strval('"'.$key->area.'"') . "," . strval('"'.$key->entidad.'"') . ")' ></div>";
+								$fondos = MetasHelper::fondos($key->area, $key->entidad, $anio_filter);
+								$existM = MetasController::existMeta($key->area, $key->entidad, $anio_filter, $fondos->fondoArr);
+								$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $fondos->fondoStr, $existM->exist, $accion];
+							}
 					}
 
 				}
