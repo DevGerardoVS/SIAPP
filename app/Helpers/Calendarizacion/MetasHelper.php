@@ -14,7 +14,6 @@ use App\Http\Controllers\Calendarizacion\MetasController;
 
 class MetasHelper
 {
-
 	public static function actividades($upp, $ur, $anio)
 	{
 		try {
@@ -787,9 +786,7 @@ class MetasHelper
 	public static function validateMesesfinalTotal($anio)
 	{
 		$metas = MetasHelper::actividadesMesesTotal($anio);
-		Log::debug("METAS".count($metas));
 		$claves = MetasHelper::clavesPpMesesTotal($anio);
-		Log::debug("claves".count($claves));
 		$aux = 0;
 		$ids = [];
 		foreach ($metas as $k) {
@@ -1487,6 +1484,8 @@ class MetasHelper
 	{
 		$areaAux = str_split($area);
 		$entidadAux = str_split($entidad);
+		Log::debug($areaAux);
+		Log::debug($entidadAux);
 		$fondos = DB::table('programacion_presupuesto')
 		->select(
 			'programacion_presupuesto.fondo_ramo as fondo',
@@ -1518,5 +1517,4 @@ class MetasHelper
 		$fond->fondoArr=$arr;
 		return $fond;
 	}
-
 }
