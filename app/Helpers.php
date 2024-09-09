@@ -145,21 +145,24 @@ function getEntidadEje($upp,$ur,$anio) {
 }
 function getCatUpp($ejercicio)
 {
-    $upp = DB::table('catalogo as c06')
+    $upp = DB::table('entidad_ejecutora as ej')
+    ->leftJoin('catalogo as c06', 'ej.upp_id', '=', 'c06.id')
     ->select(
         'c06.clave as clv_upp',
-        DB::raw('CONCAT(c06.clave, "  ",c06.descripcion) as upp'))
-        ->where(['c06.deleted_at'=>null,
-        'c06.grupo_id'=>6,
-        'c06.ejercicio'=>$ejercicio
+        DB::raw('CONCAT(c06.clave, "  ",c06.descripcion) as upp')
+    )->where([   
+            'ej.deleted_at' => null,
+            'ej.ejercicio' => $ejercicio,
+            'ej.estatus'=>4
         ])
-    ->distinct()
-    ->orderBy('clv_upp');
+        ->whereNotNull('ej.upp_id')
+        ->whereNotNull('ej.subsecretaria_id')
+        ->whereNotNull('ej.ur_id')
+    ->distinct();
     if(auth::user()->id_grupo==4 || auth::user()->id_grupo==7){
-        $upp = $upp->where('c06.clave', auth::user()->clv_upp);
+        $upp = $upp->where('c06.clave',auth::user()->clv_upp);
     }
-
-    $upp = $upp->get();
+        $upp =$upp->orderBy('clv_upp')->get();
     return $upp;
 }
 function getCatUr($ejercicio,$upp){
