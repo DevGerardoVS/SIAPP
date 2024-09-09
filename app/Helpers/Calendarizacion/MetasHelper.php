@@ -1480,31 +1480,31 @@ class MetasHelper
 			throw new \Exception($exp->getMessage());
 		}
 	}
-	public static function fondos($area, $entidad,$anio)
+	public static function fondos($obj)
 	{
-		$areaAux = str_split($area);
+/* 		$areaAux = str_split($area);
 		$entidadAux = str_split($entidad);
 		Log::debug($areaAux);
-		Log::debug($entidadAux);
+		Log::debug($entidadAux); */
 		$fondos = DB::table('programacion_presupuesto')
 		->select(
 			'programacion_presupuesto.fondo_ramo as fondo',
 		)
 		->where('programacion_presupuesto.deleted_at', null)
-		->where('programacion_presupuesto.finalidad', intval($areaAux[0]))
-		->where('programacion_presupuesto.funcion', intval($areaAux[1]))
-		->where('programacion_presupuesto.subfuncion', intval($areaAux[2]))
-		->where('programacion_presupuesto.eje', intval($areaAux[3]))
-		->where('programacion_presupuesto.linea_accion', strval($areaAux[4]. $areaAux[5]))
-		->where('programacion_presupuesto.programa_sectorial', $areaAux[6])
-		->where('programacion_presupuesto.tipologia_conac', $areaAux[7])
-		->where('programacion_presupuesto.upp', strval($entidadAux[0].$entidadAux[1].$entidadAux[2]))
-		->where('programacion_presupuesto.ur', strval($entidadAux[4].$entidadAux[5]))
-		->where('programa_presupuestario', strval($areaAux[8].$areaAux[9]))
-		->where('subprograma_presupuestario',  strval($areaAux[10].$areaAux[11].$areaAux[12]))
-		->where('proyecto_presupuestario',  strval($areaAux[13].$areaAux[14].$areaAux[15]))
+		->where('programacion_presupuesto.finalidad', $obj->finalidad)
+		->where('programacion_presupuesto.funcion', $obj->funcion)
+		->where('programacion_presupuesto.subfuncion',$obj->subfuncion)
+		->where('programacion_presupuesto.eje', $obj->eje)
+		->where('programacion_presupuesto.linea_accion', $obj->linea)
+		->where('programacion_presupuesto.programa_sectorial', $obj->programaSec)
+		->where('programacion_presupuesto.tipologia_conac',$obj->tipologia)
+		->where('programacion_presupuesto.upp',$obj->upp)
+		->where('programacion_presupuesto.ur',$obj->ur)
+		->where('programa_presupuestario', $obj->programa)
+		->where('subprograma_presupuestario',$obj->subprograma)
+		->where('proyecto_presupuestario',  $obj->clv_proyecto)
 		->groupByRaw('programacion_presupuesto.fondo_ramo')
-		->where('programacion_presupuesto.ejercicio',$anio)
+		->where('programacion_presupuesto.ejercicio',$obj->ejercicio)
 		->get();
 		$fond = new \stdClass;
 		$str = '';
