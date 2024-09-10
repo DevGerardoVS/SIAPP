@@ -15,23 +15,27 @@
             <br>
             
             <div class="contenedorBordeGuinda contenedorBColor" style="width: 95%; margin-left: 2%;">
-                <form action="{{ route('downloadLogs') }}" method="POST" style="text-align: center">
+                <form id='formLogs'{{-- action="{{ route('downloadLogs') }}" method="POST"  --}}style="text-align: center">
                     @csrf
                     <div class="wrap1">
                         <div style="width:50%; margin-left: 25%;">
                             <label>Archivo</label>
                             <select class="form-control form-select" name="selected" id="selected">
-                                @foreach ($logs as $log)
-                                    <option value="{{$log['filename']}}">{{$log['filename']}}</option>
-                                @endforeach
                             </select>
                         </div>
                         <br>
                         <div>
-                            <button class="btn btn-primary hoverButtonStyle " id="addPM" style="width:15%;">
-                                <i class="fas  fa-download" style="color: #6a0e4a"></i> 
+                            <button class="btn btn-success hoverButtonStyle " id="download" style="width:15%;" onclick="dao.exportLog()">
+                                <i  class="fa fa-download" aria-hidden="true"></i> 
                                 Descargar 
                             </button>
+                            <button class="btn btn-warning hoverButtonStyle " id="clean" style="width:15%;" onclick="dao.cleantLog()">
+                                <i class="fa fa-eraser" aria-hidden="true"></i> 
+                                Limpiar 
+                            </button>
+                            <button type="button" class="btn btn-danger hoverButtonStyle " id="clean" style="width:15%;" onclick="dao.deleteLog()">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i> 
+                                Eliminar</button>
                         </div>
                     </div>
                 </form>
@@ -40,4 +44,10 @@
             <br>
 
         </div>
+        <script src="/js/administracion/logs/init.js"></script>
+        <script src="/js/utilerias.js"></script>
+        <script>
+            //En las vistas solo se llaman las funciones del archivo init
+          //  init.validateCreate($('#frmCreate'));
+        </script>
     @endsection
