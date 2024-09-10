@@ -83,8 +83,7 @@
         });
 
         $('#fondo_filter').on('change', function(){
-            getDatos();
-            //dt.DataTable().search(this.value).draw();   
+            dt.DataTable().search(this.value).draw();   
         });
 
         
