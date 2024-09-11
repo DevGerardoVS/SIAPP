@@ -88,7 +88,10 @@ Route::group(['middleware' => 'auth'], function () { //proteccion de rutas (AGRE
     Route::get('/cambiar-contrasenia', [App\Http\Controllers\ChangePasswordController::class, 'index'])->name('cambiar_contrasenia');
     Route::post('/contrasenia-confirmada', [App\Http\Controllers\ChangePasswordController::class, 'store'])->name('change_password');
     Route::get('/logs', [App\Http\Controllers\LogController::class, 'logsView'])->name('viewLogs');
-    Route::post('/logs/download', [App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
+    Route::get('/get-logs', [App\Http\Controllers\LogController::class, 'getLogs'])->name('getLogs');
+    Route::get('/logs/download/{file?}', [App\Http\Controllers\LogController::class, 'downloadLogs'])->name('downloadLogs');
+    Route::post('/logs/clean', [App\Http\Controllers\LogController::class, 'clearLog'])->name('clearLog');
+    Route::post('/logs/delete', [App\Http\Controllers\LogController::class, 'DeleteLog'])->name('deleteLog');
     include('administracion.php'); //Agregar las rutas para el módulo de administración en este archivo
     include('calendarizacion.php'); //Agregar las rutas para el módulo de Calendarizacion en este archivo
     include('epp.php'); //Agregar las rutas para el módulo de Epp en este archivo

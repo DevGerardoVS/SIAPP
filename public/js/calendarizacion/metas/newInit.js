@@ -432,14 +432,13 @@ var dao = {
                 mesesV[key] = false;
             }
         }
-
-
         $.ajax({
             type: "GET",
             url: '/actividades/meses-activos/' + idA + "/" + idF+"/"+$('#anio_filter').val(),
             dataType: "JSON",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }).done(function (data) {
+            console.log(data);
             let { mese } = data;
             if (clv_subprograma != 'UUU') {
              
@@ -578,6 +577,7 @@ var dao = {
 
 
             }
+            console.log(mesesV);
         });
     },
     arrEquals: function (numeros) {
@@ -661,67 +661,20 @@ var dao = {
         var data = new FormData(form);
         data.append('sumMetas', $('#tableMetas').find('#sumMetas').val());
         data.append('upp', $('#upp_filter').val());
+        data.append('ur', $('#ur_filter').val());
         data.append('anio', $('#anio_filter').val());
         let aOld = $('#area').val()
         let area = aOld.replace('$', '/')
         data.append('area', area);
         data.append('conmir', $("#conmir").val());
         data.append('tipoAct', $("#tipoAct").val());
-        data.append('tipo_Ac', $('#tipo_Ac').val());
-        if ($('#tipo_Ac').val() == 'Continua') {
-            let index = 1;
-            for (const key in mesesV) {
-                if (Object.prototype.hasOwnProperty.call(mesesV, key)) {
-                    if (Object.values(mesesV[key])) {
-                        data.append(index, contValue);
-                    }
-                }
-                index++;
-            }
-
-/*             if (mesesV.enero) {
-                    data.append(1, contValue);
-            }
-            if (mesesV.febrero) {
-                data.append(2, contValue);
-            } 
-            if (mesesV.marzo) {
-                data.append(3, contValue);
-            } 
-            if (mesesV.abril) {
-                data.append(4, contValue);
-            } 
-            if (mesesV.mayo) {
-                data.append(5, contValue);
-            } 
-            if (mesesV.junio) {
-                data.append(6, contValue);
-            } 
-            if (mesesV.julio) {
-                data.append(7, contValue);
-            } 
-            if (mesesV.agosto) {
-                data.append(8, contValue);
-            } 
-            if (mesesV.septiembre) {
-                data.append(9, contValue);
-            } 
-            if (mesesV.octubre) {
-                data.append(10, contValue);
-            } 
-            if (mesesV.noviembre) {
-                data.append(11, contValue);
-            } 
-            if (mesesV.diciembre) {
-                data.append(12, contValue);
-            }  */
-
+        data.append('tipo_Ac', $('#tableMetas').find('#tipo_Ac').val());
+        for (let i = 1; i < 13; i++) {
+            data.append(i,$('#tableMetas').find('#'+i).val());
+        }
+        if ($('#tableMetas').find('#tipo_Ac').val() == 'Continua') {
             data.append('sumMetas', contValue);
         } else {
-            for (let i = 1; i < 13; i++) {
-                data.append(i,$('#tableMetas').find('#'+i).val());
-                
-            }
             data.append('sumMetas', $('#tableMetas').find('#sumMetas').val());
         }
         $.ajax({
@@ -760,12 +713,15 @@ var dao = {
         $('#addActividad').find('.form-group').removeClass('has-error');
         for (let i = 1; i <= 12; i++) {
             $('#addActividad').find('#' + i).val(0);
+            $('#addActividad').find('#'+i+'_dif').text('');
         }
         $('#addActividad').find('#beneficiario').val("");
         for (let i = 1; i <= 12; i++) {
             $('#addActividad').find("#" + i).prop('disabled', true);
         }
         $('#addActividad').find('#sumMetas').val('');
+        $('#metas_seguimiento').removeClass("alert alert-danger").removeClass("text-center");
+        $('#metas_seguimiento').text("");
     },
     rCMetasUpp: function (upp) {
         $.ajax({
@@ -914,9 +870,11 @@ var dao = {
             $('#addActividad').find('#11').val(data.noviembre);
             $('#addActividad').find('#12').val(data.diciembre);
             $('#addActividad').find('#sumMetas').val(data.total);
-            $('#ar').val(data.ar);
+            let area_funcional = data.ar;
+            $('#ar').val(area_funcional.replaceAll('-',""));
             $('#fondo').val(data.clv_fondo);
             let edit = false;
+            let conSeg = data.conSeguimiento;
             const mese = data.meses;
             for (const key in mesesV) {
                 if (Object.hasOwnProperty.call(mesesV, key)) {
@@ -934,7 +892,8 @@ var dao = {
                                     $('#addActividad').find("#1").prop('disabled', false);
                                     $('#addActividad').find("#1").prop('required', true);
                                 } else {
-                                    if (data.enero !=0) {
+                                    if (data.enero != 0) {
+                                        $('#addActividad').find('#1_dif').text('Antes: '+data.enero);
                                         $('#addActividad').find('#1').val(0);
                                         let sumE = parseInt($('#addActividad').find('#sumMetas').val());
                                         $('#addActividad').find('#sumMetas').val(sumE -data.enero);
@@ -948,7 +907,8 @@ var dao = {
                                     $('#addActividad').find("#2").prop('disabled', false);
                                     $('#addActividad').find("#2").prop('required', true);
                                 } else {
-                                    if (data.febrero !=0) {
+                                    if (data.febrero != 0) {
+                                        $('#addActividad').find('#2_dif').text('Antes: '+data.febrero);
                                         $('#addActividad').find('#2').val(0);
                                         let sumF = parseInt($('#addActividad').find('#sumMetas').val());
                                         $('#addActividad').find('#sumMetas').val(sumF -data.febrero);
@@ -962,10 +922,11 @@ var dao = {
                                     $('#addActividad').find("#3").prop('disabled', false);
                                     $('#addActividad').find("#3").prop('required', true);
                                 } else {
-                                    if (data.marzo !=0) {
+                                    if (data.marzo != 0) {
+                                        $('#addActividad').find('#3_dif').text('Antes: '+data.marzo);
                                         $('#addActividad').find('#3').val(0);
                                         let sumM = parseInt($('#addActividad').find('#sumMetas').val());
-                                $('#addActividad').find('#sumMetas').val(sumM-data.marzo);
+                                        $('#addActividad').find('#sumMetas').val(sumM-data.marzo);
                                     }
                                     $('#addActividad').find("#3").prop('disabled', 'disabled');
 
@@ -977,7 +938,8 @@ var dao = {
                                     $('#addActividad').find("#4").prop('disabled', false);
                                     $('#addActividad').find("#4").prop('required', true);
                                 } else {
-                                    if (data.abril !=0) {
+                                    if (data.abril != 0) {
+                                        $('#addActividad').find('#4_dif').text('Antes: '+data.abril);
                                         $('#addActividad').find('#4').val(0);
                                         let sumA = parseInt($('#addActividad').find('#sumMetas').val());
                                         $('#addActividad').find('#sumMetas').val(sumA -data.abril);
@@ -991,7 +953,8 @@ var dao = {
                                     $('#addActividad').find("#5").prop('disabled', false);
                                     $('#addActividad').find("#5").prop('required', true);
                                 } else {
-                                    if (data.mayo !=0) {
+                                    if (data.mayo != 0) {
+                                        $('#addActividad').find('#5_dif').text('Antes: '+data.mayo);
                                         $('#addActividad').find('#5').val(0);
                                         let sumMY = parseInt($('#addActividad').find('#sumMetas').val());
                                         $('#addActividad').find('#sumMetas').val(sumMY-data.mayo);
@@ -1005,7 +968,8 @@ var dao = {
                                 $('#addActividad').find("#6").prop('disabled', false);
                                 $('#addActividad').find("#6").prop('required', true);
                                 } else {
-                                    if (data.junio !=0) {
+                                    if (data.junio != 0) {
+                                        $('#addActividad').find('#6_dif').text('Antes: '+data.junio);
                                         $('#addActividad').find('#6').val(0);
                                         let sumJ = parseInt($('#addActividad').find('#sumMetas').val());
                                         $('#addActividad').find('#sumMetas').val(sumJ-data.junio);
@@ -1019,7 +983,8 @@ var dao = {
                                     $('#addActividad').find("#7").prop('disabled', false);
                                     $('#addActividad').find("#7").prop('required', true);
                                 } else {
-                                    if (data.julio !=0) {
+                                    if (data.julio != 0) {
+                                        $('#addActividad').find('#7_dif').text('Antes: '+data.julio);
                                         $('#addActividad').find('#7').val(0);
                                         let sumJJ = parseInt($('#addActividad').find('#sumMetas').val());
                                         $('#addActividad').find('#sumMetas').val(sumJJ-data.julio);
@@ -1033,7 +998,8 @@ var dao = {
                                     $('#addActividad').find("#8").prop('disabled', false);
                                     $('#addActividad').find("#8").prop('required', true);
                                 } else {
-                                    if (data.agosto !=0) {
+                                    if (data.agosto != 0) {
+                                        $('#addActividad').find('#8_dif').text('Antes: '+data.agosto);
                                         $('#addActividad').find('#8').val(0);
                                         let sumAG = parseInt($('#addActividad').find('#sumMetas').val());
                                         $('#addActividad').find('#sumMetas').val(sumAG-data.agosto);
@@ -1047,7 +1013,8 @@ var dao = {
                                     $('#addActividad').find("#9").prop('disabled', false);
                                     $('#addActividad').find("#9").prop('required', true);
                                 } else {
-                                    if (data.septiembre !=0) {
+                                    if (data.septiembre != 0) {
+                                        $('#addActividad').find('#9_dif').text('Antes: '+data.septiembre);
                                         $('#addActividad').find('#9').val(0);
                                         let sumS = parseInt($('#addActividad').find('#sumMetas').val());
                                         $('#addActividad').find('#sumMetas').val(sumS-data.septiembre);
@@ -1062,7 +1029,8 @@ var dao = {
                                     $('#addActividad').find("#10").prop('required', true);
                                 } else {
                                     if (data.octubre !=0) {
-                                        $('#10').val(0);
+                                        $('#addActividad').find('#10_dif').text('Antes: '+data.octubre);
+                                        $('#addActividad').find('#10').val(0);
                                         let sumO = parseInt($('#addActividad').find('#sumMetas').val());
                                         $('#addActividad').find('#sumMetas').val(sumO-data.octubre);
                                     }
@@ -1075,12 +1043,13 @@ var dao = {
                                     $('#addActividad').find("#11").prop('disabled', false);
                                     $('#addActividad').find("#11").prop('required', true);
                                 } else {
-                                    if (data.noviembre !=0) {
+                                    if (data.noviembre != 0) {
+                                        $('#addActividad').find('#11_dif').text('Antes: '+data.noviembre);
                                         $('#addActividad').find('#11').val(0);
                                         let sumN = parseInt($('#addActividad').find('#sumMetas').val());
                                         $('#addActividad').find('#sumMetas').val(sumN-data.noviembre);
                                     }
-                                    $("#11").prop('disabled', 'disabled');
+                                    $('#addActividad').find("#11").prop('disabled', 'disabled');
                                 }
                                 break;
                             case 'diciembre':
@@ -1089,8 +1058,9 @@ var dao = {
                                     $('#addActividad').find("#12").prop('disabled', false);
                                     $('#addActividad').find("#12").prop('required', true);
                                 } else {
-                                    if (data.diciembre !=0) {
-                                        $('#12').val(0);
+                                    if (data.diciembre != 0) {
+                                        $('#addActividad').find('#12_dif').text('Antes: '+data.diciembre);
+                                        $('#addActividad').find('#12').val(0);
                                         let sumD = parseInt($('#addActividad').find('#sumMetas').val());
                                        $('#addActividad').find('#sumMetas').val(sumD-data.diciembre);
                                     }
@@ -1110,6 +1080,13 @@ var dao = {
             if (edit) {
                 $('#editMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#editMetas').text("Las claves presupuestarias fueron modificadas y es posible que un mes no tenga presupuesto lo cual fue modificado a CERO");
+            }
+            if (conSeg) {
+                $('#metas_seguimiento').addClass(" alert alert-danger").addClass("text-center");
+                $('#metas_seguimiento').text("Las claves presupuestarias fueron modificadas y es posible que un mes no tenga presupuesto lo cual fue modificado a CERO");
+            } else {
+                $('#metas_seguimiento').removeClass("alert alert-danger").removeClass("text-center");
+                $('#metas_seguimiento').text("");
             }
         });
     },
@@ -1341,6 +1318,204 @@ var dao = {
         $('#firmaModal').modal('hide');
         document.getElementById("frm_eFirma").reset(); 
     },
+    getMesesCont: function (idA, idF, value) {
+        let id = $(".active")[0].id;
+        let view = '';
+        switch (id) {
+            case 'metas-tab':
+                view = 'tableMetas';
+                break;
+            case 'capturadas-tab':
+                view = 'addActividad';
+                break;
+        }
+        
+        for (const key in mesesV) {
+            if (Object.hasOwnProperty.call(mesesV, key)) {
+                mesesV[key] = false;
+            }
+        }
+        $.ajax({
+            type: "GET",
+            url: '/actividades/meses-activos/' + idA + "/" + idF+"/"+$('#anio_filter').val(),
+            dataType: "JSON",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        }).done(function (data) {
+            console.log(data);
+            let { mese } = data;
+
+                for (const key in mese) {
+                    if (Object.hasOwnProperty.call(mese, key)) {
+                        const e = mese[key];
+                        switch (key) {
+                            case 'enero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.enero = true;
+                                    $('#'+view).find("#1").prop('disabled', false);
+                                    $('#'+view).find("#1").prop('required', true);
+                                    $('#'+view).find("#1").val(value);
+                                } else {
+                                    $('#'+view).find("#1").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'febrero':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.febrero = true;
+                                    $('#'+view).find("#2").prop('disabled', false);
+                                    $('#'+view).find("#2").prop('required', true);
+                                    $('#'+view).find("#2").val(value);
+                                } else {
+                                    $('#'+view).find("#2").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'marzo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.marzo = true;
+                                    $('#'+view).find("#3").prop('disabled', false);
+                                    $('#'+view).find("#3").prop('required', true);
+                                    $('#'+view).find("#3").val(value);
+                                } else {
+                                    $('#'+view).find("#3").prop('disabled', 'disabled');
+
+                                }
+                                break;
+                            case 'abril':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.abril = true;
+                                    $('#'+view).find("#4").prop('disabled', false);
+                                    $('#'+view).find("#4").prop('required', true);
+                                    $('#'+view).find("#4").val(value);
+                                } else {
+                                    $('#'+view).find("#4").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'mayo':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.mayo = true;
+                                    $('#'+view).find("#5").prop('disabled', false);
+                                    $('#'+view).find("#5").prop('required', true);
+                                    $('#'+view).find("#5").val(value);
+                                } else {
+                                    $('#'+view).find("#5").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'junio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.junio = true;
+                                    $('#'+view).find("#6").prop('disabled', false);
+                                    $('#'+view).find("#6").prop('required', true);
+                                    $('#'+view).find("#6").val(value);
+                                } else {
+                                    $('#'+view).find("#6").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'julio':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.julio = true;
+                                    $('#'+view).find("#7").prop('disabled', false);
+                                    $('#'+view).find("#7").prop('required', true);
+                                    $('#'+view).find("#7").val(value);
+                                } else {
+                                    $('#'+view).find("#7").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'agosto':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.agosto = true;
+                                    $('#'+view).find("#8").prop('disabled', false);
+                                    $('#'+view).find("#8").prop('required', true);
+                                    $('#'+view).find("#8").val(value);
+                                } else {
+                                    $('#'+view).find("#8").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'septiembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.septiembre = true;
+                                    $('#'+view).find("#9").prop('disabled', false);
+                                    $('#'+view).find("#9").prop('required', true);
+                                    $('#'+view).find("#9").val(value);
+                                } else {
+                                    $('#'+view).find("#9").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'octubre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.octubre = true;
+                                    $('#'+view).find("#10").prop('disabled', false);
+                                    $('#'+view).find("#10").prop('required', true);
+                                    $('#'+view).find("#10").val(value);
+                                } else {
+                                    $('#'+view).find("#10").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'noviembre':
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.noviembre = true;
+                                    $('#'+view).find("#11").prop('disabled', false);
+                                    $('#'+view).find("#11").prop('required', true);
+                                    $('#'+view).find("#11").val(value);
+                                } else {
+                                    $('#'+view).find("#11").prop('disabled', 'disabled');
+                                }
+                                break;
+                            case 'diciembre':
+
+                                if (e != 0.0 || e != 0) {
+                                    mesesV.diciembre = true;
+                                $('#'+view).find("#12").prop('disabled', false);
+                                $('#'+view).find("#12").prop('required', true);
+                                $('#'+view).find("#12").val(value);
+                                } else {
+                                    $('#'+view).find("#12").prop('disabled', 'disabled');
+                                }
+                                break;
+                        }
+
+                    }
+                }
+
+        });
+    },
+    nCont: function () {
+        let vew = '';
+        let id = $(".active")[0].id;
+        let fondo = '';
+        let ar='';
+        switch (id) {
+            case 'metas-tab':
+                vew = 'tableMetas';
+                fondo = $('#sel_fondo').val() != null ? $('#sel_fondo').val() : $('#fondo_id').val();
+                ar=$('#area').val();
+                break;
+            case 'capturadas-tab':
+                fondo = $('#fondo').val();
+                ar=$('#ar').val();
+                vew = 'addActividad';
+                break;
+        }
+        if ($('#nContinua').val()!='') {
+            contValue = $('#nContinua').val();
+            dao.getMesesCont(ar,fondo,contValue);
+            $('#'+vew).find('#sumMetas').val(contValue);
+            $('#'+vew).find('#sumMetas').attr('disabled', 'disabled');
+            dao.clearCont('aceptar');
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Este campo es requerido',
+              })
+        }
+      
+    },
+    clearCont: function (tipo) {
+        if (tipo!='aceptar') {
+            $("#tipo_Ac option[value='']").attr("selected", true);
+        }
+        $('#nContinua').val("");
+        $('#continua').modal('hide');
+    },
 };
 var init = {
     validateCreate: function (form) {
@@ -1512,6 +1687,33 @@ $(document).ready(function () {
     $('#sel_fondo').change(() => {
         dao.getActividasdesMir($('#sel_fondo').val())
         dao.getMeses($('#area').val(), $('#sel_fondo').val(),'tableMetas');
+    });
+    $('#tableMetas').find('#tipo_Ac').change(() => {
+        console.log('tablemetas tipoAC');
+        for (let i = 1; i <= 12; i++) {
+              $('#' + i).val(0);
+        }
+        let fondo = $('#sel_fondo').val() != null ? $('#sel_fondo').val() : $('#fondo_id').val();
+        dao.getMeses($('#area').val(), fondo,'tableMetas');
+        $('#tableMetas').find("#sumMetas").val("");
+        if ($('#tableMetas').find('#tipo_Ac').val() == 'Continua') {
+            $('#continua').modal('show')
+        }
+    });
+    $('#addActividad').find('#tipo_Ac').change(() => {
+        console.log('addActividad tipoAC');
+        for (let i = 1; i <= 12; i++) {
+              $('#' + i).val(0);
+        }
+        dao.getMeses($('#ar').val(), $('#fondo').val(),'addActividad');
+       $('#addActividad').find('#sumMetas').val("");
+        if ($('#addActividad').find('#tipo_Ac').val() == 'Continua') {
+            $('#continua').modal('show')
+        }
+    });
+    $('#continua').modal({
+        backdrop: 'static',
+        keyboard: false
     });
     $('#actividad_id').change(() => {
         if ($('#actividad_id').val() == 'ot') {

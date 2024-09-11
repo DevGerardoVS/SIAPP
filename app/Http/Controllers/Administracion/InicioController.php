@@ -134,14 +134,16 @@ class InicioController extends Controller
         $ejercicios = DB::table("catalogo")
             ->select("ejercicio")
             ->whereNull("deleted_at")
-            ->where("grupo_id","UNIDAD RESPONSABLE")
+            ->where("grupo_id",37)
             ->groupBy("ejercicio")
             ->orderBy("ejercicio","desc")
             ->get();
 
-        if($request->anio == null || $request->anio ==""){
+            Log::channel('daily')->debug('ani '.gettype($request->anio));
 
-            $fondos = DB::table("techos_financieros as tf")
+        if($request->anio == null || $request->anio =="" || $request->anio=="null") $request->anio = date('Y');
+
+            /*$fondos = DB::table("techos_financieros as tf")
             ->join("catalogo as c", "c.clave","=","tf.clv_fondo")
             ->select("tf.clv_fondo", "tf.ejercicio", "c.descripcion as fondo_ramo")
             ->where("c.ejercicio", "=", function($query){
@@ -150,24 +152,20 @@ class InicioController extends Controller
                 ->whereNull("deleted_at");
             })
             ->whereColumn("tf.ejercicio","c.ejercicio")
-            ->where("c.grupo_id","UNIDAD RESPONSABLE")
+            ->where("c.grupo_id",37)
             ->whereNull("tf.deleted_at")
             ->groupBy("tf.clv_fondo")
-            ->get();
+            ->get();*/
 
-        }else{
-            
-            $fondos = DB::table("techos_financieros as tf")
+        $fondos = DB::table("techos_financieros as tf")
             ->join("catalogo as c", "c.clave","=","tf.clv_fondo")
             ->select("tf.clv_fondo", "tf.ejercicio", "c.descripcion as fondo_ramo")
             ->where("c.ejercicio", $request->anio)
             ->whereColumn("tf.ejercicio","c.ejercicio")
-            ->where("c.grupo_id","UNIDAD RESPONSABLE")
+            ->where("c.grupo_id",37)
             ->whereNull("tf.deleted_at")
             ->groupBy("tf.clv_fondo")
             ->get();
-
-        }
 
         //Log::channel('daily')->debug('ej '.$fondos->toSql());
 
@@ -180,11 +178,16 @@ class InicioController extends Controller
 
     }
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
         ini_set('max_execution_time', 5000);
         ini_set('memory_limit', '1024M');
-        $data = DB::table('inicio_b')
+
+        if($request->yr== null || $request->yr== "" || $request->yr == "null") $request->yr = date('Y');
+
+        $data = DB::select('CALL inicio_b('.$request->yr.')');
+
+        /*$data = DB::table('inicio_b')
         ->select(DB::raw('
             ejercicio,
             clave,
@@ -198,8 +201,9 @@ class InicioController extends Controller
                 ->limit(1)
                 ->orderBy("ejercicio","desc")
                 ->groupBy("ejercicio");})
-        ->get();
-        view()->share(['data'=>$data,"anio"=>$data[0]->ejercicio]);
+        ->get();*/
+        
+        view()->share(['data'=>collect($data),"anio"=>$data[0]->ejercicio]);
         $pdf = PDF::loadView('inicioPdf')->setPaper('a4', 'landscape');
         $b = array(
             "username" => Auth::user()->username,
@@ -210,7 +214,7 @@ class InicioController extends Controller
         return $pdf->download('Presupuesto por fondo.pdf');
     }
 
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
         /*Si no coloco estas lineas Falla*/
         ob_end_clean();
@@ -222,6 +226,7 @@ class InicioController extends Controller
             "modulo" => 'Inicio'
         );
         Controller::bitacora($b);
-        return Excel::download(new InicioExport(), 'Presupuesto por fondo..xlsx', \Maatwebsite\Excel\Excel::XLSX);
+
+        return Excel::download(new InicioExport($request->yr), 'Presupuesto por fondo..xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }

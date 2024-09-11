@@ -4,6 +4,7 @@
     @include('calendarizacion.metas.addActividad')
     @include('calendarizacion.metas.modalFirmaElectronica')
     @include('calendarizacion.metas.actividadContinua')
+    @include('calendarizacion.metas.modalFirmaElectronica')
     <div class="container">
         <div class="row">
             <header class="d-flex justify-content-center" style=" border-bottom: 5px solid #17a2b8;">
@@ -94,7 +95,6 @@
                     <input id='activiMir' type="text" style="display: none">
                     <input id='tipoAct' type="text" style="display: none">
                     <label id="validMetas"></label>
-
                     <div id="metasVista" class="row">
                         <div class="container">
                             <div class=" table table-responsive-lg d-flex justify-content-center">
@@ -142,6 +142,9 @@
             <!--ss Capturadas-->
             <div class="tab-pane" id="capturadas" role="tabpanel" aria-labelledby="capturadas-tab"
                 style="min-width: 100%">
+                <input id='ar' type="text" style="display: none">
+                <input id='fondo' type="text" style="display: none">
+                <input id='subp' type="text" style="display: none">
                 <div class="widget-body no-padding ">
                     <div class="table-responsive ">
                         &nbsp

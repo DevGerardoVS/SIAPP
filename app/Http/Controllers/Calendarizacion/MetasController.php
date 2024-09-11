@@ -34,6 +34,7 @@ use App\Models\Catalogo;
 use App\Http\Controllers\utils\ReportesJasper;
 use App\Models\notificaciones;
 use App\Exports\MetasExportErrCm;
+use App\Models\calendarizacion\Seguimiento;
 
 class MetasController extends Controller
 {
@@ -113,12 +114,11 @@ class MetasController extends Controller
 			);
 			$dataSet[] = $i;
 		}
-		return ['dataSet'=>$dataSet ,'confirmado'=>$confirmado->confirmado];
+		return ['dataSet'=>$dataSet ,'confirmado'=>isset($confirmado->confirmado)?$confirmado->confirmado:0];
 	}
 	public function getMetasP($upp_filter, $ur_filter, $anio_filter)
 	{
 		Controller::check_permission('getMetas');
-		Log::debug($upp_filter . '-' . $ur_filter . '-' . $anio_filter);
 		$dataSet = [];
 		$upp = isset($upp_filter) ? $upp_filter : auth::user()->clv_upp;
 		if (auth::user()->id_grupo == 4) {
@@ -127,17 +127,14 @@ class MetasController extends Controller
 		if ($upp != 0 && $upp != null) {
 			 /* validacion de las tablas de cierres */
 			$check = $this->checkCierre($upp, $anio_filter);
-			Log::debug(json_encode($check));
 			if ($check->status) {
 				/*Validacion de confirmacion mir y programacion_presupuesto - existan datos  */
 				$check = $this->revisionUpp($upp, $anio_filter,$check->confirmado);
-							 /* validacion de las tablas de cierres */
-			$check = $this->checkCierre($upp, $anio_filter);
+							 /* validacion de las tablas de revisionUpp */
 				if ($check->status) {
 						/*que existan datos para la ur si viene en el filtro */
 					$check = $this->revisionUppUr($upp, $ur_filter, $anio_filter,$check->confirmado);
-								 /* validacion de las tablas de cierres */
-			$check = $this->checkCierre($upp, $anio_filter);
+								 /* validacion de las tablas de revisionUppUr */
 					if ($check->status) {
 						$activs = DB::table("programacion_presupuesto")
 							->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
@@ -150,6 +147,8 @@ class MetasController extends Controller
 								'programacion_presupuesto.programa_sectorial AS programaSec',
 								'programacion_presupuesto.tipologia_conac AS tipologia',
 								'programacion_presupuesto.id',
+								'programacion_presupuesto.upp',
+								'programacion_presupuesto.ur',
 								'programa_presupuestario as programa',
 								'subprograma_presupuestario as subprograma',
 								'proyecto_presupuestario AS  clv_proyecto',
@@ -180,13 +179,16 @@ class MetasController extends Controller
 							$activs = $activs->where('programacion_presupuesto.tipo', '=', 'RH');
 						}
 						$activs = $activs->get();
-						foreach ($activs as $key) {
-							$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
-							$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.newGetFyA(" . strval('"'.$key->area.'"') . "," . strval('"'.$key->entidad.'"') . ")' ></div>";
-							$fondos = MetasHelper::fondos($key->area, $key->entidad, $anio_filter);
-							$existM = MetasController::existMeta($key->area, $key->entidad, $anio_filter, $fondos->fondoArr);
-							$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $fondos->fondoStr, $existM->exist, $accion];
+						if(count($activs)>=1){
+							foreach ($activs as $key) {
+									$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
+									$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.newGetFyA(" . strval('"'.$key->area.'"') . "," . strval('"'.$key->entidad.'"') . ")' ></div>";
+									$fondos = MetasHelper::fondos($key);
+									$existM = MetasController::existMeta($key->area, $key->entidad, $anio_filter, $fondos->fondoArr);
+									$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $fondos->fondoStr, $existM->exist, $accion];
+								}
 						}
+						
 					}
 
 				}
@@ -240,17 +242,11 @@ class MetasController extends Controller
 		}
 		return ["upp" => $upps];
 	}
-
 	public function newGetFyA($area, $entidad,$upp,$anio)
 	{
-	/* 	$areaAux = explode('-', $area);
-		$entidadAux = explode('-', $entidad); */
-	/* 	Log::debug($area);
-		Log::debug($entidad); */
 		$fondos = [];
 		$tAct = [];
 			$af = new AreayEntidad($area,$entidad);
-		Log::debug(json_encode($af));
 			$fondos = DB::table('programacion_presupuesto')
 			 ->leftJoin('catalogo AS cat', 'cat.clave', '=', 'programacion_presupuesto.fondo_ramo')
 				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
@@ -284,7 +280,6 @@ class MetasController extends Controller
 	public function getActividMir($area, $entidad,$fondo,$anio)
 	{
 		$af = new AreayEntidad($area,$entidad);
-		Log::debug(json_encode($af));
 		$tipo='';
 		$framo33 = false;
 		$conmir = 0;
@@ -456,7 +451,6 @@ class MetasController extends Controller
 	}
 	public function createMeta(Request $request)
 	{
-		Log::debug($request);
 		DB::beginTransaction();
 		try {
 			$username = Auth::user()->username;
@@ -468,7 +462,6 @@ class MetasController extends Controller
 			$area_funcional =  strval($clv[0]);
 			$fondo = $request->sel_fondo;
 			$actividad = $request->actividad_id;
-			Log::debug($entidad_ejecutora.'-'.$area_funcional);
 			$act = '';
 			switch ($request->tipoAct) {
 				case 'M':
@@ -509,7 +502,6 @@ class MetasController extends Controller
 
 			$meses = [];
 			$subpp = substr($area_funcional, 10, 3);
-			Log::debug($subpp);
 			$flagSubPp = $subpp != 'UUU' ? 1 : 0;
 			$meses = [
 				'enero' => $request[1] != NULL ? $request[1] : 0,
@@ -648,6 +640,8 @@ class MetasController extends Controller
 	{
 		$metas = [];
 		$m = Metas::where('deleted_at', null)->where('id', $id)->get();
+		$seg = Seguimiento::where('meta_id',$id)->first();
+		$conSeguimiento = isset($seg)?1:0;
 		if ($m[0]->mir_id != null) {
 			$metas = DB::table('metas')
 				->leftJoin('mml_mir', 'mml_mir.id', 'metas.mir_id')
@@ -760,7 +754,8 @@ class MetasController extends Controller
 				"noviembre" => $key->noviembre,
 				"diciembre" => $key->diciembre,
 				"total" => $key->total,
-				"meses" => $meses
+				"meses" => $meses,
+				"conSeguimiento"=>$conSeguimiento
 			);
 			$data[] = $i;
 		}
@@ -858,7 +853,6 @@ class MetasController extends Controller
 		}
 		return view('calendarizacion.metas.proyectoPDF', compact('data'));
 	}
-
 	public function exportPdf($upp,$ur ,$year)
 	{
 		ini_set('max_execution_time', 5000);
@@ -926,13 +920,12 @@ class MetasController extends Controller
 		Controller::bitacora($b);
 		return ReportesJasper::claves($request);
 	}
-		public function importPlantilla(Request $request)
+	public function importPlantilla(Request $request)
 	{
 		Controller::check_permission('putMetas');
 		Controller::check_assign(1);
 		DB::beginTransaction();
 		try {
-			Log::debug('no upp');
 			$flag = false;
 			if (Auth::user()->id_grupo == 4) {
 				$check = $this->checkClosing(Auth::user()->clv_upp);
@@ -951,11 +944,9 @@ class MetasController extends Controller
 				}
 				$flag = $check['status'];
 			} else if (Auth::user()->id_grupo == 1) {
-				Log::debug('no upp');
 				$flag = true;
 			}
 			if ($flag) {
-				Log::debug('if no upp');
 				Schema::create('metas_temp', function (Blueprint $table) {
 					$table->temporary();
 					$table->increments('id');
@@ -976,10 +967,8 @@ class MetasController extends Controller
 				if ($xlsx = SimpleXLSX::parse($assets)) {
 					$filearray = $xlsx->rows();
 					array_shift($filearray);
-					Log::debug('archivo');
 					$resul = FunFormatsNew::saveImport($filearray,Auth::user());
 					if ($resul['icon'] == 'success') {
-						Log::debug('success');
 						InsertCMActividades::handle($resul['arreglo']  ,Auth::user());
 					
 						$b = array(
@@ -990,7 +979,6 @@ class MetasController extends Controller
 						Controller::bitacora($b);
 					}else{
 						$payload = json_encode($resul['arreglo']);
-						Log::debug($payload );
 						$payloadsent = json_encode(
 							array(
 								"TypeButton" => 1,// 0 es mensaje, 1 es que si es botton, 2 ahref 
@@ -1008,7 +996,6 @@ class MetasController extends Controller
 							'status' => 2,
 							'created_user' => Auth::user()->username
 						]);
-						Log::debug($datos);
 					}
 					DB::commit();
 					return response()->json($resul);
@@ -1278,11 +1265,11 @@ class MetasController extends Controller
 		$obj->status = false;
 		$obj->title = 'La captura de metas esta cerrada';
 		$obj->mensaje = 'La captura de metas para la UPP: ' . $upp . ' estan cerradas';
+		$obj->confirmado = 0;
 		$cierre = DB::table('cierre_ejercicio_metas')->select('estatus', 'ejercicio', 'confirmado')
 			->where(['deleted_at' => null, 'clv_upp' => $upp, 'ejercicio' => $anio])->first();
-		Log::debug(json_encode($cierre));
-		$obj->confirmado = $cierre->confirmado;
-		if (isset($anio)) {
+		if (isset($cierre)) {
+			$obj->confirmado = $cierre->confirmado;
 			switch (Auth::user()->id_grupo) {
 				case '1':
 					$obj->status = true;
@@ -1307,10 +1294,14 @@ class MetasController extends Controller
 				break;
 			}
 
+		}else{
+			$obj->status = false;
+			$obj->title = 'Sin registros encontrados';
+			$obj->mensaje = 'No se encontraron datos para la UPP: ' . $upp;
+
 		}
 		return $obj;
-	}
-	
+	}	
 	function checkGoals($upp)
 	{
 		$anioMax = DB::table('cierre_ejercicio_metas')->where('clv_upp', '=', $upp)->max('ejercicio');
@@ -1373,6 +1364,9 @@ class MetasController extends Controller
 			} 
 			if ($s['status']) {
 				DB::beginTransaction();
+				CierreMetas::where(['clv_upp' => $upp, 'ejercicio' => $anio])->update([
+					'confirmado'=>1
+				]);
 				$metas = MetasHelper::actividades($upp, 0,$anio);
 				$i = 0;
 				foreach ($metas as $key) {
@@ -1622,7 +1616,6 @@ class MetasController extends Controller
 	public static function getMeses($idAc, $idfondo,$anio)
 	{
 		$dataSet = [];
-		Log::debug( $idAc);
 		$clave = explode("$", $idAc);
 		$area_funcional = $clave[0];
 		$entidad_ejecutora = $clave[1];

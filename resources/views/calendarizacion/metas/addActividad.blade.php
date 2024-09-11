@@ -9,6 +9,7 @@
                 </button>
             </div>
             <label id="editMetas"  ></label>
+            <label id="metas_seguimiento"></label>
             <div class="modal-body">
                 <form id="actividad">
                     <textarea name="id_meta" id="id_meta" style="display: none"></textarea>
@@ -57,12 +58,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <td><input onkeypress="return valideKey(event)" id="1" name="1" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" ></td>
-                                <td><input onkeypress="return valideKey(event)" id="2" name="2" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" ></td>
-                                <td><input onkeypress="return valideKey(event)" id="3" name="3" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" ></td>
-                                <td><input onkeypress="return valideKey(event)" id="4" name="4" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" ></td>
-                                <td><input onkeypress="return valideKey(event)" id="5" name="5" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" ></td>
-                                <td><input onkeypress="return valideKey(event)" id="6" name="6" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" ></td>
+                                <td><input onkeypress="return valideKey(event)" id="1" name="1" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');">
+                                <span id='1_dif' class="has-error"></span>
+                                </td>
+                                <td><input onkeypress="return valideKey(event)" id="2" name="2" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" > 
+                                <span id='2_dif' class="has-error"></span>
+                                </td>
+                                <td><input onkeypress="return valideKey(event)" id="3" name="3" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" > 
+                                <span id='3_dif' class="has-error"></span>
+                                </td>
+                                <td><input onkeypress="return valideKey(event)" id="4" name="4" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" > 
+                                <span id='4_dif' class="has-error"></span>
+                                </td>
+                                <td><input onkeypress="return valideKey(event)" id="5" name="5" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" > 
+                                <span id='5_dif' class="has-error"></span>
+                                </td>
+                                <td><input onkeypress="return valideKey(event)" id="6" name="6" type="text" class="form-control meses" onkeyup="dao.sumar('addActividad');" > 
+                                <span id='6_dif' class="has-error"></span>
+                                </td>
                             </tbody>
                         </table>
                     </div>
@@ -81,12 +94,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="7" name="7" type="text"   class="form-control  meses" ></td>
-                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="8" name="8" type="text"   class="form-control  meses" ></td>
-                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="9" name="9" type="text"   class="form-control  meses" ></td>
-                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="10" name="10" type="text" class="form-control  meses" ></td>
-                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="11" name="11" type="text" class="form-control  meses" ></td>
-                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="12" name="12" type="text" class="form-control  meses" ></td>
+                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="7" name="7" type="text"   class="form-control  meses" >
+                                <span id='7_dif' class="has-error"></span>
+                                </td>
+                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="8" name="8" type="text"   class="form-control  meses" >
+                                <span id='8_dif' class="has-error"></span>
+                                </td>
+                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="9" name="9" type="text"   class="form-control  meses" >
+                                <span id='9_dif' class="has-error"></span>
+                                </td>
+                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="10" name="10" type="text" class="form-control  meses" >
+                                <span id='10_dif' class="has-error"></span>
+                                </td>
+                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="11" name="11" type="text" class="form-control  meses" >
+                                <span id='11_dif' class="has-error"></span>
+                                </td>
+                                <td><input onkeypress="return valideKey(event)" onkeyup="dao.sumar('addActividad');" id="12" name="12" type="text" class="form-control  meses" >
+                                <span id='12_dif' class="has-error"></span>
+                                </td>
                                 <tr style="border-style: none;">
                                     <td></td>
                                     <td></td>
