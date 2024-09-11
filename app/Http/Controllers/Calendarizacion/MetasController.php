@@ -453,6 +453,7 @@ class MetasController extends Controller
 	{
 		DB::beginTransaction();
 		try {
+			Log::debug( $request);
 			$username = Auth::user()->username;
 			Controller::check_permission('postMetas');
 			$anio = $request->anio;
@@ -465,6 +466,7 @@ class MetasController extends Controller
 			$act = '';
 			switch ($request->tipoAct) {
 				case 'M':
+					Log::debug("ACTIVIDAD MIR");
 					$metaMir = MetasHelper::isExistMmir($entidad_ejecutora, $area_funcional, $fondo, intval($actividad), $anio);
 					if ($metaMir) {
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
@@ -473,6 +475,7 @@ class MetasController extends Controller
 					$act = NULL;
 					break;
 				case 'O':
+					Log::debug("ACTIVIDAD OT");
 					$metaOt = MetasHelper::isExistMoT($entidad_ejecutora, $area_funcional, $fondo, $anio);
 					if ($metaOt) {
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];
@@ -484,6 +487,7 @@ class MetasController extends Controller
 
 					break;
 				case 'C':
+					Log::debug("ACTIVIDAD CATALOGO");
 					$metaCat = MetasHelper::isExistCat($entidad_ejecutora, $area_funcional, $fondo, intval($actividad), $anio);
 					if ($metaCat) {
 						$res = ["status" => false, "mensaje" => ["icon" => 'info', "text" => 'Esa actividad ya tiene metas para ese proyecto y fondo ', "title" => "La meta ya existe"]];

@@ -1354,20 +1354,27 @@ class MetasHelper
 	}
 	public static function createMml_Ac($upp,$entidad_ejecutora, $area_funcional,$actividad, $nombre, $anio)
 	{
-		$ur = str_split($entidad_ejecutora);
-		$pp = str_split($area_funcional);
-		$mml_act = new MmlActividades();
-		$mml_act->clv_upp =$upp;
-		$mml_act->clv_ur =''.$ur[4].$ur[5].'';
-		$mml_act->clv_pp =''.$pp[8].$pp[9].'';
-		$mml_act->entidad_ejecutora = $entidad_ejecutora;
-		$mml_act->area_funcional = $area_funcional;
-		$mml_act->id_catalogo = $actividad=='ot'? null:$actividad;
-		$mml_act->nombre =$actividad=='ot'? $nombre:null;
-		$mml_act->ejercicio = $anio;
-		$mml_act->created_user = Auth::user()->username;
-		$mml_act->save();
-		return $mml_act->id;
+		try {
+			$ur = str_split($entidad_ejecutora);
+			Log::debug('UR: '.$ur);
+			$pp = str_split($area_funcional);
+			Log::debug('PP: '.$pp);
+			$mml_act = new MmlActividades();
+			$mml_act->clv_upp =$upp;
+			$mml_act->clv_ur =''.$ur[4].$ur[5].'';
+			$mml_act->clv_pp =''.$pp[8].$pp[9].'';
+			$mml_act->entidad_ejecutora = $entidad_ejecutora;
+			$mml_act->area_funcional = $area_funcional;
+			$mml_act->id_catalogo = $actividad=='ot'? null:$actividad;
+			$mml_act->nombre =$actividad=='ot'? $nombre:null;
+			$mml_act->ejercicio = $anio;
+			$mml_act->created_user = Auth::user()->username;
+			$mml_act->save();
+			return $mml_act->id;
+		} catch (\Throwable $th) {
+			Log::debug($th);
+		}
+
 	}
 	public static function createMeta($request,$actividad,$fondo,$act,$meses,$anio,$flagSubPp)
 	{
