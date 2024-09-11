@@ -1288,6 +1288,8 @@ var dao = {
         }).then(() => {
             var form = $('#frm_eFirma')[0];
             var data = new FormData(form);
+            var pass = $("#pass").val();
+            data.append('passs',"."+pass+".");
             $.ajax({
                 type: "POST",
                 url: '/calendarizacion-metas-reporte',
@@ -1602,10 +1604,12 @@ var init = {
             rules: {
                 cer: { required: true },
                 key: { required: true },
+                pass: {required: true},
             },
             messages: {
                 cer: { required: "Este campo es requerido" },
                 key: { required: "Este campo es requerido" },
+                pass: {required: "Este campo es requerido"},
             }
         }
         _gen.validate(form, rm);
