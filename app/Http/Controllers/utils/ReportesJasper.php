@@ -37,8 +37,7 @@ class ReportesJasper
 		}
 		$report_path = app_path() . "/Reportes/" . $report . ".jasper";
 		$format = array('pdf');
-		$output_file = sys_get_temp_dir()."/".time()."/";
-		mkdir($output_file, 0777, true);
+		$output_file = sys_get_temp_dir();
 		$logoLeft = public_path() . "/img/escudoBN.png";
         $logoRight = public_path() . "/img/logo.png";
 		$tipo = $request['idGrupo'] == 5 ? "RH" : "Operativo"; 
