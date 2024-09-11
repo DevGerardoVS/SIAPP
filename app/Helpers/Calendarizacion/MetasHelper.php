@@ -1355,8 +1355,8 @@ class MetasHelper
 	public static function createMml_Ac($upp,$entidad_ejecutora, $area_funcional,$actividad, $nombre, $anio)
 	{
 		try {
-			$clv_ur=substr($entidad_ejecutora, 5, 2);
-			$clv_pp=substr($area_funcional, 9, 2);
+			$clv_ur=substr($entidad_ejecutora, 4, 2);
+			$clv_pp=substr($area_funcional, 8, 2);
 			Log::debug($clv_ur.'-'.$clv_pp);
 			$mml_act = new MmlActividades();
 			$mml_act->clv_upp =$upp;
@@ -1488,10 +1488,6 @@ class MetasHelper
 	}
 	public static function fondos($obj)
 	{
-/* 		$areaAux = str_split($area);
-		$entidadAux = str_split($entidad);
-		Log::debug($areaAux);
-		Log::debug($entidadAux); */
 		$fondos = DB::table('programacion_presupuesto')
 		->select(
 			'programacion_presupuesto.fondo_ramo as fondo',
