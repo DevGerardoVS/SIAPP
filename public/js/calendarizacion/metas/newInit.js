@@ -63,9 +63,12 @@ var dao = {
             const { dataSet, confirmado } = _data;
             if (confirmado == 1) {
                 $('.confirmacion').attr("style", "display:none;");
+                $('.cmupp').removeAttr('style');
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#validMetas').text("Las metas ya fueron confirmadas para la UPP: " + upp);
+
             } else {
+                $('.cmupp').attr("style", "display:none;");
                 $('.botones_exportar').removeAttr('style');
                 $('#validMetas').removeClass(" alert alert-danger").removeClass("text-center");
                 $('#validMetas').text('');
@@ -1268,6 +1271,58 @@ var dao = {
           })
        
     },
+    firmarReporte : function () {
+        let timerInterval
+        Swal.fire({
+          title: 'Preparando',
+          html: 'Espere un momento',
+          timer: 5000,
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading()
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+              b.textContent = Swal.getTimerLeft()
+            }, 100)
+          },
+          willClose: () => {
+            clearInterval(timerInterval)
+          }
+        }).then(() => {
+            var form = $('#frm_eFirma')[0];
+            var data = new FormData(form);
+            var pass = $("#pass").val();
+            data.append('passs',"."+pass+".");
+            $.ajax({
+                type: "POST",
+                url: '/calendarizacion-metas-reporte',
+                data: data,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                cache: false,
+            }).done(function (params) {
+            if (params.estatus == 'done') {
+                const containerFile = document.querySelector('#containerFile');
+                const tempLink = document.createElement('a');
+                tempLink.href = `data:application/pdf;base64,${params.data}`;
+                tempLink.setAttribute('download', 'Reporte_Calendario_UPP.pdf');
+                tempLink.click();
+                dao.limpiarFormFirma();
+            }else{
+                Swal.fire(
+                    'Error!',
+                    'Hubo un problema al querer realizar la acción, contacte a soporte',
+                    'Error'
+                );
+            }
+            });
+        });
+    },
+    limpiarFormFirma: function () {
+        $('#firmaModal').modal('hide');
+        document.getElementById("frm_eFirma").reset(); 
+    },
     getMesesCont: function (idA, idF, value) {
         let id = $(".active")[0].id;
         let view = '';
@@ -1545,6 +1600,24 @@ var init = {
             }
         });
     },
+    validateFirmaE: function (form) {
+
+        let rm =
+        {
+            rules: {
+                cer: { required: true },
+                key: { required: true },
+                pass: {required: true},
+            },
+            messages: {
+                cer: { required: "Este campo es requerido" },
+                key: { required: "Este campo es requerido" },
+                pass: {required: "Este campo es requerido"},
+            }
+        }
+        _gen.validate(form, rm);
+
+    },
 };
 $(document).ready(function () {
     $.ajaxSetup({
@@ -1737,5 +1810,13 @@ $(document).ready(function () {
                 }
             }
         }
+    });
+    $('#btnSaveFirma').click(function (e) {
+        init.validateFirmaE($('#frm_eFirma'));
+
+        if ($('#frm_eFirma').valid()) {
+            dao.firmarReporte();
+        }
+
     });
 });

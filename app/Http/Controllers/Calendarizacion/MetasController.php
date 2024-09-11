@@ -119,7 +119,6 @@ class MetasController extends Controller
 	public function getMetasP($upp_filter, $ur_filter, $anio_filter)
 	{
 		Controller::check_permission('getMetas');
-		Log::debug($upp_filter . '-' . $ur_filter . '-' . $anio_filter);
 		$dataSet = [];
 		$upp = isset($upp_filter) ? $upp_filter : auth::user()->clv_upp;
 		if (auth::user()->id_grupo == 4) {
@@ -148,6 +147,8 @@ class MetasController extends Controller
 								'programacion_presupuesto.programa_sectorial AS programaSec',
 								'programacion_presupuesto.tipologia_conac AS tipologia',
 								'programacion_presupuesto.id',
+								'programacion_presupuesto.upp',
+								'programacion_presupuesto.ur',
 								'programa_presupuestario as programa',
 								'subprograma_presupuestario as subprograma',
 								'proyecto_presupuestario AS  clv_proyecto',
@@ -178,13 +179,16 @@ class MetasController extends Controller
 							$activs = $activs->where('programacion_presupuesto.tipo', '=', 'RH');
 						}
 						$activs = $activs->get();
+						if(count($activs)>=1){
 							foreach ($activs as $key) {
-								$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
-								$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.newGetFyA(" . strval('"'.$key->area.'"') . "," . strval('"'.$key->entidad.'"') . ")' ></div>";
-								$fondos = MetasHelper::fondos($key->area, $key->entidad, $anio_filter);
-								$existM = MetasController::existMeta($key->area, $key->entidad, $anio_filter, $fondos->fondoArr);
-								$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $fondos->fondoStr, $existM->exist, $accion];
-							}
+									$clave = '"' . strval($upp) . strval($key->subsec) . strval($ur_filter) . '-' . strval($key->finalidad) . strval($key->funcion) . strval($key->subfuncion) . strval($key->eje) . strval($key->linea) . strval($key->programaSec) . strval($key->tipologia) . strval($key->programa) . strval($key->subprograma) . strval($key->clv_proyecto) . '"';
+									$accion = "<div class'form-check'><input class='form-check-input clave' type='radio' name='clave' id='" . $clave . "' value='" . $clave . "' onchange='dao.newGetFyA(" . strval('"'.$key->area.'"') . "," . strval('"'.$key->entidad.'"') . ")' ></div>";
+									$fondos = MetasHelper::fondos($key);
+									$existM = MetasController::existMeta($key->area, $key->entidad, $anio_filter, $fondos->fondoArr);
+									$dataSet[] = [$key->finalidad, $key->funcion, $key->subfuncion, $key->eje, $key->linea, $key->programaSec, $key->tipologia, $key->programa, $key->subprograma, $key->proyecto, $fondos->fondoStr, $existM->exist, $accion];
+								}
+						}
+						
 					}
 
 				}
@@ -240,14 +244,9 @@ class MetasController extends Controller
 	}
 	public function newGetFyA($area, $entidad,$upp,$anio)
 	{
-	/* 	$areaAux = explode('-', $area);
-		$entidadAux = explode('-', $entidad); */
-	/* 	Log::debug($area);
-		Log::debug($entidad); */
 		$fondos = [];
 		$tAct = [];
 			$af = new AreayEntidad($area,$entidad);
-		Log::debug(json_encode($af));
 			$fondos = DB::table('programacion_presupuesto')
 			 ->leftJoin('catalogo AS cat', 'cat.clave', '=', 'programacion_presupuesto.fondo_ramo')
 				->leftJoin('v_epp', 'v_epp.clv_proyecto', '=', 'programacion_presupuesto.proyecto_presupuestario')
@@ -281,7 +280,6 @@ class MetasController extends Controller
 	public function getActividMir($area, $entidad,$fondo,$anio)
 	{
 		$af = new AreayEntidad($area,$entidad);
-		Log::debug(json_encode($af));
 		$tipo='';
 		$framo33 = false;
 		$conmir = 0;
@@ -453,7 +451,6 @@ class MetasController extends Controller
 	}
 	public function createMeta(Request $request)
 	{
-		Log::debug($request);
 		DB::beginTransaction();
 		try {
 			$username = Auth::user()->username;
@@ -505,7 +502,6 @@ class MetasController extends Controller
 
 			$meses = [];
 			$subpp = substr($area_funcional, 10, 3);
-			Log::debug($subpp);
 			$flagSubPp = $subpp != 'UUU' ? 1 : 0;
 			$meses = [
 				'enero' => $request[1] != NULL ? $request[1] : 0,
@@ -930,7 +926,6 @@ class MetasController extends Controller
 		Controller::check_assign(1);
 		DB::beginTransaction();
 		try {
-			Log::debug('no upp');
 			$flag = false;
 			if (Auth::user()->id_grupo == 4) {
 				$check = $this->checkClosing(Auth::user()->clv_upp);
@@ -949,11 +944,9 @@ class MetasController extends Controller
 				}
 				$flag = $check['status'];
 			} else if (Auth::user()->id_grupo == 1) {
-				Log::debug('no upp');
 				$flag = true;
 			}
 			if ($flag) {
-				Log::debug('if no upp');
 				Schema::create('metas_temp', function (Blueprint $table) {
 					$table->temporary();
 					$table->increments('id');
@@ -974,10 +967,8 @@ class MetasController extends Controller
 				if ($xlsx = SimpleXLSX::parse($assets)) {
 					$filearray = $xlsx->rows();
 					array_shift($filearray);
-					Log::debug('archivo');
 					$resul = FunFormatsNew::saveImport($filearray,Auth::user());
 					if ($resul['icon'] == 'success') {
-						Log::debug('success');
 						InsertCMActividades::handle($resul['arreglo']  ,Auth::user());
 					
 						$b = array(
@@ -988,7 +979,6 @@ class MetasController extends Controller
 						Controller::bitacora($b);
 					}else{
 						$payload = json_encode($resul['arreglo']);
-						Log::debug($payload );
 						$payloadsent = json_encode(
 							array(
 								"TypeButton" => 1,// 0 es mensaje, 1 es que si es botton, 2 ahref 
@@ -1006,7 +996,6 @@ class MetasController extends Controller
 							'status' => 2,
 							'created_user' => Auth::user()->username
 						]);
-						Log::debug($datos);
 					}
 					DB::commit();
 					return response()->json($resul);
@@ -1154,6 +1143,8 @@ class MetasController extends Controller
 	public function descargaReporteFirma(Request $request)
 	{
 		try {
+			$pass = substr($request->passs,1);
+			$password = substr($pass,0,-1);
 			//generamos el nombre del archivo a guardar
 			$nameCer = substr(str_replace(" ", "_", $request->cer->getClientOriginalName()), 0, -4);
 			//si el nombre es mayor a 55 caracteres se toman solo los primeros 55
@@ -1215,7 +1206,7 @@ class MetasController extends Controller
 				$response = $response->attach('cer', $cerFile, $nameSaveCer);
 				$response = $response->attach('key', $keyFile, $nameSaveKey);
 				$response = $response->post(env('FIRMA_ELECTRONICA'), [
-					'pass' => env('FE_PASSWORD'),
+					'pass' => $password,
 					'cadenaOrigen' => 'prueba',
 					'clave_tramite' => 'IAP01',
 					'encabezado' => 1
@@ -1627,7 +1618,6 @@ class MetasController extends Controller
 	public static function getMeses($idAc, $idfondo,$anio)
 	{
 		$dataSet = [];
-		Log::debug( $idAc);
 		$clave = explode("$", $idAc);
 		$area_funcional = $clave[0];
 		$entidad_ejecutora = $clave[1];
