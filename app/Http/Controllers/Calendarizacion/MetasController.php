@@ -1143,6 +1143,8 @@ class MetasController extends Controller
 	public function descargaReporteFirma(Request $request)
 	{
 		try {
+			$pass = substr($request->passs,1);
+			$password = substr($pass,0,-1);
 			//generamos el nombre del archivo a guardar
 			$nameCer = substr(str_replace(" ", "_", $request->cer->getClientOriginalName()), 0, -4);
 			//si el nombre es mayor a 55 caracteres se toman solo los primeros 55
@@ -1204,7 +1206,7 @@ class MetasController extends Controller
 				$response = $response->attach('cer', $cerFile, $nameSaveCer);
 				$response = $response->attach('key', $keyFile, $nameSaveKey);
 				$response = $response->post(env('FIRMA_ELECTRONICA'), [
-					'pass' => env('FE_PASSWORD'),
+					'pass' => $password,
 					'cadenaOrigen' => 'prueba',
 					'clave_tramite' => 'IAP01',
 					'encabezado' => 1
