@@ -1355,14 +1355,13 @@ class MetasHelper
 	public static function createMml_Ac($upp,$entidad_ejecutora, $area_funcional,$actividad, $nombre, $anio)
 	{
 		try {
-			$ur = str_split($entidad_ejecutora);
-			Log::debug('UR: '.$ur);
-			$pp = str_split($area_funcional);
-			Log::debug('PP: '.$pp);
+			$clv_ur=substr($entidad_ejecutora, 5, 2);
+			$clv_pp=substr($area_funcional, 9, 2);
+			Log::debug($clv_ur.'-'.$clv_pp);
 			$mml_act = new MmlActividades();
 			$mml_act->clv_upp =$upp;
-			$mml_act->clv_ur =''.$ur[4].$ur[5].'';
-			$mml_act->clv_pp =''.$pp[8].$pp[9].'';
+			$mml_act->clv_ur =$clv_ur;
+			$mml_act->clv_pp =$clv_pp;
 			$mml_act->entidad_ejecutora = $entidad_ejecutora;
 			$mml_act->area_funcional = $area_funcional;
 			$mml_act->id_catalogo = $actividad=='ot'? null:$actividad;
