@@ -131,15 +131,13 @@ class InicioController extends Controller
     
     public function getFondos(Request $request){
 
-        $ejercicios = DB::table("catalogo")
-            ->select("ejercicio")
-            ->whereNull("deleted_at")
-            ->where("grupo_id",37)
-            ->groupBy("ejercicio")
-            ->orderBy("ejercicio","desc")
+        $ejercicios = DB::table("techos_financieros as tf")
+            ->join("catalogo as c", "c.clave","=","tf.clv_fondo")
+            ->select("tf.ejercicio as ejercicio")
+            ->where("c.grupo_id",37)
+            ->whereNull("tf.deleted_at")
+            ->groupBy("tf.ejercicio")
             ->get();
-
-            Log::channel('daily')->debug('ani '.gettype($request->anio));
 
         if($request->anio == null || $request->anio =="" || $request->anio=="null") $request->anio = date('Y');
 

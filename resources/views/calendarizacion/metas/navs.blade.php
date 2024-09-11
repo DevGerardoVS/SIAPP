@@ -2,6 +2,7 @@
 @section('content')
     @include('calendarizacion.metas.modalCarga')
     @include('calendarizacion.metas.addActividad')
+    @include('calendarizacion.metas.modalFirmaElectronica')
     @include('calendarizacion.metas.actividadContinua')
     @include('calendarizacion.metas.modalFirmaElectronica')
     <div class="container">
