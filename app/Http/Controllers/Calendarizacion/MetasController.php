@@ -530,11 +530,14 @@ class MetasController extends Controller
 					"modulo" => 'Metas'
 				);
 				Controller::bitacora($b);
+				Log::debug("COMMIT");
 				DB::commit();
 				$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
 				return response()->json($res, 200);
 			} else {
 				$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
+				Log::debug("ROLLBACK");
+				DB::rollback();
 				return response()->json($res, 200);
 			}
 

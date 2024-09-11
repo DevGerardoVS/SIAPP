@@ -1378,7 +1378,8 @@ class MetasHelper
 	public static function createMeta($request,$actividad,$fondo,$act,$meses,$anio,$flagSubPp)
 	{
 		try {
-			$confirm = MetasController::cmetasUpp($request->upp, $anio);
+			Log::debug("createMeta");
+			$confirm=DB::table('cierre_ejercicio_metas')->select('confirmado')->where(['deleted_at' => null, 'clv_upp' => $request->upp, 'ejercicio' => $anio])->first();
 			$clv = explode('/', $request->area);
 			$area_funcional =  strval($clv[0]);
 			$rj = explode('$', $clv[1]);
@@ -1411,10 +1412,11 @@ class MetasHelper
 			$meta->save();
 			$clv_actividad = strval($request->upp . '-' .  $clv_ur . '-' . $area_funcional. '-' .$fondo . '-' . $anio . '-' . $meta->id);
 			$meta->clv_actividad =$clv_actividad;
-			if (!$confirm["status"] & Auth::user()->id_grupo == 1) {
+			if ($confirm->confirmado ==1 & Auth::user()->id_grupo == 1) {
 				$meta->estatus = 1;
 			}
 			$meta->save();
+			Log::debug(json_encode($meta));
 			return $meta;
 		} catch (\Throwable $th) {
 			throw $th;
