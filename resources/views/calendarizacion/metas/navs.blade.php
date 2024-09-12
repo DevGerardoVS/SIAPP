@@ -38,9 +38,9 @@
                             <button type="button" class="btn btn-outline-primary float-right confirmacion botones_exportar" onclick="dao.ConfirmarMetas()" style="display: none"><i class="fa fa-check-square-o"
                                     aria-hidden="true"></i>&nbsp;Confirmar Metas</button>
                         @endif
-                        <button type="button" class="btn btn-outline-primary cmupp botones_exportar"
+                        <button type="button" class="btn btn-outline-primary cmupp"
                             onclick="dao.exportJasperMetas()" style="display: none">Formato Metas</button>&nbsp;
-                        <button type="button" class="btn btn-outline-primary cmupp botones_exportar"
+                        <button type="button" class="btn btn-outline-primary cmupp"
                             onclick="dao.exportJasper()" style="display: none">Formato claves</button>&nbsp;
                     @endif
 

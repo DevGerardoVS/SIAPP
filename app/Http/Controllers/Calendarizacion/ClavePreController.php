@@ -629,20 +629,20 @@ class ClavePreController extends Controller
         return response()->json($areaFuncional,200);
     }
     public function getPartidas($clasificacion,$upp){
-    $vPosicionPre = DB::table('clasificacion_economica as ce')
-    ->SELECT('ce.id','ce.deleted_at',
-	'c1.clave as clv_capitulo','c1.descripcion as capitulo',
-	'c2.clave as clv_concepto','c2.descripcion as concepto',
-	'c3.clave as clv_partida_generica','c3.descripcion as partida_generica',
-	'c4.clave as clv_partida_especifica','c4.descripcion as partida_especifica',
-	'c5.clave as clv_tipo_gasto','c5.descripcion as tipo_gasto') 
-	
-    ->JOIN('catalogo as c1','ce.capitulo_id','=','c1.id') 
-    ->JOIN('catalogo as c2', 'ce.concepto_id','=','c2.id')   
-    ->JOIN('catalogo as c3','ce.partida_generica_id','=','c3.id') 
-    ->JOIN('catalogo as c4','ce.partida_especifica_id','=','c4.id') 
-    ->JOIN('catalogo as c5','ce.tipo_gasto_id','=','c5.id') 
-    ->whereNull('ce.deleted_at');
+        $vPosicionPre = DB::table('clasificacion_economica as ce')
+        ->SELECT('ce.id','ce.deleted_at',
+        'c1.clave as clv_capitulo','c1.descripcion as capitulo',
+        'c2.clave as clv_concepto','c2.descripcion as concepto',
+        'c3.clave as clv_partida_generica','c3.descripcion as partida_generica',
+        'c4.clave as clv_partida_especifica','c4.descripcion as partida_especifica',
+        'c5.clave as clv_tipo_gasto','c5.descripcion as tipo_gasto') 
+        
+        ->JOIN('catalogo as c1','ce.capitulo_id','=','c1.id') 
+        ->JOIN('catalogo as c2', 'ce.concepto_id','=','c2.id')   
+        ->JOIN('catalogo as c3','ce.partida_generica_id','=','c3.id') 
+        ->JOIN('catalogo as c4','ce.partida_especifica_id','=','c4.id') 
+        ->JOIN('catalogo as c5','ce.tipo_gasto_id','=','c5.id') 
+        ->whereNull('ce.deleted_at');
         $array_where = [];
         $esAutorizada = ClavesHelper::esAutorizada($upp);
         array_push($array_where, ['rel_economica_administrativa.clasificacion_administrativa','=',$clasificacion]);
