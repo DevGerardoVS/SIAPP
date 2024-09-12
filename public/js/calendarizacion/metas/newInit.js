@@ -398,7 +398,7 @@ var dao = {
                  $("#tipoAct").val(tipoAc);
                  var act = $('#actividad_id');
                  act.html('');
-                 if (activids.length == 2) {
+                 if (activids.length>= 2) {
                      act.append(new Option("Actividad", "true", true, true));
                      document.getElementById("actividad_id").options[0].disabled = true;
                  }
