@@ -1523,12 +1523,12 @@ class MetasHelper
 		$fond->fondoArr=$arr;
 		return $fond;
 	}
-	public static function metasXupp($upp, $anio)
+	public static function metasXupp($upp, $anio,$id_grupo)
 	{
 		try {
 			$metas = Metas::where('ejercicio', $anio)
 				->where(\DB::raw('substr(clv_actividad, 1, 3)'), '=', $upp);
-			if (auth::user()->id_grupo == 5) {
+			if ($id_grupo == 5) {
 				$metas = $metas->where('metas.tipo_meta', 'RH');
 			}
 			$metas = $metas->get();
