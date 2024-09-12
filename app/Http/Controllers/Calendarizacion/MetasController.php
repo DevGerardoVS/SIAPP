@@ -1204,6 +1204,7 @@ class MetasController extends Controller
 				'email' => env('FEL_EMAIL'),
 				'password' => env('FEL_PASSWORD'),
 			]);
+			Log::debug($pdf);
 			//una vez que tenemos el token hacemos la conexion con la api de firmado...
 			if ($token && $token['token'] && $token['token'] != '') {
 				$header = array();
@@ -1218,6 +1219,7 @@ class MetasController extends Controller
 					'clave_tramite' => 'IAP01',
 					'encabezado' => 1
 				]);
+				Log::debug($response);
 				if ($response && $response[0]['pdfFirmado']) {
 					$file = $response[0]['pdfFirmado'];
 					$response = ['estatus' => 'done', 'data' => $file];
