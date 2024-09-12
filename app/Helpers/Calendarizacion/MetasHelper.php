@@ -1370,8 +1370,9 @@ class MetasHelper
 			$mml_act->created_user = Auth::user()->username;
 			$mml_act->save();
 			return $mml_act->id;
-		} catch (\Throwable $th) {
-			Log::debug($th);
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
 		}
 
 	}
@@ -1379,7 +1380,6 @@ class MetasHelper
 	{
 		try {
 			Log::debug("createMeta");
-			$confirm=DB::table('cierre_ejercicio_metas')->select('confirmado')->where(['deleted_at' => null, 'clv_upp' => $request->upp, 'ejercicio' => $anio])->first();
 			$clv = explode('/', $request->area);
 			$area_funcional =  strval($clv[0]);
 			$rj = explode('$', $clv[1]);
@@ -1412,14 +1412,16 @@ class MetasHelper
 			$meta->save();
 			$clv_actividad = strval($request->upp . '-' .  $clv_ur . '-' . $area_funcional. '-' .$fondo . '-' . $anio . '-' . $meta->id);
 			$meta->clv_actividad =$clv_actividad;
-			if ($confirm->confirmado ==1 & Auth::user()->id_grupo == 1) {
-				$meta->estatus = 1;
+			if(Auth::user()->id_grupo == 1){
+				$confirm=DB::table('cierre_ejercicio_metas')->select('confirmado')->where(['deleted_at' => null, 'clv_upp' => $request->upp, 'ejercicio' => $anio])->first();
+				$meta->estatus = $confirm->confirmado;
 			}
 			$meta->save();
 			Log::debug(json_encode($meta));
 			return $meta;
-		} catch (\Throwable $th) {
-			throw $th;
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
 		}
 	
 	}
@@ -1520,5 +1522,20 @@ class MetasHelper
 		$fond->fondoStr=$str;
 		$fond->fondoArr=$arr;
 		return $fond;
+	}
+	public static function metasXupp($upp, $anio)
+	{
+		try {
+			$metas = Metas::where('ejercicio', $anio)
+				->where(\DB::raw('substr(clv_actividad, 1, 3)'), '=', $upp);
+			if (auth::user()->id_grupo == 5) {
+				$metas = $metas->where('metas.tipo_meta', 'RH');
+			}
+			$metas = $metas->get();
+			return $metas;
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
+		}
 	}
 }

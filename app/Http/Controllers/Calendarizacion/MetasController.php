@@ -1374,9 +1374,10 @@ class MetasController extends Controller
 			if ($s['status']) {
 				DB::beginTransaction();
 				CierreMetas::where(['clv_upp' => $upp, 'ejercicio' => $anio])->update([
-					'confirmado'=>1
+					'confirmado'=>1,
+					'estatus'=>'Cerrado'
 				]);
-				$metas = MetasHelper::actividades($upp, 0,$anio);
+				$metas=MetasHelper::metasXupp($upp,$anio);
 				$i = 0;
 				foreach ($metas as $key) {
 					$meta = Metas::where('id', $key->id)->firstOrFail();
@@ -1399,16 +1400,19 @@ class MetasController extends Controller
 					$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
 					return response()->json($res, 200);
 				} else {
+					DB::rollBack();
 					$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
 					return response()->json($res, 200);
 				}
 			} else {
+				DB::rollBack();
 				$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'No puedes confirmar las metas', "title" => "Metas incompletas"]];
 				return response()->json($res, 200);
 			}
-		} catch (\Throwable $th) {
+		} catch (\Exception $exp) {
 			DB::rollBack();
-			throw $th;
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
 		}
 
 	}
@@ -1418,7 +1422,7 @@ class MetasController extends Controller
 			Controller::check_permission('putMetas');
 			DB::beginTransaction();
 			$user = Auth::user()->username;
-			$metas = MetasHelper::actividades($upp, 0,$anio);
+			$metas=MetasHelper::metasXupp($upp,$anio);
 			$fecha = Carbon::now()->toDateTimeString();
 			$i = 0;
 			foreach ($metas as $key) {
@@ -1433,16 +1437,10 @@ class MetasController extends Controller
 				}
 			}
 			if (count($metas) == $i && count($metas) >= 1 && $i >= 1) {
-				$cierre = CierreMetas::where('deleted_at', null)->where('clv_upp', $upp)->where('estatus', 'Cerrado')->get();
-				if ($cierre) {
-					foreach ($cierre as $key ) {
-						$key->estatus = 'Abierto';
-						$key->updated_user = $user;
-						$key->updated_at = $fecha;
-						$key->save();
-					}
-					
-				}
+				CierreMetas::where(['clv_upp' => $upp, 'ejercicio' => $anio])->update([
+					'confirmado'=>1,
+					'estatus'=>'Abierto'
+				]);
 				DB::commit();
 				$b = array(
 					"username" => $user,
@@ -1453,12 +1451,14 @@ class MetasController extends Controller
 				$res = ["status" => true, "mensaje" => ["icon" => 'success', "text" => 'La acción se ha realizado correctamente', "title" => "Éxito!"]];
 				return $res;
 			} else {
+				DB::rollBack();
 				$res = ["status" => false, "mensaje" => ["icon" => 'error', "text" => 'Hubo un problema al querer realizar la acción, contacte a soporte', "title" => "Error!"]];
 				return $res;
 			}
-		} catch (\Throwable $th) {
+		} catch (\Exception $exp) {
 			DB::rollBack();
-			throw $th;
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
 		}
 
 	}
@@ -1578,25 +1578,8 @@ class MetasController extends Controller
 	}
 	public static function cmetasUpp($upp, $anio)
 	{
-		$_upp = $upp = null ? Auth::user()->clv_upp : $upp;
-		$metas = true;
-		$query = MetasHelper::actividadesConf($_upp, $anio);
-		if(count($query)){
-			$metas = $query[0]->estatus == 1 ? false : true;
-		}else{
-			$actv = DB::table('metas')
-				->leftJoin('mml_actividades','mml_actividades.id','=','metas.actividad_id')
-				->select('mml_actividades.clv_upp','mml_actividades.id_catalogo','metas.estatus')
-				->where('mml_actividades.id_catalogo', '=', null)
-				->where('mml_actividades.deleted_at', '=', null)
-				->where('mml_actividades.clv_upp', $upp)
-				->where('mml_actividades.ejercicio', $anio)->get();
-				if(count($actv)){
-					$metas = $actv[0]->estatus == 1 ? false : true;
-				}else{
-					$metas = true;
-				}
-		}
+		$confirmado=DB::table('cierre_ejercicio_metas')->select('confirmado')->where(['deleted_at' => null, 'clv_upp' => $upp, 'ejercicio' => $anio])->first();
+		$metas = $confirmado->confirmado == 1 ? false : true;
 		return ["status" => $metas];
 	}
 	public static function cmetasadd($_upp)
