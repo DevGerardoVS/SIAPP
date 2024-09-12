@@ -1169,27 +1169,27 @@ class MetasController extends Controller
 			$fileExtKey = $request->key->getClientOriginalExtension();
 			$nameSaveKey = $nameKey . "." . $fileExtKey;
 			//crear un path para los reportes... storage\app\public\reportes\Claveprivada_FIEL_HEHF7712015Z2_20220324_105350.key
-			$cerPath = Storage::path('public/reportes/' . $nameSaveCer);
-			$keyPath = Storage::path('public/reportes/' . $nameSaveKey);
-			//revisamos si existe  y lo eliminamos...
-			if (File::exists($cerPath)) {
-				Storage::delete($cerPath);
-			}
-			if (File::exists($keyPath)) {
-				Storage::delete($keyPath);
-			}
+			// $cerPath = Storage::path('public/reportes/' . $nameSaveCer);
+			// $keyPath = Storage::path('public/reportes/' . $nameSaveKey);
+			// //revisamos si existe  y lo eliminamos...
+			// if (File::exists($cerPath)) {
+			// 	Storage::delete($cerPath);
+			// }
+			// if (File::exists($keyPath)) {
+			// 	Storage::delete($keyPath);
+			// }
 			//guardamos los archivos...
-			$key = $request->key->storeAs('public/reportes/', $nameSaveKey);
-			$cer = $request->cer->storeAs('public/reportes/', $nameSaveCer);
-			$cerFile = '';
-			$keyFile = '';
+			// $key = $->storeAs('public/reportes/', $nameSaveKey);
+			// $cer = ->storeAs('public/reportes/', $nameSaveCer);
+			$cerFile = file_get_contents($request->cer);
+			$keyFile = file_get_contents($request->key);
 			//obtenemos el contenido de los archivos...
-			if (File::exists($cerPath)) {
-				$cerFile = file_get_contents($cerPath);
-			}
-			if (File::exists($keyPath)) {
-				$keyFile = file_get_contents($keyPath);
-			}
+			// if (File::exists($cerPath)) {
+			// 	$cerFile = ;
+			// }
+			// if (File::exists($keyPath)) {
+			// 	$keyFile = 
+			// }
 			$pdf = '';
 			if ($request->tipoReporte == 2) {
 				$ruta = sys_get_temp_dir() . "/proyecto_calendario_actividades.pdf";
@@ -1204,14 +1204,8 @@ class MetasController extends Controller
 				'email' => env('FEL_EMAIL'),
 				'password' => env('FEL_PASSWORD'),
 			]);
-			Log::debug('cer content');
-			Log::debug($cerFile);
-			Log::debug('key content');
-			Log::debug($keyFile);
 			//una vez que tenemos el token hacemos la conexion con la api de firmado...
 			if ($token && $token['token'] && $token['token'] != '') {
-				Log::debug('entro en el fidel token');
-				Log::debug($token);
 				$header = array();
 				$response = Http::withToken($token['token'])
 					->withHeaders($header);
@@ -1224,8 +1218,6 @@ class MetasController extends Controller
 					'clave_tramite' => 'IAP01',
 					'encabezado' => 1
 				]);
-				Log::debug('response');
-				Log::debug($response);
 				if ($response && $response[0]['pdfFirmado']) {
 					$file = $response[0]['pdfFirmado'];
 					$response = ['estatus' => 'done', 'data' => $file];
