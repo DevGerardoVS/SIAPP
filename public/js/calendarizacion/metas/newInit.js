@@ -63,9 +63,12 @@ var dao = {
             const { dataSet, confirmado } = _data;
             if (confirmado == 1) {
                 $('.confirmacion').attr("style", "display:none;");
+                $('.cmupp').removeAttr('style');
                 $('#validMetas').addClass(" alert alert-danger").addClass("text-center");
                 $('#validMetas').text("Las metas ya fueron confirmadas para la UPP: " + upp);
+
             } else {
+                $('.cmupp').attr("style", "display:none;");
                 $('.botones_exportar').removeAttr('style');
                 $('#validMetas').removeClass(" alert alert-danger").removeClass("text-center");
                 $('#validMetas').text('');
