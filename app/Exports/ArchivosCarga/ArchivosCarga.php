@@ -21,15 +21,17 @@ use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 use Auth;
 
 
-class ArchivosCarga extends DefaultValueBinder implements FromCollection, ShouldAutoSize, WithColumnWidths, WithCustomValueBinder
+class ArchivosCarga extends DefaultValueBinder implements FromCollection, ShouldAutoSize, WithColumnWidths, WithCustomValueBinder,WithHeadings
 {
     protected $id;
     // protected $upp;
-    // protected $anio;
+    protected $ejercicio;
 
-    function __construct($id)
+    function __construct($id,$ejercicio)
     {
         $this->id = $id;
+        $this->ejercicio = $ejercicio;
+
         
     }
     public function collection()
@@ -37,22 +39,22 @@ class ArchivosCarga extends DefaultValueBinder implements FromCollection, Should
         ini_set('max_execution_time', 5000);
         switch ($this->id) {
             case 1:
-                $dataSet = ArchivosCargaHelper::getDataAreasFuncionales();
+                $dataSet = ArchivosCargaHelper::getDataAreasFuncionales($this->ejercicio);
                 break;
             case 2:
-                $dataSet = ArchivosCargaHelper::getDataFondos();
+                $dataSet = ArchivosCargaHelper::getDataFondos($this->ejercicio);
                 break;
             case 3:
-                $dataSet = ArchivosCargaHelper::getDataCostoBeneficio();
+                $dataSet = ArchivosCargaHelper::getDataCostoBeneficio($this->ejercicio);
                 break;
             case 4:
-                $dataSet = ArchivosCargaHelper::getDataCentroGestor();
+                $dataSet = ArchivosCargaHelper::getDataCentroGestor($this->ejercicio);
                 break;
             case 5:
-                $dataSet = ArchivosCargaHelper::getDataPospre();
+                $dataSet = ArchivosCargaHelper::getDataPospre($this->ejercicio);
                 break;
             case 6:
-                $dataSet = ArchivosCargaHelper::getDataClavesPresupuestales();
+                $dataSet = ArchivosCargaHelper::getDataClavesPresupuestales($this->ejercicio);
                 break;
             
             default:

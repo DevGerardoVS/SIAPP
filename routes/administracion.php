@@ -55,7 +55,7 @@ Route::controller(UsuarioController::class)->group(function () {
 		Route::post('/amd-configuracion/data-auto', 'GetAutorizadas')->name('uppsAutorizadas');
 		Route::post('/amd-configuracion/update-auto', 'updateAutoUpps')->name('updateAutoUpps');
 		// Rutas de descarga archivos de carga
-			Route::get('/archivos-carga/{id?}', 'getArchivosDeCarga2024');
+			Route::get('/archivos-carga/{id?}/{ejercicio?}', 'getArchivosDeCarga2024');
 		// Fin de rutas archivos de carga
 		
 	});
