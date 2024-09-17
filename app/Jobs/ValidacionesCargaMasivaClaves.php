@@ -99,7 +99,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                         if ($uppsautorizadas) {
                             array_push($arrayErrores, ' $ $No se puede cargar la upp: ' . $u . ' en tipo operativo porque esta autorizada para cargar RH. ');
                         }
-                        $query = MetasHelper::actividades($u,0, $ejercicio[0]);
+                        $query = MetasHelper::metasXupp($u,$ejercicio[0], $usuario->id_grupo);
                         //MetasDelController::checkConfirmadas
                         if (count($query) > 0) {
                             array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. ');
@@ -254,7 +254,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                         $confirmadasC++;
                                     }
 
-                                    $query = MetasHelper::actividades($u,0,$ejercicio[0]);
+                                    $query = MetasHelper::metasXupp($u,$ejercicio[0], $usuario->id_grupo);
                                     if (count($query) > 0) {
                                         array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. en la upp: ' . $u);
                                     }
@@ -290,7 +290,7 @@ class ValidacionesCargaMasivaClaves implements ShouldQueue
                                     if ($u != $uppUsuario) {
                                         array_push($arrayErrores, ' $ $: No tiene permiso para registrar de  la upp: ' . $u);
                                     }
-                                    $query = MetasHelper::actividades($u,0,$ejercicio[0]);
+                                    $query = MetasHelper::metasXupp($u,$ejercicio[0], $usuario->id_grupo);
                                     if (count($query) > 0) {
                                         array_push($arrayErrores, ' $ $No se pueden añadir claves porque ya hay metas registradas. ');
                                     }

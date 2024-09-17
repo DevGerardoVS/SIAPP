@@ -212,7 +212,6 @@
        
         
         @if($errors->any())
-       
         var failures= {!! $errors !!};
         const fails = [];
          $.each(failures, function (key, value) {
