@@ -88,6 +88,16 @@
                                 <div class="widget-body-toolbar">
                                 </div>
                                 <br>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="filEjercicio">Ejercicio:</label>
+                                            <select name="filEjercicio" id="filEjercicio" class="form-select">
+                                                <option value=2025 selected>2025</option>
+                                                <option value=2024>2024</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                <br>
                                 <table id="archivosCarga-table" class="table table-striped table-bordered text-center table-b"
                                     style="width:100%">
                                     <thead>
@@ -101,32 +111,32 @@
                                         <tr>
                                             <td>1</td>
                                             <td>Áreas funcionales</td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/1"><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a id="areas" data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/1"><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>2</td>
                                             <td>Fondos</td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/2" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a id="fondos" data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/2" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>3</td>
                                             <td>Centro de costos  / Centro de beneficios </td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/3" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a id="costos" data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/3" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>4</td>
                                             <td>Centro gestor</td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/4" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a id="gestor" data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/4" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>5</td>
                                             <td>Pospre</td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/5" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a id="pospre" data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/5" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                         <tr>
                                             <td>6</td>
                                             <td>Claves presupuestales</td>
-                                            <td><a data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/6" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
+                                            <td><a id="claves" data-toggle="tooltip" title="Descargar" class="btn btn-sm btn-success" href="/archivos-carga/6" ><i class="fa fa-file-excel-o" style="color: aliceblue"></i></a></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -148,7 +158,24 @@
     <script>
         //En las vistas solo se llaman las funciones del archivo init
         init.validateCreate($('#frmCreate'));
-
+        $(document).ready(function () {
+            var valorInicial = $('#filEjercicio').val();
+            let archivos = ['areas','fondos','costos','gestor','pospre','claves'];
+            for (let i = 0; i < archivos.length; i++) {
+                const element = archivos[i];
+                let posicion = i+1;
+                $('#'+element).attr('href','archivos-carga/'+posicion+'/'+valorInicial);
+            }
+        });
+        $('#filEjercicio').on('change',function () {
+            var valor = $(this).val();
+            let archivos = ['areas','fondos','costos','gestor','pospre','claves'];
+            for (let i = 0; i < archivos.length; i++) {
+                const element = archivos[i];
+                let posicion = i+1;
+                $('#'+element).attr('href','archivos-carga/'+posicion+'/'+valor);
+            }
+        })
         
     </script>
 @endsection

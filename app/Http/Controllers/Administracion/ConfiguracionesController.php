@@ -408,28 +408,28 @@ class ConfiguracionesController extends Controller
             throw new \Exception($exp->getMessage());
         }
     }
-    public function getArchivosDeCarga2024($id){
+    public function getArchivosDeCarga2024($id,$ejercicio){
         ob_end_clean();
         ob_start();
         $nombreArchivo = '';
         switch ($id) {
             case 1:
-                $nombreArchivo = 'Áreas funcionales';
+                $nombreArchivo = 'Áreas funcionales '.$ejercicio;
             break;
             case 2:
-                $nombreArchivo = 'Fondos';
+                $nombreArchivo = 'Fondos '.$ejercicio;
             break;
             case 3:
-                $nombreArchivo = 'CeCo-Be y CeGe-Descripcion';
+                $nombreArchivo = 'CeCo-Be y CeGe-Descripcion '.$ejercicio;
             break;
             case 4:
-                $nombreArchivo = 'Centro gestor 2024';          
+                $nombreArchivo = 'Centro gestor '.$ejercicio;          
             break;
             case 5:
-                $nombreArchivo = 'Pospre';        
+                $nombreArchivo = 'Pospre '.$ejercicio;        
             break;
             case 6:
-                $nombreArchivo = 'LAYOUT PRESUPUESTO 2024';                
+                $nombreArchivo = 'LAYOUT PRESUPUESTO '.$ejercicio;                
             break;
             default:
                 
@@ -441,6 +441,6 @@ class ConfiguracionesController extends Controller
             'modulo'=>'configuracion'
         );
         Controller::bitacora($b);
-        return Excel::download(new ArchivosCarga($id), $nombreArchivo.'.xlsx',\Maatwebsite\Excel\Excel::XLSX);
+        return Excel::download(new ArchivosCarga($id,$ejercicio), $nombreArchivo.'.xlsx',\Maatwebsite\Excel\Excel::XLSX);
     }
 }
