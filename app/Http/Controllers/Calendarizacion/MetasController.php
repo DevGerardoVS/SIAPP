@@ -268,7 +268,8 @@ class MetasController extends Controller
 					'subprograma_presupuestario'=> $af->clv_subprograma,
 					'proyecto_presupuestario'=> $af->clv_proyecto,
 					'v_epp.presupuestable'=> 1,
-					'programacion_presupuesto.ejercicio'=>$anio
+					'programacion_presupuesto.ejercicio'=>$anio,
+					'cat.grupo_id'=>'cat'
 				])
 				->groupByRaw('clave')
 				->where('programacion_presupuesto.ejercicio',$anio)
