@@ -13,18 +13,19 @@
                 <form id="frm_eFirma">
                     @csrf
                     <div class="row">
-                        <div class="col-md-2"></div>
                         <div class="form-group col-md-4">
                             <input type="hidden" id="tipoReporte" name="tipoReporte" value=0>
                             <label class="control-label ">Certificado de Sello Digital (.cer)</label>
-                            <input type="file" id="cer" name='cer'class="form-control">
+                            <input type="file" id="cer" name='cer'class="form-control" accept=".cer">
                         </div>
                         <div class="form-group col-md-4">
                             <label class="control-label ">Clave (.key)</label>
-                            <input type="file" id="key" name='key'class="form-control">
+                            <input type="file" id="key" name='key'class="form-control" accept=".key">
                         </div>
-                        <div class="col-md-2"></div>
-                        <div class="col-md-2"></div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Contraseña FIEL</label>
+                            <input type="password" id="pass" name="pass" class="form-control">
+                        </div>
                     </div>
 
             </div>

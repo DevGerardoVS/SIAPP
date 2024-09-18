@@ -14,7 +14,6 @@ use App\Http\Controllers\Calendarizacion\MetasController;
 
 class MetasHelper
 {
-
 	public static function actividades($upp, $ur, $anio)
 	{
 		try {
@@ -787,9 +786,7 @@ class MetasHelper
 	public static function validateMesesfinalTotal($anio)
 	{
 		$metas = MetasHelper::actividadesMesesTotal($anio);
-		Log::debug("METAS".count($metas));
 		$claves = MetasHelper::clavesPpMesesTotal($anio);
-		Log::debug("claves".count($claves));
 		$aux = 0;
 		$ids = [];
 		foreach ($metas as $k) {
@@ -1357,28 +1354,36 @@ class MetasHelper
 	}
 	public static function createMml_Ac($upp,$entidad_ejecutora, $area_funcional,$actividad, $nombre, $anio)
 	{
-		$ur = str_split($entidad_ejecutora);
-		$pp = str_split($area_funcional);
-		$mml_act = new MmlActividades();
-		$mml_act->clv_upp =$upp;
-		$mml_act->clv_ur =''.$ur[4].$ur[5].'';
-		$mml_act->clv_pp =''.$pp[8].$pp[9].'';
-		$mml_act->entidad_ejecutora = $entidad_ejecutora;
-		$mml_act->area_funcional = $area_funcional;
-		$mml_act->id_catalogo = $actividad=='ot'? null:$actividad;
-		$mml_act->nombre =$actividad=='ot'? $nombre:null;
-		$mml_act->ejercicio = $anio;
-		$mml_act->created_user = Auth::user()->username;
-		$mml_act->save();
-		return $mml_act->id;
+		try {
+			$clv_ur=substr($entidad_ejecutora, 4, 2);
+			$clv_pp=substr($area_funcional, 8, 2);
+			Log::debug($clv_ur.'-'.$clv_pp);
+			$mml_act = new MmlActividades();
+			$mml_act->clv_upp =$upp;
+			$mml_act->clv_ur =$clv_ur;
+			$mml_act->clv_pp =$clv_pp;
+			$mml_act->entidad_ejecutora = $entidad_ejecutora;
+			$mml_act->area_funcional = $area_funcional;
+			$mml_act->id_catalogo = $actividad=='ot'? null:$actividad;
+			$mml_act->nombre =$actividad=='ot'? $nombre:null;
+			$mml_act->ejercicio = $anio;
+			$mml_act->created_user = Auth::user()->username;
+			$mml_act->save();
+			return $mml_act->id;
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
+		}
+
 	}
 	public static function createMeta($request,$actividad,$fondo,$act,$meses,$anio,$flagSubPp)
 	{
 		try {
-			$confirm = MetasController::cmetasUpp($request->upp, $anio);
+			Log::debug("createMeta");
 			$clv = explode('/', $request->area);
-			$pp = substr(strval($clv[0]), 8, 2);
-			Log::debug($pp);
+			$area_funcional =  strval($clv[0]);
+			$rj = explode('$', $clv[1]);
+			$clv_ur=substr($rj[0], 4, 2);
 			$meta = new Metas();
 			$meta->mir_id = $request->tipoAct == 'M'?$actividad:null;
 			$meta->actividad_id = $request->tipoAct !='M'?$act:null;
@@ -1405,14 +1410,18 @@ class MetasHelper
 			$meta->tipo_meta = 'Operativo';
 			/* PROGRAMA:7 SUBPRO:8 PROYECTO:9 */
 			$meta->save();
-			$meta->clv_actividad = "" . $request->upp . "-" . $pp . "-" . $meta->id . "-" . $anio;
-			if (!$confirm["status"] & Auth::user()->id_grupo == 1) {
-				$meta->estatus = 1;
+			$clv_actividad = strval($request->upp . '-' .  $clv_ur . '-' . $area_funcional. '-' .$fondo . '-' . $anio . '-' . $meta->id);
+			$meta->clv_actividad =$clv_actividad;
+			if(Auth::user()->id_grupo == 1){
+				$confirm=DB::table('cierre_ejercicio_metas')->select('confirmado')->where(['deleted_at' => null, 'clv_upp' => $request->upp, 'ejercicio' => $anio])->first();
+				$meta->estatus = $confirm->confirmado;
 			}
 			$meta->save();
+			Log::debug(json_encode($meta));
 			return $meta;
-		} catch (\Throwable $th) {
-			throw $th;
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
 		}
 	
 	}
@@ -1481,29 +1490,27 @@ class MetasHelper
 			throw new \Exception($exp->getMessage());
 		}
 	}
-	public static function fondos($area, $entidad,$anio)
+	public static function fondos($obj)
 	{
-		$areaAux = str_split($area);
-		$entidadAux = str_split($entidad);
 		$fondos = DB::table('programacion_presupuesto')
 		->select(
 			'programacion_presupuesto.fondo_ramo as fondo',
 		)
 		->where('programacion_presupuesto.deleted_at', null)
-		->where('programacion_presupuesto.finalidad', intval($areaAux[0]))
-		->where('programacion_presupuesto.funcion', intval($areaAux[1]))
-		->where('programacion_presupuesto.subfuncion', intval($areaAux[2]))
-		->where('programacion_presupuesto.eje', intval($areaAux[3]))
-		->where('programacion_presupuesto.linea_accion', strval($areaAux[4]. $areaAux[5]))
-		->where('programacion_presupuesto.programa_sectorial', $areaAux[6])
-		->where('programacion_presupuesto.tipologia_conac', $areaAux[7])
-		->where('programacion_presupuesto.upp', strval($entidadAux[0].$entidadAux[1].$entidadAux[2]))
-		->where('programacion_presupuesto.ur', strval($entidadAux[4].$entidadAux[5]))
-		->where('programa_presupuestario', strval($areaAux[8].$areaAux[9]))
-		->where('subprograma_presupuestario',  strval($areaAux[10].$areaAux[11].$areaAux[12]))
-		->where('proyecto_presupuestario',  strval($areaAux[13].$areaAux[14].$areaAux[15]))
+		->where('programacion_presupuesto.finalidad', $obj->finalidad)
+		->where('programacion_presupuesto.funcion', $obj->funcion)
+		->where('programacion_presupuesto.subfuncion',$obj->subfuncion)
+		->where('programacion_presupuesto.eje', $obj->eje)
+		->where('programacion_presupuesto.linea_accion', $obj->linea)
+		->where('programacion_presupuesto.programa_sectorial', $obj->programaSec)
+		->where('programacion_presupuesto.tipologia_conac',$obj->tipologia)
+		->where('programacion_presupuesto.upp',$obj->upp)
+		->where('programacion_presupuesto.ur',$obj->ur)
+		->where('programa_presupuestario', $obj->programa)
+		->where('subprograma_presupuestario',$obj->subprograma)
+		->where('proyecto_presupuestario',  $obj->clv_proyecto)
 		->groupByRaw('programacion_presupuesto.fondo_ramo')
-		->where('programacion_presupuesto.ejercicio',$anio)
+		->where('programacion_presupuesto.ejercicio',$obj->ejercicio)
 		->get();
 		$fond = new \stdClass;
 		$str = '';
@@ -1516,5 +1523,19 @@ class MetasHelper
 		$fond->fondoArr=$arr;
 		return $fond;
 	}
-
+	public static function metasXupp($upp, $anio,$id_grupo)
+	{
+		try {
+			$metas = Metas::where('ejercicio', $anio)
+				->where(\DB::raw('substr(clv_actividad, 1, 3)'), '=', $upp);
+			if ($id_grupo == 5) {
+				$metas = $metas->where('metas.tipo_meta', 'RH');
+			}
+			$metas = $metas->get();
+			return $metas;
+		} catch (\Exception $exp) {
+			Log::channel('daily')->debug('exp ' . $exp->getMessage());
+			throw new \Exception($exp->getMessage());
+		}
+	}
 }
