@@ -182,15 +182,20 @@ var dao = {
         }).done(function (response) {
           switch (response) {
             case 'done':
-              Swal.fire(
-                'Eliminado',
-                'Eliminado correctamente.',
-                'success'
-              );
-              let ejercicio = document.getElementById('filtro_anio').value;
-              let upp = document.getElementById('filtro_upp').value;
-              let ur = document.getElementById('filtro_ur').value;
-              dao.getData(ejercicio,upp,ur);
+              Swal.fire({
+                icon:'success',
+                title: 'Eliminado',
+                text: 'Eliminado correctamente.',
+                showConfirmButton:false,
+                allowOutsideClick:false,
+              });
+              setTimeout(() => {
+                let ejercicio = document.getElementById('filtro_anio').value;
+                let upp = document.getElementById('filtro_upp').value;
+                let ur = document.getElementById('filtro_ur').value;
+                dao.getData(ejercicio,upp,ur);
+              }, 3000);
+              
               break;
             
             case 'invalid':
