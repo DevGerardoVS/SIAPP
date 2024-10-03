@@ -24,15 +24,21 @@ class ConfiguracionesController extends Controller
 		return view('administracion.configuraciones.index');
 	}
 
-    public function GetUpps(){
+    public function GetUpps(Request $request){
         try {
+            $validated = $request->validate([
+                'ejercicio' => 'required|integer|digits:4|min:2022',
+            ]);
+            
             $dataSet = array();
 
             $dataSet = DB::table('catalogo')
                 ->select('clave', 'descripcion')
                 ->where('grupo_id', 6)
+                ->where('ejercicio','=',$request->ejercicio)
                 ->orderByRaw('clave')
                 ->get();
+
 
             return response()->json([
                 "dataSet" => $dataSet,
@@ -45,14 +51,40 @@ class ConfiguracionesController extends Controller
         }
     }
 
-    public function GetUppsAuto(){
+    public function GetEjercicios(){
         try {
+
+            $ejercicios = DB::table('catalogo')
+                ->select('ejercicio')
+                ->where('grupo_id', 6)
+                ->groupBy('ejercicio')
+                ->orderByRaw('ejercicio DESC')
+                ->get();
+
+            return response()->json([
+                "ejercicios"=>$ejercicios,
+                "catalogo" => "Configuraciones",
+            ]);
+
+        } catch(\Exception $exp) {
+            Log::channel('daily')->debug('exp '.$exp->getMessage());
+            throw new \Exception($exp->getMessage());
+        }
+    }
+
+    public function GetUppsAuto(Request $request){
+        try {
+            $validated = $request->validate([
+                'anio' => 'required|integer|digits:4|min:2022|max:' . date('Y'),
+            ]);
+
             $dataSet = array();
             //select epp.upp_id, catalogo.descripcion from epp inner join catalogo on catalogo.clave=epp.upp_id where catalogo.grupo_id=6 group by upp_id order by upp_id;
             $dataSet = DB::table('epp')
                 ->select('catalogo.clave', 'catalogo.descripcion')
                 ->join('catalogo', 'catalogo.id','=','epp.upp_id')
                 ->where('grupo_id', 6)
+                ->where('ejercicio','=',$request->anio)
                 ->groupBy('upp_id')
                 ->orderBy('catalogo.clave')
                 ->get();
@@ -73,11 +105,14 @@ class ConfiguracionesController extends Controller
             $dataSet = array();
             $array_where = [];
             $filter = $request->filter;
+            $ejercicio = $request->ejercicio;
 
             if($filter!=null || $filter!='') array_push($array_where, ['clave','=',$filter]);
+            if($ejercicio!=null || $ejercicio!='') array_push($array_where, ['ejercicio','=',$ejercicio]);
+            else array_push($array_where, ['ejercicio','=',date('Y')]);
 
             $data = DB::table('tipo_actividad_upp')
-                ->select('clave', 'descripcion','Acumulativa','Continua','Especial')
+                ->select('catalogo.id','clave', 'descripcion','Acumulativa','Continua','Especial')
                 ->join('catalogo','tipo_actividad_upp.clv_upp','=','catalogo.clave')
                 ->where('grupo_id', 6)
                 ->where($array_where)
@@ -92,15 +127,15 @@ class ConfiguracionesController extends Controller
 
                 if(Auth::user()->id_grupo==1){
                     $ds = array($d->clave , $d->descripcion, 
-                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'acumulativa\')" id="'.$d->clave.'_a" '.$acumulativa.'></div>',
-                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'continua\')" id="'.$d->clave.'_c" '.$continua.'></div>',
-                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'especial\')" id="'.$d->clave.'_e" '.$especial.'></div>');
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->id.'\',\'acumulativa\')" id="'.$d->id.'_a" '.$acumulativa.'></div>',
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->id.'\',\'continua\')" id="'.$d->id.'_c" '.$continua.'></div>',
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->id.'\',\'especial\')" id="'.$d->id.'_e" '.$especial.'></div>');
                     $dataSet[] = $ds;
                 }else{
                     $ds = array($d->clave , $d->descripcion, 
-                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'acumulativa\')" id="'.$d->clave.'_a" '.$acumulativa.' disabled></div>',
-                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'continua\')" id="'.$d->clave.'_c" '.$continua.' disabled></div>',
-                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->clave.'\',\'especial\')" id="'.$d->clave.'_e" '.$especial.' disabled></div>');
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->id.'\',\'acumulativa\')" id="'.$d->id.'_a" '.$acumulativa.' disabled></div>',
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->id.'\',\'continua\')" id="'.$d->id.'_c" '.$continua.' disabled></div>',
+                    '<div class="form-check"><input class="form-check-input" type="checkbox" value="" onclick="updateData(\''.$d->id.'\',\'especial\')" id="'.$d->id.'_e" '.$especial.' disabled></div>');
                     $dataSet[] = $ds;
                 }
                 

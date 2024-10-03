@@ -2,7 +2,7 @@
 @section('content')
 @include('panels.datatable')
     <div class="container">
-        <form action="{{ route('configuraciones') }}" id="buscarForm" method="Post">
+        <form action="" id="buscarForm" method="Post">
             @csrf
             <input id="filter" name="filter" value="" style="display: none">
         </form>
@@ -34,7 +34,13 @@
                                 </div>
                                 <div class="widget-body-toolbar">
                                     <div class="row">
-                                        <div class="col-xs-9 col-sm-5 col-md-5 col-lg-5">
+                                        <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2">
+                                            <select id="actividad_anio" class="form-select">
+                                                <option value="">Año</option>
+                                            </select>
+                                            
+                                        </div>
+                                        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
                                         </div>
                                         <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
                                             <select id="upps" class="form-select">
@@ -61,7 +67,13 @@
                             <div class="tab-pane fade" id="auto" role="tabpanel" aria-labelledby="autorizadas-tab">
                                 <div class="widget-body-toolbar">
                                     <div class="row">
-                                        <div class="col-xs-9 col-sm-5 col-md-5 col-lg-5">
+                                        <div class="col-xs-3 col-sm-2 col-md-2 col-lg-2">
+                                            <select id="autorizadas_anio" class="form-select">
+                                                <option value="">Año</option>
+                                            </select>
+                                            
+                                        </div>
+                                        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
                                         </div>
                                         <div class="col-xs-3 col-sm-7 col-md-7 col-lg-7 text-right">
                                             <input id="filter_auto" name="filter_auto" value="" style="display: none">

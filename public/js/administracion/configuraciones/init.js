@@ -15,22 +15,71 @@ var init = {
 };
 
 
-function getUpps(){
+function getUpps(anio){
+
+	var formData = new FormData();
+	var csrf_tpken = $("input[name='_token']").val();
+
+	formData.append("ejercicio",anio);
+	formData.append("_token",csrf_tpken);
+
     $.ajax({
         url:"/amd-configuracion/upps",
         type: "POST",
         dataType: 'json',
+		data: formData,
         processData: false,
         contentType: false,
         success:function(response){
-            response = response.dataSet;
+            var dataset = response.dataSet;
             var $dropdown = $("#upps");
-            $.each(response, function(key, value) {
+            $.each(dataset, function(key, value) {
                 $dropdown.append('<option value="' + value.clave + '">'  + value.clave + ' - ' + value.descripcion + '</option>');
             });
 
         },
         error: function(response) {
+			
+			//console.log(response.responseJSON.message);
+            var mensaje="";
+            $.each(response.responseJSON.errors, function( key, value ) {
+                mensaje += value+"\n";
+            });
+			mensaje = response.responseJSON.message;
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensaje,
+                confirmButtonText: "Aceptar",
+            });
+            //$('#errorModal').modal('show');
+            console.log('Error: ' +  JSON.stringify(response.responseJSON));
+        }
+    });
+}
+
+function getEjercicios(){
+	$.ajax({
+        url:"/adm-configuracion/ejercicios",
+        type: "POST",
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success:function(response){
+			var ejercicios =response.ejercicios;
+
+			var $dropdn = $("#actividad_anio");
+			$.each(ejercicios, function(_, value) {
+                $dropdn.append('<option value="' + value.ejercicio + '">'  + value.ejercicio + '</option>');
+            });
+
+			var $dropdn = $("#autorizadas_anio");
+			$.each(ejercicios, function(_, value) {
+                $dropdn.append('<option value="' + value.ejercicio + '">'  + value.ejercicio + '</option>');
+            });
+        },
+        error: function(response) {
+			
             var mensaje="";
             $.each(response.responseJSON.errors, function( key, value ) {
                 mensaje += value+"\n";
@@ -47,17 +96,25 @@ function getUpps(){
     });
 }
 
-function getUPPAuto(){
+function getUPPAuto(anio){
+	var formData = new FormData();
+	var csrf_tpken = $("input[name='_token']").val();
+
+	formData.append("ejercicio",anio);
+	formData.append("_token",csrf_tpken);
+
 	$.ajax({
         url:"/amd-configuracion/upps-auto",
         type: "POST",
         dataType: 'json',
+		data: formData,
         processData: false,
         contentType: false,
         success:function(response){
-            response = response.dataSet;
+            var data = response.dataSet;
+
             var $dropdown = $("#upps_auto");
-            $.each(response, function(key, value) {
+            $.each(data, function(key, value) {
                 $dropdown.append('<option value="' + value.clave + '">' + value.clave + ' - ' + value.descripcion + '</option>');
             });
 
@@ -82,6 +139,95 @@ function getUPPAuto(){
 function adjustTableColumns(){
 	var dt = $("#catalogo_b");
 	dt.DataTable().columns.adjust().draw();
+}
+
+function getConfiguraciones(){
+	
+	var formData = new FormData();
+	var csrf_tpken = $("input[name='_token']").val();
+	var filter = $("#upps option").filter(':selected').val();
+	var anio = $("#actividad_anio option").filter(':selected').val();
+
+	console.log("entra a config "+ anio);
+
+	formData.append("_token",csrf_tpken);
+	formData.append("filter",filter);
+	formData.append("ejercicio",anio);
+
+	$.ajax({
+		url:"/amd-configuracion/data",
+		type: "POST",
+		data: formData,
+		dataType: 'json',
+		processData: false,
+		contentType: false,
+		success:function(response){
+			response = response.dataSet;
+			var dt = $("#catalogo");
+			if(response.length == 0){
+				dt.attr('data-empty','true');
+			}
+			else{
+				dt.attr('data-empty','false');
+			}
+			dt.DataTable().clear();
+			dt.DataTable().destroy();
+			dt.DataTable({
+			   data: response,
+			   pageLength:10,
+			   scrollX: true,
+			   autoWidth: false,
+			   processing: true,
+			   order: [],
+			   ServerSide: true,
+			   api:true,
+			   language: {
+				   processing: "Procesando...",
+				   lengthMenu: "Mostrar _MENU_ registros",
+				   zeroRecords: "No se encontraron resultados",
+				   emptyTable: "Ningún dato disponible en esta tabla",
+				   info: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+				   infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+				   infoFiltered: "(filtrado de un total de _MAX_ registros)",
+				   search: "Búsqueda:",
+				   infoThousands: ",",
+				   loadingRecords: "Cargando...",
+				   buttonText: "Imprimir",
+				   paginate: {
+					   first: "Primero",
+					   last: "Último",
+					   next: "Siguiente",
+					   previous: "Anterior",
+				   },
+				   buttons: {
+					   copyTitle: 'Copiado al portapapeles',
+					   copySuccess: {
+						   _: '%d registros copiados',
+						   1: 'Se copio un registro'
+					   }
+				   },
+			   }
+
+		   });
+		   console.log("auto");
+		   //dt.DataTable().columns.adjust().draw(); 
+		   
+		},
+		error: function(response) {
+			var mensaje="";
+			$.each(response.responseJSON.errors, function( key, value ) {
+				mensaje += value+"\n";
+			});
+			Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: mensaje,
+				confirmButtonText: "Aceptar",
+			});
+			//$('#errorModal').modal('show');
+			console.log('Error: ' +  JSON.stringify(response.responseJSON));
+		}
+	});
 }
 
 function getAutorizedUpp(){
@@ -280,9 +426,9 @@ function updateData(id,field){
 
 $(document).ready(function () {
 
-	getData();
+	getConfiguraciones();
 
-    getUpps();
+    //getUpps();
 
 	getAutorizedUpp();
 	
@@ -299,7 +445,7 @@ $(document).ready(function () {
 
 	$("#upps").on('change',function(){
 		$("#filter").val($("#upps").val());
-		getData();
+		getConfiguraciones();
 	});
 
 	$("#upps_auto").on('change',function(){
@@ -307,7 +453,17 @@ $(document).ready(function () {
 		getAutorizedUpp();
 	});
 
+	$("#actividad_anio").on('change',function(){
+		getUpps($(this).val());
+		getConfiguraciones();
+	});
 
-	getUPPAuto();
+	$("#autorizadas_anio").on('change',function(){
+		getUPPAuto($(this).val());
+		
+	});
+
+	getEjercicios();
+	//getUPPAuto();
 	
 });
