@@ -268,7 +268,8 @@ class MetasController extends Controller
 					'subprograma_presupuestario'=> $af->clv_subprograma,
 					'proyecto_presupuestario'=> $af->clv_proyecto,
 					'v_epp.presupuestable'=> 1,
-					'programacion_presupuesto.ejercicio'=>$anio
+					'programacion_presupuesto.ejercicio'=>$anio,
+					'cat.grupo_id'=>'FONDO DEL RAMO'
 				])
 				->groupByRaw('clave')
 				->where('programacion_presupuesto.ejercicio',$anio)
@@ -1377,7 +1378,7 @@ class MetasController extends Controller
 					'confirmado'=>1,
 					'estatus'=>'Cerrado'
 				]);
-				$metas=MetasHelper::metasXupp($upp,$anio);
+				$metas=MetasHelper::metasXupp($upp,$anio,Auth::user()->id_grupo );
 				$i = 0;
 				foreach ($metas as $key) {
 					$meta = Metas::where('id', $key->id)->firstOrFail();
@@ -1422,7 +1423,7 @@ class MetasController extends Controller
 			Controller::check_permission('putMetas');
 			DB::beginTransaction();
 			$user = Auth::user()->username;
-			$metas=MetasHelper::metasXupp($upp,$anio);
+			$metas=MetasHelper::metasXupp($upp,$anio,Auth::user()->id_grupo );
 			$fecha = Carbon::now()->toDateTimeString();
 			$i = 0;
 			foreach ($metas as $key) {
