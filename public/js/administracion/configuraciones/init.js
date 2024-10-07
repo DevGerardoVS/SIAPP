@@ -33,6 +33,8 @@ function getUpps(anio){
         success:function(response){
             var dataset = response.dataSet;
             var $dropdown = $("#upps");
+			$("#upps").empty();
+			$dropdown.append('<option value="">Todas las UPP\'s</option>');
             $.each(dataset, function(key, value) {
                 $dropdown.append('<option value="' + value.clave + '">'  + value.clave + ' - ' + value.descripcion + '</option>');
             });
@@ -114,6 +116,8 @@ function getUPPAuto(anio){
             var data = response.dataSet;
 
             var $dropdown = $("#upps_auto");
+			$("#upps_auto").empty();
+			$dropdown.append('<option value="">Todas las UPP\'s</option>');
             $.each(data, function(key, value) {
                 $dropdown.append('<option value="' + value.clave + '">' + value.clave + ' - ' + value.descripcion + '</option>');
             });
@@ -147,8 +151,6 @@ function getConfiguraciones(){
 	var csrf_tpken = $("input[name='_token']").val();
 	var filter = $("#upps option").filter(':selected').val();
 	var anio = $("#actividad_anio option").filter(':selected').val();
-
-	console.log("entra a config "+ anio);
 
 	formData.append("_token",csrf_tpken);
 	formData.append("filter",filter);
@@ -235,9 +237,11 @@ function getAutorizedUpp(){
 	var formData = new FormData();
 	var csrf_tpken = $("input[name='_token']").val();
 	var filter = $("#upps_auto option").filter(':selected').val();
+	var anio = $("#autorizadas_anio option").filter(':selected').val();
 
 	formData.append("_token",csrf_tpken);
 	formData.append("filter",filter);
+	formData.append("ejercicio",anio);
 
 	$.ajax({
 		url:"/amd-configuracion/data-auto",
@@ -294,9 +298,7 @@ function getAutorizedUpp(){
 			   }
 
 		   });
-		   console.log("auto");
-		   //dt.DataTable().columns.adjust().draw(); 
-		   
+
 		},
 		error: function(response) {
 			var mensaje="";
@@ -460,7 +462,7 @@ $(document).ready(function () {
 
 	$("#autorizadas_anio").on('change',function(){
 		getUPPAuto($(this).val());
-		
+		getAutorizedUpp();
 	});
 
 	getEjercicios();

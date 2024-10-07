@@ -75,7 +75,7 @@ class ConfiguracionesController extends Controller
     public function GetUppsAuto(Request $request){
         try {
             $validated = $request->validate([
-                'anio' => 'required|integer|digits:4|min:2022|max:' . date('Y'),
+                'ejercicio' => 'required|integer|digits:4|min:2022',
             ]);
 
             $dataSet = array();
@@ -84,7 +84,7 @@ class ConfiguracionesController extends Controller
                 ->select('catalogo.clave', 'catalogo.descripcion')
                 ->join('catalogo', 'catalogo.id','=','epp.upp_id')
                 ->where('grupo_id', 6)
-                ->where('ejercicio','=',$request->anio)
+                ->where('catalogo.ejercicio','=',$request->ejercicio)
                 ->groupBy('upp_id')
                 ->orderBy('catalogo.clave')
                 ->get();
@@ -157,6 +157,10 @@ class ConfiguracionesController extends Controller
             $dataSet = array();
             $array_where = [];
             $filter = $request->filter;
+            $ejercicio = $request->ejercicio;
+
+            if($ejercicio!=null || $ejercicio!='') array_push($array_where, ['catalogo.ejercicio','=',$ejercicio]);
+            else array_push($array_where, ['catalogo.ejercicio','=',date('Y')]);
 
             //if($filter!=NULL && $filter!='' && $filter != 'undefined') array_push($array_where, ['upp_id','=',$filter]);
 
@@ -174,7 +178,7 @@ class ConfiguracionesController extends Controller
                 ->join('catalogo','catalogo.id','=','epp.upp_id')
                 ->join('uppautorizadascpnomina','uppautorizadascpnomina.clv_upp','=','catalogo.clave')
                 ->where('grupo_id', 6)
-                //->where($array_where)
+                ->where($array_where)
                 ->groupBy('upp_id')
                 ->union($complemento)
                 ->orderBy('clave')
