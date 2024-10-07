@@ -69,16 +69,26 @@ function getEjercicios(){
         contentType: false,
         success:function(response){
 			var ejercicios =response.ejercicios;
-
+			var selected = "";
+			var anio = new Date().getFullYear();
 			var $dropdn = $("#actividad_anio");
 			$.each(ejercicios, function(_, value) {
-                $dropdn.append('<option value="' + value.ejercicio + '">'  + value.ejercicio + '</option>');
+				if(anio == value.ejercicio){
+					selected = "selected";
+					getUpps(anio);
+				}else selected = "";
+                $dropdn.append('<option value="' + value.ejercicio + '"'+selected+'>'  + value.ejercicio + '</option>');
             });
 
 			var $dropdn = $("#autorizadas_anio");
 			$.each(ejercicios, function(_, value) {
-                $dropdn.append('<option value="' + value.ejercicio + '">'  + value.ejercicio + '</option>');
+				if(anio == value.ejercicio){
+					selected = "selected";
+					getUPPAuto(anio);
+				} else selected = "";
+                $dropdn.append('<option value="' + value.ejercicio + '"'+selected+'>'  + value.ejercicio + '</option>');
             });
+			
         },
         error: function(response) {
 			
